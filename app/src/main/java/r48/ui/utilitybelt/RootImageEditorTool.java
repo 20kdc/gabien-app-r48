@@ -85,8 +85,8 @@ public class RootImageEditorTool extends ImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (dedicatedDragControl)
-            return app.ts("Tap/drag: Draw, Camera button: Pan");
-        return app.ts("LMB: Draw, Shift-LMB: Grab Colour, Other: Pan");
+            return T.z.l285;
+        return T.z.l286;
     }
 
     @Override

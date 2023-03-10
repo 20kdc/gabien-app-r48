@@ -152,15 +152,15 @@ public class UIMapView extends UIPlaneView {
     protected String planeGetStatus() {
         String shortcuts;
         if (camDragSwitch) {
-            shortcuts = app.ts("Drag to pan. Camera button: Return.");
+            shortcuts = T.z.l258;
         } else if (callbacks == null) {
             if ((pickTileHelper != null) && (!app.ui.isMobile)) {
-                shortcuts = app.ts("Drag to pan. Shift-left: Pick tile. Camera button: Scroll.");
+                shortcuts = T.z.l259;
             } else {
-                shortcuts = app.ts("Drag to pan.");
+                shortcuts = T.z.l260;
             }
         } else {
-            shortcuts = app.ts("Tap/Drag: Use tool. Camera button: Scroll.");
+            shortcuts = T.z.l261;
         }
         return mapGUM + ";" + mouseXT + ", " + mouseYT + " Z" + planeZoomDiv + ":" + planeZoomMul + "; " + shortcuts;
     }

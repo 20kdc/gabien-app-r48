@@ -176,7 +176,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     IRIO miLocal = app.odb.getObject("MapInfos").getObject();
                     IRIO mapInfo = miLocal.getHashVal(rio);
                     if (mapInfo == null)
-                        return app.ts("<map removed from RPG_RT.lmt>");
+                        return T.z.l263;
                     return mapInfo.getIVar("@name").decString();
                 }
             }, id, RXPRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
@@ -206,7 +206,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public void dumpCustomData(RMTranscriptDumper dumper) {
-        dumper.startFile("Items", app.ts("The list of items in the game."));
+        dumper.startFile("Items", T.z.l264);
         LinkedList<String> lls = new LinkedList<String>();
         IRIO items = app.odb.getObject("Items").getObject();
         int itemCount = items.getALen();
@@ -221,13 +221,13 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         dumper.dumpBasicList("Names", lls.toArray(new String[0]), 0);
         dumper.endFile();
 
-        dumper.startFile("System", app.ts("System data (of any importance, anyway)."));
+        dumper.startFile("System", T.z.l265);
         IObjectBackend.ILoadedObject sys = app.odb.getObject("System");
 
-        dumper.dumpHTML(app.ts("Notably, switch and variable lists have a 0th index, but only indexes starting from 1 are actually allowed to be used.") + "<br/>");
+        dumper.dumpHTML(T.z.l266 + "<br/>");
         IRIO sys2 = sys.getObject();
-        dumper.dumpHTML(app.ts("Magic number:") + sys2.getIVar("@magic_number").toString() + "<br/>");
-        dumper.dumpHTML(app.ts("Magic number II:") + sys2.getIVar("@_").toString() + "<br/>");
+        dumper.dumpHTML(T.z.l267 + sys2.getIVar("@magic_number").toString() + "<br/>");
+        dumper.dumpHTML(T.z.l268 + sys2.getIVar("@_").toString() + "<br/>");
 
         dumper.dumpSVList("@switches", sys2.getIVar("@switches"), 0);
         dumper.dumpSVList("@variables", sys2.getIVar("@variables"), 0);

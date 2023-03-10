@@ -63,8 +63,8 @@ public class CopyImageEditorTool extends RectangleImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (stage2)
-            return app.ts("Press another bounding point to finish.");
-        return app.ts("Press bounding points to copy.");
+            return T.z.l283;
+        return T.z.l336;
     }
 
 }

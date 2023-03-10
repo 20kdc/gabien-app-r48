@@ -30,7 +30,7 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return app.fmt.formatExtended(app.ts("Tile L#A ({B=T='upper'/'wall' tileset flags|general})"), new RubyIO().setFX(tileLayers[0]), new RubyIO().setBool(upper));
+        return app.fmt.formatExtended(T.z.l207, new RubyIO().setFX(tileLayers[0]), new RubyIO().setBool(upper));
     }
 
     @Override

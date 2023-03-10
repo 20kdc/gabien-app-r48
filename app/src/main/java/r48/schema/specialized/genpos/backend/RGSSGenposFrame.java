@@ -247,14 +247,14 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
     @Override
     public String[] getCellProps() {
         return new String[] {
-                app.ts("cellID"),
-                app.ts("xPos"),
-                app.ts("yPos"),
-                app.ts("scale"),
-                app.ts("angle"),
-                app.ts("mirror"),
-                app.ts("opacity"),
-                app.ts("blendType")
+                T.z.l132,
+                T.z.l133,
+                T.z.l134,
+                T.z.l126,
+                T.z.l135,
+                T.z.l136,
+                T.z.l137,
+                T.z.l138
         };
     }
 

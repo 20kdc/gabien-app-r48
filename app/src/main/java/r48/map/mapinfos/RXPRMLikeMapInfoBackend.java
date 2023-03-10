@@ -13,6 +13,7 @@ import r48.RubyIO;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
+import r48.tr.pages.TrRoot;
 import r48.ui.Art;
 
 import java.util.*;
@@ -168,6 +169,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
             }
         });
 
+        final TrRoot T = app.t;
         LinkedList<Long> parentStack = new LinkedList<Long>();
         int lastOrder = 0;
         for (Long map : maps) {
@@ -181,7 +183,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
                     parentStack.removeLast();
                 if (parentStack.size() == 0) {
                     // Not valid!
-                    errors.append(app.ts("Parent/order inconsistency error.")).append(" (@").append(map).append(")\n");
+                    errors.append(T.z.l236).append(" (@").append(map).append(")\n");
                 }
             }
 
@@ -191,13 +193,13 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
             // For R2k
             if (indent != null)
                 if (indent.getFX() != (parentStack.size() + standardIndentOffset))
-                    errors.append(app.ts("Indent inconsistent for map: ")).append(map).append('=').append(indent.getFX()).append(" !").append(parentStack.size() + standardIndentOffset).append('\n');
+                    errors.append(T.z.l237).append(map).append('=').append(indent.getFX()).append(" !").append(parentStack.size() + standardIndentOffset).append('\n');
 
             parentStack.add(map);
 
             int order = backend.getOrderOfMap(map);
             if (order != (lastOrder + 1))
-                errors.append(app.ts("Order inconsistency: ")).append(map).append('\n');
+                errors.append(T.z.l238).append(map).append('\n');
             lastOrder = order;
         }
     }
@@ -205,7 +207,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     public static String errorsToStringOrNull(App app, StringBuilder errors) {
         if (errors.length() == 0)
             return null;
-        errors.append(app.ts("These errors must be resolved manually to use this panel."));
+        errors.append(app.t.z.l239);
         return errors.toString();
     }
 }

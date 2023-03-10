@@ -21,6 +21,7 @@ import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.pages.TrRoot;
 import r48.ui.UIThumbnail;
 
 /**
@@ -62,8 +63,9 @@ public class TonePickerSchemaElement extends SchemaElement {
         finalComposite.blitScaledImage(0, 0, 256, 256, 0, 0, imageUnit, imageUnit, totem);
         finalComposite.blitImage(0, 0, imageUnit, imageUnit, imageUnit, 0, app.ui.imageFXCache.process(finalComposite, cfg));
 
-        FontManager.drawString(finalComposite, 0, (imageUnit + 1) - app.f.tonePickerTextHeight, app.ts("TotemSrc."), false, false, app.f.tonePickerTextHeight);
-        FontManager.drawString(finalComposite, imageUnit, (imageUnit + 1) - app.f.tonePickerTextHeight, app.ts("Composite"), false, false, app.f.tonePickerTextHeight);
+        final TrRoot T = app.t;
+        FontManager.drawString(finalComposite, 0, (imageUnit + 1) - app.f.tonePickerTextHeight, T.z.l102, false, false, app.f.tonePickerTextHeight);
+        FontManager.drawString(finalComposite, imageUnit, (imageUnit + 1) - app.f.tonePickerTextHeight, T.z.l103, false, false, app.f.tonePickerTextHeight);
 
         IImage im = GaBIEn.createImage(finalComposite.getPixels(), imageUnit * 2, imageUnit);
         finalComposite.shutdown();

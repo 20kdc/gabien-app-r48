@@ -14,6 +14,7 @@ import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.App;
 import r48.schema.util.ISchemaHost;
+import r48.tr.pages.TrRoot;
 import r48.ui.UINSVertLayout;
 
 /**
@@ -39,6 +40,7 @@ public class GenposFramePanelController {
 
     public GenposFramePanelController(IGenposFrame rootForNow, IGenposTweeningManagement gtm, @NonNull ISchemaHost launcher) {
         App app = launcher.getApp();
+        final TrRoot T = app.t;
         tweening = gtm;
         hostLauncher = launcher;
         frame = rootForNow;
@@ -51,7 +53,7 @@ public class GenposFramePanelController {
         cellSelection = new UICellSelectionPanel(launcher.getApp(), rootForNow);
 
         editingPanel = new UICellEditingPanel(cellSelection, this);
-        gridToggleButton = new UITextButton(app.ts("8px Grid"), app.f.rmaCellTextHeight, new Runnable() {
+        gridToggleButton = new UITextButton(T.z.l142, app.f.rmaCellTextHeight, new Runnable() {
             @Override
             public void run() {
                 // Do nothing.

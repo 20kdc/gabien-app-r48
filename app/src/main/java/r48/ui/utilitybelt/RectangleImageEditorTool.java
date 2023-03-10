@@ -78,8 +78,8 @@ public class RectangleImageEditorTool extends ImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (stage2)
-            return app.ts("Press another bounding point to finish.");
-        return app.ts("Press bounding points to fill.");
+            return T.z.l283;
+        return T.z.l284;
     }
 
     @Override

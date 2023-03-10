@@ -80,14 +80,14 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
                 }
             }).togglable(false));
         }
-        tools.add(new UITextButton(app.ts("Layer Visibility"), app.f.mapLayertabTextHeight, new Runnable() {
+        tools.add(new UITextButton(T.z.l200, app.f.mapLayertabTextHeight, new Runnable() {
             final int thisButton = tools.size();
 
             @Override
             public void run() {
                 clearTools(thisButton);
                 UIScrollLayout svl = new UIScrollLayout(true, app.f.generalScrollersize);
-                svl.panelsAdd(new UITextButton(app.ts("Disable rendering (even across maps!)"), app.f.mapLayertabTextHeight, new Runnable() {
+                svl.panelsAdd(new UITextButton(T.z.l201, app.f.mapLayertabTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         viewGiver.setMasterRenderDisableSwitch(!viewGiver.getMasterRenderDisableSwitch());
@@ -110,7 +110,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
         // Utility buttons
 
         if (!readonlyTiles) {
-            tools.add(new UITextButton(app.ts("Grab Tile"), app.f.mapLayertabTextHeight, new Runnable() {
+            tools.add(new UITextButton(T.z.l202, app.f.mapLayertabTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     // Select the current tile layer
@@ -119,7 +119,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
                 }
             }));
 
-            tools.add(new UITextButton(app.ts("B.Copy"), app.f.mapLayertabTextHeight, new Runnable() {
+            tools.add(new UITextButton(T.z.l203, app.f.mapLayertabTextHeight, new Runnable() {
                 final int thisButton = tools.size();
 
                 @Override
@@ -129,7 +129,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
                 }
             }));
 
-            tools.add(new UITextButton(app.ts("B.Paste"), app.f.mapLayertabTextHeight, new Runnable() {
+            tools.add(new UITextButton(T.z.l204, app.f.mapLayertabTextHeight, new Runnable() {
                 final int thisButton = tools.size();
 
                 @Override
@@ -157,7 +157,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
             }));
         }
 
-        tools.add(new UITextButton(app.ts("..."), app.f.mapLayertabTextHeight, new Runnable() {
+        tools.add(new UITextButton(T.z.l205, app.f.mapLayertabTextHeight, new Runnable() {
             final int thisButton = tools.size();
 
             @Override

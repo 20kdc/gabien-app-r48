@@ -25,10 +25,10 @@ import r48.ui.UIAppendButton;
 public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
 
     private final RubyTable table;
-    private UILabel innerLabel = new UILabel(app.ts("Click at the target, or close this window."), app.f.dialogWindowTextHeight);
+    private UILabel innerLabel = new UILabel(T.z.l10, app.f.dialogWindowTextHeight);
 
     private int confirmX, confirmY;
-    private UIElement confirmButton = new UIAppendButton(app.ts("Cancel"), new UITextButton(app.ts("Confirm"), app.f.dialogWindowTextHeight, new Runnable() {
+    private UIElement confirmButton = new UIAppendButton(T.z.l3, new UITextButton(T.z.l11, app.f.dialogWindowTextHeight, new Runnable() {
         @Override
         public void run() {
             actualConfirm(confirmX, confirmY);

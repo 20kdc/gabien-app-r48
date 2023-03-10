@@ -49,9 +49,9 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         if (name.equals("_"))
             return HiddenSchemaElement.makeHiddenElement();
         if (target.getALen() <= index) {
-            String tx = app.ts("(This index isn't valid - did you modify a group from another window?)");
+            String tx = T.z.l104;
             if (optional != null)
-                tx = app.fmt.formatExtended(app.ts("Field #A doesn't exist (default #B)"), new RubyIO().setString(name, true), new RubyIO().setString(optional, true));
+                tx = app.fmt.formatExtended(T.z.l105, new RubyIO().setString(name, true), new RubyIO().setString(optional, true));
             return new UITextButton(tx, app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {

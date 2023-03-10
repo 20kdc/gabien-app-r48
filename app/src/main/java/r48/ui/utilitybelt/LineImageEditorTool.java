@@ -46,7 +46,7 @@ public class LineImageEditorTool extends StagedImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (stage == 0)
-            return app.ts("Press to start line.");
-        return app.ts("Press to end line.");
+            return T.z.l280;
+        return T.z.l281;
     }
 }

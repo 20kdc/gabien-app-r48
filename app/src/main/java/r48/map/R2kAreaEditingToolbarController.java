@@ -42,7 +42,7 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
 
     @Override
     public UIElement getBar() {
-        return new UILabel(app.ts("Editing Area..."), app.f.mapLayertabTextHeight);
+        return new UILabel(T.z.l219, app.f.mapLayertabTextHeight);
     }
 
     @Override
@@ -53,8 +53,8 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
     private class UIMTAreaTool extends UIMTBase implements IMapViewCallbacks {
 
         public UILabel label;
-        public String textA = app.ts("Click to define first point (old area shown)");
-        public String textB = app.ts("Click again to define second point");
+        public String textA = T.z.l220;
+        public String textB = T.z.l221;
 
         public UIMTAreaTool() {
             super(R2kAreaEditingToolbarController.this.mapToolContext);

@@ -61,7 +61,7 @@ public class EDImageEditorTool extends ImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return app.ts("Tap on the point to select the colour of.");
+        return T.z.l279;
     }
 
     @Override

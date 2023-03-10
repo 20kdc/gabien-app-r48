@@ -55,7 +55,7 @@ public class AddColourFromImageEditorTool extends ImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return app.ts("Touch a point to add a new palette entry for it.");
+        return T.z.l282;
     }
 
     @Override

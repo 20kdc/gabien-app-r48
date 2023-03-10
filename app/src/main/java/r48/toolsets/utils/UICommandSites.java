@@ -53,7 +53,7 @@ public class UICommandSites extends App.Prx {
 
     @Override
     public String toString() {
-        return app.fmt.formatExtended(app.ts("Translatables in: #A"), new RubyIO().setString(objIdName, true));
+        return app.fmt.formatExtended(T.z.l96, new RubyIO().setString(objIdName, true));
     }
 
     public void doRefresh() {

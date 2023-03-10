@@ -22,7 +22,7 @@ import r48.ui.UINSVertLayout;
  * WARNING: May Contain Minigame.
  * Created on 1/1/17.
  */
-public class UIMapViewContainer extends UIElement.UIPanel {
+public class UIMapViewContainer extends App.Pan {
     public UIMapView view;
     private UINSVertLayout viewToolbarSplit;
     // Use when mapTool is being set to null.
@@ -44,16 +44,14 @@ public class UIMapViewContainer extends UIElement.UIPanel {
 
     private boolean masterRenderDisableSwitch = false;
 
-    public final App app;
-
     public UIMapViewContainer(App app) {
-        this.app = app;
+        super(app);
         timeWaster = new TimeWaster(app);
     }
 
     @Override
     public String toString() {
-        return app.ts("Map");
+        return T.z.l218;
     }
 
     @Override

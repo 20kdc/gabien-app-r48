@@ -22,7 +22,7 @@ public class GridMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return app.ts("RM-Style Grid Overlay");
+        return T.z.l215;
     }
 
     @Override

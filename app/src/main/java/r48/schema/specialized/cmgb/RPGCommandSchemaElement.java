@@ -27,6 +27,7 @@ import r48.schema.integers.ROIntegerSchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.pages.TrRoot;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 import r48.ui.dialog.UIEnumChoice;
@@ -75,7 +76,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         final SchemaPath path = path2.tagSEMonitor(target, this, false);
 
         if (showHeader) {
-            UIElement chooseCode = new UIAppendButton(app.ts(" ? "), new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTextHeight, new Runnable() {
+            UIElement chooseCode = new UIAppendButton(T.z.l165, new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     launcher.pushObject(path2.newWindow(navigateToCode(launcher, target, new IConsumer<int[]>() {
@@ -92,16 +93,16 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     int code = (int) target.getIVar("@code").getFX();
                     RPGCommand rc = database.knownCommands.get(code);
                     String title = code + " : ";
-                    String result = app.ts("This command isn't known by the schema's CMDB.");
+                    String result = T.z.l166;
                     if (rc != null) {
                         title += rc.formatName(null, null);
                         if (rc.description == null) {
-                            result = app.ts("This command is known, but no description exists.");
+                            result = T.z.l167;
                         } else {
                             result = rc.description;
                         }
                     } else {
-                        title += app.ts("Unknown Command");
+                        title += T.z.l168;
                     }
                     app.ui.launchDialog(title + "\n" + result);
                 }
@@ -123,9 +124,9 @@ public class RPGCommandSchemaElement extends SchemaElement {
             if (target.getIVar("@indent") != null) {
                 if (showHeader) {
                     PathSyntax indent = PathSyntax.compile(app, "@indent");
-                    SchemaElement ise = new PathSchemaElement(indent, app.ts("@indent"), new ROIntegerSchemaElement(app, 0), false);
+                    SchemaElement ise = new PathSchemaElement(indent, T.z.l169, new ROIntegerSchemaElement(app, 0), false);
                     if (!allowControlOfIndent)
-                        ise = new PathSchemaElement(indent, app.ts("@indent"), new IntegerSchemaElement(app, 0), false);
+                        ise = new PathSchemaElement(indent, T.z.l169, new IntegerSchemaElement(app, 0), false);
                     uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
                 }
             }
@@ -169,6 +170,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         }
 
         final App app = launcher.getApp();
+        final TrRoot T = app.t;
         return new TempDialogSchemaChoice(app, new UIEnumChoice(app, new IConsumer<RubyIO>() {
             @Override
             public void accept(RubyIO integer) {
@@ -204,7 +206,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 // This isn't done automatically by UIEnumChoice.
                 launcher.popObject();
             }
-        }, categories, app.ts("Code"), UIEnumChoice.EntryMode.INT), null, path);
+        }, categories, T.z.l170, UIEnumChoice.EntryMode.INT), null, path);
     }
 
     @Override

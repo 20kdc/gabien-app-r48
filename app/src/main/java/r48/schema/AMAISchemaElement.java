@@ -23,7 +23,7 @@ public class AMAISchemaElement extends OpaqueSchemaElement {
 
     @Override
     public String getMessage(IRIO v) {
-        return app.ts("Parent Index. ") + v;
+        return T.z.l110 + v;
     }
 
     @Override

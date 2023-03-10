@@ -23,7 +23,7 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
     public final VXATileRenderer tiles;
     public final RMEventGraphicRenderer events;
 
-    public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvA = new ZSortingDrawLayer.SignalMapViewLayer(app.ts("Event Layers"));
+    public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvA = new ZSortingDrawLayer.SignalMapViewLayer(T.z.l216);
 
     private static final int[] layerPreference = new int[] {0, 1, 3, 2};
 
@@ -54,7 +54,7 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
 
     @Override
     public String getName() {
-        return app.ts("VXA Tile/Event Z-Emulation Layer");
+        return T.z.l217;
     }
 
     private class RVXAPriorityPlane extends TileMapViewDrawLayer implements ZSortingDrawLayer.IZSortedObject {

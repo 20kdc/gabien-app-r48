@@ -229,15 +229,15 @@ public abstract class ArraySchemaElement extends SchemaElement {
                                 target.addAElem(i).setDeepClone(finalInsertionRv[j]);
                             }
                         } catch (Exception e) {
-                            app.ui.launchDialog(app.ts("Incompatible clipboard and target."), e);
+                            app.ui.launchDialog(T.z.l188, e);
                         }
                         // whack the UI
                         path.changeOccurred(false);
                     } else {
-                        app.ui.launchDialog(app.ts("Can't copy in - copying in a range into an array requires that range be an array.") + "\n" + app.ts("Copying from the array interface will give you these."));
+                        app.ui.launchDialog(T.z.l189 + "\n" + T.z.l190);
                     }
                 } else {
-                    app.ui.launchDialog(app.ts("Can't copy in - the clipboard is empty."));
+                    app.ui.launchDialog(T.z.l191);
                 }
             }
         };

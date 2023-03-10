@@ -37,7 +37,7 @@ public class UICellSelectionPanel extends App.Prx {
             final int i2 = i;
             addAdditionButton(i2);
             String prefix = cellNumber == i2 ? ">" : " ";
-            UIElement button = new UITextButton(prefix + app.fmt.formatExtended(app.ts("Cell #A"), new RubyIO().setFX(i)), app.f.rmaCellTextHeight, new Runnable() {
+            UIElement button = new UITextButton(prefix + app.fmt.formatExtended(T.z.l118, new RubyIO().setFX(i)), app.f.rmaCellTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     cellNumber = i2;
@@ -67,7 +67,7 @@ public class UICellSelectionPanel extends App.Prx {
     private void addAdditionButton(final int i2) {
         if (!root.canAddRemoveCells())
             return;
-        selectionPanel.panelsAdd(new UITextButton(app.ts("<add cell here>"), app.f.rmaCellTextHeight, new Runnable() {
+        selectionPanel.panelsAdd(new UITextButton(T.z.l119, app.f.rmaCellTextHeight, new Runnable() {
             @Override
             public void run() {
                 if (i2 <= root.getCellCount()) {

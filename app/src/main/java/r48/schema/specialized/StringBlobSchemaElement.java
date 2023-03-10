@@ -37,7 +37,7 @@ public class StringBlobSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final String fpath = Application.BRAND + "/r48.edit.txt";
 
-        UITextButton importer = new UITextButton(app.ts("Import"), app.f.blobTextHeight, new Runnable() {
+        UITextButton importer = new UITextButton(T.z.l154, app.f.blobTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -48,12 +48,12 @@ public class StringBlobSchemaElement extends SchemaElement {
                     path.changeOccurred(false);
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
-                    app.ui.launchDialog(app.ts("Wasn't able to import 'r48.edit.txt' from the R48 settings folder.") + "\n" + ioe);
+                    app.ui.launchDialog(T.z.l155 + "\n" + ioe);
                 }
             }
         });
         AggregateSchemaElement.hookButtonForPressPreserve(launcher, this, target, importer, "import");
-        UISplitterLayout usl = new UISplitterLayout(new UITextButton(app.ts("Export/Edit"), app.f.blobTextHeight, new Runnable() {
+        UISplitterLayout usl = new UISplitterLayout(new UITextButton(T.z.l156, app.f.blobTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -64,14 +64,14 @@ public class StringBlobSchemaElement extends SchemaElement {
                     dis.close();
                     os.close();
                     if (!GaBIEn.tryStartTextEditor(fpath))
-                        app.ui.launchDialog(app.ts("Unable to start the editor! Wrote to the file 'r48.edit.txt' in the R48 settings folder."));
+                        app.ui.launchDialog(T.z.l157);
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
-                    app.ui.launchDialog(app.ts("Wasn't able to export.") + "\n" + ioe);
+                    app.ui.launchDialog(T.z.l158 + "\n" + ioe);
                 }
             }
         }), importer, false, 0.5d); 
-        return new UISplitterLayout(usl, new UITextButton(app.ts("Edit Here"), app.f.blobTextHeight, new Runnable() {
+        return new UISplitterLayout(usl, new UITextButton(T.z.l159, app.f.blobTextHeight, new Runnable() {
             @Override
             public void run() {
                 final UITextBox utb = new UITextBox("", app.f.schemaFieldTextHeight).setMultiLine();
@@ -81,18 +81,18 @@ public class StringBlobSchemaElement extends SchemaElement {
                         try {
                             utb.text = readContentString(target);
                         } catch (IOException e) {
-                            app.ui.launchDialog(app.ts("Cannot read"), e);
+                            app.ui.launchDialog(T.z.l160, e);
                         }
                     }
                 };
                 update.run();
-                UIElement ui = new UISplitterLayout(utb, new UITextButton(app.ts("Confirm"), app.f.schemaFieldTextHeight, new Runnable() {
+                UIElement ui = new UISplitterLayout(utb, new UITextButton(T.z.l11, app.f.schemaFieldTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         try {
                             writeContentString(target, utb.text);
                         } catch (IOException e) {
-                            app.ui.launchDialog(app.ts("Cannot write"), e);
+                            app.ui.launchDialog(T.z.l161, e);
                             return;
                         }
                         path.changeOccurred(false);

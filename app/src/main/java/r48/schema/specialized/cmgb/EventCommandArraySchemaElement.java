@@ -234,8 +234,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                     canCopyText = true;
             }
         }
-        final String addText = app.ts("Add to group...");
-        final String copyText = app.ts("Copy text to clipboard");
+        final String addText = T.z.l162;
+        final String copyText = T.z.l163;
         final boolean addRemoveF = addRemove;
         final boolean cctF = canCopyText;
         group[group.length - 1] = new SchemaElement(app) {
@@ -360,7 +360,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
                 int actualStart = findActualStart(target, tracker);
                 if (actualStart == -1)
-                    return new UILabel(app.ts("The command isn't in the list anymore, so it has no context."), app.f.schemaFieldTextHeight);
+                    return new UILabel(T.z.l164, app.f.schemaFieldTextHeight);
                 return getGroupElement(target, actualStart, this).buildHoldingEditor(target, launcher, path);
             }
 

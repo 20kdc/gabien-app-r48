@@ -49,7 +49,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
         if (tgo == null) {
             if (!optional)
                 throw new RuntimeException("Error: Made it to PathSchemaElement.buildHoldingEditor when target wasn't there: " + pStr);
-            e2 = new UITextButton(app.ts("<Not present - Add>"), app.f.schemaFieldTextHeight, new Runnable() {
+            e2 = new UITextButton(T.z.l111, app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     IRIO rio = pStr.add(target);

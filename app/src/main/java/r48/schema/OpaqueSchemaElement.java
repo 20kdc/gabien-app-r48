@@ -24,7 +24,7 @@ public class OpaqueSchemaElement extends SchemaElement {
     }
 
     public String getMessage(IRIO v) {
-        return app.ts("Can't edit: ") + v;
+        return T.z.l106 + v;
     }
 
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {

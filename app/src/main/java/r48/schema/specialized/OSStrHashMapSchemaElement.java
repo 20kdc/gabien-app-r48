@@ -18,6 +18,7 @@ import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.pages.TrRoot;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -36,7 +37,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
         App app = launcher.getApp();
         tryInitOSSHESEDB(app);
         if (app.osSHESEDB == null)
-            app.ui.launchDialog(app.ts("This is basically useless without a locmaps.txt file. Please prepare one by going into RXP mode, System Tools, and pressing 'Retrieve all object strings', then return here."));
+            app.ui.launchDialog(T.z.l181);
         final UITextBox utb = new UITextBox("", app.f.schemaFieldTextHeight);
         utb.onEdit = new Runnable() {
             @Override
@@ -133,11 +134,12 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
     }
 
     private static String mainDecode(App app, int fixnumVal) {
+        final TrRoot T = app.t;
         if (app.osSHESEDB == null)
-            return app.ts("[NO DB AVAILABLE]");
+            return T.z.l182;
         String r = app.osSHESEDB.get(fixnumVal);
         if (r == null)
-            return app.ts("[UNKNOWN STRING. I just don't know what went wrong...]");
+            return T.z.l183;
         return r;
     }
 }

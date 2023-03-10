@@ -16,6 +16,7 @@ import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
+import r48.tr.pages.TrRoot;
 
 /**
  * A replacement for (the old) StuffRenderer.
@@ -56,6 +57,7 @@ public class StuffRenderer {
     public static IMapViewDrawLayer[] prepareTraditional(App app, ITileRenderer itr, int[] tlOrder, IEventGraphicRenderer igr, IImageLoader iil, IRIO map, IEventAccess events, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
         if (map == null)
             return new IMapViewDrawLayer[0];
+        final TrRoot T = app.t;
         RubyTable rt = new RubyTable(map.getIVar("@data").getBuffer());
         // 0: P
         // 1: E-1
@@ -67,7 +69,7 @@ public class StuffRenderer {
         if (!vxaPano.equals(""))
             panoImg = iil.getImage(vxaPano, true);
         layers[0] = new PanoramaMapViewDrawLayer(app, panoImg, lx, ly, alx, aly, rt.width, rt.height, panoSW, panoSH, panoSC);
-        layers[1] = new EventMapViewDrawLayer(app, -1, events, igr, app.ts(" (Lowest)"));
+        layers[1] = new EventMapViewDrawLayer(app, -1, events, igr, T.z.l256);
         for (int i = 0; i < rt.planeCount; i++) {
             layers[(i * 2) + 2] = new TileMapViewDrawLayer(app, rt, tlOrder[i], itr);
             layers[(i * 2) + 3] = new EventMapViewDrawLayer(app, i, events, igr, "");

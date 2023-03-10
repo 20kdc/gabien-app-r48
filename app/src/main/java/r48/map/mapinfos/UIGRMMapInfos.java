@@ -135,7 +135,7 @@ public class UIGRMMapInfos extends App.Prx {
         utv.setElements(tree.toArray(new UITreeView.TreeElement[0]));
         uiSVL.panelsAdd(searchBar);
         uiSVL.panelsAdd(utv);
-        uiSVL.panelsAdd(new UITextButton(app.ts("<Insert New Map>"), app.f.mapInfosTextHeight, new Runnable() {
+        uiSVL.panelsAdd(new UITextButton(T.z.l240, app.f.mapInfosTextHeight, new Runnable() {
             @Override
             public void run() {
                 final UINumberBox num = new UINumberBox(0, app.f.textDialogFieldTextHeight);
@@ -150,12 +150,12 @@ public class UIGRMMapInfos extends App.Prx {
                 };
                 unusedID.run();
                 final AtomicBoolean close = new AtomicBoolean(false);
-                UIAppendButton prompt = new UIAppendButton(app.ts("Confirm"), num, new Runnable() {
+                UIAppendButton prompt = new UIAppendButton(T.z.l11, num, new Runnable() {
                     @Override
                     public void run() {
                         long i = num.number;
                         if (operators.getHashBID(i) != null) {
-                            app.ui.launchDialog(app.ts("That ID is already in use."));
+                            app.ui.launchDialog(T.z.l241);
                             return;
                         }
                         selectedOrder = operators.createNewMap(i);
@@ -165,10 +165,10 @@ public class UIGRMMapInfos extends App.Prx {
                         close.set(true);
                     }
                 }, app.f.textDialogFieldTextHeight);
-                UINSVertLayout dialog = new UINSVertLayout(prompt, new UITextButton(app.ts("Find unused ID."), app.f.textDialogFieldTextHeight, unusedID)) {
+                UINSVertLayout dialog = new UINSVertLayout(prompt, new UITextButton(T.z.l242, app.f.textDialogFieldTextHeight, unusedID)) {
                     @Override
                     public String toString() {
-                        return app.ts("Map ID?");
+                        return T.z.l243;
                     }
 
                     @Override
@@ -194,7 +194,7 @@ public class UIGRMMapInfos extends App.Prx {
         if (selectedOrder == order) {
             if (parent != 0) {
                 // This used to be two operations, but, eh.
-                elm = new UIAppendButton(app.ts("Move Out "), elm, new Runnable() {
+                elm = new UIAppendButton(T.z.l244, elm, new Runnable() {
                     @Override
                     public void run() {
                         final int parentLastOrder = MapInfoReparentUtil.findChildrenLastOrder(parent, operators);
@@ -238,13 +238,13 @@ public class UIGRMMapInfos extends App.Prx {
                     }
                 }, app.f.mapInfosTextHeight);
             }
-            elm = new UIAppendButton(app.ts("Edit Info. "), elm, new Runnable() {
+            elm = new UIAppendButton(T.z.l245, elm, new Runnable() {
                 @Override
                 public void run() {
                     operators.triggerEditInfoOf(k);
                 }
             }, app.f.mapInfosTextHeight);
-            elm = new UIAppendButton(app, app.ts("Delete"), elm, null, new String[] {app.ts("Confirm")}, new Runnable[] {new Runnable() {
+            elm = new UIAppendButton(app, T.z.l246, elm, null, new String[] {T.z.l11}, new Runnable[] {new Runnable() {
                 @Override
                 public void run() {
                     // Orphan/move up child nodes first

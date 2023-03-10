@@ -44,7 +44,7 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
             }
         }));
         editor1.accept(planes[0]);
-        base.panelsAdd(new UILabel(app.ts("Manual Edit:"), app.f.tableElementTextHeight));
+        base.panelsAdd(new UILabel(T.z.l112, app.f.tableElementTextHeight));
         final Runnable editor2 = new DefaultTableCellEditor(app).createEditor(base, planes, changeOccurred);
         
         return new Runnable() {

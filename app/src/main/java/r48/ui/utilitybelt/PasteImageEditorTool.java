@@ -49,7 +49,7 @@ public class PasteImageEditorTool extends ImageEditorTool {
         }
 
         if (result == null) {
-            app.ui.launchDialog(app.ts("Object in clipboard not a valid image."));
+            app.ui.launchDialog(T.z.l291);
             return;
         }
 
@@ -158,25 +158,25 @@ public class PasteImageEditorTool extends ImageEditorTool {
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
         UIScrollLayout uie = RootImageEditorTool.createToolPalette(uiev, PasteImageEditorTool.class);
-        UITextButton a = new UITextButton(app.ts("FlipX"), app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton a = new UITextButton(T.z.l292, app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 flipX = !flipX;
             }
         }).togglable(flipX);
-        UITextButton b = new UITextButton(app.ts("Y"), app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton b = new UITextButton(T.z.l293, app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 flipY = !flipY;
             }
         }).togglable(flipY);
-        UITextButton c = new UITextButton(app.ts("SwapXY"), app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton c = new UITextButton(T.z.l294, app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 swapXY = !swapXY;
             }
         }).togglable(swapXY);
-        UITextButton d = new UITextButton(app.ts("Raw Copy"), app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton d = new UITextButton(T.z.l295, app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 rawCopy = !rawCopy;
@@ -195,7 +195,7 @@ public class PasteImageEditorTool extends ImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return app.ts("Tap top-left pixel of destination.");
+        return T.z.l296;
     }
 
     @Override

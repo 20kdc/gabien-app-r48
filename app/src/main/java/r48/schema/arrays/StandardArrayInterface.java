@@ -12,6 +12,7 @@ import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.tr.pages.TrRoot;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 import r48.ui.UIMenuButton;
@@ -38,6 +39,7 @@ public class StandardArrayInterface implements IArrayInterface {
     public void provideInterfaceFrom(final Host uiSVL, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
         final ArrayPosition[] positions = getPositions.get();
         final App app = uiSVL.getApp();
+        final TrRoot T = app.t;
         // this object is needed as a pin to hold things together.
         // It used to be kind of redundant, but now with the selection stuff...
         final Runnable runCompleteRelayout = new Runnable() {
@@ -96,7 +98,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                 final int fixedStart = selectedStart;
                                 final int fixedEnd = selectedEnd;
                                 if (positions[fixedStart].execDelete != null) {
-                                    uie = new UIAppendButton(app, "Delete", uie, valid, new String[] {app.ts("Confirm")}, new Runnable[] {
+                                    uie = new UIAppendButton(app, "Delete", uie, valid, new String[] {T.z.l11}, new Runnable[] {
                                         new Runnable() {
                                             @Override
                                             public void run() {
@@ -118,7 +120,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                         containerRCL();
                                     }
                                 };
-                                uie = new UIAppendButton(app.ts("Copy"), uie, new Runnable() {
+                                uie = new UIAppendButton(T.z.l139, uie, new Runnable() {
                                     @Override
                                     public void run() {
                                         copyRange(fixedStart, fixedEnd);
@@ -126,7 +128,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                         containerRCL();
                                     }
                                 }, app.f.schemaFieldTextHeight);
-                                uie = new UIAppendButton(app.ts("Cut Array"), uie, new Runnable() {
+                                uie = new UIAppendButton(T.z.l192, uie, new Runnable() {
                                     @Override
                                     public void run() {
                                         copyRange(fixedStart, fixedEnd);
@@ -285,14 +287,14 @@ public class StandardArrayInterface implements IArrayInterface {
                 LinkedList<String> optText = new LinkedList<String>();
                 LinkedList<Runnable> optRuns = new LinkedList<Runnable>();
                 // This keeps this string in the translation DB in case it's needed again; stuff should be tested first.
-                // app.fmt.formatExtended(app.ts("Add #@ #A"), new RubyIO().setString(text, true))
-                optText.add(clarifyEmpty ? app.ts("Insert Here...") : app.ts("Add Next..."));
+                // app.fmt.formatExtended(T.z.l193, new RubyIO().setString(text, true))
+                optText.add(clarifyEmpty ? T.z.l194 : T.z.l195);
                 optRuns.add(runnable);
                 if (runnable2 != null) {
-                    optText.add(app.ts("Paste Array"));
+                    optText.add(T.z.l196);
                     optRuns.add(runnable2);
                 }
-                return new UIMenuButton(uiSVL.getApp(), app.ts("Add..."), app.f.schemaArrayAddTextHeight, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
+                return new UIMenuButton(uiSVL.getApp(), T.z.l197, app.f.schemaArrayAddTextHeight, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
             }
 
             // This assumes it's being placed on a button 'before' the position

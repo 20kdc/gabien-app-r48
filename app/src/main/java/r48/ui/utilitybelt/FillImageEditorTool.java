@@ -108,19 +108,19 @@ public class FillImageEditorTool extends ImageEditorTool {
         App app = uiev.app;
         UIElement uie = RootImageEditorTool.createToolPalette(uiev, FillImageEditorTool.class);
         UIScrollLayout usl = new UIScrollLayout(false, app.f.mapToolbarScrollersize);
-        usl.panelsAdd(new UITextButton(app.ts("Autoshade"), app.f.imageEditorTextHeight, new Runnable() {
+        usl.panelsAdd(new UITextButton(T.z.l287, app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 autoshade = !autoshade;
             }
         }).togglable(autoshade));
-        usl.panelsAdd(new UITextButton(app.ts("LR"), app.f.imageEditorTextHeight, new Runnable() {
+        usl.panelsAdd(new UITextButton(T.z.l288, app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 autoshadeLRX = !autoshadeLRX;
             }
         }).togglable(autoshadeLRX));
-        usl.panelsAdd(new UITextButton(app.ts("UD"), app.f.imageEditorTextHeight, new Runnable() {
+        usl.panelsAdd(new UITextButton(T.z.l289, app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 autoshadeUDX = !autoshadeUDX;
@@ -136,7 +136,7 @@ public class FillImageEditorTool extends ImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return app.ts("Press to fill area.");
+        return T.z.l290;
     }
 
     @Override

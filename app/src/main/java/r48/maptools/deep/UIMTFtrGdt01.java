@@ -27,7 +27,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
     public UIMTFtrGdt01(IMapToolContext o) {
         super(o);
 
-        changeInner(new UIAppendButton(T.g.bConfirm, new UIAppendButton(app.ts("Raise Pen"), new UITextButton(T.g.bUndo, app.f.schemaFieldTextHeight, new Runnable() {
+        changeInner(new UIAppendButton(T.g.bConfirm, new UIAppendButton(T.z.l8, new UITextButton(T.g.bUndo, app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 TOutline.Line l = workspace.removeLast();
@@ -59,7 +59,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public String toString() {
-        return app.ts("Deep Water, layer ") + mapToolContext.getMapView().currentLayer;
+        return T.z.l9 + mapToolContext.getMapView().currentLayer;
     }
 
     @Override

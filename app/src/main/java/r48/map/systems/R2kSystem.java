@@ -148,13 +148,13 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             // layer 2 upper
             layers = new IMapViewDrawLayer[] {
                 new PanoramaMapViewDrawLayer(app, img, loopX, loopY, autoLoopX, autoLoopY, tbl.width, tbl.height, 320, 240, 1),
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, false, tileset, app.ts("L0 (no Upper flag)")),
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, false, tileset, app.ts("L1 (no Upper flag)")),
-                    new EventMapViewDrawLayer(app, 0, events, eventRenderer, app.ts(" (Below Player)")),
-                    new EventMapViewDrawLayer(app, 1, events, eventRenderer, app.ts(" (Player/Same)")), // Player/Same
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, true, tileset, app.ts("L0 (Upper flag)")),
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, true, tileset, app.ts("L1 (Upper flag)")),
-                    new EventMapViewDrawLayer(app, 2, events, eventRenderer, app.ts(" (Above Player)")),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, false, tileset, T.z.l271),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, false, tileset, T.z.l272),
+                    new EventMapViewDrawLayer(app, 0, events, eventRenderer, T.z.l273),
+                    new EventMapViewDrawLayer(app, 1, events, eventRenderer, T.z.l274), // Player/Same
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, true, tileset, T.z.l275),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, true, tileset, T.z.l276),
+                    new EventMapViewDrawLayer(app, 2, events, eventRenderer, T.z.l277),
                 new PassabilityMapViewDrawLayer(app, new R2kPassabilitySource(tbl, tileset, (scrollFlags & 2) != 0, (scrollFlags & 1) != 0), 16),
                     new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, eventRenderer, ""),
                 new GridMapViewDrawLayer(app),
@@ -185,7 +185,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     IRIO lmtiLocal = app.odb.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos");
                     IRIO mapInfo = lmtiLocal.getHashVal(key);
                     if (mapInfo == null)
-                        return app.ts("<map removed from RPG_RT.lmt>");
+                        return T.z.l263;
                     return mapInfo.getIVar("@name").decString();
                 }
             }, id, R2kRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
@@ -214,7 +214,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public void dumpCustomData(RMTranscriptDumper dumper) {
-        dumper.startFile("RPG_RT.ldb", app.ts("System data (of any importance, anyway)."));
+        dumper.startFile("RPG_RT.ldb", T.z.l265);
         IRIO sys = app.odb.getObject("RPG_RT.ldb").getObject();
         dumper.dumpSVListHash("@switches", sys.getIVar("@switches"));
         dumper.dumpSVListHash("@variables", sys.getIVar("@variables"));
@@ -319,7 +319,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             @Override
             public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
                 return new MapEditingToolbarController(iMapToolContext, false, new ToolButton[] {
-                        new ToolButton(app.ts("DeepWater")) {
+                        new ToolButton(T.z.l278) {
                             @Override
                             public UIMTBase apply(IMapToolContext a) {
                                 return new UIMTFtrGdt01(a);

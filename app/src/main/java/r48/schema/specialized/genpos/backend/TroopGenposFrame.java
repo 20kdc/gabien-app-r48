@@ -26,7 +26,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 28/07/17.
  */
-public class TroopGenposFrame implements IGenposFrame {
+public class TroopGenposFrame extends App.Svc implements IGenposFrame {
 
     public static final int[] gameBattleDisplay = new int[] {
             // 320x160 (RPG Maker 2000)
@@ -39,7 +39,6 @@ public class TroopGenposFrame implements IGenposFrame {
             320, 240
     };
 
-    public final App app;
     public IImage battleBkg;
     public IRIO troop;
     public SchemaPath troopPath;
@@ -47,7 +46,7 @@ public class TroopGenposFrame implements IGenposFrame {
     public Runnable changed;
 
     public TroopGenposFrame(App app, IRIO t, SchemaPath path, Runnable change) {
-        this.app = app;
+        super(app);
         troop = t;
         troopPath = path;
         changed = change;
@@ -141,10 +140,10 @@ public class TroopGenposFrame implements IGenposFrame {
     @Override
     public String[] getCellProps() {
         return new String[] {
-                app.ts("enemyId"),
-                app.ts("x"),
-                app.ts("y"),
-                app.ts("invisible")
+                T.z.l120,
+                T.z.l121,
+                T.z.l122,
+                T.z.l123
         };
     }
 

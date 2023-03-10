@@ -22,7 +22,7 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
     public final int startX, startY;
     public final boolean autotile;
 
-    public UIAppendButton innerLabel = new UIAppendButton(app.ts("Cancel"), new UILabel(app.ts("Click on a tile to finish the rectangle, or:"), app.f.dialogWindowTextHeight), new Runnable() {
+    public UIAppendButton innerLabel = new UIAppendButton(T.z.l3, new UILabel(T.z.l4, app.f.dialogWindowTextHeight), new Runnable() {
         @Override
         public void run() {
             parent.selfClose = false;

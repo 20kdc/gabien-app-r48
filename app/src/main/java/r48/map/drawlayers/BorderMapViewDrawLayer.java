@@ -24,7 +24,7 @@ public class BorderMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer
 
     @Override
     public String getName() {
-        return app.ts("Map Border");
+        return T.z.l212;
     }
 
     @Override

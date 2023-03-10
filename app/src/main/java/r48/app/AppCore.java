@@ -85,13 +85,6 @@ public class AppCore {
     }
 
     /**
-     * Legacy static translation
-     */
-    public String ts(String text) {
-        return d.tr("r48", text);
-    }
-
-    /**
      * Legacy dynamic translation
      */
     public String td(String context, String text) {

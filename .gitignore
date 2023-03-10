@@ -10,6 +10,11 @@
 !releaser/*.sh
 !releaser/icon.png
 
+# Other
+!attic
+!attic/lamb.py
+!attic/field.py
+
 # Documentation
 !doc
 !doc/**

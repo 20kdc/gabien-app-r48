@@ -31,32 +31,32 @@ public class UIMTPopupButtons extends UIMTBase {
         final App app = view.app;
 
         ToolButton[] mainToolButtons = {
-                new ToolButton(app.ts("Reload Panorama/TS")) {
+                new ToolButton(T.z.l13) {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
                         UIMapView.performFullCacheFlush(view.app, view);
                         return null;
                     }
                 },
-                new ToolButton(app.ts("Properties")) {
+                new ToolButton(T.z.l14) {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
                         app.ui.launchSchema(view.map.objectSchema, view.map.object, view);
                         return null;
                     }
                 },
-                new ToolButton(app.ts("Resize")) {
+                new ToolButton(T.z.l15) {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
                         if (disableResize) {
-                            app.ui.launchDialog(app.ts("Tiles are apparently readonly, so resizing is not possible."));
+                            app.ui.launchDialog(T.z.l16);
                         } else {
                             return new UIMTMapResizer(mtc);
                         }
                         return null;
                     }
                 },
-                new ToolButton(app.ts("Export shot.png")) {
+                new ToolButton(T.z.l17) {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
                         IGrDriver igd = GaBIEn.makeOffscreenBuffer(view.tileSize * view.mapTable.width, view.tileSize * view.mapTable.height, true);
@@ -67,18 +67,18 @@ public class UIMTPopupButtons extends UIMTBase {
                             try {
                                 os.write(igd.createPNG());
                                 os.close();
-                                app.ui.launchDialog(app.ts("Wrote 'shot.png' in R48 settings directory."));
+                                app.ui.launchDialog(T.z.l18);
                             } catch (Exception e) {
-                                app.ui.launchDialog(app.ts("Failed for... ") + e);
+                                app.ui.launchDialog(T.z.l19 + e);
                             }
                         } else {
-                            app.ui.launchDialog(app.ts("Failed to open file."));
+                            app.ui.launchDialog(T.z.l20);
                         }
                         igd.shutdown();
                         return null;
                     }
                 },
-                new ToolButton(app.ts("Show/Hide Tile IDs")) {
+                new ToolButton(T.z.l21) {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
                         view.debugToggle = !view.debugToggle;

@@ -75,7 +75,7 @@ public abstract class MapSystem extends App.Svc {
     // If null, the map explorer is not enabled.
     public UIElement createMapExplorer(final IMapContext mapBox, final String mapInfos) {
         return new UIPopupMenu(new String[] {
-                app.ts("Load Map")
+                T.z.l269
         }, new Runnable[] {
                 new Runnable() {
                     @Override

@@ -18,7 +18,7 @@ import r48.map.UIMapView;
  * Created on 09/06/17.
  */
 public class UIMTPickTile extends UIMTBase implements IMapViewCallbacks {
-    public UILabel innerLabel = new UILabel(app.ts("Click on a tile to pick it."), app.f.dialogWindowTextHeight);
+    public UILabel innerLabel = new UILabel(T.z.l7, app.f.dialogWindowTextHeight);
     public final UIMapView map;
 
     public UIMTPickTile(IMapToolContext m) {

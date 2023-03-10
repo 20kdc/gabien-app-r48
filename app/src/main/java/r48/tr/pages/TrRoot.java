@@ -19,4 +19,5 @@ public class TrRoot extends TrPage {
     public final TrAppUI u = new TrAppUI();
     public final TrSchema s = new TrSchema();
     public final TrFontSizes fontSizes = new TrFontSizes();
+    public final TrAutoGen z = new TrAutoGen();
 }

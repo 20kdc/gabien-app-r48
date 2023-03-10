@@ -41,7 +41,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
 
-        final UITextButton importer = new UITextButton(app.ts("Import scripts/*.rb"), app.f.schemaFieldTextHeight, new Runnable() {
+        final UITextButton importer = new UITextButton(T.z.l143, app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -51,17 +51,17 @@ public class ScriptControlSchemaElement extends SchemaElement {
                         path.changeOccurred(true);
                     }
                 } catch (IOException ioe) {
-                    app.ui.launchDialog(app.ts("An IOException occurred."));
+                    app.ui.launchDialog(T.z.l144);
                 }
             }
         });
 
-        final UITextButton exporter = new UITextButton(app.ts("Export scripts/*.rb"), app.f.schemaFieldTextHeight, new Runnable() {
+        final UITextButton exporter = new UITextButton(T.z.l145, app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {
                     StringBuilder sb = new StringBuilder();
-                    sb.append(app.ts("Script export complete!") + "\n");
+                    sb.append(T.z.l146 + "\n");
                     HashSet<String> used = new HashSet<String>();
                     GaBIEn.makeDirectories(PathUtils.autoDetectWindows(app.rootPath + "scripts"));
                     OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
@@ -114,21 +114,21 @@ public class ScriptControlSchemaElement extends SchemaElement {
 
                         String name2 = new String(adjusted);
                         if (tryWrite(name2, inflated, used, ps)) {
-                            sb.append(app.ts("Script name had to be adjusted: "));
+                            sb.append(T.z.l147);
                             sb.append(name);
                             sb.append(" -> ");
                             sb.append(name2);
                             sb.append("\n");
                             continue;
                         }
-                        sb.append(app.ts("Script could not be written: "));
+                        sb.append(T.z.l148);
                         sb.append(name);
                         sb.append("\n");
                     }
                     ps.close();
                     app.ui.launchDialog(sb.toString());
                 } catch (IOException ioe) {
-                    app.ui.launchDialog(app.ts("Couldn't export scripts due to IOException: ") + ioe);
+                    app.ui.launchDialog(T.z.l149 + ioe);
                 }
             }
             private boolean tryWrite(String name, byte[] inflated, HashSet<String> used, PrintStream ps) throws IOException {
@@ -154,11 +154,11 @@ public class ScriptControlSchemaElement extends SchemaElement {
         UISplitterLayout impExp = new UISplitterLayout(exporter, importer, false, 0.5d);
 
         final UITextBox searchText = new UITextBox("", app.f.schemaFieldTextHeight);
-        UISplitterLayout search = new UISplitterLayout(searchText, new UITextButton(app.ts("Search"), app.f.schemaFieldTextHeight, new Runnable() {
+        UISplitterLayout search = new UISplitterLayout(searchText, new UITextButton(T.z.l150, app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 StringBuilder results = new StringBuilder();
-                results.append(app.ts("Search Results:"));
+                results.append(T.z.l151);
                 results.append("\n");
                 String searchFor = searchText.text;
                 int alen = target.getALen();
@@ -193,7 +193,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
         LinkedList<RubyIO> scripts = new LinkedList<RubyIO>();
         InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
         if (inp == null) {
-            app.ui.launchDialog(app.ts("It appears scripts/_scripts.txt does not exist. It acts as an index."));
+            app.ui.launchDialog(T.z.l152);
             return null;
         }
         BufferedReader br = new BufferedReader(new InputStreamReader(inp, "UTF-8"));
@@ -222,7 +222,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
             if (ok) {
                 byte[] data = loadScript(s);
                 if (data == null) {
-                    app.ui.launchDialog(app.ts("Script missing: ") + s);
+                    app.ui.launchDialog(T.z.l153 + s);
                     return null;
                 }
                 scr.arrVal[2].putBuffer(data);

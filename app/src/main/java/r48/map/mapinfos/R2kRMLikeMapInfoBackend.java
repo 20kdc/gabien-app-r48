@@ -215,12 +215,12 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     public String calculateIndentsAndGetErrors(HashMap<Long, Integer> id) {
         StringBuilder errors = new StringBuilder();
         if (getHashBID(0) == null)
-            errors.append(app.ts("Root map (ID 0, type 'root) required!")).append('\n');
+            errors.append(T.z.l247).append('\n');
         RXPRMLikeMapInfoBackend.standardCalculateIndentsAndGetErrors(app, this, id, errors, 1);
         // Perform further order consistency checks
         for (Long l : getHashKeys()) {
             if (getOrderOfMap(l) == -1) {
-                errors.append(app.ts("No order for map: "));
+                errors.append(T.z.l248);
                 errors.append(l);
                 errors.append('\n');
             }
@@ -231,13 +231,13 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
         for (int i = 0; i < alen; i++) {
             long rt = mapTreeOrders.getAElem(i).getFX();
             if (orderMaps.contains(rt)) {
-                errors.append(app.ts("Order contains map twice: "));
+                errors.append(T.z.l249);
                 errors.append(rt);
                 errors.append('\n');
             }
             orderMaps.add(rt);
             if (getHashBID(rt) == null) {
-                errors.append(app.ts("Order expects mapinfos entry: "));
+                errors.append(T.z.l250);
                 errors.append(rt);
                 errors.append('\n');
             }

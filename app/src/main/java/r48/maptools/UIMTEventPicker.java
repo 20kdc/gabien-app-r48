@@ -35,7 +35,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public UIMTEventPicker(IMapToolContext mv) {
         super(mv);
         mapView = mv.getMapView();
-        svl.panelsAdd(new UILabel(app.ts("Click on a target to show the events."), app.f.eventPickerEntryTextHeight) {
+        svl.panelsAdd(new UILabel(T.z.l22, app.f.eventPickerEntryTextHeight) {
             @Override
             public void setWantedSize(Size size) {
                 super.setWantedSize(new Size(size.width, size.height * 8));
@@ -103,7 +103,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 showEvent(evK, mapView, evI);
                             }
                         });
-                        button = new UIAppendButton(app.ts("Move"), button, new Runnable() {
+                        button = new UIAppendButton(T.z.l23, button, new Runnable() {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
@@ -118,7 +118,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 mapToolContext.accept(new UIMTEventMover(mapToolContext, evK));
                             }
                         }, app.f.eventPickerEntryTextHeight);
-                        button = new UIAppendButton(app.ts("Clone"), button, new Runnable() {
+                        button = new UIAppendButton(T.z.l24, button, new Runnable() {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
@@ -137,7 +137,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 mapToolContext.accept(new UIMTEventMover(mapToolContext, nevK));
                             }
                         }, app.f.eventPickerEntryTextHeight);
-                        button = new UIAppendButton(app.ts("Del."), button, new Runnable() {
+                        button = new UIAppendButton(T.z.l25, button, new Runnable() {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
@@ -156,7 +156,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                         svl.panelsAdd(button);
                     } else {
                         UIElement button = new UILabel(nam, app.f.eventPickerEntryTextHeight);
-                        button = new UIAppendButton(app.ts("Sync"), button, new Runnable() {
+                        button = new UIAppendButton(T.z.l26, button, new Runnable() {
                             @Override
                             public void run() {
                                 // It's possible (if unlikely) that this action actually became invalid.
@@ -201,7 +201,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public String toString() {
-        return app.fmt.formatExtended(app.ts("Ev.Pick #[#A total#]"), new RubyIO().setFX(eventCache.size()));
+        return app.fmt.formatExtended(T.z.l27, new RubyIO().setFX(eventCache.size()));
     }
 
     public static void showEvent(IRIO key, @NonNull UIMapView map, IRIO event) {

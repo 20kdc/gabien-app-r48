@@ -46,7 +46,7 @@ public class TileImageEditorTool extends RectangleImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (stage2)
-            return app.ts("Click remaining point of area to restrict drawing to.");
-        return app.ts("Click points of area to restrict drawing to.");
+            return T.z.l334;
+        return T.z.l335;
     }
 }

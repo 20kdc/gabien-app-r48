@@ -13,6 +13,7 @@ import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.tr.pages.TrRoot;
 
 import java.util.LinkedList;
 
@@ -25,6 +26,7 @@ public class PagerArrayInterface implements IArrayInterface {
     @Override
     public void provideInterfaceFrom(final Host svl, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
         final App app = svl.getApp();
+        final TrRoot T = app.t;
         // work out if we want to be in regular array mode
         final IProperty regularArrayMode = prop.apply("regularArrayMode");
         final boolean regularArrayModeCurrent = ((int) ((double) regularArrayMode.get())) != 0;
@@ -42,7 +44,7 @@ public class PagerArrayInterface implements IArrayInterface {
         };
         if (regularArrayModeCurrent) {
             // regular array mode
-            final UITextButton swapModeButton = new UITextButton(app.ts("Mode: Regular Array"), app.f.schemaFieldTextHeight, swapModeAndReset);
+            final UITextButton swapModeButton = new UITextButton(T.z.l198, app.f.schemaFieldTextHeight, swapModeAndReset);
             svl.panelsAdd(swapModeButton);
             regularArrayInterface.provideInterfaceFrom(new Host() {
                 
@@ -102,7 +104,7 @@ public class PagerArrayInterface implements IArrayInterface {
             }
             final IRIO[] copyMe = positions[i].elements;
             if (copyMe != null) {
-                barLayout.panelsAdd(new UITextButton(app.ts("Copy"), app.f.schemaFieldTextHeight, new Runnable() {
+                barLayout.panelsAdd(new UITextButton(T.z.l139, app.f.schemaFieldTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         RubyIO rio = new RubyIO();
@@ -119,7 +121,7 @@ public class PagerArrayInterface implements IArrayInterface {
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsertCopiedArray != null) {
                     final Runnable r = positions[i + 1].execInsertCopiedArray;
-                    barLayout.panelsAdd(new UITextButton(app.ts("Paste"), app.f.schemaFieldTextHeight, new Runnable() {
+                    barLayout.panelsAdd(new UITextButton(T.z.l140, app.f.schemaFieldTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             r.run();
@@ -127,7 +129,7 @@ public class PagerArrayInterface implements IArrayInterface {
                     }));
                 }
             }
-            barLayout.panelsAdd(new UITextButton(app.ts("Mode: Pager"), app.f.schemaFieldTextHeight, swapModeAndReset));
+            barLayout.panelsAdd(new UITextButton(T.z.l199, app.f.schemaFieldTextHeight, swapModeAndReset));
             if (positions[i].core != null) {
                 uie.add(new UISplitterLayout(barLayout, positions[i].core, true, 0d) {
                     @Override

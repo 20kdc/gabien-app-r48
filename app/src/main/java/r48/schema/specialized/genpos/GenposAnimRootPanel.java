@@ -86,13 +86,13 @@ public class GenposAnimRootPanel extends App.Prx {
 
         UIElement toolbar = timeframe;
 
-        toolbar = new UIAppendButton(app.ts("Copy"), toolbar, new Runnable() {
+        toolbar = new UIAppendButton(T.z.l139, toolbar, new Runnable() {
             @Override
             public void run() {
                 app.theClipboard = new RubyIO().setDeepClone(target.getFrame());
             }
         }, app.f.rmaTimeframeTextHeight);
-        toolbar = new UIAppendButton(app.ts("Paste"), toolbar, new Runnable() {
+        toolbar = new UIAppendButton(T.z.l140, toolbar, new Runnable() {
             @Override
             public void run() {
                 if (target.acceptableForPaste(app.theClipboard)) {
@@ -124,7 +124,7 @@ public class GenposAnimRootPanel extends App.Prx {
 
     @Override
     public String toString() {
-        return app.ts("Animation Editor");
+        return T.z.l141;
     }
 
     // This alerts everything to rebuild, but doesn't run the updateNotify.

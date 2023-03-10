@@ -16,7 +16,7 @@ import java.util.HashMap;
  * A new base class for all of the UI code that I keep replicating between UIMapView & UIImageEditView.
  * Created on November 18, 2018.
  */
-public abstract class UIPlaneView extends UIElement {
+public abstract class UIPlaneView extends App.Elm {
 
     private final UILabel.StatusLine planeStatusLine = new UILabel.StatusLine();
 
@@ -28,10 +28,8 @@ public abstract class UIPlaneView extends UIElement {
     private HashMap<IPointer, Size> dragPointers = new HashMap<IPointer, Size>();
     private double dragNexusX, dragNexusY, firstDragDist, firstDragZoom, dragAvgDist;
 
-    public final App app;
-
     public UIPlaneView(App app) {
-        this.app = app;
+        super(app);
     }
 
     protected abstract String planeGetStatus();

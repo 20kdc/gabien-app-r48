@@ -27,7 +27,7 @@ public class TileMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
     public final String name;
 
     public TileMapViewDrawLayer(App app, RubyTable table, int i, ITileRenderer itr) {
-        this(app, table, new int[] {i}, itr, app.fmt.formatExtended(app.ts("Tile Layer #A"), new RubyIO().setFX(i)));
+        this(app, table, new int[] {i}, itr, app.fmt.formatExtended(app.t.z.l206, new RubyIO().setFX(i)));
     }
 
     public TileMapViewDrawLayer(App app, RubyTable table, int[] i, ITileRenderer itr, String post) {

@@ -80,14 +80,14 @@ public class RMFindTranslatables extends App.Svc {
     public void addSitesFromCommonEvents(IRIO[] commonEvents) {
         SchemaElement sch = app.sdb.findSchemaFor(objIdName, objRoot.getObject());
         if (sch == null) {
-            app.ui.launchDialog(app.ts("Somehow, the common events file does not have a schema."));
+            app.ui.launchDialog(T.z.l97);
         } else {
             SchemaPath rootSP = new SchemaPath(sch, objRoot);
             EventCommandArraySchemaElement ecase = RMFindTranslatables.getEventCommandArraySchemaElement(app, "EventListEditor");
             for (IRIO rio : commonEvents) {
                 SchemaElement cevElm = app.sdb.findSchemaFor(null, rio);
                 if (cevElm == null) {
-                    app.ui.launchDialog(app.ts("Unable to determine common event schema, looks like that refactor will have to happen now"));
+                    app.ui.launchDialog(T.z.l98);
                     return;
                 }
                 SchemaPath commonEventSP = rootSP.newWindow(cevElm, rio);

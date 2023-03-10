@@ -53,11 +53,11 @@ public class RMTools extends App.Svc {
     }
 
     public UIElement genButton() {
-        return new UIMenuButton(app, app.ts("RM-Tools"), app.f.menuTextHeight, null, new String[] {
-                app.ts("Locate EventCommand in all Pages"),
-                app.ts("Find Translatables in Common Events"),
-                app.ts("See If Autocorrect Modifies Anything"),
-                app.ts("Universal String Replace"),
+        return new UIMenuButton(app, T.z.l29, app.f.menuTextHeight, null, new String[] {
+                T.z.l30,
+                T.z.l31,
+                T.z.l32,
+                T.z.l33,
                 // 3:24 PM, third day of 2017.
                 // This is now a viable option.
                 // 3:37 PM, same day.
@@ -65,19 +65,19 @@ public class RMTools extends App.Svc {
                 // Still need to see to the CommonEvents.
                 // next day, um, these tools aren't really doable post-further-modularization (stickynote)
                 // 5th January 2017. Here we go.
-                app.ts("MEV/CEV Transcript Dump (no Troop/Item/etc.)"),
+                T.z.l34,
         }, new Runnable[] {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.ui.launchPrompt(app.ts("Code (or -1337 for any unknown) ?"), new IConsumer<String>() {
+                        app.ui.launchPrompt(T.z.l35, new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 int i;
                                 try {
                                     i = Integer.parseInt(s);
                                 } catch (Exception e) {
-                                    app.ui.launchDialog(app.ts("Not a valid number."));
+                                    app.ui.launchDialog(T.z.l36);
                                     return;
                                 }
                                 for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
@@ -112,7 +112,7 @@ public class RMTools extends App.Svc {
                                         }
                                     }
                                 }
-                                app.ui.launchDialog(app.ts("Not found."));
+                                app.ui.launchDialog(T.z.l37);
                             }
                         });
                     }

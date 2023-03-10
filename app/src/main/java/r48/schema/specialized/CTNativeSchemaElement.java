@@ -32,10 +32,10 @@ public class CTNativeSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
         RubyCT rct = new RubyCT(target.getBuffer());
-        addField(uiSVL, app.ts("R"), 0, rct, path);
-        addField(uiSVL, app.ts("G"), 8, rct, path);
-        addField(uiSVL, app.ts("B"), 16, rct, path);
-        addField(uiSVL, app.ts("A/L"), 24, rct, path);
+        addField(uiSVL, T.z.l184, 0, rct, path);
+        addField(uiSVL, T.z.l185, 8, rct, path);
+        addField(uiSVL, T.z.l186, 16, rct, path);
+        addField(uiSVL, T.z.l187, 24, rct, path);
         return uiSVL;
     }
 

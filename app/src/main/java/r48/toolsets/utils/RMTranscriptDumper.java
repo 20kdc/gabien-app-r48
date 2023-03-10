@@ -35,11 +35,11 @@ public class RMTranscriptDumper extends App.Svc {
         tableOfContents.clear();
         tableOfContentsIID.clear();
         output.println("<!DOCTYPE html>");
-        output.println("<html><head><title>" + app.ts("Exported Transcript") + "</title></head><body><a href=\"#toc\">" + app.ts("To Table Of Contents") + "</a>");
+        output.println("<html><head><title>" + T.z.l99 + "</title></head><body><a href=\"#toc\">" + T.z.l100 + "</a>");
     }
 
     public void end() {
-        output.println("<a name=\"toc\"/><h1>" + app.ts("Table Of Contents") + "</h1><ol>");
+        output.println("<a name=\"toc\"/><h1>" + T.z.l101 + "</h1><ol>");
         int hIndex = 0;
         for (String s : tableOfContents) {
             if (s != null) {

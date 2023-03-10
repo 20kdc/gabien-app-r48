@@ -36,7 +36,7 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     public TraditionalEventAccess(App app, String baseOId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName) {
-        this(app, baseOId, baseSchema, path, b, schema, pathX, pathY, pathName, app.ts("Events"), app.ts("+ Add Event"));
+        this(app, baseOId, baseSchema, path, b, schema, pathX, pathY, pathName, app.t.z.l222, app.t.z.l223);
     }
 
     public TraditionalEventAccess(App app, String baseOId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName, String en, String en2) {

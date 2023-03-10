@@ -30,7 +30,7 @@ public class PassabilityMapViewDrawLayer extends App.Svc implements IMapViewDraw
 
     @Override
     public String getName() {
-        return app.ts("Passability Overlay");
+        return T.z.l208;
     }
 
     @Override

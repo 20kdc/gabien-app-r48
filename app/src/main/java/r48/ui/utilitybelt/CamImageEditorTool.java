@@ -51,7 +51,7 @@ public class CamImageEditorTool extends ImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return app.ts("Drag: Move around, Camera: Return to old tool");
+        return T.z.l297;
     }
 
     @Override
