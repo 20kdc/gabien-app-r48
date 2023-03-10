@@ -25,28 +25,28 @@ public class UITimeframeControl extends App.Prx {
     private double playTimer = 0;
     public int recommendedFramerate;
 
-    public UILabel currentFrame = new UILabel("", app.f.rmaTimeframeTextHeight);
+    public UILabel currentFrame = new UILabel("", app.f.rmaTimeframeTH);
 
     public UIAppendButton playController = new UIAppendButton(Art.Symbol.Play, currentFrame, new Runnable() {
         @Override
         public void run() {
         }
-    }, app.f.rmaTimeframeTextHeight);
+    }, app.f.rmaTimeframeTH);
     public UIAppendButton loopController = new UIAppendButton(Art.Symbol.Loop, playController, new Runnable() {
         @Override
         public void run() {
         }
-    }, app.f.rmaTimeframeTextHeight);
+    }, app.f.rmaTimeframeTH);
     public UIAppendButton hsController = new UIAppendButton(Art.Symbol.Div2, loopController, new Runnable() {
         @Override
         public void run() {
         }
-    }, app.f.rmaTimeframeTextHeight);
+    }, app.f.rmaTimeframeTH);
     public UIAppendButton tsController = new UIAppendButton(Art.Symbol.Div3, hsController, new Runnable() {
         @Override
         public void run() {
         }
-    }, app.f.rmaTimeframeTextHeight);
+    }, app.f.rmaTimeframeTH);
 
     // The rest of the toolbar is constructed in the constructor
     public UIElement toolbar = tsController;
@@ -66,13 +66,13 @@ public class UITimeframeControl extends App.Prx {
             public void run() {
                 setFrameIdx.accept(getFrameIdx.get() - 1);
             }
-        }, app.f.rmaTimeframeTextHeight);
+        }, app.f.rmaTimeframeTH);
         toolbar = new UIAppendButton(">", toolbar, new Runnable() {
             @Override
             public void run() {
                 setFrameIdx.accept(getFrameIdx.get() + 1);
             }
-        }, app.f.rmaTimeframeTextHeight);
+        }, app.f.rmaTimeframeTH);
 
         proxySetElement(toolbar, true);
     }

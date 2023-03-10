@@ -27,7 +27,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
     public UIMTFtrGdt01(IMapToolContext o) {
         super(o);
 
-        changeInner(new UIAppendButton(T.g.bConfirm, new UIAppendButton(T.z.l8, new UITextButton(T.g.bUndo, app.f.schemaFieldTextHeight, new Runnable() {
+        changeInner(new UIAppendButton(T.g.bConfirm, new UIAppendButton(T.z.l8, new UITextButton(T.g.bUndo, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 TOutline.Line l = workspace.removeLast();
@@ -43,7 +43,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
             public void run() {
                 placingPen = true;
             }
-        }, app.f.schemaFieldTextHeight), new Runnable() {
+        }, app.f.schemaFieldTH), new Runnable() {
             @Override
             public void run() {
                 UIMapView umv = mapToolContext.getMapView();
@@ -54,7 +54,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
                 workspace = new MOutline();
                 placingPen = true;
             }
-        }, app.f.schemaFieldTextHeight), true);
+        }, app.f.schemaFieldTH), true);
     }
 
     @Override

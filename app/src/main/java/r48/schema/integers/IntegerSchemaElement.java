@@ -48,7 +48,7 @@ public class IntegerSchemaElement extends SchemaElement {
     }
 
     public ActiveInteger buildIntegerEditor(long oldVal, final IntegerSchemaElement.IIntegerContext context) {
-        final UINumberBox unb = new UINumberBox(oldVal, app.f.schemaFieldTextHeight);
+        final UINumberBox unb = new UINumberBox(oldVal, app.f.schemaFieldTH);
         unb.readOnly = isReadOnly();
         unb.onEdit = new Runnable() {
             @Override

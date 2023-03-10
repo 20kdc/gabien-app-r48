@@ -13,62 +13,62 @@ import r48.tr.TrPage;
  * Created 9th March 2023.
  */
 public class TrFontSizes extends TrPage {
-    public String schemaPathTextHeight;
-    public String schemaFieldTextHeight;
-    public String schemaArrayAddTextHeight;
-    public String enumChoiceTextHeight;
-    public String blobTextHeight;
+    public String schemaPathTH;
+    public String schemaFieldTH;
+    public String schemaArrayAddTH;
+    public String enumChoiceTH;
+    public String blobTH;
 
-    public String gridTextHeight;
-    public String tableElementTextHeight;
-    public String tableSizeTextHeight;
-    public String tableResizeTextHeight;
+    public String gridTH;
+    public String tableElementTH;
+    public String tableSizeTH;
+    public String tableResizeTH;
 
-    public String mapPositionTextHeight;
-    public String mapInfosTextHeight;
-    public String mapLayertabTextHeight;
+    public String mapPositionTH;
+    public String mapInfosTH;
+    public String mapLayertabTH;
 
-    public String eventPickerEntryTextHeight;
-    public String tilesTabTextHeight;
-    public String atSubtoolTextHeight;
+    public String eventPickerEntryTH;
+    public String tilesTabTH;
+    public String atSubtoolTH;
 
-    public String rmaTimeframeTextHeight;
-    public String rmaCellTextHeight;
+    public String rmaTimeframeTH;
+    public String rmaCellTH;
 
-    public String tonePickerTextHeight;
+    public String tonePickerTH;
 
-    public String dialogWindowTextHeight;
-    public String textDialogFieldTextHeight;
-    public String textDialogDescTextHeight;
+    public String dialogWindowTH;
+    public String textDialogFieldTH;
+    public String textDialogDescTH;
 
-    public String helpTextHeight;
-    public String helpLinkHeight;
-    public String helpPathHeight;
+    public String helpTH;
+    public String helpLinkH;
+    public String helpPathH;
 
-    public String inspectorBackTextHeight;
-    public String inspectorTextHeight;
+    public String inspectorBackTH;
+    public String inspectorTH;
 
-    public String windowFrameHeight;
-    public String statusBarTextHeight;
-    public String tabTextHeight;
-    public String menuTextHeight;
+    public String windowFrameH;
+    public String statusBarTH;
+    public String tabTH;
+    public String menuTH;
 
-    public String maintabsScrollersize;
+    public String maintabsS;
 
-    public String objectDBMonitorTextHeight;
-    public String fontSizerTextHeight;
-    public String gSysCoreTextHeight;
-    public String launcherTextHeight;
-    public String imageEditorTextHeight;
+    public String objectDBMonitorTH;
+    public String fontSizerTH;
+    public String gSysCoreTH;
+    public String launcherTH;
+    public String imageEditorTH;
 
-    public String mapToolbarScrollersize;
-    public String tilesTabScrollersize;
-    public String schemaPagerTabScrollersize;
+    public String mapToolbarS;
+    public String tilesTabS;
+    public String schemaPagerTabS;
 
-    public String gridScrollersize;
-    public String cellSelectScrollersize;
-    public String generalScrollersize;
-    public String menuScrollersize;
+    public String gridS;
+    public String cellSelectS;
+    public String generalS;
+    public String menuS;
 
     public String uiGuessScaleTenths;
     public String uiGridScaleTenths;

@@ -118,7 +118,7 @@ public class RMFindTranslatables extends App.Svc {
     public static CommandSite siteFromContext(App app, final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath[] basePaths) {
         final CMDB cmdb = cmdbEditor.database;
         String text = cmdb.buildGroupCodename(listObj, codeIndex, true);
-        final UITextButton button = new UITextButton(text, app.f.schemaFieldTextHeight, new Runnable() {
+        final UITextButton button = new UITextButton(text, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 ISchemaHost shi = new SchemaHostImpl(app, mapView);

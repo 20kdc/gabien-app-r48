@@ -33,7 +33,7 @@ public class UIHelpSystem extends UIPanel implements IConsumer<String> {
     public UIHelpSystem(InterlaunchGlobals ilg) {
         this.c = ilg.c;
         this.ilg = ilg;
-        Rect sz = new Rect(0, 0, c.f.helpTextHeight * 32, c.f.helpTextHeight * 32);
+        Rect sz = new Rect(0, 0, c.f.helpTH * 32, c.f.helpTH * 32);
         setWantedSize(sz);
         setForcedBounds(null, sz);
     }
@@ -96,7 +96,7 @@ public class UIHelpSystem extends UIPanel implements IConsumer<String> {
                     sbt.append(s);
                     sbt.append(' ');
                 }
-                element = new UILabel(sbt.toString(), c.f.helpTextHeight);
+                element = new UILabel(sbt.toString(), c.f.helpTH);
             } else if (ch == 'h') {
                 position = false;
                 StringBuilder sbt = new StringBuilder();
@@ -104,7 +104,7 @@ public class UIHelpSystem extends UIPanel implements IConsumer<String> {
                     sbt.append(s);
                     sbt.append(' ');
                 }
-                element = new UILabel(sbt.toString(), c.f.helpTextHeight).centred();
+                element = new UILabel(sbt.toString(), c.f.helpTH).centred();
             } else if (ch == '>') {
                 String t = "";
                 boolean first = true;
@@ -117,7 +117,7 @@ public class UIHelpSystem extends UIPanel implements IConsumer<String> {
                 }
                 final String index = args[0];
                 position = false;
-                element = new UITextButton(t, c.f.helpLinkHeight, new Runnable() {
+                element = new UITextButton(t, c.f.helpLinkH, new Runnable() {
                     @Override
                     public void run() {
                         if (onLinkClick != null)

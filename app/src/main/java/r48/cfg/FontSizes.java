@@ -22,105 +22,105 @@ public class FontSizes {
     // I'm unsure how these stay in order, but they do.
     // Beware that the names must correspond to TrFontSizes.
 
-    @FontSizeDefault(16)
-    public int schemaPathTextHeight;
-    @FontSizeDefault(16)
-    public int schemaFieldTextHeight; // also class names
-    @FontSizeDefault(16)
-    public int schemaArrayAddTextHeight;
-    @FontSizeDefault(16)
-    public int enumChoiceTextHeight;
-    @FontSizeDefault(16)
-    public int blobTextHeight;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int schemaPathTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int schemaFieldTH; // also class names
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int schemaArrayAddTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int enumChoiceTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int blobTH;
 
-    @FontSizeDefault(6)
-    public int gridTextHeight;
-    @FontSizeDefault(16)
-    public int tableElementTextHeight;
-    @FontSizeDefault(16)
-    public int tableSizeTextHeight;
-    @FontSizeDefault(16)
-    public int tableResizeTextHeight;
+    @FontSizeDefault(6) @FontSizeOName("TH/TextHeight")
+    public int gridTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int tableElementTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int tableSizeTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int tableResizeTH;
 
-    @FontSizeDefault(16)
-    public int mapPositionTextHeight;
-    @FontSizeDefault(16)
-    public int mapInfosTextHeight; // separate tab!
-    @FontSizeDefault(16)
-    public int mapLayertabTextHeight;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int mapPositionTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int mapInfosTH; // separate tab!
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int mapLayertabTH;
 
-    @FontSizeDefault(16)
-    public int eventPickerEntryTextHeight;
-    @FontSizeDefault(6)
-    public int tilesTabTextHeight;
-    @FontSizeDefault(8)
-    public int atSubtoolTextHeight;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int eventPickerEntryTH;
+    @FontSizeDefault(6) @FontSizeOName("TH/TextHeight")
+    public int tilesTabTH;
+    @FontSizeDefault(8) @FontSizeOName("TH/TextHeight")
+    public int atSubtoolTH;
 
-    @FontSizeDefault(16)
-    public int rmaTimeframeTextHeight;
-    @FontSizeDefault(16)
-    public int rmaCellTextHeight;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int rmaTimeframeTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int rmaCellTH;
 
-    @FontSizeDefault(6)
-    public int tonePickerTextHeight;
+    @FontSizeDefault(6) @FontSizeOName("TH/TextHeight")
+    public int tonePickerTH;
 
-    @FontSizeDefault(16)
-    public int dialogWindowTextHeight;
-    @FontSizeDefault(16)
-    public int textDialogFieldTextHeight;
-    @FontSizeDefault(16)
-    public int textDialogDescTextHeight;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int dialogWindowTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int textDialogFieldTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int textDialogDescTH;
 
-    @FontSizeDefault(16)
-    public int helpTextHeight;
-    @FontSizeDefault(16)
-    public int helpLinkHeight;
-    @FontSizeDefault(16)
-    public int helpPathHeight;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int helpTH;
+    @FontSizeDefault(16) @FontSizeOName("H/Height")
+    public int helpLinkH;
+    @FontSizeDefault(16) @FontSizeOName("H/Height")
+    public int helpPathH;
 
-    @FontSizeDefault(16)
-    public int inspectorBackTextHeight;
-    @FontSizeDefault(8)
-    public int inspectorTextHeight;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int inspectorBackTH;
+    @FontSizeDefault(8) @FontSizeOName("TH/TextHeight")
+    public int inspectorTH;
 
-    @FontSizeDefault(16)
-    public int windowFrameHeight;
-    @FontSizeDefault(16)
-    public int statusBarTextHeight;
-    @FontSizeDefault(16)
-    public int tabTextHeight;
-    @FontSizeDefault(16)
-    public int menuTextHeight;
+    @FontSizeDefault(16) @FontSizeOName("H/Height")
+    public int windowFrameH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int statusBarTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int tabTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int menuTH;
 
-    @FontSizeDefault(8)
-    public int maintabsScrollersize;
+    @FontSizeDefault(8) @FontSizeOName("S/Scrollersize")
+    public int maintabsS;
 
-    @FontSizeDefault(16)
-    public int objectDBMonitorTextHeight;
-    @FontSizeDefault(16)
-    public int fontSizerTextHeight;
-    @FontSizeDefault(16)
-    public int gSysCoreTextHeight; // Has a special hook needed to make this work
-    @FontSizeDefault(16)
-    public int launcherTextHeight;
-    @FontSizeDefault(16)
-    public int imageEditorTextHeight; // Compat. check is performed to ensure this doesn't get reset to 16 - see load
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int objectDBMonitorTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int fontSizerTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int gSysCoreTH; // Has a special hook needed to make this work
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int launcherTH;
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    public int imageEditorTH; // Compat. check is performed to ensure this doesn't get reset to 16 - see load
 
-    @FontSizeDefault(8)
-    public int mapToolbarScrollersize;
-    @FontSizeDefault(8)
-    public int tilesTabScrollersize;
-    @FontSizeDefault(8)
-    public int schemaPagerTabScrollersize;
+    @FontSizeDefault(8) @FontSizeOName("S/Scrollersize")
+    public int mapToolbarS;
+    @FontSizeDefault(8) @FontSizeOName("S/Scrollersize")
+    public int tilesTabS;
+    @FontSizeDefault(8) @FontSizeOName("S/Scrollersize")
+    public int schemaPagerTabS;
 
-    @FontSizeDefault(24)
-    public int gridScrollersize;
-    @FontSizeDefault(8)
-    public int cellSelectScrollersize;
-    @FontSizeDefault(24)
-    public int generalScrollersize;
-    @FontSizeDefault(24)
-    public int menuScrollersize;
+    @FontSizeDefault(24) @FontSizeOName("S/Scrollersize")
+    public int gridS;
+    @FontSizeDefault(8) @FontSizeOName("S/Scrollersize")
+    public int cellSelectS;
+    @FontSizeDefault(24) @FontSizeOName("S/Scrollersize")
+    public int generalS;
+    @FontSizeDefault(24) @FontSizeOName("S/Scrollersize")
+    public int menuS;
 
     @FontSizeDefault(10)
     public int uiGuessScaleTenths;
@@ -139,12 +139,21 @@ public class FontSizes {
     public class FontSizeField implements IConsumer<Integer>, ISupplier<Integer> {
         // untranslated
         public final String name;
+        // config
+        public final String configID;
         public final int defValue;
         private final Field intern;
         private final Field trPageField;
 
         public FontSizeField(Field i) {
             name = i.getName();
+            String ecid = name;
+            FontSizeOName tf = i.getAnnotation(FontSizeOName.class);
+            if (tf != null) {
+                String[] tfp = tf.value().split("/");
+                ecid = ecid.replaceAll(tfp[0], tfp[1]);
+            }
+            configID = ecid;
             defValue = i.getAnnotation(FontSizeDefault.class).value();
             intern = i;
             try {

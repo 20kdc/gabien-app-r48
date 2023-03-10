@@ -92,7 +92,7 @@ public class Launcher {
         }
         // exceptions
         if (isMobile)
-            c.f.tilesTabTextHeight *= 2;
+            c.f.tilesTabTH *= 2;
     }
 
     void shutdownAllAppMainWindows() {

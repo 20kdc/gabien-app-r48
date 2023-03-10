@@ -27,7 +27,7 @@ public class ConfigIO {
         prepare.type = 'o';
         prepare.symVal = "R48::FontConfig";
         for (FontSizeField fsf : c.f.getFields())
-            prepare.addIVar("@" + fsf.name, new RubyIO().setFX(fsf.get()));
+            prepare.addIVar("@" + fsf.configID, new RubyIO().setFX(fsf.get()));
 
         prepare.addIVar("@secondary_images_list", encodeStringList(c.secondaryImageLoadLocationBackup));
         prepare.addIVar("@saved_rootpath_list", encodeStringList(c.rootPathBackup));
@@ -61,21 +61,21 @@ public class ConfigIO {
             boolean shouldResetWSZ = false;
 
             for (FontSizeField fsf : c.f.getFields()) {
-                RubyIO f = dat.getInstVarBySymbol("@" + fsf.name);
+                RubyIO f = dat.getInstVarBySymbol("@" + fsf.configID);
                 if (f != null) {
                     fsf.accept((int) f.fixnumVal);
                 } else {
-                    if (fsf.name.equals("imageEditorTextHeight"))
+                    if (fsf.configID.equals("imageEditorTextHeight"))
                         shouldResetIETH = true;
-                    if (fsf.name.equals("maintabsScrollersize"))
+                    if (fsf.configID.equals("maintabsScrollersize"))
                         shouldResetWSZ = true;
                 }
             }
 
             if (shouldResetIETH)
-                c.f.imageEditorTextHeight = c.f.schemaFieldTextHeight;
+                c.f.imageEditorTH = c.f.schemaFieldTH;
             if (shouldResetWSZ)
-                c.f.maintabsScrollersize = c.f.mapToolbarScrollersize;
+                c.f.maintabsS = c.f.mapToolbarS;
 
             RubyIO sys = dat.getInstVarBySymbol("@sysfont");
             if (sys != null) {

@@ -34,7 +34,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         this.c = c;
         T = t;
         this.apply = apply;
-        outerLayout = new UIScrollLayout(true, c.f.generalScrollersize);
+        outerLayout = new UIScrollLayout(true, c.f.generalS);
         refreshLayout(true);
         proxySetElement(outerLayout, false);
         setForcedBounds(null, new Rect(0, 0, c.f.scaleGuess(320), c.f.scaleGuess(240)));
@@ -53,18 +53,18 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         if (outerLayout != null)
             iniScroll = outerLayout.scrollbar.scrollPoint;
         if (!force)
-            if (lastFontSizerSize == c.f.fontSizerTextHeight)
-                if (lastSBSize == c.f.generalScrollersize)
+            if (lastFontSizerSize == c.f.fontSizerTH)
+                if (lastSBSize == c.f.generalS)
                     return;
-        lastFontSizerSize = c.f.fontSizerTextHeight;
-        lastSBSize = c.f.generalScrollersize;
+        lastFontSizerSize = c.f.fontSizerTH;
+        lastSBSize = c.f.generalS;
 
         outerLayout.panelsClear();
         outerLayout.setSBSize(lastSBSize);
         outerLayout.scrollbar.scrollPoint = iniScroll;
         final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
         final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton("*2", c.f.fontSizerTextHeight, new Runnable() {
+        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton("*2", c.f.fontSizerTH, new Runnable() {
             @Override
             public void run() {
                 for (Runnable r : doubleAll)
@@ -72,7 +72,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 apply.run();
                 refreshLayout(false);
             }
-        }), new UITextButton("/2", c.f.fontSizerTextHeight, new Runnable() {
+        }), new UITextButton("/2", c.f.fontSizerTH, new Runnable() {
             @Override
             public void run() {
                 for (Runnable r : halfAll)
@@ -81,12 +81,12 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 refreshLayout(false);
             }
         }), false, 1, 2));
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(T.g.wordSave, c.f.fontSizerTextHeight, new Runnable() {
+        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(T.g.wordSave, c.f.fontSizerTH, new Runnable() {
             @Override
             public void run() {
                 ConfigIO.save(c);
             }
-        }), new UITextButton(T.g.wordLoad, c.f.fontSizerTextHeight, new Runnable() {
+        }), new UITextButton(T.g.wordLoad, c.f.fontSizerTH, new Runnable() {
             @Override
             public void run() {
                 ConfigIO.load(false, c);
@@ -94,7 +94,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 refreshLayout(true);
             }
         }), false, 1, 2));
-        UITextButton fontButton = new UITextButton("", c.f.fontSizerTextHeight, new Runnable() {
+        UITextButton fontButton = new UITextButton("", c.f.fontSizerTH, new Runnable() {
             @Override
             public void run() {
                 if (c.fontOverride != null) {
@@ -116,7 +116,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 super.updateContents(deltaTime, selected, peripherals);
             }
         };
-        final UITextButton fontButtonAppend = new UITextButton(TEMP("Even for height <= 8"), c.f.fontSizerTextHeight, new Runnable() {
+        final UITextButton fontButtonAppend = new UITextButton(TEMP("Even for height <= 8"), c.f.fontSizerTH, new Runnable() {
             @Override
             public void run() {
             }
@@ -130,7 +130,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         };
         outerLayout.panelsAdd(new UISplitterLayout(fontButton, fontButtonAppend, false, 0.5));
         String themeTxt = TEMP("Theme: #A").replaceAll("#A", String.valueOf(c.borderTheme));
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(themeTxt, c.f.fontSizerTextHeight, new Runnable() {
+        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(themeTxt, c.f.fontSizerTH, new Runnable() {
             @Override
             public void run() {
                 c.borderTheme++;
@@ -138,7 +138,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 apply.run();
                 refreshLayout(true);
             }
-        }), new UIAppendButton(TEMP("External Windowing"), new UITextButton(TEMP("Enable Blending"), c.f.fontSizerTextHeight, new Runnable() {
+        }), new UIAppendButton(TEMP("External Windowing"), new UITextButton(TEMP("Enable Blending"), c.f.fontSizerTH, new Runnable() {
             @Override
             public void run() {
                 c.allowBlending = !c.allowBlending;
@@ -148,7 +148,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
             public void run() {
                 c.windowingExternal = !c.windowingExternal;
             }
-        }, c.f.fontSizerTextHeight).togglable(c.windowingExternal), false, 0.5));
+        }, c.f.fontSizerTH).togglable(c.windowingExternal), false, 0.5));
         try {
             for (final FontSizeField field : c.f.getFields()) {
                 doubleAll.add(new Runnable() {
@@ -177,7 +177,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                         field.accept(v);
                     }
                 });
-                UIAdjuster tb = new UIAdjuster(c.f.fontSizerTextHeight, field.get(), new IFunction<Long, Long>() {
+                UIAdjuster tb = new UIAdjuster(c.f.fontSizerTH, field.get(), new IFunction<Long, Long>() {
                     @Override
                     public Long apply(Long aLong) {
                         int nv = (int) (long) aLong;
@@ -191,7 +191,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 });
                 tb.accept(Integer.toString(field.get()));
                 // NOTE: This is correct behavior due to an 'agreement' in FontSizes that this should be correct
-                outerLayout.panelsAdd(new UISplitterLayout(new UILabel(field.trName(T.fontSizes), c.f.fontSizerTextHeight), tb, false, 4, 5));
+                outerLayout.panelsAdd(new UISplitterLayout(new UILabel(field.trName(T.fontSizes), c.f.fontSizerTH), tb, false, 4, 5));
             }
         } catch (Exception e) {
             e.printStackTrace();

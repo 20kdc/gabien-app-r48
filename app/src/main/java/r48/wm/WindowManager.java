@@ -80,12 +80,12 @@ public class WindowManager extends AppCore.Csv {
                     super.onWindowClose();
             }
         };
-        rootView.windowTextHeight = app.f.windowFrameHeight;
+        rootView.windowTextHeight = app.f.windowFrameH;
         rootView.sizerVisual = rootView.windowTextHeight / 2;
         rootView.sizerActual = rootView.windowTextHeight;
         rootView.setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(800), app.f.scaleGuess(600)));
 
-        tabPane = new UITabPane(app.f.tabTextHeight, true, true, app.f.maintabsScrollersize, thbrL, thbrR);
+        tabPane = new UITabPane(app.f.tabTH, true, true, app.f.maintabsS, thbrL, thbrR);
 
         UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, tabPane);
         rootView.addShell(backing);

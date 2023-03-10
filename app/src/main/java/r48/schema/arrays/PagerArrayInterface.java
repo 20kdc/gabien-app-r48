@@ -44,7 +44,7 @@ public class PagerArrayInterface implements IArrayInterface {
         };
         if (regularArrayModeCurrent) {
             // regular array mode
-            final UITextButton swapModeButton = new UITextButton(T.z.l198, app.f.schemaFieldTextHeight, swapModeAndReset);
+            final UITextButton swapModeButton = new UITextButton(T.z.l198, app.f.schemaFieldTH, swapModeAndReset);
             svl.panelsAdd(swapModeButton);
             regularArrayInterface.provideInterfaceFrom(new Host() {
                 
@@ -72,10 +72,10 @@ public class PagerArrayInterface implements IArrayInterface {
         for (int i = 0; i < positions.length; i++) {
             final String i2 = Integer.toString(i + 1);
             // "+", "+>", "-", "Cp.", "Ps."
-            UIScrollLayout barLayout = new UIScrollLayout(false, app.f.mapToolbarScrollersize);
+            UIScrollLayout barLayout = new UIScrollLayout(false, app.f.mapToolbarS);
             if (positions[i].execInsert != null) {
                 final Runnable r = positions[i].execInsert;
-                barLayout.panelsAdd(new UITextButton("+", app.f.schemaFieldTextHeight, new Runnable() {
+                barLayout.panelsAdd(new UITextButton("+", app.f.schemaFieldTH, new Runnable() {
                     @Override
                     public void run() {
                         r.run();
@@ -85,7 +85,7 @@ public class PagerArrayInterface implements IArrayInterface {
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsert != null) {
                     final Runnable r = positions[i + 1].execInsert;
-                    barLayout.panelsAdd(new UITextButton("+>", app.f.schemaFieldTextHeight, new Runnable() {
+                    barLayout.panelsAdd(new UITextButton("+>", app.f.schemaFieldTH, new Runnable() {
                         @Override
                         public void run() {
                             r.run();
@@ -95,7 +95,7 @@ public class PagerArrayInterface implements IArrayInterface {
             }
             if (positions[i].execDelete != null) {
                 final ISupplier<Runnable> r = positions[i].execDelete;
-                barLayout.panelsAdd(new UITextButton("-", app.f.schemaFieldTextHeight, new Runnable() {
+                barLayout.panelsAdd(new UITextButton("-", app.f.schemaFieldTH, new Runnable() {
                     @Override
                     public void run() {
                         r.get().run();
@@ -104,7 +104,7 @@ public class PagerArrayInterface implements IArrayInterface {
             }
             final IRIO[] copyMe = positions[i].elements;
             if (copyMe != null) {
-                barLayout.panelsAdd(new UITextButton(T.z.l139, app.f.schemaFieldTextHeight, new Runnable() {
+                barLayout.panelsAdd(new UITextButton(T.z.l139, app.f.schemaFieldTH, new Runnable() {
                     @Override
                     public void run() {
                         RubyIO rio = new RubyIO();
@@ -121,7 +121,7 @@ public class PagerArrayInterface implements IArrayInterface {
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsertCopiedArray != null) {
                     final Runnable r = positions[i + 1].execInsertCopiedArray;
-                    barLayout.panelsAdd(new UITextButton(T.z.l140, app.f.schemaFieldTextHeight, new Runnable() {
+                    barLayout.panelsAdd(new UITextButton(T.z.l140, app.f.schemaFieldTH, new Runnable() {
                         @Override
                         public void run() {
                             r.run();
@@ -129,7 +129,7 @@ public class PagerArrayInterface implements IArrayInterface {
                     }));
                 }
             }
-            barLayout.panelsAdd(new UITextButton(T.z.l199, app.f.schemaFieldTextHeight, swapModeAndReset));
+            barLayout.panelsAdd(new UITextButton(T.z.l199, app.f.schemaFieldTH, swapModeAndReset));
             if (positions[i].core != null) {
                 uie.add(new UISplitterLayout(barLayout, positions[i].core, true, 0d) {
                     @Override
@@ -146,7 +146,7 @@ public class PagerArrayInterface implements IArrayInterface {
         }
         final IProperty prop2 = prop.apply("page");
         final IProperty scrollProp = prop.apply("pageTabScroll");
-        UITabPane utp = new UITabPane(app.f.tabTextHeight, false, false, app.f.schemaPagerTabScrollersize) {
+        UITabPane utp = new UITabPane(app.f.tabTH, false, false, app.f.schemaPagerTabS) {
             @Override
             public void selectTab(UIElement i) {
                 super.selectTab(i);

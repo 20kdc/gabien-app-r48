@@ -42,7 +42,7 @@ public class UIMenuButton extends UITextButton {
         this(app, s, h2, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
-                return new UIAutoclosingPopupMenu(text, runnables, app.f.menuTextHeight, app.f.menuScrollersize, true) {
+                return new UIAutoclosingPopupMenu(text, runnables, app.f.menuTH, app.f.menuS, true) {
                     @Override
                     public void optionExecute(int b) {
                         if (continued != null)
@@ -63,7 +63,7 @@ public class UIMenuButton extends UITextButton {
         this(app, s, h2, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
-                return new UIAutoclosingPopupMenu(runnables, app.f.menuTextHeight, app.f.menuScrollersize, true) {
+                return new UIAutoclosingPopupMenu(runnables, app.f.menuTH, app.f.menuS, true) {
                     @Override
                     public void optionExecute(int b) {
                         if (continued != null)

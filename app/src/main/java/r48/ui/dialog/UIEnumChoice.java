@@ -41,14 +41,14 @@ public class UIEnumChoice extends App.Prx {
         categoryPanels = new UIScrollLayout[order.length];
         for (int i = 0; i < categoryPanels.length; i++) {
             final String name = order[i].translatedName;
-            categoryPanels[i] = new UIScrollLayout(true, app.f.generalScrollersize) {
+            categoryPanels[i] = new UIScrollLayout(true, app.f.generalS) {
                 @Override
                 public String toString() {
                     return name;
                 }
             };
             for (final Option o : order[i].options) {
-                final UITextButton button = new UITextButton(o.textPrefix + o.textSuffix, app.f.enumChoiceTextHeight, new Runnable() {
+                final UITextButton button = new UITextButton(o.textPrefix + o.textSuffix, app.f.enumChoiceTH, new Runnable() {
                     @Override
                     public void run() {
                         if (!wantsSelfClose)
@@ -58,8 +58,8 @@ public class UIEnumChoice extends App.Prx {
                 });
                 UIElement element = button;
                 if (o.editSuffix != null) {
-                    final UIAppendButton switcheroo = new UIAppendButton(T.u.bEnumRename, element, null, app.f.enumChoiceTextHeight);
-                    final UITextBox textbox = new UITextBox(o.textSuffix, app.f.enumChoiceTextHeight);
+                    final UIAppendButton switcheroo = new UIAppendButton(T.u.bEnumRename, element, null, app.f.enumChoiceTH);
+                    final UITextBox textbox = new UITextBox(o.textSuffix, app.f.enumChoiceTH);
                     final AtomicBoolean ab = new AtomicBoolean(false);
                     switcheroo.button.onClick = new Runnable() {
                         @Override
@@ -93,8 +93,8 @@ public class UIEnumChoice extends App.Prx {
 
         UISplitterLayout finalSplit = null;
         if (entryType == EntryMode.STR) {
-            final UITextBox nb = new UITextBox("", app.f.schemaFieldTextHeight);
-            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTextHeight, new Runnable() {
+            final UITextBox nb = new UITextBox("", app.f.schemaFieldTH);
+            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
@@ -103,8 +103,8 @@ public class UIEnumChoice extends App.Prx {
                 }
             }), false, 1, 3);
         } else if (entryType == EntryMode.SYM) {
-            final UITextBox nb = new UITextBox("", app.f.schemaFieldTextHeight);
-            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTextHeight, new Runnable() {
+            final UITextBox nb = new UITextBox("", app.f.schemaFieldTH);
+            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     if (!wantsSelfClose) {
@@ -117,8 +117,8 @@ public class UIEnumChoice extends App.Prx {
                 }
             }), false, 1, 3);
         } else if (entryType == EntryMode.INT) {
-            final UINumberBox nb = new UINumberBox(0, app.f.schemaFieldTextHeight);
-            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTextHeight, new Runnable() {
+            final UINumberBox nb = new UINumberBox(0, app.f.schemaFieldTH);
+            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
@@ -130,7 +130,7 @@ public class UIEnumChoice extends App.Prx {
         if (finalSplit != null)
             categoryPanels[categoryPanels.length - 1].panelsAdd(finalSplit);
 
-        mainPanel = new UITabPane(app.f.tabTextHeight, false, false);
+        mainPanel = new UITabPane(app.f.tabTH, false, false);
         for (UIElement uie : categoryPanels)
             mainPanel.addTab(new UITabBar.Tab(uie, new UITabBar.TabIcon[] {}));
         mainPanel.handleIncoming();

@@ -38,11 +38,11 @@ public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
         UIScrollLayout usl = context.newSVL();
         final ActiveInteger ai = super.buildIntegerEditor(oldVal, context);
         final int sprScale = app.f.getSpriteScale();
-        final UIGrid uig = new UIGrid(app, tileSize * sprScale, (tileSize * sprScale) + app.f.gridTextHeight + 1, maxCount) {
+        final UIGrid uig = new UIGrid(app, tileSize * sprScale, (tileSize * sprScale) + app.f.gridTH + 1, maxCount) {
             @Override
             protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
                 super.drawTile(t, hover, x, y, igd);
-                y += app.f.gridTextHeight + 1;
+                y += app.f.gridTH + 1;
                 RMEventGraphicRenderer.flexibleSpriteDraw(app, t * tileSize, 0, tileSize, tileSize, x, y, tileSize * sprScale, tileSize * sprScale, 0, tsdb, 0, igd);
             }
 

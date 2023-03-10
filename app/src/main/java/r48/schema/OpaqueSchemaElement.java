@@ -28,7 +28,7 @@ public class OpaqueSchemaElement extends SchemaElement {
     }
 
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(getMessage(target), app.f.schemaFieldTextHeight, new Runnable() {
+        return new UITextButton(getMessage(target), app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 launcher.launchOther(new UITest(launcher.getApp(), target));

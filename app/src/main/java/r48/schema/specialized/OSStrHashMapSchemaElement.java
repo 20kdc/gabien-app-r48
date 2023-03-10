@@ -39,7 +39,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
         tryInitOSSHESEDB(app);
         if (app.osSHESEDB == null)
             app.ui.launchDialog(T.z.l181);
-        final UITextBox utb = new UITextBox("", app.f.schemaFieldTextHeight);
+        final UITextBox utb = new UITextBox("", app.f.schemaFieldTH);
         utb.onEdit = new Runnable() {
             @Override
             public void run() {

@@ -35,7 +35,7 @@ public class UIFancyInit extends UIElement.UIProxy implements IConsumer<String> 
 
     public UIFancyInit(Config c) {
         super();
-        layout = new UILabel("", c.f.launcherTextHeight);
+        layout = new UILabel("", c.f.launcherTH);
         consoletronDataInput = new ConcurrentLinkedQueue<String>();
         proxySetElement(layout, false);
         setForcedBounds(null, new Rect(0, 0, c.f.scaleGuess(400), c.f.scaleGuess(300)));

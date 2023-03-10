@@ -39,7 +39,7 @@ public class FloatSchemaElement extends SchemaElement {
         } else {
             throw new RuntimeException("No JSONCoerce but got a " + target.getType() + " instead of a float.");
         }
-        final UITextBox utb = new UITextBox(oldValue, app.f.schemaFieldTextHeight);
+        final UITextBox utb = new UITextBox(oldValue, app.f.schemaFieldTH);
         utb.onEdit = new Runnable() {
             @Override
             public void run() {

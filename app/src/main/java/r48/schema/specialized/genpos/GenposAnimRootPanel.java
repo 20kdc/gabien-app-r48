@@ -92,7 +92,7 @@ public class GenposAnimRootPanel extends App.Prx {
             public void run() {
                 app.theClipboard = new RubyIO().setDeepClone(target.getFrame());
             }
-        }, app.f.rmaTimeframeTextHeight);
+        }, app.f.rmaTimeframeTH);
         toolbar = new UIAppendButton(T.z.l140, toolbar, new Runnable() {
             @Override
             public void run() {
@@ -103,21 +103,21 @@ public class GenposAnimRootPanel extends App.Prx {
                     incomingModification();
                 }
             }
-        }, app.f.rmaTimeframeTextHeight);
+        }, app.f.rmaTimeframeTH);
         toolbar = new UIAppendButton("+", toolbar, new Runnable() {
             @Override
             public void run() {
                 target.insertFrame(new RubyIO().setDeepClone(target.getFrame()));
                 incomingModification();
             }
-        }, app.f.rmaTimeframeTextHeight);
+        }, app.f.rmaTimeframeTH);
         toolbar = new UIAppendButton("-", toolbar, new Runnable() {
             @Override
             public void run() {
                 target.deleteFrame();
                 incomingModification();
             }
-        }, app.f.rmaTimeframeTextHeight);
+        }, app.f.rmaTimeframeTH);
 
         proxySetElement(new UISplitterLayout(toolbar, framePanelController.rootLayout, true, 0), true);
 

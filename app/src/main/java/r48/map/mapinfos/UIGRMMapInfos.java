@@ -29,10 +29,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class UIGRMMapInfos extends App.Prx {
     private final IRMLikeMapInfoBackendWPub operators;
-    private final UIScrollLayout uiSVL = new UIScrollLayout(true, app.f.generalScrollersize);
+    private final UIScrollLayout uiSVL = new UIScrollLayout(true, app.f.generalS);
     private final UITreeView utv;
-    private final UITextBox searchBarBox = new UITextBox("", app.f.mapInfosTextHeight);
-    private final UISplitterLayout searchBar = new UISplitterLayout(new UILabel("Search: ", app.f.mapInfosTextHeight), searchBarBox, false, 0); 
+    private final UITextBox searchBarBox = new UITextBox("", app.f.mapInfosTH);
+    private final UISplitterLayout searchBar = new UISplitterLayout(new UILabel("Search: ", app.f.mapInfosTH), searchBarBox, false, 0); 
     private String lastSearchTerm = "";
     private int selectedOrder = 0;
     private IMapContext mapContext;
@@ -49,7 +49,7 @@ public class UIGRMMapInfos extends App.Prx {
 
     public UIGRMMapInfos(final IRMLikeMapInfoBackendWPub b, IMapContext context, String mapInfos) {
         super(context.getApp());
-        utv = new UITreeView(UIBorderedElement.getRecommendedTextSize("", app.f.mapInfosTextHeight).height);
+        utv = new UITreeView(UIBorderedElement.getRecommendedTextSize("", app.f.mapInfosTH).height);
         operators = b;
         mapContext = context;
         toStringRes = mapInfos;
@@ -71,7 +71,7 @@ public class UIGRMMapInfos extends App.Prx {
         HashMap<Long, Integer> indent = new HashMap<Long, Integer>();
         String errors = operators.calculateIndentsAndGetErrors(indent);
         if (errors != null) {
-            uiSVL.panelsAdd(new UILabel(errors, app.f.mapInfosTextHeight));
+            uiSVL.panelsAdd(new UILabel(errors, app.f.mapInfosTH));
             return;
         }
 
@@ -135,10 +135,10 @@ public class UIGRMMapInfos extends App.Prx {
         utv.setElements(tree.toArray(new UITreeView.TreeElement[0]));
         uiSVL.panelsAdd(searchBar);
         uiSVL.panelsAdd(utv);
-        uiSVL.panelsAdd(new UITextButton(T.z.l240, app.f.mapInfosTextHeight, new Runnable() {
+        uiSVL.panelsAdd(new UITextButton(T.z.l240, app.f.mapInfosTH, new Runnable() {
             @Override
             public void run() {
-                final UINumberBox num = new UINumberBox(0, app.f.textDialogFieldTextHeight);
+                final UINumberBox num = new UINumberBox(0, app.f.textDialogFieldTH);
                 final Runnable unusedID = new Runnable() {
                     @Override
                     public void run() {
@@ -164,8 +164,8 @@ public class UIGRMMapInfos extends App.Prx {
                         rebuildList();
                         close.set(true);
                     }
-                }, app.f.textDialogFieldTextHeight);
-                UINSVertLayout dialog = new UINSVertLayout(prompt, new UITextButton(T.z.l242, app.f.textDialogFieldTextHeight, unusedID)) {
+                }, app.f.textDialogFieldTH);
+                UINSVertLayout dialog = new UINSVertLayout(prompt, new UITextButton(T.z.l242, app.f.textDialogFieldTH, unusedID)) {
                     @Override
                     public String toString() {
                         return T.z.l243;
@@ -182,7 +182,7 @@ public class UIGRMMapInfos extends App.Prx {
     }
 
     private UIElement extractedElement(final Long k, final IRIO map, final int order, final long parent, String name) {
-        UIElement elm = new UITextButton(k + ":" + name + " P" + parent, app.f.mapInfosTextHeight, new Runnable() {
+        UIElement elm = new UITextButton(k + ":" + name + " P" + parent, app.f.mapInfosTH, new Runnable() {
             @Override
             public void run() {
                 selectedOrder = order;
@@ -236,14 +236,14 @@ public class UIGRMMapInfos extends App.Prx {
                         map.getIVar("@parent_id").setFX(operators.getHashBID(parent).getIVar("@parent_id").getFX());
                         operators.complete();
                     }
-                }, app.f.mapInfosTextHeight);
+                }, app.f.mapInfosTH);
             }
             elm = new UIAppendButton(T.z.l245, elm, new Runnable() {
                 @Override
                 public void run() {
                     operators.triggerEditInfoOf(k);
                 }
-            }, app.f.mapInfosTextHeight);
+            }, app.f.mapInfosTH);
             elm = new UIAppendButton(app, T.z.l246, elm, null, new String[] {T.z.l11}, new Runnable[] {new Runnable() {
                 @Override
                 public void run() {
@@ -257,7 +257,7 @@ public class UIGRMMapInfos extends App.Prx {
                     operators.complete();
                     rebuildList();
                 }
-            }}, app.f.mapInfosTextHeight);
+            }}, app.f.mapInfosTH);
         }
         return elm;
     }

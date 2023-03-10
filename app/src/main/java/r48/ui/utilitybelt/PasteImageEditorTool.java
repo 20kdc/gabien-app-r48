@@ -160,25 +160,25 @@ public class PasteImageEditorTool extends ImageEditorTool {
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
         UIScrollLayout uie = RootImageEditorTool.createToolPalette(uiev, PasteImageEditorTool.class);
-        UITextButton a = new UITextButton(T.z.l292, app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton a = new UITextButton(T.z.l292, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 flipX = !flipX;
             }
         }).togglable(flipX);
-        UITextButton b = new UITextButton(T.z.l293, app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton b = new UITextButton(T.z.l293, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 flipY = !flipY;
             }
         }).togglable(flipY);
-        UITextButton c = new UITextButton(T.z.l294, app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton c = new UITextButton(T.z.l294, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 swapXY = !swapXY;
             }
         }).togglable(swapXY);
-        UITextButton d = new UITextButton(T.z.l295, app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton d = new UITextButton(T.z.l295, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 rawCopy = !rawCopy;

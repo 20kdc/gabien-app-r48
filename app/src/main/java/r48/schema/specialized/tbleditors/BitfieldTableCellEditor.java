@@ -44,7 +44,7 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
             }
         }));
         editor1.accept(planes[0]);
-        base.panelsAdd(new UILabel(T.z.l112, app.f.tableElementTextHeight));
+        base.panelsAdd(new UILabel(T.z.l112, app.f.tableElementTH));
         final Runnable editor2 = new DefaultTableCellEditor(app).createEditor(base, planes, changeOccurred);
         
         return new Runnable() {
@@ -93,11 +93,11 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
 
                         @Override
                         public UIScrollLayout newSVL() {
-                            return new UIScrollLayout(true, app.f.generalScrollersize);
+                            return new UIScrollLayout(true, app.f.generalS);
                         }
                     });
 
-                    panelAdder.accept(new UISplitterLayout(new UILabel(name, app.f.tableElementTextHeight), iai.uie, false, 1));
+                    panelAdder.accept(new UISplitterLayout(new UILabel(name, app.f.tableElementTH), iai.uie, false, 1));
                     flagStates[i] = new Runnable() {
                         @Override
                         public void run() {
@@ -108,7 +108,7 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
                     bit <<= len;
                 } else {
                     // Bool-field
-                    final UITextButton flag = new UITextButton(Integer.toHexString(thisBit) + ": " + flags[i], app.f.tableElementTextHeight, null).togglable(false);
+                    final UITextButton flag = new UITextButton(Integer.toHexString(thisBit) + ": " + flags[i], app.f.tableElementTH, null).togglable(false);
                     panelAdder.accept(flag);
                     flagStates[i] = new Runnable() {
                         @Override

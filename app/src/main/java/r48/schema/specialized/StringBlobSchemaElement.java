@@ -37,7 +37,7 @@ public class StringBlobSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final String fpath = Application.BRAND + "/r48.edit.txt";
 
-        UITextButton importer = new UITextButton(T.z.l154, app.f.blobTextHeight, new Runnable() {
+        UITextButton importer = new UITextButton(T.z.l154, app.f.blobTH, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -53,7 +53,7 @@ public class StringBlobSchemaElement extends SchemaElement {
             }
         });
         AggregateSchemaElement.hookButtonForPressPreserve(launcher, this, target, importer, "import");
-        UISplitterLayout usl = new UISplitterLayout(new UITextButton(T.z.l156, app.f.blobTextHeight, new Runnable() {
+        UISplitterLayout usl = new UISplitterLayout(new UITextButton(T.z.l156, app.f.blobTH, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -71,10 +71,10 @@ public class StringBlobSchemaElement extends SchemaElement {
                 }
             }
         }), importer, false, 0.5d); 
-        return new UISplitterLayout(usl, new UITextButton(T.z.l159, app.f.blobTextHeight, new Runnable() {
+        return new UISplitterLayout(usl, new UITextButton(T.z.l159, app.f.blobTH, new Runnable() {
             @Override
             public void run() {
-                final UITextBox utb = new UITextBox("", app.f.schemaFieldTextHeight).setMultiLine();
+                final UITextBox utb = new UITextBox("", app.f.schemaFieldTH).setMultiLine();
                 Runnable update = new Runnable() {
                     @Override
                     public void run() {
@@ -86,7 +86,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                     }
                 };
                 update.run();
-                UIElement ui = new UISplitterLayout(utb, new UITextButton(T.z.l11, app.f.schemaFieldTextHeight, new Runnable() {
+                UIElement ui = new UISplitterLayout(utb, new UITextButton(T.z.l11, app.f.schemaFieldTH, new Runnable() {
                     @Override
                     public void run() {
                         try {

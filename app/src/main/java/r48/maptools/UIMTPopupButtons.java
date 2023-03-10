@@ -104,7 +104,7 @@ public class UIMTPopupButtons extends UIMTBase {
             });
         }
 
-        UIAutoclosingPopupMenu u = new UIAutoclosingPopupMenu(allEntries, app.f.dialogWindowTextHeight, app.f.menuScrollersize, true);
+        UIAutoclosingPopupMenu u = new UIAutoclosingPopupMenu(allEntries, app.f.dialogWindowTH, app.f.menuS, true);
         changeInner(u, true);
     }
 
@@ -112,8 +112,8 @@ public class UIMTPopupButtons extends UIMTBase {
         private UIMTMapResizer(final IMapToolContext mtc) {
             super(mtc);
             final UIMapView view = mtc.getMapView();
-            final UINumberBox a = new UINumberBox(view.mapTable.width, app.f.textDialogFieldTextHeight);
-            final UINumberBox b = new UINumberBox(view.mapTable.height, app.f.textDialogFieldTextHeight);
+            final UINumberBox a = new UINumberBox(view.mapTable.width, app.f.textDialogFieldTH);
+            final UINumberBox b = new UINumberBox(view.mapTable.height, app.f.textDialogFieldTH);
             a.onEdit = new Runnable() {
                 @Override
                 public void run() {
@@ -128,7 +128,7 @@ public class UIMTPopupButtons extends UIMTBase {
                         b.number = 1;
                 }
             };
-            UISplitterLayout root = new UISplitterLayout(new UISplitterLayout(a, b, false, 0.5d), new UITextButton("Resize", app.f.textDialogFieldTextHeight, new Runnable() {
+            UISplitterLayout root = new UISplitterLayout(new UISplitterLayout(a, b, false, 0.5d), new UITextButton("Resize", app.f.textDialogFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     int w = (int) a.number;

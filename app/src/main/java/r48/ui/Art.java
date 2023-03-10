@@ -38,7 +38,7 @@ public class Art {
 
     // This controls the layout of (in particular) zoom
     public static int getZIconSize(App app) {
-        return UILabel.getRecommendedTextSize("", app.f.mapPositionTextHeight).height;
+        return UILabel.getRecommendedTextSize("", app.f.mapPositionTH).height;
     }
 
     public static int getZIconMargin(App app) {

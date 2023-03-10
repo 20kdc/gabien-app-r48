@@ -44,14 +44,14 @@ public class FileSelectorSchemaElement extends SchemaElement {
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
         String[] strs = GaBIEn.listEntries(PathUtils.autoDetectWindows(app.rootPath + pathExtender));
         if (strs == null)
-            return new UILabel("The folder does not exist or was not accessible.", app.f.schemaFieldTextHeight);
+            return new UILabel("The folder does not exist or was not accessible.", app.f.schemaFieldTH);
         HashSet<String> hitStrs = new HashSet<String>();
         UIElement waitingLeft = null;
         for (String s : strs) {
             final String sStripped = stripExt(s);
             if (hitStrs.contains(sStripped))
                 continue;
-            UITextButton selectButton = new UITextButton(sStripped, app.f.schemaFieldTextHeight, new Runnable() {
+            UITextButton selectButton = new UITextButton(sStripped, app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     target.setString(sStripped);
@@ -65,7 +65,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
                 if (im == GaBIEn.getErrorImage())
                     continue;
                 hitStrs.add(sStripped);
-                int bw = UIBorderedElement.getRecommendedBorderWidth(app.f.schemaFieldTextHeight) * 4;
+                int bw = UIBorderedElement.getRecommendedBorderWidth(app.f.schemaFieldTH) * 4;
                 res = new UIBorderedSubpanel(new UISplitterLayout(new UIThumbnail(im), selectButton, true, 1), bw);
             } else {
                 hitStrs.add(sStripped);

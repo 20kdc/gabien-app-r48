@@ -27,7 +27,7 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
     public UIMTShadowLayer(IMapToolContext mv) {
         super(mv);
         map = mv.getMapView();
-        changeInner(new UISplitterLayout(new UILabel(T.z.l28, app.f.tableElementTextHeight), regionId = new UINumberBox(0, app.f.tableElementTextHeight), false, 1, 2), true);
+        changeInner(new UISplitterLayout(new UILabel(T.z.l28, app.f.tableElementTH), regionId = new UINumberBox(0, app.f.tableElementTH), false, 1, 2), true);
     }
 
     @Override

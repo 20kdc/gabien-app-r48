@@ -85,7 +85,7 @@ public abstract class UIPlaneView extends App.Elm {
         int textW = getSize().width - (textX + ((plusRectFull.width - plusRect.width) / 2));
         String statusText = planeGetStatus();
         if (statusText != null)
-            planeStatusLine.draw(statusText, app.f.mapPositionTextHeight, igd, textX, plusRect.y, textW);
+            planeStatusLine.draw(statusText, app.f.mapPositionTH, igd, textX, plusRect.y, textW);
 
         if (planeCanZoom(true))
             Art.drawZoom(igd, true, plusRect.x, plusRect.y, plusRect.height);

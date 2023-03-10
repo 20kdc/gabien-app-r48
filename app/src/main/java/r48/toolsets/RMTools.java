@@ -53,7 +53,7 @@ public class RMTools extends App.Svc {
     }
 
     public UIElement genButton() {
-        return new UIMenuButton(app, T.z.l29, app.f.menuTextHeight, null, new String[] {
+        return new UIMenuButton(app, T.z.l29, app.f.menuTH, null, new String[] {
                 T.z.l30,
                 T.z.l31,
                 T.z.l32,

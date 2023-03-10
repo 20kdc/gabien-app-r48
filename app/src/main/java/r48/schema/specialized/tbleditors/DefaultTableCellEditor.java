@@ -23,7 +23,7 @@ public class DefaultTableCellEditor extends App.Svc implements ITableCellEditor 
         final UINumberBox[] numbers = new UINumberBox[planes.length];
         for (int i = 0; i < planes.length; i++) {
             final int index = i;
-            final UINumberBox box = new UINumberBox(planes[i], app.f.tableElementTextHeight);
+            final UINumberBox box = new UINumberBox(planes[i], app.f.tableElementTH);
             numbers[i] = box;
             box.onEdit = new Runnable() {
                 @Override

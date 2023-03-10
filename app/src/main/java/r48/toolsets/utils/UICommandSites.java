@@ -24,7 +24,7 @@ public class UICommandSites extends App.Prx {
     private final ISupplier<CommandSite[]> refresh;
     private final IObjectBackend.ILoadedObject[] roots;
 
-    private final UIScrollLayout layout = new UIScrollLayout(true, app.f.generalScrollersize);
+    private final UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
     private boolean needsRefresh = false;
     private String objIdName;
 

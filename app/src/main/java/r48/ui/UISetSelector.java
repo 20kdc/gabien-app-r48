@@ -26,10 +26,10 @@ public class UISetSelector<T> extends App.Prx {
     private HashSet<T> set = new HashSet<T>();
     private HashMap<T, UIIndentThingy> setButtons = new HashMap<T, UIIndentThingy>();
     private HashMap<T, UILabel> setLabels = new HashMap<T, UILabel>();
-    private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalScrollersize);
+    private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
     public UISetSelector(App app, final Iterable<T> entries) {
         super(app);
-        layout.panelsAdd(new UITextButton(T.u.set_selAll, app.f.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(T.u.set_selAll, app.f.dialogWindowTH, new Runnable() {
             @Override
             public void run() {
                 for (T x : entries)
@@ -37,17 +37,17 @@ public class UISetSelector<T> extends App.Prx {
                 refreshContents();
             }
         }));
-        layout.panelsAdd(new UITextButton(T.u.set_deSelAll, app.f.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(T.u.set_deSelAll, app.f.dialogWindowTH, new Runnable() {
             @Override
             public void run() {
                 set.clear();
                 refreshContents();
             }
         }));
-        int labelHeight = UILabel.getRecommendedTextSize("", app.f.dialogWindowTextHeight).height;
+        int labelHeight = UILabel.getRecommendedTextSize("", app.f.dialogWindowTH).height;
         for (T o : entries) {
             final T fo = o;
-            final UILabel ul = new UILabel(o.toString(), app.f.dialogWindowTextHeight);
+            final UILabel ul = new UILabel(o.toString(), app.f.dialogWindowTH);
             final UIIndentThingy utb = new UIIndentThingy(0, labelHeight, 0, 0, new Runnable() {
                 @Override
                 public void run() {

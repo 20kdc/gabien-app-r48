@@ -87,13 +87,13 @@ public class AppUI extends App.Svc {
         app.stuffRendererIndependent = app.system.rendererFromTso(null);
 
         // initialize UI
-        saveButtonSym = new UISymbolButton(Art.Symbol.Save, app.f.tabTextHeight, new Runnable() {
+        saveButtonSym = new UISymbolButton(Art.Symbol.Save, app.f.tabTH, new Runnable() {
             @Override
             public void run() {
                 saveAllModified();
             }
         });
-        final UISymbolButton sym2 = new UISymbolButton(Art.Symbol.Back, app.f.tabTextHeight, createLaunchConfirmation(T.u.revertWarn, new Runnable() {
+        final UISymbolButton sym2 = new UISymbolButton(Art.Symbol.Back, app.f.tabTH, createLaunchConfirmation(T.u.revertWarn, new Runnable() {
             @Override
             public void run() {
                 AppMain.performSystemDump(app, false, "revert file");
@@ -135,7 +135,7 @@ public class AppUI extends App.Svc {
                                 launchDoneDialog();
                             }
                         }
-                }, app.f.menuTextHeight, app.f.menuScrollersize, true));
+                }, app.f.menuTH, app.f.menuS, true));
             }
         }
     }
@@ -221,9 +221,9 @@ public class AppUI extends App.Svc {
         return new Runnable() {
             @Override
             public void run() {
-                UITextButton accept = new UITextButton(T.u.confirm_accept, app.f.dialogWindowTextHeight, null).centred();
-                UITextButton cancel = new UITextButton(T.u.confirm_cancel, app.f.dialogWindowTextHeight, null).centred();
-                UIElement uie = new UISplitterLayout(new UILabel(s, app.f.dialogWindowTextHeight),
+                UITextButton accept = new UITextButton(T.u.confirm_accept, app.f.dialogWindowTH, null).centred();
+                UITextButton cancel = new UITextButton(T.u.confirm_cancel, app.f.dialogWindowTH, null).centred();
+                UIElement uie = new UISplitterLayout(new UILabel(s, app.f.dialogWindowTH),
                         new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
                 final UIMTBase mtb = UIMTBase.wrap(null, uie);
                 mtb.titleOverride = T.t.confirm;
@@ -260,11 +260,11 @@ public class AppUI extends App.Svc {
 
     public void startHelp(String base, String link) {
         // exception to the rule
-        UILabel uil = new UILabel("", app.f.helpPathHeight);
+        UILabel uil = new UILabel("", app.f.helpPathH);
         final UIHelpSystem uis = new UIHelpSystem(app.ilg);
         final HelpSystemController hsc = new HelpSystemController(uil, base, uis);
         uis.onLinkClick = hsc;
-        final UIScrollLayout uus = new UIScrollLayout(true, app.f.generalScrollersize);
+        final UIScrollLayout uus = new UIScrollLayout(true, app.f.generalS);
         uus.panelsAdd(uis);
         Size rootSize = wm.getRootSize();
         final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(T.u.helpIndex, uil, new Runnable() {
@@ -272,7 +272,7 @@ public class AppUI extends App.Svc {
             public void run() {
                 hsc.loadPage(0);
             }
-        }, app.f.helpPathHeight), uus) {
+        }, app.f.helpPathH), uus) {
             @Override
             public String toString() {
                 return T.u.helpTitle;
@@ -329,8 +329,8 @@ public class AppUI extends App.Svc {
     }
 
     public void launchDialog(String s, String title) {
-        UILabel ul = new UILabel(s, app.f.textDialogDescTextHeight);
-        UIScrollLayout svl = new UIScrollLayout(true, app.f.generalScrollersize) {
+        UILabel ul = new UILabel(s, app.f.textDialogDescTH);
+        UIScrollLayout svl = new UIScrollLayout(true, app.f.generalS) {
             @Override
             public String toString() {
                 return title;

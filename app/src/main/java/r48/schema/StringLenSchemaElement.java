@@ -105,7 +105,7 @@ public class StringLenSchemaElement extends StringSchemaElement {
                 return Integer.toString(len - l1);
             }
         };
-        UILabel l = new UILabel("-00000", app.f.schemaFieldTextHeight) {
+        UILabel l = new UILabel("-00000", app.f.schemaFieldTH) {
             @Override
             public void runLayout() {
                 int l1 = measureText(utb.text);

@@ -45,8 +45,8 @@ public class CharacterGeneratorController extends App.Svc {
 
     public CharacterGeneratorController(App app) {
         super(app);
-        modes = new UITabPane(app.f.tabTextHeight, true, false);
-        final UIScrollLayout availableOpts = new UIScrollLayout(true, app.f.cellSelectScrollersize);
+        modes = new UITabPane(app.f.tabTH, true, false);
+        final UIScrollLayout availableOpts = new UIScrollLayout(true, app.f.cellSelectS);
         DBLoader.readFile(app, "CharGen/Modes.txt", new IDatabase() {
             private UICharGenView view;
 
@@ -87,7 +87,7 @@ public class CharacterGeneratorController extends App.Svc {
 
                     final LinkedList<String> layerGroups = new LinkedList<String>();
 
-                    l.naming = new UITextButton(args[0], app.f.rmaCellTextHeight, new Runnable() {
+                    l.naming = new UITextButton(args[0], app.f.rmaCellTH, new Runnable() {
                         @Override
                         public void run() {
                             if (!l.enabled) {
@@ -103,7 +103,7 @@ public class CharacterGeneratorController extends App.Svc {
                             l.naming.state = l.enabled;
                         }
                     }).togglable(l.enabled);
-                    l.swatch = new UIColourSwatchButton((int) Long.parseLong(args[1], 16), app.f.schemaFieldTextHeight, null);
+                    l.swatch = new UIColourSwatchButton((int) Long.parseLong(args[1], 16), app.f.schemaFieldTH, null);
                     l.swatch.onClick = new Runnable() {
                         @Override
                         public void run() {
@@ -141,7 +141,7 @@ public class CharacterGeneratorController extends App.Svc {
                 }
             }
         });
-        UIElement modeBar = new UIAppendButton(T.u.cg_savePNG, new UITextButton(T.u.cg_copyR48, app.f.schemaFieldTextHeight, new Runnable() {
+        UIElement modeBar = new UIAppendButton(T.u.cg_savePNG, new UITextButton(T.u.cg_copyR48, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 IImage img = getCurrentModeImage();
@@ -180,7 +180,7 @@ public class CharacterGeneratorController extends App.Svc {
                     }
                 });
             }
-        }, app.f.schemaFieldTextHeight);
+        }, app.f.schemaFieldTH);
         rootView = new UISplitterLayout(new UISplitterLayout(modes, modeBar, true, 1), availableOpts, false, 1) {
             @Override
             public String toString() {

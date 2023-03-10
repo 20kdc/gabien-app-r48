@@ -37,7 +37,7 @@ public class UIColourPicker extends App.Prx {
     private final UITabPane tabPane;
     private final IConsumer<Integer>[] colourListeners;
     private final UINumberBox alphaBox;
-    private final Size numberBoxMinimumSize = UILabel.getRecommendedTextSize("_255_", app.f.imageEditorTextHeight);
+    private final Size numberBoxMinimumSize = UILabel.getRecommendedTextSize("_255_", app.f.imageEditorTH);
     private boolean shuttingDown = false;
 
     @SuppressWarnings("unchecked")
@@ -45,7 +45,7 @@ public class UIColourPicker extends App.Prx {
         super(app);
         currentColour = new UIColourSwatch(baseCol);
         wTitle = purpose;
-        tabPane = new UITabPane(app.f.imageEditorTextHeight, false, true);
+        tabPane = new UITabPane(app.f.imageEditorTH, false, true);
         // IGNORE THE WARNING. There is no way to fix this.
         colourListeners = new IConsumer[] {
                 new UIHSVColourView(app.f.getSpriteScale()),
@@ -65,7 +65,7 @@ public class UIColourPicker extends App.Prx {
         UISplitterLayout s2Layout = new UISplitterLayout(new UIColourSwatch(baseCol), currentColour, true, 0.5d) {
             @Override
             public void setWantedSize(Size size) {
-                int v = app.f.imageEditorTextHeight * 2;
+                int v = app.f.imageEditorTH * 2;
                 super.setWantedSize(new Size(v, v));
             }
         };
@@ -84,12 +84,12 @@ public class UIColourPicker extends App.Prx {
             leftCoreLayout = s2Layout;
         } else {
             // alphaBox is referred to elsewhere so it's kept around, but this isn't
-            UISplitterLayout a0Layout = new UISplitterLayout(new UILabel(T.u.lAlphaChannel, app.f.imageEditorTextHeight), alphaBox, false, 0);
+            UISplitterLayout a0Layout = new UISplitterLayout(new UILabel(T.u.lAlphaChannel, app.f.imageEditorTH), alphaBox, false, 0);
             leftCoreLayout = new UISplitterLayout(s2Layout, a0Layout, true, 1d);
         }
 
         // left/right layouts are stuff above ok/cancel buttons
-        UISplitterLayout leftLayout = new UISplitterLayout(leftCoreLayout, new UITextButton(T.g.bOk, app.f.imageEditorTextHeight, new Runnable() {
+        UISplitterLayout leftLayout = new UISplitterLayout(leftCoreLayout, new UITextButton(T.g.bOk, app.f.imageEditorTH, new Runnable() {
             @Override
             public void run() {
                 if (!shuttingDown) {
@@ -98,7 +98,7 @@ public class UIColourPicker extends App.Prx {
                 }
             }
         }), true, 1);
-        UISplitterLayout rightLayout = new UISplitterLayout(tabPane, new UITextButton(T.g.bCancel, app.f.imageEditorTextHeight, new Runnable() {
+        UISplitterLayout rightLayout = new UISplitterLayout(tabPane, new UITextButton(T.g.bCancel, app.f.imageEditorTH, new Runnable() {
             @Override
             public void run() {
                 if (!shuttingDown) {
@@ -133,7 +133,7 @@ public class UIColourPicker extends App.Prx {
 
     private class UIChannelBox extends UINumberBox {
         public UIChannelBox(long number) {
-            super(number, app.f.imageEditorTextHeight);
+            super(number, app.f.imageEditorTH);
         }
 
         @Override
@@ -148,7 +148,7 @@ public class UIColourPicker extends App.Prx {
 
     private static class UIChannelLabel extends UILabel {
         public UIChannelLabel(App app, String txt) {
-            super(txt, app.f.imageEditorTextHeight);
+            super(txt, app.f.imageEditorTH);
         }
 
         @Override
@@ -199,9 +199,9 @@ public class UIColourPicker extends App.Prx {
             igd.clearRect(0, 0, 0, tsx + targetScale, intPos.y, targetScale, intPos.height);
 
             if (bh == 1) {
-                FontManager.drawString(igd, 0, 0, Integer.toString(targetSize.width), false, false, app.f.tonePickerTextHeight);
+                FontManager.drawString(igd, 0, 0, Integer.toString(targetSize.width), false, false, app.f.tonePickerTH);
             } else {
-                FontManager.drawString(igd, 0, 0, targetSize.width + "," + targetSize.height, false, false, app.f.tonePickerTextHeight);
+                FontManager.drawString(igd, 0, 0, targetSize.width + "," + targetSize.height, false, false, app.f.tonePickerTH);
             }
         }
 
@@ -272,9 +272,9 @@ public class UIColourPicker extends App.Prx {
             bA = new UIChannelBox(0);
             bA.onEdit = onAEdit;
 
-            rB = new UIScrollbar(false, app.f.generalScrollersize);
-            gB = new UIScrollbar(false, app.f.generalScrollersize);
-            bB = new UIScrollbar(false, app.f.generalScrollersize);
+            rB = new UIScrollbar(false, app.f.generalS);
+            gB = new UIScrollbar(false, app.f.generalS);
+            bB = new UIScrollbar(false, app.f.generalS);
 
             UISplitterLayout rC = new UISplitterLayout(rA, rB, false, 0);
             UISplitterLayout gC = new UISplitterLayout(gA, gB, false, 0);
@@ -285,7 +285,7 @@ public class UIColourPicker extends App.Prx {
             UISplitterLayout b = new UISplitterLayout(new UIChannelLabel(app, "B"), bC, false, 0);
 
             UISplitterLayout rgSplit = new UISplitterLayout(r, g, true, 0);
-            UISplitterLayout b0Split = new UISplitterLayout(b, new UILabel(T.u.lHSVRecommend, app.f.imageEditorTextHeight), true, 0);
+            UISplitterLayout b0Split = new UISplitterLayout(b, new UILabel(T.u.lHSVRecommend, app.f.imageEditorTH), true, 0);
             UISplitterLayout rbSplit = new UISplitterLayout(rgSplit, b0Split, true, 0);
             proxySetElement(rbSplit, true);
         }

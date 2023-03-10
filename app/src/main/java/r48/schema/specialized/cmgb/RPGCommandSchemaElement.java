@@ -78,7 +78,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         final SchemaPath path = path2.tagSEMonitor(target, this, false);
 
         if (showHeader) {
-            UIElement chooseCode = new UIAppendButton(T.z.l165, new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTextHeight, new Runnable() {
+            UIElement chooseCode = new UIAppendButton(T.z.l165, new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     launcher.pushObject(path2.newWindow(navigateToCode(launcher, target, new IConsumer<int[]>() {
@@ -108,7 +108,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     }
                     app.ui.launchDialog(title + "\n" + result);
                 }
-            }, app.f.schemaFieldTextHeight);
+            }, app.f.schemaFieldTH);
 
             return new UISplitterLayout(chooseCode, buildSubElem(target, launcher, path), true, 0);
         }
@@ -139,7 +139,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 // Hidden parameters, introduced to deal with the "text as first parameter" thing brought about by R2k
                 if (paramName.equals("_"))
                     continue;
-                labels[i] = new UILabel(paramName + " ", app.f.schemaFieldTextHeight);
+                labels[i] = new UILabel(paramName + " ", app.f.schemaFieldTH);
                 labelWidth.set(Math.max(labelWidth.get(), labels[i].getWantedSize().width));
             }
             for (int i = 0; i < labels.length; i++) {

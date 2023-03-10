@@ -22,7 +22,7 @@ import r48.ui.UIAppendButton;
  * Created sometime in December 2017 (whoops!)
  */
 public class UISaveScanMapInfos extends App.Prx {
-    public final UIScrollLayout mainLayout = new UIScrollLayout(true, app.f.generalScrollersize);
+    public final UIScrollLayout mainLayout = new UIScrollLayout(true, app.f.generalS);
     public final IFunction<Integer, String> objectMapping, gumMapping;
     public final IMapContext context;
     public final int first, last;
@@ -53,30 +53,30 @@ public class UISaveScanMapInfos extends App.Prx {
                 IObjectBackend.ILoadedObject rio = app.odb.getObject(objectMapping.apply(i), null);
                 final String gum = gumMapping.apply(i);
                 if (rio != null) {
-                    mainLayout.panelsAdd(new UITextButton(app.fmt.formatExtended(T.z.l251, new RubyIO().setString(gum, true), rio.getObject()), app.f.mapInfosTextHeight, new Runnable() {
+                    mainLayout.panelsAdd(new UITextButton(app.fmt.formatExtended(T.z.l251, new RubyIO().setString(gum, true), rio.getObject()), app.f.mapInfosTH, new Runnable() {
                         @Override
                         public void run() {
                             context.loadMap(gum);
                         }
                     }));
                 } else {
-                    mainLayout.panelsAdd(new UIAppendButton(T.z.l252, new UILabel(app.fmt.formatExtended(T.z.l253, new RubyIO().setString(gum, true)), app.f.mapInfosTextHeight), new Runnable() {
+                    mainLayout.panelsAdd(new UIAppendButton(T.z.l252, new UILabel(app.fmt.formatExtended(T.z.l253, new RubyIO().setString(gum, true)), app.f.mapInfosTH), new Runnable() {
                         @Override
                         public void run() {
                             context.loadMap(gum);
                             reload();
                         }
-                    }, app.f.mapInfosTextHeight));
+                    }, app.f.mapInfosTH));
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                UILabel warning = new UILabel(T.z.l254, app.f.mapInfosTextHeight);
+                UILabel warning = new UILabel(T.z.l254, app.f.mapInfosTH);
                 mainLayout.panelsAdd(new UIAppendButton(T.z.l255, warning, new Runnable() {
                     @Override
                     public void run() {
                         context.loadMap(gumMapping.apply(fi));
                     }
-                }, app.f.mapInfosTextHeight));
+                }, app.f.mapInfosTH));
             }
         }
     }

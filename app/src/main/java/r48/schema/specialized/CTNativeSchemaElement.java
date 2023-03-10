@@ -40,7 +40,7 @@ public class CTNativeSchemaElement extends SchemaElement {
     }
 
     private void addField(UIScrollLayout uiSVL, String r, final int i, final RubyCT targ, final SchemaPath sp) {
-        final UINumberBox uinb = new UINumberBox((long) targ.innerTable.getDouble(i), app.f.schemaFieldTextHeight);
+        final UINumberBox uinb = new UINumberBox((long) targ.innerTable.getDouble(i), app.f.schemaFieldTH);
         uinb.onEdit = new Runnable() {
             @Override
             public void run() {
@@ -57,7 +57,7 @@ public class CTNativeSchemaElement extends SchemaElement {
                 sp.changeOccurred(false);
             }
         };
-        uiSVL.panelsAdd(new UISplitterLayout(new UILabel(r, app.f.schemaFieldTextHeight), uinb, false, 1, 3));
+        uiSVL.panelsAdd(new UISplitterLayout(new UILabel(r, app.f.schemaFieldTH), uinb, false, 1, 3));
     }
 
     @Override

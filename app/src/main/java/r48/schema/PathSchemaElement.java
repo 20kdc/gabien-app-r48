@@ -43,13 +43,13 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         UILabel uil = null;
         if (alias != null)
-            uil = new UILabel(alias + " ", app.f.schemaFieldTextHeight);
+            uil = new UILabel(alias + " ", app.f.schemaFieldTH);
         IRIO tgo = pStr.get(target);
         UIElement e2;
         if (tgo == null) {
             if (!optional)
                 throw new RuntimeException("Error: Made it to PathSchemaElement.buildHoldingEditor when target wasn't there: " + pStr);
-            e2 = new UITextButton(T.z.l111, app.f.schemaFieldTextHeight, new Runnable() {
+            e2 = new UITextButton(T.z.l111, app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     IRIO rio = pStr.add(target);
@@ -65,7 +65,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
                         if (pStr.del(target) != null)
                             path.changeOccurred(false);
                     }
-                }, app.f.schemaFieldTextHeight);
+                }, app.f.schemaFieldTH);
         }
         if (uil != null) {
             UIFieldLayout usl = new UIFieldLayout(uil, e2, fieldWidth, fieldWidthOverride);
@@ -78,7 +78,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     @Override
     public int getDefaultFieldWidth(IRIO target) {
         if (alias != null)
-            return UILabel.getRecommendedTextSize(alias + " ", app.f.schemaFieldTextHeight).width;
+            return UILabel.getRecommendedTextSize(alias + " ", app.f.schemaFieldTH).width;
         return 0;
     }
 

@@ -45,11 +45,11 @@ public class RootImageEditorTool extends ImageEditorTool {
                 Symbol.Area,
                 Symbol.Eyedropper
         };
-        UIScrollLayout svl = new UIScrollLayout(true, app.f.mapToolbarScrollersize);
+        UIScrollLayout svl = new UIScrollLayout(true, app.f.mapToolbarS);
         UIElement left = null;
         for (int i = 0; i < toolClasses.length; i++) {
             final int ic = i;
-            UIElement nx = new UISymbolButton(toolSymbol[i], app.f.schemaFieldTextHeight, new Runnable() {
+            UIElement nx = new UISymbolButton(toolSymbol[i], app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     try {

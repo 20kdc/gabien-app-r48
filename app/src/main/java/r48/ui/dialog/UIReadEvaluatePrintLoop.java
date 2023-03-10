@@ -30,7 +30,7 @@ public class UIReadEvaluatePrintLoop extends UIProxy {
     public UIReadEvaluatePrintLoop(Config c, MVMEnv vmCtx, String title) {
         this.c = c;
         this.title = title;
-        text = new UIChatBox("", c.f.dialogWindowTextHeight);
+        text = new UIChatBox("", c.f.dialogWindowTH);
         text.onSubmit = (txt) -> {
             write("> " + txt);
             Object res = null;
@@ -53,7 +53,7 @@ public class UIReadEvaluatePrintLoop extends UIProxy {
             }
             write("= " + MVMU.userStr(res));
         };
-        view = new UIScrollLayout(true, c.f.generalScrollersize);
+        view = new UIScrollLayout(true, c.f.generalS);
         write(title);
         proxySetElement(new UISplitterLayout(view, text, true, 1), false);
         Size sz = new Size(c.f.scaleGuess(400), c.f.scaleGuess(300));
@@ -67,6 +67,6 @@ public class UIReadEvaluatePrintLoop extends UIProxy {
     }
 
     public void write(String string) {
-        view.panelsAdd(new UILabel(string, c.f.dialogWindowTextHeight));
+        view.panelsAdd(new UILabel(string, c.f.dialogWindowTH));
     }
 }

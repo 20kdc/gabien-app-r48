@@ -28,7 +28,7 @@ public class UIGamePathList extends UIProxy {
 
     public UIGamePathList(Config c, List<String> val) {
         this.c = c;
-        text = new UITextBox("", c.f.launcherTextHeight);
+        text = new UITextBox("", c.f.launcherTH);
         appendButton = new UIAppendButton("+", text, new Runnable() {
             @Override
             public void run() {
@@ -37,11 +37,11 @@ public class UIGamePathList extends UIProxy {
                     modified();
                 }
             }
-        }, c.f.launcherTextHeight);
+        }, c.f.launcherTH);
         if (val.size() > 0)
             text.text = val.get(val.size() - 1);
         values = val;
-        layout = new UIScrollLayout(true, c.f.generalScrollersize);
+        layout = new UIScrollLayout(true, c.f.generalS);
         refresh();
         proxySetElement(layout, true);
     }
@@ -49,7 +49,7 @@ public class UIGamePathList extends UIProxy {
     public void refresh() {
         layout.panelsClear();
         for (final String v : values) {
-            UITextButton mainButton = new UITextButton(v, c.f.launcherTextHeight, new Runnable() {
+            UITextButton mainButton = new UITextButton(v, c.f.launcherTH, new Runnable() {
                 @Override
                 public void run() {
                     text.text = v;
@@ -64,7 +64,7 @@ public class UIGamePathList extends UIProxy {
                     values.remove(v);
                     modified();
                 }
-            }, c.f.launcherTextHeight));
+            }, c.f.launcherTH));
         }
         layout.panelsAdd(appendButton);
     }

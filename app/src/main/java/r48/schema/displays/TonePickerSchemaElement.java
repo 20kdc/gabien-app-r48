@@ -55,7 +55,7 @@ public class TonePickerSchemaElement extends SchemaElement {
         // The tone picker text height is typically 6, which should equal 64, as a base.
         // How do I make this work? Like this:
 
-        int imageUnit = (app.f.tonePickerTextHeight * 64) / 6;
+        int imageUnit = (app.f.tonePickerTH * 64) / 6;
         if (imageUnit < 1)
             imageUnit = 1;
         IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(imageUnit * 2, imageUnit, false);
@@ -64,8 +64,8 @@ public class TonePickerSchemaElement extends SchemaElement {
         finalComposite.blitImage(0, 0, imageUnit, imageUnit, imageUnit, 0, app.ui.imageFXCache.process(finalComposite, cfg));
 
         final TrRoot T = app.t;
-        FontManager.drawString(finalComposite, 0, (imageUnit + 1) - app.f.tonePickerTextHeight, T.z.l102, false, false, app.f.tonePickerTextHeight);
-        FontManager.drawString(finalComposite, imageUnit, (imageUnit + 1) - app.f.tonePickerTextHeight, T.z.l103, false, false, app.f.tonePickerTextHeight);
+        FontManager.drawString(finalComposite, 0, (imageUnit + 1) - app.f.tonePickerTH, T.z.l102, false, false, app.f.tonePickerTH);
+        FontManager.drawString(finalComposite, imageUnit, (imageUnit + 1) - app.f.tonePickerTH, T.z.l103, false, false, app.f.tonePickerTH);
 
         IImage im = GaBIEn.createImage(finalComposite.getPixels(), imageUnit * 2, imageUnit);
         finalComposite.shutdown();

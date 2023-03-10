@@ -51,7 +51,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
             String tx = T.s.aElmInv;
             if (optional != null)
                 tx = T.s.aElmOpt.r(name, optional);
-            return new UITextButton(tx, app.f.schemaFieldTextHeight, new Runnable() {
+            return new UITextButton(tx, app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     // resize to include and set default
@@ -64,7 +64,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         UIElement core = subSchema.buildHoldingEditor(target.getAElem(index), launcher, path.arrayHashIndex(new IRIOFixnum(index), "." + name));
 
         if (!name.equals("")) {
-            UILabel label = new UILabel(name, app.f.schemaFieldTextHeight);
+            UILabel label = new UILabel(name, app.f.schemaFieldTH);
             core = new UIFieldLayout(label, core, fieldWidth, fieldWidthOverride);
             fieldWidthOverride = false;
         }
@@ -81,14 +81,14 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
                     }
                     path.changeOccurred(false);
                 }
-            }, app.f.schemaFieldTextHeight);
+            }, app.f.schemaFieldTH);
 
         return core;
     }
 
     @Override
     public int getDefaultFieldWidth(IRIO target) {
-        return UILabel.getRecommendedTextSize(name + " ", app.f.schemaFieldTextHeight).width;
+        return UILabel.getRecommendedTextSize(name + " ", app.f.schemaFieldTH).width;
     }
 
     @Override

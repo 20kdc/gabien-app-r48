@@ -27,7 +27,7 @@ public class BooleanSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
-        final UITextButton utb = new UITextButton(determineTruth(target) ? T.z.l113 : T.z.l114, app.f.schemaFieldTextHeight, null).togglable(determineTruth(target));
+        final UITextButton utb = new UITextButton(determineTruth(target) ? T.z.l113 : T.z.l114, app.f.schemaFieldTH, null).togglable(determineTruth(target));
         utb.onClick = new Runnable() {
             @Override
             public void run() {

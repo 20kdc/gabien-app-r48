@@ -29,13 +29,13 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public UIMapView mapView;
-    public UIScrollLayout svl = new UIScrollLayout(true, app.f.generalScrollersize);
+    public UIScrollLayout svl = new UIScrollLayout(true, app.f.generalS);
     public HashMap<String, IRIO> eventCache = new HashMap<String, IRIO>();
 
     public UIMTEventPicker(IMapToolContext mv) {
         super(mv);
         mapView = mv.getMapView();
-        svl.panelsAdd(new UILabel(T.z.l22, app.f.eventPickerEntryTextHeight) {
+        svl.panelsAdd(new UILabel(T.z.l22, app.f.eventPickerEntryTH) {
             @Override
             public void setWantedSize(Size size) {
                 super.setWantedSize(new Size(size.width, size.height * 8));
@@ -88,7 +88,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                     Runnable r = mapView.mapTable.eventAccess.hasSync(evK);
                     if (r == null) {
                         // Note the checks in case of out of date panel.
-                        UIElement button = new UITextButton(nam, app.f.eventPickerEntryTextHeight, new Runnable() {
+                        UIElement button = new UITextButton(nam, app.f.eventPickerEntryTH, new Runnable() {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
@@ -117,7 +117,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 }
                                 mapToolContext.accept(new UIMTEventMover(mapToolContext, evK));
                             }
-                        }, app.f.eventPickerEntryTextHeight);
+                        }, app.f.eventPickerEntryTH);
                         button = new UIAppendButton(T.z.l24, button, new Runnable() {
                             @Override
                             public void run() {
@@ -136,7 +136,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     return;
                                 mapToolContext.accept(new UIMTEventMover(mapToolContext, nevK));
                             }
-                        }, app.f.eventPickerEntryTextHeight);
+                        }, app.f.eventPickerEntryTH);
                         button = new UIAppendButton(T.z.l25, button, new Runnable() {
                             @Override
                             public void run() {
@@ -152,10 +152,10 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 mapView.mapTable.eventAccess.delEvent(evK);
                                 confirmAt(x, y, 123, 123, layer, true);
                             }
-                        }, app.f.eventPickerEntryTextHeight);
+                        }, app.f.eventPickerEntryTH);
                         svl.panelsAdd(button);
                     } else {
-                        UIElement button = new UILabel(nam, app.f.eventPickerEntryTextHeight);
+                        UIElement button = new UILabel(nam, app.f.eventPickerEntryTH);
                         button = new UIAppendButton(T.z.l26, button, new Runnable() {
                             @Override
                             public void run() {
@@ -166,7 +166,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     r.run();
                                 confirmAt(x, y, 123, 123, layer, true);
                             }
-                        }, app.f.eventPickerEntryTextHeight);
+                        }, app.f.eventPickerEntryTH);
                         svl.panelsAdd(button);
                     }
                 }
@@ -176,7 +176,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
             final int i2 = i;
             if (types[i] == null)
                 continue;
-            svl.panelsAdd(new UITextButton(types[i], app.f.eventPickerEntryTextHeight, new Runnable() {
+            svl.panelsAdd(new UITextButton(types[i], app.f.eventPickerEntryTH, new Runnable() {
                 @Override
                 public void run() {
                     IRIO k = mapView.mapTable.eventAccess.addEvent(null, i2);

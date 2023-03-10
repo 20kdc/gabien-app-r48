@@ -30,7 +30,7 @@ public class StringSchemaElement extends SchemaElement {
     // Note the type must be UITextBox - This is so StringLenSchemaElement can latch on.
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UITextBox tb = new UITextBox(decodeVal(target), app.f.schemaFieldTextHeight);
+        final UITextBox tb = new UITextBox(decodeVal(target), app.f.schemaFieldTH);
         tb.onEdit = new Runnable() {
             @Override
             public void run() {

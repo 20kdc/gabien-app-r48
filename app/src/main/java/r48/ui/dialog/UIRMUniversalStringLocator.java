@@ -42,7 +42,7 @@ import r48.ui.UISetSelector;
  * Created on 13th August 2022.
  */
 public class UIRMUniversalStringLocator extends App.Prx {
-    private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalScrollersize);
+    private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
     private RListPanel settingsFull = new RListPanel(app, T.u.usl_full);
     private RListPanel settingsPartial = new RListPanel(app, T.u.usl_partial);
 
@@ -121,12 +121,12 @@ public class UIRMUniversalStringLocator extends App.Prx {
         settingsFull.refreshContents();
         settingsPartial.refreshContents();
 
-        UITabPane utp = new UITabPane(app.f.schemaPagerTabScrollersize, false, false);
+        UITabPane utp = new UITabPane(app.f.schemaPagerTabS, false, false);
         utp.addTab(new Tab(settingsFull, new TabIcon[0]));
         utp.addTab(new Tab(settingsPartial, new TabIcon[0]));
         layout.panelsAdd(utp);
 
-        layout.panelsAdd(new UITextButton(T.g.wordSave, app.f.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(T.g.wordSave, app.f.dialogWindowTH, new Runnable() {
             @Override
             public void run() {
                 RubyIO rio = new RubyIO();
@@ -141,7 +141,7 @@ public class UIRMUniversalStringLocator extends App.Prx {
             }
         }));
 
-        layout.panelsAdd(new UITextButton(T.u.usl_confirmReplace, app.f.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(T.u.usl_confirmReplace, app.f.dialogWindowTH, new Runnable() {
             @Override
             public void run() {
                 int total = 0;
@@ -226,15 +226,15 @@ public class UIRMUniversalStringLocator extends App.Prx {
     }
 
     public static class RListPanel extends App.Prx {
-        private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalScrollersize);
+        private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
         private LinkedList<Replacement> settings = new LinkedList<Replacement>();
 
-        private UITextBox adderK = new UITextBox("", app.f.dialogWindowTextHeight);
-        private UITextBox adderV = new UITextBox("", app.f.dialogWindowTextHeight);
+        private UITextBox adderK = new UITextBox("", app.f.dialogWindowTH);
+        private UITextBox adderV = new UITextBox("", app.f.dialogWindowTH);
 
-        private UIElement adderA = new UISplitterLayout(new UILabel(T.u.usl_from, app.f.dialogWindowTextHeight), adderK, false, 0);
-        private UIElement adderB = new UISplitterLayout(new UILabel(T.u.usl_to, app.f.dialogWindowTextHeight), adderV, false, 0);
-        private UIElement adderC = new UITextButton(T.u.usl_addR, app.f.dialogWindowTextHeight, new Runnable() {
+        private UIElement adderA = new UISplitterLayout(new UILabel(T.u.usl_from, app.f.dialogWindowTH), adderK, false, 0);
+        private UIElement adderB = new UISplitterLayout(new UILabel(T.u.usl_to, app.f.dialogWindowTH), adderV, false, 0);
+        private UIElement adderC = new UITextButton(T.u.usl_addR, app.f.dialogWindowTH, new Runnable() {
             @Override
             public void run() {
                 settingsRemoveByKey(adderK.text);
@@ -290,14 +290,14 @@ public class UIRMUniversalStringLocator extends App.Prx {
             layout.panelsClear();
 
             for (final Replacement key : settings) {
-                UIElement keyLine = new UILabel(key.key + " -> " + key.value, app.f.dialogWindowTextHeight);
+                UIElement keyLine = new UILabel(key.key + " -> " + key.value, app.f.dialogWindowTH);
                 keyLine = new UIAppendButton("-", keyLine, new Runnable() {
                     @Override
                     public void run() {
                         settings.remove(key);
                         refreshContents();
                     }
-                }, app.f.dialogWindowTextHeight);
+                }, app.f.dialogWindowTH);
                 layout.panelsAdd(keyLine);
             }
             layout.panelsAdd(adderA);

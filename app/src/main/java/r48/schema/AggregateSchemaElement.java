@@ -92,7 +92,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     // PREFERABLY avoid regeneration of schema objects that are reusable (RPGCommandSchemaElement was fixed this way)
     public static UIScrollLayout createScrollSavingSVL(final ISchemaHost host, final SchemaElement elem, final IRIO target) {
         final App app = host.getApp();
-        final UIScrollLayout uiSVL = new UIScrollLayout(true, app.f.generalScrollersize) {
+        final UIScrollLayout uiSVL = new UIScrollLayout(true, app.f.generalS) {
             @Override
             public void handleMousewheel(int x, int y, boolean north) {
                 super.handleMousewheel(x, y, north);

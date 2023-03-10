@@ -87,7 +87,7 @@ public class EnumSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIEnumChoice.Option opt = findOption(target);
-        UITextButton button = new UITextButton(viewValue(target, true, opt), app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton button = new UITextButton(viewValue(target, true, opt), app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 liveUpdate();
@@ -109,7 +109,7 @@ public class EnumSchemaElement extends SchemaElement {
                     public void run() {
                         launcher.newBlank().pushObject(opt.furtherDataButton);
                     }
-                }, app.f.schemaFieldTextHeight);
+                }, app.f.schemaFieldTH);
         }
         return button;
     }

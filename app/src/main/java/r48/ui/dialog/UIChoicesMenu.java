@@ -24,13 +24,13 @@ public class UIChoicesMenu extends App.Prx {
 
     public UIChoicesMenu(App app, String s, String[] strings, final Runnable[] runnables) {
         super(app);
-        UILabel topLabel = new UILabel(s, app.f.dialogWindowTextHeight);
-        UIScrollLayout label = new UIScrollLayout(true, app.f.menuScrollersize);
+        UILabel topLabel = new UILabel(s, app.f.dialogWindowTH);
+        UIScrollLayout label = new UIScrollLayout(true, app.f.menuS);
         label.panelsAdd(topLabel);
-        UIScrollLayout usl = new UIScrollLayout(false, app.f.menuScrollersize);
+        UIScrollLayout usl = new UIScrollLayout(false, app.f.menuS);
         for (int i = 0; i < strings.length; i++) {
             final int fi = i;
-            usl.panelsAdd(new UITextButton(strings[i], app.f.dialogWindowTextHeight, new Runnable() {
+            usl.panelsAdd(new UITextButton(strings[i], app.f.dialogWindowTH, new Runnable() {
                 @Override
                 public void run() {
                     runnables[fi].run();

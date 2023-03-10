@@ -46,9 +46,9 @@ public class UILauncher extends UIProxy {
         final Launcher lun = ls.lun;
         final TrGlobal tr = lun.ilg.t.g;
         Config c = lun.c;
-        final UITabPane tabPane = new UITabPane(c.f.tabTextHeight, false, false);
+        final UITabPane tabPane = new UITabPane(c.f.tabTH, false, false);
 
-        final UIScrollLayout configure = new UIScrollLayout(true, c.f.generalScrollersize) {
+        final UIScrollLayout configure = new UIScrollLayout(true, c.f.generalS) {
             @Override
             public String toString() {
                 return tr.bConfigV;
@@ -56,7 +56,7 @@ public class UILauncher extends UIProxy {
         };
         tabPane.addTab(new Tab(configure, new TabIcon[0]));
 
-        final UIScrollLayout gamepaks = new UIScrollLayout(true, c.f.generalScrollersize) {
+        final UIScrollLayout gamepaks = new UIScrollLayout(true, c.f.generalS) {
             @Override
             public String toString() {
                 return tr.bSelectEngine;
@@ -64,7 +64,7 @@ public class UILauncher extends UIProxy {
         };
         tabPane.addTab(new Tab(gamepaks, new TabIcon[0]));
 
-        UIAdjuster msAdjust = new UIAdjuster(c.f.launcherTextHeight, lun.globalMS, new IFunction<Long, Long>() {
+        UIAdjuster msAdjust = new UIAdjuster(c.f.launcherTH, lun.globalMS, new IFunction<Long, Long>() {
             @Override
             public Long apply(Long aLong) {
                 int gms = (int) (long) aLong;
@@ -86,9 +86,9 @@ public class UILauncher extends UIProxy {
 
         configure.panelsAdd(figureOutTopBar(lun));
 
-        configure.panelsAdd(new UISplitterLayout(new UILabel(tr.lFrameMS, c.f.launcherTextHeight), msAdjust, false, 3, 5));
+        configure.panelsAdd(new UISplitterLayout(new UILabel(tr.lFrameMS, c.f.launcherTH), msAdjust, false, 3, 5));
 
-        configure.panelsAdd(new UILabel(tr.lGamePath, c.f.launcherTextHeight));
+        configure.panelsAdd(new UILabel(tr.lGamePath, c.f.launcherTH));
 
         final UIGamePathList rootBox = new UIGamePathList(c, c.rootPathBackup) {
             @Override
@@ -99,7 +99,7 @@ public class UILauncher extends UIProxy {
         };
         configure.panelsAdd(rootBox);
 
-        configure.panelsAdd(new UILabel(tr.lSecondaryPath, c.f.launcherTextHeight));
+        configure.panelsAdd(new UILabel(tr.lSecondaryPath, c.f.launcherTH));
 
         final UIGamePathList sillBox = new UIGamePathList(c, c.secondaryImageLoadLocationBackup) {
             @Override
@@ -110,7 +110,7 @@ public class UILauncher extends UIProxy {
         };
         configure.panelsAdd(sillBox);
 
-        basePanels.add(new UILabel(tr.lChooseEngine, c.f.launcherTextHeight));
+        basePanels.add(new UILabel(tr.lChooseEngine, c.f.launcherTH));
 
         final IConsumer<IGPMenuPanel> menuConstructor = new IConsumer<IGPMenuPanel>() {
             @Override
@@ -126,7 +126,7 @@ public class UILauncher extends UIProxy {
                 IFunction<LauncherState, IGPMenuPanel>[] runs = igpMenuPanel.getButtonActs();
                 for (int i = 0; i < names.length; i++) {
                     final IFunction<LauncherState, IGPMenuPanel> r = runs[i];
-                    gamepaks.panelsAdd(new UITextButton(names[i], c.f.launcherTextHeight, new Runnable() {
+                    gamepaks.panelsAdd(new UITextButton(names[i], c.f.launcherTH, new Runnable() {
                         @Override
                         public void run() {
                             accept(r.apply(new LauncherState(rootBox.text.text, sillBox.text.text)));
@@ -136,7 +136,7 @@ public class UILauncher extends UIProxy {
             }
         };
 
-        configure.panelsAdd(new UISplitterLayout(new UIPublicPanel(0, 0), new UITextButton(tr.bContinue, c.f.launcherTextHeight, new Runnable() {
+        configure.panelsAdd(new UISplitterLayout(new UIPublicPanel(0, 0), new UITextButton(tr.bContinue, c.f.launcherTH, new Runnable() {
             @Override
             public void run() {
                 tabPane.selectTab(gamepaks);
@@ -158,14 +158,14 @@ public class UILauncher extends UIProxy {
         final Config c = lun.c;
         final TrGlobal tr = lun.ilg.t.g;
         final WindowCreatingUIElementConsumer uiTicker = lun.uiTicker;
-        UIElement whatever = new UITextButton(tr.bQuit, c.f.launcherTextHeight, new Runnable() {
+        UIElement whatever = new UITextButton(tr.bQuit, c.f.launcherTH, new Runnable() {
             @Override
             public void run() {
                 GaBIEn.ensureQuit();
             }
         });
         if (!GaBIEn.singleWindowApp()) { // SWA means we can't create windows
-            whatever = new UISplitterLayout(whatever, new UITextButton(tr.bConfigN, c.f.launcherTextHeight, new Runnable() {
+            whatever = new UISplitterLayout(whatever, new UITextButton(tr.bConfigN, c.f.launcherTH, new Runnable() {
                 @Override
                 public void run() {
                     uiTicker.accept(new UIFontSizeConfigurator(c, lun.ilg.t, () -> {
@@ -195,6 +195,6 @@ public class UILauncher extends UIProxy {
                 lun.currentState = new LSMain(lun);
                 gamepaksRequestClose = true;
             }
-        }, c.f.launcherTextHeight);
+        }, c.f.launcherTH);
     }
 }

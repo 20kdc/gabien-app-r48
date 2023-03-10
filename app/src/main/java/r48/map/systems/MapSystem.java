@@ -83,7 +83,7 @@ public abstract class MapSystem extends App.Svc {
                         mapBox.loadMap("Map");
                     }
                 }
-        }, app.f.menuTextHeight, app.f.menuScrollersize, false) {
+        }, app.f.menuTH, app.f.menuS, false) {
             @Override
             public String toString() {
                 return mapInfos;

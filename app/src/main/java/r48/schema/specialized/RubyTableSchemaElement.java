@@ -69,9 +69,9 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
                     return;
                 tileHelper = baseTileDraw(target, t, x, y, igd, tileHelper);
                 if (allowTextdraw) {
-                    igd.clearRect(0, 0, 0, x, y, tileSizeW, app.f.gridTextHeight);
+                    igd.clearRect(0, 0, 0, x, y, tileSizeW, app.f.gridTH);
                     for (int i = 0; i < targ.planeCount; i++)
-                        FontManager.drawString(igd, x, y + (i * app.f.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, false, app.f.gridTextHeight);
+                        FontManager.drawString(igd, x, y + (i * app.f.gridTH), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, false, app.f.gridTH);
                 }
             }
 
@@ -143,7 +143,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
         uig.uivScrollbar.scrollPoint = lastScrollCache;
 
         if (allowResize) {
-            final UINumberBox wNB = new UINumberBox(targ.width, app.f.tableSizeTextHeight);
+            final UINumberBox wNB = new UINumberBox(targ.width, app.f.tableSizeTH);
             wNB.onEdit = new Runnable() {
                 @Override
                 public void run() {
@@ -151,7 +151,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
                         wNB.number = 0;
                 }
             };
-            final UINumberBox hNB = new UINumberBox(targ.height, app.f.tableSizeTextHeight);
+            final UINumberBox hNB = new UINumberBox(targ.height, app.f.tableSizeTH);
             hNB.onEdit = new Runnable() {
                 @Override
                 public void run() {
@@ -161,7 +161,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
             };
             UIElement uie = new UISplitterLayout(wNB, hNB, false, 1, 2);
             uiSVL.panelsAdd(uie);
-            uiSVL.panelsAdd(new UITextButton(T.z.l15, app.f.tableResizeTextHeight, new Runnable() {
+            uiSVL.panelsAdd(new UITextButton(T.z.l15, app.f.tableResizeTH, new Runnable() {
                 @Override
                 public void run() {
                     int w = (int) wNB.number;

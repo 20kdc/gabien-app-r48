@@ -42,7 +42,7 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
 
     @Override
     public UIElement getBar() {
-        return new UILabel(T.z.l219, app.f.mapLayertabTextHeight);
+        return new UILabel(T.z.l219, app.f.mapLayertabTH);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
 
         public UIMTAreaTool() {
             super(R2kAreaEditingToolbarController.this.mapToolContext);
-            label = new UILabel(textA, app.f.dialogWindowTextHeight);
+            label = new UILabel(textA, app.f.dialogWindowTH);
             changeInner(label, true);
         }
 

@@ -39,19 +39,19 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
 
     private EmbedDataTracker embedData = new EmbedDataTracker();
 
-    private UILabel pathLabel = new UILabel("", app.f.schemaPathTextHeight);
+    private UILabel pathLabel = new UILabel("", app.f.schemaPathTH);
     private UIAppendButton toolbarP = new UIAppendButton(Art.Symbol.Back, pathLabel, new Runnable() {
         @Override
         public void run() {
             popObject();
         }
-    }, app.f.schemaPathTextHeight);
+    }, app.f.schemaPathTH);
     private UIAppendButton toolbarCp = new UIAppendButton(T.g.bCopy, toolbarP, new Runnable() {
         @Override
         public void run() {
             app.theClipboard = new RubyIO().setDeepClone(innerElem.targetElement);
         }
-    }, app.f.schemaPathTextHeight);
+    }, app.f.schemaPathTH);
     private UIAppendButton toolbarPs = new UIAppendButton(T.g.bPaste, toolbarCp, new Runnable() {
         @Override
         public void run() {
@@ -71,7 +71,7 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
                 }
             }
         }
-    }, app.f.schemaPathTextHeight);
+    }, app.f.schemaPathTH);
     private UIAppendButton toolbarS = new UIAppendButton(T.g.wordSave, toolbarPs, new Runnable() {
         @Override
         public void run() {
@@ -80,13 +80,13 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
             // root.editor.modifyVal(root.targetElement, root, false);
             app.odb.ensureSaved(root.hrIndex, root.root);
         }
-    }, app.f.schemaPathTextHeight);
+    }, app.f.schemaPathTH);
     private UIAppendButton toolbarI = new UIAppendButton(Art.Symbol.Inspect, toolbarS, new Runnable() {
         @Override
         public void run() {
             app.ui.wm.createWindow(new UITest(app, innerElem.targetElement));
         }
-    }, app.f.schemaPathTextHeight);
+    }, app.f.schemaPathTH);
     private UIAppendButton toolbarC = new UIAppendButton(Art.Symbol.CloneFrame, toolbarI, new Runnable() {
         @Override
         public void run() {
@@ -102,7 +102,7 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
             next.embedData = new EmbedDataTracker(next.backStack, embedData);
             next.popObject();
         }
-    }, app.f.schemaPathTextHeight);
+    }, app.f.schemaPathTH);
 
     // Used so this doesn't require too much changes when moved about
     private UIElement toolbarRoot = toolbarC;

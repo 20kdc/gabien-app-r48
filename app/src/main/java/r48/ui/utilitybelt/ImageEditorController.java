@@ -35,7 +35,7 @@ public class ImageEditorController extends App.Svc {
     private UIScrollLayout paletteView;
 
     // This holds a bit of state, so let's just attach it/detach it as we want
-    private final UITextButton sanityButton = new UITextButton(T.z.l298, app.f.schemaFieldTextHeight, null).togglable(true);
+    private final UITextButton sanityButton = new UITextButton(T.z.l298, app.f.schemaFieldTH, null).togglable(true);
     // The current thing holding the sanity button (needed so it can be broken apart on UI rebuild)
     private UISplitterLayout sanityButtonHolder = null;
 
@@ -60,7 +60,7 @@ public class ImageEditorController extends App.Svc {
                 initPalette(0);
             }
         });
-        paletteView = new UIScrollLayout(true, app.f.generalScrollersize);
+        paletteView = new UIScrollLayout(true, app.f.generalS);
         initPalette(0);
         rootView = new UISplitterLayout(imageEditView, paletteView, false, 1.0d) {
             @Override
@@ -319,7 +319,7 @@ public class ImageEditorController extends App.Svc {
                         }
                     });
                 }
-                app.ui.wm.createWindow(new UIAutoclosingPopupMenu(items.toArray(new String[0]), runnables.toArray(new Runnable[0]), app.f.menuTextHeight, app.f.menuScrollersize, true));
+                app.ui.wm.createWindow(new UIAutoclosingPopupMenu(items.toArray(new String[0]), runnables.toArray(new Runnable[0]), app.f.menuTH, app.f.menuS, true));
             }
         }));
         menuDetails.add(T.z.l318);
@@ -330,7 +330,7 @@ public class ImageEditorController extends App.Svc {
             }
         });
 
-        fileButtonMenuHook = new UIMenuButton(app, T.z.l319, app.f.imageEditorTextHeight, new ISupplier<Boolean>() {
+        fileButtonMenuHook = new UIMenuButton(app, T.z.l319, app.f.imageEditorTH, new ISupplier<Boolean>() {
             @Override
             public Boolean get() {
                 return paletteThing == currentPaletteThing;
@@ -338,17 +338,17 @@ public class ImageEditorController extends App.Svc {
         }, menuDetails.toArray(new String[0]), menuFuncs.toArray(new Runnable[0]));
         paletteView.panelsAdd(fileButtonMenuHook);
 
-        paletteView.panelsAdd(new UIMenuButton(app, T.z.l320, app.f.imageEditorTextHeight, new ISupplier<UIElement>() {
+        paletteView.panelsAdd(new UIMenuButton(app, T.z.l320, app.f.imageEditorTH, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
                 // The grid changer used to be using the same XY changer as resizing, then that became impractical.
                 // Probably for the better, this may in some circumstances allow a runtime view...
-                UIScrollLayout verticalLayout = new UIScrollLayout(true, app.f.generalScrollersize);
+                UIScrollLayout verticalLayout = new UIScrollLayout(true, app.f.generalS);
                 final UINumberBox gridX, gridY, gridW, gridH;
-                gridX = new UINumberBox(imageEditView.grid.x, app.f.imageEditorTextHeight);
-                gridY = new UINumberBox(imageEditView.grid.y, app.f.imageEditorTextHeight);
-                gridW = new UINumberBox(imageEditView.grid.width, app.f.imageEditorTextHeight);
-                gridH = new UINumberBox(imageEditView.grid.height, app.f.imageEditorTextHeight);
+                gridX = new UINumberBox(imageEditView.grid.x, app.f.imageEditorTH);
+                gridY = new UINumberBox(imageEditView.grid.y, app.f.imageEditorTH);
+                gridW = new UINumberBox(imageEditView.grid.width, app.f.imageEditorTH);
+                gridH = new UINumberBox(imageEditView.grid.height, app.f.imageEditorTH);
                 Runnable sendUpdates = new Runnable() {
                     @Override
                     public void run() {
@@ -359,12 +359,12 @@ public class ImageEditorController extends App.Svc {
                 gridY.onEdit = sendUpdates;
                 gridW.onEdit = sendUpdates;
                 gridH.onEdit = sendUpdates;
-                verticalLayout.panelsAdd(new UILabel(T.z.l321, app.f.imageEditorTextHeight));
+                verticalLayout.panelsAdd(new UILabel(T.z.l321, app.f.imageEditorTH));
                 verticalLayout.panelsAdd(new UISplitterLayout(gridX, gridY, false, 0.5d));
-                verticalLayout.panelsAdd(new UILabel(T.z.l322, app.f.imageEditorTextHeight));
+                verticalLayout.panelsAdd(new UILabel(T.z.l322, app.f.imageEditorTH));
                 verticalLayout.panelsAdd(new UISplitterLayout(gridW, gridH, false, 0.5d));
                 // This is the colour of the grid.
-                final UIColourSwatchButton uicsb = new UIColourSwatchButton(imageEditView.gridColour, app.f.imageEditorTextHeight, null);
+                final UIColourSwatchButton uicsb = new UIColourSwatchButton(imageEditView.gridColour, app.f.imageEditorTH, null);
                 uicsb.onClick = new Runnable() {
                     @Override
                     public void run() {
@@ -379,7 +379,7 @@ public class ImageEditorController extends App.Svc {
                 };
                 verticalLayout.panelsAdd(uicsb);
                 // Finally, grid overlay control.
-                verticalLayout.panelsAdd(new UITextButton(T.z.l324, app.f.imageEditorTextHeight, new Runnable() {
+                verticalLayout.panelsAdd(new UITextButton(T.z.l324, app.f.imageEditorTH, new Runnable() {
                     @Override
                     public void run() {
                         imageEditView.gridST = !imageEditView.gridST;
@@ -391,7 +391,7 @@ public class ImageEditorController extends App.Svc {
             }
         }));
 
-        UIElement ul = new UISymbolButton(Symbol.Target, app.f.imageEditorTextHeight, new Runnable() {
+        UIElement ul = new UISymbolButton(Symbol.Target, app.f.imageEditorTH, new Runnable() {
             @Override
             public void run() {
                 imageEditView.camX = 0;
@@ -410,7 +410,7 @@ public class ImageEditorController extends App.Svc {
                     app.ui.launchDialog(T.z.l325);
                 }
             }
-        }, app.f.imageEditorTextHeight));
+        }, app.f.imageEditorTH));
 
         ul = pokeOnCause(cause, 2, new UIAppendButton(Symbol.Forward, ul, new Runnable() {
             @Override
@@ -422,7 +422,7 @@ public class ImageEditorController extends App.Svc {
                     app.ui.launchDialog(T.z.l326);
                 }
             }
-        }, app.f.imageEditorTextHeight));
+        }, app.f.imageEditorTH));
 
         paletteView.panelsAdd(ul);
 
@@ -430,11 +430,11 @@ public class ImageEditorController extends App.Svc {
 
         // mode details
         if (imageEditView.image.usesPalette()) {
-            UILabel cType = new UILabel(T.z.l327, app.f.imageEditorTextHeight);
+            UILabel cType = new UILabel(T.z.l327, app.f.imageEditorTH);
             paletteView.panelsAdd(sanityButtonHolder = new UISplitterLayout(cType, sanityButton, false, 1));
         }
 
-        paletteView.panelsAdd(new UISplitterLayout(new UIMenuButton(app, "+", app.f.imageEditorTextHeight, new ISupplier<UIElement>() {
+        paletteView.panelsAdd(new UISplitterLayout(new UIMenuButton(app, "+", app.f.imageEditorTH, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
                 return new UIColourPicker(app, T.z.l328, imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex) | 0xFF000000, new IConsumer<Integer>() {
@@ -449,7 +449,7 @@ public class ImageEditorController extends App.Svc {
                     }
                 }, !imageEditView.image.t1Lock);
             }
-        }), new UISymbolButton(Symbol.Eyedropper, app.f.imageEditorTextHeight, new Runnable() {
+        }), new UISymbolButton(Symbol.Eyedropper, app.f.imageEditorTH, new Runnable() {
             @Override
             public void run() {
                 imageEditView.currentTool = new AddColourFromImageEditorTool(app, new IConsumer<Integer>() {
@@ -466,7 +466,7 @@ public class ImageEditorController extends App.Svc {
 
         for (int idx = 0; idx < imageEditView.image.paletteSize(); idx++) {
             final int fidx = idx;
-            UIElement cPanel = new UIColourSwatchButton(imageEditView.image.getPaletteRGB(idx), app.f.imageEditorTextHeight, new Runnable() {
+            UIElement cPanel = new UIColourSwatchButton(imageEditView.image.getPaletteRGB(idx), app.f.imageEditorTH, new Runnable() {
                 @Override
                 public void run() {
                     imageEditView.selPaletteIndex = fidx;
@@ -487,7 +487,7 @@ public class ImageEditorController extends App.Svc {
                             initPalette(0);
                         }
                     }
-                }, app.f.imageEditorTextHeight);
+                }, app.f.imageEditorTH);
             } else {
                 cPanel = new UIAppendButton("~", cPanel, new Runnable() {
                     @Override
@@ -497,9 +497,9 @@ public class ImageEditorController extends App.Svc {
                         imageEditView.eds.endSection();
                         initPalette(0);
                     }
-                }, app.f.imageEditorTextHeight);
+                }, app.f.imageEditorTH);
             }
-            cPanel = new UISplitterLayout(new UIMenuButton(app, "=", app.f.imageEditorTextHeight, new ISupplier<UIElement>() {
+            cPanel = new UISplitterLayout(new UIMenuButton(app, "=", app.f.imageEditorTH, new ISupplier<UIElement>() {
                 @Override
                 public UIElement get() {
                     return new UIColourPicker(app, T.z.l329, imageEditView.image.getPaletteRGB(fidx), new IConsumer<Integer>() {
@@ -546,7 +546,7 @@ public class ImageEditorController extends App.Svc {
     }
 
     private UIElement showXYChanger(Rect targetVal, final IConsumer<Rect> iConsumer, final String title) {
-        UIScrollLayout xyChanger = new UIScrollLayout(true, app.f.generalScrollersize) {
+        UIScrollLayout xyChanger = new UIScrollLayout(true, app.f.generalS) {
             @Override
             public String toString() {
                 return title;
@@ -555,10 +555,10 @@ public class ImageEditorController extends App.Svc {
         final UIMTBase res = UIMTBase.wrap(null, xyChanger);
         final UINumberBox wVal, hVal, xVal, yVal;
         final UITextButton acceptButton;
-        wVal = new UINumberBox(targetVal.width, app.f.imageEditorTextHeight);
-        hVal = new UINumberBox(targetVal.height, app.f.imageEditorTextHeight);
-        xVal = new UINumberBox(targetVal.x, app.f.imageEditorTextHeight);
-        yVal = new UINumberBox(targetVal.y, app.f.imageEditorTextHeight);
+        wVal = new UINumberBox(targetVal.width, app.f.imageEditorTH);
+        hVal = new UINumberBox(targetVal.height, app.f.imageEditorTH);
+        xVal = new UINumberBox(targetVal.x, app.f.imageEditorTH);
+        yVal = new UINumberBox(targetVal.y, app.f.imageEditorTH);
         hVal.onEdit = wVal.onEdit = new Runnable() {
             @Override
             public void run() {
@@ -567,7 +567,7 @@ public class ImageEditorController extends App.Svc {
             }
         };
 
-        acceptButton = new UITextButton(T.z.l331, app.f.imageEditorTextHeight, new Runnable() {
+        acceptButton = new UITextButton(T.z.l331, app.f.imageEditorTH, new Runnable() {
             @Override
             public void run() {
                 Rect r = new Rect((int) xVal.number, (int) yVal.number, Math.max((int) wVal.number, 1), Math.max((int) hVal.number, 1));
@@ -575,16 +575,16 @@ public class ImageEditorController extends App.Svc {
                 res.selfClose = true;
             }
         });
-        xyChanger.panelsAdd(new UILabel(T.z.l332, app.f.imageEditorTextHeight));
+        xyChanger.panelsAdd(new UILabel(T.z.l332, app.f.imageEditorTH));
         xyChanger.panelsAdd(new UISplitterLayout(wVal, hVal, false, 1, 2));
-        xyChanger.panelsAdd(new UILabel(T.z.l333, app.f.imageEditorTextHeight));
+        xyChanger.panelsAdd(new UILabel(T.z.l333, app.f.imageEditorTH));
         xyChanger.panelsAdd(new UISplitterLayout(xVal, yVal, false, 1, 2));
         xyChanger.panelsAdd(new UIAppendButton(T.z.l3, acceptButton, new Runnable() {
             @Override
             public void run() {
                 res.selfClose = true;
             }
-        }, app.f.imageEditorTextHeight));
+        }, app.f.imageEditorTH));
 
         res.forceToRecommended();
         Size tgtSize = res.getSize();

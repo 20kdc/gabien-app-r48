@@ -31,7 +31,7 @@ import r48.ui.UISetSelector;
  * Created 23rd October 2022.
  */
 public class UITranscriptControl extends App.Prx {
-    private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalScrollersize);
+    private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
     private boolean done = false;
 
     private UISetSelector<TranscriptComponent> setSelector;
@@ -73,7 +73,7 @@ public class UITranscriptControl extends App.Prx {
     private void refreshContents() {
         layout.panelsClear();
 
-        layout.panelsAdd(new UITextButton(T.g.bConfirm, app.f.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(T.g.bConfirm, app.f.dialogWindowTH, new Runnable() {
             @Override
             public void run() {
                 PrintStream ps = null;

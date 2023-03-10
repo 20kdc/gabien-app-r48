@@ -48,7 +48,7 @@ public class TypeChangerSchemaElement extends SchemaElement {
                     path.changeOccurred(false);
                     // auto-updates
                 }
-            }, app.f.schemaFieldTextHeight);
+            }, app.f.schemaFieldTH);
         }
         return holder;
     }

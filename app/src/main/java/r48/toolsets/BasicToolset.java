@@ -55,16 +55,16 @@ public class BasicToolset extends App.Svc implements IToolset {
 
     @Override
     public UIElement[] generateTabs() {
-        UIElement menu4 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l38, app.f.menuTextHeight, () -> {
+        UIElement menu4 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l38, app.f.menuTH, () -> {
             app.ui.wm.coco.launch();
-        }).centred(), app.f.menuTextHeight), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l39, app.f.menuTextHeight, () -> {
+        }).centred(), app.f.menuTH), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l39, app.f.menuTH, () -> {
             app.ui.startHelp(null, "0");
-        }).centred(), app.f.menuTextHeight), new UIBorderedSubpanel(new UITextButton(T.z.l40, app.f.menuTextHeight, () -> {
+        }).centred(), app.f.menuTH), new UIBorderedSubpanel(new UITextButton(T.z.l40, app.f.menuTH, () -> {
             app.ui.wm.createWindow(new UIFontSizeConfigurator(app.c, app.t, app.applyConfigChange));
-        }).centred(), app.f.menuTextHeight), false, 0.5), false, 0.333333);
-        UIElement menu5 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l41, app.f.menuTextHeight, () -> {
+        }).centred(), app.f.menuTH), false, 0.5), false, 0.333333);
+        UIElement menu5 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l41, app.f.menuTH, () -> {
             app.ui.startImgedit();
-        }).centred(), app.f.menuTextHeight), new UISplitterLayout(new UIBorderedSubpanel(createODBRMGestalt(), app.f.menuTextHeight), new UIBorderedSubpanel(createOtherButton(), app.f.menuTextHeight), false, 0.5), false, 1d / 3d);
+        }).centred(), app.f.menuTH), new UISplitterLayout(new UIBorderedSubpanel(createODBRMGestalt(), app.f.menuTH), new UIBorderedSubpanel(createOtherButton(), app.f.menuTH), false, 0.5), false, 1d / 3d);
 
         UISplitterLayout menu6 = new UISplitterLayout(menu5, createInitialHelp(), true, 0.5);
 
@@ -72,7 +72,7 @@ public class BasicToolset extends App.Svc implements IToolset {
 
         UISplitterLayout menu8 = new UISplitterLayout(menu3, createStatusBar(app), true, 1);
 
-        UIBorderedSubpanel menu3b = new UIBorderedSubpanel(menu8, app.f.schemaFieldTextHeight * 4);
+        UIBorderedSubpanel menu3b = new UIBorderedSubpanel(menu8, app.f.schemaFieldTH * 4);
 
         UIElement menu2 = new UISplitterLayout(menu3b, new UIObjectDBMonitor(app), true, 1) {
             @Override
@@ -116,7 +116,7 @@ public class BasicToolset extends App.Svc implements IToolset {
     }
 
     private UIElement createODBButton() {
-        return new UIMenuButton(app, T.z.l43, app.f.menuTextHeight, null, new String[] {
+        return new UIMenuButton(app, T.z.l43, app.f.menuTH, null, new String[] {
                 T.z.mEditObj,
                 T.z.mCorrectObj,
                 T.z.mInspectObj,
@@ -267,7 +267,7 @@ public class BasicToolset extends App.Svc implements IToolset {
     }
 
     private UIElement createOtherButton() {
-        return new UIMenuButton(app, T.z.l65, app.f.menuTextHeight, null, new String[] {
+        return new UIMenuButton(app, T.z.l65, app.f.menuTH, null, new String[] {
                 T.z.mTestFonts,
                 T.z.mTestGraphics,
                 T.z.mToggleFull,
@@ -322,7 +322,7 @@ public class BasicToolset extends App.Svc implements IToolset {
 
     private static UIElement createStatusBar(App app) {
         final TrRoot T = app.t;
-        final UILabel uiStatusLabel = new UILabel(T.z.l81, app.f.statusBarTextHeight);
+        final UILabel uiStatusLabel = new UILabel(T.z.l81, app.f.statusBarTH);
         // second time I've tried to lambda this - you can't because of the repetition
         app.uiPendingRunnables.add(new Runnable() {
             @Override
@@ -362,10 +362,10 @@ public class BasicToolset extends App.Svc implements IToolset {
                         app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard));
                     }
                 }
-        }, app.f.statusBarTextHeight);
+        }, app.f.statusBarTH);
         workspace = new UIAppendButton(T.g.bQuit, workspace, app.ui.createLaunchConfirmation(T.z.l92, () -> {
             app.ui.wm.pleaseShutdown();
-        }), app.f.statusBarTextHeight);
+        }), app.f.statusBarTH);
         return workspace;
     }
 
@@ -382,7 +382,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 app.ui.launchSchema(s2.schemaName, app.odb.getObject(s2.idName), null);
             });
         }
-        return new UIPopupMenu(str.toArray(new String[0]), r.toArray(new Runnable[0]), app.f.menuTextHeight, app.f.menuScrollersize, false) {
+        return new UIPopupMenu(str.toArray(new String[0]), r.toArray(new Runnable[0]), app.f.menuTH, app.f.menuS, false) {
             @Override
             public String toString() {
                 return T.z.l93;

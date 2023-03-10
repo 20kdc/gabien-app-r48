@@ -43,7 +43,7 @@ public class BitfieldSchemaElement extends IntegerSchemaElement {
             }
         }));
         refresh.accept((int) oldVal);
-        uiSVL.panelsAdd(new UILabel(T.z.l112, app.f.tableElementTextHeight));
+        uiSVL.panelsAdd(new UILabel(T.z.l112, app.f.tableElementTH));
         final ActiveInteger ai = super.buildIntegerEditor(oldVal, context);
         uiSVL.panelsAdd(ai.uie);
         return new ActiveInteger(uiSVL, new IConsumer<Long>() {

@@ -29,9 +29,9 @@ public class UIObjectDBMonitor extends App.Elm {
 
     @Override
     public void render(IGrDriver igd) {
-        int step = UILabel.getRecommendedTextSize("", app.f.objectDBMonitorTextHeight).height;
+        int step = UILabel.getRecommendedTextSize("", app.f.objectDBMonitorTH).height;
         int width = getSize().width;
-        UILabel.drawLabel(igd, width, 0, 0, toString(), 1, app.f.objectDBMonitorTextHeight);
+        UILabel.drawLabel(igd, width, 0, 0, toString(), 1, app.f.objectDBMonitorTH);
         int oy = step;
         for (String s : UITest.sortedKeysStr(app.odb.objectMap.keySet())) {
             String status = T.u.odb_disposed;
@@ -50,7 +50,7 @@ public class UIObjectDBMonitor extends App.Elm {
                     app.odb.objectMap.remove(s);
                 }
             }
-            UILabel.drawLabel(igd, width, 0, oy, s + status, 0, app.f.objectDBMonitorTextHeight);
+            UILabel.drawLabel(igd, width, 0, oy, s + status, 0, app.f.objectDBMonitorTH);
             oy += step;
         }
         setWantedSize(new Size(width, oy));

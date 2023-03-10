@@ -22,7 +22,7 @@ public class UICellSelectionPanel extends App.Prx {
 
     public IGenposFrame root;
 
-    public UIScrollLayout selectionPanel = new UIScrollLayout(true, app.f.cellSelectScrollersize);
+    public UIScrollLayout selectionPanel = new UIScrollLayout(true, app.f.cellSelectS);
 
     public UICellSelectionPanel(App app, IGenposFrame rmAnimRootPanel) {
         super(app);
@@ -37,7 +37,7 @@ public class UICellSelectionPanel extends App.Prx {
             final int i2 = i;
             addAdditionButton(i2);
             String prefix = cellNumber == i2 ? ">" : " ";
-            UIElement button = new UITextButton(prefix + app.fmt.formatExtended(T.z.l118, new RubyIO().setFX(i)), app.f.rmaCellTextHeight, new Runnable() {
+            UIElement button = new UITextButton(prefix + app.fmt.formatExtended(T.z.l118, new RubyIO().setFX(i)), app.f.rmaCellTH, new Runnable() {
                 @Override
                 public void run() {
                     cellNumber = i2;
@@ -56,7 +56,7 @@ public class UICellSelectionPanel extends App.Prx {
                         }
                         frameChanged();
                     }
-                }, app.f.rmaCellTextHeight));
+                }, app.f.rmaCellTH));
             } else {
                 selectionPanel.panelsAdd(button);
             }
@@ -67,7 +67,7 @@ public class UICellSelectionPanel extends App.Prx {
     private void addAdditionButton(final int i2) {
         if (!root.canAddRemoveCells())
             return;
-        selectionPanel.panelsAdd(new UITextButton(T.z.l119, app.f.rmaCellTextHeight, new Runnable() {
+        selectionPanel.panelsAdd(new UITextButton(T.z.l119, app.f.rmaCellTH, new Runnable() {
             @Override
             public void run() {
                 if (i2 <= root.getCellCount()) {

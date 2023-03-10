@@ -43,7 +43,7 @@ public class InitButtonSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
-        UITextButton utb = new UITextButton(text, app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton utb = new UITextButton(text, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 // This is going to show up as a modifyVal changeOccurred, so it needs to be run again

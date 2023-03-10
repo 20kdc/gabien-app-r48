@@ -47,13 +47,13 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
         final UITileGrid[] tileTabGrids = new UITileGrid[tileTabs.length];
         int spriteScale = app.f.getSpriteScale();
         // -- Assemble tab pane --
-        final UITabPane tabPane = new UITabPane(app.f.tilesTabTextHeight, true, false, app.f.tilesTabScrollersize);
+        final UITabPane tabPane = new UITabPane(app.f.tilesTabTH, true, false, app.f.tilesTabS);
         for (int i = 0; i < tileTabs.length; i++) {
             final TileEditingTab tab = tileTabs[i];
             // Multi-select is allowed on everything.
             final UITileGrid tileGrid = new UITileGrid(app, renderer, 0, 0, true, tab.visTilesNormal, tab.visTilesHover, " " + tab.localizedText + " ", spriteScale);
             
-            UIScrollLayout fields = new UIScrollLayout(true, app.f.generalScrollersize);
+            UIScrollLayout fields = new UIScrollLayout(true, app.f.generalS);
             final int[] values = new int[targ.planeCount];
             
             final Runnable onChange = editor.createEditor(fields, values, new Runnable() {

@@ -45,8 +45,8 @@ public class UITest extends App.Prx {
     // the naming got screwed up with the Nth layout redesign.
     // UITest -> outerPanel -> Back/PRINT
     //                      -> masterPanel
-    public UIScrollLayout masterPanel = new UIScrollLayout(true, app.f.generalScrollersize);
-    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(T.u.test_PTS, new UIAppendButton(T.u.test_PTF, new UITextButton(T.u.test_back, app.f.inspectorBackTextHeight, new Runnable() {
+    public UIScrollLayout masterPanel = new UIScrollLayout(true, app.f.generalS);
+    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(T.u.test_PTS, new UIAppendButton(T.u.test_PTF, new UITextButton(T.u.test_back, app.f.inspectorBackTH, new Runnable() {
         @Override
         public void run() {
             if (back.size() > 0)
@@ -65,12 +65,12 @@ public class UITest extends App.Prx {
                 app.ui.launchDialog(T.u.test_prFail, e);
             }
         }
-    }, app.f.inspectorBackTextHeight), new Runnable() {
+    }, app.f.inspectorBackTH), new Runnable() {
         @Override
         public void run() {
             app.ui.launchDialog(currentObj.toStringLong(""));
         }
-    }, app.f.inspectorBackTextHeight), masterPanel);
+    }, app.f.inspectorBackTH), masterPanel);
 
     public static String getPrintPath(App app) {
         return PathUtils.autoDetectWindows(app.rootPath + "PRINT.txt");
@@ -113,7 +113,7 @@ public class UITest extends App.Prx {
         masterPanel.panelsClear();
         for (int i = 0; i < navigaList.length; i++) {
             final int j = i;
-            UIElement button = new UITextButton(navigaList[i], app.f.inspectorTextHeight, new Runnable() {
+            UIElement button = new UITextButton(navigaList[i], app.f.inspectorTH, new Runnable() {
                 @Override
                 public void run() {
                     back.addLast(obj);
@@ -128,7 +128,7 @@ public class UITest extends App.Prx {
                         back.addLast(obj);
                         loadObject(MagicalBinders.toBoundWithCache(app, b, (IRIO) objectList[j]));
                     }
-                }, app.f.inspectorTextHeight);
+                }, app.f.inspectorTH);
             masterPanel.panelsAdd(button);
         }
     }

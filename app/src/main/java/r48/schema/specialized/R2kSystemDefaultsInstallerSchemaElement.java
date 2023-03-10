@@ -38,7 +38,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         if (mode == 3) {
-            UITextButton utb1 = new UITextButton(T.z.l172, app.f.schemaFieldTextHeight, new Runnable() {
+            UITextButton utb1 = new UITextButton(T.z.l172, app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     // Before doing anything stupid...
@@ -69,7 +69,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     app.ui.launchDialog(T.z.l174);
                 }
             });
-            UITextButton utb2 = new UITextButton(T.z.l175, app.f.schemaFieldTextHeight, new Runnable() {
+            UITextButton utb2 = new UITextButton(T.z.l175, app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");

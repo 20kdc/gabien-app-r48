@@ -34,7 +34,7 @@ public class UIAudioPlayer extends App.Prx {
     private boolean playing;
     private final float[] audioThreadBuffer;
 
-    private final UISymbolButton playButton = new UISymbolButton(Art.Symbol.Play, app.f.schemaFieldTextHeight, new Runnable() {
+    private final UISymbolButton playButton = new UISymbolButton(Art.Symbol.Play, app.f.schemaFieldTH, new Runnable() {
         @Override
         public void run() {
             if (position > source.length)
@@ -43,9 +43,9 @@ public class UIAudioPlayer extends App.Prx {
         }
     }).togglable(false);
 
-    private final UISymbolButton loopButton = new UISymbolButton(Art.Symbol.Loop, app.f.schemaFieldTextHeight, null).togglable(false);
+    private final UISymbolButton loopButton = new UISymbolButton(Art.Symbol.Loop, app.f.schemaFieldTH, null).togglable(false);
 
-    private final UIScrollbar seeker = new UIScrollbar(false, app.f.generalScrollersize);
+    private final UIScrollbar seeker = new UIScrollbar(false, app.f.generalS);
     private double lastSeekerScrollPoint;
     private double speed;
 
@@ -54,8 +54,8 @@ public class UIAudioPlayer extends App.Prx {
         speed = spd;
         source = new StreamingAudioDiscreteSample(data);
         audioThreadBuffer = new float[data.crSet.channels];
-        UIScrollLayout svl = new UIScrollLayout(false, app.f.mapToolbarScrollersize);
-        svl.panelsAdd(new UISymbolButton(Art.Symbol.Back, app.f.schemaFieldTextHeight, new Runnable() {
+        UIScrollLayout svl = new UIScrollLayout(false, app.f.mapToolbarS);
+        svl.panelsAdd(new UISymbolButton(Art.Symbol.Back, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 position = 0;
@@ -118,7 +118,7 @@ public class UIAudioPlayer extends App.Prx {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new UILabel(app.t.u.soundFail, app.f.schemaFieldTextHeight);
+        return new UILabel(app.t.u.soundFail, app.f.schemaFieldTH);
     }
 
     public static UIElement createAbsoluteName(App app, String filename, double speed) {
@@ -128,7 +128,7 @@ public class UIAudioPlayer extends App.Prx {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new UILabel(app.t.u.soundFail, app.f.schemaFieldTextHeight);
+        return new UILabel(app.t.u.soundFail, app.f.schemaFieldTH);
     }
 
     @Override

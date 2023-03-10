@@ -45,7 +45,7 @@ public class UICellEditingPanel extends App.Pan {
         String[] properties = root.frame.getCellProps();
         for (int i = 0; i < halfsplits.length; i++) {
             UIElement ed = createPropertyEditor(i);
-            UIElement leftSide = new UILabel(properties[i], app.f.schemaFieldTextHeight);
+            UIElement leftSide = new UILabel(properties[i], app.f.schemaFieldTH);
             halfsplits[i] = new UISplitterLayout(leftSide, ed, false, 1);
             layoutAddElement(halfsplits[i]);
         }
@@ -67,7 +67,7 @@ public class UICellEditingPanel extends App.Pan {
                             if (keyed)
                                 root.tweening.disablePropertyKey(i, keytrack);
                         }
-                    }, app.f.schemaFieldTextHeight);
+                    }, app.f.schemaFieldTH);
                 }
             }
             return uie;

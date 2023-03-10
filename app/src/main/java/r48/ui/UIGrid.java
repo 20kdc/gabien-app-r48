@@ -45,7 +45,7 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
     public UIGrid(App app, int tSizeW, int tSizeH, int tCount) {
         super(app.f.scaleGuess(320), app.f.scaleGuess(200));
         this.app = app;
-        uivScrollbar = new UIScrollbar(true, app.f.gridScrollersize);
+        uivScrollbar = new UIScrollbar(true, app.f.gridS);
         tileSizeW = tSizeW;
         tileSizeH = tSizeH;
         tileCount = tCount;
@@ -128,7 +128,7 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
     }
 
     protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
-        FontManager.drawString(igd, x, y + 1, Integer.toHexString(t).toUpperCase(), false, false, app.f.gridTextHeight);
+        FontManager.drawString(igd, x, y + 1, Integer.toHexString(t).toUpperCase(), false, false, app.f.gridTH);
     }
 
     @Override

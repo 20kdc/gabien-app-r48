@@ -62,9 +62,9 @@ public class StandardArrayInterface implements IArrayInterface {
                     r.run();
                 releasers.clear();
                 // Work out how big each array index field has to be.
-                final Size maxSizePre = UILabel.getRecommendedTextSize("", app.f.schemaFieldTextHeight);
+                final Size maxSizePre = UILabel.getRecommendedTextSize("", app.f.schemaFieldTH);
                 final AtomicInteger maxWidth = new AtomicInteger(maxSizePre.width);
-                int selectButtonUnit = UITextButton.getRecommendedTextSize("", app.f.schemaFieldTextHeight).height;
+                int selectButtonUnit = UITextButton.getRecommendedTextSize("", app.f.schemaFieldTH).height;
                 int indentUnit = app.f.scaleGuess(8);
                 if (positions.length > 0) {
                     if (selectedStart == -1) {
@@ -105,7 +105,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                                 deleteRange(fixedStart, fixedEnd);
                                             }
                                         }
-                                    }, app.f.schemaFieldTextHeight);
+                                    }, app.f.schemaFieldTH);
                                 }
                                 onClick = new Runnable() {
                                     @Override
@@ -127,14 +127,14 @@ public class StandardArrayInterface implements IArrayInterface {
                                         selectedStart = -1;
                                         containerRCL();
                                     }
-                                }, app.f.schemaFieldTextHeight);
+                                }, app.f.schemaFieldTH);
                                 uie = new UIAppendButton(T.z.l192, uie, new Runnable() {
                                     @Override
                                     public void run() {
                                         copyRange(fixedStart, fixedEnd);
                                         deleteRange(fixedStart, fixedEnd);
                                     }
-                                }, app.f.schemaFieldTextHeight);
+                                }, app.f.schemaFieldTH);
                             } else if ((mi < selectedStart) || (mi > selectedEnd)) {
                                 onClick = new Runnable() {
                                     @Override
@@ -160,7 +160,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         final UIElement editor = uie;
                         UIElement label = null;
                         if (hasIndexLabels) {
-                            label = new UILabel(positions[mi].text, app.f.schemaFieldTextHeight);
+                            label = new UILabel(positions[mi].text, app.f.schemaFieldTH);
                             maxWidth.set(Math.max(label.getWantedSize().width, maxWidth.get()));
                         }
                         releasers.add(new Runnable() {
@@ -294,7 +294,7 @@ public class StandardArrayInterface implements IArrayInterface {
                     optText.add(T.z.l196);
                     optRuns.add(runnable2);
                 }
-                return new UIMenuButton(uiSVL.getApp(), T.z.l197, app.f.schemaArrayAddTextHeight, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
+                return new UIMenuButton(uiSVL.getApp(), T.z.l197, app.f.schemaArrayAddTH, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
             }
 
             // This assumes it's being placed on a button 'before' the position

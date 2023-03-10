@@ -22,14 +22,14 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
     public final int startX, startY;
     public final boolean autotile;
 
-    public UIAppendButton innerLabel = new UIAppendButton(T.z.l3, new UILabel(T.z.l4, app.f.dialogWindowTextHeight), new Runnable() {
+    public UIAppendButton innerLabel = new UIAppendButton(T.z.l3, new UILabel(T.z.l4, app.f.dialogWindowTH), new Runnable() {
         @Override
         public void run() {
             parent.selfClose = false;
             parent.hasClosed = false;
             mapToolContext.accept(parent);
         }
-    }, app.f.dialogWindowTextHeight);
+    }, app.f.dialogWindowTH);
 
     public UIMTAutotileRectangle(UIMTAutotile par, int x, int y, boolean at) {
         super(par.mapToolContext);

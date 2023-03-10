@@ -41,7 +41,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
 
-        final UITextButton importer = new UITextButton(T.z.l143, app.f.schemaFieldTextHeight, new Runnable() {
+        final UITextButton importer = new UITextButton(T.z.l143, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -56,7 +56,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
             }
         });
 
-        final UITextButton exporter = new UITextButton(T.z.l145, app.f.schemaFieldTextHeight, new Runnable() {
+        final UITextButton exporter = new UITextButton(T.z.l145, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -153,8 +153,8 @@ public class ScriptControlSchemaElement extends SchemaElement {
 
         UISplitterLayout impExp = new UISplitterLayout(exporter, importer, false, 0.5d);
 
-        final UITextBox searchText = new UITextBox("", app.f.schemaFieldTextHeight);
-        UISplitterLayout search = new UISplitterLayout(searchText, new UITextButton(T.z.l150, app.f.schemaFieldTextHeight, new Runnable() {
+        final UITextBox searchText = new UITextBox("", app.f.schemaFieldTH);
+        UISplitterLayout search = new UISplitterLayout(searchText, new UITextButton(T.z.l150, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 StringBuilder results = new StringBuilder();

@@ -47,9 +47,9 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         // Properly set the tab pane into gear, then see if it's still having issues displaying tabs.
         // If so, give it as much extra space as possible without messing with the tile-count-width.
         tabPane.handleIncoming();
-        setForcedBounds(null, new Rect(0, 0, (map.tileSize * scale * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) + app.f.gridScrollersize, app.f.scaleGuess(200)));
+        setForcedBounds(null, new Rect(0, 0, (map.tileSize * scale * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) + app.f.gridS, app.f.scaleGuess(200)));
         if (tabPane.getShortened())
-            setForcedBounds(null, new Rect(0, 0, ((map.tileSize * scale * (map.mapTable.renderer.tileRenderer.getRecommendedWidth() + 1)) - 1) + app.f.gridScrollersize, app.f.scaleGuess(200)));
+            setForcedBounds(null, new Rect(0, 0, ((map.tileSize * scale * (map.mapTable.renderer.tileRenderer.getRecommendedWidth() + 1)) - 1) + app.f.gridS, app.f.scaleGuess(200)));
     }
     
     private int setupView(boolean inConstructor) {
@@ -76,7 +76,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             tileMaps[i] = new UITileGrid(app, map.mapTable.renderer, map.currentLayer, tileTabs[i].atProcessing, tileTabs[i].visTilesNormal, tileTabs[i].visTilesHover, lText, resultScale);
         }
 
-        tabPane = new UITabPane(app.f.tilesTabTextHeight, true, false, app.f.tilesTabScrollersize);
+        tabPane = new UITabPane(app.f.tilesTabTH, true, false, app.f.tilesTabS);
         for (UIElement uie : tileMaps)
             tabPane.addTab(new UITabBar.Tab(uie, new UITabBar.TabIcon[] {}));
         atBases = map.mapTable.renderer.tileRenderer.indicateATs();
@@ -86,7 +86,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         subtool = 0;
         final LinkedList<UIButton<?>> options = new LinkedList<UIButton<?>>();
 
-        UITextButton baseTool = new UITextButton(T.z.l0, app.f.atSubtoolTextHeight, new Runnable() {
+        UITextButton baseTool = new UITextButton(T.z.l0, app.f.atSubtoolTH, new Runnable() {
             @Override
             public void run() {
                 for (UIButton<?> utb : options)
@@ -105,7 +105,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                 options.get(1).state = true;
                 subtool = 1;
             }
-        }, app.f.atSubtoolTextHeight);
+        }, app.f.atSubtoolTH);
         uab.button.toggle = true;
         options.add(uab.button);
 
@@ -117,7 +117,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                 options.get(2).state = true;
                 subtool = 2;
             }
-        }, app.f.atSubtoolTextHeight);
+        }, app.f.atSubtoolTH);
         uab.button.toggle = true;
         options.add(uab.button);
 
