@@ -46,7 +46,6 @@
 	l39 "Help"
 	l40 "Configuration"
 	l41 "Image Editor"
-	l42 "System Tools"
 	l43 "Object Access"
 	l44 "Edit Object"
 	l45 "Autocorrect Object By Name And Schema"

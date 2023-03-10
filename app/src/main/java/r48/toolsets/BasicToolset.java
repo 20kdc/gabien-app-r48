@@ -89,7 +89,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         UIElement menu2 = new UISplitterLayout(menu3b, new UIObjectDBMonitor(app), true, 1) {
             @Override
             public String toString() {
-                return T.z.l42;
+                return T.t.sysTools;
             }
         };
 

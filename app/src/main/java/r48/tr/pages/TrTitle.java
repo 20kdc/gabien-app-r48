@@ -14,5 +14,5 @@ import r48.tr.TrPage;
  */
 public class TrTitle extends TrPage {
     public String info, error, confirm;
-    public String charGen;
+    public String charGen, sysTools;
 }
