@@ -8,7 +8,6 @@
 package r48.map.drawlayers;
 
 import r48.App;
-import r48.RubyIO;
 import r48.RubyTable;
 import r48.io.data.IRIO;
 import r48.map.tiles.ITileRenderer;
@@ -30,7 +29,7 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return app.fmt.formatExtended(T.z.l207, new RubyIO().setFX(tileLayers[0]), new RubyIO().setBool(upper));
+        return T.z.l207.r(tileLayers[0], upper);
     }
 
     @Override

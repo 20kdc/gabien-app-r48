@@ -201,7 +201,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public String toString() {
-        return app.fmt.formatExtended(T.z.l27, new RubyIO().setFX(eventCache.size()));
+        return T.z.l27.r(eventCache.size());
     }
 
     public static void showEvent(IRIO key, @NonNull UIMapView map, IRIO event) {

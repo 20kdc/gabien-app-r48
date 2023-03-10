@@ -62,7 +62,7 @@ public class TrAutoGen extends TrPage {
     public String l24;
     public String l25;
     public String l26;
-    public String l27;
+    public FF1 l27;
     public String l28;
     public String l29;
     public String l30;
@@ -86,7 +86,7 @@ public class TrAutoGen extends TrPage {
     public String l65;
     public String l74;
     public String l81;
-    public String l82;
+    public FF2 l82;
     public String l83;
     public String l84;
     public String l85;
@@ -98,7 +98,7 @@ public class TrAutoGen extends TrPage {
     public String l93;
     public String l94;
     public String l95;
-    public String l96;
+    public FF1 l96;
     public String l97;
     public String l98;
     public String l99;
@@ -118,7 +118,7 @@ public class TrAutoGen extends TrPage {
     public String l115;
     public String l116;
     public String l117;
-    public String l118;
+    public FF1 l118;
     public String l119;
     public String l120;
     public String l121;
@@ -206,8 +206,8 @@ public class TrAutoGen extends TrPage {
     public String l203;
     public String l204;
     public String l205;
-    public String l206;
-    public String l207;
+    public FF1 l206;
+    public FF2 l207;
     public String l208;
     public String l209;
     public String l210;
@@ -251,9 +251,9 @@ public class TrAutoGen extends TrPage {
     public String l248;
     public String l249;
     public String l250;
-    public String l251;
+    public FF2 l251;
     public String l252;
-    public String l253;
+    public FF1 l253;
     public String l254;
     public String l255;
     public String l256;
@@ -302,7 +302,7 @@ public class TrAutoGen extends TrPage {
     public String l299;
     public String l300;
     public String l301;
-    public String l302;
+    public FF1 l302;
     public String l303;
     public String l304;
     public String l305;
@@ -317,7 +317,7 @@ public class TrAutoGen extends TrPage {
     public String l314;
     public String l315;
     public String l316;
-    public String l317;
+    public FF1 l317;
     public String l318;
     public String l319;
     public String l320;

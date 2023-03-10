@@ -9,7 +9,6 @@ package r48.schema.specialized.genpos;
 
 import gabien.ui.*;
 import r48.App;
-import r48.RubyIO;
 import r48.ui.UIAppendButton;
 
 /**
@@ -37,7 +36,7 @@ public class UICellSelectionPanel extends App.Prx {
             final int i2 = i;
             addAdditionButton(i2);
             String prefix = cellNumber == i2 ? ">" : " ";
-            UIElement button = new UITextButton(prefix + app.fmt.formatExtended(T.z.l118, new RubyIO().setFX(i)), app.f.rmaCellTH, new Runnable() {
+            UIElement button = new UITextButton(prefix + T.z.l118.r(i), app.f.rmaCellTH, new Runnable() {
                 @Override
                 public void run() {
                     cellNumber = i2;

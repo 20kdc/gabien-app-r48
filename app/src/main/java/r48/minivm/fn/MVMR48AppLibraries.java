@@ -6,16 +6,16 @@
  */
 package r48.minivm.fn;
 
+import r48.App;
 import r48.minivm.MVMEnvR48;
 
 /**
  * MiniVM standard library.
- * Created 28th February 2023.
+ * Created 10th March 2023.
  */
-public class MVMR48GlobalLibraries {
-    public static void add(MVMEnvR48 ctx) {
-        MVMCoreLibraries.add(ctx);
-        MVMIntegrationLibrary.add(ctx);
-        MVMDMLibrary.add(ctx);
+public class MVMR48AppLibraries {
+    public static void add(MVMEnvR48 ctx, App app) {
+        MVMR48GlobalLibraries.add(ctx);
+        MVMDMAppLibrary.add(ctx, app);
     }
 }

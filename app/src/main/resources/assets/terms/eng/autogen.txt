@@ -31,7 +31,7 @@
 	l24 "Clone"
 	l25 "Del."
 	l26 "Sync"
-	l27 "Ev.Pick #[#A total#]"
+	l27 (fl1 "Ev.Pick [" a0 " total]")
 	l28 "Region:"
 	l29 "RM-Tools"
 	l30 "Locate EventCommand in all Pages"
@@ -55,7 +55,7 @@
 	l65 "Other..."
 	l74 "Wrote Lang and Cmtx files to R48 startup directory (to be put in schema dir.)"
 	l81 "Loading..."
-	l82 "#A modified. Clipboard: #B"
+	l82 (fl2 a0 " modified. Clipboard: " a1)
 	l83 "Clipboard"
 	l84 "Save Clipboard To 'clip.r48'"
 	l85 "Load Clipboard From 'clip.r48'"
@@ -67,7 +67,7 @@
 	l93 "Database Objects"
 	l94 "MapInfos"
 	l95 "Saves"
-	l96 "Translatables in: #A"
+	l96 (fl1 "Translatables in: " a0)
 	l97 "Somehow, the common events file does not have a schema."
 	l98 "Unable to determine common event schema, looks like that refactor will have to happen now"
 	l99 "Exported Transcript"
@@ -87,7 +87,7 @@
 	l115 "Position editor disabled."
 	l116 "Can't translate ID to map."
 	l117 "No such map exists."
-	l118 "Cell #A"
+	l118 (fl1 "Cell " a0)
 	l119 "<add cell here>"
 	l120 "enemyId"
 	l121 "x"
@@ -175,8 +175,8 @@
 	l203 "B.Copy"
 	l204 "B.Paste"
 	l205 "..."
-	l206 "Tile Layer #A"
-	l207 "Tile L#A ({B=T='upper'/'wall' tileset flags|general})"
+	l206 (fl1 "Tile Layer " a0)
+	l207 (fl2 "Tile L" a0 "(" (if a1 "'upper'/'wall' tileset flags" "general") ")")
 	l208 "Passability Overlay"
 	l209 "Event Layers (lower)"
 	l210 "Event Layers (upper)"
@@ -220,9 +220,9 @@
 	l248 "No order for map: "
 	l249 "Order contains map twice: "
 	l250 "Order expects mapinfos entry: "
-	l251 "#A : #B"
+	l251 (fl2 a0 " : " a1)
 	l252 "New..."
-	l253 "#A (Unavailable)"
+	l253 (fl1 a0 " (Unavailable)")
 	l254 "Internal error in R48 or with file."
 	l255 "Attempt Load Anyway"
 	l256 " (Lowest)"
@@ -271,7 +271,7 @@
 	l299 "Image Editor (modified)"
 	l300 "While the image editor contents would be saved, there's nowhere to save them."
 	l301 "Failed to save."
-	l302 "Failed to load #A."
+	l302 (fl1 "Failed to load " a0 ".")
 	l303 "Change grid to suit this asset?"
 	l304 "Open"
 	l305 "Save"
@@ -286,7 +286,7 @@
 	l314 "New image created (same size as the previous image)"
 	l315 "Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."
 	l316 "Save As"
-	l317 "Failed to save #A."
+	l317 (fl1 "Failed to save " a0 ".")
 	l318 "CharacterGen..."
 	l319 "File..."
 	l320 "Grid..."

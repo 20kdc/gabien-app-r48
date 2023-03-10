@@ -15,6 +15,7 @@ import r48.App;
 import r48.IMapContext;
 import r48.RubyIO;
 import r48.io.IObjectBackend;
+import r48.schema.SchemaElement;
 import r48.ui.UIAppendButton;
 
 /**
@@ -53,14 +54,15 @@ public class UISaveScanMapInfos extends App.Prx {
                 IObjectBackend.ILoadedObject rio = app.odb.getObject(objectMapping.apply(i), null);
                 final String gum = gumMapping.apply(i);
                 if (rio != null) {
-                    mainLayout.panelsAdd(new UITextButton(app.fmt.formatExtended(T.z.l251, new RubyIO().setString(gum, true), rio.getObject()), app.f.mapInfosTH, new Runnable() {
+                    String obj = app.fmt.interpretParameter(rio.getObject(), (SchemaElement) null, false);
+                    mainLayout.panelsAdd(new UITextButton(T.z.l251.r(gum, obj), app.f.mapInfosTH, new Runnable() {
                         @Override
                         public void run() {
                             context.loadMap(gum);
                         }
                     }));
                 } else {
-                    mainLayout.panelsAdd(new UIAppendButton(T.z.l252, new UILabel(app.fmt.formatExtended(T.z.l253, new RubyIO().setString(gum, true)), app.f.mapInfosTH), new Runnable() {
+                    mainLayout.panelsAdd(new UIAppendButton(T.z.l252, new UILabel(T.z.l253.r(gum), app.f.mapInfosTH), new Runnable() {
                         @Override
                         public void run() {
                             context.loadMap(gum);

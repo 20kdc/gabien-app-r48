@@ -48,7 +48,7 @@ public class InterlaunchGlobals {
         c.language = lang;
         // ---
         langVM = new MVMEnvR48(loadProgress);
-        MVMR48GlobalLibraries.add(langVM, this);
+        MVMR48GlobalLibraries.add(langVM);
         langVM.include("vm/global", false);
         // if the language author wants English fallback, they'll just (include "terms/eng/init")
         langVM.include("terms/" + c.language + "/init", true);

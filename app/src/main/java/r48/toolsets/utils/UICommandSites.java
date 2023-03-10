@@ -13,7 +13,6 @@ import gabien.ui.UIScrollLayout;
 import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.ISupplier;
 import r48.App;
-import r48.RubyIO;
 import r48.io.IObjectBackend;
 import r48.schema.util.SchemaPath;
 
@@ -53,7 +52,7 @@ public class UICommandSites extends App.Prx {
 
     @Override
     public String toString() {
-        return app.fmt.formatExtended(T.z.l96, new RubyIO().setString(objIdName, true));
+        return T.z.l96.r(objIdName);
     }
 
     public void doRefresh() {

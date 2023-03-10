@@ -11,7 +11,6 @@ import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.RubyIO;
 import r48.imageio.ImageIOFormat;
 import r48.maptools.UIMTBase;
 import r48.ui.UIAppendButton;
@@ -103,7 +102,7 @@ public class ImageEditorController extends App.Svc {
         GaBIEn.hintFlushAllTheCaches();
         ImageIOFormat.TryToLoadResult ioi = ImageIOFormat.tryToLoad(filename, app.imageIOFormats);
         if (ioi == null) {
-            app.ui.launchDialog(app.fmt.formatExtended(T.z.l302, new RubyIO().setString(filename, true)));
+            app.ui.launchDialog(T.z.l302.r(filename));
         } else {
             boolean detectedCK = false;
             if (ioi.wouldKnowIfColourKey) {
@@ -309,7 +308,7 @@ public class ImageEditorController extends App.Svc {
                                             imageEditView.eds.didSuccessfulSave(s, format);
                                         } catch (Exception e) {
                                             e.printStackTrace();
-                                            app.ui.launchDialog(app.fmt.formatExtended(T.z.l317, new RubyIO().setString(s, true)) + "\n" + e);
+                                            app.ui.launchDialog(T.z.l317.r(s), e);
                                         }
                                         app.ui.performFullImageFlush();
                                         initPalette(0);

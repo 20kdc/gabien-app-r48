@@ -24,7 +24,7 @@ import r48.app.InterlaunchGlobals;
 import r48.io.data.RORIO;
 import r48.map.StuffRenderer;
 import r48.minivm.MVMEnvR48;
-import r48.minivm.fn.MVMR48GlobalLibraries;
+import r48.minivm.fn.MVMR48AppLibraries;
 import r48.tr.pages.TrRoot;
 
 /**
@@ -60,7 +60,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
         vmCtx = new MVMEnvR48((str) -> {
             loadProgress.accept(t.g.loadingProgress.r(str));
         });
-        MVMR48GlobalLibraries.add(vmCtx, ilg);
+        MVMR48AppLibraries.add(vmCtx, this);
         vmCtx.include("vm/global", false);
     }
 

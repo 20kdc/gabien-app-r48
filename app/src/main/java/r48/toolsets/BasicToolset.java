@@ -17,7 +17,6 @@ import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixnum;
 import r48.io.data.RORIO;
 import r48.map.systems.IRMMapSystem;
 import r48.schema.OpaqueSchemaElement;
@@ -329,7 +328,8 @@ public class BasicToolset extends App.Svc implements IToolset {
             public void run() {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
                 RORIO clipGet = (app.theClipboard == null) ? new RubyIO().setNull() : app.theClipboard;
-                uiStatusLabel.text = app.fmt.formatExtended(T.z.l82, new IRIOFixnum(app.odb.modifiedObjects.size()), clipGet);
+                String clipText = app.fmt.interpretParameter(clipGet, (SchemaElement) null, false);
+                uiStatusLabel.text = T.z.l82.r(app.odb.modifiedObjects.size(), clipText);
                 app.uiPendingRunnables.add(this);
             }
         });
