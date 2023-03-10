@@ -26,8 +26,8 @@ unzip -o ../../gabien-common/media/target/gabien-media-0.666-SNAPSHOT.jar &&
 unzip -o ../../gabien-common/common/target/gabien-common-0.666-SNAPSHOT.jar &&
 unzip -o ../io/target/r48-io-0.666-SNAPSHOT.jar &&
 unzip -o ../app/target/r48-app-0.666-SNAPSHOT.jar &&
+unzip -o ../minivm/target/r48-minivm-0.666-SNAPSHOT.jar &&
 cd .. &&
-lua translation.lua > staging/assets/Systerms/English.txt &&
 # Prepare licensing information
 cp CREDITS.txt staging/ &&
 cp COPYING.txt staging/ &&
