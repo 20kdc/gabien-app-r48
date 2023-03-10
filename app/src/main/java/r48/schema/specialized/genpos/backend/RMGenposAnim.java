@@ -10,6 +10,7 @@ package r48.schema.specialized.genpos.backend;
 import r48.App;
 import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.genpos.IGenposAnim;
 import r48.schema.specialized.genpos.IGenposFrame;
@@ -99,7 +100,7 @@ public class RMGenposAnim extends App.Svc implements IGenposAnim {
     }
 
     @Override
-    public boolean acceptableForPaste(IRIO theClipboard) {
+    public boolean acceptableForPaste(RORIO theClipboard) {
         return !SchemaElement.checkType(theClipboard, 'o', "RPG::Animation::Frame", false);
     }
 

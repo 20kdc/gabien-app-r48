@@ -10,6 +10,7 @@ package r48.schema.util;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
 
@@ -54,7 +55,7 @@ public class SchemaPath extends App.Svc {
     // Otherwise, it should propagate whenever unchanged.
     // lastArray does a similar thing, except it points to the object whose targetElement is the array/hash itself.
     // This allows "inside" elements to cause consistency checks.
-    public IRIO lastArrayIndex;
+    public RORIO lastArrayIndex;
 
     // Null for "no human readable index here".
     // The root is the intended ObjectID index, but this is a visual property only.
@@ -85,7 +86,7 @@ public class SchemaPath extends App.Svc {
         if (hrIndex == null)
             hrIndex = "AnonObject";
         editor = heldElement;
-        targetElement = lastArrayIndex = root.getObject();
+        lastArrayIndex = targetElement = root.getObject();
     }
 
     // Used for default value setup bootstrapping.
@@ -151,7 +152,7 @@ public class SchemaPath extends App.Svc {
 
     // -- Important Stuff (always used) --
 
-    public SchemaPath arrayHashIndex(IRIO index, String indexS) {
+    public SchemaPath arrayHashIndex(RORIO index, String indexS) {
         SchemaPath sp = new SchemaPath(this);
         sp.lastArrayIndex = index;
         sp.hrIndex = indexS;

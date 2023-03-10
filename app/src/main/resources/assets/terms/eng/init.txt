@@ -153,6 +153,8 @@
 		valueVarFN "valueVar "
 		isVarFN "isVar "
 	)
+	aElmInv "(This index isn't valid - did you modify a group from another window?)"
+	aElmOpt (fl2 "Field " a0 " doesn't exist (default " a1 ")")
 )
 
 (define-group TrTitle

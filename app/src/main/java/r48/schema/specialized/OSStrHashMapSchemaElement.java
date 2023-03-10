@@ -14,6 +14,7 @@ import r48.App;
 import r48.io.IMIUtils;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -112,7 +113,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
         }
     }
 
-    public static String decode(App app, IRIO v) {
+    public static String decode(App app, RORIO v) {
         if (app.osSHESEDB == null)
             tryInitOSSHESEDB(app);
         int type = v.getType();

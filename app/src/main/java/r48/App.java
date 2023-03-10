@@ -21,6 +21,7 @@ import r48.app.AppNewProject;
 import r48.app.AppUI;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
+import r48.io.data.RORIO;
 import r48.map.StuffRenderer;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMR48GlobalLibraries;
@@ -42,7 +43,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
     public StuffRenderer stuffRendererIndependent;
 
     // State for in-system copy/paste
-    public RubyIO theClipboard = null;
+    public RORIO theClipboard = null;
     public final Runnable applyConfigChange = () -> {
         c.applyUIGlobals();
     };

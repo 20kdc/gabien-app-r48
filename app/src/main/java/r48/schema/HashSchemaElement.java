@@ -14,6 +14,7 @@ import r48.RubyIO;
 import r48.UITest;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.specialized.OSStrHashMapSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -94,9 +95,9 @@ public class HashSchemaElement extends SchemaElement {
 
                 AtomicInteger fw = new AtomicInteger(0);
 
-                for (IRIO key : UITest.sortedKeysArr(target.getHashKeys(), new IFunction<IRIO, String>() {
+                for (RORIO key : UITest.sortedKeysArr(target.getHashKeys(), new IFunction<RORIO, String>() {
                     @Override
-                    public String apply(IRIO rubyIO) {
+                    public String apply(RORIO rubyIO) {
                         return getKeyText(rubyIO);
                     }
                 })) {
@@ -110,7 +111,7 @@ public class HashSchemaElement extends SchemaElement {
                     if (!relevantToSearch)
                         continue;
 
-                    final IRIO kss = key;
+                    final RORIO kss = key;
                     // keys are opaque - this prevents MANY issues
                     UIElement hsA = new UILabel(keyText, app.f.schemaFieldTextHeight);
                     UIElement hsB = valElem.buildHoldingEditor(value, launcher, path.arrayHashIndex(key, "{" + keyText + "}"));
@@ -155,7 +156,7 @@ public class HashSchemaElement extends SchemaElement {
         return uiSV;
     }
 
-    private String getKeyText(IRIO v) {
+    private String getKeyText(RORIO v) {
         SchemaElement ke = AggregateSchemaElement.extractField(keyElem, v);
         if (ke instanceof EnumSchemaElement)
             return ((EnumSchemaElement) ke).viewValue(v, true);

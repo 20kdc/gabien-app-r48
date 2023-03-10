@@ -20,6 +20,7 @@ import r48.App;
 import r48.DictionaryUpdaterRunnable;
 import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.*;
 import r48.schema.arrays.*;
 import r48.schema.displays.*;
@@ -859,17 +860,17 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 for (String ps : arguments)
                     argumentsPS[idx++] = compilePS(ps);
 
-                app.fmt.nameDB.put(args[1], new IFunction<IRIO, String>() {
+                app.fmt.nameDB.put(args[1], new IFunction<RORIO, String>() {
                     @Override
-                    public String apply(IRIO rubyIO) {
-                        LinkedList<IRIO> parameters = new LinkedList<IRIO>();
+                    public String apply(RORIO rubyIO) {
+                        LinkedList<RORIO> parameters = new LinkedList<RORIO>();
                         for (PathSyntax arg : argumentsPS) {
-                            IRIO res = arg.get(rubyIO);
+                            RORIO res = arg.get(rubyIO);
                             if (res == null)
                                 break;
                             parameters.add(res);
                         }
-                        return app.fmt.formatNameExtended(textF, rubyIO, parameters.toArray(new IRIO[0]), null);
+                        return app.fmt.formatNameExtended(textF, rubyIO, parameters.toArray(new RORIO[0]), null);
                     }
                 });
             }

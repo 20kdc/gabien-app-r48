@@ -12,6 +12,7 @@ import r48.App;
 import r48.dbs.PathSyntax;
 import r48.dbs.ValueSyntax;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -50,7 +51,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
         return ise.buildHoldingEditor(target, launcher, path);
     }
 
-    private String getDisambigIndex(IRIO target) {
+    private String getDisambigIndex(RORIO target) {
         target = dIndex.get(target);
         if (target == null)
             return "";
@@ -67,7 +68,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     }
 
     // used by OCSE
-    public SchemaElement getDisambiguation(IRIO target) {
+    public SchemaElement getDisambiguation(RORIO target) {
         return getSchemaElement(getDisambigIndex(target));
     }
 

@@ -117,8 +117,6 @@ public class TrAutoGen extends TrPage {
     public String l101;
     public String l102;
     public String l103;
-    public String l104;
-    public String l105;
     public String l106;
     public String l107;
     public String l108;

@@ -12,6 +12,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import r48.App;
 import r48.RubyIO;
+import r48.io.data.RORIO;
 import r48.schema.util.ISchemaHost;
 import r48.ui.UIAppendButton;
 import r48.ui.UITimeframeControl;
@@ -95,8 +96,9 @@ public class GenposAnimRootPanel extends App.Prx {
         toolbar = new UIAppendButton(T.z.l140, toolbar, new Runnable() {
             @Override
             public void run() {
-                if (target.acceptableForPaste(app.theClipboard)) {
-                    target.getFrame().setDeepClone(app.theClipboard);
+                RORIO ro = app.theClipboard;
+                if (target.acceptableForPaste(ro)) {
+                    target.getFrame().setDeepClone(ro);
                     target.modifiedFrames();
                     incomingModification();
                 }

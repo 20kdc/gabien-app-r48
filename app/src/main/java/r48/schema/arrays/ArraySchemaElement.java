@@ -14,6 +14,7 @@ import r48.App;
 import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
@@ -220,14 +221,15 @@ public abstract class ArraySchemaElement extends SchemaElement {
         return new Runnable() {
             @Override
             public void run() {
-                if (app.theClipboard != null) {
+                RORIO ro = app.theClipboard;
+                if (ro != null) {
                     // could have changed
-                    if (app.theClipboard.type == '[') {
-                        IRIO[] finalInsertionRv = app.theClipboard.arrVal;
+                    if (ro.getType() == '[') {
+                        int roLen = ro.getALen();
                         try {
-                            for (int j = finalInsertionRv.length - 1; j >= 0; j--) {
-                                target.addAElem(i).setDeepClone(finalInsertionRv[j]);
-                            }
+                            // Insert in reverse
+                            for (int j = roLen - 1; j >= 0; j--)
+                                target.addAElem(i).setDeepClone(ro.getAElem(j));
                         } catch (Exception e) {
                             app.ui.launchDialog(T.z.l188, e);
                         }

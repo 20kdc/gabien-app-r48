@@ -8,6 +8,7 @@
 package r48.schema.specialized.genpos;
 
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 
 /**
  * Takes over some of RMAnimRootPanel's duties.
@@ -34,5 +35,5 @@ public interface IGenposAnim {
     // Only called once - the separation helps keep the code sane.
     IGenposFrame getFrameDisplay();
 
-    boolean acceptableForPaste(IRIO theClipboard);
+    boolean acceptableForPaste(RORIO theClipboard);
 }

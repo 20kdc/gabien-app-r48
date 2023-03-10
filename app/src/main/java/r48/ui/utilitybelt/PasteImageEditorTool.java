@@ -10,6 +10,7 @@ package r48.ui.utilitybelt;
 import gabien.ui.*;
 import r48.App;
 import r48.io.BMPConnection;
+import r48.io.data.RORIO;
 
 import java.io.IOException;
 
@@ -36,12 +37,13 @@ public class PasteImageEditorTool extends ImageEditorTool {
             return;
         BMPConnection result = null;
 
-        if (app.theClipboard != null) {
-            if (app.theClipboard.type == 'u') {
-                if (app.theClipboard.symVal.equals("Image")) {
+        RORIO ro = app.theClipboard;
+        if (ro != null) {
+            if (ro.getType() == 'u') {
+                if (ro.getSymbol().equals("Image")) {
                     // Everything valid so far...
                     try {
-                        result = new BMPConnection(app.theClipboard.userVal, BMPConnection.CMode.Normal, 0, false);
+                        result = new BMPConnection(ro.getBuffer(), BMPConnection.CMode.Normal, 0, false);
                     } catch (IOException ioe) {
                     }
                 }

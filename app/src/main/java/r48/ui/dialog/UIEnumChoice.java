@@ -12,6 +12,7 @@ import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
 import r48.UITest;
+import r48.io.data.RORIO;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 
@@ -31,11 +32,11 @@ public class UIEnumChoice extends App.Prx {
     private boolean wantsSelfClose = false;
 
     // entryText defaults to "Manual."
-    public UIEnumChoice(App app, final IConsumer<RubyIO> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
+    public UIEnumChoice(App app, final IConsumer<RORIO> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
         this(app, result, new Category[] {new Category(app.t.u.enumOptions, options)}, entryText, entryType);
     }
 
-    public UIEnumChoice(App app, final IConsumer<RubyIO> result, final Category[] order, String entryText, EntryMode entryType) {
+    public UIEnumChoice(App app, final IConsumer<RORIO> result, final Category[] order, String entryText, EntryMode entryType) {
         super(app);
         categoryPanels = new UIScrollLayout[order.length];
         for (int i = 0; i < categoryPanels.length; i++) {
@@ -172,11 +173,11 @@ public class UIEnumChoice extends App.Prx {
         public final String textPrefix;
         public final String textSuffix;
         public final String textMerged;
-        public final RubyIO value;
+        public final RORIO value;
         public final @Nullable IConsumer<String> editSuffix;
         public final @Nullable SchemaPath furtherDataButton;
 
-        public Option(String s, RubyIO integer) {
+        public Option(String s, RORIO integer) {
             textPrefix = s;
             textSuffix = "";
             textMerged = s;
@@ -185,7 +186,7 @@ public class UIEnumChoice extends App.Prx {
             furtherDataButton = null;
         }
 
-        public Option(String pfx, String sfx, RubyIO integer, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
+        public Option(String pfx, String sfx, RORIO integer, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
             textPrefix = pfx;
             textSuffix = sfx;
             textMerged = pfx + sfx;

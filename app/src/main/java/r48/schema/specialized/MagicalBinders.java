@@ -10,6 +10,7 @@ package r48.schema.specialized;
 import r48.App;
 import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class MagicalBinders {
         return null;
     }
 
-    public static IMagicalBinder getBinderFor(App app, IRIO rio) {
+    public static IMagicalBinder getBinderFor(App app, RORIO rio) {
         if (rio.getType() == 'u')
             if (app.odb.binderPrefix != null)
                 if (rio.getSymbol().startsWith(app.odb.binderPrefix)) {

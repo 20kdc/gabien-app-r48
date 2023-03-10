@@ -11,6 +11,7 @@ import gabien.ui.*;
 import r48.App;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -61,7 +62,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
         return uiSVL;
     }
 
-    public static SchemaElement extractField(SchemaElement ise, IRIO rio) {
+    public static SchemaElement extractField(SchemaElement ise, RORIO rio) {
         boolean continuing = true;
         while (continuing) {
             continuing = false;

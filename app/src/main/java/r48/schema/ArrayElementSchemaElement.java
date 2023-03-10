@@ -11,7 +11,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.RubyIO;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
 import r48.schema.util.ISchemaHost;
@@ -49,9 +48,9 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         if (name.equals("_"))
             return HiddenSchemaElement.makeHiddenElement();
         if (target.getALen() <= index) {
-            String tx = T.z.l104;
+            String tx = T.s.aElmInv;
             if (optional != null)
-                tx = app.fmt.formatExtended(T.z.l105, new RubyIO().setString(name, true), new RubyIO().setString(optional, true));
+                tx = T.s.aElmOpt.r(name, optional);
             return new UITextButton(tx, app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {

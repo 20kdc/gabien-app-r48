@@ -11,9 +11,9 @@ import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.RubyIO;
 import r48.dbs.ValueSyntax;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.specialized.TempDialogSchemaChoice;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -91,9 +91,9 @@ public class EnumSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 liveUpdate();
-                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, new UIEnumChoice(app, new IConsumer<RubyIO>() {
+                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, new UIEnumChoice(app, new IConsumer<RORIO>() {
                     @Override
-                    public void accept(RubyIO integer) {
+                    public void accept(RORIO integer) {
                         target.setDeepClone(integer);
                         path.changeOccurred(false);
                         // Enums can affect parent format, so deal with that now.
@@ -114,11 +114,11 @@ public class EnumSchemaElement extends SchemaElement {
         return button;
     }
 
-    public static UIEnumChoice.Option makeStandardOption(RubyIO val, String text, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
+    public static UIEnumChoice.Option makeStandardOption(RORIO val, String text, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
         return new UIEnumChoice.Option(val.toString() + " : ", text, val, edit, fdb);
     }
 
-    public @Nullable UIEnumChoice.Option findOption(IRIO val) {
+    public @Nullable UIEnumChoice.Option findOption(RORIO val) {
         String v2 = ValueSyntax.encode(val);
         UIEnumChoice.Option st = null;
         if (v2 != null)
@@ -126,11 +126,11 @@ public class EnumSchemaElement extends SchemaElement {
         return st;
     }
 
-    public String viewValue(IRIO val, boolean prefix) {
+    public String viewValue(RORIO val, boolean prefix) {
         return viewValue(val, prefix, findOption(val));
     }
 
-    public String viewValue(IRIO val, boolean prefix, @Nullable UIEnumChoice.Option option) {
+    public String viewValue(RORIO val, boolean prefix, @Nullable UIEnumChoice.Option option) {
         if (option != null) {
             if (!prefix)
                 return option.textSuffix;

@@ -13,6 +13,7 @@ import gabien.ui.UIScrollLayout;
 import gabien.ui.UITextButton;
 import r48.App;
 import r48.RubyTable;
+import r48.io.data.RORIO;
 import r48.maptools.*;
 
 import java.util.LinkedList;
@@ -134,19 +135,20 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
 
                 @Override
                 public void run() {
-                    if (app.theClipboard == null) {
+                    RORIO ro = app.theClipboard;
+                    if (ro == null) {
                         app.ui.launchDialog("Unable - there is no clipboard.");
                         return;
                     }
-                    if (app.theClipboard.type != 'u') {
+                    if (ro.getType() != 'u') {
                         app.ui.launchDialog("Unable - the clipboard must contain a section of map data - This is not a usertype.");
                         return;
                     }
-                    if (!app.theClipboard.symVal.equals("Table")) {
+                    if (!ro.getSymbol().equals("Table")) {
                         app.ui.launchDialog("Unable - the clipboard must contain a section of map data - This is not a Table.");
                         return;
                     }
-                    RubyTable rt = new RubyTable(app.theClipboard.userVal);
+                    RubyTable rt = new RubyTable(ro.getBuffer());
                     if (rt.planeCount != viewGiver.getMapView().mapTable.planeCount) {
                         app.ui.launchDialog("Unable - the map data must contain the same amount of layers for transfer.");
                         return;

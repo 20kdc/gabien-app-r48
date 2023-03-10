@@ -16,6 +16,8 @@ import r48.dbs.PathSyntax;
 import r48.dbs.RPGCommand;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixnum;
+import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.PathSchemaElement;
@@ -164,19 +166,20 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 RPGCommand rc = database.knownCommands.get(key);
                 String text = key + ";" + rc.formatName(null, null);
                 if (rc.category == i)
-                    llo.add(new UIEnumChoice.Option(text, new RubyIO().setFX(key)));
+                    llo.add(new UIEnumChoice.Option(text, new IRIOFixnum(key)));
             }
             categories[i] = new UIEnumChoice.Category(database.categories[i], llo);
         }
 
         final App app = launcher.getApp();
         final TrRoot T = app.t;
-        return new TempDialogSchemaChoice(app, new UIEnumChoice(app, new IConsumer<RubyIO>() {
+        return new TempDialogSchemaChoice(app, new UIEnumChoice(app, new IConsumer<RORIO>() {
             @Override
-            public void accept(RubyIO integer) {
+            public void accept(RORIO integer) {
+                long fnv = integer.getFX();
                 // NOTE: This just uses ints for everything.
-                RPGCommand rc = database.knownCommands.get((int) integer.fixnumVal);
-                target.getIVar("@code").setFX(integer.fixnumVal);
+                RPGCommand rc = database.knownCommands.get((int) fnv);
+                target.getIVar("@code").setFX(fnv);
                 IRIO param = target.getIVar("@parameters");
                 if (rc != null) {
                     // Notice: Both are used!

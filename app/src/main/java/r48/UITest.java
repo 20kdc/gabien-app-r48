@@ -12,6 +12,7 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBinders;
 import r48.ui.UIAppendButton;
@@ -36,11 +37,11 @@ public class UITest extends App.Prx {
         }
     };
     
-    public IRIO currentObj;
+    public RORIO currentObj;
     public String[] navigaList;
-    public IRIO[] objectList;
+    public RORIO[] objectList;
     int offset = 0;
-    public LinkedList<IRIO> back = new LinkedList<IRIO>();
+    public LinkedList<RORIO> back = new LinkedList<RORIO>();
     // the naming got screwed up with the Nth layout redesign.
     // UITest -> outerPanel -> Back/PRINT
     //                      -> masterPanel
@@ -82,18 +83,18 @@ public class UITest extends App.Prx {
         setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(320), app.f.scaleGuess(240)));
     }
 
-    public void loadObject(final IRIO obj) {
+    public void loadObject(final RORIO obj) {
         offset = 0;
         currentObj = obj;
         LinkedList<String> strings = new LinkedList<String>();
-        LinkedList<IRIO> targs = new LinkedList<IRIO>();
+        LinkedList<RORIO> targs = new LinkedList<RORIO>();
         // -- Actually collate things
         for (String s : sortedKeysStrArr(obj.getIVars())) {
             strings.add("IVar " + s + " -> " + obj.getIVar(s));
             targs.add(obj.getIVar(s));
         }
         if (obj.getType() == '{') {
-            for (IRIO s : sortedKeysArr(obj.getHashKeys())) {
+            for (RORIO s : sortedKeysArr(obj.getHashKeys())) {
                 strings.add(s + " -> " + obj.getHashVal(s));
                 targs.add(obj.getHashVal(s));
             }
@@ -101,7 +102,7 @@ public class UITest extends App.Prx {
         if (obj.getType() == '[') {
             int alen = obj.getALen();
             for (int i = 0; i < alen; i++) {
-                IRIO o = obj.getAElem(i);
+                RORIO o = obj.getAElem(i);
                 strings.add(i + " -> " + o);
                 targs.add(o);
             }
@@ -125,7 +126,7 @@ public class UITest extends App.Prx {
                     @Override
                     public void run() {
                         back.addLast(obj);
-                        loadObject(MagicalBinders.toBoundWithCache(app, b, objectList[j]));
+                        loadObject(MagicalBinders.toBoundWithCache(app, b, (IRIO) objectList[j]));
                     }
                 }, app.f.inspectorTextHeight);
             masterPanel.panelsAdd(button);
@@ -193,35 +194,35 @@ public class UITest extends App.Prx {
         return sortedKeysStr(hs);
     }
 
-    public static LinkedList<IRIO> sortedKeys(Set<IRIO> rubyIOs) {
-        return sortedKeys(rubyIOs, new IFunction<IRIO, String>() {
+    public static LinkedList<RORIO> sortedKeys(Set<RORIO> rubyIOs) {
+        return sortedKeys(rubyIOs, new IFunction<RORIO, String>() {
             @Override
-            public String apply(IRIO rubyIO) {
+            public String apply(RORIO rubyIO) {
                 return rubyIO.toString();
             }
         });
     }
 
-    public static LinkedList<IRIO> sortedKeys(Set<IRIO> rubyIOs, final IFunction<IRIO, String> toString) {
-        LinkedList<IRIO> ios = new LinkedList<IRIO>(rubyIOs);
-        Collections.sort(ios, new Comparator<IRIO>() {
+    public static LinkedList<RORIO> sortedKeys(Set<RORIO> rubyIOs, final IFunction<RORIO, String> toString) {
+        LinkedList<RORIO> ios = new LinkedList<RORIO>(rubyIOs);
+        Collections.sort(ios, new Comparator<RORIO>() {
             @Override
-            public int compare(IRIO rubyIO, IRIO t1) {
+            public int compare(RORIO rubyIO, RORIO t1) {
                 return natStrComp(toString.apply(rubyIO), toString.apply(t1));
             }
         });
         return ios;
     }
 
-    public static LinkedList<IRIO> sortedKeysArr(IRIO[] iVarKeys) {
-        HashSet<IRIO> hs = new HashSet<IRIO>();
+    public static LinkedList<RORIO> sortedKeysArr(RORIO[] iVarKeys) {
+        HashSet<RORIO> hs = new HashSet<RORIO>();
         if (iVarKeys != null)
             Collections.addAll(hs, iVarKeys);
         return sortedKeys(hs);
     }
 
-    public static LinkedList<IRIO> sortedKeysArr(IRIO[] iVarKeys, final IFunction<IRIO, String> toString) {
-        HashSet<IRIO> hs = new HashSet<IRIO>();
+    public static LinkedList<RORIO> sortedKeysArr(RORIO[] iVarKeys, final IFunction<RORIO, String> toString) {
+        HashSet<RORIO> hs = new HashSet<RORIO>();
         if (iVarKeys != null)
             Collections.addAll(hs, iVarKeys);
         return sortedKeys(hs, toString);

@@ -10,7 +10,7 @@ package r48.dbs;
 import gabien.uslx.append.*;
 import r48.RubyIO;
 import r48.app.AppCore;
-import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
@@ -24,7 +24,7 @@ import java.util.LinkedList;
  * Created on 11/06/17.
  */
 public class FormatSyntax extends AppCore.Csv {
-    public HashMap<String, IFunction<IRIO, String>> nameDB = new HashMap<>();
+    public HashMap<String, IFunction<RORIO, String>> nameDB = new HashMap<>();
 
     public FormatSyntax(AppCore app) {
         super(app);
@@ -32,9 +32,9 @@ public class FormatSyntax extends AppCore.Csv {
         // Explicitly for Set Variables use and similar.
         // Yes, if you request it, I'll make a similar TXDB routine for you,
         //  assuming it's not ridiculously complicated.
-        nameDB.put("Interp.lang-Russian-pluralRange", new IFunction<IRIO, String>() {
+        nameDB.put("Interp.lang-Russian-pluralRange", new IFunction<RORIO, String>() {
             @Override
-            public String apply(IRIO rubyIO) {
+            public String apply(RORIO rubyIO) {
                 String[] range = rubyIO.decString().split(" ");
                 int v = Integer.valueOf(range[1]);
                 v -= Integer.valueOf(range[0]) - 1;
@@ -46,15 +46,15 @@ public class FormatSyntax extends AppCore.Csv {
                 return "2";
             }
         });
-        nameDB.put("Interp.lang-Common-arrayLen", new IFunction<IRIO, String>() {
+        nameDB.put("Interp.lang-Common-arrayLen", new IFunction<RORIO, String>() {
             @Override
-            public String apply(IRIO rubyIO) {
+            public String apply(RORIO rubyIO) {
                 return Integer.toString(rubyIO.getALen());
             }
         });
-        nameDB.put("Interp.lang-Common-add", new IFunction<IRIO, String>() {
+        nameDB.put("Interp.lang-Common-add", new IFunction<RORIO, String>() {
             @Override
-            public String apply(IRIO rubyIO) {
+            public String apply(RORIO rubyIO) {
                 String[] range = rubyIO.decString().split(" ");
                 int v = 0;
                 for (String s : range)
@@ -62,9 +62,9 @@ public class FormatSyntax extends AppCore.Csv {
                 return Integer.toString(v);
             }
         });
-        nameDB.put("Interp.lang-Common-r2kTsConverter", new IFunction<IRIO, String>() {
+        nameDB.put("Interp.lang-Common-r2kTsConverter", new IFunction<RORIO, String>() {
             @Override
-            public String apply(IRIO rubyIO) {
+            public String apply(RORIO rubyIO) {
                 double d = Double.parseDouble(rubyIO.decString());
                 // WARNING: THIS IS MADNESS, and could be off by a few seconds.
                 // In practice I tested it and it somehow wasn't off at all.
@@ -90,16 +90,16 @@ public class FormatSyntax extends AppCore.Csv {
                 return new Date(v).toString();
             }
         });
-        nameDB.put("lang-Common-valueSyntax", new IFunction<IRIO, String>() {
+        nameDB.put("lang-Common-valueSyntax", new IFunction<RORIO, String>() {
             @Override
-            public String apply(IRIO rubyIO) {
+            public String apply(RORIO rubyIO) {
                 return ValueSyntax.encode(rubyIO);
             }
         });
     }
     // The new format allows for more precise setups,
     // but isn't as neat.
-    public String formatNameExtended(String name, IRIO root, IRIO[] parameters, IFunction<IRIO, SchemaElement>[] parameterSchemas) {
+    public String formatNameExtended(String name, RORIO root, RORIO[] parameters, IFunction<RORIO, SchemaElement>[] parameterSchemas) {
         StringBuilder r = new StringBuilder();
         char[] data = name.toCharArray();
         boolean prefixNext = false;
@@ -195,7 +195,7 @@ public class FormatSyntax extends AppCore.Csv {
                 if (parameters != null) {
                     if (indexOfAt != 0) {
                         char ch = data[++i];
-                        IRIO p;
+                        RORIO p;
                         if (ch == '[') {
                             // At this point, it's gone recursive.
                             // Need to safely skip over this lot...
@@ -234,7 +234,7 @@ public class FormatSyntax extends AppCore.Csv {
                     } else {
                         // Meta-interpretation syntax
                         String tp = type.substring(1);
-                        IFunction<IRIO, String> n = nameDB.get(tp);
+                        IFunction<RORIO, String> n = nameDB.get(tp);
                         if (n == null)
                             throw new RuntimeException("Expected NDB " + tp);
                         r.append(n.apply(root));
@@ -258,7 +258,7 @@ public class FormatSyntax extends AppCore.Csv {
         return r.toString();
     }
 
-    private void determineBooleanComponent(StringBuilder r, LinkedList<String> components, boolean result, IRIO root, IRIO[] parameters, IFunction<IRIO, SchemaElement>[] parameterSchemas) {
+    private void determineBooleanComponent(StringBuilder r, LinkedList<String> components, boolean result, RORIO root, RORIO[] parameters, IFunction<RORIO, SchemaElement>[] parameterSchemas) {
         for (int i = (result ? 0 : 1); i < components.size(); i += 2)
             r.append(formatNameExtended(components.get(i), root, parameters, parameterSchemas));
     }
@@ -307,9 +307,9 @@ public class FormatSyntax extends AppCore.Csv {
         throw new RuntimeException("Hit end-of-data without reaching end character.");
     }
 
-    public String interpretParameter(IRIO rubyIO, String st, boolean prefixEnums) {
+    public String interpretParameter(RORIO rubyIO, String st, boolean prefixEnums) {
         if (st != null) {
-            IFunction<IRIO, String> handler = nameDB.get("Interp." + st);
+            IFunction<RORIO, String> handler = nameDB.get("Interp." + st);
             if (handler != null) {
                 return handler.apply(rubyIO);
             } else {
@@ -321,10 +321,10 @@ public class FormatSyntax extends AppCore.Csv {
         }
     }
 
-    public String interpretParameter(IRIO rubyIO, SchemaElement ise, boolean prefixEnums) {
+    public String interpretParameter(RORIO rubyIO, SchemaElement ise, boolean prefixEnums) {
         // Basically, Class. overrides go first, then everything else comes after.
         if (rubyIO.getType() == 'o') {
-            IFunction<IRIO, String> handler = nameDB.get("Class." + rubyIO.getSymbol());
+            IFunction<RORIO, String> handler = nameDB.get("Class." + rubyIO.getSymbol());
             if (handler != null)
                 return handler.apply(rubyIO);
         }
@@ -340,7 +340,7 @@ public class FormatSyntax extends AppCore.Csv {
     }
 
     // NOTE: This can return null.
-    public static SchemaElement getParameterDisplaySchemaFromArray(IRIO root, IFunction<IRIO, SchemaElement>[] ise, int i) {
+    public static SchemaElement getParameterDisplaySchemaFromArray(RORIO root, IFunction<RORIO, SchemaElement>[] ise, int i) {
         if (ise == null)
             return null;
         if (ise.length <= i)
@@ -348,7 +348,7 @@ public class FormatSyntax extends AppCore.Csv {
         return ise[i].apply(root);
     }
 
-    public String formatExtended(String s, IRIO... pieces) {
+    public String formatExtended(String s, RORIO... pieces) {
         return formatNameExtended(s, new RubyIO().setNull(), pieces, null);
     }
 }

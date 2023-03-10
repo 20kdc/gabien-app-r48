@@ -12,6 +12,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.ui.UIElement;
 import r48.App;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -26,7 +27,7 @@ public abstract class SchemaElement extends App.Svc {
     }
 
     // For lack of a better place.
-    public static boolean checkType(IRIO tgt, int t, String objType, boolean setDefault) {
+    public static boolean checkType(RORIO tgt, int t, String objType, boolean setDefault) {
         if (tgt.getType() != t)
             return true;
         if (objType != null)

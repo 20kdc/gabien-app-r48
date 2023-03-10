@@ -108,8 +108,6 @@
 	l101 "Table Of Contents"
 	l102 "TotemSrc."
 	l103 "Composite"
-	l104 "(This index isn't valid - did you modify a group from another window?)"
-	l105 "Field #A doesn't exist (default #B)"
 	l106 "Can't edit: "
 	l107 "Search:"
 	l108 "Add Key"

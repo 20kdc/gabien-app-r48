@@ -23,4 +23,7 @@ public class TrSchema extends TrPage {
     public String ppp_idVarFN, ppp_idFN, ppp_typeFN;
     public String ppp_explain;
     public String ppp_valueVarFN, ppp_isVarFN;
+
+    public String aElmInv;
+    public FF2 aElmOpt;
 }

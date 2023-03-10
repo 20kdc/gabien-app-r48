@@ -10,6 +10,7 @@ package r48;
 import gabien.GaBIEn;
 import gabienapp.Application;
 import r48.io.R48ObjectBackend;
+import r48.io.data.RORIO;
 
 import java.io.IOException;
 
@@ -27,11 +28,14 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class AdHocSaveLoad {
     public static String PREFIX = Application.BRAND + "/";
-    public static void save(String fonts, RubyIO prepare) {
+    public static void save(String fonts, RORIO prepare) {
         prepare();
+        // workaround because R48ObjectBackend still hasn't undergone some sort of reform
+        RubyIO tmp = new RubyIO();
+        tmp.setDeepClone(prepare);
         R48ObjectBackend rob = new R48ObjectBackend(PREFIX, ".r48");
         try {
-            rob.saveObjectToFile(fonts, prepare);
+            rob.saveObjectToFile(fonts, tmp);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
