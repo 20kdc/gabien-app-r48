@@ -55,27 +55,15 @@ public class BasicToolset extends App.Svc implements IToolset {
 
     @Override
     public UIElement[] generateTabs() {
-        UIElement menu4 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l38, app.f.menuTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                app.ui.wm.coco.launch();
-            }
-        }).centred(), app.f.menuTextHeight), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l39, app.f.menuTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                app.ui.startHelp(null, "0");
-            }
-        }).centred(), app.f.menuTextHeight), new UIBorderedSubpanel(new UITextButton(T.z.l40, app.f.menuTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                app.ui.wm.createWindow(new UIFontSizeConfigurator(app.c, app.t, app.applyConfigChange));
-            }
+        UIElement menu4 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l38, app.f.menuTextHeight, () -> {
+            app.ui.wm.coco.launch();
+        }).centred(), app.f.menuTextHeight), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l39, app.f.menuTextHeight, () -> {
+            app.ui.startHelp(null, "0");
+        }).centred(), app.f.menuTextHeight), new UIBorderedSubpanel(new UITextButton(T.z.l40, app.f.menuTextHeight, () -> {
+            app.ui.wm.createWindow(new UIFontSizeConfigurator(app.c, app.t, app.applyConfigChange));
         }).centred(), app.f.menuTextHeight), false, 0.5), false, 0.333333);
-        UIElement menu5 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l41, app.f.menuTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                app.ui.startImgedit();
-            }
+        UIElement menu5 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l41, app.f.menuTextHeight, () -> {
+            app.ui.startImgedit();
         }).centred(), app.f.menuTextHeight), new UISplitterLayout(new UIBorderedSubpanel(createODBRMGestalt(), app.f.menuTextHeight), new UIBorderedSubpanel(createOtherButton(), app.f.menuTextHeight), false, 0.5), false, 1d / 3d);
 
         UISplitterLayout menu6 = new UISplitterLayout(menu5, createInitialHelp(), true, 0.5);
@@ -136,177 +124,144 @@ public class BasicToolset extends App.Svc implements IToolset {
                 T.z.l48,
                 T.z.l49,
         }, new Runnable[] {
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.launchPrompt(T.z.l50, new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
-                                if (app.sdb.hasSDBEntry("File." + s)) {
-                                    app.ui.launchSchema("File." + s, rio, null);
+                () -> {
+                    app.ui.launchPrompt(T.z.l50, (s) -> {
+                        final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
+                        if (app.sdb.hasSDBEntry("File." + s)) {
+                            app.ui.launchSchema("File." + s, rio, null);
+                            return;
+                        }
+                        if (rio != null) {
+                            IRIO r2 = rio.getObject();
+                            if (r2.getType() == 'o') {
+                                if (app.sdb.hasSDBEntry(r2.getSymbol())) {
+                                    app.ui.launchSchema(r2.getSymbol(), rio, null);
                                     return;
                                 }
-                                if (rio != null) {
-                                    IRIO r2 = rio.getObject();
-                                    if (r2.getType() == 'o') {
-                                        if (app.sdb.hasSDBEntry(r2.getSymbol())) {
-                                            app.ui.launchSchema(r2.getSymbol(), rio, null);
-                                            return;
-                                        }
-                                    }
-                                    app.ui.launchPrompt(T.z.l51, new IConsumer<String>() {
-                                        @Override
-                                        public void accept(String s) {
-                                            app.ui.launchSchema(s, rio, null);
-                                        }
-                                    });
-                                } else {
-                                    app.ui.launchDialog(T.z.l52);
+                            }
+                            app.ui.launchPrompt(T.z.l51, new IConsumer<String>() {
+                                @Override
+                                public void accept(String s) {
+                                    app.ui.launchSchema(s, rio, null);
                                 }
-                            }
-                        });
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.launchPrompt(T.z.l50, new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
-                                app.ui.launchPrompt(T.z.l51, new IConsumer<String>() {
-                                    @Override
-                                    public void accept(String s) {
-                                        SchemaElement ise = app.sdb.getSDBEntry(s);
-                                        ise.modifyVal(rio.getObject(), new SchemaPath(ise, rio), false);
-                                        app.ui.launchDialog(T.z.l53);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.launchPrompt(T.z.l50, new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                IObjectBackend.ILoadedObject obj = app.odb.getObject(s);
-                                if (obj == null) {
-                                    app.ui.launchDialog(T.z.l54);
-                                } else {
-                                    app.ui.wm.createWindow(new UITest(app, obj.getObject()));
-                                }
-                            }
-                        });
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.launchPrompt(T.z.l55, new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                final IObjectBackend.ILoadedObject objA = app.odb.getObject(s);
-                                app.ui.launchPrompt(T.z.l56, new IConsumer<String>() {
-                                    @Override
-                                    public void accept(String s) {
-                                        final IObjectBackend.ILoadedObject objB = app.odb.getObject(s);
-                                        if ((objA == null) || (objB == null)) {
-                                            app.ui.launchDialog(T.z.l57);
-                                        } else {
-                                            try {
-                                                OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "objcompareAB.txt"));
-                                                byte[] cid = IMIUtils.createIMIData(objA.getObject(), objB.getObject(), "");
-                                                if (cid != null)
-                                                    os.write(cid);
-                                                os.close();
-                                                os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "objcompareBA.txt"));
-                                                cid = IMIUtils.createIMIData(objB.getObject(), objA.getObject(), "");
-                                                if (cid != null)
-                                                    os.write(cid);
-                                                os.close();
-                                                app.ui.launchDialog(T.z.l58);
-                                                return;
-                                            } catch (Exception e) {
-                                                app.ui.launchDialog(T.z.l59);
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            OutputStream lm = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "locmaps.txt"));
-                            final DataOutputStream dos = new DataOutputStream(lm);
-                            final HashSet<String> text = new HashSet<String>();
-                            for (String s : app.getAllObjects()) {
-                                IObjectBackend.ILoadedObject obj = app.odb.getObject(s, null);
-                                if (obj != null) {
-                                    universalStringLocator(app, obj.getObject(), new IFunction<IRIO, Integer>() {
-                                        @Override
-                                        public Integer apply(IRIO rubyIO) {
-                                            text.add(rubyIO.decString());
-                                            return 1;
-                                        }
-                                    }, false);
-                                }
-                            }
-                            for (String st : text) {
-                                dos.writeBytes("\"");
-                                IMIUtils.writeIMIStringBody(dos, st.getBytes("UTF-8"), false);
-                                dos.write('\n');
-                            }
-                            dos.write(';');
-                            dos.write('\n');
-                            dos.close();
-                            if (app.dataPath.equals("Languages/")) {
-                                app.ui.launchDialog(T.z.l60);
-                            } else {
-                                app.ui.launchDialog(T.z.l61);
-                            }
-                        } catch (IOException ioe) {
-                            throw new RuntimeException(ioe);
+                            });
+                        } else {
+                            app.ui.launchDialog(T.z.l52);
                         }
-                    }
+                    });
                 },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.launchPrompt(T.z.l50, new IConsumer<String>() {
+                () -> {
+                    app.ui.launchPrompt(T.z.l50, (s) -> {
+                        final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
+                        app.ui.launchPrompt(T.z.l51, new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
-                                final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
-                                final InputStream is = GaBIEn.getInFile(UITest.getPrintPath(app));
-                                if (rio == null) {
-                                    app.ui.launchDialog(T.z.l62);
-                                } else if (is == null) {
-                                    app.ui.launchDialog(T.z.l63);
-                                } else {
-                                    try {
-                                        IRIO irio = rio.getObject();
-                                        IMIUtils.runIMISegment(is, irio);
-                                        app.odb.objectRootModified(rio, new SchemaPath(new OpaqueSchemaElement(app), rio));
-                                        app.ui.launchDialog(T.z.l64);
-                                    } catch (Exception ioe) {
-                                        try {
-                                            is.close();
-                                        } catch (Exception ex) {
-                                        }
-                                        ioe.printStackTrace();
-                                        app.ui.launchDialog(T.z.l59);
-                                    }
+                                SchemaElement ise = app.sdb.getSDBEntry(s);
+                                ise.modifyVal(rio.getObject(), new SchemaPath(ise, rio), false);
+                                app.ui.launchDialog(T.z.l53);
+                            }
+                        });
+                    });
+                },
+                () -> {
+                    app.ui.launchPrompt(T.z.l50, (s) -> {
+                        IObjectBackend.ILoadedObject obj = app.odb.getObject(s);
+                        if (obj == null) {
+                            app.ui.launchDialog(T.z.l54);
+                        } else {
+                            app.ui.wm.createWindow(new UITest(app, obj.getObject()));
+                        }
+                    });
+                },
+                () -> {
+                    app.ui.launchPrompt(T.z.l55, (sA) -> {
+                        final IObjectBackend.ILoadedObject objA = app.odb.getObject(sA);
+                        app.ui.launchPrompt(T.z.l56, (sB) -> {
+                            final IObjectBackend.ILoadedObject objB = app.odb.getObject(sB);
+                            if ((objA == null) || (objB == null)) {
+                                app.ui.launchDialog(T.z.l57);
+                            } else {
+                                try {
+                                    OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "objcompareAB.txt"));
+                                    byte[] cid = IMIUtils.createIMIData(objA.getObject(), objB.getObject(), "");
+                                    if (cid != null)
+                                        os.write(cid);
+                                    os.close();
+                                    os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "objcompareBA.txt"));
+                                    cid = IMIUtils.createIMIData(objB.getObject(), objA.getObject(), "");
+                                    if (cid != null)
+                                        os.write(cid);
+                                    os.close();
+                                    app.ui.launchDialog(T.z.l58);
+                                    return;
+                                } catch (Exception e) {
+                                    app.ui.launchDialog(T.z.l59);
                                 }
                             }
                         });
+                    });
+                },
+                () -> {
+                    try {
+                        OutputStream lm = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "locmaps.txt"));
+                        final DataOutputStream dos = new DataOutputStream(lm);
+                        final HashSet<String> text = new HashSet<String>();
+                        for (String s : app.getAllObjects()) {
+                            IObjectBackend.ILoadedObject obj = app.odb.getObject(s, null);
+                            if (obj != null) {
+                                universalStringLocator(app, obj.getObject(), new IFunction<IRIO, Integer>() {
+                                    @Override
+                                    public Integer apply(IRIO rubyIO) {
+                                        text.add(rubyIO.decString());
+                                        return 1;
+                                    }
+                                }, false);
+                            }
+                        }
+                        for (String st : text) {
+                            dos.writeBytes("\"");
+                            IMIUtils.writeIMIStringBody(dos, st.getBytes("UTF-8"), false);
+                            dos.write('\n');
+                        }
+                        dos.write(';');
+                        dos.write('\n');
+                        dos.close();
+                        if (app.dataPath.equals("Languages/")) {
+                            app.ui.launchDialog(T.z.l60);
+                        } else {
+                            app.ui.launchDialog(T.z.l61);
+                        }
+                    } catch (IOException ioe) {
+                        throw new RuntimeException(ioe);
                     }
+                },
+                () -> {
+                    app.ui.launchPrompt(T.z.l50, new IConsumer<String>() {
+                        @Override
+                        public void accept(String s) {
+                            final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
+                            final InputStream is = GaBIEn.getInFile(UITest.getPrintPath(app));
+                            if (rio == null) {
+                                app.ui.launchDialog(T.z.l62);
+                            } else if (is == null) {
+                                app.ui.launchDialog(T.z.l63);
+                            } else {
+                                try {
+                                    IRIO irio = rio.getObject();
+                                    IMIUtils.runIMISegment(is, irio);
+                                    app.odb.objectRootModified(rio, new SchemaPath(new OpaqueSchemaElement(app), rio));
+                                    app.ui.launchDialog(T.z.l64);
+                                } catch (Exception ioe) {
+                                    try {
+                                        is.close();
+                                    } catch (Exception ex) {
+                                    }
+                                    ioe.printStackTrace();
+                                    app.ui.launchDialog(T.z.l59);
+                                }
+                            }
+                        }
+                    });
                 }
         }).centred();
     }
@@ -321,72 +276,44 @@ public class BasicToolset extends App.Svc implements IToolset {
                 T.z.l71,
                 T.z.l72,
         }, new Runnable[] {
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.launchPrompt(T.z.l73, new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                try {
-                                    Integer i = Integer.parseInt(s);
-                                    app.ui.wm.createWindow(new UITextBox("", i).setMultiLine());
-                                } catch (Exception e) {
-                                    app.ui.launchDialog(T.z.l36);
-                                }
-                            }
-                        });
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.wm.createWindow(new UITestGraphicsStuff(app));
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.wm.toggleFullscreen();
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.performTranslatorDump("Lang", "SDB@");
-                        app.performTranslatorDump("Cmtx", "CMDB@");
-                        app.ui.launchDialog(T.z.l74);
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.launchPrompt(T.z.l75, new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                // Don't translate this, don't lax the restrictions.
-                                // If they aren't willing to put in the effort to type it, whatever that effort may be,
-                                //  then they won't be careful enough using this - and will probably ruin even more of their data.
-                                if (s.equals("I understand."))
-                                    AppMain.reloadSystemDump(app);
-                            }
-                        });
-                        app.ui.launchDialog(T.z.l76 +
-                                "\n" + T.z.l77 + "\n" + T.z.l78);
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.launchPrompt(T.z.l79, new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                app.ui.wm.createWindow(UIAudioPlayer.create(app, s, 1));
-                            }
-                        });
-                    }
+                () -> {
+                    app.ui.launchPrompt(T.z.l73, (s) -> {
+                        try {
+                            Integer i = Integer.parseInt(s);
+                            app.ui.wm.createWindow(new UITextBox("", i).setMultiLine());
+                        } catch (Exception e) {
+                            app.ui.launchDialog(T.z.l36);
+                        }
+                    });
                 },
                 () -> {
-                    String title = T.z.l80;
+                    app.ui.wm.createWindow(new UITestGraphicsStuff(app));
+                },
+                () -> {
+                    app.ui.wm.toggleFullscreen();
+                },
+                () -> {
+                    app.performTranslatorDump("Lang", "SDB@");
+                    app.performTranslatorDump("Cmtx", "CMDB@");
+                    app.ui.launchDialog(T.z.l74);
+                },
+                () -> {
+                    app.ui.launchPrompt(T.t.restoreSafetyConfirm, (s) -> {
+                        // Don't translate this, don't lax the restrictions.
+                        // If they aren't willing to put in the effort to type it, whatever that effort may be,
+                        //  then they won't be careful enough using this - and will probably ruin even more of their data.
+                        if (s.equals("I understand."))
+                            AppMain.reloadSystemDump(app);
+                    });
+                    app.ui.launchDialog(T.z.warnRestoreSafety);
+                },
+                () -> {
+                    GaBIEn.startFileBrowser(T.u.openAud, false, "", (res) -> {
+                        app.ui.wm.createWindow(UIAudioPlayer.createAbsoluteName(app, res, 1));
+                    });
+                },
+                () -> {
+                    String title = T.t.appREPL;
                     UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(app.c, app.vmCtx, title);
                     app.ui.wm.createWindow(repl);
                 }
@@ -410,45 +337,33 @@ public class BasicToolset extends App.Svc implements IToolset {
                 T.z.l85,
                 T.z.l86
         }, new Runnable[] {
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (app.theClipboard == null) {
-                            app.ui.launchDialog(T.z.l87);
-                        } else {
-                            AdHocSaveLoad.save("clip", app.theClipboard);
-                            app.ui.launchDialog(T.z.l88);
-                        }
+                () -> {
+                    if (app.theClipboard == null) {
+                        app.ui.launchDialog(T.z.l87);
+                    } else {
+                        AdHocSaveLoad.save("clip", app.theClipboard);
+                        app.ui.launchDialog(T.z.l88);
                     }
                 },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        RubyIO newClip = AdHocSaveLoad.load("clip");
-                        if (newClip == null) {
-                            app.ui.launchDialog(T.z.l89);
-                        } else {
-                            app.theClipboard = newClip;
-                            app.ui.launchDialog(T.z.l90);
-                        }
+                () -> {
+                    RubyIO newClip = AdHocSaveLoad.load("clip");
+                    if (newClip == null) {
+                        app.ui.launchDialog(T.z.l89);
+                    } else {
+                        app.theClipboard = newClip;
+                        app.ui.launchDialog(T.z.l90);
                     }
                 },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (app.theClipboard == null) {
-                            app.ui.launchDialog(T.z.l87);
-                        } else {
-                            app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard));
-                        }
+                () -> {
+                    if (app.theClipboard == null) {
+                        app.ui.launchDialog(T.z.l87);
+                    } else {
+                        app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard));
                     }
                 }
         }, app.f.statusBarTextHeight);
-        workspace = new UIAppendButton(T.z.l91, workspace, app.ui.createLaunchConfirmation(T.z.l92, new Runnable() {
-            @Override
-            public void run() {
-                app.ui.wm.pleaseShutdown();
-            }
+        workspace = new UIAppendButton(T.g.bQuit, workspace, app.ui.createLaunchConfirmation(T.z.l92, () -> {
+            app.ui.wm.pleaseShutdown();
         }), app.f.statusBarTextHeight);
         return workspace;
     }
@@ -462,11 +377,8 @@ public class BasicToolset extends App.Svc implements IToolset {
         LinkedList<Runnable> r = new LinkedList<Runnable>();
         for (final ObjectInfo s2 : s) {
             str.add(s2.toString());
-            r.add(new Runnable() {
-                @Override
-                public void run() {
-                    app.ui.launchSchema(s2.schemaName, app.odb.getObject(s2.idName), null);
-                }
+            r.add(() -> {
+                app.ui.launchSchema(s2.schemaName, app.odb.getObject(s2.idName), null);
             });
         }
         return new UIPopupMenu(str.toArray(new String[0]), r.toArray(new Runnable[0]), app.f.menuTextHeight, app.f.menuScrollersize, false) {

@@ -11,4 +11,6 @@
 	confirm "Please confirm..."
 	charGen "Character Generator"
 	sysTools "System Tools"
+	restoreSafetyConfirm "Safety Confirmation Prompt"
+	appREPL "R48 Application REPL"
 )

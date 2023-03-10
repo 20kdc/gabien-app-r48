@@ -39,4 +39,5 @@ public class TrAppUI extends TrPage {
     public FF3 tsc_ev;
     public String shcEmpty, shcIncompatible;
     public String shNoCloneTmp;
+    public String openAud;
 }

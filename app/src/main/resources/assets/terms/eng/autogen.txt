@@ -78,12 +78,12 @@
 	l72 "REPL..."
 	l73 "Font Size?"
 	l74 "Wrote Lang and Cmtx files to R48 startup directory (to be put in schema dir.)"
-	l75 "Safety Confirmation Prompt"
-	l76 "If the backup file is invalid, wasn't created, or is otherwise harmed, this can destroy more data than it saves."
-	l77 "Check *everything* before a final save."
-	l78 "Type 'I understand.' at the prompt behind this window if you HAVE done this."
-	l79 "Filename?"
-	l80 "R48 Application REPL"
+	warnRestoreSafety (..
+		"If the backup file is invalid, wasn't created, or is otherwise harmed, this can destroy more data than it saves."
+		"Check *everything* before a final save."
+		; "I understand." is NOT translated
+		"Type 'I understand.' at the prompt behind this window if you HAVE done this."
+	)
 	l81 "Loading..."
 	l82 "#A modified. Clipboard: #B"
 	l83 "Clipboard"
@@ -94,7 +94,6 @@
 	l88 "The clipboard was saved."
 	l89 "The clipboard file is invalid or does not exist."
 	l90 "The clipboard file was loaded."
-	l91 "Quit"
 	l92 "Are you sure you want to return to menu? This will lose unsaved data."
 	l93 "Database Objects"
 	l94 "MapInfos"

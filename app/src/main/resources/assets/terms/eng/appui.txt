@@ -86,4 +86,5 @@
 	shcEmpty "There is nothing in the clipboard."
 	shcIncompatible "Incompatible clipboard and target."
 	shNoCloneTmp "Cannot clone, this contains a temporary dialog."
+	openAud "Open sound file..."
 )

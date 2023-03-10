@@ -121,6 +121,16 @@ public class UIAudioPlayer extends App.Prx {
         return new UILabel(app.t.u.soundFail, app.f.schemaFieldTextHeight);
     }
 
+    public static UIElement createAbsoluteName(App app, String filename, double speed) {
+        try {
+            InputStream tryWav = GaBIEn.getInFile(filename);
+            return new UIAudioPlayer(app, WavIO.readWAV(tryWav, true), speed);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new UILabel(app.t.u.soundFail, app.f.schemaFieldTextHeight);
+    }
+
     @Override
     public void setAttachedToRoot(boolean attached) {
         super.setAttachedToRoot(attached);

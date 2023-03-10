@@ -88,11 +88,7 @@ public class TrAutoGen extends TrPage {
     public String l73;
     public String l74;
     public String l75;
-    public String l76;
-    public String l77;
-    public String l78;
-    public String l79;
-    public String l80;
+    public String warnRestoreSafety;
     public String l81;
     public String l82;
     public String l83;
@@ -103,7 +99,6 @@ public class TrAutoGen extends TrPage {
     public String l88;
     public String l89;
     public String l90;
-    public String l91;
     public String l92;
     public String l93;
     public String l94;
