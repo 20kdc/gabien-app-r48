@@ -28,30 +28,8 @@ public class FormatSyntax extends AppCore.Csv {
 
     public FormatSyntax(AppCore app) {
         super(app);
-        // Usage: {@[lang-Russian-pluralRange][#A #B]|0|plural-form-0|1|plural-form-1|2|plural-form-2}
-        // Explicitly for Set Variables use and similar.
-        // Yes, if you request it, I'll make a similar TXDB routine for you,
-        //  assuming it's not ridiculously complicated.
-        nameDB.put("Interp.lang-Russian-pluralRange", new IFunction<RORIO, String>() {
-            @Override
-            public String apply(RORIO rubyIO) {
-                String[] range = rubyIO.decString().split(" ");
-                int v = Integer.valueOf(range[1]);
-                v -= Integer.valueOf(range[0]) - 1;
-                int i = v % 10;
-                if ((i == 1) && (v != 11))
-                    return "0";
-                if ((i >= 2) && (i <= 4) && ((v / 10) != 1))
-                    return "1";
-                return "2";
-            }
-        });
-        nameDB.put("Interp.lang-Common-arrayLen", new IFunction<RORIO, String>() {
-            @Override
-            public String apply(RORIO rubyIO) {
-                return Integer.toString(rubyIO.getALen());
-            }
-        });
+        // Note: The current NameDB initial state is a "bare minimum" maintenance mode.
+        // Name routines are going to get farmed out to MiniVM as soon as possible.
         nameDB.put("Interp.lang-Common-add", new IFunction<RORIO, String>() {
             @Override
             public String apply(RORIO rubyIO) {
@@ -88,12 +66,6 @@ public class FormatSyntax extends AppCore.Csv {
 
                 // NOTE: This converts to local time zone.
                 return new Date(v).toString();
-            }
-        });
-        nameDB.put("lang-Common-valueSyntax", new IFunction<RORIO, String>() {
-            @Override
-            public String apply(RORIO rubyIO) {
-                return ValueSyntax.encode(rubyIO);
             }
         });
     }
@@ -321,6 +293,13 @@ public class FormatSyntax extends AppCore.Csv {
         }
     }
 
+    /**
+     * This is replacing a lot of really silly FormatSyntax use.
+     */
+    public String interpretParameter(RORIO rubyIO) {
+        return interpretParameter(rubyIO, (SchemaElement) null, false);
+    }
+
     public String interpretParameter(RORIO rubyIO, SchemaElement ise, boolean prefixEnums) {
         // Basically, Class. overrides go first, then everything else comes after.
         if (rubyIO.getType() == 'o') {
@@ -340,15 +319,11 @@ public class FormatSyntax extends AppCore.Csv {
     }
 
     // NOTE: This can return null.
-    public static SchemaElement getParameterDisplaySchemaFromArray(RORIO root, IFunction<RORIO, SchemaElement>[] ise, int i) {
+    private static SchemaElement getParameterDisplaySchemaFromArray(RORIO root, IFunction<RORIO, SchemaElement>[] ise, int i) {
         if (ise == null)
             return null;
         if (ise.length <= i)
             return null;
         return ise[i].apply(root);
-    }
-
-    public String formatExtended(String s, RORIO... pieces) {
-        return formatNameExtended(s, new RubyIO().setNull(), pieces, null);
     }
 }

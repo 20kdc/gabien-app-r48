@@ -131,7 +131,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
 
     private SchemaElement[] getCellPropSchemas() {
         return new SchemaElement[] {
-                new SpritesheetCoreSchemaElement(app, "#A", 0, new IFunction<IRIO, IRIO>() {
+                new SpritesheetCoreSchemaElement(app, (v) -> app.fmt.interpretParameter(v), 0, new IFunction<IRIO, IRIO>() {
                     @Override
                     public IRIO apply(IRIO rubyIO) {
                         return rubyIO;

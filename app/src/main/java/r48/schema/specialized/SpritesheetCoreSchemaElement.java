@@ -12,6 +12,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -22,13 +23,13 @@ import r48.ui.dialog.UISpritesheetChoice;
  * Created on 29/07/17.
  */
 public class SpritesheetCoreSchemaElement extends SchemaElement {
-    public String text;
+    public IFunction<RORIO, String> text;
     public int defaultVal;
 
     public IFunction<IRIO, IRIO> numberProvider;
     public IFunction<IRIO, ISpritesheetProvider> provider;
 
-    public SpritesheetCoreSchemaElement(App app, String propTranslated, int def, IFunction<IRIO, IRIO> nprov, IFunction<IRIO, ISpritesheetProvider> core) {
+    public SpritesheetCoreSchemaElement(App app, IFunction<RORIO, String> propTranslated, int def, IFunction<IRIO, IRIO> nprov, IFunction<IRIO, ISpritesheetProvider> core) {
         super(app);
         text = propTranslated;
         defaultVal = def;
@@ -40,7 +41,7 @@ public class SpritesheetCoreSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final ISpritesheetProvider localProvider = provider.apply(target);
         final IRIO actTarg = numberProvider.apply(target);
-        return new UITextButton(app.fmt.formatExtended(text, actTarg), app.f.schemaFieldTH, new Runnable() {
+        return new UITextButton(text.apply(actTarg), app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, null, path);

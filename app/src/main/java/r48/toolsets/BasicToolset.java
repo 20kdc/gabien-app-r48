@@ -328,7 +328,7 @@ public class BasicToolset extends App.Svc implements IToolset {
             public void run() {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
                 RORIO clipGet = (app.theClipboard == null) ? new RubyIO().setNull() : app.theClipboard;
-                String clipText = app.fmt.interpretParameter(clipGet, (SchemaElement) null, false);
+                String clipText = app.fmt.interpretParameter(clipGet);
                 uiStatusLabel.text = T.z.l82.r(app.odb.modifiedObjects.size(), clipText);
                 app.uiPendingRunnables.add(this);
             }

@@ -4,6 +4,11 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
+ -- NOTICE OF DEPRECATION --
+
+ FormatSyntax is deprecated, pending a transition of whatever I can get away with moving into MiniVM.
+ Rejoice, because FormatSyntax is AWFUL! The below notes will be moved to the attic for "entertainment purposes" when that's over.
+
  -- MOVED FROM THE RXP CMDB, cleaned up --
 
  Original Format (no prefix)
@@ -131,18 +136,6 @@
   These all follow the scheme "lang-<language>-<methodCamelCase>".
   Common is used for routines which aren't targetted at a specific language.
 
-  lang-Russian-pluralRange:
-   Example:
-    {@[lang-Russian-pluralRange][#A #B]|0|plural-form-0|1|plural-form-1|2|plural-form-2}
-   Splits the input string by spaces, then converts to numbers, and takes the difference,
-    then gives the value 0, 1 or 2 dependent on plural form.
-
-  lang-Common-arrayLen:
-   Example:
-    {@[lang-Common-arrayLen]A|0|No commands|1|One command|[lang-Common-arrayLen]A commands}
-   Used to extract an array length from an array. (Which would otherwise show as "[<length>]".)
-   Note that one-indexed arrays are considered zero-indexed internally, this means their length is one higher than it 'should be'.
-
   lang-Common-add:
    Example:
     [lang-Common-add][5 5]
@@ -154,11 +147,6 @@
     [lang-Common-r2kTsConverter]A
    Converts a TDateTime (float) to a human-readable date format.
 
-  lang-Common-valueSyntax:
-   Example:
-    [lang-Common-valueSyntax]A
-   Converts an object to ValueSyntax form for totally consistent output.
-   Useful at the start of {@ blocks.
  ----------------------------------
 
  Note: It is probably possible to confuse the NDB interpreter if you know what you are doing (or don't).
