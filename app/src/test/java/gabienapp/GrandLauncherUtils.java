@@ -15,13 +15,16 @@ import r48.App;
  * Created on April 18, 2019.
  */
 public class GrandLauncherUtils {
-    public static Launcher launcher;
+    public final Launcher launcher;
+    public GrandLauncherUtils(Launcher l) {
+        launcher = l;
+    }
 
-    public static WindowCreatingUIElementConsumer getTicker() {
+    public WindowCreatingUIElementConsumer getTicker() {
         return launcher.uiTicker;
     }
 
-    public static App getApp() {
+    public App getApp() {
         Launcher.State cs = launcher.currentState;
         if (cs instanceof LSInApp)
             return (App) ((LSInApp) cs).app;

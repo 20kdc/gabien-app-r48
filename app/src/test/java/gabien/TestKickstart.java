@@ -35,21 +35,23 @@ import org.eclipse.jdt.annotation.Nullable;
  * Created on November 19, 2018.
  */
 public class TestKickstart {
-    public static String currentTestPhase;
-    public static LinkedList<ISupplier<Boolean>> waitingTestEntries = new LinkedList<ISupplier<Boolean>>();
-    public static IConsumer<String> waitingFileDialog = null;
+    public String currentTestPhase;
+    public LinkedList<ISupplier<Boolean>> waitingTestEntries = new LinkedList<ISupplier<Boolean>>();
+    public IConsumer<String> waitingFileDialog = null;
 
-    public static HashMap<String, byte[]> mockFS = new HashMap<String, byte[]>();
-    public static HashSet<String> mockDFS = new HashSet<String>();
+    public HashMap<String, byte[]> mockFS = new HashMap<String, byte[]>();
+    public HashSet<String> mockDFS = new HashSet<String>();
 
 
-    public static LinkedList<TestGrInDriver> windows = new LinkedList<TestGrInDriver>();
-    public static MobilePeripherals.DummyPointer pointer;
-    public static String maintainText = null;
-    public static boolean maintainTextEnter = false;
-    public static int windowCount = 1337;
+    public LinkedList<TestGrInDriver> windows = new LinkedList<TestGrInDriver>();
+    public MobilePeripherals.DummyPointer pointer;
+    public String maintainText = null;
+    public boolean maintainTextEnter = false;
+    public int windowCount = 1337;
 
-    public static App kickstart(final String s2, final String encoding, final String engineDefId) {
+    public GrandWindowManagerUtils gwmu;
+
+    public App kickstart(final String s2, final String encoding, final String engineDefId) {
         currentTestPhase = "Initial Phase";
         kickstartRFS();
         // In case unset.
@@ -63,7 +65,7 @@ public class TestKickstart {
         return AppMain.initializeCore(ilg, s2, "", engine, (s) -> {});
     }
 
-    public static void kickstartRFS() {
+    public void kickstartRFS() {
         FontManager.fontsReady = true;
         GaBIEnImpl.mobileEmulation = true;
         GaBIEnImpl.fontsAlwaysMeasure16 = true;
@@ -193,12 +195,12 @@ public class TestKickstart {
         new Config(false).applyUIGlobals();
     }
 
-    public static void resetODB(App app) {
+    public void resetODB(App app) {
         IObjectBackend backend = IObjectBackend.Factory.create(app.engine.odbBackend, app.rootPath, app.engine.dataPath, app.engine.dataExt);
         app.odb = new ObjectDB(app, backend, (s) -> {});
     }
 
-    public static class TestGrInDriver extends gabien.GrInDriver {
+    public class TestGrInDriver extends gabien.GrInDriver {
         private String internalMaintainText;
         private boolean didMaintainThisFrame;
 
@@ -306,7 +308,7 @@ public class TestKickstart {
             while (true) {
                 // An entry returns false (which waits a frame) until it's done, then it returns true
                 if (waitingTestEntries.size() == 0) {
-                    GrandWindowManagerUtils.printTree();
+                    gwmu.printTree();
                     throw new GrandExecutionError("Ran out of test sequence data.");
                 }
                 ISupplier<Boolean> isb = waitingTestEntries.getFirst();

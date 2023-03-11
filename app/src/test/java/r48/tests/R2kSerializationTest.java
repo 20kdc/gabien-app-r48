@@ -22,7 +22,8 @@ import java.io.IOException;
 public class R2kSerializationTest {
     @Test
     public void testFullIOStack() throws IOException {
-        App app = TestKickstart.kickstart("RAM/", "UTF-8", "r2k");
+        TestKickstart kick = new TestKickstart();
+        App app = kick.kickstart("RAM/", "UTF-8", "r2k");
 
         String[] fileDefs = new String[] {
                 "hello.lmu",
@@ -36,7 +37,7 @@ public class R2kSerializationTest {
         app.odb.getObject("and.lmt", "RPG::MapTree").save();
         app.odb.getObject("you.lsd", "RPG::Save").save();
         // Kills off the old ObjectDB
-        TestKickstart.resetODB(app);
+        kick.resetODB(app);
 
         for (String s : fileDefs) {
             IObjectBackend.ILoadedObject i = app.odb.getObject(s, null);

@@ -36,7 +36,7 @@ public class LocalTestExecutiveTest {
     @Parameterized.Parameters(name = "{1}")
     public static Collection<Object[]> data() {
         final LinkedList<Object[]> tests = new LinkedList<Object[]>();
-        TestKickstart.kickstartRFS();
+        new TestKickstart().kickstartRFS();
         try {
             DBLoader.readFile(null, "LTE.txt", new IDatabase() {
                 @Override
@@ -76,7 +76,7 @@ public class LocalTestExecutiveTest {
 
     @Test
     public void test() {
-        App app = TestKickstart.kickstart(name + "/", charset, schema);
+        App app = new TestKickstart().kickstart(name + "/", charset, schema);
         for (ObjectInfo s : dynamic ? app.getObjectInfos() : app.sdb.listFileDefs())
             testObject(app, s.idName);
     }

@@ -36,7 +36,7 @@ public class SchemaParseTest {
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
         LinkedList<Object[]> tests = new LinkedList<Object[]>();
-        TestKickstart.kickstartRFS();
+        new TestKickstart().kickstartRFS();
         final HashSet<String> schemas = new HashSet<String>();
         DBLoader.readFile(null, "Gamepaks.txt", new IDatabase() {
             @Override
@@ -62,7 +62,7 @@ public class SchemaParseTest {
 
     @Test
     public void testParses() {
-        App app = TestKickstart.kickstart("RAM/", "UTF-8", gamepak);
+        App app = new TestKickstart().kickstart("RAM/", "UTF-8", gamepak);
         // ... Also does this.
         // Not really parsing, but a good safety measure none-the-less.
         for (EventCommandArraySchemaElement st : TestDBUtils.getLoadedCSLs(app)) {

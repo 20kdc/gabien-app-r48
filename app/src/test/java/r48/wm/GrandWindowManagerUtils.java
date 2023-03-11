@@ -9,9 +9,9 @@ package r48.wm;
 
 import gabien.TestKickstart;
 import gabien.ui.*;
-import gabienapp.GrandLauncherUtils;
 import r48.App;
 import r48.tests.grand.GrandExecutionError;
+import r48.tests.grand.GrandTestBuilder;
 import r48.ui.UISymbolButton;
 
 import java.util.HashMap;
@@ -22,11 +22,22 @@ import java.util.Set;
  * Created on March 28, 2019.
  */
 public class GrandWindowManagerUtils {
-    public static App getApp() {
-        return GrandLauncherUtils.getApp();
+    public final TestKickstart kick;
+    public final GrandTestBuilder gtb;
+    public GrandWindowManagerUtils(GrandTestBuilder k) {
+        gtb = k;
+        kick = k.kick;
     }
 
-    public static UIElement[] getAllWindows() {
+    public App getApp() {
+        return gtb.lUtils.getApp();
+    }
+
+    public WindowCreatingUIElementConsumer getTicker() {
+        return gtb.lUtils.getTicker();
+    }
+
+    public UIElement[] getAllWindows() {
         App app = getApp();
         LinkedList<UIElement> ll = new LinkedList<UIElement>();
         if (app.ui.wm == null)
@@ -40,7 +51,7 @@ public class GrandWindowManagerUtils {
         return ll.toArray(new UIElement[0]);
     }
 
-    public static void clickIcon(UIElement e, int ico) {
+    public void clickIcon(UIElement e, int ico) {
         App app = getApp();
         if (app.ui.wm == null)
             throw new GrandExecutionError("No window manager");
@@ -60,29 +71,29 @@ public class GrandWindowManagerUtils {
         }
     }
 
-    private static void clickIcon(UITabBar.Tab sh, int ico) {
+    private void clickIcon(UITabBar.Tab sh, int ico) {
         sh.icons[ico].click(sh);
     }
 
-    public static void selectTab(UIElement element) {
+    public void selectTab(UIElement element) {
         App app = getApp();
         app.ui.wm.tabPane.selectTab(element);
     }
 
     // --- Control-Finding-based access. ---
 
-    public static Rect getControlRect(String id) {
+    public Rect getControlRect(String id) {
         HashMap<UIElement, Rect> es = getAllControls();
         return es.get(getControlCore(id, es.keySet()));
     }
 
-    public static UIElement getControl(String id) {
+    public UIElement getControl(String id) {
         return getControlCore(id, getAllControls().keySet());
     }
 
-    private static UIElement getControlCore(String id, Set<UIElement> es) {
+    private UIElement getControlCore(String id, Set<UIElement> es) {
         if (id == null)
-            return GrandLauncherUtils.getTicker().runningWindows().getFirst();
+            return getTicker().runningWindows().getFirst();
         // ¥ splits it up
         String[] st = id.split("¥");
         UIElement currentRoot = null;
@@ -115,10 +126,10 @@ public class GrandWindowManagerUtils {
                 }
             }
             if (!ok)
-                throw new GrandExecutionError("Unable to get: '" + id + "' (part: '" + ptr + "') in phase " + TestKickstart.currentTestPhase);
+                throw new GrandExecutionError("Unable to get: '" + id + "' (part: '" + ptr + "') in phase " + kick.currentTestPhase);
         }
         if (currentRoot == null)
-            throw new GrandExecutionError("Empty selector in phase " + TestKickstart.currentTestPhase);
+            throw new GrandExecutionError("Empty selector in phase " + kick.currentTestPhase);
         return currentRoot;
     }
 
@@ -169,9 +180,9 @@ public class GrandWindowManagerUtils {
         return identify(uie);
     }
 
-    private static HashMap<UIElement, Rect> getAllControls() {
+    private HashMap<UIElement, Rect> getAllControls() {
         HashMap<UIElement, Rect> hs = new HashMap<UIElement, Rect>();
-        for (UIElement uie : GrandLauncherUtils.getTicker().runningWindows())
+        for (UIElement uie : getTicker().runningWindows())
             addElementAndDescendants(uie, hs, new Rect(uie.getSize()));
         return hs;
     }
@@ -202,7 +213,7 @@ public class GrandWindowManagerUtils {
         addElementAndDescendants(s, hs, screenRect);
     }
 
-    public static void printTree() {
+    public void printTree() {
         // The quotes ensure that the resulting paths include 'hidden' spaces
         for (UIElement uie : getAllControls().keySet())
             System.out.println("\"" + fullIdentify(uie) + "\"");

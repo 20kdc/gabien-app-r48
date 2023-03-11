@@ -26,8 +26,15 @@ import java.util.LinkedList;
  * Created on March 28, 2019.
  */
 public class GrandTestBuilder {
+    public final TestKickstart kick;
+    public GrandLauncherUtils lUtils;
+    public GrandWindowManagerUtils wm;
+    public GrandTestBuilder() {
+        kick = new TestKickstart();
+    }
+
     public void thenWaitFrame() {
-        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
@@ -42,10 +49,10 @@ public class GrandTestBuilder {
     }
 
     public void thenSetPhase(final String phase) {
-        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
             @Override
             public Boolean get() {
-                TestKickstart.currentTestPhase = phase;
+                kick.currentTestPhase = phase;
                 return true;
             }
         });
@@ -60,18 +67,18 @@ public class GrandTestBuilder {
     }
 
     public void thenClick(final String id, final int ox, final int oy) {
-        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
             public Boolean get() {
                 if (waitFrame) {
-                    Rect ctrl = GrandWindowManagerUtils.getControlRect(id);
-                    TestKickstart.pointer = new MobilePeripherals.DummyPointer(ctrl.x + ox, ctrl.y + oy);
+                    Rect ctrl = wm.getControlRect(id);
+                    kick.pointer = new MobilePeripherals.DummyPointer(ctrl.x + ox, ctrl.y + oy);
                     waitFrame = false;
                     return false;
                 }
-                TestKickstart.pointer = null;
+                kick.pointer = null;
                 return true;
             }
         });
@@ -86,38 +93,38 @@ public class GrandTestBuilder {
     }
 
     public void thenDrag(final String n1, final int i, final int i1, final String n2, final int i2, final int i3) {
-        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
             int waitFrame = 0;
 
             @Override
             public Boolean get() {
                 if (waitFrame == 0) {
-                    Rect ctrl = GrandWindowManagerUtils.getControlRect(n1);
-                    TestKickstart.pointer = new MobilePeripherals.DummyPointer(ctrl.x + i, ctrl.y + i1);
+                    Rect ctrl = wm.getControlRect(n1);
+                    kick.pointer = new MobilePeripherals.DummyPointer(ctrl.x + i, ctrl.y + i1);
                     waitFrame++;
                     return false;
                 } else if (waitFrame == 1) {
-                    Rect ctrl = GrandWindowManagerUtils.getControlRect(n2);
-                    TestKickstart.pointer.x = ctrl.x + i2;
-                    TestKickstart.pointer.y = ctrl.y + i3;
+                    Rect ctrl = wm.getControlRect(n2);
+                    kick.pointer.x = ctrl.x + i2;
+                    kick.pointer.y = ctrl.y + i3;
                     waitFrame++;
                     return false;
                 }
-                TestKickstart.pointer = null;
+                kick.pointer = null;
                 return true;
             }
         });
     }
 
     public void thenScroll(final String n1, final String n2) {
-        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
             public Boolean get() {
                 if (waitFrame) {
-                    UIScrollLayout ctrl = (UIScrollLayout) GrandWindowManagerUtils.getControl(n1);
-                    GrandControlUtils.scroll(ctrl, GrandWindowManagerUtils.getControl(n2));
+                    UIScrollLayout ctrl = (UIScrollLayout) wm.getControl(n1);
+                    GrandControlUtils.scroll(ctrl, wm.getControl(n2));
                     waitFrame = false;
                     return false;
                 }
@@ -127,16 +134,16 @@ public class GrandTestBuilder {
     }
 
     public void thenWaitWC(final int wc) {
-        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
             @Override
             public Boolean get() {
-                return TestKickstart.windowCount == wc;
+                return kick.windowCount == wc;
             }
         });
     }
 
     private UIElement getElement(String s) {
-        UIElement[] w = GrandWindowManagerUtils.getAllWindows();
+        UIElement[] w = wm.getAllWindows();
         for (UIElement uie : w) {
             if (uie.toString().contains(s))
                 return uie;
@@ -145,17 +152,17 @@ public class GrandTestBuilder {
         for (UIElement uie : w)
             System.err.println(uie.toString());
         System.err.println("---]");
-        throw new GrandExecutionError("Unable to getElement " + s + " during phase " + TestKickstart.currentTestPhase);
+        throw new GrandExecutionError("Unable to getElement " + s + " during phase " + kick.currentTestPhase);
     }
 
     public void thenIcon(final String title, final int idx) {
-        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
             public Boolean get() {
                 if (waitFrame) {
-                    GrandWindowManagerUtils.clickIcon(getElement(title), idx);
+                    wm.clickIcon(getElement(title), idx);
                     waitFrame = false;
                     return false;
                 }
@@ -165,13 +172,13 @@ public class GrandTestBuilder {
     }
 
     public void thenSelectTab(final String title) {
-        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
             public Boolean get() {
                 if (waitFrame) {
-                    GrandWindowManagerUtils.selectTab(getElement(title));
+                    wm.selectTab(getElement(title));
                     waitFrame = false;
                     return false;
                 }
@@ -181,14 +188,14 @@ public class GrandTestBuilder {
     }
 
     public void thenType(final String s) {
-        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
             public Boolean get() {
                 if (waitFrame) {
-                    TestKickstart.maintainText = s;
-                    TestKickstart.maintainTextEnter = true;
+                    kick.maintainText = s;
+                    kick.maintainTextEnter = true;
                     waitFrame = false;
                     return false;
                 }
@@ -198,13 +205,13 @@ public class GrandTestBuilder {
     }
 
     public void thenCloseWindow() {
-        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
             public Boolean get() {
                 if (waitFrame) {
-                    TestKickstart.windows.getLast().shutdown();
+                    kick.windows.getLast().shutdown();
                     waitFrame = false;
                     return false;
                 }
@@ -215,9 +222,11 @@ public class GrandTestBuilder {
 
     public void execute(long expectedChecksum) {
         try {
-            TestKickstart.kickstartRFS();
-            GrandLauncherUtils.launcher = new Launcher();
-            GrandLauncherUtils.launcher.run();
+            kick.kickstartRFS();
+            lUtils = new GrandLauncherUtils(new Launcher());
+            wm = new GrandWindowManagerUtils(this);
+            kick.gwmu = wm;
+            lUtils.launcher.run();
             byte[] dat = createDump();
             long checksum = 0;
             for (byte b : dat)
@@ -240,11 +249,11 @@ public class GrandTestBuilder {
     private byte[] createDump() throws IOException {
         LinkedList<DumpedLump> l = new LinkedList<DumpedLump>();
 
-        LinkedList<String> lls = new LinkedList<String>(TestKickstart.mockFS.keySet());
+        LinkedList<String> lls = new LinkedList<String>(kick.mockFS.keySet());
         Collections.sort(lls);
 
         for (String s : lls)
-            l.add(new DumpedLump(s, TestKickstart.mockFS.get(s)));
+            l.add(new DumpedLump(s, kick.mockFS.get(s)));
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 

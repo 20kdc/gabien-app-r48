@@ -26,7 +26,7 @@ import java.io.IOException;
 public class IMIBasicTest {
     @Test
     public void testEncode2kDatabase() {
-        App app = TestKickstart.kickstart("RAM/", "UTF-8", "r2k");
+        App app = new TestKickstart().kickstart("RAM/", "UTF-8", "r2k");
         // Use RubyIOs both in and out to deal with encoding oddities
         RubyIO newObj = new RubyIO().setNull();
         SchemaPath.setDefaultValue(newObj, app.sdb.getSDBEntry("RPG::Database"), null);
