@@ -8,6 +8,9 @@ package r48.app;
 
 import java.util.HashMap;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.datum.DatumExpectListVisitor;
 import gabien.datum.DatumKVDHVisitor;
 import gabien.datum.DatumODec1Visitor;
@@ -47,13 +50,19 @@ public class EngineDef {
                 c.mapSystem = ((DatumSymbol) v).id;
             }, null);
         });
+        map.put("autoDetectPath", (k, c, gt) -> {
+            return new DatumODec1Visitor<>(null, null, (v, ctx) -> {
+                c.autoDetectPath = (String) v;
+            }, null);
+        });
     }
 
-    public String initDir = "";
-    public String odbBackend = "<you forgot to select a backend>";
-    public String dataPath = "";
-    public String dataExt = "";
-    public String mapSystem = "null";
+    public @NonNull String initDir = "";
+    public @NonNull String odbBackend = "<you forgot to select a backend>";
+    public @NonNull String dataPath = "";
+    public @NonNull String dataExt = "";
+    public @NonNull String mapSystem = "null";
+    public @Nullable String autoDetectPath = null;
 
     public DatumVisitor newVisitor() {
         return new DatumExpectListVisitor(() -> new DatumKVDHVisitor<EngineDef, Object>(map, this, null));

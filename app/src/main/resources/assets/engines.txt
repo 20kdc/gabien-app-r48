@@ -19,6 +19,7 @@ ika (
 	initDir "Ika/"
 	odbBackend ika
 	mapSystem Ika
+	autoDetectPath "Pbm/Map1.pbm"
 )
 
 osLoc (
@@ -26,12 +27,14 @@ osLoc (
 	odbBackend r48
 	dataPath "Languages/"
 	dataExt ".loc"
+	autoDetectPath "Languages/en.loc"
 )
 
 r2k (
 	initDir "R2K/"
 	odbBackend lcf2000
 	mapSystem R2k
+	autoDetectPath "RPG_RT.ldb"
 )
 
 rxp (
@@ -40,6 +43,7 @@ rxp (
 	dataPath "Data/"
 	dataExt ".rxdata"
 	mapSystem RXP
+	autoDetectPath "Data/MapInfos.rxdata"
 )
 
 rvxa (
@@ -48,4 +52,5 @@ rvxa (
 	dataPath "Data/"
 	dataExt ".rvdata2"
 	mapSystem RVXA
+	autoDetectPath "Data/MapInfos.rvdata2"
 )
