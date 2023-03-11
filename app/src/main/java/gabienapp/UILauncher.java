@@ -22,9 +22,7 @@ import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.ui.UIElement.UIProxy;
 import gabien.ui.UITabBar.Tab;
 import gabien.ui.UITabBar.TabIcon;
-import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.IFunction;
-import gabienapp.IGPMenuPanel.LauncherState;
 import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.cfg.Config;
@@ -42,10 +40,16 @@ import r48.ui.spacing.UIBorderedSubpanel;
  */
 public class UILauncher extends UIProxy {
     private boolean gamepaksRequestClose = false;
+    public final UIGamePathList rootBox, sillBox;
+
+    private final LinkedList<UIElement> basePanels = new LinkedList<UIElement>();
+    private final UIScrollLayout gamepaks;
+    private final Config c;
+
     public UILauncher(final LSMain ls) {
         final Launcher lun = ls.lun;
         final TrGlobal tr = lun.ilg.t.g;
-        Config c = lun.c;
+        c = lun.c;
         final UITabPane tabPane = new UITabPane(c.f.tabTH, false, false);
 
         final UIScrollLayout configure = new UIScrollLayout(true, c.f.generalS) {
@@ -56,7 +60,7 @@ public class UILauncher extends UIProxy {
         };
         tabPane.addTab(new Tab(configure, new TabIcon[0]));
 
-        final UIScrollLayout gamepaks = new UIScrollLayout(true, c.f.generalS) {
+        gamepaks = new UIScrollLayout(true, c.f.generalS) {
             @Override
             public String toString() {
                 return tr.bSelectEngine;
@@ -76,8 +80,6 @@ public class UILauncher extends UIProxy {
         });
         msAdjust.accept(Integer.toString(lun.globalMS));
 
-        final LinkedList<UIElement> basePanels = new LinkedList<UIElement>();
-
         UIHelpSystem uhs = new UIHelpSystem(lun.ilg);
         HelpSystemController hsc = new HelpSystemController(null, "Help/Launcher/Entry", uhs);
         hsc.loadPage(0);
@@ -90,7 +92,7 @@ public class UILauncher extends UIProxy {
 
         configure.panelsAdd(new UILabel(tr.lGamePath, c.f.launcherTH));
 
-        final UIGamePathList rootBox = new UIGamePathList(c, c.rootPathBackup) {
+        rootBox = new UIGamePathList(c, c.rootPathBackup) {
             @Override
             public void modified() {
                 super.modified();
@@ -101,7 +103,7 @@ public class UILauncher extends UIProxy {
 
         configure.panelsAdd(new UILabel(tr.lSecondaryPath, c.f.launcherTH));
 
-        final UIGamePathList sillBox = new UIGamePathList(c, c.secondaryImageLoadLocationBackup) {
+        sillBox = new UIGamePathList(c, c.secondaryImageLoadLocationBackup) {
             @Override
             public void modified() {
                 super.modified();
@@ -112,30 +114,6 @@ public class UILauncher extends UIProxy {
 
         basePanels.add(new UILabel(tr.lChooseEngine, c.f.launcherTH));
 
-        final IConsumer<IGPMenuPanel> menuConstructor = new IConsumer<IGPMenuPanel>() {
-            @Override
-            public void accept(IGPMenuPanel igpMenuPanel) {
-                gamepaks.panelsClear();
-                for (UIElement uie : basePanels)
-                    gamepaks.panelsAdd(uie);
-                if (igpMenuPanel == null) {
-                    gamepaksRequestClose = true;
-                    return;
-                }
-                String[] names = igpMenuPanel.getButtonText();
-                IFunction<LauncherState, IGPMenuPanel>[] runs = igpMenuPanel.getButtonActs();
-                for (int i = 0; i < names.length; i++) {
-                    final IFunction<LauncherState, IGPMenuPanel> r = runs[i];
-                    gamepaks.panelsAdd(new UITextButton(names[i], c.f.launcherTH, new Runnable() {
-                        @Override
-                        public void run() {
-                            accept(r.apply(new LauncherState(rootBox.text.text, sillBox.text.text)));
-                        }
-                    }));
-                }
-            }
-        };
-
         configure.panelsAdd(new UISplitterLayout(new UIPublicPanel(0, 0), new UITextButton(tr.bContinue, c.f.launcherTH, new Runnable() {
             @Override
             public void run() {
@@ -145,13 +123,33 @@ public class UILauncher extends UIProxy {
         // ...
 
         tabPane.setForcedBounds(null, new Rect(0, 0, c.f.scaleGuess(640), c.f.scaleGuess(480)));
-        menuConstructor.accept(new PrimaryGPMenuPanel(ls));
+        setPanel(new PrimaryGPMenuPanel(ls));
         proxySetElement(tabPane, false);
     }
 
     @Override
     public boolean requestsUnparenting() {
         return gamepaksRequestClose;
+    }
+
+    public void requestClose() {
+        gamepaksRequestClose = true;
+    }
+
+    public void setPanel(IGPMenuPanel igpMenuPanel) {
+        gamepaks.panelsClear();
+        for (UIElement uie : basePanels)
+            gamepaks.panelsAdd(uie);
+        if (igpMenuPanel == null) {
+            gamepaksRequestClose = true;
+            return;
+        }
+        String[] names = igpMenuPanel.getButtonText();
+        Runnable[] runs = igpMenuPanel.getButtonActs();
+        for (int i = 0; i < names.length; i++) {
+            final Runnable r = runs[i];
+            gamepaks.panelsAdd(new UITextButton(names[i], c.f.launcherTH, r));
+        }
     }
 
     private UIElement figureOutTopBar(final Launcher lun) {

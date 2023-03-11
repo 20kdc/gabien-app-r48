@@ -18,11 +18,14 @@ import gabienapp.Launcher.State;
  */
 public class LSMain extends State {
     final ErrorHandler errorHandler;
+    public final UILauncher uiLauncher;
 
     public LSMain(Launcher lun) {
         super(lun);
         errorHandler = new ErrorHandler(lun);
-        lun.uiTicker.accept(new UILauncher(this));
+        uiLauncher = new UILauncher(this);
+        
+        lun.uiTicker.accept(uiLauncher);
     }
 
     @Override

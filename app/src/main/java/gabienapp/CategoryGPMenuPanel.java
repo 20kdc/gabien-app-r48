@@ -7,7 +7,6 @@
 
 package gabienapp;
 
-import gabien.uslx.append.*;
 import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.App;
@@ -25,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CategoryGPMenuPanel implements IGPMenuPanel {
     public LinkedList<String> res1 = new LinkedList<String>();
-    public LinkedList<IFunction<LauncherState, IGPMenuPanel>> res2 = new LinkedList<IFunction<LauncherState, IGPMenuPanel>>();
+    public LinkedList<Runnable> res2 = new LinkedList<Runnable>();
     public final LSMain ls;
     public final Config c;
 
@@ -33,10 +32,10 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
         this.ls = ls;
         this.c = ls.lun.c;
         res1.add(ls.tr("Back..."));
-        res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
+        res2.add(new Runnable() {
             @Override
-            public IGPMenuPanel apply(LauncherState ls) {
-                return root;
+            public void run() {
+                ls.uiLauncher.setPanel(root);
             }
         });
         DBLoader.readFile(null, "Gamepaks.txt", new IDatabase() {
@@ -86,14 +85,13 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
         return res1.toArray(new String[0]);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public IFunction<LauncherState,IGPMenuPanel>[] getButtonActs() {
+    public Runnable[] getButtonActs() {
         // *sighs*
-        return res2.toArray(new IFunction[0]);
+        return res2.toArray(new Runnable[0]);
     }
 
-    public static class StartupCause implements IFunction<LauncherState, IGPMenuPanel> {
+    public static class StartupCause implements Runnable {
         private final AtomicReference<String> box;
         private final String objName;
         private final LSMain ls;
@@ -105,11 +103,11 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
         }
 
         @Override
-        public IGPMenuPanel apply(LauncherState ls2) {
+        public void run() {
             if (ls.lun.currentState == ls) {
                 IObjectBackend.Factory.encoding = box.get();
-                final String rootPath = PathUtils.fixRootPath(ls2.rootPath);
-                final String silPath = PathUtils.fixRootPath(ls2.secondaryImagePath);
+                final String rootPath = PathUtils.fixRootPath(ls.uiLauncher.rootBox.text.text);
+                final String silPath = PathUtils.fixRootPath(ls.uiLauncher.sillBox.text.text);
 
                 final LSInApp lia = new LSInApp(ls.lun);
                 ls.lun.currentState = lia;
@@ -122,29 +120,25 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                     public void run() {
                         try {
                             EngineDef engine = ls.lun.ilg.getEngineDef(objName);
+                            if (engine == null)
+                                throw new RuntimeException("EngineDef " + objName + " missing!");
                             // Regarding thread safety, this should be safe enough because app is kept here.
                             // It's then transferred out.
                             App app = AppMain.initializeCore(ls.lun.ilg, rootPath, silPath, engine, theKickstart);
                             AppMain.initializeUI(app, ls.lun.uiTicker, ls.lun.isMobile);
-                            theKickstart.doneInjector.set(new Runnable() {
-                                @Override
-                                public void run() {
-                                    lia.app = app;
-                                    app.ui.finishInitialization();
-                                }
+                            theKickstart.doneInjector.set(() -> {
+                                lia.app = app;
+                                app.ui.finishInitialization();
                             });
+                            ls.uiLauncher.requestClose();
                         } catch (final RuntimeException e) {
-                            theKickstart.doneInjector.set(new Runnable() {
-                                @Override
-                                public void run() {
-                                    throw e;
-                                }
+                            theKickstart.doneInjector.set(() -> {
+                                throw e;
                             });
                         }
                     }
                 }.start();
             }
-            return null;
         }
     }
 }

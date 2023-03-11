@@ -7,7 +7,6 @@
 
 package gabienapp;
 
-import gabien.uslx.append.*;
 import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.dbs.DBLoader;
@@ -20,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class PrimaryGPMenuPanel implements IGPMenuPanel {
     public LinkedList<String> res1 = new LinkedList<String>();
-    public LinkedList<IFunction<LauncherState, IGPMenuPanel>> res2 = new LinkedList<IFunction<LauncherState, IGPMenuPanel>>();
+    public LinkedList<Runnable> res2 = new LinkedList<Runnable>();
 
     public PrimaryGPMenuPanel(final LSMain ls) {
         // Loads everything
@@ -35,37 +34,26 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
                 if (c == '=') {
                     final CategoryGPMenuPanel cat = new CategoryGPMenuPanel(ls, PrimaryGPMenuPanel.this, args[0]);
                     res1.add(ls.trL(args[0]));
-                    res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
-                        @Override
-                        public IGPMenuPanel apply(LauncherState ls) {
-                            return cat;
-                        }
+                    res2.add(() -> {
+                        ls.uiLauncher.setPanel(cat);
                     });
                 }
             }
         });
         res1.add(ls.tr("'No Game' Mode"));
-        res2.add(new CategoryGPMenuPanel.StartupCause(ls, new AtomicReference<String>("UTF-8"), "Null"));
+        res2.add(new CategoryGPMenuPanel.StartupCause(ls, new AtomicReference<String>("UTF-8"), "null"));
         res1.add(ls.tr("Access Launcher REPL"));
-        res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
-            @Override
-            public IGPMenuPanel apply(LauncherState ls2) {
-                String title = ls.tr("R48 Launcher REPL");
-                UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(ls.c, ls.lun.vmCtx, title);
-                ls.lun.uiTicker.accept(repl);
-                ls.lun.currentState = new LSInApp(ls.lun);
-                return null;
-            }
+        res2.add(() -> {
+            String title = ls.tr("R48 Launcher REPL");
+            UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(ls.c, ls.lun.vmCtx, title);
+            ls.lun.uiTicker.accept(repl);
+            ls.lun.currentState = new LSInApp(ls.lun);
         });
         res1.add(ls.tr("Dump L-<lang>.txt"));
-        res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
-            @Override
-            public IGPMenuPanel apply(LauncherState ls2) {
-                ls.translationDump("L-", "launcher/");
-                res1.removeLast();
-                res2.removeLast();
-                return PrimaryGPMenuPanel.this;
-            }
+        res2.add(() -> {
+            ls.translationDump("L-", "launcher/");
+            res1.removeLast();
+            res2.removeLast();
         });
     }
 
@@ -74,10 +62,9 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
         return res1.toArray(new String[0]);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public IFunction<LauncherState, IGPMenuPanel>[] getButtonActs() {
+    public Runnable[] getButtonActs() {
         // *sighs*
-        return res2.toArray(new IFunction[0]);
+        return res2.toArray(new Runnable[0]);
     }
 }

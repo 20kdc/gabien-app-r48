@@ -17,6 +17,7 @@ import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.cfg.FontSizes.FontSizeField;
 import r48.minivm.MVMEnv;
+import r48.tr.LanguageList;
 
 /**
  * Rethink of how this should work for code reasons.
@@ -53,7 +54,7 @@ public class Launcher {
             //  we WILL (not may, WILL) freeze up until ready.
             boolean fontsNecessary = true;
             if (canAvoidWait)
-                if (c.language.equals("English"))
+                if (c.language.equals(LanguageList.hardcodedLang))
                     fontsNecessary = false;
             if (fontsNecessary)
                 while (!FontManager.fontsReady)
