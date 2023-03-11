@@ -60,22 +60,10 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                 }
                 if (!doWeCare)
                     return;
-                if (c == '.') {
-                    String rn = "";
-                    for (String s : args)
-                        rn += s + " ";
-                    res1.set(res1.size() - 1, ls.trL(rn));
-                }
+                if (c == '.')
+                    res1.set(res1.size() - 1, ls.trL(args[0]));
                 if (c == 'e')
                     boxedEncoding.set(args[0]);
-
-                /*
-                 * if (c == 'f')
-                 *     if (!new File(args[0]).exists()) {
-                 *         System.out.println("Can't use " + lastButton.Text + ": " + args[0] + " missing");
-                 *         gamepaks.panels.remove(lastButton);
-                 *     }
-                 */
             }
         });
     }

@@ -14,6 +14,8 @@ import r48.tests.grand.GrandExecutionError;
 import r48.tests.grand.GrandTestBuilder;
 import r48.ui.UISymbolButton;
 
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
@@ -125,8 +127,19 @@ public class GrandWindowManagerUtils {
                     }
                 }
             }
-            if (!ok)
+            if (!ok) {
+                try {
+                    FileOutputStream debugOut = new FileOutputStream("test-out/elements.txt");
+                    for (UIElement uie : es) {
+                        String res = "[" + identify(uie) + "] [" + identifyCls(uie) + "]\n";
+                        debugOut.write(res.getBytes(StandardCharsets.UTF_8));
+                    }
+                    debugOut.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 throw new GrandExecutionError("Unable to get: '" + id + "' (part: '" + ptr + "') in phase " + kick.currentTestPhase);
+            }
         }
         if (currentRoot == null)
             throw new GrandExecutionError("Empty selector in phase " + kick.currentTestPhase);

@@ -18,7 +18,7 @@ public class GrandInitializers {
         gtb.thenClick("button:Continue");
         gtb.thenClick("button:RPG Maker 2000, 2003, or EasyRPG. (Android users, go here.)"); // R2k
         gtb.thenWaitFrame();
-        gtb.thenClick("button:R2K[3?] (UTF-8) (Use for new games or languages not shown.) "); // Some encoding or another...
+        gtb.thenClick("button:R2K[3?] (UTF-8) (Use for new games or languages not shown.)"); // Some encoding or another...
         gtb.thenWaitWC(4);
         gtb.thenWaitFrame();
         // Maximize 'Please confirm...'
