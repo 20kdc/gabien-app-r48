@@ -25,6 +25,7 @@ import r48.AdHocSaveLoad;
 import r48.App;
 import r48.app.AppMain;
 import r48.app.IAppAsSeenByLauncher;
+import r48.tr.pages.TrRoot;
 import r48.wm.Coco;
 
 /**
@@ -85,32 +86,21 @@ public class ErrorHandler {
             } catch (UnsupportedEncodingException e2) {
                 throw new RuntimeException(e2);
             }
-            ps.println(tr("An error has occurred in R48. This is always the result of a bug somewhere."));
-            ps.println(tr("Version: ") + Coco.getVersion());
+            TrRoot T = lun.ilg.t;
+            // don't use MVM stuff around here
+            ps.println(T.g.err_hasOccurred + Coco.getVersion());
             if (app != null) {
-                ps.println(tr("If the rest of R48 disappeared, that means a second error occurred, and R48 has shut down to keep this message up."));
-                ps.println(tr("This is because, if backups failed, then Save would fail anyway - and without these instructions, you're kind of doomed."));
+                ps.println(T.g.err_appWasStarted);
                 if (fErr == null) {
-                    ps.println(tr("A backup data file has been created."));
-                    ps.println(tr("QUIT AFTER READING THIS MESSAGE IN IT'S ENTIRETY."));
-                    ps.println(tr("MAKE A COPY OF THE ENTIRE DIRECTORY AND ALL R48 SYSTEM FILES IMMEDIATELY. (anything with .r48 extension is an r48 system file. clip.r48 counts but is probably unnecessary.)"));
-                    ps.println(tr("DO NOT MODIFY OR DESTROY THIS COPY UNLESS YOUR CURRENT WORK IS COMPLETELY SAFE, VALID, NON-CORRUPT AND BACKED UP."));
-                    ps.println(tr("PREFERABLY FORWARD THE ERROR TEXT FILE (r48.error.txt) TO YOUR DEVELOPMENT GROUP."));
-                    ps.println(tr("I wrote that in caps since those are the most important instructions for recovering your work."));
-                    ps.println(tr("Make a copy of r48.error.YOUR_SAVED_DATA.r48 - it contains your data at the time of the error."));
-                    ps.println(tr("You can import the backup using 'Recover data from R48 error' - but copy the game first, as the data may be corrupt."));
-                    ps.println(tr("You are encountering an error. Backup as much as you can, backup as often as you can."));
+                    ps.println(T.g.err_backupOk);
                 } else {
-                    ps.println(tr("Unfortunately, R48 was unable to make a backup. If R48 is gone, this means that, basically, there's no way the current state could be recoverable."));
-                    ps.println(tr("Unless you ran out of disk space, even attaching a debugger would not help you at this point, because the data is likely corrupt."));
-                    ps.println(tr("Make a copy of the game immediately, then, if R48 is still around, try to save, but I will summarize by saying: it appears all hope is lost now."));
-                    ps.println(tr("The reason for the failure to backup is below."));
-                    ps.println(tr("----"));
+                    ps.println(T.g.err_backupFail);
+                    ps.println("----");
                     fErr.printStackTrace(ps);
-                    ps.println(tr("----"));
+                    ps.println("----");
                 }
             }
-            ps.println(tr("Error details follow."));
+            ps.println(T.g.err_footer);
             e.printStackTrace(ps);
             ps.flush();
             System.err.println("Prepared contents...");

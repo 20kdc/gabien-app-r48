@@ -16,5 +16,5 @@ public class TrTitle extends TrPage {
     public String info, error, confirm;
     public String charGen, sysTools;
     public String restoreSafetyConfirm;
-    public String appREPL;
+    public String appREPL, launcherREPL;
 }

@@ -11,6 +11,7 @@ import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
+import r48.tr.pages.TrRoot;
 import r48.ui.dialog.UIReadEvaluatePrintLoop;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
     public LinkedList<Runnable> res2 = new LinkedList<Runnable>();
 
     public PrimaryGPMenuPanel(final LSMain ls) {
+        final TrRoot T = ls.lun.ilg.t;
         // Loads everything
         DBLoader.readFile(null, "Gamepaks.txt", new IDatabase() {
             @Override
@@ -40,16 +42,16 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
                 }
             }
         });
-        res1.add(ls.tr("'No Game' Mode"));
+        res1.add(T.g.noGameMode);
         res2.add(new CategoryGPMenuPanel.StartupCause(ls, new AtomicReference<String>("UTF-8"), "null"));
-        res1.add(ls.tr("Access Launcher REPL"));
+        res1.add(T.g.accessLauncherREPL);
         res2.add(() -> {
-            String title = ls.tr("R48 Launcher REPL");
+            String title = T.t.launcherREPL;
             UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(ls.c, ls.lun.vmCtx, title);
             ls.lun.uiTicker.accept(repl);
             ls.lun.currentState = new LSInApp(ls.lun);
         });
-        res1.add(ls.tr("Dump L-<lang>.txt"));
+        res1.add(T.g.dumpLLang);
         res2.add(() -> {
             ls.translationDump("L-", "launcher/");
             res1.removeLast();

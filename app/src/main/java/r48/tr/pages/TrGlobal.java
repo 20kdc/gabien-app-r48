@@ -21,6 +21,10 @@ public class TrGlobal extends TrPage {
     public String bConfigN, bQuit;
     // launcher
     public String bSelectEngine, lFrameMS, lGamePath, lSecondaryPath, lChooseEngine;
+    public String bBack;
+    public String noGameMode;
+    public String accessLauncherREPL;
+    public String dumpLLang;
     // help
     public String helpUnavailable;
     // app
@@ -33,4 +37,8 @@ public class TrGlobal extends TrPage {
     public String img_png32;
     public String img_png8;
     public String img_xyz;
+    // errorhandler
+    public String err_hasOccurred, err_appWasStarted;
+    public String err_backupOk, err_backupFail;
+    public String err_footer;
 }

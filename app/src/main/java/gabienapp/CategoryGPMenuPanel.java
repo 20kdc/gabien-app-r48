@@ -17,6 +17,7 @@ import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
+import r48.tr.pages.TrRoot;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -31,7 +32,8 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
     public CategoryGPMenuPanel(LSMain ls, final IGPMenuPanel root, final String category) {
         this.ls = ls;
         this.c = ls.lun.c;
-        res1.add(ls.tr("Back..."));
+        final TrRoot T = ls.lun.ilg.t;
+        res1.add(T.g.bBack);
         res2.add(new Runnable() {
             @Override
             public void run() {

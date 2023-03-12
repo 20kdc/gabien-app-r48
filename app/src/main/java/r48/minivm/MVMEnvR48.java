@@ -6,8 +6,10 @@
  */
 package r48.minivm;
 
+import gabien.datum.DatumSymbol;
 import gabien.uslx.append.IConsumer;
 import r48.dbs.DatumLoader;
+import r48.tr.DynTrSlot;
 
 /**
  * MiniVM environment.
@@ -43,5 +45,12 @@ public final class MVMEnvR48 extends MVMEnv {
         DatumLoader.read(filename + ".aux.scm", loadProgress, (obj) -> {
             evalObject(obj);
         });
+    }
+
+    /**
+     * Dynamic translation slot.
+     */
+    public DynTrSlot dynTr(String slot) {
+        return new DynTrSlot(ensureSlot(new DatumSymbol(slot)));
     }
 }

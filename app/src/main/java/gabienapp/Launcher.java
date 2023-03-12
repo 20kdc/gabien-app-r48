@@ -112,13 +112,6 @@ public class Launcher {
         public abstract void tick(double dT);
 
         /**
-         * Convenience function for translation.
-         */
-        public final String tr(String text) {
-            return lun.ilg.tr(text);
-        }
-
-        /**
          * Continued translation convenience.
          */
         public String trL(String text) {

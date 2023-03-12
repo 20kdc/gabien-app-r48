@@ -13,4 +13,5 @@
 	sysTools "System Tools"
 	restoreSafetyConfirm "Safety Confirmation Prompt"
 	appREPL "R48 Application REPL"
+	launcherREPL "R48 Launcher REPL"
 )

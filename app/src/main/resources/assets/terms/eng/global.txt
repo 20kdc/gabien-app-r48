@@ -43,4 +43,38 @@
 		png8 "Save PNG-8I"
 		xyz "Save XYZ"
 	)
+
+	bBack "Back..."
+	noGameMode "'No Game' Mode"
+	accessLauncherREPL "Access Launcher REPL"
+	dumpLLang "Dump L-<lang>.txt"
+
+	(err_
+		hasOccurred (..
+			"An error has occurred in R48. This is always the result of a bug somewhere.\n"
+			"Version: "
+		)
+		appWasStarted (..
+			"If the rest of R48 disappeared, that means a second error occurred, and R48 has shut down to keep this message up.\n"
+			"This is because, if backups failed, then Save would fail anyway - and without these instructions, you're kind of doomed."
+		)
+		backupOk (..
+			"A backup data file has been created.\n"
+			"QUIT AFTER READING THIS MESSAGE IN IT'S ENTIRETY.\n"
+			"MAKE A COPY OF THE ENTIRE DIRECTORY AND ALL R48 SYSTEM FILES IMMEDIATELY. (anything with .r48 extension is an r48 system file. clip.r48 counts but is probably unnecessary.)\n"
+			"DO NOT MODIFY OR DESTROY THIS COPY UNLESS YOUR CURRENT WORK IS COMPLETELY SAFE, VALID, NON-CORRUPT AND BACKED UP.\n"
+			"PREFERABLY FORWARD THE ERROR TEXT FILE (r48.error.txt) TO YOUR DEVELOPMENT GROUP.\n"
+			"I wrote that in caps since those are the most important instructions for recovering your work.\n"
+			"Make a copy of r48.error.YOUR_SAVED_DATA.r48 - it contains your data at the time of the error.\n"
+			"You can import the backup using 'Recover data from R48 error' - but copy the game first, as the data may be corrupt.\n"
+			"You are encountering an error. Backup as much as you can, backup as often as you can."
+		)
+		backupFail (..
+			"Unfortunately, R48 was unable to make a backup. If R48 is gone, this means that, basically, there's no way the current state could be recoverable.\n"
+			"Unless you ran out of disk space, even attaching a debugger would not help you at this point, because the data is likely corrupt.\n"
+			"Make a copy of the game immediately, then, if R48 is still around, try to save, but I will summarize by saying: it appears all hope is lost now.\n"
+			"The reason for the failure to backup is below."
+		)
+		footer "Error details follow:"
+	)
 )
