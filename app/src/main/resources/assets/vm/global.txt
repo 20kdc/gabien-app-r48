@@ -29,7 +29,7 @@
 				(append! result (list (list
 					define
 					(string->symbol
-						(string-append (symbol->string prefix) (symbol->string key))
+						(string-append (value->string prefix) (value->string key))
 					)
 					value
 				)))
@@ -42,7 +42,7 @@
 						(list
 							define-prefix
 							(string->symbol
-								(string-append (symbol->string prefix) (symbol->string (list-ref value 0)))
+								(string-append (value->string prefix) (value->string (list-ref value 0)))
 							)
 						)
 						(sublist value 1 (list-length value))
@@ -69,7 +69,7 @@
 (define-syntax (define-group prefix . entries)
 	(append
 		(list define-prefix
-			(string->symbol (string-append (symbol->string prefix) "."))
+			(string->symbol (string-append (value->string prefix) "."))
 		)
 		entries
 	)

@@ -4,21 +4,47 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-+ Destatic R48
-+ Make increasing use of Datum/MiniVM to clean up R48
- + PathSyntax minivm (in progress)
- + Datum-based language to compile to minivm (not even started yet)
+GOAL 1. CMDB dynamic translation
++ DynTrSlot, a wrapper over an MVMSlot.
+  Mainly responsible for calls, error checking, etc.
+  Above all else this is how R48 code sets up dynamic translation slots.
++ Finally remap how CMDB IDs are assigned.
+  (it's probably NOT a good idea to put them all into MVM-land, for testcase reasons.
+   just give them names and have explicit load instructions in MVM.)
++ Define a constant mapping between a CMDB command ID and a name MVM lambda slot.
+  Assume ValueSyntax might get used in this mapping at a later date.
+  Luckily the ValueSyntax of a long is just that long's string representation.
+  CMDBNames.(name).(id)
+  I've just modified define-group and define-prefix to use value->string for this.
+  So syntax will be fine for essentially ever.
++ CMDB loading stores initial names in the slots and reads them back.
+  CMDB must check type at each read (but hey it's not string parsing).
+
+GOAL 2. The Biggest Problem With R48
++ Introduce a fancy new prefix for CMDB command names for them to be run on MiniVM.
++ Successfully port every CMDB command name.
+   GOAL 1 puts them all in one place (as FormatSyntax strings). I wonder...
++ Drop support for unported command names.
++ Remove the prefix and error if the prefix is received.
++ Successfully de-prefix every CMDB command name.
++ Rather than loading FormatSyntax into MVM slots, do things the sensible way instead.
 
 -- DELAYED --
 
+honestly all of this stuff is eternally delayed
+
 + Map looping support
+ (ok tbh this is probably not happening
+  and if it was happening, it'd probably be tiles only)
 + Helpfile rewrite
 
 + Demetrius's various notes over IRC and such:
  + Nicer pattern-tiling map editing similar to the way paste works in the image editor
  + Image editor palette cleanup ( #51 )
  + Character creator??? [in progress]
+
 + OSLoc mode improvements, perhaps?
+  nope, just nope, just nope, just nope.
 
 + Documentation
  + SDB Further Documentation Project ???
