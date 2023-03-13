@@ -16,6 +16,7 @@ import r48.schema.displays.TonePickerSchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrPage.FF0;
 
 import java.util.LinkedList;
 
@@ -24,7 +25,8 @@ import java.util.LinkedList;
  * Created on 12/30/16.
  */
 public class RPGCommand extends App.Svc {
-    public String name;
+    public final int commandId;
+    public FF0 name;
 
     public SchemaElement specialSchema;
 
@@ -50,7 +52,7 @@ public class RPGCommand extends App.Svc {
     public boolean typeListLeave;
     public boolean typeStrictLeave;
 
-    public String description;
+    public FF0 description;
 
     // Extrenely special behavior for certain commands.
     // Note that groupBehaviors should try to be as stable as possible, i.e. not corrupt stuff.
@@ -65,24 +67,26 @@ public class RPGCommand extends App.Svc {
     // For copy all text
     public int textArg = -1;
 
-    public RPGCommand(App app) {
+    public RPGCommand(App app, int objId) {
         super(app);
+        commandId = objId;
     }
 
     // Pass null for parameters if this is for combobox display.
     @SuppressWarnings("unchecked")
     public String formatName(IRIO root, IRIO[] parameters) {
+        String nameGet = name.r();
         try {
-            if (name.startsWith("@@"))
-                return app.fmt.formatNameExtended(name.substring(2), root, parameters, paramType.toArray(new IFunction[0]));
+            if (nameGet.startsWith("@@"))
+                return app.fmt.formatNameExtended(nameGet.substring(2), root, parameters, paramType.toArray(new IFunction[0]));
             boolean prefixes = true;
-            if (name.startsWith("@P")) {
+            if (nameGet.startsWith("@P")) {
                 prefixes = false;
-                name = name.substring(2);
+                nameGet = nameGet.substring(2);
             }
             String sn = "";
             int pi = 0;
-            for (char c : name.toCharArray()) {
+            for (char c : nameGet.toCharArray()) {
                 if (c == '!') {
                     if (parameters != null) {
                         sn += " to " + interpretLocalParameter(root, pi, parameters[pi], prefixes);

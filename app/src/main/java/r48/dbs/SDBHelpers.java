@@ -9,6 +9,7 @@ package r48.dbs;
 
 import gabien.IGrDriver;
 import gabien.IImage;
+import gabien.datum.DatumSrcLoc;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
@@ -18,6 +19,7 @@ import r48.schema.displays.HWNDSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBindingSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
+import r48.tr.TrPage.FF0;
 import r48.tr.pages.TrSchema;
 import r48.ui.dialog.ISpritesheetProvider;
 import r48.ui.dialog.UIEnumChoice.EntryMode;
@@ -35,7 +37,7 @@ class SDBHelpers extends App.Svc {
     }
     // Spritesheet definitions are quite opaque lists of numbers defining how a grid sheet should appear. See spriteSelector.
     protected HashMap<String, IFunction<String, ISpritesheetProvider>> spritesheets = new HashMap<String, IFunction<String, ISpritesheetProvider>>();
-    protected HashMap<String, String> spritesheetN = new HashMap<String, String>();
+    protected HashMap<String, FF0> spritesheetN = new HashMap<String, FF0>();
 
     // cellW/cellH is the skip size.
     // useX/useY/useW/useH is what to use of a given cell.
@@ -85,7 +87,7 @@ class SDBHelpers extends App.Svc {
         final IFunction<String, ISpritesheetProvider> args2 = spritesheets.get(imgPfx);
         return new SpritesheetCoreSchemaElement(app, (v) -> {
             // used to be a FormatSyntax step buried in SpritesheetCoreSchemaElement, but it never got used here
-            return spritesheetN.get(imgPfx);
+            return spritesheetN.get(imgPfx).r();
         }, 0, new IFunction<IRIO, IRIO>() {
             @Override
             public IRIO apply(IRIO rubyIO) {
@@ -99,9 +101,9 @@ class SDBHelpers extends App.Svc {
         });
     }
 
-    public int createSpritesheet(String[] args, int point, String text2) {
+    public int createSpritesheet(DatumSrcLoc srcLoc, String[] args, int point, String text2) {
         final String imgPfx = args[point];
-        spritesheetN.put(args[point], app.td(args[point] + "sprites", text2));
+        spritesheetN.put(args[point], app.dTr(srcLoc, "TrSpritesheet." + imgPfx, text2));
         if (args[point + 1].equals("r2kCharacter")) {
             spritesheets.put(args[point], new IFunction<String, ISpritesheetProvider>() {
                 @Override
@@ -175,18 +177,18 @@ class SDBHelpers extends App.Svc {
         // Since this is much too complicated for a mere enum,
         //  use the magical binding to make it more in-line with R48's standards,
         //  with a minimal amount of code
-        HashMap<String, String> types = new HashMap<String, String>();
-        types.put("0", S.ppp_constant);
-        types.put("1", S.ppp_idVar);
-        types.put("2", S.ppp_idNSfx);
+        HashMap<String, FF0> types = new HashMap<String, FF0>();
+        types.put("0", () -> S.ppp_constant);
+        types.put("1", () -> S.ppp_idVar);
+        types.put("2", () -> S.ppp_idNSfx);
         HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
-        ArrayElementSchemaElement idV = new ArrayElementSchemaElement(app, 1, S.ppp_idVarFN, varId, null, false);
+        ArrayElementSchemaElement idV = new ArrayElementSchemaElement(app, 1, () -> S.ppp_idVarFN, varId, null, false);
         disambiguations.put("1", idV);
         disambiguations.put("2", idV);
-        disambiguations.put("", new ArrayElementSchemaElement(app, 1, S.ppp_idFN, val, null, false));
+        disambiguations.put("", new ArrayElementSchemaElement(app, 1, () -> S.ppp_idFN, val, null, false));
         AggregateSchemaElement inner = new AggregateSchemaElement(app, new SchemaElement[] {
                 new HalfsplitSchemaElement(
-                        new ArrayElementSchemaElement(app, 0, S.ppp_typeFN, new EnumSchemaElement(app, types, new RubyIO().setFX(0), EntryMode.LOCK, ""), null, false),
+                        new ArrayElementSchemaElement(app, 0, () -> S.ppp_typeFN, new EnumSchemaElement(app, types, new RubyIO().setFX(0), EntryMode.LOCK, () -> ""), null, false),
                         new DisambiguatorSchemaElement(app, PathSyntax.compile(app, "]0"), disambiguations)
                 ),
                 new SubwindowSchemaElement(new HWNDSchemaElement(app, PathSyntax.compile(app, "]0"), "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {
@@ -250,10 +252,10 @@ class SDBHelpers extends App.Svc {
         // Less complicated but still more than an enum is reasonable for.
         final TrSchema S = varId.T.s;
         HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
-        disambiguations.put("0", new ArrayElementSchemaElement(app, 1, vname, val, null, false));
-        disambiguations.put("", new ArrayElementSchemaElement(app, 1, S.ppp_valueVarFN, varId, null, false));
+        disambiguations.put("0", new ArrayElementSchemaElement(app, 1, () -> vname, val, null, false));
+        disambiguations.put("", new ArrayElementSchemaElement(app, 1, () -> S.ppp_valueVarFN, varId, null, false));
         SchemaElement inner = new HalfsplitSchemaElement(
-                new ArrayElementSchemaElement(app, 0, S.ppp_isVarFN, new IntBooleanSchemaElement(app, false), null, false),
+                new ArrayElementSchemaElement(app, 0, () -> S.ppp_isVarFN, new IntBooleanSchemaElement(app, false), null, false),
                 new DisambiguatorSchemaElement(app, PathSyntax.compile(app, "]0"), disambiguations)
         );
         return new MagicalBindingSchemaElement(app, new IMagicalBinder() {

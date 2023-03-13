@@ -89,15 +89,6 @@ public class AppCore {
         return d.tr(context.replace('/', '-'), text);
     }
 
-    /**
-     * Legacy dynamic translation
-     */
-    public String trExUnderscore(String context, String text) {
-        if (text.equals("_"))
-            return "_";
-        return td(context, text);
-    }
-
     public void performTranslatorDump(String fnPrefix, String ctxPrefix) {
         d.dump(fnPrefix, ctxPrefix);
     }

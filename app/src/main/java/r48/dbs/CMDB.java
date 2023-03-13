@@ -7,6 +7,7 @@
 
 package r48.dbs;
 
+import gabien.datum.DatumSrcLoc;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
@@ -14,6 +15,7 @@ import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrPage.FF0;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,15 +24,21 @@ import java.util.LinkedList;
  * Created on 12/30/16.
  */
 public class CMDB extends App.Svc {
+    /**
+     * DB ID for use in internationalization
+     */
+    public final String dbID;
+
     public int digitCount = 3;
-    public String[] categories = new String[] {T.s.cmdb_defCatName};
+    public FF0[] categories = new FF0[] {() -> T.s.cmdb_defCatName};
     public HashMap<Integer, RPGCommand> knownCommands = new HashMap<Integer, RPGCommand>();
     public LinkedList<Integer> knownCommandOrder = new LinkedList<Integer>();
     public int listLeaveCmd = -1; // -1 means "no list leave command actually exists".
     public int blockLeaveCmd = 0; // This is 10 on R2k, but that is controlled via Lblock.
 
-    public CMDB(final SDB sdb) {
+    public CMDB(final SDB sdb, final String id) {
         super(sdb.app);
+        dbID = id;
     }
 
     /**
@@ -43,22 +51,40 @@ public class CMDB extends App.Svc {
             int workingCmdId = 0;
             RPGCommand.SpecialTag nextTag = null;
             HashMap<String, SchemaElement> localAliasing = new HashMap<String, SchemaElement>();
-            HashMap<Integer, SchemaElement> currentPvH = new HashMap<Integer, SchemaElement>();
-            HashMap<Integer, String> currentPvH2 = new HashMap<Integer, String>();
+
+            String currentPvHLocPrefix;
+            HashMap<Integer, SchemaElement> currentPvH;
+            HashMap<Integer, FF0> currentPvH2;
+
             String baseFile = readFile;
-            String subContext = "CMDB@" + baseFile;
             // sorting order seems to work well enough:
             // X-/<name>
             // X./<desc>
             // X/
 
+            DatumSrcLoc srcLoc = DatumSrcLoc.NONE;
+
+            @Override
+            public void updateSrcLoc(DatumSrcLoc sl) {
+                srcLoc = sl;
+            }
+
+            private FF0 dTr(String subkey, String defVal) {
+                return app.dTr(srcLoc, "CMDB." + dbID + "." + subkey, defVal);
+            }
+
+            private FF0 dTrExUnderscore(String subkey, String defVal) {
+                if (defVal.equals("_"))
+                    return () -> defVal;
+                return dTr(subkey, defVal);
+            }
+
             @Override
             public void newObj(int objId, String objName) {
-                rc = new RPGCommand(sdb.app);
+                rc = new RPGCommand(sdb.app, objId);
                 rc.category = categories.length - 1;
-                subContext = "CMDB@" + baseFile + "." + lenForm(objId);
                 // Names use NDB syntax, thus, separate context
-                rc.name = app.td(subContext + "-", objName);
+                rc.name = dTr(".names." + objId, objName);
                 if (knownCommands.containsKey(objId))
                     throw new RuntimeException("Redefined " + objId);
                 knownCommands.put(objId, rc);
@@ -163,11 +189,11 @@ public class CMDB extends App.Svc {
                         }
                     };
                 } else if (arg.equals("form")) {
-                    final String[] translatedNames = new String[(gbStateArgs.length - (gbStatePosition + 1)) / 2];
-                    final int[] subIds = new int[translatedNames.length];
-                    for (int i = 0; i < translatedNames.length; i++) {
+                    final int[] subIds = new int[(gbStateArgs.length - (gbStatePosition + 1)) / 2];
+                    for (int i = 0; i < subIds.length; i++) {
                         subIds[i] = Integer.parseInt(gbStateArgs[gbStatePosition++]);
-                        translatedNames[i] = app.td(subContext, gbStateArgs[gbStatePosition++]);
+                        // translated names aren't actually used, which is good since I have no good idea how to translate them
+                        gbStatePosition++;
                     }
                     final int lastId = Integer.parseInt(gbStateArgs[gbStatePosition++]);
                     return new IGroupBehavior() {
@@ -362,11 +388,12 @@ public class CMDB extends App.Svc {
                 gbStatePosition = -1;
                 gbStateArgs = null;
                 if (c == 'p') {
-                    final String fv = app.trExUnderscore(subContext, args[0]);
+                    int paramIdx = rc.paramName.size();
+                    final FF0 fv = dTrExUnderscore(rc.commandId + ".p." + paramIdx, args[0]);
                     rc.paramName.add(new IFunction<IRIO, String>() {
                         @Override
                         public String apply(IRIO rubyIO) {
-                            return fv;
+                            return fv.r();
                         }
                     });
                     String s = args[1].trim();
@@ -379,14 +406,16 @@ public class CMDB extends App.Svc {
                     });
                     useTag();
                 } else if (c == 'P') {
+                    int paramIdx = rc.paramName.size();
                     final HashMap<Integer, SchemaElement> h = new HashMap<Integer, SchemaElement>();
                     currentPvH = h;
-                    final HashMap<Integer, String> h2 = new HashMap<Integer, String>();
+                    final HashMap<Integer, FF0> h2 = new HashMap<Integer, FF0>();
                     currentPvH2 = h2;
                     // Pv-syntax:
                     // P arrayDI defaultName defaultType
                     // v specificVal name type
-                    final String defName = app.trExUnderscore(subContext, args[1]);
+                    final FF0 defName = dTrExUnderscore(rc.commandId + ".p." + paramIdx + ".", args[1]);
+                    currentPvHLocPrefix = rc.commandId + ".pv." + paramIdx + ".";
                     final int arrayDI = Integer.parseInt(args[0]);
                     final SchemaElement defaultSE = aliasingAwareSG(args[2]);
                     rc.paramType.add(new IFunction<IRIO, SchemaElement>() {
@@ -410,16 +439,16 @@ public class CMDB extends App.Svc {
                         @Override
                         public String apply(IRIO rubyIO) {
                             if (rubyIO == null)
-                                return defName;
+                                return defName.r();
                             if (rubyIO.getType() != '[')
-                                return defName;
+                                return defName.r();
                             if (rubyIO.getALen() <= arrayDI)
-                                return defName;
+                                return defName.r();
                             int p = (int) rubyIO.getAElem(arrayDI).getFX();
-                            String ise = h2.get(p);
+                            FF0 ise = h2.get(p);
                             if (ise != null)
-                                return ise;
-                            return defName;
+                                return ise.r();
+                            return defName.r();
                         }
                     });
                     useTag();
@@ -427,12 +456,12 @@ public class CMDB extends App.Svc {
                     // v specificVal name type
                     final int idx = Integer.parseInt(args[0]);
                     currentPvH.put(idx, aliasingAwareSG(args[2]));
-                    currentPvH2.put(idx, app.trExUnderscore(subContext, args[1]));
+                    currentPvH2.put(idx, dTrExUnderscore(currentPvHLocPrefix + idx, args[1]));
                 } else if (c == 'd') {
                     String desc = "";
                     for (String s : args)
                         desc += " " + s;
-                    rc.description = app.td(subContext + ".", desc.trim());
+                    rc.description = dTr(rc.commandId + ".d", desc.trim());
                 } else if (c == 'i') {
                     rc.indentPre = Integer.parseInt(args[0]);
                 } else if (c == 'I') {
@@ -476,10 +505,10 @@ public class CMDB extends App.Svc {
                     if (args[0].equals("category"))
                         rc.category = Integer.parseInt(args[1]);
                     if (args[0].equals("categories")) {
-                        categories = new String[args.length - 1];
+                        categories = new FF0[args.length - 1];
                         // No longer using EscapedStringSyntax, so sanity has been restored (yay!)
                         for (int i = 1; i < args.length; i++)
-                            categories[i - 1] = app.td(subContext + ".categories", args[i]);
+                            categories[i - 1] = dTr("cat." + i, args[i]);
                     }
                     if (args[0].equals("digitCount"))
                         digitCount = Integer.parseInt(args[1]);
@@ -586,7 +615,7 @@ public class CMDB extends App.Svc {
         int fails1 = 0;
         for (RPGCommand rc : knownCommands.values())
             if (rc.description == null) {
-                System.err.print(rc.name + " ");
+                System.err.print(rc.name.r() + " ");
                 fails1++;
             }
         if (fails1 > 0)

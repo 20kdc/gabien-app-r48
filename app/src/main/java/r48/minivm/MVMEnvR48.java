@@ -68,9 +68,11 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
             res = new DynTrSlot(srcLoc, slot);
             dynMap.put(id, res);
         }
+        Object intoMVM = DynTrSlot.translateIntoMVM(id, base);
         if (res.underlyingSlot.v != null)
-            logTrIssues.accept("dynTr ID " + id + " already occupied!");
-        res.underlyingSlot.v = DynTrSlot.translateIntoMVM(id, base);
+            if (!res.underlyingSlot.v.equals(intoMVM))
+                logTrIssues.accept("dynTr ID " + id + " changed value between two dynTrBase calls. DON'T do this.");
+        res.underlyingSlot.v = intoMVM;
         return res;
     }
 

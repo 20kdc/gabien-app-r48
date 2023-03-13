@@ -12,6 +12,7 @@ import java.util.HashSet;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.GaBIEn;
+import gabien.datum.DatumSrcLoc;
 import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIPanel;
 import gabien.ui.UIElement.UIProxy;
@@ -26,13 +27,15 @@ import r48.io.data.RORIO;
 import r48.map.StuffRenderer;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMR48AppLibraries;
+import r48.tr.DynTrSlot;
+import r48.tr.IDynTrProxy;
 import r48.tr.pages.TrRoot;
 
 /**
  * An attempt to move as much as possible out of static variables.
  * Created 26th February, 2023
  */
-public final class App extends AppCore implements IAppAsSeenByLauncher {
+public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrProxy {
     public HashMap<Integer, String> osSHESEDB;
     // scheduled tasks for when UI is around, not in UI because it may not init (ever, even!)
     public HashSet<Runnable> uiPendingRunnables = new HashSet<Runnable>();
@@ -63,6 +66,11 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
         }, ilg.logTrIssues);
         MVMR48AppLibraries.add(vmCtx, this);
         vmCtx.include("vm/global", false);
+    }
+
+    @Override
+    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, Object text) {
+        return vmCtx.dynTrBase(srcLoc, id, text);
     }
 
     /**

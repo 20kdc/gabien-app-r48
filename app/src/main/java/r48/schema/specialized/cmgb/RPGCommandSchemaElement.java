@@ -101,7 +101,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                         if (rc.description == null) {
                             result = T.z.l167;
                         } else {
-                            result = rc.description;
+                            result = rc.description.r();
                         }
                     } else {
                         title += T.z.l168;
@@ -126,9 +126,9 @@ public class RPGCommandSchemaElement extends SchemaElement {
             if (target.getIVar("@indent") != null) {
                 if (showHeader) {
                     PathSyntax indent = PathSyntax.compile(app, "@indent");
-                    SchemaElement ise = new PathSchemaElement(indent, T.z.l169, new ROIntegerSchemaElement(app, 0), false);
+                    SchemaElement ise = new PathSchemaElement(indent, () -> T.z.l169, new ROIntegerSchemaElement(app, 0), false);
                     if (!allowControlOfIndent)
-                        ise = new PathSchemaElement(indent, T.z.l169, new IntegerSchemaElement(app, 0), false);
+                        ise = new PathSchemaElement(indent, () -> T.z.l169, new IntegerSchemaElement(app, 0), false);
                     uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
                 }
             }
@@ -168,7 +168,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 if (rc.category == i)
                     llo.add(new UIEnumChoice.Option(text, new IRIOFixnum(key)));
             }
-            categories[i] = new UIEnumChoice.Category(database.categories[i], llo);
+            categories[i] = new UIEnumChoice.Category(database.categories[i].r(), llo);
         }
 
         final App app = launcher.getApp();

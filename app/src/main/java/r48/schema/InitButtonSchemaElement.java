@@ -14,6 +14,7 @@ import gabien.ui.UITextButton;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrPage.FF0;
 
 /**
  * The most horrifying creation I have ever wrought.
@@ -28,11 +29,12 @@ import r48.schema.util.SchemaPath;
  * Created on April 20, 2019.
  */
 public class InitButtonSchemaElement extends SchemaElement {
-    private final String text, condition;
+    private final FF0 text;
+    private final String condition;
     private final SchemaElement reinitializer;
     private final boolean defaulting, asDefault;
 
-    public InitButtonSchemaElement(String text2, String cond, @NonNull SchemaElement reinit, boolean runDef, boolean def) {
+    public InitButtonSchemaElement(FF0 text2, String cond, @NonNull SchemaElement reinit, boolean runDef, boolean def) {
         super(reinit.app);
         text = text2;
         condition = cond;
@@ -43,7 +45,7 @@ public class InitButtonSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
-        UITextButton utb = new UITextButton(text, app.f.schemaFieldTH, new Runnable() {
+        UITextButton utb = new UITextButton(text.r(), app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 // This is going to show up as a modifyVal changeOccurred, so it needs to be run again

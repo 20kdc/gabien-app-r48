@@ -15,6 +15,7 @@ import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrPage.FF0;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 
@@ -25,7 +26,7 @@ import r48.ui.UIFieldLayout;
  */
 public class ArrayElementSchemaElement extends SchemaElement implements IFieldSchemaElement {
     public int index;
-    public String name;
+    public FF0 nameCb;
     public SchemaElement subSchema;
     public String optional;
     // Removes the element rather than cutting the array. Only use when it is safe to do so.
@@ -34,10 +35,10 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     private boolean fieldWidthOverride = false;
     private int fieldWidth;
 
-    public ArrayElementSchemaElement(App app, int ind, String niceName, SchemaElement ise, String opt, boolean dr) {
+    public ArrayElementSchemaElement(App app, int ind, FF0 niceName, SchemaElement ise, String opt, boolean dr) {
         super(app);
         index = ind;
-        name = niceName;
+        nameCb = niceName;
         subSchema = ise;
         optional = opt;
         delRemove = dr;
@@ -45,6 +46,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+        final String name = nameCb.r();
         if (name.equals("_"))
             return HiddenSchemaElement.makeHiddenElement();
         if (target.getALen() <= index) {
@@ -88,7 +90,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
 
     @Override
     public int getDefaultFieldWidth(IRIO target) {
-        return UILabel.getRecommendedTextSize(name + " ", app.f.schemaFieldTH).width;
+        return UILabel.getRecommendedTextSize(nameCb.r() + " ", app.f.schemaFieldTH).width;
     }
 
     @Override
@@ -111,7 +113,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         if (optional == null)
             changed |= resizeToInclude(target);
         if (target.getALen() > index)
-            subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(new IRIOFixnum(index), "." + name), setDefault);
+            subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(new IRIOFixnum(index), "." + nameCb.r()), setDefault);
         if (changed)
             path.changeOccurred(true);
     }

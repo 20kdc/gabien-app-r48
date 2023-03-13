@@ -102,7 +102,7 @@ public class SDB extends App.Svc {
     public void newCMDB(String a0) {
         if (cmdbs.containsKey(a0))
             throw new RuntimeException("Attempted to overwrite CMDB: " + a0);
-        cmdbs.put(a0, new CMDB(this));
+        cmdbs.put(a0, new CMDB(this, a0));
     }
 
     public CMDB getCMDB(String arg) {

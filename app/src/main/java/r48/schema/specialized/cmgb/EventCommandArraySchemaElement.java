@@ -225,7 +225,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             RPGCommand rc = database.knownCommands.get(code);
             // make group element
             boolean elemAddRemove = addRemove && (i != 0);
-            group[i] = new ArrayElementSchemaElement(app, start + i, "", rcse, elemAddRemove ? "" : null, elemAddRemove);
+            group[i] = new ArrayElementSchemaElement(app, start + i, () -> "", rcse, elemAddRemove ? "" : null, elemAddRemove);
             if (i == 0)
                 rcse = rcse.hideHeaderVer();
             // specifics

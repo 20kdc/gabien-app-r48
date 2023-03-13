@@ -17,6 +17,7 @@ import r48.io.data.RORIO;
 import r48.schema.specialized.TempDialogSchemaChoice;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrPage.FF0;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.dialog.UIEnumChoice;
@@ -40,13 +41,13 @@ public class EnumSchemaElement extends SchemaElement {
     // Options for use in enum choice dialogs
     public final LinkedList<UIEnumChoice.Option> viewOptions = new LinkedList<UIEnumChoice.Option>();
 
-    public String buttonText;
+    public FF0 buttonText;
     public UIEnumChoice.EntryMode entryMode;
     public IRIO defaultVal;
 
-    public EnumSchemaElement(App app, HashMap<String, String> o, IRIO def, UIEnumChoice.EntryMode em, String bt) {
+    public EnumSchemaElement(App app, HashMap<String, FF0> o, IRIO def, UIEnumChoice.EntryMode em, FF0 bt) {
         super(app);
-        for (Map.Entry<String, String> mapping : o.entrySet())
+        for (Map.Entry<String, FF0> mapping : o.entrySet())
             lookupOptions.put(mapping.getKey(), makeStandardOption(ValueSyntax.decode(mapping.getKey()), mapping.getValue(), null, null));
         convertLookupToView();
         // continue
@@ -55,7 +56,7 @@ public class EnumSchemaElement extends SchemaElement {
         defaultVal = def;
     }
 
-    public EnumSchemaElement(App app, Collection<UIEnumChoice.Option> opts, IRIO def, UIEnumChoice.EntryMode em, String bt) {
+    public EnumSchemaElement(App app, Collection<UIEnumChoice.Option> opts, IRIO def, UIEnumChoice.EntryMode em, FF0 bt) {
         super(app);
         viewOptions.addAll(opts);
         Collections.sort(viewOptions, UIEnumChoice.COMPARATOR_OPTION);
@@ -99,7 +100,7 @@ public class EnumSchemaElement extends SchemaElement {
                         // Enums can affect parent format, so deal with that now.
                         launcher.popObject();
                     }
-                }, viewOptions, buttonText, entryMode), null, path), target));
+                }, viewOptions, buttonText.r(), entryMode), null, path), target));
             }
         });
         if (opt != null) {
@@ -114,7 +115,7 @@ public class EnumSchemaElement extends SchemaElement {
         return button;
     }
 
-    public static UIEnumChoice.Option makeStandardOption(RORIO val, String text, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
+    public static UIEnumChoice.Option makeStandardOption(RORIO val, FF0 text, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
         return new UIEnumChoice.Option(val.toString() + " : ", text, val, edit, fdb);
     }
 
@@ -133,8 +134,8 @@ public class EnumSchemaElement extends SchemaElement {
     public String viewValue(RORIO val, boolean prefix, @Nullable UIEnumChoice.Option option) {
         if (option != null) {
             if (!prefix)
-                return option.textSuffix;
-            return option.textMerged;
+                return option.textSuffix.r();
+            return option.getTextMerged();
         }
         return val.toString();
     }

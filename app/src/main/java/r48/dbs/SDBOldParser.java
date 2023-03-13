@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+import gabien.datum.DatumSrcLoc;
 import gabien.ui.UIElement;
 import gabien.uslx.append.IFunction;
 import gabien.uslx.append.ISupplier;
@@ -30,6 +31,7 @@ import r48.schema.specialized.cmgb.*;
 import r48.schema.specialized.tbleditors.*;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrPage.FF0;
 import r48.ui.dialog.UIEnumChoice;
 import r48.ui.dialog.UIEnumChoice.EntryMode;
 
@@ -43,16 +45,23 @@ public class SDBOldParser extends App.Svc implements IDatabase {
 
     public AggregateSchemaElement workingObj;
 
-    public HashMap<String, String> commandBufferNames = new HashMap<String, String>();
+    public HashMap<String, FF0> commandBufferNames = new HashMap<String, FF0>();
     public HashMap<String, SchemaElement> commandBufferSchemas = new HashMap<String, SchemaElement>();
 
     public String outerContext;
+
+    public DatumSrcLoc srcLoc = DatumSrcLoc.NONE;
 
     public SDBOldParser(App app, String fName) {
         super(app);
         sdb = app.sdb;
         fPfx = "SDB@" + fName;
         outerContext = fPfx + "/NONE";
+    }
+
+    @Override
+    public void updateSrcLoc(DatumSrcLoc sl) {
+        srcLoc = sl;
     }
 
     private PathSyntax compilePS(String text) {
@@ -84,12 +93,30 @@ public class SDBOldParser extends App.Svc implements IDatabase {
         DBLoader.readFile(app, fName, new SDBOldParser(app, fName));
     }
 
+    private FF0 trAnon(String text) {
+        return trAnon(outerContext, text);
+    }
+
+    private FF0 trAnon(String ovc, String text) {
+        return app.dTr(srcLoc, "SDB." + ovc + "." + text, text);
+    }
+
+    private FF0 trAnonExUnderscore(String text) {
+        return trAnonExUnderscore(outerContext, text);
+    }
+
+    private FF0 trAnonExUnderscore(String ovc, String text) {
+        if (text.equals("_"))
+            return () -> text;
+        return app.dTr(srcLoc, "SDB." + ovc + "." + text, text);
+    }
+
     @Override
     public void newObj(int objId, String objName) {
         outerContext = fPfx + "/commandBuffer";
         workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
         if (objId != -1) {
-            commandBufferNames.put(Integer.toString(objId), app.td(outerContext, objName));
+            commandBufferNames.put(Integer.toString(objId), trAnon(objName));
             commandBufferSchemas.put(Integer.toString(objId), workingObj);
         } else {
             commandBufferSchemas.put("", workingObj);
@@ -188,11 +215,11 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 }
                 if (text.equals("path") || text.equals("pathN")) {
                     PathSyntax path = getPathSyntax();
-                    String txt = "";
+                    FF0 txt;
                     if (!text.endsWith("N")) {
-                        txt = app.td(outerContext, path.decompiled);
+                        txt = trAnon(path.decompiled);
                     } else {
-                        txt = app.trExUnderscore(outerContext, args[point++]);
+                        txt = trAnonExUnderscore(args[point++]);
                         if (txt.equals("_"))
                             txt = null;
                     }
@@ -201,11 +228,11 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 }
                 if (text.equals("optP") || text.equals("optPN")) {
                     PathSyntax path = getPathSyntax();
-                    String txt = "";
+                    FF0 txt;
                     if (!text.endsWith("N")) {
-                        txt = app.td(outerContext, path.decompiled);
+                        txt = trAnon(path.decompiled);
                     } else {
-                        txt = app.trExUnderscore(outerContext, args[point++]);
+                        txt = trAnonExUnderscore(args[point++]);
                         if (txt.equals("_"))
                             txt = null;
                     }
@@ -308,13 +335,13 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     int len = Integer.parseInt(args[point++]);
                     String cond = "{@[@Interp.lang-Common-arrayLen]|" + len + "|1|0}";
                     SchemaElement reinit = new StandardArraySchemaElement(app, new OpaqueSchemaElement(app), len, 0, 0, null);
-                    return new InitButtonSchemaElement(app.td(outerContext, text2), cond, reinit, false, text.equals("lengthAdjustDef"));
+                    return new InitButtonSchemaElement(trAnon(text2), cond, reinit, false, text.equals("lengthAdjustDef"));
                 }
                 if (text.equals("initButton")) {
                     String text2 = args[point++];
                     String cond = args[point++];
                     SchemaElement reinit = get();
-                    return new InitButtonSchemaElement(app.td(outerContext, text2), cond, reinit, true, false);
+                    return new InitButtonSchemaElement(trAnon(text2), cond, reinit, true, false);
                 }
                 /*
                  * Command buffers are assembled by putting entries into commandBufferNames (which is ValueSyntax, Text),
@@ -323,18 +350,18 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (text.equals("flushCommandBuffer")) {
                     // time to flush it!
                     PathSyntax disambiguationIVar = getPathSyntax();
-                    setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, new RubyIO().setFX(0), EntryMode.INT, T.s.enum_code));
+                    setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, new RubyIO().setFX(0), EntryMode.INT, () -> T.s.enum_code));
                     HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
-                    commandBufferNames = new HashMap<String, String>();
+                    commandBufferNames = new HashMap<String, FF0>();
                     commandBufferSchemas = new HashMap<String, SchemaElement>();
                     return new DisambiguatorSchemaElement(app, disambiguationIVar, baseSE);
                 }
                 if (text.equals("flushCommandBufferStr")) {
                     // time to flush it!
                     PathSyntax disambiguationIVar = getPathSyntax();
-                    setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, new RubyIO().setString("", true), EntryMode.STR, T.s.enum_code));
+                    setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, new RubyIO().setString("", true), EntryMode.STR, () -> T.s.enum_code));
                     HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
-                    commandBufferNames = new HashMap<String, String>();
+                    commandBufferNames = new HashMap<String, FF0>();
                     commandBufferSchemas = new HashMap<String, SchemaElement>();
                     return new DisambiguatorSchemaElement(app, disambiguationIVar, baseSE);
                 }
@@ -401,14 +428,14 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (text.startsWith("]?")) {
                     // yay for... well, semi-consistency!
                     String a = text.substring(2);
-                    String b = app.trExUnderscore(outerContext, args[point++]);
+                    FF0 b = trAnonExUnderscore(args[point++]);
                     String o = app.td(outerContext, args[point++]);
                     return new ArrayElementSchemaElement(app, Integer.parseInt(a), b, get(), o, false);
                 }
                 if (text.startsWith("]")) {
                     // yay for consistency!
                     String a = text.substring(1);
-                    String b = app.trExUnderscore(outerContext, args[point++]);
+                    FF0 b = trAnonExUnderscore(args[point++]);
                     return new ArrayElementSchemaElement(app, Integer.parseInt(a), b, get(), null, false);
                 }
                 // --
@@ -505,7 +532,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                         }
 
                         private SchemaPath applySchema(final IRIO host, SchemaPath path, boolean update) {
-                            EnumSchemaElement sce = new EnumSchemaElement(app, new HashMap<String, String>(), defVal, EntryMode.INT, T.s.enum_id) {
+                            EnumSchemaElement sce = new EnumSchemaElement(app, new HashMap<String, FF0>(), defVal, EntryMode.INT, () -> T.s.enum_id) {
                                 @Override
                                 public void liveUpdate() {
                                     viewOptions.clear();
@@ -673,7 +700,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
         } else if (c == '@') {
             PathSyntax t = compilePS("@" + PathSyntax.poundEscape(args[0]));
             // Note: the unescaping happens in the Path
-            workingObj.aggregate.add(new PathSchemaElement(t, app.td(outerContext, t.decompiled), handleChain(args, 1), false));
+            workingObj.aggregate.add(new PathSchemaElement(t, trAnon(t.decompiled), handleChain(args, 1), false));
         } else if (c == '}') {
             String intA0 = args[0];
             boolean opt = false;
@@ -685,7 +712,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             // Note: the unescaping happens in the Path
             // Automatically escape.
             PathSyntax t = compilePS(":{" + PathSyntax.poundEscape(intA0));
-            workingObj.aggregate.add(new PathSchemaElement(t, app.td(outerContext, args[1]), handleChain(args, 2), opt));
+            workingObj.aggregate.add(new PathSchemaElement(t, trAnon(args[1]), handleChain(args, 2), opt));
         } else if (c == '+') {
             workingObj.aggregate.add(handleChain(args, 0));
         } else if (c == '>') {
@@ -694,33 +721,35 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             setSDBEntry(args[0], handleChain(args, 1));
             outerContext = backup;
         } else if (c == 'e') {
-            HashMap<String, String> options = new HashMap<String, String>();
+            HashMap<String, FF0> options = new HashMap<String, FF0>();
             int defVal = 0;
             for (int i = 1; i < args.length; i += 2) {
                 int k = Integer.parseInt(args[i]);
                 if (i == 1)
                     defVal = k;
-                String ctx = "SDB@" + args[0];
-                options.put(Integer.toString(k), app.td(ctx, args[i + 1]));
+                FF0 nam = trAnon(args[0], args[i + 1]);
+                options.put(Integer.toString(k), nam);
             }
             // INT: is part of the format
-            EnumSchemaElement e = new EnumSchemaElement(app, options, new RubyIO().setFX(defVal), EntryMode.INT, T.s.enum_int);
+            EnumSchemaElement e = new EnumSchemaElement(app, options, new RubyIO().setFX(defVal), EntryMode.INT, () -> T.s.enum_int);
             setSDBEntry(args[0], e);
         } else if (c == 's') {
             // Symbols
-            HashMap<String, String> options = new HashMap<String, String>();
-            for (int i = 1; i < args.length; i++)
-                options.put(":" + args[i], app.td(args[0], args[i]));
+            HashMap<String, FF0> options = new HashMap<String, FF0>();
+            for (int i = 1; i < args.length; i++) {
+                FF0 nam = trAnon(args[0], args[i]);
+                options.put(":" + args[i], nam);
+            }
 
-            EnumSchemaElement ese = new EnumSchemaElement(app, options, ValueSyntax.decode(":" + args[1]), EntryMode.SYM, T.s.enum_sym);
+            EnumSchemaElement ese = new EnumSchemaElement(app, options, ValueSyntax.decode(":" + args[1]), EntryMode.SYM, () -> T.s.enum_sym);
             setSDBEntry(args[0], ese);
         } else if (c == 'E') {
-            HashMap<String, String> options = new HashMap<String, String>();
+            HashMap<String, FF0> options = new HashMap<String, FF0>();
             for (int i = 2; i < args.length; i += 2) {
-                String ctx = "SDB@" + args[0];
-                options.put(args[i], app.td(ctx, args[i + 1]));
+                FF0 nam = trAnon(args[0], args[i]);
+                options.put(args[i], nam);
             }
-            EnumSchemaElement e = new EnumSchemaElement(app, options, ValueSyntax.decode(args[2]), EntryMode.INT, app.td(args[0], args[1]));
+            EnumSchemaElement e = new EnumSchemaElement(app, options, ValueSyntax.decode(args[2]), EntryMode.INT, trAnon(args[0], args[1]));
             setSDBEntry(args[0], e);
         } else if (c == 'M') {
             // Make a proxy (because we change the backing element all the time)
@@ -735,7 +764,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 return new EnumSchemaElement(app, finalMap.values(), mergeB.defaultVal, mergeB.entryMode, mergeB.buttonText);
             });
         } else if (c == ']') {
-            workingObj.aggregate.add(new ArrayElementSchemaElement(app, Integer.parseInt(args[0]), app.td(outerContext, args[1]), handleChain(args, 2), null, false));
+            workingObj.aggregate.add(new ArrayElementSchemaElement(app, Integer.parseInt(args[0]), trAnon(args[1]), handleChain(args, 2), null, false));
         } else if (c == 'i') {
             readFile(app, args[0]);
         } else if (c == 'D') {
@@ -794,8 +823,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 } else if (args.length != 2) {
                     throw new RuntimeException("Cmd <Disambiguator> [<Name>]");
                 }
-                nam = app.td(outerContext + "/" + val, nam);
-                commandBufferNames.put(val, nam);
+                FF0 nam2 = trAnon(outerContext + "/" + val, nam);
+                commandBufferNames.put(val, nam2);
                 commandBufferSchemas.put(val, workingObj);
             } else if (args[0].equals("defaultCB")) {
                 workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
@@ -835,7 +864,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                         }
                     }
                 }
-                final String textF = args[0].equals("name") ? app.td(fPfx + "/" + args[1], text) : text;
+                final String textFPre = text; 
+                final FF0 textF = args[0].equals("name") ? trAnon(fPfx + "/" + args[1], text) : () -> textFPre;
 
                 final PathSyntax[] argumentsPS = new PathSyntax[arguments.size()];
                 int idx = 0;
@@ -852,7 +882,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                                 break;
                             parameters.add(res);
                         }
-                        return app.fmt.formatNameExtended(textF, rubyIO, parameters.toArray(new RORIO[0]), null);
+                        return app.fmt.formatNameExtended(textF.r(), rubyIO, parameters.toArray(new RORIO[0]), null);
                     }
                 });
             } else if (args[0].equals("spritesheet[")) {
@@ -863,7 +893,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     text2 += " " + args[point++];
                 point++; // skip ]
                 // returns new point
-                sdb.helpers.createSpritesheet(args, point, text2);
+                sdb.helpers.createSpritesheet(srcLoc, args, point, text2);
             } else {
                 throw new RuntimeException("C-command " + args[0] + " is not supported.");
             }

@@ -14,6 +14,7 @@ import r48.RubyIO;
 import r48.UITest;
 import r48.io.data.RORIO;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrPage.FF0;
 import r48.ui.UIAppendButton;
 
 import java.util.Comparator;
@@ -48,7 +49,7 @@ public class UIEnumChoice extends App.Prx {
                 }
             };
             for (final Option o : order[i].options) {
-                final UITextButton button = new UITextButton(o.textPrefix + o.textSuffix, app.f.enumChoiceTH, new Runnable() {
+                final UITextButton button = new UITextButton(o.getTextMerged(), app.f.enumChoiceTH, new Runnable() {
                     @Override
                     public void run() {
                         if (!wantsSelfClose)
@@ -59,7 +60,7 @@ public class UIEnumChoice extends App.Prx {
                 UIElement element = button;
                 if (o.editSuffix != null) {
                     final UIAppendButton switcheroo = new UIAppendButton(T.u.bEnumRename, element, null, app.f.enumChoiceTH);
-                    final UITextBox textbox = new UITextBox(o.textSuffix, app.f.enumChoiceTH);
+                    final UITextBox textbox = new UITextBox(o.textSuffix.r(), app.f.enumChoiceTH);
                     final AtomicBoolean ab = new AtomicBoolean(false);
                     switcheroo.button.onClick = new Runnable() {
                         @Override
@@ -165,34 +166,41 @@ public class UIEnumChoice extends App.Prx {
 
     public static final Comparator<Option> COMPARATOR_OPTION = new Comparator<UIEnumChoice.Option>() {
         public int compare(UIEnumChoice.Option o1, UIEnumChoice.Option o2) {
-            return UITest.natStrComp(o1.textMerged, o2.textMerged);
+            return UITest.natStrComp(o1.getTextMerged(), o2.getTextMerged());
         }
     };
 
     public static final class Option {
         public final String textPrefix;
-        public final String textSuffix;
-        public final String textMerged;
+        public final FF0 textSuffix;
+        private String textMerged;
         public final RORIO value;
         public final @Nullable IConsumer<String> editSuffix;
         public final @Nullable SchemaPath furtherDataButton;
 
         public Option(String s, RORIO integer) {
             textPrefix = s;
-            textSuffix = "";
-            textMerged = s;
+            textSuffix = () -> "";
             value = integer;
             editSuffix = null;
             furtherDataButton = null;
         }
 
-        public Option(String pfx, String sfx, RORIO integer, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
+        public Option(String pfx, FF0 sfx, RORIO integer, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
             textPrefix = pfx;
             textSuffix = sfx;
-            textMerged = pfx + sfx;
             value = integer;
             editSuffix = edit;
             furtherDataButton = fdb;
+        }
+
+        public synchronized String getTextMerged() {
+            String got = textMerged;
+            if (got == null) {
+                got = textPrefix + textSuffix.r();
+                textMerged = got;
+            }
+            return got;
         }
     }
 }

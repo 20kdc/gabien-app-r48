@@ -8,6 +8,7 @@
 package r48.schema;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
@@ -16,6 +17,7 @@ import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrPage.FF0;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 
@@ -24,14 +26,14 @@ import r48.ui.UIFieldLayout;
  */
 public class PathSchemaElement extends SchemaElement implements IFieldSchemaElement {
     public final PathSyntax pStr;
-    public String alias;
+    public @Nullable FF0 alias;
     public SchemaElement subElem;
     public boolean optional;
 
     private boolean fieldWidthOverride = false;
     private int fieldWidth;
 
-    public PathSchemaElement(PathSyntax iv, String a, @NonNull SchemaElement sub, boolean opt) {
+    public PathSchemaElement(@NonNull PathSyntax iv, @Nullable FF0 a, @NonNull SchemaElement sub, boolean opt) {
         super(sub.app);
         pStr = iv;
         alias = a;
@@ -43,7 +45,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         UILabel uil = null;
         if (alias != null)
-            uil = new UILabel(alias + " ", app.f.schemaFieldTH);
+            uil = new UILabel(alias.r() + " ", app.f.schemaFieldTH);
         IRIO tgo = pStr.get(target);
         UIElement e2;
         if (tgo == null) {
@@ -57,7 +59,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
                 }
             });
         } else {
-            e2 = subElem.buildHoldingEditor(tgo, launcher, path.otherIndex(alias));
+            e2 = subElem.buildHoldingEditor(tgo, launcher, path.otherIndex(alias.r()));
             if (optional)
                 e2 = new UIAppendButton("-", e2, new Runnable() {
                     @Override
@@ -78,7 +80,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     @Override
     public int getDefaultFieldWidth(IRIO target) {
         if (alias != null)
-            return UILabel.getRecommendedTextSize(alias + " ", app.f.schemaFieldTH).width;
+            return UILabel.getRecommendedTextSize(alias.r() + " ", app.f.schemaFieldTH).width;
         return 0;
     }
 
@@ -92,7 +94,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         IRIO r = pStr.get(target);
         if (r != null) {
-            subElem.modifyVal(r, path.otherIndex(alias), setDefault);
+            subElem.modifyVal(r, path.otherIndex(alias.r()), setDefault);
         } else {
             if (!optional) {
                 IRIO rio = pStr.add(target);
@@ -105,7 +107,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
 
     private void createIVar(IRIO r, SchemaPath targetPath, boolean mv) {
         // being created, so create from scratch no matter what.
-        subElem.modifyVal(r, targetPath.otherIndex(alias), mv);
+        subElem.modifyVal(r, targetPath.otherIndex(alias.r()), mv);
         targetPath.changeOccurred(mv);
     }
 }
