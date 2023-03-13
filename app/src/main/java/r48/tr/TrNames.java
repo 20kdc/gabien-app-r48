@@ -41,4 +41,8 @@ public class TrNames {
     public static String sdbAnon(String ovc, String text) {
         return "SDB_" + ovc + "." + text;
     }
+
+    public static String sdbEnum(String string, int k) {
+        return "SDB_" + string + ".e" + k;
+    }
 }

@@ -732,7 +732,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 int k = Integer.parseInt(args[i]);
                 if (i == 1)
                     defVal = k;
-                FF0 nam = trAnon(args[0], args[i + 1]);
+                FF0 nam = app.dTr(srcLoc, TrNames.sdbEnum(args[0], k), args[i + 1]);
                 options.put(Integer.toString(k), nam);
             }
             // INT: is part of the format

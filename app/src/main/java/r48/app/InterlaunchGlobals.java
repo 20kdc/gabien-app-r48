@@ -33,9 +33,9 @@ public class InterlaunchGlobals implements IDynTrProxy {
     private HashMap<String, EngineDef> engineDefs;
     public final IConsumer<String> logTrIssues;
 
-    public InterlaunchGlobals(Config c, IConsumer<MVMEnv> report, IConsumer<String> loadProgress) {
+    public InterlaunchGlobals(Config c, IConsumer<MVMEnv> report, IConsumer<String> loadProgress, IConsumer<String> trIssues) {
         this.c = c;
-        logTrIssues = (str) -> System.err.println("TR: " + str);
+        logTrIssues = trIssues;
         reportVMChanges = report;
         updateLanguage(loadProgress);
         engineDefs = EnginesList.getEngines(loadProgress);
