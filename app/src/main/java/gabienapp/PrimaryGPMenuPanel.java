@@ -12,6 +12,7 @@ import gabienapp.state.LSMain;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.tr.LanguageList;
+import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 import r48.tr.pages.TrRoot;
 import r48.ui.dialog.UIReadEvaluatePrintLoop;
@@ -48,7 +49,7 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
                     final CategoryGPMenuPanel cat = new CategoryGPMenuPanel(ls, PrimaryGPMenuPanel.this, args[0]);
                     if (args.length != 2)
                         throw new RuntimeException("a category needs both an ID name and a " + LanguageList.hardcodedLang + " name");
-                    res1.add(ls.dTr(srcLoc, "TrDynLauncher." + args[0], args[1]));
+                    res1.add(ls.dTr(srcLoc, TrNames.dynLn(args[0]), args[1]));
                     res2.add(() -> {
                         ls.uiLauncher.setPanel(cat);
                     });

@@ -17,6 +17,7 @@ import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
+import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 import r48.tr.pages.TrRoot;
 
@@ -72,7 +73,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                 if (!doWeCare)
                     return;
                 if (c == '.')
-                    res1.set(res1.size() - 1, ls.dTr(srcLoc, "TrDynLauncher." + args[0], args[1]));
+                    res1.set(res1.size() - 1, ls.dTr(srcLoc, TrNames.dynLn(args[0]), args[1]));
                 if (c == 'e')
                     boxedEncoding.set(args[0]);
             }

@@ -31,6 +31,7 @@ import r48.schema.specialized.cmgb.*;
 import r48.schema.specialized.tbleditors.*;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 import r48.ui.dialog.UIEnumChoice;
 import r48.ui.dialog.UIEnumChoice.EntryMode;
@@ -41,7 +42,6 @@ import r48.ui.dialog.UIEnumChoice.EntryMode;
  */
 public class SDBOldParser extends App.Svc implements IDatabase {
     public final SDB sdb;
-    public final String fPfx;
 
     public AggregateSchemaElement workingObj;
 
@@ -55,8 +55,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     public SDBOldParser(App app, String fName) {
         super(app);
         sdb = app.sdb;
-        fPfx = "SDB@" + fName;
-        outerContext = fPfx + "/NONE";
+        outerContext = "NONE";
     }
 
     @Override
@@ -98,7 +97,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     }
 
     private @NonNull FF0 trAnon(String ovc, String text) {
-        return app.dTr(srcLoc, "SDB." + ovc + "." + text, text);
+        return app.dTr(srcLoc, TrNames.sdbAnon(ovc, text), text);
     }
 
     private @NonNull FF0 trAnonExUnderscore(String text) {
@@ -114,12 +113,12 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     private @NonNull FF0 trAnonExUnderscore(String ovc, String text) {
         if (text.equals("_"))
             return () -> text;
-        return app.dTr(srcLoc, "SDB." + ovc + "." + text, text);
+        return app.dTr(srcLoc, TrNames.sdbAnon(ovc, text), text);
     }
 
     @Override
     public void newObj(int objId, String objName) {
-        outerContext = fPfx + "/commandBuffer";
+        outerContext = "commandBuffer";
         workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
         if (objId != -1) {
             commandBufferNames.put(Integer.toString(objId), trAnon(objName));
@@ -691,7 +690,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
         } else if (c == ':') {
             if (args.length == 1) {
                 workingObj = new AggregateSchemaElement(app, new SchemaElement[]{});
-                outerContext = fPfx + "/" + args[0];
+                outerContext = args[0];
                 setSDBEntry(args[0], new ObjectClassSchemaElement(args[0], workingObj, 'o'));
             } else {
                 String backup = outerContext;
@@ -701,7 +700,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             }
         } else if (c == '.') {
             workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
-            outerContext = fPfx + "/" + args[0];
+            outerContext = args[0];
             setSDBEntry(args[0], workingObj);
         } else if (c == '@') {
             PathSyntax t = compilePS("@" + PathSyntax.poundEscape(args[0]));
@@ -820,7 +819,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 // This is getting changed over for sanity reasons.
                 // It's not used right now, so it's safe to move it over.
                 // The new syntax is Cmd <DisambiguatorSyntax> ["Name!"]
-                outerContext = fPfx + "/commandBuffer";
+                outerContext = "commandBuffer";
                 workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
                 String val = args[1];
                 String nam = val;
@@ -871,7 +870,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     }
                 }
                 final String textFPre = text; 
-                final FF0 textF = args[0].equals("name") ? trAnon(fPfx + "/" + args[1], text) : () -> textFPre;
+                final FF0 textF = args[0].equals("name") ? trAnon(args[1], text) : () -> textFPre;
 
                 final PathSyntax[] argumentsPS = new PathSyntax[arguments.size()];
                 int idx = 0;

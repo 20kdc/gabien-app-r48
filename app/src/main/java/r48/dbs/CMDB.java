@@ -15,6 +15,7 @@ import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 
 import java.util.HashMap;
@@ -27,7 +28,7 @@ public class CMDB extends App.Svc {
     /**
      * DB ID for use in internationalization
      */
-    public final String dbID;
+    public final String dbId;
 
     public int digitCount = 3;
     public FF0[] categories = new FF0[] {() -> T.s.cmdb_defCatName};
@@ -38,7 +39,7 @@ public class CMDB extends App.Svc {
 
     public CMDB(final SDB sdb, final String id) {
         super(sdb.app);
-        dbID = id;
+        dbId = id;
     }
 
     /**
@@ -69,14 +70,10 @@ public class CMDB extends App.Svc {
                 srcLoc = sl;
             }
 
-            private FF0 dTr(String subkey, String defVal) {
-                return app.dTr(srcLoc, "CMDB." + dbID + "." + subkey, defVal);
-            }
-
             private FF0 dTrExUnderscore(String subkey, String defVal) {
                 if (defVal.equals("_"))
                     return () -> defVal;
-                return dTr(subkey, defVal);
+                return app.dTr(srcLoc, subkey, defVal);
             }
 
             @Override
@@ -84,7 +81,7 @@ public class CMDB extends App.Svc {
                 rc = new RPGCommand(sdb.app, objId);
                 rc.category = categories.length - 1;
                 // Names use NDB syntax, thus, separate context
-                rc.name = dTr(".names." + objId, objName);
+                rc.name = app.dTr(srcLoc, TrNames.cmdbName(dbId, objId), objName);
                 if (knownCommands.containsKey(objId))
                     throw new RuntimeException("Redefined " + objId);
                 knownCommands.put(objId, rc);
@@ -389,7 +386,7 @@ public class CMDB extends App.Svc {
                 gbStateArgs = null;
                 if (c == 'p') {
                     int paramIdx = rc.paramName.size();
-                    final FF0 fv = dTrExUnderscore(rc.commandId + ".p." + paramIdx, args[0]);
+                    final FF0 fv = dTrExUnderscore(TrNames.cmdbParam(dbId, rc.commandId, paramIdx), args[0]);
                     rc.paramName.add(new IFunction<IRIO, String>() {
                         @Override
                         public String apply(IRIO rubyIO) {
@@ -414,8 +411,8 @@ public class CMDB extends App.Svc {
                     // Pv-syntax:
                     // P arrayDI defaultName defaultType
                     // v specificVal name type
-                    final FF0 defName = dTrExUnderscore(rc.commandId + ".p." + paramIdx + ".", args[1]);
-                    currentPvHLocPrefix = rc.commandId + ".pv." + paramIdx + ".";
+                    final FF0 defName = dTrExUnderscore(TrNames.cmdbParam(dbId, rc.commandId, paramIdx), args[1]);
+                    currentPvHLocPrefix = TrNames.cmdbParam(dbId, rc.commandId, paramIdx) + ".";
                     final int arrayDI = Integer.parseInt(args[0]);
                     final SchemaElement defaultSE = aliasingAwareSG(args[2]);
                     rc.paramType.add(new IFunction<IRIO, SchemaElement>() {
@@ -461,7 +458,7 @@ public class CMDB extends App.Svc {
                     String desc = "";
                     for (String s : args)
                         desc += " " + s;
-                    rc.description = dTr(rc.commandId + ".d", desc.trim());
+                    rc.description = app.dTr(srcLoc, TrNames.cmdbDesc(dbId, rc.commandId), desc.trim());
                 } else if (c == 'i') {
                     rc.indentPre = Integer.parseInt(args[0]);
                 } else if (c == 'I') {
@@ -508,7 +505,7 @@ public class CMDB extends App.Svc {
                         categories = new FF0[args.length - 1];
                         // No longer using EscapedStringSyntax, so sanity has been restored (yay!)
                         for (int i = 1; i < args.length; i++)
-                            categories[i - 1] = dTr("cat." + i, args[i]);
+                            categories[i - 1] = app.dTr(srcLoc, TrNames.cmdbCat(dbId, i), args[i]);
                     }
                     if (args[0].equals("digitCount"))
                         digitCount = Integer.parseInt(args[1]);

@@ -8,7 +8,6 @@ package r48.minivm;
 
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -29,12 +28,14 @@ import r48.tr.IDynTrProxy;
 public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
     private final IConsumer<String> loadProgress, logTrIssues;
     private final HashMap<String, DynTrSlot> dynMap;
+    private final LinkedList<String> dynList;
 
     public MVMEnvR48(IConsumer<String> loadProgress, IConsumer<String> logTrIssues) {
         super();
         this.loadProgress = loadProgress;
         this.logTrIssues = logTrIssues;
         dynMap = new HashMap<>();
+        dynList = new LinkedList<>();
     }
 
     protected MVMEnvR48(MVMEnvR48 p) {
@@ -42,6 +43,7 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
         loadProgress = p.loadProgress;
         logTrIssues = p.logTrIssues;
         dynMap = p.dynMap;
+        dynList = p.dynList;
     }
 
     /**
@@ -68,6 +70,7 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
             MVMSlot slot = ensureSlot(new DatumSymbol(id));
             res = new DynTrSlot(srcLoc, slot);
             dynMap.put(id, res);
+            dynList.add(id);
         }
         Object intoMVM = DynTrSlot.translateIntoMVM(id, base);
         if (res.underlyingSlot.v != null)
@@ -77,21 +80,52 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
         return res;
     }
 
-    public void dynTrDump(String fn) {
-        LinkedList<String> keys = new LinkedList<>(dynMap.keySet());
-        Collections.sort(keys);
-        try (OutputStream os = GaBIEn.getOutFile(fn)) {
-            os.write("(define \n".getBytes(StandardCharsets.UTF_8));
-            for (String s : keys) {
-                DynTrSlot slot = dynMap.get(s);
-                DatumSymbol symK = slot.underlyingSlot.s;
-                String v = slot.sourceDump();
-                String ln = "\t; " + slot.sourceLoc  + "\n\t" + DatumWriter.objectToString(symK) + " " + v + "\n";
-                os.write(ln.getBytes(StandardCharsets.UTF_8));
+    private LinkedList<TrDumpSection> dynTrDumpSections() {
+        LinkedList<TrDumpSection> sections = new LinkedList<>();
+        TrDumpSection currentSection = null;
+        for (String s : dynList) {
+            String estPfx = "";
+            if (s.contains("."))
+                estPfx = s.substring(0, s.indexOf('.') + 1);
+            if (currentSection == null || !currentSection.prefix.equals(estPfx)) {
+                currentSection = new TrDumpSection(estPfx);
+                sections.add(currentSection);
             }
-            os.write(")\n".getBytes(StandardCharsets.UTF_8));
+            currentSection.sectionContent.add(s);
+        }
+        return sections;
+    }
+
+    public void dynTrDump(String fn) {
+        try (OutputStream os = GaBIEn.getOutFile(fn)) {
+            for (TrDumpSection section : dynTrDumpSections()) {
+                if (section.prefix.equals("")) {
+                    os.write("(define \n".getBytes(StandardCharsets.UTF_8));
+                } else if (section.prefix.endsWith(".")) {
+                    DatumSymbol ds = new DatumSymbol(section.prefix.substring(0, section.prefix.length() - 1));
+                    os.write(("(define-group " + DatumWriter.objectToString(ds) + " \n").getBytes(StandardCharsets.UTF_8));
+                } else {
+                    DatumSymbol ds = new DatumSymbol(section.prefix);
+                    os.write(("(define-prefix " + DatumWriter.objectToString(ds) + " \n").getBytes(StandardCharsets.UTF_8));
+                }
+                for (String s : section.sectionContent) {
+                    DynTrSlot slot = dynMap.get(s);
+                    DatumSymbol symK = new DatumSymbol(s.substring(section.prefix.length()));
+                    String v = slot.sourceDump();
+                    String ln = "\t; " + slot.sourceLoc  + "\n\t" + DatumWriter.objectToString(symK) + " " + v + "\n";
+                    os.write(ln.getBytes(StandardCharsets.UTF_8));
+                }
+                os.write(")\n".getBytes(StandardCharsets.UTF_8));
+            }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    private static class TrDumpSection {
+        String prefix;
+        LinkedList<String> sectionContent = new LinkedList<>();
+        TrDumpSection(String hdr) {
+            prefix = hdr;
         }
     }
 }
