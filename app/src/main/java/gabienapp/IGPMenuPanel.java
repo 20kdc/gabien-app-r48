@@ -7,8 +7,10 @@
 
 package gabienapp;
 
+import r48.tr.TrPage.FF0;
+
 public interface IGPMenuPanel {
-    String[] getButtonText();
+    FF0[] getButtonText();
 
     Runnable[] getButtonActs();
 }

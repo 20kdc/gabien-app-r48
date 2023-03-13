@@ -6,6 +6,7 @@
  */
 package r48.minivm.compiler;
 
+import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.ISupplier;
 import r48.minivm.MVMEnv;
@@ -18,8 +19,8 @@ import r48.minivm.expr.MVMCSetSlot;
  * Created 1st March 2023.
  */
 public class MVMToplevelScope extends MVMCompileScope {
-    public MVMToplevelScope(MVMEnv ctx) {
-        super(ctx);
+    public MVMToplevelScope(MVMEnv ctx, DatumSrcLoc srcLoc) {
+        super(ctx, srcLoc);
     }
     private MVMToplevelScope(MVMToplevelScope tls) {
         super(tls);

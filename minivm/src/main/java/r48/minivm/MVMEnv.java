@@ -16,6 +16,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.datum.DatumDecodingVisitor;
 import gabien.datum.DatumReaderTokenSource;
+import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.IFunction;
 import gabien.uslx.append.ISupplier;
@@ -59,22 +60,22 @@ public class MVMEnv {
         AtomicReference<Object> ar = new AtomicReference<>();
         DatumDecodingVisitor ddv = new DatumDecodingVisitor() {
             @Override
-            public void visitTree(Object obj) {
-                ar.set(evalObject(obj));
+            public void visitTree(Object obj, DatumSrcLoc srcLoc) {
+                ar.set(evalObject(obj, srcLoc));
             }
             @Override
-            public void visitEnd() {
+            public void visitEnd(DatumSrcLoc srcLoc) {
             }
         };
-        new DatumReaderTokenSource(str).visit(ddv);
+        new DatumReaderTokenSource("REPL", str).visit(ddv);
         return ar.get();
     }
 
     /**
      * Evaluates an object
      */
-    public Object evalObject(Object obj) {
-        MVMCompileScope mcs = new MVMToplevelScope(this);
+    public Object evalObject(Object obj, DatumSrcLoc srcLoc) {
+        MVMCompileScope mcs = new MVMToplevelScope(this, srcLoc);
         MVMCExpr exp = mcs.compile(obj);
         return exp.exc(MVMScope.ROOT);
     }

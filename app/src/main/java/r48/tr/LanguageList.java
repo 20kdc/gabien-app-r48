@@ -18,6 +18,7 @@ import gabien.GaBIEn;
 import gabien.datum.DatumDecodingVisitor;
 import gabien.datum.DatumKVDVisitor;
 import gabien.datum.DatumReaderTokenSource;
+import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumVisitor;
 
 /**
@@ -45,18 +46,17 @@ public class LanguageList {
         try (InputStreamReader isr = GaBIEn.getTextResource(fn)) {
             if (isr == null)
                 return;
-            new DatumReaderTokenSource(isr).visit(new DatumKVDVisitor() {
+            new DatumReaderTokenSource(fn, isr).visit(new DatumKVDVisitor() {
                 @Override
                 public DatumVisitor handle(String key) {
                     // sure!
                     return new DatumDecodingVisitor() {
-                        
                         @Override
-                        public void visitEnd() {
+                        public void visitEnd(DatumSrcLoc srcLoc) {
                         }
                         
                         @Override
-                        public void visitTree(Object obj) {
+                        public void visitTree(Object obj, DatumSrcLoc srcLoc) {
                             if (obj instanceof List) {
                                 @SuppressWarnings("unchecked")
                                 List<Object> lo = (List<Object>) obj;

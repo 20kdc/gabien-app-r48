@@ -6,7 +6,8 @@
  */
 package r48.tr;
 
-import gabien.uslx.append.ISupplier;
+import gabien.datum.DatumSrcLoc;
+import gabien.datum.DatumWriter;
 import r48.minivm.MVMSlot;
 import r48.minivm.fn.MVMFn;
 import r48.tr.TrPage.FF0;
@@ -19,9 +20,11 @@ import r48.tr.TrPage.FF4;
  * Dynamic translation slot.
  * Created 12th March 2023.
  */
-public final class DynTrSlot implements ISupplier<String>, FF1, FF2, FF3, FF4 {
+public final class DynTrSlot implements FF0, FF1, FF2, FF3, FF4 {
+    public final DatumSrcLoc sourceLoc;
     public final MVMSlot underlyingSlot;
-    public DynTrSlot(MVMSlot slot) {
+    public DynTrSlot(DatumSrcLoc sl, MVMSlot slot) {
+        sourceLoc = sl;
         underlyingSlot = slot;
     }
 
@@ -101,7 +104,7 @@ public final class DynTrSlot implements ISupplier<String>, FF1, FF2, FF3, FF4 {
         }
     }
 
-    public String get() {
+    public String r() {
         return resolve(0, null, null, null, null);
     }
 
@@ -119,5 +122,14 @@ public final class DynTrSlot implements ISupplier<String>, FF1, FF2, FF3, FF4 {
 
     public String r(Object a0, Object a1, Object a2, Object a3) {
         return resolve(4, a0, a1, a2, a3);
+    }
+
+    /**
+     * Attempts to dump source, somehow.
+     */
+    public String sourceDump() {
+        if (underlyingSlot.v instanceof String)
+            return DatumWriter.objectToString(underlyingSlot.v);
+        return DatumWriter.objectToString(r()) + " ; unable to copy source code";
     }
 }

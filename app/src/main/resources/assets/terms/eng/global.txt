@@ -47,7 +47,7 @@
 	bBack "Back..."
 	noGameMode "'No Game' Mode"
 	accessLauncherREPL "Access Launcher REPL"
-	dumpLLang "Dump L-<lang>.txt"
+	dumpLLang "Write launcher-tr.scm"
 
 	(err_
 		hasOccurred (..

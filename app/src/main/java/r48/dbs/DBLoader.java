@@ -8,6 +8,7 @@
 package r48.dbs;
 
 import gabien.GaBIEn;
+import gabien.datum.DatumSrcLoc;
 import r48.app.AppCore;
 import r48.io.JsonStringIO;
 
@@ -28,7 +29,7 @@ public class DBLoader {
         if (app != null)
             app.loadProgress.accept(app.t.g.loadingProgress.r(s));
         try {
-            readFile(GaBIEn.getResource(s), db);
+            readFile(s, GaBIEn.getResource(s), db);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -36,10 +37,10 @@ public class DBLoader {
         System.out.println("<<" + s);
     }
 
-    public static void readFile(InputStream helpStream, IDatabase db) {
+    public static void readFile(String fn, InputStream helpStream, IDatabase db) {
         try {
             InputStreamReader fr = new InputStreamReader(helpStream, "UTF-8");
-            new DBLoader(new BufferedReader(fr), db);
+            new DBLoader(fn, new BufferedReader(fr), db);
             fr.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,25 +48,25 @@ public class DBLoader {
         }
     }
 
-    private DBLoader(BufferedReader br, IDatabase db) throws IOException {
+    private DBLoader(String fn, BufferedReader br, IDatabase db) throws IOException {
         int ln = 1;
         try {
             while (br.ready()) {
+                db.updateSrcLoc(new DatumSrcLoc(fn, ln));
                 String l = br.readLine();
                 if (l.length() > 0) {
                     char cmd = l.charAt(0);
-                    if (cmd == ' ')
-                        continue;
-                    String[] ll = tokenize(new StringReader(l.substring(1).trim()));
-                    if (cmd >= '0')
-                        if (cmd <= '9') {
+                    if (cmd != ' ') {
+                        String[] ll = tokenize(new StringReader(l.substring(1).trim()));
+                        if (cmd >= '0' && cmd <= '9') {
                             int a = l.indexOf(':');
                             if (a == -1)
                                 throw new RuntimeException("Bad DB entry");
                             db.newObj(Integer.parseInt(l.substring(0, a)), l.substring(a + 1).trim());
-                            continue;
+                        } else {
+                            db.execCmd(cmd, ll);
                         }
-                    db.execCmd(cmd, ll);
+                    }
                 }
                 ln++;
             }

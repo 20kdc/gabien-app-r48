@@ -9,12 +9,18 @@ package r48.dbs;
 
 import java.io.IOException;
 
+import gabien.datum.DatumSrcLoc;
+
 /**
  * Called upon by DBLoader to actually implement the database.
  * Created on 12/30/16.
  */
 public interface IDatabase {
     void newObj(int objId, String objName) throws IOException;
+
+    default void updateSrcLoc(DatumSrcLoc sl) {
+        
+    }
 
     void execCmd(char c, String[] args) throws IOException;
 }

@@ -9,15 +9,15 @@ package r48.app;
 import java.util.HashMap;
 
 import gabien.GaBIEn;
+import gabien.datum.DatumSrcLoc;
 import gabien.uslx.append.IConsumer;
 import r48.cfg.Config;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMR48GlobalLibraries;
-import r48.tr.ITranslator;
+import r48.tr.DynTrSlot;
+import r48.tr.IDynTrProxy;
 import r48.tr.LanguageList;
-import r48.tr.NullTranslator;
-import r48.tr.Translator;
 import r48.tr.pages.TrRoot;
 
 /**
@@ -25,10 +25,9 @@ import r48.tr.pages.TrRoot;
  * Notably, updateLanguage must be called at least once before this can really be called finished.
  * Created 28th February, 2023
  */
-public class InterlaunchGlobals {
+public class InterlaunchGlobals implements IDynTrProxy {
     public final Config c;
     public final TrRoot t = new TrRoot();
-    private ITranslator translator = new NullTranslator();
     private MVMEnvR48 langVM;
     private IConsumer<MVMEnv> reportVMChanges;
     private HashMap<String, EngineDef> engineDefs;
@@ -40,6 +39,15 @@ public class InterlaunchGlobals {
         reportVMChanges = report;
         updateLanguage(loadProgress);
         engineDefs = EnginesList.getEngines(loadProgress);
+    }
+
+    @Override
+    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, Object text) {
+        return langVM.dynTrBase(srcLoc, id, text);
+    }
+
+    public void launcherDynTrDump(String fn) {
+        langVM.dynTrDump(fn);
     }
 
     /**
@@ -67,36 +75,8 @@ public class InterlaunchGlobals {
         langVM.include("terms/" + c.language + "/init", true);
         t.fillFromVM(langVM, logTrIssues);
         reportVMChanges.accept(langVM);
-        if (lang.equals(LanguageList.hardcodedLang)) {
-            translator = new NullTranslator();
-        } else {
-            translator = new Translator(lang);
-        }
-        translator.read("Systerms/" + lang + ".txt", "r48/");
-        translator.read("Systerms/L-" + lang + ".txt", "launcher/");
         GaBIEn.wordLoad = t.g.wordLoad;
         GaBIEn.wordSave = t.g.wordSave;
         GaBIEn.wordInvalidFileName = t.g.wordInvalidFileName;
-    }
-
-    /**
-     * Translates an internal string.
-     */
-    public String tr(String text) {
-        return translator.tr("r48", text);
-    }
-
-    /**
-     * Translates a launcher metadata string.
-     */
-    public String trL(String text) {
-        return translator.tr("launcher", text);
-    }
-
-    /**
-     * Passthrough to translation dumper
-     */
-    public void translationDump(String string, String string2) {
-        translator.dump(string, string2);
     }
 }

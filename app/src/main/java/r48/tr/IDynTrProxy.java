@@ -6,6 +6,8 @@
  */
 package r48.tr;
 
+import gabien.datum.DatumSrcLoc;
+
 /**
  * Dynamic translation proxy.
  * Created 13th March 2023.
@@ -14,40 +16,47 @@ public interface IDynTrProxy {
     /**
      * Dynamically translate something.
      */
-    DynTrSlot dynTrBase(String id, Object text);
+    DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, Object text);
 
     /**
      * Dynamically translate a string.
      */
-    default DynTrSlot dTr(String id, String text) {
-        return dynTrBase(id, text);
+    default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, String text) {
+        return dynTrBase(srcLoc, id, text);
     }
 
     /**
      * Dynamically translate a formatting lambda.
      */
-    default DynTrSlot dTr(String id, TrPage.FF1 text) {
-        return dynTrBase(id, text);
+    default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, TrPage.FF0 text) {
+        return dynTrBase(srcLoc, id, text);
     }
 
     /**
      * Dynamically translate a formatting lambda.
      */
-    default DynTrSlot dTr(String id, TrPage.FF2 text) {
-        return dynTrBase(id, text);
+    default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, TrPage.FF1 text) {
+        return dynTrBase(srcLoc, id, text);
     }
 
     /**
      * Dynamically translate a formatting lambda.
      */
-    default DynTrSlot dTr(String id, TrPage.FF3 text) {
-        return dynTrBase(id, text);
+    default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, TrPage.FF2 text) {
+        return dynTrBase(srcLoc, id, text);
     }
 
     /**
      * Dynamically translate a formatting lambda.
      */
-    default DynTrSlot dTr(String id, TrPage.FF4 text) {
-        return dynTrBase(id, text);
+    default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, TrPage.FF3 text) {
+        return dynTrBase(srcLoc, id, text);
+    }
+
+    /**
+     * Dynamically translate a formatting lambda.
+     */
+    default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, TrPage.FF4 text) {
+        return dynTrBase(srcLoc, id, text);
     }
 }

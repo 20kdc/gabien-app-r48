@@ -8,6 +8,7 @@ package r48.minivm.compiler;
 
 import java.util.List;
 
+import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.ISupplier;
 import r48.minivm.MVMEnv;
@@ -22,13 +23,16 @@ import r48.minivm.fn.MVMMacro;
  * Created 28th February 2023.
  */
 public abstract class MVMCompileScope {
+    public final DatumSrcLoc topLevelSrcLoc;
     public final MVMEnv context;
 
-    public MVMCompileScope(MVMEnv ctx) {
+    public MVMCompileScope(MVMEnv ctx, DatumSrcLoc srcLoc) {
         context = ctx;
+        topLevelSrcLoc = srcLoc;
     }
     public MVMCompileScope(MVMCompileScope cs) {
         context = cs.context;
+        topLevelSrcLoc = cs.topLevelSrcLoc;
     }
 
     /**

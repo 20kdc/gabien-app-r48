@@ -8,6 +8,7 @@ package gabienapp;
 
 import gabien.FontManager;
 import gabien.GaBIEn;
+import gabien.datum.DatumSrcLoc;
 import gabien.ui.UIElement;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabienapp.state.LSMain;
@@ -17,6 +18,8 @@ import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.cfg.FontSizes.FontSizeField;
 import r48.minivm.MVMEnv;
+import r48.tr.DynTrSlot;
+import r48.tr.IDynTrProxy;
 import r48.tr.LanguageList;
 
 /**
@@ -101,7 +104,7 @@ public class Launcher {
             uiTicker.forceRemove(uie);
     }
 
-    public abstract static class State {
+    public abstract static class State implements IDynTrProxy {
         public final Launcher lun;
         public final Config c;
         public State(Launcher lun) {
@@ -111,15 +114,9 @@ public class Launcher {
 
         public abstract void tick(double dT);
 
-        /**
-         * Continued translation convenience.
-         */
-        public String trL(String text) {
-            return lun.ilg.trL(text);
-        }
-
-        public void translationDump(String string, String string2) {
-            lun.ilg.translationDump(string, string2);
+        @Override
+        public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, Object text) {
+            return lun.ilg.dynTrBase(srcLoc, id, text);
         }
     }
 }

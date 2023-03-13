@@ -39,7 +39,11 @@ Access to statically translated fields from Java is best achieved through the `T
 
 ## Dynamic
 
-This isn't set in stone, but here's the basic ideas:
+Dynamic strings are represented Java-side by FF0 through FF4, which DynTrSlot can be cast to. All dynamic translation slots go through MVMEnvR48.dynTrBase, and the default string is given then. dynTrDump is an attempt to approximately reverse-engineer all translation strings.
+
+It may end up being necessary to use a dedicated storage system for dynamic translation strings that holds source Datum code for generating the dump file, but this wastes the `define-group` efforts...
+
+OTHER STUFF:This isn't set in stone, but here's the basic ideas:
 
 * Name routines are connected into the MVM context "somehow" in a way that allows for direct definition from MVM.
   
@@ -54,7 +58,3 @@ This isn't set in stone, but here's the basic ideas:
 * Other strings are complicated.
   
   * They're represented by FF0 through FF4, which DynTrSlot can be cast to. When setting up a dynamic translation slot, the default behaviour is given.
-
-## Launcher Dynamic (Gamepaks)
-
-* "The Rewrite Will Save Us"

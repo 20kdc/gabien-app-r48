@@ -17,14 +17,17 @@ import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
+import r48.tr.TrPage.FF0;
 import r48.tr.pages.TrRoot;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 
+import gabien.datum.DatumSrcLoc;
+
 public class CategoryGPMenuPanel implements IGPMenuPanel {
-    public LinkedList<String> res1 = new LinkedList<String>();
+    public LinkedList<FF0> res1 = new LinkedList<FF0>();
     public LinkedList<Runnable> res2 = new LinkedList<Runnable>();
     public final LSMain ls;
     public final Config c;
@@ -33,7 +36,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
         this.ls = ls;
         this.c = ls.lun.c;
         final TrRoot T = ls.lun.ilg.t;
-        res1.add(T.g.bBack);
+        res1.add(() -> T.g.bBack);
         res2.add(new Runnable() {
             @Override
             public void run() {
@@ -43,6 +46,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
         DBLoader.readFile(null, "Gamepaks.txt", new IDatabase() {
             AtomicReference<String> boxedEncoding; // it's a boxed object, so...
             boolean doWeCare = false;
+            DatumSrcLoc srcLoc = DatumSrcLoc.NONE;
 
             @Override
             public void newObj(int objId, final String objName) throws IOException {
@@ -50,8 +54,13 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                     return;
                 final AtomicReference<String> box = new AtomicReference<String>();
                 boxedEncoding = box;
-                res1.add(objName);
+                res1.add(() -> "UNNAMED ENTRY " + objName);
                 res2.add(new StartupCause(ls, box, objName));
+            }
+
+            @Override
+            public void updateSrcLoc(DatumSrcLoc sl) {
+                srcLoc = sl;
             }
 
             @Override
@@ -63,7 +72,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                 if (!doWeCare)
                     return;
                 if (c == '.')
-                    res1.set(res1.size() - 1, ls.trL(args[0]));
+                    res1.set(res1.size() - 1, ls.dTr(srcLoc, "TrDynLauncher." + args[0], args[1]));
                 if (c == 'e')
                     boxedEncoding.set(args[0]);
             }
@@ -71,8 +80,8 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
     }
 
     @Override
-    public String[] getButtonText() {
-        return res1.toArray(new String[0]);
+    public FF0[] getButtonText() {
+        return res1.toArray(new FF0[0]);
     }
 
     @Override

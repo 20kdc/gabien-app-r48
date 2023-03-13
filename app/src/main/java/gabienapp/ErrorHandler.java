@@ -41,10 +41,6 @@ public class ErrorHandler {
         this.lun = lun;
     }
 
-    public String tr(String v) {
-        return lun.ilg.tr(v);
-    }
-
     // If this returns true, the app must be stopped
     public boolean handle(@Nullable IAppAsSeenByLauncher app, Exception e, WindowCreatingUIElementConsumer uiTicker) {
         // ok, so, 'what is going on with the flags', you might ask?

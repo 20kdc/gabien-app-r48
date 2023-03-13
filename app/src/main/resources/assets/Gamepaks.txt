@@ -4,58 +4,58 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-= "RPG Maker 2000, 2003, or EasyRPG. (Android users, go here.)"
+= rm2k3 "RPG Maker 2000, 2003, or EasyRPG. (Android users, go here.)"
 
 0: r2k
 e Cp1252
-. "R2K[3?] (English/French/CP1252)"
+. r2k_cp1252 "R2K[3?] (English/French/CP1252)"
 
 0: r2k
 e UTF-8
-. "R2K[3?] (UTF-8) (Use for new games or languages not shown.)"
+. r2k_utf8 "R2K[3?] (UTF-8) (Use for new games or languages not shown.)"
 
 0: r2k
 e MS932
-. "R2K[3?] (Japanese/MS932)"
+. r2k_ms932 "R2K[3?] (Japanese/MS932)"
 
 0: r2k
 e cp1251
-. "R2K[3?] (Russian/Cyrillic/CP1251)"
+. r2k_cp1251 "R2K[3?] (Russian/Cyrillic/CP1251)"
 
 0: r2k
 e cp1250
-. "R2K[3?] (Polish/Eastern European/CP1250)"
+. r2k_cp1250 "R2K[3?] (Polish/Eastern European/CP1250)"
 
 0: r2k
 e MS949
-. "R2K[3?] (Korean/MS949)"
+. r2k_cp949 "R2K[3?] (Korean/MS949)"
 
 0: r2k
 e MS936
-. "R2K[3?] (Simplified Chinese/MS936)"
+. r2k_cp936 "R2K[3?] (Simplified Chinese/MS936)"
 
-= "RGSS Engines (RPG Maker XP, VX Ace)"
+= rgss "RGSS Engines (RPG Maker XP, VX Ace)"
 
 0: rxp
 e UTF-8
-. "RXP"
+. rxp "RXP"
 
 0: rvxa
 e UTF-8
-. "RVXA"
+. rvxa "RVXA"
 
-= "Other..."
+= other "Other..."
 
 0: ika
 e UTF-8
-. "Ikachan"
+. ika "Ikachan"
 
 0: osLoc
 e UTF-8
-. "OneShot (remake) External Localization Files"
+. osLoc "OneShot (remake) External Localization Files"
 
-= "Tests"
+= tests "Tests"
 
 0: sticki
 e UTF-8
-. "Launch testbed ("Sticky Note Editor")"
+. sticki "Launch testbed (\"Sticky Note Editor\")"

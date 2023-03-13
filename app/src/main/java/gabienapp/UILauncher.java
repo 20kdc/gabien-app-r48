@@ -28,6 +28,7 @@ import gabienapp.state.LSMain;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.tr.LanguageList;
+import r48.tr.TrPage.FF0;
 import r48.tr.pages.TrGlobal;
 import r48.ui.UIAppendButton;
 import r48.ui.dialog.UIFontSizeConfigurator;
@@ -144,11 +145,11 @@ public class UILauncher extends UIProxy {
             gamepaksRequestClose = true;
             return;
         }
-        String[] names = igpMenuPanel.getButtonText();
+        FF0[] names = igpMenuPanel.getButtonText();
         Runnable[] runs = igpMenuPanel.getButtonActs();
         for (int i = 0; i < names.length; i++) {
             final Runnable r = runs[i];
-            gamepaks.panelsAdd(new UITextButton(names[i], c.f.launcherTH, r));
+            gamepaks.panelsAdd(new UITextButton(names[i].r(), c.f.launcherTH, r));
         }
     }
 

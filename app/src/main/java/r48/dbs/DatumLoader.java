@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import gabien.GaBIEn;
 import gabien.datum.DatumDecodingVisitor;
 import gabien.datum.DatumReaderTokenSource;
+import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumVisitor;
 import gabien.uslx.append.IConsumer;
 
@@ -22,14 +23,14 @@ public class DatumLoader {
     /**
      * Loads the given file into this context.
      */
-    public static boolean read(String filename, IConsumer<String> loadProgress, IConsumer<Object> eval) {
+    public static boolean read(String filename, IConsumer<String> loadProgress, Handler eval) {
         return read(filename, loadProgress, new DatumDecodingVisitor() {
             @Override
-            public void visitTree(Object obj) {
-                eval.accept(obj);
+            public void visitTree(Object obj, DatumSrcLoc srcLoc) {
+                eval.accept(obj, srcLoc);
             }
             @Override
-            public void visitEnd() {
+            public void visitEnd(DatumSrcLoc srcLoc) {
             }
         });
     }
@@ -46,12 +47,16 @@ public class DatumLoader {
             System.out.println(">>" + filename);
             if (loadProgress != null)
                 loadProgress.accept(filename);
-            DatumReaderTokenSource drts = new DatumReaderTokenSource(ins);
+            DatumReaderTokenSource drts = new DatumReaderTokenSource(filename, ins);
             drts.visit(ddv);
         } catch (Exception ex) {
             throw new RuntimeException("During read-in @ " + filename, ex);
         }
         System.out.println("<<" + filename);
         return true;
+    }
+
+    public interface Handler {
+        void accept(Object val, DatumSrcLoc srcLoc);
     }
 }
