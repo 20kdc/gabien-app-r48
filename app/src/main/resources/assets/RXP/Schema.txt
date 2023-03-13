@@ -30,8 +30,6 @@ C recommendMkdir Audio/ME
 C recommendMkdir Audio/SE
 
 A RXP/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
-C allowIndentControl
-C defineIndent
 
  THE RXP SCHEMA FILE
  <Documentation moved to IRB_SDB.txt

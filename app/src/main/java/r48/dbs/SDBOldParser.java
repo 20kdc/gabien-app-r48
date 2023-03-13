@@ -220,7 +220,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     s1 = get();
                     s2 = get();
                     String a = args[point++];
-                    return new EventCommandArraySchemaElement(app, s1, s2, getCMDB(a), sdb.allowControlOfEventCommandIndent);
+                    return new EventCommandArraySchemaElement(app, s1, s2, getCMDB(a), app.engine.allowIndentControl);
                 }
                 if (text.equals("arrayMS")) {
                     SchemaElement s1, s2;
@@ -797,10 +797,6 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 nam = app.td(outerContext + "/" + val, nam);
                 commandBufferNames.put(val, nam);
                 commandBufferSchemas.put(val, workingObj);
-            } else if (args[0].equals("allowIndentControl")) {
-                sdb.allowControlOfEventCommandIndent = true;
-            } else if (args[0].equals("defineIndent")) {
-                sdb.defineIndent();
             } else if (args[0].equals("recommendMkdir")) {
                 sdb.recommendedDirs.add(args[1]);
             } else if (args[0].equals("defaultCB")) {

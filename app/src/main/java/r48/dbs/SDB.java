@@ -43,8 +43,8 @@ public class SDB extends App.Svc {
     // The answer is the same:
     // Entries 9 and 10 of entity 315, in the Map029 file, contain a duplicate Leave Block.
     // I have no idea how this was managed.
+    // On another note, app.engine.allowIndentControl now contains the option this comment block refers to.
 
-    public boolean allowControlOfEventCommandIndent = false;
     private HashMap<String, SchemaElement> schemaDatabase = new HashMap<String, SchemaElement>();
     protected HashMap<String, SchemaElement> schemaTrueDatabase = new HashMap<String, SchemaElement>();
     private LinkedList<DictionaryUpdaterRunnable> dictionaryUpdaterRunnables = new LinkedList<DictionaryUpdaterRunnable>();
@@ -88,6 +88,14 @@ public class SDB extends App.Svc {
         schemaDatabase.put("internal_scriptIE", new ScriptControlSchemaElement(app));
 
         schemaDatabase.put("internal_LF_INDEX", new OSStrHashMapSchemaElement(app));
+
+        if (app.engine.defineIndent) {
+            if (app.engine.allowIndentControl) {
+                schemaDatabase.put("indent", new ROIntegerSchemaElement(app, 0));
+            } else {
+                schemaDatabase.put("indent", new IntegerSchemaElement(app, 0));
+            }
+        }
 
         schemaTrueDatabase.putAll(schemaDatabase);
     }
@@ -201,15 +209,6 @@ public class SDB extends App.Svc {
         mergeRunnables.add(() -> {
             setSDBEntry(id, s.get());
         });
-    }
-
-    public void defineIndent() {
-        if (allowControlOfEventCommandIndent) {
-            schemaDatabase.put("indent", new ROIntegerSchemaElement(app, 0));
-        } else {
-            schemaDatabase.put("indent", new IntegerSchemaElement(app, 0));
-        }
-        schemaTrueDatabase.put("indent", schemaDatabase.get("indent"));
     }
 
     private class NameProxySchemaElement extends SchemaElement implements IProxySchemaElement {

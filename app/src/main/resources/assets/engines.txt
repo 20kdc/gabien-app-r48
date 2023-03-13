@@ -13,6 +13,8 @@ null (
 sticki (
 	initDir "Sticki/"
 	odbBackend r48
+	allowIndentControl #t
+	defineIndent #t
 )
 
 ika (
@@ -35,6 +37,8 @@ r2k (
 	odbBackend lcf2000
 	mapSystem R2k
 	autoDetectPath "RPG_RT.ldb"
+	allowIndentControl #t
+	defineIndent #t
 )
 
 rxp (
@@ -44,6 +48,8 @@ rxp (
 	dataExt ".rxdata"
 	mapSystem RXP
 	autoDetectPath "Data/MapInfos.rxdata"
+	allowIndentControl #t
+	defineIndent #t
 )
 
 rvxa (
@@ -53,4 +59,6 @@ rvxa (
 	dataExt ".rvdata2"
 	mapSystem RVXA
 	autoDetectPath "Data/MapInfos.rvdata2"
+	allowIndentControl #t
+	defineIndent #t
 )

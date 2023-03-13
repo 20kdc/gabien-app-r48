@@ -23,8 +23,6 @@ C recommendMkdir Audio/ME
 C recommendMkdir Audio/SE
 
 A RVXA/AutoTiles.txt RVXA/AutoTileRules.txt RVXA/WallAT.txt $WallATs$ RVXA/WaterfallAT.txt .
-C allowIndentControl
-C defineIndent
 
 D internal_tilesetDictionary 1 Tilesets 0 @name
 D internal_mapDictionary 1 MapInfos 1 @name

@@ -61,7 +61,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
 
     @Override
     public boolean autoCorrectArray(IRIO array, SchemaPath path) {
-        if (!app.sdb.allowControlOfEventCommandIndent)
+        if (!app.engine.allowIndentControl)
             return false;
 
         boolean debugInfloop = false;

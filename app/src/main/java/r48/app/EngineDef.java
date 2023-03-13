@@ -55,6 +55,17 @@ public class EngineDef {
                 c.autoDetectPath = (String) v;
             }, null);
         });
+        // SDB flags
+        map.put("defineIndent", (k, c, gt) -> {
+            return new DatumODec1Visitor<>(null, null, (v, ctx) -> {
+                c.defineIndent = (Boolean) v;
+            }, null);
+        });
+        map.put("allowIndentControl", (k, c, gt) -> {
+            return new DatumODec1Visitor<>(null, null, (v, ctx) -> {
+                c.allowIndentControl = (Boolean) v;
+            }, null);
+        });
     }
 
     public @NonNull String initDir = "";
@@ -63,6 +74,8 @@ public class EngineDef {
     public @NonNull String dataExt = "";
     public @NonNull String mapSystem = "null";
     public @Nullable String autoDetectPath = null;
+    // SDB flags
+    public boolean defineIndent, allowIndentControl;
 
     public DatumVisitor newVisitor() {
         return new DatumExpectListVisitor(() -> new DatumKVDHVisitor<EngineDef, Object>(map, this, null));
