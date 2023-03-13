@@ -93,19 +93,25 @@ public class SDBOldParser extends App.Svc implements IDatabase {
         DBLoader.readFile(app, fName, new SDBOldParser(app, fName));
     }
 
-    private FF0 trAnon(String text) {
+    private @NonNull FF0 trAnon(String text) {
         return trAnon(outerContext, text);
     }
 
-    private FF0 trAnon(String ovc, String text) {
+    private @NonNull FF0 trAnon(String ovc, String text) {
         return app.dTr(srcLoc, "SDB." + ovc + "." + text, text);
     }
 
-    private FF0 trAnonExUnderscore(String text) {
+    private @NonNull FF0 trAnonExUnderscore(String text) {
         return trAnonExUnderscore(outerContext, text);
     }
 
-    private FF0 trAnonExUnderscore(String ovc, String text) {
+    private @Nullable FF0 trAnonExUnderscoreNull(String text) {
+        if (text == "_")
+            return null;
+        return trAnon(outerContext, text);
+    }
+
+    private @NonNull FF0 trAnonExUnderscore(String ovc, String text) {
         if (text.equals("_"))
             return () -> text;
         return app.dTr(srcLoc, "SDB." + ovc + "." + text, text);
@@ -175,17 +181,17 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 // (later) However, context makes it obvious
                 if (text.equals("string=")) {
                     String esc = args[point++];
-                    return new StringSchemaElement(app, app.td(outerContext, esc), '\"');
+                    return new StringSchemaElement(app, trAnon(esc), '\"');
                 }
                 // Before you go using these - They are based on *visual* length, and are not hard limits.
                 if (text.equals("stringLen")) {
                     int l = Integer.parseInt(args[point++]);
-                    return new StringLenSchemaElement(app, "", l);
+                    return new StringLenSchemaElement(app, () -> "", l);
                 }
                 if (text.equals("stringLen=")) {
                     String esc = args[point++];
                     int l = Integer.parseInt(args[point++]);
-                    return new StringLenSchemaElement(app, app.td(outerContext, esc), l);
+                    return new StringLenSchemaElement(app, trAnon(esc), l);
                 }
 
                 //
@@ -219,9 +225,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     if (!text.endsWith("N")) {
                         txt = trAnon(path.decompiled);
                     } else {
-                        txt = trAnonExUnderscore(args[point++]);
-                        if (txt.equals("_"))
-                            txt = null;
+                        txt = trAnonExUnderscoreNull(args[point++]);
                     }
                     SchemaElement hide = get();
                     return new PathSchemaElement(path, txt, hide, false);
@@ -232,9 +236,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     if (!text.endsWith("N")) {
                         txt = trAnon(path.decompiled);
                     } else {
-                        txt = trAnonExUnderscore(args[point++]);
-                        if (txt.equals("_"))
-                            txt = null;
+                        txt = trAnonExUnderscoreNull(args[point++]);
                     }
                     SchemaElement hide = get();
                     return new PathSchemaElement(path, txt, hide, true);
@@ -387,14 +389,12 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     String text2 = args[point++];
                     if (text2.startsWith("@")) {
                         final String textFinal = text2.substring(1);
-                        return new SubwindowSchemaElement(get(), new IFunction<IRIO, String>() {
-                            @Override
-                            public String apply(IRIO rubyIO) {
-                                return app.fmt.nameDB.get("Interp." + textFinal).apply(rubyIO);
-                            }
+                        return new SubwindowSchemaElement(get(), (rubyIO) -> {
+                            return app.fmt.nameDB.get("Interp." + textFinal).apply(rubyIO);
                         });
                     } else {
-                        return new SubwindowSchemaElement(get(), getFunctionToReturn(app.td(outerContext, text2)));
+                        final FF0 translation = trAnon(outerContext, text2);
+                        return new SubwindowSchemaElement(get(), (irio) -> translation.r());
                     }
                 }
 
@@ -429,7 +429,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     // yay for... well, semi-consistency!
                     String a = text.substring(2);
                     FF0 b = trAnonExUnderscore(args[point++]);
-                    String o = app.td(outerContext, args[point++]);
+                    FF0 o = trAnon(args[point++]);
                     return new ArrayElementSchemaElement(app, Integer.parseInt(a), b, get(), o, false);
                 }
                 if (text.startsWith("]")) {
@@ -587,7 +587,13 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     PathSyntax wV = getNullablePathSyntax();
                     PathSyntax hV = getNullablePathSyntax();
 
-                    IFunction<IRIO, String> iVT = getFunctionToReturn(iV == null ? T.s.bOpenTable : app.td(outerContext, iV.decompiled));
+                    IFunction<IRIO, String> iVT;
+                    if (iV == null) {
+                        iVT = (irio) -> T.s.bOpenTable;
+                    } else {
+                        FF0 ff0 = trAnon(iV.decompiled);
+                        iVT = (irio) -> ff0.r();
+                    }
 
                     int dc = Integer.parseInt(args[point++]);
                     int aW = Integer.parseInt(args[point++]);
@@ -635,7 +641,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     return sdb.helpers.makePicPointerPatchID(getSDBEntry("var_id"), se);
                 }
                 if (text.equals("internal_r2kPPPV")) {
-                    String txt = app.td(outerContext, args[point++]);
+                    FF0 txt = trAnon(args[point++]);
                     SchemaElement se = get();
                     return sdb.helpers.makePicPointerPatchVar(getSDBEntry("var_id"), txt, se);
                 }
@@ -656,7 +662,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(app, b), Integer.parseInt(a), c, d), getFunctionToReturn(T.s.selectTileGraphic));
                 }
                 if (text.equals("windowTitleAttachment")) {
-                    String txt = app.td(outerContext, args[point++]);
+                    FF0 txt = trAnon(args[point++]);
                     return new WindowTitleAttachmentSchemaElement(app, txt);
                 }
                 if (text.equals("soundPlayer")) {

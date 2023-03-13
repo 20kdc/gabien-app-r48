@@ -13,15 +13,16 @@ import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrPage.FF0;
 
 /**
  * Created on 12/29/16.
  */
 public class StringSchemaElement extends SchemaElement {
-    public final String defaultStr;
+    public final FF0 defaultStr;
     public final char type;
 
-    public StringSchemaElement(App app, String arg, char t) {
+    public StringSchemaElement(App app, FF0 arg, char t) {
         super(app);
         defaultStr = arg;
         type = t;
@@ -61,7 +62,7 @@ public class StringSchemaElement extends SchemaElement {
     @Override
     public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         if (SchemaElement.checkType(target, type, null, setDefault)) {
-            encodeVal(defaultStr, target);
+            encodeVal(defaultStr.r(), target);
             path.changeOccurred(true);
         }
     }

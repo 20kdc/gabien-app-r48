@@ -29,10 +29,6 @@ import r48.io.data.IRIO;
 import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
 import r48.schema.specialized.IMagicalBinder;
-import r48.tr.ITranslator;
-import r48.tr.LanguageList;
-import r48.tr.NullTranslator;
-import r48.tr.Translator;
 import r48.tr.pages.TrRoot;
 
 /**
@@ -48,7 +44,6 @@ public class AppCore {
     // Launch settings
     public final EngineDef engine;
     // Main
-    public final @NonNull ITranslator d; // dynamic string translation
     public ObjectDB odb;
     public SDB sdb;
     public FormatSyntax fmt;
@@ -79,36 +74,9 @@ public class AppCore {
         loadProgress = lp;
         fmt = new FormatSyntax(this);
         imageIOFormats = ImageIOFormat.initializeFormats(this);
-        d = createGPTranslatorForLang(c.language, engine.initDir);
-    }
-
-    /**
-     * Legacy dynamic translation
-     */
-    public String td(String context, String text) {
-        return d.tr(context.replace('/', '-'), text);
     }
 
     public void performTranslatorDump(String fnPrefix, String ctxPrefix) {
-        d.dump(fnPrefix, ctxPrefix);
-    }
-
-    private static ITranslator createGPTranslatorForLang(String lang, String gp) {
-        ITranslator currentTranslator;
-        if (lang.equals(LanguageList.hardcodedLang)) {
-            currentTranslator = new NullTranslator();
-        } else {
-            currentTranslator = new Translator(lang);
-        }
-        try {
-            currentTranslator.read(gp + "Lang" + lang + ".txt", "SDB@");
-        } catch (Exception e) {
-        }
-        try {
-            currentTranslator.read(gp + "Cmtx" + lang + ".txt", "CMDB@");
-        } catch (Exception e) {
-        }
-        return currentTranslator;
     }
 
     // Attempts to ascertain all known objects

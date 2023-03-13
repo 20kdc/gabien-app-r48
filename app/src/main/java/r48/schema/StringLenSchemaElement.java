@@ -13,6 +13,7 @@ import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrPage.FF0;
 
 /**
  * Created on August 31st 2017.
@@ -20,7 +21,7 @@ import r48.schema.util.SchemaPath;
 public class StringLenSchemaElement extends StringSchemaElement {
     public int len;
 
-    public StringLenSchemaElement(App app, String arg, int l) {
+    public StringLenSchemaElement(App app, FF0 arg, int l) {
         super(app, arg, '"');
         len = l;
     }

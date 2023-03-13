@@ -70,7 +70,7 @@ public class SDB extends App.Svc {
         schemaDatabase.put("index", new AMAISchemaElement(app));
         schemaDatabase.put("float", new FloatSchemaElement(app, "0", false));
         schemaDatabase.put("jnum", new FloatSchemaElement(app, "0", true));
-        schemaDatabase.put("string", new StringSchemaElement(app, "", '\"'));
+        schemaDatabase.put("string", new StringSchemaElement(app, () -> "", '\"'));
         schemaDatabase.put("boolean", new BooleanSchemaElement(app, false));
         schemaDatabase.put("booleanDefTrue", new BooleanSchemaElement(app, true));
         schemaDatabase.put("int_boolean", new IntBooleanSchemaElement(app, false));

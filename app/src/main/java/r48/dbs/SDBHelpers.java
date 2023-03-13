@@ -248,11 +248,11 @@ class SDBHelpers extends App.Svc {
         }, inner);
     }
 
-    public SchemaElement makePicPointerPatchVar(SchemaElement varId, String vname, SchemaElement val) {
+    public SchemaElement makePicPointerPatchVar(SchemaElement varId, FF0 vname, SchemaElement val) {
         // Less complicated but still more than an enum is reasonable for.
         final TrSchema S = varId.T.s;
         HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
-        disambiguations.put("0", new ArrayElementSchemaElement(app, 1, () -> vname, val, null, false));
+        disambiguations.put("0", new ArrayElementSchemaElement(app, 1, vname, val, null, false));
         disambiguations.put("", new ArrayElementSchemaElement(app, 1, () -> S.ppp_valueVarFN, varId, null, false));
         SchemaElement inner = new HalfsplitSchemaElement(
                 new ArrayElementSchemaElement(app, 0, () -> S.ppp_isVarFN, new IntBooleanSchemaElement(app, false), null, false),

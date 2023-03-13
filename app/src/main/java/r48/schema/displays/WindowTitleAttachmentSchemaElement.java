@@ -17,14 +17,15 @@ import r48.schema.HiddenSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrPage.FF0;
 
 /**
  * Created on 1st August 2022.
  */
 public class WindowTitleAttachmentSchemaElement extends SchemaElement {
-    public final String suffixRoutine;
+    public final FF0 suffixRoutine;
 
-    public WindowTitleAttachmentSchemaElement(App app, String sr) {
+    public WindowTitleAttachmentSchemaElement(App app, FF0 sr) {
         super(app);
         suffixRoutine = sr;
     }
@@ -40,6 +41,6 @@ public class WindowTitleAttachmentSchemaElement extends SchemaElement {
 
     @Override
     public @Nullable String windowTitleSuffix(SchemaPath path) {
-        return app.fmt.formatNameExtended(suffixRoutine, path.targetElement, new RORIO[] {path.lastArrayIndex}, null);
+        return app.fmt.formatNameExtended(suffixRoutine.r(), path.targetElement, new RORIO[] {path.lastArrayIndex}, null);
     }
 }

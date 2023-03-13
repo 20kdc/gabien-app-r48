@@ -28,14 +28,14 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     public int index;
     public FF0 nameCb;
     public SchemaElement subSchema;
-    public String optional;
+    public FF0 optional;
     // Removes the element rather than cutting the array. Only use when it is safe to do so.
     public boolean delRemove;
 
     private boolean fieldWidthOverride = false;
     private int fieldWidth;
 
-    public ArrayElementSchemaElement(App app, int ind, FF0 niceName, SchemaElement ise, String opt, boolean dr) {
+    public ArrayElementSchemaElement(App app, int ind, FF0 niceName, SchemaElement ise, FF0 opt, boolean dr) {
         super(app);
         index = ind;
         nameCb = niceName;
@@ -52,7 +52,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         if (target.getALen() <= index) {
             String tx = T.s.aElmInv;
             if (optional != null)
-                tx = T.s.aElmOpt.r(name, optional);
+                tx = T.s.aElmOpt.r(name, optional.r());
             return new UITextButton(tx, app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
