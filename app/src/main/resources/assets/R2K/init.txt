@@ -5,4 +5,10 @@
 
 ; R2K MVM init
 
+(cmdb-init "event")
+(cmdb-load-old "event" "R2K/Commands.txt")
+
+(cmdb-init "move")
+(cmdb-load-old "move" "R2K/CommandsMove.txt")
+
 (sdb-load-old "R2K/Schema.txt")

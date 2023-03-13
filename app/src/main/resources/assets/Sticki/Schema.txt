@@ -93,5 +93,5 @@ Cmd "$Squeek!"
 
 > Plan subwindow NoteList
 
-> NoteList arrayCS Note NoteEditor_Most Sticki/NoteTypes.txt
+> NoteList arrayCS Note NoteEditor_Most notes
 > File.Notes NoteList

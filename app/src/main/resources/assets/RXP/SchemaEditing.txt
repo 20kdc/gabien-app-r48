@@ -10,8 +10,8 @@
 
 i RCOM/SchemaScript.txt
 
-> EventListEditor subwindow arrayCS RPG::EventCommand EventCommandEditor_Most RXP/Commands.txt
-> MoveListEditor subwindow arrayMS RPG::MoveCommand MoveCommandEditor_Most RXP/CommandsMove.txt
+> EventListEditor subwindow arrayCS RPG::EventCommand EventCommandEditor_Most event
+> MoveListEditor subwindow arrayMS RPG::MoveCommand MoveCommandEditor_Most move
 
  Defining MoveRoute down here since it depends on things above
 

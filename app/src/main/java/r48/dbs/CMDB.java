@@ -29,8 +29,15 @@ public class CMDB extends App.Svc {
     public int listLeaveCmd = -1; // -1 means "no list leave command actually exists".
     public int blockLeaveCmd = 0; // This is 10 on R2k, but that is controlled via Lblock.
 
-    public CMDB(final SDB sdb, final String readFile) {
+    public CMDB(final SDB sdb) {
         super(sdb.app);
+    }
+
+    /**
+     * Actual load code was moved here to help pull stuff out of the old system
+     */
+    public void load(String readFile) {
+        final SDB sdb = app.sdb;
         DBLoader.readFile(app, readFile, new IDatabase() {
             RPGCommand rc;
             int workingCmdId = 0;
@@ -572,6 +579,9 @@ public class CMDB extends App.Svc {
                 return se;
             }
         });
+    }
+
+    public void check() {
         // see if I need to be informed that the schema doesn't support the latest and greatest features
         int fails1 = 0;
         for (RPGCommand rc : knownCommands.values())

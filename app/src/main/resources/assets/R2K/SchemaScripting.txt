@@ -119,7 +119,7 @@ i R2K/SchemaScriptingMonolith3.txt
 @indent indent
 @parameters EventCommandParams
 
-> EventListEditor subwindow arrayCS RPG::EventCommand EventCommandEditor_Most R2K/Commands.txt
+> EventListEditor subwindow arrayCS RPG::EventCommand EventCommandEditor_Most event
 
  Use the Command Buffer syntax to fix this mess.
  Note that this introduces new and interesting problems, but I claim it's worth it,
@@ -136,4 +136,4 @@ i R2K/SchemaScriptingMonolith3.txt
 @code int
 @parameters { ]0 _ string ]1 _ int ]2 _ int ]3 _ int }
 
-> MoveListEditor subwindow: Route... arrayMS RPG::MoveCommand movecommand_default_nothing R2K/CommandsMove.txt
+> MoveListEditor subwindow: Route... arrayMS RPG::MoveCommand movecommand_default_nothing move

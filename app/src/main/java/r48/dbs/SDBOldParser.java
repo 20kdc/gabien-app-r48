@@ -797,26 +797,16 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 nam = app.td(outerContext + "/" + val, nam);
                 commandBufferNames.put(val, nam);
                 commandBufferSchemas.put(val, workingObj);
-            }
-            if (args[0].equals("allowIndentControl"))
+            } else if (args[0].equals("allowIndentControl")) {
                 sdb.allowControlOfEventCommandIndent = true;
-            if (args[0].equals("defineIndent"))
+            } else if (args[0].equals("defineIndent")) {
                 sdb.defineIndent();
-            if (args[0].equals("objectDB"))
-                throw new RuntimeException("This is now INVALID");
-            if (args[0].equals("recommendMkdir"))
+            } else if (args[0].equals("recommendMkdir")) {
                 sdb.recommendedDirs.add(args[1]);
-            if (args[0].equals("dataPath"))
-                throw new RuntimeException("This is now INVALID");
-            if (args[0].equals("dataExt"))
-                throw new RuntimeException("This is now INVALID");
-            if (args[0].equals("versionId"))
-                throw new RuntimeException("This is now INVALID");
-            if (args[0].equals("defaultCB")) {
+            } else if (args[0].equals("defaultCB")) {
                 workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
                 commandBufferSchemas.put("x default", workingObj);
-            }
-            if (args[0].equals("magicGenpos")) {
+            } else if (args[0].equals("magicGenpos")) {
                 // Really special schema
                 String aS = args[2];
                 String bS = args[3];
@@ -831,12 +821,10 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (dS.equals("."))
                     dS = null;
                 workingObj.aggregate.add(new GenposSchemaElement(app, args[1], aS, bS, cS, dS, Integer.parseInt(args[6])));
-            }
-            if (args[0].equals("magicR2kSystemDefaults")) {
+            } else if (args[0].equals("magicR2kSystemDefaults")) {
                 // Really special schema
                 workingObj.aggregate.add(new R2kSystemDefaultsInstallerSchemaElement(app, Integer.parseInt(args[1])));
-            }
-            if (args[0].equals("name") || args[0].equals("logic")) {
+            } else if (args[0].equals("name") || args[0].equals("logic")) {
                 final LinkedList<String> arguments = new LinkedList<String>();
                 String text = "";
                 boolean nextState = false;
@@ -873,9 +861,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                         return app.fmt.formatNameExtended(textF, rubyIO, parameters.toArray(new RORIO[0]), null);
                     }
                 });
-            }
-            // Defines a spritesheet for spriteSelector.
-            if (args[0].equals("spritesheet[")) {
+            } else if (args[0].equals("spritesheet[")) {
+                // Defines a spritesheet for spriteSelector.
                 int point = 1;
                 String text2 = args[point++];
                 while (!args[point].equals("]"))
@@ -883,6 +870,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 point++; // skip ]
                 // returns new point
                 sdb.helpers.createSpritesheet(args, point, text2);
+            } else {
+                throw new RuntimeException("C-command " + args[0] + " is not supported.");
             }
         } else if (c != ' ') {
             for (String arg : args)

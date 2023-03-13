@@ -85,7 +85,6 @@ C name transfer_player_paramassist ]0 ]1 ]2 ]3 | Transfer player{A=1= by vars @[
 e set_event_location_type 0 ints 1 vars 2 swap
 
 .set_event_location_header
- "And you don't seem to understand..."
 ]0 event character_id
 ]4 dir direction_disable
 ]1 selType set_event_location_type

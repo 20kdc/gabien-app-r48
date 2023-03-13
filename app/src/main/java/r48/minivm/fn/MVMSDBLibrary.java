@@ -20,5 +20,13 @@ public class MVMSDBLibrary {
             SDBOldParser.readFile(app, (String) a0);
             return null;
         }).attachHelp("(sdb-load-old FILE) : Read old-format SDB file.");
+        ctx.defLib("cmdb-init", (a0) -> {
+            app.sdb.newCMDB((String) a0);
+            return null;
+        }).attachHelp("(cmdb-init ID) : Setup a CMDB.");
+        ctx.defLib("cmdb-load-old", (a0, a1) -> {
+            app.sdb.loadCMDB((String) a0, (String) a1);
+            return null;
+        }).attachHelp("(cmdb-load-old ID FILE) : Read old-format CMDB file.");
     }
 }

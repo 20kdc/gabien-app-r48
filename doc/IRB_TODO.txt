@@ -5,9 +5,6 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
 GOAL 1. CMDB dynamic translation
-+ Finally remap how CMDB IDs are assigned.
-  (it's probably NOT a good idea to put them all into MVM-land, for testcase reasons.
-   just give them names and have explicit load instructions in MVM.)
 + Define a constant mapping between a CMDB command ID and a name MVM lambda slot.
   Assume ValueSyntax might get used in this mapping at a later date.
   Luckily the ValueSyntax of a long is just that long's string representation.

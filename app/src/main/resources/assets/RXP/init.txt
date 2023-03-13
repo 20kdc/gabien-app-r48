@@ -5,4 +5,10 @@
 
 ; RXP MVM init
 
+(cmdb-init "event")
+(cmdb-load-old "event" "RXP/Commands.txt")
+
+(cmdb-init "move")
+(cmdb-load-old "move" "RXP/CommandsMove.txt")
+
 (sdb-load-old "RXP/Schema.txt")

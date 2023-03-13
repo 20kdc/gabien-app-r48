@@ -92,18 +92,28 @@ public class SDB extends App.Svc {
         schemaTrueDatabase.putAll(schemaDatabase);
     }
 
+    public void newCMDB(String a0) {
+        if (cmdbs.containsKey(a0))
+            throw new RuntimeException("Attempted to overwrite CMDB: " + a0);
+        cmdbs.put(a0, new CMDB(this));
+    }
+
     public CMDB getCMDB(String arg) {
         CMDB cm = cmdbs.get(arg);
-        if (cm != null)
-            return cm;
-        CMDB r = new CMDB(this, arg);
-        cmdbs.put(arg, r);
-        return r;
+        if (cm == null)
+            throw new RuntimeException("Expected CMDB to exist (and it didn't): " + arg);
+        return cm;
+    }
+
+    public void loadCMDB(String arg, String fn) {
+        getCMDB(arg).load(fn);
     }
 
     public void confirmAllExpectationsMet() {
         if (remainingExpected.size() > 0)
             throw new RuntimeException("Remaining expectation " + remainingExpected.getFirst());
+        for (CMDB cmdb : cmdbs.values())
+            cmdb.check();
     }
 
     public boolean hasSDBEntry(String text) {
