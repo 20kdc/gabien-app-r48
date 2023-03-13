@@ -11,4 +11,26 @@
 (cmdb-init "move")
 (cmdb-load-old "move" "R2K/CommandsMove.txt")
 
-(sdb-load-old "R2K/Schema.txt")
+; The R2k/R2k3 Schema. It acts as both, it's your job to figure out what gets ignored or errors if on 2k.
+; Things postfixed with _2k3 were marked as such in the file format information I got.
+; _2KO means '2k only'
+; _112 means '2k3 1.12'
+; _EPL means 'EasyRPG Player'
+
+; General stuff
+(sdb-load-old "R2K/SchemaGeneral.txt")
+
+; Event scripts
+(sdb-load-old "R2K/SchemaScripting.txt")
+(sdb-load-old "R2K/SchemaScriptingKII.txt")
+(sdb-load-old "R2K/SchemaScriptingSBGM.txt")
+(sdb-load-old "R2K/SchemaScriptingMonolith.txt")
+(sdb-load-old "R2K/SchemaScriptingMonolith2.txt")
+(sdb-load-old "R2K/SchemaScriptingMonolith3.txt")
+
+; The main files
+(sdb-load-old "R2K/SchemaLMU.txt")
+(sdb-load-old "R2K/SchemaLMT.txt")
+(sdb-load-old "R2K/SchemaLDB.txt")
+(sdb-load-old "R2K/SchemaLDBTerms.txt")
+(sdb-load-old "R2K/SchemaLSD.txt")

@@ -818,3 +818,5 @@ e rpg_bas_speed 0 slow 8 normal 14 fast
 +hide optP @unused_31 subwindow array 0 int
  Supplies defaults
 C magicR2kSystemDefaults 0
+
+> File.RPG_RT.ldb RPG::Database

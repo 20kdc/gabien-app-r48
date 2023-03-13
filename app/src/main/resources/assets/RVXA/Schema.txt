@@ -121,7 +121,3 @@ C name Class.RPG::BGS @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|}
 @name { string fileSelector Audio/BGS/ }
 @pitch int= 100
 @volume int= 100
-
-i RVXA/SchemaCommandHelpers.txt
-i RVXA/SchemaEditing.txt
-i RVXA/SchemaFiles.txt

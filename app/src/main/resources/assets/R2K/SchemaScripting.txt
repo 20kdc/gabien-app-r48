@@ -73,14 +73,6 @@ E choice_begin_magic choiceIndex+1 0 None 5 invisibleCancel
 
  ---
 
-i R2K/SchemaScriptingKII.txt
-i R2K/SchemaScriptingSBGM.txt
-i R2K/SchemaScriptingMonolith.txt
-i R2K/SchemaScriptingMonolith2.txt
-i R2K/SchemaScriptingMonolith3.txt
-
- ---
-
  Now for an explanation.
  RPG::EventCommand is the 'skeleton' schema element used to build event commands & is used for modifyVal.
  EventCommandEditor_Most is what the user will see if no command is defined.

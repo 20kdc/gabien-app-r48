@@ -57,3 +57,5 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 @start subwindow: "Player/Vehicle Start Point" RPG::Start
  Supplies defaults
 C magicR2kSystemDefaults 1
+
+> File.RPG_RT.lmt RPG::MapTree

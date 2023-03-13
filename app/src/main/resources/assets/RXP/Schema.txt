@@ -133,14 +133,3 @@ C name Class.RPG::AudioFile @name @pitch @volume | {A:[string]A p.[int]B v.[int]
 @name string
 @pitch int= 100
 @volume int= 100
-
- Everything needed for map editing.
-
-i RXP/SchemaEditing.txt
-i RXP/SchemaCommandHelpers.txt
-
- Defining 'non-essential' bits & pieces, that the system could conceivably survive without.
- Though in some cases they may be used to attempt to create stand-ins for missing files,
-  and in this case they are required.
-
-i RXP/SchemaFiles.txt
