@@ -76,9 +76,6 @@ public class AppCore {
         imageIOFormats = ImageIOFormat.initializeFormats(this);
     }
 
-    public void performTranslatorDump(String fnPrefix, String ctxPrefix) {
-    }
-
     // Attempts to ascertain all known objects
     public LinkedList<String> getAllObjects() {
         // anything loaded gets added (this allows some bypass of the mechanism)

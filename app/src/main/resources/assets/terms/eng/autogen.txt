@@ -53,7 +53,6 @@
 	l62 "The target file couldn't be read, and there's no schema to create it."
 	l63 "The PRINT.txt file couldn't be read."
 	l65 "Other..."
-	l74 "Wrote Lang and Cmtx files to R48 startup directory (to be put in schema dir.)"
 	l81 "Loading..."
 	l82 (fl2 a0 " modified. Clipboard: " a1)
 	l83 "Clipboard"

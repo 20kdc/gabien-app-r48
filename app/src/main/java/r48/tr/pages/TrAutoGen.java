@@ -20,7 +20,7 @@ public class TrAutoGen extends TrPage {
     public String mTestFonts;
     public String mTestGraphics;
     public String mToggleFull;
-    public String mSoonToBeRemoved;
+    public String mSchemaTranslator;
     public String mTryRecover;
     public String mAudPlay;
     public String mREPL;
@@ -84,7 +84,6 @@ public class TrAutoGen extends TrPage {
     public String l62;
     public String l63;
     public String l65;
-    public String l74;
     public String l81;
     public FF2 l82;
     public String l83;

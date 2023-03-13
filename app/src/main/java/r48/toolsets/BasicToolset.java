@@ -270,7 +270,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 T.z.mTestFonts,
                 T.z.mTestGraphics,
                 T.z.mToggleFull,
-                T.z.mSoonToBeRemoved,
+                T.z.mSchemaTranslator,
                 T.z.mTryRecover,
                 T.z.mAudPlay,
                 T.z.mREPL,
@@ -292,9 +292,11 @@ public class BasicToolset extends App.Svc implements IToolset {
                     app.ui.wm.toggleFullscreen();
                 },
                 () -> {
-                    app.performTranslatorDump("Lang", "SDB@");
-                    app.performTranslatorDump("Cmtx", "CMDB@");
-                    app.ui.launchDialog(T.z.l74);
+                    GaBIEn.startFileBrowser(T.z.mSchemaTranslator, true, "", (str) -> {
+                        if (str == null)
+                            return;
+                        app.performTranslatorDump(str);
+                    });
                 },
                 () -> {
                     app.ui.launchPrompt(T.t.restoreSafetyConfirm, (s) -> {

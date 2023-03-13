@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import gabien.GaBIEn;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
+import gabien.datum.DatumWriter;
 import gabien.uslx.append.IConsumer;
 import r48.dbs.DatumLoader;
 import r48.tr.DynTrSlot;
@@ -83,8 +84,9 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
             os.write("(define \n".getBytes(StandardCharsets.UTF_8));
             for (String s : keys) {
                 DynTrSlot slot = dynMap.get(s);
+                DatumSymbol symK = slot.underlyingSlot.s;
                 String v = slot.sourceDump();
-                String ln = "\t; " + slot.sourceLoc  + "\n\t" + s + " " + v + "\n";
+                String ln = "\t; " + slot.sourceLoc  + "\n\t" + DatumWriter.objectToString(symK) + " " + v + "\n";
                 os.write(ln.getBytes(StandardCharsets.UTF_8));
             }
             os.write(")\n".getBytes(StandardCharsets.UTF_8));

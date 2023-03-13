@@ -11,7 +11,7 @@
 	mTestFonts "Test Fonts"
 	mTestGraphics "Test Graphics Stuff"
 	mToggleFull "Toggle Fullscreen"
-	mSoonToBeRemoved "Dump Schemaside Translations"
+	mSchemaTranslator "Dump Schemaside Translations"
 	mTryRecover "Recover data from R48 error <INCREDIBLY DAMAGING>..."
 	mAudPlay "Audio Player..."
 	mREPL "REPL..."

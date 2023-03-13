@@ -67,6 +67,8 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
         res1.add(() -> T.g.dumpLLang);
         res2.add(() -> {
             GaBIEn.startFileBrowser(T.g.dumpLLang, true, "", (str) -> {
+                if (str == null)
+                    return;
                 ls.lun.ilg.launcherDynTrDump(str);
             });
             res1.removeLast();

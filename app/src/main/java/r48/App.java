@@ -73,6 +73,10 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
         return vmCtx.dynTrBase(srcLoc, id, text);
     }
 
+    public void performTranslatorDump(String fn) {
+        vmCtx.dynTrDump(fn);
+    }
+
     /**
      * Finishes initialization on main thread just before ticking begins.
      */
