@@ -109,8 +109,6 @@ public class AppCore {
         } else {
             currentTranslator = new Translator(lang);
         }
-        currentTranslator.read("Systerms/" + lang + ".txt", "r48/");
-        currentTranslator.read("Systerms/L-" + lang + ".txt", "launcher/");
         try {
             currentTranslator.read(gp + "Lang" + lang + ".txt", "SDB@");
         } catch (Exception e) {
