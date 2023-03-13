@@ -53,17 +53,7 @@ This isn't set in stone, but here's the basic ideas:
 
 * Other strings are complicated.
   
-  * This _really_ depends how the problem of getting SDB to play along is approached.
-    
-    * If SDB elements live in MVM, any option that relies on SDB elements knowing their IDs is out.
-      
-      * Unfortunately this may be a necessary sacrifice for SDB under MVM to actually be coherently usable and not suck.
-  
-  * If interlacing code and names isn't supposed to be supported, the answer is *actually* very simple: generalize the approach used for name routines!
-    
-    * whatever do you mean "what about all the existing SDB code that's all over the place"
-  
-  * In practice, what will probably have to happen is something *like* ITranslator with the values stored in MVM
+  * They're represented by FF0 through FF4, which DynTrSlot can be cast to. When setting up a dynamic translation slot, the default behaviour is given.
 
 ## Launcher Dynamic (Gamepaks)
 

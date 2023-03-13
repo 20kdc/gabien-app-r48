@@ -32,9 +32,11 @@ public class InterlaunchGlobals {
     private MVMEnvR48 langVM;
     private IConsumer<MVMEnv> reportVMChanges;
     private HashMap<String, EngineDef> engineDefs;
+    public final IConsumer<String> logTrIssues;
 
     public InterlaunchGlobals(Config c, IConsumer<MVMEnv> report, IConsumer<String> loadProgress) {
         this.c = c;
+        logTrIssues = (str) -> System.err.println("TR: " + str);
         reportVMChanges = report;
         updateLanguage(loadProgress);
         engineDefs = EnginesList.getEngines(loadProgress);
@@ -58,12 +60,12 @@ public class InterlaunchGlobals {
             lang = LanguageList.defaultLang;
         c.language = lang;
         // ---
-        langVM = new MVMEnvR48(loadProgress);
+        langVM = new MVMEnvR48(loadProgress, logTrIssues);
         MVMR48GlobalLibraries.add(langVM);
         langVM.include("vm/global", false);
         // if the language author wants English fallback, they'll just (include "terms/eng/init")
         langVM.include("terms/" + c.language + "/init", true);
-        t.fillFromVM(langVM);
+        t.fillFromVM(langVM, logTrIssues);
         reportVMChanges.accept(langVM);
         if (lang.equals(LanguageList.hardcodedLang)) {
             translator = new NullTranslator();

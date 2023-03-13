@@ -10,23 +10,27 @@ import gabien.datum.DatumSymbol;
 import gabien.uslx.append.IConsumer;
 import r48.dbs.DatumLoader;
 import r48.tr.DynTrSlot;
+import r48.tr.IDynTrProxy;
+import r48.tr.TrPage;
 
 /**
  * MiniVM environment.
  * Created 26th February 2023 but only fleshed out 28th.
  * Include/loadProgress split from MiniVM core 1st March 2023.
  */
-public final class MVMEnvR48 extends MVMEnv {
-    private final IConsumer<String> loadProgress;
+public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
+    private final IConsumer<String> loadProgress, logTrIssues;
 
-    public MVMEnvR48(IConsumer<String> loadProgress) {
+    public MVMEnvR48(IConsumer<String> loadProgress, IConsumer<String> logTrIssues) {
         super();
         this.loadProgress = loadProgress;
+        this.logTrIssues = logTrIssues;
     }
 
     protected MVMEnvR48(MVMEnvR48 p) {
         super(p);
         loadProgress = p.loadProgress;
+        logTrIssues = p.logTrIssues;
     }
 
     /**
@@ -50,7 +54,14 @@ public final class MVMEnvR48 extends MVMEnv {
     /**
      * Dynamic translation slot.
      */
-    public DynTrSlot dynTr(String slot) {
-        return new DynTrSlot(ensureSlot(new DatumSymbol(slot)));
+    @Override
+    public DynTrSlot dynTrBase(String id, Object res) {
+        MVMSlot slot = ensureSlot(new DatumSymbol(id));
+        if (res != null) {
+            if (slot.v != null)
+                logTrIssues.accept("dynTr ID " + id + " already occupied!");
+            slot.v = TrPage.translateIntoMVM(res);
+        }
+        return new DynTrSlot(slot);
     }
 }

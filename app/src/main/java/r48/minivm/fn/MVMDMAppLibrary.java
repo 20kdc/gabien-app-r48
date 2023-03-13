@@ -11,7 +11,6 @@ import r48.App;
 import r48.dbs.FormatSyntax;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
-import r48.schema.SchemaElement;
 
 /**
  * MiniVM standard library.
@@ -30,8 +29,17 @@ public class MVMDMAppLibrary {
         }
         @Override
         public Object callDirect(Object a0) {
-            // we're doing this one intentionally, as this may become more customizable in future
-            return fmt.interpretParameter((RORIO) a0, (SchemaElement) null, false);
+            return fmt.interpretParameter((RORIO) a0, (String) null, false);
+        }
+
+        @Override
+        public Object callDirect(Object a0, Object a1) {
+            return fmt.interpretParameter((RORIO) a0, (String) a1, false);
+        }
+
+        @Override
+        public Object callDirect(Object a0, Object a1, Object a2) {
+            return fmt.interpretParameter((RORIO) a0, (String) a1, (boolean) a2);
         }
     }
 }
