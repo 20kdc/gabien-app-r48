@@ -12,9 +12,9 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.imageio.ImageIOFormat;
-import r48.maptools.UIMTBase;
 import r48.ui.UIAppendButton;
 import r48.ui.UIColourSwatchButton;
+import r48.ui.UIDynAppPrx;
 import r48.ui.UIMenuButton;
 import r48.ui.Art.Symbol;
 import r48.ui.UISymbolButton;
@@ -551,7 +551,7 @@ public class ImageEditorController extends App.Svc {
                 return title;
             }
         };
-        final UIMTBase res = UIMTBase.wrap(null, xyChanger);
+        final UIDynAppPrx res = UIDynAppPrx.wrap(app, xyChanger);
         final UINumberBox wVal, hVal, xVal, yVal;
         final UITextButton acceptButton;
         wVal = new UINumberBox(targetVal.width, app.f.imageEditorTH);

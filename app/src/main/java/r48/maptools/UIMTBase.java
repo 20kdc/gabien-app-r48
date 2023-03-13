@@ -7,12 +7,9 @@
 
 package r48.maptools;
 
-import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import r48.App;
 import r48.map.IMapToolContext;
-
-import java.util.concurrent.atomic.AtomicBoolean;
+import r48.ui.UIDynAppPrx;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -22,95 +19,16 @@ import org.eclipse.jdt.annotation.NonNull;
  * Maybe make a superclass for the convenient stuff?
  * Created on August 14 2017.
  */
-public class UIMTBase extends App.Pan {
-    private UIElement innerElem = null;
-
+public class UIMTBase extends UIDynAppPrx {
     public final IMapToolContext mapToolContext;
-
-    public boolean selfClose = false;
-    public boolean hasClosed = false;
-    public String titleOverride;
 
     public UIMTBase(@NonNull IMapToolContext mtc) {
         super(mtc.getMapView().app);
         mapToolContext = mtc;
     }
 
-    protected void changeInner(UIElement inner, boolean inConstructor) {
-        for (UIElement uie : layoutGetElements())
-            layoutRemoveElement(uie);
-        if (innerElem != null)
-            if (inConstructor)
-                throw new RuntimeException("Stop it! >.<");
-        innerElem = inner;
-        if (inner != null) {
-            if (inConstructor)
-                inner.forceToRecommended();
-            layoutAddElement(inner);
-            // This is just to do the set forced bounds -> set wanted size thing.
-            if (!inConstructor) {
-                runLayout();
-            } else {
-                setForcedBounds(null, new Rect(inner.getSize()));
-            }
-        }
-    }
-
-    @Override
-    public boolean requestsUnparenting() {
-        return selfClose;
-    }
-
-    @Override
-    public void runLayout() {
-        if (innerElem != null) {
-            // If it doesn't change anything, this won't work very well
-            boolean cannotSFB = innerElem.getSize().sizeEquals(getSize());
-            if (!cannotSFB) {
-                innerElem.setForcedBounds(this, new Rect(getSize()));
-            } else {
-                innerElem.runLayoutLoop();
-            }
-            setWantedSize(innerElem.getWantedSize());
-        }
-    }
-
-    @Override
-    public void onWindowClose() {
-        hasClosed = true;
-    }
-
-    @Override
-    public String toString() {
-        if (titleOverride != null)
-            return titleOverride;
-        if (innerElem != null)
-            return innerElem.toString();
-        return super.toString();
-    }
-
-    public static UIMTBase wrap(IMapToolContext mtc, UIElement svl) {
+    public static UIMTBase wrapUIMT(@NonNull IMapToolContext mtc, @NonNull UIElement svl) {
         UIMTBase r = new UIMTBase(mtc);
-        r.changeInner(svl, true);
-        return r;
-    }
-
-    public static UIMTBase wrapWithCloseCallback(IMapToolContext mtc, final UIElement svl, final AtomicBoolean baseCloser, final Runnable cc) {
-        UIMTBase r = new UIMTBase(mtc) {
-            @Override
-            public boolean requestsUnparenting() {
-                if (baseCloser != null)
-                    return baseCloser.get();
-                return svl.requestsUnparenting();
-            }
-
-            @Override
-            public void onWindowClose() {
-                // Intentional super, as this is a subclass of UIMTBase.
-                super.onWindowClose();
-                cc.run();
-            }
-        };
         r.changeInner(svl, true);
         return r;
     }

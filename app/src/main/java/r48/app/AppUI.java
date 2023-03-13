@@ -28,7 +28,6 @@ import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
 import r48.map.UIMapView;
-import r48.maptools.UIMTBase;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
@@ -37,6 +36,7 @@ import r48.toolsets.IToolset;
 import r48.toolsets.MapToolset;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
+import r48.ui.UIDynAppPrx;
 import r48.ui.UINSVertLayout;
 import r48.ui.UISymbolButton;
 import r48.ui.dialog.UITextPrompt;
@@ -225,7 +225,7 @@ public class AppUI extends App.Svc {
                 UITextButton cancel = new UITextButton(T.u.confirm_cancel, app.f.dialogWindowTH, null).centred();
                 UIElement uie = new UISplitterLayout(new UILabel(s, app.f.dialogWindowTH),
                         new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
-                final UIMTBase mtb = UIMTBase.wrap(null, uie);
+                final UIDynAppPrx mtb = UIDynAppPrx.wrap(app, uie);
                 mtb.titleOverride = T.t.confirm;
                 accept.onClick = new Runnable() {
                     @Override

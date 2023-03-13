@@ -104,7 +104,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
                     }).togglable(view.layerVis[i]);
                     svl.panelsAdd(layerVis);
                 }
-                viewGiver.accept(UIMTBase.wrap(viewGiver, svl));
+                viewGiver.accept(UIMTBase.wrapUIMT(viewGiver, svl));
             }
         }).togglable(false));
 
