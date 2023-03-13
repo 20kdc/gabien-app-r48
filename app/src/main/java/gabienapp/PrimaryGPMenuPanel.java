@@ -63,6 +63,7 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
             String title = T.t.launcherREPL;
             UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(ls.c, ls.lun.vmCtx, title);
             ls.lun.uiTicker.accept(repl);
+            ls.uiLauncher.requestClose();
             ls.lun.currentState = new LSInApp(ls.lun);
         });
         res1.add(() -> T.g.dumpLLang);

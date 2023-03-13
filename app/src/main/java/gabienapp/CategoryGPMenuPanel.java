@@ -115,6 +115,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                 // Start fancy loading screen.
                 final UIFancyInit theKickstart = new UIFancyInit(ls.lun.c);
                 ls.lun.uiTicker.accept(theKickstart);
+                ls.uiLauncher.requestClose();
                 new Thread() {
                     @Override
                     public void run() {
@@ -130,7 +131,6 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                                 lia.app = app;
                                 app.ui.finishInitialization();
                             });
-                            ls.uiLauncher.requestClose();
                         } catch (final RuntimeException e) {
                             theKickstart.doneInjector.set(() -> {
                                 throw e;
