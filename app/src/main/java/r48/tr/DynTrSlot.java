@@ -20,7 +20,7 @@ import r48.tr.TrPage.FF4;
  * Dynamic translation slot.
  * Created 12th March 2023.
  */
-public final class DynTrSlot implements FF0, FF1, FF2, FF3, FF4 {
+public final class DynTrSlot implements IDynTr {
     public final DatumSrcLoc sourceLoc;
     public final MVMSlot underlyingSlot;
     public DynTrSlot(DatumSrcLoc sl, MVMSlot slot) {

@@ -4,20 +4,12 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.minivm.fn;
-
-import r48.App;
-import r48.minivm.MVMEnvR48;
+package r48.tr;
 
 /**
- * MiniVM standard library.
- * Created 10th March 2023.
+ * Generic dynamic translation entry.
+ * Created 13th March 2023.
  */
-public class MVMR48AppLibraries {
-    public static void add(MVMEnvR48 ctx, App app) {
-        MVMR48GlobalLibraries.add(ctx);
-        MVMDMAppLibrary.add(ctx, app);
-        MVMSDBLibrary.add(ctx, app);
-        MVMTrLibrary.add(ctx, app);
-    }
+public interface IDynTr extends TrPage.FF0, TrPage.FF1, TrPage.FF2, TrPage.FF3, TrPage.FF4 {
+
 }

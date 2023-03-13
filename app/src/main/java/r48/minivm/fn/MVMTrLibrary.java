@@ -7,17 +7,18 @@
 package r48.minivm.fn;
 
 import r48.App;
-import r48.minivm.MVMEnvR48;
+import r48.minivm.MVMEnv;
+import r48.minivm.MVMU;
+import r48.tr.NLSTr;
 
 /**
- * MiniVM standard library.
- * Created 10th March 2023.
+ * Translation library.
+ * 
+ * Created 13th March 2023.
  */
-public class MVMR48AppLibraries {
-    public static void add(MVMEnvR48 ctx, App app) {
-        MVMR48GlobalLibraries.add(ctx);
-        MVMDMAppLibrary.add(ctx, app);
-        MVMSDBLibrary.add(ctx, app);
-        MVMTrLibrary.add(ctx, app);
+public class MVMTrLibrary {
+    public static void add(MVMEnv ctx, App app) {
+        ctx.defLib("tr-nls", (a0) -> new NLSTr(MVMU.coerceToString(a0)))
+            .attachHelp("(tr-nls VALUE) : Returns a non-localizable value that still acts like a translation entry.");
     }
 }

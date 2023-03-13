@@ -9,6 +9,8 @@ package r48.minivm.fn;
 import r48.App;
 import r48.dbs.SDBOldParser;
 import r48.minivm.MVMEnv;
+import r48.minivm.MVMU;
+import r48.schema.SchemaElement;
 
 /**
  * MiniVM standard library.
@@ -20,13 +22,23 @@ public class MVMSDBLibrary {
             SDBOldParser.readFile(app, (String) a0);
             return null;
         }).attachHelp("(sdb-load-old FILE) : Read old-format SDB file.");
+
         ctx.defLib("cmdb-init", (a0) -> {
-            app.sdb.newCMDB((String) a0);
+            app.sdb.newCMDB(MVMU.coerceToString(a0));
             return null;
         }).attachHelp("(cmdb-init ID) : Setup a CMDB.");
         ctx.defLib("cmdb-load-old", (a0, a1) -> {
-            app.sdb.loadCMDB((String) a0, (String) a1);
+            app.sdb.loadCMDB(MVMU.coerceToString(a0), (String) a1);
             return null;
         }).attachHelp("(cmdb-load-old ID FILE) : Read old-format CMDB file.");
+
+        ctx.defLib("sdb-get", (a0) -> {
+            return app.sdb.getSDBEntry(MVMU.coerceToString(a0));
+        }).attachHelp("(sdb-get ID) : Gets a SchemaElement from SDB.");
+
+        ctx.defLib("sdb-set", (a0, a1) -> {
+            app.sdb.setSDBEntry(MVMU.coerceToString(a0), (SchemaElement) a1);
+            return null;
+        }).attachHelp("(sdb-set ID SE) : Puts a SchemaElement into SDB.");
     }
 }
