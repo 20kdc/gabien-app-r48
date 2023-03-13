@@ -6,22 +6,6 @@
 
  VX Ace Schema.
 
-C recommendMkdir Data
-
-C recommendMkdir Graphics
-C recommendMkdir Graphics/Animations
-C recommendMkdir Graphics/Characters
-C recommendMkdir Graphics/Faces
-C recommendMkdir Graphics/Pictures
-C recommendMkdir Graphics/Parallaxes
-C recommendMkdir Graphics/Tilesets
- NOTE: Possibly others to add?
-
-C recommendMkdir Audio/BGM
-C recommendMkdir Audio/BGS
-C recommendMkdir Audio/ME
-C recommendMkdir Audio/SE
-
 A RVXA/AutoTiles.txt RVXA/AutoTileRules.txt RVXA/WallAT.txt $WallATs$ RVXA/WaterfallAT.txt .
 
 D internal_tilesetDictionary 1 Tilesets 0 @name

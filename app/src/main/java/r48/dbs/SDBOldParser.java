@@ -797,8 +797,6 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 nam = app.td(outerContext + "/" + val, nam);
                 commandBufferNames.put(val, nam);
                 commandBufferSchemas.put(val, workingObj);
-            } else if (args[0].equals("recommendMkdir")) {
-                sdb.recommendedDirs.add(args[1]);
             } else if (args[0].equals("defaultCB")) {
                 workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
                 commandBufferSchemas.put("x default", workingObj);

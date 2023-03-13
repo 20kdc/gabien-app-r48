@@ -116,7 +116,7 @@ public class AppUI extends App.Svc {
 
         // start possible recommended directory nagger
         final LinkedList<String> createDirs = new LinkedList<String>();
-        for (String s : app.sdb.recommendedDirs)
+        for (String s : app.engine.mkdirs)
             if (!GaBIEn.dirExists(PathUtils.autoDetectWindows(app.rootPath + s)))
                 createDirs.add(s);
 

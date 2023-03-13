@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.datum.DatumDecodingVisitor;
 import gabien.datum.DatumReaderTokenSource;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
@@ -25,6 +24,7 @@ import r48.minivm.compiler.MVMToplevelScope;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.fn.MVMFn;
 import r48.minivm.fn.MVMJLambdaConv;
+import static gabien.datum.DatumTreeUtils.decVisitor;
 
 /**
  * MiniVM environment.
@@ -58,16 +58,9 @@ public class MVMEnv {
      */
     public Object evalString(String str) {
         AtomicReference<Object> ar = new AtomicReference<>();
-        DatumDecodingVisitor ddv = new DatumDecodingVisitor() {
-            @Override
-            public void visitTree(Object obj, DatumSrcLoc srcLoc) {
-                ar.set(evalObject(obj, srcLoc));
-            }
-            @Override
-            public void visitEnd(DatumSrcLoc srcLoc) {
-            }
-        };
-        new DatumReaderTokenSource("REPL", str).visit(ddv);
+        new DatumReaderTokenSource("REPL", str).visit(decVisitor((obj, srcLoc) -> {
+            ar.set(evalObject(obj, srcLoc));
+        }));
         return ar.get();
     }
 

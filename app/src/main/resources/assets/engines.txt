@@ -50,6 +50,28 @@ rxp (
 	autoDetectPath "Data/MapInfos.rxdata"
 	allowIndentControl #t
 	defineIndent #t
+	mkdirs (
+		"Data"
+		"Graphics"
+		"Graphics/Animations"
+		"Graphics/Autotiles"
+		"Graphics/Battlebacks"
+		"Graphics/Battlers"
+		"Graphics/Characters"
+		"Graphics/Fogs"
+		"Graphics/Gameovers"
+		"Graphics/Icons"
+		"Graphics/Panoramas"
+		"Graphics/Pictures"
+		"Graphics/Tilesets"
+		"Graphics/Titles"
+		"Graphics/Transitions"
+		"Graphics/Windowskins"
+		"Audio/BGM"
+		"Audio/BGS"
+		"Audio/ME"
+		"Audio/SE"
+	)
 )
 
 rvxa (
@@ -61,4 +83,19 @@ rvxa (
 	autoDetectPath "Data/MapInfos.rvdata2"
 	allowIndentControl #t
 	defineIndent #t
+	mkdirs (
+		"Data"
+		"Graphics"
+		"Graphics/Animations"
+		"Graphics/Characters"
+		"Graphics/Faces"
+		"Graphics/Pictures"
+		"Graphics/Parallaxes"
+		"Graphics/Tilesets"
+		"Audio/BGM"
+		"Audio/BGS"
+		"Audio/ME"
+		"Audio/SE"
+		; Possibly more to add?
+	)
 )

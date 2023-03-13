@@ -56,7 +56,6 @@ public class SDB extends App.Svc {
 
     public final StandardArrayInterface standardArrayUi = new StandardArrayInterface();
 
-    public LinkedList<String> recommendedDirs = new LinkedList<String>();
     public final OpaqueSchemaElement opaque;
 
     public SDB(App app) {

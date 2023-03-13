@@ -7,15 +7,17 @@
 package r48.app;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.datum.DatumExpectListVisitor;
 import gabien.datum.DatumKVDHVisitor;
-import gabien.datum.DatumODec1Visitor;
 import gabien.datum.DatumSymbol;
 import gabien.datum.DatumVisitor;
+import r48.minivm.MVMU;
+import static gabien.datum.DatumTreeUtils.decVisitor;
 
 /**
  * Engine definition. Used to restrain MiniVM's potential arbitrary-write capabilities somewhat.
@@ -26,45 +28,51 @@ public class EngineDef {
     private static final HashMap<String, DatumKVDHVisitor.Handler<EngineDef, Object>> map = new HashMap<>();
     static {
         map.put("initDir", (k, c, gt) -> {
-            return new DatumODec1Visitor<>(null, null, (v, ctx) -> {
+            return decVisitor((v, srcLoc) -> {
                 c.initDir = (String) v;
-            }, null);
+            });
         });
         map.put("odbBackend", (k, c, gt) -> {
-            return new DatumODec1Visitor<>(null, null, (v, ctx) -> {
+            return decVisitor((v, srcLoc) -> {
                 c.odbBackend = ((DatumSymbol) v).id;
-            }, null);
+            });
         });
         map.put("dataPath", (k, c, gt) -> {
-            return new DatumODec1Visitor<>(null, null, (v, ctx) -> {
+            return decVisitor((v, srcLoc) -> {
                 c.dataPath = (String) v;
-            }, null);
+            });
         });
         map.put("dataExt", (k, c, gt) -> {
-            return new DatumODec1Visitor<>(null, null, (v, ctx) -> {
+            return decVisitor((v, srcLoc) -> {
                 c.dataExt = (String) v;
-            }, null);
+            });
         });
         map.put("mapSystem", (k, c, gt) -> {
-            return new DatumODec1Visitor<>(null, null, (v, ctx) -> {
+            return decVisitor((v, srcLoc) -> {
                 c.mapSystem = ((DatumSymbol) v).id;
-            }, null);
+            });
         });
         map.put("autoDetectPath", (k, c, gt) -> {
-            return new DatumODec1Visitor<>(null, null, (v, ctx) -> {
+            return decVisitor((v, srcLoc) -> {
                 c.autoDetectPath = (String) v;
-            }, null);
+            });
+        });
+        map.put("mkdirs", (k, c, gt) -> {
+            return decVisitor((v, srcLoc) -> {
+                List<Object> obj = MVMU.cList(v);
+                c.mkdirs = obj.toArray(new String[0]);
+            });
         });
         // SDB flags
         map.put("defineIndent", (k, c, gt) -> {
-            return new DatumODec1Visitor<>(null, null, (v, ctx) -> {
+            return decVisitor((v, srcLoc) -> {
                 c.defineIndent = (Boolean) v;
-            }, null);
+            });
         });
         map.put("allowIndentControl", (k, c, gt) -> {
-            return new DatumODec1Visitor<>(null, null, (v, ctx) -> {
+            return decVisitor((v, srcLoc) -> {
                 c.allowIndentControl = (Boolean) v;
-            }, null);
+            });
         });
     }
 
@@ -74,6 +82,7 @@ public class EngineDef {
     public @NonNull String dataExt = "";
     public @NonNull String mapSystem = "null";
     public @Nullable String autoDetectPath = null;
+    public @NonNull String[] mkdirs = new String[0];
     // SDB flags
     public boolean defineIndent, allowIndentControl;
 
