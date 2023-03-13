@@ -31,13 +31,13 @@ public class R2kCommandSchemaTest {
     @Test
     public void testEventCommands() {
         App app = beginCommandProcedure();
-        runMainCommandProcedure(app, "RPG::EventCommand", "R2K/Commands.txt", rpgEvInst.getIVar("@pages").getAElem(1).getIVar("@list"));
+        runMainCommandProcedure(app, "RPG::EventCommand", "event", rpgEvInst.getIVar("@pages").getAElem(1).getIVar("@list"));
     }
 
     @Test
     public void testMoveCommands() {
         App app = beginCommandProcedure();
-        runMainCommandProcedure(app, "RPG::MoveCommand", "R2K/CommandsMove.txt", rpgEvInst.getIVar("@pages").getAElem(1).getIVar("@move_route").getIVar("@list"));
+        runMainCommandProcedure(app, "RPG::MoveCommand", "move", rpgEvInst.getIVar("@pages").getAElem(1).getIVar("@move_route").getIVar("@list"));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class R2kCommandSchemaTest {
         IRIO res = addCommandInto(app, "RPG::EventCommand", lst);
         res.getIVar("@code").setFX(11330);
         rpgEv.modifyVal(rpgEvInst, rpgEvP, false);
-        runMainCommandProcedure(app, "RPG::MoveCommand", "R2K/CommandsMove.txt", res.getIVar("@move_commands"));
+        runMainCommandProcedure(app, "RPG::MoveCommand", "move", res.getIVar("@move_commands"));
     }
 
     private IRIO addCommandInto(App app, String listType, IRIO iVar) {
