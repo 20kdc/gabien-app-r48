@@ -21,6 +21,7 @@ import r48.tr.TrPage.FF0;
 
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
@@ -147,11 +148,7 @@ public class RPGCommand extends App.Svc {
     public @Nullable String getParameterName(IRIO root, int i) {
         if (params.size() <= i)
             return T.s.cmdb_unkParamName;
-        String name = params.get(i).name.apply(root);
-        // Hidden parameters, introduced to deal with the "text as first parameter" thing brought about by R2k
-        if (name.equals("_"))
-            return null;
-        return name;
+        return params.get(i).name.apply(root);
     }
 
     public boolean isAnchor(IRIO root) {
@@ -184,9 +181,12 @@ public class RPGCommand extends App.Svc {
     }
 
     public static class Param {
-        public final IFunction<RORIO, String> name;
-        public final IFunction<RORIO, SchemaElement> schema;
-        public Param(IFunction<RORIO, String> n, IFunction<RORIO, SchemaElement> s) {
+        /**
+         * This can return null, which makes the parameter invisible.
+         */
+        public final @NonNull IFunction<RORIO, String> name;
+        public final @NonNull IFunction<RORIO, SchemaElement> schema;
+        public Param(@NonNull IFunction<RORIO, String> n, @NonNull IFunction<RORIO, SchemaElement> s) {
             name = n;
             schema = s;
         }

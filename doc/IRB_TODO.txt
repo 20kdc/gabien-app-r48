@@ -4,13 +4,9 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-GOAL 1. SDB parsing cleanup
-+ Figure out how to make the "get tr except underscore" function account for that "" makes much more sense. Or at least make it internally use null.
-
-GOAL 2. The Biggest Problem With R48
+GOAL 1. The Biggest Problem With R48
 + Introduce a fancy new prefix for CMDB command names for them to be run on MiniVM.
 + Successfully port every CMDB command name.
-   GOAL 1 puts them all in one place (as FormatSyntax strings). I wonder...
 + Drop support for unported command names.
 + Remove the prefix and error if the prefix is received.
 + Successfully de-prefix every CMDB command name.

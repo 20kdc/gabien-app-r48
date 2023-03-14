@@ -20,6 +20,8 @@ import r48.tr.TrPage.FF0;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.*;
+
 /**
  * Created on 12/30/16.
  */
@@ -53,8 +55,15 @@ public class CMDB extends App.Svc {
             HashMap<String, SchemaElement> localAliasing = new HashMap<String, SchemaElement>();
 
             String currentPvHLocPrefix;
-            HashMap<Integer, SchemaElement> currentPvH;
-            HashMap<Integer, FF0> currentPvH2;
+            HashMap<Integer, PVHEntry> currentPvH;
+            class PVHEntry {
+                final @Nullable FF0 name;
+                final @NonNull SchemaElement schema;
+                public PVHEntry(@Nullable FF0 n, @NonNull SchemaElement s) {
+                    name = n;
+                    schema = s;
+                }
+            }
 
             String baseFile = readFile;
             // sorting order seems to work well enough:
@@ -69,9 +78,10 @@ public class CMDB extends App.Svc {
                 srcLoc = sl;
             }
 
-            private FF0 dTrExUnderscore(String subkey, String defVal) {
+            private @Nullable FF0 dTrExUnderscoreNull(String subkey, String defVal) {
+                // Hidden parameters, introduced to deal with the "text as first parameter" thing brought about by R2k
                 if (defVal.equals("_"))
-                    return () -> defVal;
+                    return null;
                 return app.dTr(srcLoc, subkey, defVal);
             }
 
@@ -385,55 +395,45 @@ public class CMDB extends App.Svc {
                 gbStateArgs = null;
                 if (c == 'p') {
                     int paramIdx = rc.params.size();
-                    final FF0 fv = dTrExUnderscore(TrNames.cmdbParam(dbId, rc.commandId, paramIdx), args[0]);
+                    final FF0 fv = dTrExUnderscoreNull(TrNames.cmdbParam(dbId, rc.commandId, paramIdx), args[0]);
                     String s = args[1].trim();
                     final SchemaElement se = aliasingAwareSG(s);
-                    rc.params.add(new RPGCommand.Param((irio) -> fv.r(), (irio) -> se));
+                    rc.params.add(new RPGCommand.Param((fv != null) ? ((irio) -> fv.r()) : (irio) -> null, (irio) -> se));
                     useTag();
                 } else if (c == 'P') {
                     int paramIdx = rc.params.size();
-                    final HashMap<Integer, SchemaElement> h = new HashMap<Integer, SchemaElement>();
+                    final HashMap<Integer, PVHEntry> h = new HashMap<>();
                     currentPvH = h;
-                    final HashMap<Integer, FF0> h2 = new HashMap<Integer, FF0>();
-                    currentPvH2 = h2;
                     // Pv-syntax:
                     // P arrayDI defaultName defaultType
                     // v specificVal name type
-                    final FF0 defName = dTrExUnderscore(TrNames.cmdbParam(dbId, rc.commandId, paramIdx), args[1]);
+                    final FF0 defName = dTrExUnderscoreNull(TrNames.cmdbParam(dbId, rc.commandId, paramIdx), args[1]);
                     currentPvHLocPrefix = TrNames.cmdbParam(dbId, rc.commandId, paramIdx) + ".";
                     final int arrayDI = Integer.parseInt(args[0]);
                     final SchemaElement defaultSE = aliasingAwareSG(args[2]);
                     rc.params.add(new RPGCommand.Param((irio) -> {
-                        if (irio == null)
-                            return defName.r();
-                        if (irio.getType() != '[')
-                            return defName.r();
-                        if (irio.getALen() <= arrayDI)
-                            return defName.r();
-                        int p = (int) irio.getAElem(arrayDI).getFX();
-                        FF0 ise = h2.get(p);
-                        if (ise != null)
-                            return ise.r();
-                        return defName.r();
+                        if (irio != null && irio.getType() == '[' && irio.getALen() > arrayDI) {
+                            int p = (int) irio.getAElem(arrayDI).getFX();
+                            PVHEntry ise = h.get(p);
+                            if (ise != null)
+                                return ise.name != null ? ise.name.r() : null;
+                        }
+                        return defName != null ? defName.r() : null;
                     }, (irio) -> {
-                        if (irio == null)
-                            return defaultSE;
-                        if (irio.getType() != '[')
-                            return defaultSE;
-                        if (irio.getALen() <= arrayDI)
-                            return defaultSE;
-                        int p = (int) irio.getAElem(arrayDI).getFX();
-                        SchemaElement ise = h.get(p);
-                        if (ise != null)
-                            return ise;
+                        if (irio != null && irio.getType() == '[' && irio.getALen() > arrayDI) {
+                            int p = (int) irio.getAElem(arrayDI).getFX();
+                            PVHEntry ise = h.get(p);
+                            if (ise != null)
+                                return ise.schema;
+                        }
                         return defaultSE;
                     }));
                     useTag();
                 } else if (c == 'v') {
                     // v specificVal name type
                     final int idx = Integer.parseInt(args[0]);
-                    currentPvH.put(idx, aliasingAwareSG(args[2]));
-                    currentPvH2.put(idx, dTrExUnderscore(currentPvHLocPrefix + idx, args[1]));
+                    FF0 name = dTrExUnderscoreNull(currentPvHLocPrefix + idx, args[1]);
+                    currentPvH.put(idx, new PVHEntry(name, aliasingAwareSG(args[2])));
                 } else if (c == 'd') {
                     String desc = "";
                     for (String s : args)
