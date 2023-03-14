@@ -30,12 +30,7 @@ import java.util.*;
  * Created on 12/27/16.
  */
 public class UITest extends App.Prx {
-    public static final Comparator<String> COMPARATOR_NATSTRCOMP = new Comparator<String>() {
-        @Override
-        public int compare(String t0, String t1) {
-            return natStrComp(t0, t1);
-        }
-    };
+    public static final Comparator<String> COMPARATOR_NATSTRCOMP = UITest::natStrComp;
     
     public RORIO currentObj;
     public String[] navigaList;
@@ -46,30 +41,21 @@ public class UITest extends App.Prx {
     // UITest -> outerPanel -> Back/PRINT
     //                      -> masterPanel
     public UIScrollLayout masterPanel = new UIScrollLayout(true, app.f.generalS);
-    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(T.u.test_PTS, new UIAppendButton(T.u.test_PTF, new UITextButton(T.u.test_back, app.f.inspectorBackTH, new Runnable() {
-        @Override
-        public void run() {
-            if (back.size() > 0)
-                loadObject(back.removeLast());
+    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(T.u.test_PTS, new UIAppendButton(T.u.test_PTF, new UITextButton(T.u.test_back, app.f.inspectorBackTH, () -> {
+        if (back.size() > 0)
+            loadObject(back.removeLast());
+    }), () -> {
+        try {
+            OutputStream fos = GaBIEn.getOutFile(getPrintPath(app));
+            PrintStream ps = new PrintStream(fos);
+            ps.print(currentObj.toStringLong(""));
+            fos.close();
+            app.ui.launchDialog(T.u.test_prOk);
+        } catch (Exception e) {
+            app.ui.launchDialog(T.u.test_prFail, e);
         }
-    }), new Runnable() {
-        @Override
-        public void run() {
-            try {
-                OutputStream fos = GaBIEn.getOutFile(getPrintPath(app));
-                PrintStream ps = new PrintStream(fos);
-                ps.print(currentObj.toStringLong(""));
-                fos.close();
-                app.ui.launchDialog(T.u.test_prOk);
-            } catch (Exception e) {
-                app.ui.launchDialog(T.u.test_prFail, e);
-            }
-        }
-    }, app.f.inspectorBackTH), new Runnable() {
-        @Override
-        public void run() {
-            app.ui.launchDialog(currentObj.toStringLong(""));
-        }
+    }, app.f.inspectorBackTH), () -> {
+        app.ui.launchDialog(currentObj.toStringLong(""));
     }, app.f.inspectorBackTH), masterPanel);
 
     public static String getPrintPath(App app) {
@@ -113,21 +99,15 @@ public class UITest extends App.Prx {
         masterPanel.panelsClear();
         for (int i = 0; i < navigaList.length; i++) {
             final int j = i;
-            UIElement button = new UITextButton(navigaList[i], app.f.inspectorTH, new Runnable() {
-                @Override
-                public void run() {
-                    back.addLast(obj);
-                    loadObject(objectList[j]);
-                }
+            UIElement button = new UITextButton(navigaList[i], app.f.inspectorTH, () -> {
+                back.addLast(obj);
+                loadObject(objectList[j]);
             });
             final IMagicalBinder b = MagicalBinders.getBinderFor(app, objectList[j]);
             if (b != null)
-                button = new UIAppendButton(T.u.test_binding, button, new Runnable() {
-                    @Override
-                    public void run() {
-                        back.addLast(obj);
-                        loadObject(MagicalBinders.toBoundWithCache(app, b, (IRIO) objectList[j]));
-                    }
+                button = new UIAppendButton(T.u.test_binding, button, () -> {
+                    back.addLast(obj);
+                    loadObject(MagicalBinders.toBoundWithCache(app, b, (IRIO) objectList[j]));
                 }, app.f.inspectorTH);
             masterPanel.panelsAdd(button);
         }
@@ -195,22 +175,12 @@ public class UITest extends App.Prx {
     }
 
     public static LinkedList<RORIO> sortedKeys(Set<RORIO> rubyIOs) {
-        return sortedKeys(rubyIOs, new IFunction<RORIO, String>() {
-            @Override
-            public String apply(RORIO rubyIO) {
-                return rubyIO.toString();
-            }
-        });
+        return sortedKeys(rubyIOs, RORIO::toString);
     }
 
     public static LinkedList<RORIO> sortedKeys(Set<RORIO> rubyIOs, final IFunction<RORIO, String> toString) {
         LinkedList<RORIO> ios = new LinkedList<RORIO>(rubyIOs);
-        Collections.sort(ios, new Comparator<RORIO>() {
-            @Override
-            public int compare(RORIO rubyIO, RORIO t1) {
-                return natStrComp(toString.apply(rubyIO), toString.apply(t1));
-            }
-        });
+        Collections.sort(ios, (t0, t1) -> natStrComp(toString.apply(t0), toString.apply(t1)));
         return ios;
     }
 

@@ -73,45 +73,42 @@ public class AppNewProject extends App.Svc {
 
     // R2kSystemDefaultsInstallerSchemaElement uses this to indirectly access several things a SchemaElement isn't allowed to access.
     public void r2kProjectCreationHelperFunction() {
-        final Runnable deploy2k = new Runnable() {
-            @Override
-            public void run() {
-                // Perform all mkdirs
-                String[] mkdirs = {
-                        "Backdrop",
-                        "Battle",
-                        "Battle2",
-                        "BattleCharSet",
-                        "BattleWeapon",
-                        "CharSet",
-                        "ChipSet",
-                        "FaceSet",
-                        "Frame",
-                        "GameOver",
-                        "Monster",
-                        "Music",
-                        "Panorama",
-                        "Picture",
-                        "Sound",
-                        "System",
-                        "System2",
-                        "Title"
-                };
-                String[] fileCopies = {
-                        "R2K/char.png", "CharSet/char.png",
-                        "R2K/faceset.png", "FaceSet/faceset.png",
-                        "R2K/backdrop.png", "Backdrop/backdrop.png",
-                        "R2K/System.png", "System/System.png",
-                        "R2K/templatetileset.png", "ChipSet/templatetileset.png",
-                        "R2K/slime.png", "Monster/monster.png",
-                        "R2K/templateconfig.ini", "RPG_RT.ini"
-                };
-                fileCopier(mkdirs, fileCopies);
-                // Load map 1, save everything
-                app.ui.mapContext.loadMap("Map.1");
-                app.odb.ensureAllSaved();
-                app.ui.launchDialog(T.u.np_synthOk);
-            }
+        final Runnable deploy2k = () -> {
+            // Perform all mkdirs
+            String[] mkdirs = {
+                    "Backdrop",
+                    "Battle",
+                    "Battle2",
+                    "BattleCharSet",
+                    "BattleWeapon",
+                    "CharSet",
+                    "ChipSet",
+                    "FaceSet",
+                    "Frame",
+                    "GameOver",
+                    "Monster",
+                    "Music",
+                    "Panorama",
+                    "Picture",
+                    "Sound",
+                    "System",
+                    "System2",
+                    "Title"
+            };
+            String[] fileCopies = {
+                    "R2K/char.png", "CharSet/char.png",
+                    "R2K/faceset.png", "FaceSet/faceset.png",
+                    "R2K/backdrop.png", "Backdrop/backdrop.png",
+                    "R2K/System.png", "System/System.png",
+                    "R2K/templatetileset.png", "ChipSet/templatetileset.png",
+                    "R2K/slime.png", "Monster/monster.png",
+                    "R2K/templateconfig.ini", "RPG_RT.ini"
+            };
+            fileCopier(mkdirs, fileCopies);
+            // Load map 1, save everything
+            app.ui.mapContext.loadMap("Map.1");
+            app.odb.ensureAllSaved();
+            app.ui.launchDialog(T.u.np_synthOk);
         };
         app.ui.wm.createWindowSH(new UIChoicesMenu(app, T.u.np_synth2kQ, new String[] {
                 T.u.np_r2k0,
@@ -119,20 +116,13 @@ public class AppNewProject extends App.Svc {
                 T.u.np_nothing
         }, new Runnable[] {
                 deploy2k,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        IObjectBackend.ILoadedObject root = app.odb.getObject("RPG_RT.ldb");
-                        R2kSystemDefaultsInstallerSchemaElement.upgradeDatabase(root.getObject());
-                        app.odb.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(app), root));
-                        deploy2k.run();
-                    }
-                }, new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }
+                () -> {
+                    IObjectBackend.ILoadedObject root = app.odb.getObject("RPG_RT.ldb");
+                    R2kSystemDefaultsInstallerSchemaElement.upgradeDatabase(root.getObject());
+                    app.odb.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(app), root));
+                    deploy2k.run();
+                }, () -> {
+                }
         }));
     }
 }

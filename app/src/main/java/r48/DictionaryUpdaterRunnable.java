@@ -51,12 +51,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
         iVar = ivar;
         defaultVal = def;
         interpret = ip;
-        kickMe = new IConsumer<SchemaPath>() {
-            @Override
-            public void accept(SchemaPath sp) {
-                actNow = true;
-            }
-        };
+        kickMe = (path) -> actNow = true;
         dataSchema = ds;
     }
 
@@ -157,12 +152,9 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
             if (mappedRIO.getType() == '\"') {
                 text = mappedRIO.decString();
                 if (rootSchemaPath != null) {
-                    editor = new IConsumer<String>() {
-                        @Override
-                        public void accept(String t) {
-                            mappedRIO.setString(t);
-                            app.odb.objectRootModified(targetILO, rootSchemaPath);
-                        }
+                    editor = (t) -> {
+                        mappedRIO.setString(t);
+                        app.odb.objectRootModified(targetILO, rootSchemaPath);
                     };
                 }
             } else {

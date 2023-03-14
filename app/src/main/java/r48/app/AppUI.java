@@ -87,25 +87,17 @@ public class AppUI extends App.Svc {
         app.stuffRendererIndependent = app.system.rendererFromTso(null);
 
         // initialize UI
-        saveButtonSym = new UISymbolButton(Art.Symbol.Save, app.f.tabTH, new Runnable() {
-            @Override
-            public void run() {
-                saveAllModified();
-            }
-        });
-        final UISymbolButton sym2 = new UISymbolButton(Art.Symbol.Back, app.f.tabTH, createLaunchConfirmation(T.u.revertWarn, new Runnable() {
-            @Override
-            public void run() {
-                AppMain.performSystemDump(app, false, "revert file");
-                // Shutdown schema hosts
-                for (ISchemaHost ish : activeHosts)
-                    ish.shutdown();
-                // We're prepared for revert, do the thing
-                app.odb.revertEverything();
-                // Map editor will have fixed itself because it watches the roots and does full reinits when anything even remotely changes
-                // But do this as well
-                app.sdb.kickAllDictionariesForMapChange();
-            }
+        saveButtonSym = new UISymbolButton(Art.Symbol.Save, app.f.tabTH, this::saveAllModified);
+        final UISymbolButton sym2 = new UISymbolButton(Art.Symbol.Back, app.f.tabTH, createLaunchConfirmation(T.u.revertWarn, () -> {
+            AppMain.performSystemDump(app, false, "revert file");
+            // Shutdown schema hosts
+            for (ISchemaHost ish : activeHosts)
+                ish.shutdown();
+            // We're prepared for revert, do the thing
+            app.odb.revertEverything();
+            // Map editor will have fixed itself because it watches the roots and does full reinits when anything even remotely changes
+            // But do this as well
+            app.sdb.kickAllDictionariesForMapChange();
         }));
         UISplitterLayout usl = new UISplitterLayout(saveButtonSym, sym2, false, 0.5);
         wm = new WindowManager(app, uiTicker, null, usl);
@@ -127,13 +119,10 @@ public class AppUI extends App.Svc {
                 wm.createWindow(new UIAutoclosingPopupMenu(new String[] {
                         T.u.newDirs
                 }, new Runnable[] {
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                for (String st : createDirs)
-                                    GaBIEn.makeDirectories(PathUtils.autoDetectWindows(app.rootPath + st));
-                                launchDoneDialog();
-                            }
+                        () -> {
+                            for (String st : createDirs)
+                                GaBIEn.makeDirectories(PathUtils.autoDetectWindows(app.rootPath + st));
+                            launchDoneDialog();
                         }
                 }, app.f.menuTH, app.f.menuS, true));
             }
@@ -227,18 +216,12 @@ public class AppUI extends App.Svc {
                         new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
                 final UIDynAppPrx mtb = UIDynAppPrx.wrap(app, uie);
                 mtb.titleOverride = T.t.confirm;
-                accept.onClick = new Runnable() {
-                    @Override
-                    public void run() {
-                        runnable.run();
-                        mtb.selfClose = true;
-                    }
+                accept.onClick = () -> {
+                    runnable.run();
+                    mtb.selfClose = true;
                 };
-                cancel.onClick = new Runnable() {
-                    @Override
-                    public void run() {
-                        mtb.selfClose = true;
-                    }
+                cancel.onClick = () -> {
+                    mtb.selfClose = true;
                 };
                 app.ui.wm.createWindowSH(mtb);
             }
@@ -267,22 +250,16 @@ public class AppUI extends App.Svc {
         final UIScrollLayout uus = new UIScrollLayout(true, app.f.generalS);
         uus.panelsAdd(uis);
         Size rootSize = wm.getRootSize();
-        final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(T.u.helpIndex, uil, new Runnable() {
-            @Override
-            public void run() {
-                hsc.loadPage(0);
-            }
+        final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(T.u.helpIndex, uil, () -> {
+            hsc.loadPage(0);
         }, app.f.helpPathH), uus) {
             @Override
             public String toString() {
                 return T.u.helpTitle;
             }
         };
-        hsc.onLoad = new Runnable() {
-            @Override
-            public void run() {
-                uus.scrollbar.scrollPoint = 0;
-            }
+        hsc.onLoad = () -> {
+            uus.scrollbar.scrollPoint = 0;
         };
         topbar.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, rootSize.height / 2));
         wm.createWindow(topbar);
