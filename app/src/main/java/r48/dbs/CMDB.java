@@ -385,25 +385,14 @@ public class CMDB extends App.Svc {
                 gbStatePosition = -1;
                 gbStateArgs = null;
                 if (c == 'p') {
-                    int paramIdx = rc.paramName.size();
+                    int paramIdx = rc.params.size();
                     final FF0 fv = dTrExUnderscore(TrNames.cmdbParam(dbId, rc.commandId, paramIdx), args[0]);
-                    rc.paramName.add(new IFunction<IRIO, String>() {
-                        @Override
-                        public String apply(IRIO rubyIO) {
-                            return fv.r();
-                        }
-                    });
                     String s = args[1].trim();
                     final SchemaElement se = aliasingAwareSG(s);
-                    rc.paramType.add(new IFunction<IRIO, SchemaElement>() {
-                        @Override
-                        public SchemaElement apply(IRIO rubyIO) {
-                            return se;
-                        }
-                    });
+                    rc.params.add(new RPGCommand.Param((irio) -> fv.r(), (irio) -> se));
                     useTag();
                 } else if (c == 'P') {
-                    int paramIdx = rc.paramName.size();
+                    int paramIdx = rc.params.size();
                     final HashMap<Integer, SchemaElement> h = new HashMap<Integer, SchemaElement>();
                     currentPvH = h;
                     final HashMap<Integer, FF0> h2 = new HashMap<Integer, FF0>();
@@ -415,39 +404,31 @@ public class CMDB extends App.Svc {
                     currentPvHLocPrefix = TrNames.cmdbParam(dbId, rc.commandId, paramIdx) + ".";
                     final int arrayDI = Integer.parseInt(args[0]);
                     final SchemaElement defaultSE = aliasingAwareSG(args[2]);
-                    rc.paramType.add(new IFunction<IRIO, SchemaElement>() {
-                        @Override
-                        public SchemaElement apply(IRIO rubyIO) {
-                            if (rubyIO == null)
-                                return defaultSE;
-                            if (rubyIO.getType() != '[')
-                                return defaultSE;
-                            if (rubyIO.getALen() <= arrayDI)
-                                return defaultSE;
-                            int p = (int) rubyIO.getAElem(arrayDI).getFX();
-                            SchemaElement ise = h.get(p);
-                            if (ise != null)
-                                return ise;
-                            return defaultSE;
-                        }
-                    });
-
-                    rc.paramName.add(new IFunction<IRIO, String>() {
-                        @Override
-                        public String apply(IRIO rubyIO) {
-                            if (rubyIO == null)
-                                return defName.r();
-                            if (rubyIO.getType() != '[')
-                                return defName.r();
-                            if (rubyIO.getALen() <= arrayDI)
-                                return defName.r();
-                            int p = (int) rubyIO.getAElem(arrayDI).getFX();
-                            FF0 ise = h2.get(p);
-                            if (ise != null)
-                                return ise.r();
+                    rc.params.add(new RPGCommand.Param((irio) -> {
+                        if (irio == null)
                             return defName.r();
-                        }
-                    });
+                        if (irio.getType() != '[')
+                            return defName.r();
+                        if (irio.getALen() <= arrayDI)
+                            return defName.r();
+                        int p = (int) irio.getAElem(arrayDI).getFX();
+                        FF0 ise = h2.get(p);
+                        if (ise != null)
+                            return ise.r();
+                        return defName.r();
+                    }, (irio) -> {
+                        if (irio == null)
+                            return defaultSE;
+                        if (irio.getType() != '[')
+                            return defaultSE;
+                        if (irio.getALen() <= arrayDI)
+                            return defaultSE;
+                        int p = (int) irio.getAElem(arrayDI).getFX();
+                        SchemaElement ise = h.get(p);
+                        if (ise != null)
+                            return ise;
+                        return defaultSE;
+                    }));
                     useTag();
                 } else if (c == 'v') {
                     // v specificVal name type

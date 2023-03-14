@@ -11,6 +11,7 @@ import gabien.uslx.append.*;
 import gabien.ui.UIScrollLayout;
 import r48.App;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
 import r48.schema.displays.TonePickerSchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
@@ -19,6 +20,8 @@ import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;
 
 import java.util.LinkedList;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * RPGCommand database entry.
@@ -30,10 +33,9 @@ public class RPGCommand extends App.Svc {
 
     public SchemaElement specialSchema;
 
-    public LinkedList<IFunction<IRIO, SchemaElement>> paramType = new LinkedList<IFunction<IRIO, SchemaElement>>();
     // As the entire paramType cannot be replaced (paramType is relied upon for parameter names), this instead allows supplementing it.
     public LinkedList<SpecialTag> paramSpecialTags = new LinkedList<SpecialTag>();
-    public LinkedList<IFunction<IRIO, String>> paramName = new LinkedList<IFunction<IRIO, String>>();
+    public LinkedList<Param> params = new LinkedList<Param>();
     public int indentPre;
     // This is conditional solely because of Show Inn (R2k).
     public IFunction<IRIO, Integer> indentPost = new IFunction<IRIO, Integer>() {
@@ -77,8 +79,13 @@ public class RPGCommand extends App.Svc {
     public String formatName(IRIO root, IRIO[] parameters) {
         String nameGet = name.r();
         try {
-            if (nameGet.startsWith("@@"))
-                return app.fmt.formatNameExtended(nameGet.substring(2), root, parameters, paramType.toArray(new IFunction[0]));
+            if (nameGet.startsWith("@@")) {
+                IFunction<RORIO, SchemaElement>[] paramTypes = new IFunction[params.size()];
+                int idx = 0;
+                for (Param p : params)
+                    paramTypes[idx++] = p.schema;
+                return app.fmt.formatNameExtended(nameGet.substring(2), root, parameters, paramTypes);
+            }
             boolean prefixes = true;
             if (nameGet.startsWith("@P")) {
                 prefixes = false;
@@ -133,15 +140,23 @@ public class RPGCommand extends App.Svc {
     }
 
     public SchemaElement getParameterSchema(IRIO root, int i) {
-        if (paramType.size() <= i)
+        if (params.size() <= i)
             return app.sdb.getSDBEntry("genericScriptParameter");
-        return paramType.get(i).apply(root);
+        return params.get(i).schema.apply(root);
     }
 
-    public String getParameterName(IRIO root, int i) {
-        if (paramName.size() <= i)
+    /**
+     * Returns the contextual name of the given parameter index.
+     * This is nullable - if null, the parameter is hidden.
+     */
+    public @Nullable String getParameterName(IRIO root, int i) {
+        if (params.size() <= i)
             return T.s.cmdb_unkParamName;
-        return paramName.get(i).apply(root);
+        String name = params.get(i).name.apply(root);
+        // Hidden parameters, introduced to deal with the "text as first parameter" thing brought about by R2k
+        if (name.equals("_"))
+            return null;
+        return name;
     }
 
     public boolean isAnchor(IRIO root) {
@@ -170,6 +185,15 @@ public class RPGCommand extends App.Svc {
                 SchemaElement scse = new TonePickerSchemaElement(launcher.getApp(), PathSyntax.compile(app, "]" + tpA), PathSyntax.compile(app, "]" + tpB), PathSyntax.compile(app, "]" + tpC), PathSyntax.compile(app, "]" + tpD), tpBase);
                 elementList.panelsAdd(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
+        }
+    }
+
+    public static class Param {
+        public final IFunction<RORIO, String> name;
+        public final IFunction<RORIO, SchemaElement> schema;
+        public Param(IFunction<RORIO, String> n, IFunction<RORIO, SchemaElement> s) {
+            name = n;
+            schema = s;
         }
     }
 }

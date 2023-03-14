@@ -37,6 +37,8 @@ import r48.ui.dialog.UIEnumChoice;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Used to make RPGCommands bearable.
  * (Essentially a version of the ArrayDisambiguatorSchema logic,
@@ -135,9 +137,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
             UILabel[] labels = new UILabel[param.getALen()];
             AtomicInteger labelWidth = new AtomicInteger();
             for (int i = 0; i < labels.length; i++) {
-                String paramName = rc.getParameterName(param, i);
-                // Hidden parameters, introduced to deal with the "text as first parameter" thing brought about by R2k
-                if (paramName.equals("_"))
+                @Nullable String paramName = rc.getParameterName(param, i);
+                if (paramName == null)
                     continue;
                 labels[i] = new UILabel(paramName + " ", app.f.schemaFieldTH);
                 labelWidth.set(Math.max(labelWidth.get(), labels[i].getWantedSize().width));
@@ -185,7 +186,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     // Notice: Both are used!
                     // Firstly nuke it to whatever the command says for array-len-reduce, then use the X-code to fill in details
                     param.setArray();
-                    int size = rc.paramType.size();
+                    int size = rc.params.size();
                     IntUtils.resizeArrayTo(param, size);
                     for (int i = 0; i < size; i++) {
                         IRIO rio = param.getAElem(i);
@@ -197,10 +198,6 @@ public class RPGCommandSchemaElement extends SchemaElement {
                         schemaElement.modifyVal(target, path, true);
                     }
                     templateAndConfirm.accept(rc.template);
-                    if (rc.specialSchema == null)
-                        for (IFunction<IRIO, String> name : rc.paramName)
-                            if (!name.apply(target).equals("_"))
-                                break;
                 } else {
                     templateAndConfirm.accept(new int[0]);
                 }
@@ -225,7 +222,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             } else {
                 IRIO param = target.getIVar("@parameters");
                 // All parameters are described, and the SASE will ensure length is precisely equal
-                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(app, new OpaqueSchemaElement(app), rc.paramName.size(), false, 0, new StandardArrayInterface());
+                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(app, new OpaqueSchemaElement(app), rc.params.size(), false, 0, new StandardArrayInterface());
                 parametersSanitySchema.modifyVal(param, path, setDefault);
                 int alen = param.getALen();
                 for (int i = 0; i < alen; i++) {
