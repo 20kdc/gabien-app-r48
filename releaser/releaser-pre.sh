@@ -11,9 +11,11 @@
 
 # Start with leaving the releaser folder first
 cd ../../gabien-common &&
+mvn clean &&
 mvn install &&
 cd ../gabien-app-r48 &&
 # Testing requires manual IDE intervention at the moment due to LTE.
+mvn clean &&
 mvn install -DskipTests &&
 mkdir -p staging &&
 rm -r staging &&
