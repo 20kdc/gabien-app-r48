@@ -8,7 +8,6 @@
 package r48.dbs;
 
 import gabien.datum.DatumSrcLoc;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
 import r48.io.data.IRIO;
@@ -444,12 +443,7 @@ public class CMDB extends App.Svc {
                     rc.indentPre = Integer.parseInt(args[0]);
                 } else if (c == 'I') {
                     final int s = Integer.parseInt(args[0]);
-                    rc.indentPost = new IFunction<IRIO, Integer>() {
-                        @Override
-                        public Integer apply(IRIO rubyIO) {
-                            return s;
-                        }
-                    };
+                    rc.indentPost = (irio) -> s;
                 } else if (c == 'K') {
                     rc.needsBlockLeavePre = true;
                     rc.blockLeaveReplacement = Integer.parseInt(args[0]);
@@ -480,56 +474,46 @@ public class CMDB extends App.Svc {
                 } else if ((c == 'X') || (c == 'x')) {
                     rc.specialSchema = sdb.getSDBEntry(args[0]);
                 } else if (c == 'C') {
-                    if (args[0].equals("category"))
+                    if (args[0].equals("category")) {
                         rc.category = Integer.parseInt(args[1]);
-                    if (args[0].equals("categories")) {
+                    } else if (args[0].equals("categories")) {
                         categories = new FF0[args.length - 1];
                         // No longer using EscapedStringSyntax, so sanity has been restored (yay!)
                         for (int i = 1; i < args.length; i++)
                             categories[i - 1] = app.dTr(srcLoc, TrNames.cmdbCat(dbId, i), args[i]);
-                    }
-                    if (args[0].equals("digitCount"))
+                    } else if (args[0].equals("digitCount")) {
                         digitCount = Integer.parseInt(args[1]);
-                    if (args[0].equals("commandIndentConditionalIB")) {
+                    } else if (args[0].equals("commandIndentConditionalIB")) {
                         final int target = Integer.parseInt(args[1]);
-                        rc.indentPost = new IFunction<IRIO, Integer>() {
-                            @Override
-                            public Integer apply(IRIO rubyIO) {
-                                if (rubyIO.getALen() <= target)
-                                    return 0;
-                                if (rubyIO.getAElem(target).getFX() == 0)
-                                    return 0;
-                                return 1;
-                            }
+                        rc.indentPost = (irio) -> {
+                            if (irio.getALen() <= target)
+                                return 0;
+                            if (irio.getAElem(target).getFX() == 0)
+                                return 0;
+                            return 1;
                         };
-                    }
-                    if (args[0].equals("commandIndentConditionalOF")) {
+                    } else if (args[0].equals("commandIndentConditionalOF")) {
                         final RubyIO[] iargs = new RubyIO[(args.length - 1) / 2];
                         final int[] ikeys = new int[iargs.length];
                         for (int i = 0; i < iargs.length; i++) {
                             ikeys[i] = Integer.parseInt(args[(i * 2) + 1]);
                             iargs[i] = ValueSyntax.decode(args[(i * 2) + 2]);
                         }
-                        rc.indentPost = new IFunction<IRIO, Integer>() {
-                            @Override
-                            public Integer apply(IRIO rubyIO) {
-                                for (int i = 0; i < iargs.length; i++) {
-                                    if (rubyIO.getALen() <= ikeys[i])
-                                        continue;
-                                    if (IRIO.rubyEquals(rubyIO.getAElem(ikeys[i]), iargs[i]))
-                                        return 1;
-                                }
-                                return 0;
+                        rc.indentPost = (irio) -> {
+                            for (int i = 0; i < iargs.length; i++) {
+                                if (irio.getALen() <= ikeys[i])
+                                    continue;
+                                if (IRIO.rubyEquals(irio.getAElem(ikeys[i]), iargs[i]))
+                                    return 1;
                             }
+                            return 0;
                         };
-                    }
-                    if (args[0].equals("spritesheet")) {
+                    } else if (args[0].equals("spritesheet")) {
                         // C spritesheet 0 CharSet/
                         nextTag.hasSpritesheet = true;
                         nextTag.spritesheetTargstr = Integer.parseInt(args[1]);
                         nextTag.spritesheetId = args[2];
-                    }
-                    if (args[0].equals("r2kTonePicker")) {
+                    } else if (args[0].equals("r2kTonePicker")) {
                         // C r2kTonePicker 0 1 2 3
                         nextTag.hasTonepicker = true;
                         nextTag.tpBase = 100;
@@ -537,8 +521,7 @@ public class CMDB extends App.Svc {
                         nextTag.tpB = Integer.parseInt(args[2]);
                         nextTag.tpC = Integer.parseInt(args[3]);
                         nextTag.tpD = Integer.parseInt(args[4]);
-                    }
-                    if (args[0].equals("r2kFETonePicker")) {
+                    } else if (args[0].equals("r2kFETonePicker")) {
                         // C r2kFETonePicker 0 1 2 3
                         nextTag.hasTonepicker = true;
                         nextTag.tpBase = 31;
@@ -546,23 +529,23 @@ public class CMDB extends App.Svc {
                         nextTag.tpB = Integer.parseInt(args[2]);
                         nextTag.tpC = Integer.parseInt(args[3]);
                         nextTag.tpD = Integer.parseInt(args[4]);
-                    }
-                    if (args[0].equals("groupBehavior")) {
+                    } else if (args[0].equals("groupBehavior")) {
                         gbStatePosition = 1;
                         gbStateArgs = args;
                         rc.groupBehaviors.add(getGroupBehavior());
                         if (gbStatePosition != args.length)
                             throw new RuntimeException("Group behavior must consume all args");
-                    }
-                    if (args[0].equals("template")) {
+                    } else if (args[0].equals("template")) {
                         rc.template = new int[args.length - 1];
                         for (int i = 1; i < args.length; i++)
                             rc.template[i - 1] = Integer.parseInt(args[i]);
-                    }
-                    if (args[0].equals("translatable"))
+                    } else if (args[0].equals("translatable")) {
                         rc.isTranslatable = true;
-                    if (args[0].equals("textArg"))
+                    } else if (args[0].equals("textArg")) {
                         rc.textArg = Integer.parseInt(args[1]);
+                    } else {
+                        throw new RuntimeException("Unknown C-command: " + args[0]);
+                    }
                 } else if (c == '#') {
                     String oldFile = baseFile;
                     baseFile = args[0];
