@@ -86,24 +86,19 @@ public class RPGCommand extends App.Svc {
                     paramTypes[idx++] = p.schema;
                 return app.fmt.formatNameExtended(nameGet.substring(2), root, parameters, paramTypes);
             }
-            boolean prefixes = true;
-            if (nameGet.startsWith("@P")) {
-                prefixes = false;
-                nameGet = nameGet.substring(2);
-            }
             String sn = "";
             int pi = 0;
             for (char c : nameGet.toCharArray()) {
                 if (c == '!') {
                     if (parameters != null) {
-                        sn += " to " + interpretLocalParameter(root, pi, parameters[pi], prefixes);
+                        sn += " to " + interpretLocalParameter(root, pi, parameters[pi], true);
                         pi++;
                     }
                     continue;
                 }
                 if (c == '$') {
                     if (parameters != null) {
-                        sn += " " + interpretLocalParameter(root, pi, parameters[pi], prefixes);
+                        sn += " " + interpretLocalParameter(root, pi, parameters[pi], true);
                         pi++;
                     }
                     continue;

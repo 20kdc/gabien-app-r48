@@ -574,11 +574,12 @@ public class CMDB extends App.Svc {
     public void check() {
         // see if I need to be informed that the schema doesn't support the latest and greatest features
         int fails1 = 0;
-        for (RPGCommand rc : knownCommands.values())
+        for (RPGCommand rc : knownCommands.values()) {
             if (rc.description == null) {
                 System.err.print(rc.name.r() + " ");
                 fails1++;
             }
+        }
         if (fails1 > 0)
             System.err.println(fails1 + " commands do not have descriptions.");
     }

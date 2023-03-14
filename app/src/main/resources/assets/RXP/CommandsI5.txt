@@ -29,7 +29,7 @@ p direction direction
 p distance int
 p speed int
 
-204:@PChange Map$ Settings
+204:@@Change Map{A: #A} Settings
 C category 3
 p type cms_type
 X change_map_settings_parameters

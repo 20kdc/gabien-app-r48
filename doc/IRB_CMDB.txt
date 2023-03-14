@@ -24,11 +24,6 @@
   a more advanced example: 103: Input Number!$ digits
    (As this format is crude, this shows as "Input Number digits" in the selection box.)
 
- Semi-original Format (prefix '@P')
-
- '@P' is the Original Format -
-  but enumeration prefixes are not applied, like with the Extended Format.
-
  Extended Format (prefix '@@')
 
   A format which has grown to be used in quite a lot of things (SDB can use it, for example)
