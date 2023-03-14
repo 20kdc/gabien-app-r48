@@ -100,20 +100,10 @@ public class SDBOldParser extends App.Svc implements IDatabase {
         return app.dTr(srcLoc, TrNames.sdbAnon(ovc, text), text);
     }
 
-    private @NonNull FF0 trAnonExUnderscore(String text) {
-        return trAnonExUnderscore(outerContext, text);
-    }
-
     private @Nullable FF0 trAnonExUnderscoreNull(String text) {
         if (text == "_")
             return null;
         return trAnon(outerContext, text);
-    }
-
-    private @NonNull FF0 trAnonExUnderscore(String ovc, String text) {
-        if (text.equals("_"))
-            return () -> text;
-        return app.dTr(srcLoc, TrNames.sdbAnon(ovc, text), text);
     }
 
     @Override
@@ -427,14 +417,14 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (text.startsWith("]?")) {
                     // yay for... well, semi-consistency!
                     String a = text.substring(2);
-                    FF0 b = trAnonExUnderscore(args[point++]);
+                    FF0 b = trAnonExUnderscoreNull(args[point++]);
                     FF0 o = trAnon(args[point++]);
                     return new ArrayElementSchemaElement(app, Integer.parseInt(a), b, get(), o, false);
                 }
                 if (text.startsWith("]")) {
                     // yay for consistency!
                     String a = text.substring(1);
-                    FF0 b = trAnonExUnderscore(args[point++]);
+                    FF0 b = trAnonExUnderscoreNull(args[point++]);
                     return new ArrayElementSchemaElement(app, Integer.parseInt(a), b, get(), null, false);
                 }
                 // --
@@ -769,7 +759,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 return new EnumSchemaElement(app, finalMap.values(), mergeB.defaultVal, mergeB.entryMode, mergeB.buttonText);
             });
         } else if (c == ']') {
-            workingObj.aggregate.add(new ArrayElementSchemaElement(app, Integer.parseInt(args[0]), trAnon(args[1]), handleChain(args, 2), null, false));
+            workingObj.aggregate.add(new ArrayElementSchemaElement(app, Integer.parseInt(args[0]), trAnonExUnderscoreNull(args[1]), handleChain(args, 2), null, false));
         } else if (c == 'i') {
             readFile(app, args[0]);
         } else if (c == 'D') {

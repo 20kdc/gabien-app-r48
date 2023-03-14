@@ -7,6 +7,8 @@
 
 package r48.schema;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
@@ -26,16 +28,16 @@ import r48.ui.UIFieldLayout;
  */
 public class ArrayElementSchemaElement extends SchemaElement implements IFieldSchemaElement {
     public int index;
-    public FF0 nameCb;
+    public @Nullable FF0 nameCb;
     public SchemaElement subSchema;
-    public FF0 optional;
+    public @Nullable FF0 optional;
     // Removes the element rather than cutting the array. Only use when it is safe to do so.
     public boolean delRemove;
 
     private boolean fieldWidthOverride = false;
     private int fieldWidth;
 
-    public ArrayElementSchemaElement(App app, int ind, FF0 niceName, SchemaElement ise, FF0 opt, boolean dr) {
+    public ArrayElementSchemaElement(App app, int ind, @Nullable FF0 niceName, SchemaElement ise, @Nullable FF0 opt, boolean dr) {
         super(app);
         index = ind;
         nameCb = niceName;
@@ -46,21 +48,18 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
-        final String name = nameCb.r();
-        if (name.equals("_"))
+        if (nameCb == null)
             return HiddenSchemaElement.makeHiddenElement();
+        final String name = nameCb.r();
         if (target.getALen() <= index) {
             String tx = T.s.aElmInv;
             if (optional != null)
                 tx = T.s.aElmOpt.r(name, optional.r());
-            return new UITextButton(tx, app.f.schemaFieldTH, new Runnable() {
-                @Override
-                public void run() {
-                    // resize to include and set default
-                    resizeToInclude(target);
-                    subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(new IRIOFixnum(index), "." + name), true);
-                    path.changeOccurred(false);
-                }
+            return new UITextButton(tx, app.f.schemaFieldTH, () -> {
+                // resize to include and set default
+                resizeToInclude(target);
+                subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(new IRIOFixnum(index), "." + name), true);
+                path.changeOccurred(false);
             });
         }
         UIElement core = subSchema.buildHoldingEditor(target.getAElem(index), launcher, path.arrayHashIndex(new IRIOFixnum(index), "." + name));
@@ -72,17 +71,14 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         }
 
         if (optional != null)
-            return new UIAppendButton("-", core, new Runnable() {
-                @Override
-                public void run() {
-                    if (delRemove) {
+            return new UIAppendButton("-", core, () -> {
+                if (delRemove) {
+                    target.rmAElem(index);
+                } else {
+                    while (target.getALen() > index)
                         target.rmAElem(index);
-                    } else {
-                        while (target.getALen() > index)
-                            target.rmAElem(index);
-                    }
-                    path.changeOccurred(false);
                 }
+                path.changeOccurred(false);
             }, app.f.schemaFieldTH);
 
         return core;
@@ -90,6 +86,8 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
 
     @Override
     public int getDefaultFieldWidth(IRIO target) {
+        if (nameCb == null)
+            return 0;
         return UILabel.getRecommendedTextSize(nameCb.r() + " ", app.f.schemaFieldTH).width;
     }
 
@@ -112,8 +110,10 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         // Resize array if required?
         if (optional == null)
             changed |= resizeToInclude(target);
-        if (target.getALen() > index)
-            subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(new IRIOFixnum(index), "." + nameCb.r()), setDefault);
+        if (target.getALen() > index) {
+            String indexStr = nameCb != null ? "." + nameCb.r() : ("]" + index);
+            subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(new IRIOFixnum(index), indexStr), setDefault);
+        }
         if (changed)
             path.changeOccurred(true);
     }

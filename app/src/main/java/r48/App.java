@@ -66,6 +66,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
         }, ilg.logTrIssues);
         MVMR48AppLibraries.add(vmCtx, this);
         vmCtx.include("vm/global", false);
+        vmCtx.include("vm/app", false);
     }
 
     @Override
