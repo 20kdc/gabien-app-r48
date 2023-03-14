@@ -17,64 +17,7 @@
 (help-set! list? "(list? V) : Returns true if V is a list.")
 
 ; other stuff
-
-; for sane namespacing
-(define-syntax (define-prefix prefix . entries)
-	(define result (list begin))
-	(define hasKey #f)
-	(define key #nil)
-	(for-each (lambda (value)
-		(if hasKey
-			(begin
-				(append! result (list (list
-					define
-					(string->symbol
-						(string-append (value->string prefix) (value->string key))
-					)
-					value
-				)))
-				(set! hasKey #f)
-			)
-			(if (list? value)
-				; the key is a list, so it's actually a sub-group
-				(append! result (list
-					(append
-						(list
-							define-prefix
-							(string->symbol
-								(string-append (value->string prefix) (value->string (list-ref value 0)))
-							)
-						)
-						(sublist value 1 (list-length value))
-					)
-				))
-				(begin
-					; otherwise, this is really a key
-					(set! key value)
-					(set! hasKey #t)
-				)
-			)
-		)
-	) entries)
-	result
-)
-(help-set! define-prefix (string-append
-	"(define-prefix PREFIX K/V...) : "
-	"Defines a prefixed group of values as key/value pairs with a given symbol prefix.\n"
-	"Example would be (define-prefix abc def 123 ghi 456). This creates abcdef = 123 and abcghi = 456.\n"
-	"If a key is a list, then the first element of that is an additional prefix to append to the first.\n"
-	"Therefore, (define-prefix a (b c 1 d 2)) creates abc = 1 and abd = 2."
-))
-
-(define-syntax (define-group prefix . entries)
-	(append
-		(list define-prefix
-			(string->symbol (string-append (value->string prefix) "."))
-		)
-		entries
-	)
-)
-(help-set! define-group "(define-group PREFIX K/V...) : See define-prefix, but the outer prefix has a dot appended.")
+(include "vm/namespacing")
 
 ; for quick formatting
 (define-syntax (.. . entries)
@@ -98,3 +41,7 @@
 
 (define-syntax (fl4 . entries) (list lambda '(a0 a1 a2 a3) (append '(..) entries)))
 (help-set! fl4 "(fl4 V...) : Formatting Lambda 4: equivalent to (lambda (a0 a1 a2 a3) (.. V...))")
+
+; Translation compiler
+(define (tr-dyn-compiler code) code)
+(help-set! tr-dyn-compiler "(tr-dyn-compiler code) : Dynamic translation compiler, invoked Javaside. Pass-through in this (launcher) context.")

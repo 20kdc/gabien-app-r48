@@ -67,16 +67,16 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
     public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, Object base) {
         DynTrSlot res = dynMap.get(id);
         if (res == null) {
-            MVMSlot slot = ensureSlot(new DatumSymbol(id));
-            res = new DynTrSlot(srcLoc, slot);
+            res = new DynTrSlot(this, srcLoc, id, base);
+            ensureSlot(new DatumSymbol(id)).v = res;
             dynMap.put(id, res);
             dynList.add(id);
-        }
-        Object intoMVM = DynTrSlot.translateIntoMVM(id, base);
-        if (res.underlyingSlot.v != null)
-            if (!res.underlyingSlot.v.equals(intoMVM))
+        } else {
+            String srcOld = res.sourceDump();
+            res.setValue(base);
+            if (!srcOld.equals(res.sourceDump()))
                 logTrIssues.accept("dynTr ID " + id + " changed value between two dynTrBase calls. DON'T do this.");
-        res.underlyingSlot.v = intoMVM;
+        }
         return res;
     }
 
@@ -98,25 +98,27 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
 
     public void dynTrDump(String fn) {
         try (OutputStream os = GaBIEn.getOutFile(fn)) {
+            StringBuilder sb = new StringBuilder();
             for (TrDumpSection section : dynTrDumpSections()) {
                 if (section.prefix.equals("")) {
-                    os.write("(define \n".getBytes(StandardCharsets.UTF_8));
+                    sb.append("(tr-set!\n");
                 } else if (section.prefix.endsWith(".")) {
                     DatumSymbol ds = new DatumSymbol(section.prefix.substring(0, section.prefix.length() - 1));
-                    os.write(("(define-group " + DatumWriter.objectToString(ds) + " \n").getBytes(StandardCharsets.UTF_8));
+                    sb.append("(tr-group " + DatumWriter.objectToString(ds) + "\n");
                 } else {
                     DatumSymbol ds = new DatumSymbol(section.prefix);
-                    os.write(("(define-prefix " + DatumWriter.objectToString(ds) + " \n").getBytes(StandardCharsets.UTF_8));
+                    sb.append("(tr-prefix " + DatumWriter.objectToString(ds) + "\n");
                 }
                 for (String s : section.sectionContent) {
                     DynTrSlot slot = dynMap.get(s);
                     DatumSymbol symK = new DatumSymbol(s.substring(section.prefix.length()));
                     String v = slot.sourceDump();
-                    String ln = "\t; " + slot.sourceLoc  + "\n\t" + DatumWriter.objectToString(symK) + " " + v + "\n";
-                    os.write(ln.getBytes(StandardCharsets.UTF_8));
+                    sb.append("\t; " + slot.sourceLoc  + ": " + slot.originalSrc + "\n");
+                    sb.append("\t" + DatumWriter.objectToString(symK) + " " + v + "\n");
                 }
-                os.write(")\n".getBytes(StandardCharsets.UTF_8));
+                sb.append(")\n");
             }
+            os.write(sb.toString().getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             e.printStackTrace();
         }

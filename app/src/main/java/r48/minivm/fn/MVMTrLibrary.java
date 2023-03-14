@@ -6,9 +6,9 @@
  */
 package r48.minivm.fn;
 
-import r48.App;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMU;
+import r48.tr.DynTrSlot;
 import r48.tr.NLSTr;
 
 /**
@@ -17,8 +17,12 @@ import r48.tr.NLSTr;
  * Created 13th March 2023.
  */
 public class MVMTrLibrary {
-    public static void add(MVMEnv ctx, App app) {
+    public static void add(MVMEnv ctx) {
         ctx.defLib("tr-nls", (a0) -> new NLSTr(MVMU.coerceToString(a0)))
-            .attachHelp("(tr-nls VALUE) : Returns a non-localizable value that still acts like a translation entry.");
+            .attachHelp("(tr-nls VALUE) : Returns a non-localizable constant that still looks like a translation entry.");
+        ctx.defLib("tr-set!", (a0, a1) -> {
+            ((DynTrSlot) a0).setValue(a1);
+            return a1;
+        }).attachHelp("(tr-set! DYNTR VALUE) : Compiles a value into a dynamic translation entry.");
     }
 }

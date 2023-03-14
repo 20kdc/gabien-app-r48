@@ -7,100 +7,68 @@
 package r48.tr;
 
 import gabien.datum.DatumSrcLoc;
+import gabien.datum.DatumSymbol;
 import gabien.datum.DatumWriter;
-import r48.minivm.MVMSlot;
+import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMFn;
-import r48.tr.TrPage.FF0;
-import r48.tr.TrPage.FF1;
-import r48.tr.TrPage.FF2;
-import r48.tr.TrPage.FF3;
-import r48.tr.TrPage.FF4;
 
 /**
  * Dynamic translation slot.
  * Created 12th March 2023.
  */
 public final class DynTrSlot implements IDynTr {
+    private final DatumSymbol DYNTR_CALL_API = new DatumSymbol("tr-dyn-compiler");
+
+    public final MVMEnvR48 env;
     public final DatumSrcLoc sourceLoc;
-    public final MVMSlot underlyingSlot;
-    public DynTrSlot(DatumSrcLoc sl, MVMSlot slot) {
+    public final String id;
+    public final String originalSrc;
+    // The source of the value is cached so that dynamic translation can work properly.
+    private String valueSrc;
+    private Object valueCompiled;
+
+    public DynTrSlot(MVMEnvR48 e, DatumSrcLoc sl, String i, Object base) {
+        env = e;
         sourceLoc = sl;
-        underlyingSlot = slot;
+        id = i;
+        setValue(base);
+        originalSrc = valueSrc;
+    }
+
+    public void setValue(Object v) {
+        valueSrc = DatumWriter.objectToString(v);
+        valueCompiled = ((MVMFn) env.getSlot(DYNTR_CALL_API).v).clDirect(v);
     }
 
     /**
-     * Translates a lambda/etc. into a value to initialize an MVM dynamic translation slot.
+     * Attempts to dump source of the value.
      */
-    public static Object translateIntoMVM(String nh, Object obj) {
-        if (obj instanceof String) {
-            return obj;
-        } else if (obj instanceof FF0) {
-            FF0 oc = (FF0) obj;
-            return new MVMFn.Fixed(nh) {
-                @Override
-                public Object callDirect() {
-                    return oc.r();
-                }
-            };
-        } else if (obj instanceof FF1) {
-            FF1 oc = (FF1) obj;
-            return new MVMFn.Fixed(nh) {
-                @Override
-                public Object callDirect(Object a0) {
-                    return oc.r(a0);
-                }
-            };
-        } else if (obj instanceof FF2) {
-            FF2 oc = (FF2) obj;
-            return new MVMFn.Fixed(nh) {
-                @Override
-                public Object callDirect(Object a0, Object a1) {
-                    return oc.r(a0, a1);
-                }
-            };
-        } else if (obj instanceof FF3) {
-            FF3 oc = (FF3) obj;
-            return new MVMFn.Fixed(nh) {
-                @Override
-                public Object callDirect(Object a0, Object a1, Object a2) {
-                    return oc.r(a0, a1, a2);
-                }
-            };
-        } else if (obj instanceof FF4) {
-            FF4 oc = (FF4) obj;
-            return new MVMFn.Fixed(nh) {
-                @Override
-                public Object callDirect(Object a0, Object a1, Object a2, Object a3) {
-                    return oc.r(a0, a1, a2, a3);
-                }
-            };
-        }
-        throw new RuntimeException("Cannot translate " + obj + " into DynTrSlot " + nh + "!");
+    public String sourceDump() {
+        return valueSrc;
     }
 
     private String resolve(int ac, Object a0, Object a1, Object a2, Object a3) {
         try {
-            Object obj = underlyingSlot.v;
-            if (obj instanceof String)
-                return (String) obj;
-            if (obj instanceof MVMFn) {
+            if (valueCompiled instanceof String)
+                return (String) valueCompiled;
+            if (valueCompiled instanceof MVMFn) {
                 switch (ac) {
                 case 0:
-                    return (String) ((MVMFn) obj).clDirect();
+                    return (String) ((MVMFn) valueCompiled).clDirect();
                 case 1:
-                    return (String) ((MVMFn) obj).clDirect(a0);
+                    return (String) ((MVMFn) valueCompiled).clDirect(a0);
                 case 2:
-                    return (String) ((MVMFn) obj).clDirect(a0, a1);
+                    return (String) ((MVMFn) valueCompiled).clDirect(a0, a1);
                 case 3:
-                    return (String) ((MVMFn) obj).clDirect(a0, a1, a2);
+                    return (String) ((MVMFn) valueCompiled).clDirect(a0, a1, a2);
                 case 4:
-                    return (String) ((MVMFn) obj).clDirect(a0, a1, a2, a3);
+                    return (String) ((MVMFn) valueCompiled).clDirect(a0, a1, a2, a3);
                 }
             }
-            return obj.toString();
+            return valueCompiled.toString();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return "!!!" + underlyingSlot.s.id + "!!!";
+            return "!!!" + id + "!!!";
         }
     }
 
@@ -122,14 +90,5 @@ public final class DynTrSlot implements IDynTr {
 
     public String r(Object a0, Object a1, Object a2, Object a3) {
         return resolve(4, a0, a1, a2, a3);
-    }
-
-    /**
-     * Attempts to dump source, somehow.
-     */
-    public String sourceDump() {
-        if (underlyingSlot.v instanceof String)
-            return DatumWriter.objectToString(underlyingSlot.v);
-        return DatumWriter.objectToString(r()) + " ; unable to copy source code";
     }
 }

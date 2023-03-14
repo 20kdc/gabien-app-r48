@@ -24,39 +24,4 @@ public interface IDynTrProxy {
     default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, String text) {
         return dynTrBase(srcLoc, id, text);
     }
-
-    /**
-     * Dynamically translate a formatting lambda.
-     */
-    default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, TrPage.FF0 text) {
-        return dynTrBase(srcLoc, id, text);
-    }
-
-    /**
-     * Dynamically translate a formatting lambda.
-     */
-    default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, TrPage.FF1 text) {
-        return dynTrBase(srcLoc, id, text);
-    }
-
-    /**
-     * Dynamically translate a formatting lambda.
-     */
-    default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, TrPage.FF2 text) {
-        return dynTrBase(srcLoc, id, text);
-    }
-
-    /**
-     * Dynamically translate a formatting lambda.
-     */
-    default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, TrPage.FF3 text) {
-        return dynTrBase(srcLoc, id, text);
-    }
-
-    /**
-     * Dynamically translate a formatting lambda.
-     */
-    default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, TrPage.FF4 text) {
-        return dynTrBase(srcLoc, id, text);
-    }
 }

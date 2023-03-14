@@ -4,3 +4,7 @@
 ; A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
 ; MiniVM app context additions
+
+; Translation compiler
+(define (tr-dyn-compiler code) code)
+(help-set! tr-dyn-compiler "(tr-dyn-compiler code) : Dynamic translation compiler, invoked Javaside.")

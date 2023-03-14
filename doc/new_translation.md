@@ -39,22 +39,34 @@ Access to statically translated fields from Java is best achieved through the `T
 
 ## Dynamic
 
-Dynamic strings are represented Java-side by FF0 through FF4, which DynTrSlot can be cast to. All dynamic translation slots go through MVMEnvR48.dynTrBase, and the default string is given then. dynTrDump is an attempt to approximately reverse-engineer all translation strings.
+Abstract problems that this needed to/needs to solve:
 
-It may end up being necessary to use a dedicated storage system for dynamic translation strings that holds source Datum code for generating the dump file, but this wastes the `define-group` efforts...
+* All dynamic translation slots need to be savable to a file for user editing. This mechanism should be either lossless or effectively lossless.
+  
+  * Essentially, if you want to translate a given "profile" of R48, you copy the English static translation files, and save out the launcher and schema dynamic translation files, and start editing.
 
-OTHER STUFF:This isn't set in stone, but here's the basic ideas:
+* Dynamic translations need to work without App present for the launcher dynamics.
 
-* Name routines are connected into the MVM context "somehow" in a way that allows for direct definition from MVM.
+* Dynamic translations should still be reasonably quick to write.
+
+* Dynamic translations are supposed to ultimately replace FormatSyntax.
+
+This leads me to believe the following is required:
+
+* Dynamic translations are arbitrary Datum data. *Not MVM. Datum.*
   
-  * Presumably, referring to a name routine ensures the slot for consistency reasons.
-  
-  * Presumably, FormatSyntax's name routine database simply becomes a cache of "connector" objects implementing find-or-fallback.
-  
-  * All this done, name routines can start being migrated effectively the moment the necessary DM primitives exist.
+  * To actually implement this, dynamic translation *values* live inside DynTrSlot, not MVMSlot. The DynTrSlot objects will live in the MVM namespace where the DynTrSlot values used to live.
     
-    * So much R2K code would be cleaned up.
+    * This solution also cleans up the "how does MVMSDB get a DynTrSlot if the MVMSlot just points to the value" problem by not doing that nonsense.
 
-* Other strings are complicated.
+* Dynamic translations are compiled into MVM by *MVM-side code* that differs between Launcher and App.
   
-  * They're represented by FF0 through FF4, which DynTrSlot can be cast to. When setting up a dynamic translation slot, the default behaviour is given.
+  * The MVM-side code can add whatever particular syntax it wants, and it has no effect on the general MVM namespace or R48 Java code.
+  
+  * It may be of use to be able to specify the *kind* of compilation desired, but this task could also just be put into "stuff MVM has to worry about".
+  
+  * This compilation occurs within the fold of SchemaParseTest. This means any compilation errors become test errors, which is good.
+  
+  * The in-MVM compiler can implement all the usual "fuzzy" safety expected from FormatSyntax.
+
+Dynamic strings are represented Java-side by FF0 through FF4, which DynTrSlot can be cast to. All dynamic translation slots go through MVMEnvR48.dynTrBase, and the default is given then. Ideally, some way to make the FormatSyntax parameters stuff a *compile-time* problem would be good, because this prepares things for when FormatSyntax goes away.
