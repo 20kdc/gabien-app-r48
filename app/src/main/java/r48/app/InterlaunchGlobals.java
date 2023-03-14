@@ -68,11 +68,11 @@ public class InterlaunchGlobals implements IDynTrProxy {
             lang = LanguageList.defaultLang;
         c.language = lang;
         // ---
-        langVM = new MVMEnvR48(loadProgress, logTrIssues);
+        langVM = new MVMEnvR48(loadProgress, logTrIssues, lang);
         MVMR48GlobalLibraries.add(langVM);
         langVM.include("vm/global", false);
         // if the language author wants English fallback, they'll just (include "terms/eng/init")
-        langVM.include("terms/" + c.language + "/init", true);
+        langVM.include("terms/" + lang + "/init", true);
         t.fillFromVM(langVM, logTrIssues);
         reportVMChanges.accept(langVM);
         GaBIEn.wordLoad = t.g.wordLoad;

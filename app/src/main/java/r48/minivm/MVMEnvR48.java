@@ -16,9 +16,11 @@ import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.datum.DatumWriter;
 import gabien.uslx.append.IConsumer;
+import gabienapp.Application;
 import r48.dbs.DatumLoader;
 import r48.tr.DynTrSlot;
 import r48.tr.IDynTrProxy;
+import r48.wm.Coco;
 
 /**
  * MiniVM environment.
@@ -29,13 +31,15 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
     private final IConsumer<String> loadProgress, logTrIssues;
     private final HashMap<String, DynTrSlot> dynMap;
     private final LinkedList<String> dynList;
+    private final String langID;
 
-    public MVMEnvR48(IConsumer<String> loadProgress, IConsumer<String> logTrIssues) {
+    public MVMEnvR48(IConsumer<String> loadProgress, IConsumer<String> logTrIssues, String lid) {
         super();
         this.loadProgress = loadProgress;
         this.logTrIssues = logTrIssues;
         dynMap = new HashMap<>();
         dynList = new LinkedList<>();
+        langID = lid;;
     }
 
     protected MVMEnvR48(MVMEnvR48 p) {
@@ -44,6 +48,7 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
         logTrIssues = p.logTrIssues;
         dynMap = p.dynMap;
         dynList = p.dynList;
+        langID = p.langID;
     }
 
     /**
@@ -99,6 +104,8 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
     public void dynTrDump(String fn) {
         try (OutputStream os = GaBIEn.getOutFile(fn)) {
             StringBuilder sb = new StringBuilder();
+            // we're not actually in even an ILG context, so we can't translate this
+            new DatumWriter(sb).visitComment(Application.BRAND_C + " Version: " + Coco.getVersion() + ", Language: " + langID);
             for (TrDumpSection section : dynTrDumpSections()) {
                 if (section.prefix.equals("")) {
                     sb.append("(tr-set!\n");

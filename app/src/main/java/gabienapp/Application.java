@@ -13,6 +13,7 @@ package gabienapp;
 public class Application {
     // used for directory name so R48 stops polluting any workspace it's used in.
     public static final String BRAND = "r48";
+    public static final String BRAND_C = "R48";
 
     public static void gabienmain() {
         Launcher lun = new Launcher();

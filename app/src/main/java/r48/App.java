@@ -63,7 +63,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
         super(ilg, gp, rp, sip, loadProgress);
         vmCtx = new MVMEnvR48((str) -> {
             loadProgress.accept(t.g.loadingProgress.r(str));
-        }, ilg.logTrIssues);
+        }, ilg.logTrIssues, ilg.c.language);
         MVMR48AppLibraries.add(vmCtx, this);
         vmCtx.include("vm/global", false);
         vmCtx.include("vm/app", false);
