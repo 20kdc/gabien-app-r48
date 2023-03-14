@@ -126,7 +126,7 @@ public class FormatSyntax extends AppCore.Csv {
                     i = explodeComponentsAndAdvance(components, data, i + 1, '}');
                     boolean result = parameters != null;
                     if (result) {
-                        SchemaElement as = getParameterDisplaySchemaFromArray(parameters[va - 'A'], parameterSchemas, va - 'A');
+                        SchemaElement as = getParameterDisplaySchemaFromArray(root, parameterSchemas, va - 'A');
                         String a = interpretParameter(parameters[va - 'A'], as, false);
                         result = a.equals(eqTarget.toString());
                     }
@@ -137,8 +137,8 @@ public class FormatSyntax extends AppCore.Csv {
                     char vb = data[i + 1];
                     boolean result = parameters != null;
                     if (result) {
-                        SchemaElement as = getParameterDisplaySchemaFromArray(parameters[va - 'A'], parameterSchemas, va - 'A');
-                        SchemaElement bs = getParameterDisplaySchemaFromArray(parameters[vb - 'A'], parameterSchemas, vb - 'A');
+                        SchemaElement as = getParameterDisplaySchemaFromArray(root, parameterSchemas, va - 'A');
+                        SchemaElement bs = getParameterDisplaySchemaFromArray(root, parameterSchemas, vb - 'A');
                         String a = interpretParameter(parameters[va - 'A'], as, false);
                         String b = interpretParameter(parameters[vb - 'A'], bs, false);
                         result = a.equals(b);
