@@ -4,7 +4,15 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-GOAL 1. The Biggest Problem With R48
+GOAL 1. The Biggest Problem With R48, Part 1
+ this is all just theory right now
++ Name routines are "pure formatsyntax" as opposed to the messy magical knows-all-schemas-in-advance kind. Can this preknowledge be utilized to recompile them?
++ Look into trying to precompile formatsyntax, not to stabilize it like with pathsyntax, but to find a way to check, auto-translate, etc. it.
+  This can be used to start deprecating FormatSyntax features in favour of passing off these cases to MVM.
++ Implement a 2-parameter name routine for the sole purpose of porting old command ranges.
+  If everything's forced onto Extended FormatSyntax, that avoids needing a temp prefix for the new MVM command names.
+
+GOAL 2. The Biggest Problem With R48, Part 2
 + Introduce a fancy new prefix for CMDB command names for them to be run on MiniVM.
 + Successfully port every CMDB command name.
 + Drop support for unported command names.
