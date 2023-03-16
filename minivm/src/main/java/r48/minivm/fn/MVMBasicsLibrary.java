@@ -21,9 +21,11 @@ import r48.minivm.compiler.MVMCompileFrame;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.compiler.MVMSubScope;
 import r48.minivm.compiler.MVMSubScope.LocalRoot;
+import r48.minivm.expr.MVMCAnd;
 import r48.minivm.expr.MVMCBegin;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCIf;
+import r48.minivm.expr.MVMCOr;
 
 /**
  * MiniVM standard library.
@@ -42,17 +44,29 @@ public class MVMBasicsLibrary {
                 .attachHelp("(lambda (ARG... [. VA]) STMT...) : Creates first-class functions. The symbol . splits main args from a var-arg list arg.");
         ctx.defineSlot(sym("if")).v = new If()
                 .attachHelp("(if C T [F]) : Conditional primitive.");
+        ctx.defineSlot(sym("and")).v = new AndOr(false)
+                .attachHelp("(and BRANCH...) : And conditional primitive, with short-circuiting and returning the value.");
+        ctx.defineSlot(sym("or")).v = new AndOr(true)
+                .attachHelp("(or BRANCH...) : Or conditional primitive, with short-circuiting and returning the value.");
         ctx.defineSlot(sym("set!")).v = new Set()
                 .attachHelp("(set! VAR V) : Sets a variable.");
         ctx.defLib("equal?", (a0, a1) -> {
-            // Can't rewrite to Objects.deepEquals or anything, that's API level 19
+            // This is a bit awkward because it needs to make number equality work properly.
+            // Things get even more awkward in eqv... think maybe this logic should be promoted to MVMU...
             if (a0 == a1)
                 return true;
             else if (a0 == null)
                 return false;
-            else
+            else {
+                if (a0 instanceof Number && a1 instanceof Number) {
+                    // copied out of MVMMathsLibrary
+                    if (a0 instanceof Float || a0 instanceof Double || a1 instanceof Float || a1 instanceof Double)
+                        return ((Number) a0).doubleValue() == ((Number) a1).doubleValue();
+                    return ((Number) a0).longValue() == ((Number) a1).longValue();
+                }
                 return a0.equals(a1);
-        }).attachHelp("(equal? A B) : Checks two values for Java value equality.");
+            }
+        }).attachHelp("(equal? A B) : Checks two values for equality (Java .equals but with special rules for numbers).");
         // this is definitely not in-spec, but what can 'ya do?
         ctx.defLib("eq?", (a0, a1) -> a0 == a1)
             .attachHelp("(eq? A B) : Checks two values for Java pointer equality.");
@@ -240,6 +254,22 @@ public class MVMBasicsLibrary {
             else if (call.length == 2)
                 return new MVMCIf(cs.compile(call[0]), cs.compile(call[1]), new MVMCExpr.Const(null));
             return new MVMCIf(cs.compile(call[0]), cs.compile(call[1]), cs.compile(call[2]));
+        }
+    }
+
+    public static final class AndOr extends MVMMacro {
+        public final boolean isOr;
+        public AndOr(boolean or) {
+            super(or ? "or" : "and");
+            isOr = or;
+        }
+
+        @Override
+        public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
+            MVMCExpr[] exprs = new MVMCExpr[call.length];
+            for (int i = 0; i < exprs.length; i++)
+                exprs[i] = cs.compile(call[i]);
+            return isOr ? new MVMCOr(exprs) : new MVMCAnd(exprs);
         }
     }
 

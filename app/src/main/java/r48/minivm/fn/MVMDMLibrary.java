@@ -80,9 +80,9 @@ public class MVMDMLibrary {
 
         @Override
         public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
-            if (call.length != 3)
+            if (call.length != 2)
                 throw new RuntimeException(nameHint + " expects exactly 2 args (target path)");
-            PathSyntax ps = PathSyntax.compile(cs.context, cs.compile(call[1]), MVMU.coerceToString(call[2]));
+            PathSyntax ps = PathSyntax.compile(cs.context, cs.compile(call[0]), MVMU.coerceToString(call[1]));
             if (mode == 1)
                 return ps.addProgram;
             if (mode == 2)

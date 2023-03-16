@@ -8,6 +8,7 @@
 package r48;
 
 import gabien.GaBIEn;
+import gabien.datum.DatumSymbol;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.io.PathUtils;
@@ -41,7 +42,7 @@ public class UITest extends App.Prx {
     // UITest -> outerPanel -> Back/PRINT
     //                      -> masterPanel
     public UIScrollLayout masterPanel = new UIScrollLayout(true, app.f.generalS);
-    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(T.u.test_PTS, new UIAppendButton(T.u.test_PTF, new UITextButton(T.u.test_back, app.f.inspectorBackTH, () -> {
+    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(T.u.test_toREPL, new UIAppendButton(T.u.test_PTS, new UIAppendButton(T.u.test_PTF, new UITextButton(T.u.test_back, app.f.inspectorBackTH, () -> {
         if (back.size() > 0)
             loadObject(back.removeLast());
     }), () -> {
@@ -56,6 +57,9 @@ public class UITest extends App.Prx {
         }
     }, app.f.inspectorBackTH), () -> {
         app.ui.launchDialog(currentObj.toStringLong(""));
+    }, app.f.inspectorBackTH), () -> {
+        app.vmCtx.ensureSlot(new DatumSymbol("$obj")).v = currentObj;
+        app.ui.launchDialog(T.u.test_toREPLOk);
     }, app.f.inspectorBackTH), masterPanel);
 
     public static String getPrintPath(App app) {

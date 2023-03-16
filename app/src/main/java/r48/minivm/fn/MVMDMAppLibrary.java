@@ -11,6 +11,7 @@ import r48.App;
 import r48.dbs.FormatSyntax;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
+import r48.minivm.MVMU;
 
 /**
  * MiniVM standard library.
@@ -39,7 +40,7 @@ public class MVMDMAppLibrary {
 
         @Override
         public Object callDirect(Object a0, Object a1, Object a2) {
-            return fmt.interpretParameter((RORIO) a0, (String) a1, (boolean) a2);
+            return fmt.interpretParameter((RORIO) a0, (String) a1, MVMU.isTruthy(a2));
         }
     }
 }

@@ -22,7 +22,7 @@ public class TrAppUI extends TrPage {
     public String notRelease;
     public String odb_disposed, odb_created, odb_modified, odb_lost;
     public FF1 odb_listeners, odb_saveErr, odb_loadObj;
-    public String test_binding, test_prFail, test_prOk, test_PTS, test_PTF, test_back;
+    public String test_binding, test_prFail, test_prOk, test_PTS, test_PTF, test_back, test_toREPL, test_toREPLOk;
     public String np_synthOk, np_synth2kQ, np_r2k0, np_r2k3, np_nothing;
     public String spr_num, spr_msgNoImage;
     public String soundFail;

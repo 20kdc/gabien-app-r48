@@ -312,16 +312,15 @@ e timer_operation_type 0 setTime 1 setFlagsAndStart 2 stop
   so "initButton" was invented to force specific settings in juuust the right way.
 
  Previously, a paragraph existed here about having to use FormatSyntax because reasons.
- Now we don't strictly need to, but some things need to be dealt with first...
+ Now it's all Datum!
 
- This name routine outputs 1 for 'Wait For Action' and 0 otherwise.
-C logic Interp.waitForAction_control_pos :length ]1 | {A=3={B=0=1|0}|0}
-C logic Interp.waitForAction_control_neg "" | {@[@Interp.waitForAction_control_pos]|0|1|0}
+C datum "(define (r2k-waitForAction obj) (and (equal? (dm-a-len obj) 3) (equal? (dm-decode (dm-a-ref obj 1)) 0)))"
+C datum "(define (r2k-waitForAction-not obj) (not (r2k-waitForAction obj)))"
 
 .wait_array
 ]0 _ string
-+initButton "Wait For X/10 Seconds" "[@Interp.waitForAction_control_neg]" wait_array_subroutine_2
-+initButton "Wait For Action (2k3)" "[@Interp.waitForAction_control_pos]" wait_array_subroutine_3
++initButton "Wait For X/10 Seconds" "r2k-waitForAction-not" wait_array_subroutine_2
++initButton "Wait For Action (2k3)" "r2k-waitForAction" wait_array_subroutine_3
  This reimplements the same control logic as a disambiguator for the UI/checking,
   which has to be distinct from the actual initializers because the initializers force stuff
   that can't be forced safely on existing data.

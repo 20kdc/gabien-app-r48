@@ -24,6 +24,7 @@ public class MVMMathsLibrary {
         ctx.defineSlot(new DatumSymbol("-")).v = new Sub()
                 .attachHelp("(- V...) : Subtracts various values. If none given, returns 0. A special rule is that - with a single parameter negates.");
         ctx.defLib("=", (a0, a1) -> {
+            // copied to equal? for inlining
             if (a0 instanceof Float || a0 instanceof Double || a1 instanceof Float || a1 instanceof Double)
                 return ((Number) a0).doubleValue() == ((Number) a1).doubleValue();
             return ((Number) a0).longValue() == ((Number) a1).longValue();

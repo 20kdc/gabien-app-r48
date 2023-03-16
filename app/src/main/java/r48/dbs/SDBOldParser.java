@@ -22,6 +22,8 @@ import r48.DictionaryUpdaterRunnable;
 import r48.RubyIO;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
+import r48.minivm.MVMU;
+import r48.minivm.fn.MVMFn;
 import r48.schema.*;
 import r48.schema.arrays.*;
 import r48.schema.displays.*;
@@ -333,7 +335,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (text.equals("initButton")) {
                     String text2 = args[point++];
                     String cond = args[point++];
-                    InitButtonSchemaElement.Condition c = (target) -> !app.fmt.formatNameExtended(cond, target, new IRIO[0], null).equals("0");
+                    final Object datumCond = app.vmCtx.evalString(cond);
+                    InitButtonSchemaElement.Condition c = (obj) -> MVMU.isTruthy(((MVMFn) datumCond).clDirect(obj));
                     SchemaElement reinit = get();
                     return new InitButtonSchemaElement(trAnon(text2), c, reinit, true, false);
                 }
@@ -894,6 +897,10 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 point++; // skip ]
                 // returns new point
                 sdb.helpers.createSpritesheet(srcLoc, args, point, text2);
+            } else if (args[0].equals("datum")) {
+                // this is used to help port over existing code to be more Datumy
+                for (int i = 1; i < args.length; i++)
+                    app.vmCtx.evalString(args[i]);
             } else {
                 throw new RuntimeException("C-command " + args[0] + " is not supported.");
             }

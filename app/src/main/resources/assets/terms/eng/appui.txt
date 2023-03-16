@@ -40,6 +40,8 @@
 		PTS "PTS"
 		PTF "PTF"
 		back "Back..."
+		toREPL "To REPL"
+		toREPLOk "Accessible from REPL as $obj"
 	)
 	(np_
 		synthOk "The synthesis was completed successfully."

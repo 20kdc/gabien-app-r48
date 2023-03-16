@@ -5,18 +5,7 @@
 
 ; MiniVM global additions
 
-; all Java classes we care about
-(define java.util.List (string->class "java.util.List"))
-
-; obvious operations
-
-(define (list . v) v)
-(help-set! list "(list V...) : Creates a list of values.")
-
-(define (list? v) (instance? java.util.List v))
-(help-set! list? "(list? V) : Returns true if V is a list.")
-
-(define (not v) (if v #f #t))
+(include "vm/rxrs")
 
 ; other stuff
 (include "vm/namespacing")
