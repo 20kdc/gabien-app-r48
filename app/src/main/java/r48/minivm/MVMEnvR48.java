@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import gabien.GaBIEn;
+import gabien.datum.DatumDecToLambdaVisitor;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.datum.DatumWriter;
@@ -55,7 +56,7 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
      * Loads the given file into this context.
      */
     public void include(String filename, boolean opt) {
-        DatumLoader.Handler eval = this::evalObject; 
+        DatumDecToLambdaVisitor.Handler eval = this::evalObject; 
         boolean attempt = DatumLoader.read(filename + ".scm", loadProgress, eval);
         if (!attempt)
             attempt = DatumLoader.read(filename + ".txt", loadProgress, eval);

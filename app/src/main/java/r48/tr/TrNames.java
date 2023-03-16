@@ -39,10 +39,14 @@ public class TrNames {
 
     // pretty much just whatever could be made up
     public static String sdbAnon(String ovc, String text) {
-        return "SDB_" + ovc + "." + text;
+        return "SDB_" + ovc + ".$" + text;
     }
 
     public static String sdbEnum(String string, int k) {
         return "SDB_" + string + ".e" + k;
+    }
+
+    public static String sdbWindowTitle(String ovc) {
+        return "SDB_" + ovc + ".title";
     }
 }

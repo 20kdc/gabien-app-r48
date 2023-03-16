@@ -20,7 +20,7 @@ import r48.minivm.MVMU;
 public class MVMDMAppLibrary {
     public static void add(MVMEnv ctx, App app) {
         ctx.defineSlot(new DatumSymbol("dm-fmt")).v = new DMFmt(app.fmt)
-                .attachHelp("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. Important: Because of schemas and stuff this doesn't exist in the static translation context.");
+                .attachHelp("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. If the passed-in object is null (say, due to a PathSyntax failure) returns the empty string. Important: Because of schemas and stuff this doesn't exist in the static translation context.");
     }
     public static final class DMFmt extends MVMFn.Fixed {
         public final FormatSyntax fmt;
@@ -30,16 +30,22 @@ public class MVMDMAppLibrary {
         }
         @Override
         public Object callDirect(Object a0) {
+            if (a0 == null)
+                return "";
             return fmt.interpretParameter((RORIO) a0, (String) null, false);
         }
 
         @Override
         public Object callDirect(Object a0, Object a1) {
+            if (a0 == null)
+                return "";
             return fmt.interpretParameter((RORIO) a0, (String) a1, false);
         }
 
         @Override
         public Object callDirect(Object a0, Object a1, Object a2) {
+            if (a0 == null)
+                return "";
             return fmt.interpretParameter((RORIO) a0, (String) a1, MVMU.isTruthy(a2));
         }
     }

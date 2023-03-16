@@ -239,6 +239,11 @@ public class SDB extends App.Svc {
         }
 
         @Override
+        public @Nullable String windowTitleSuffix(SchemaPath path) {
+            return getEntry().windowTitleSuffix(path);
+        }
+
+        @Override
         public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
             getEntry().modifyVal(target, path, setDefault);
         }

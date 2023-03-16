@@ -7,6 +7,7 @@
 package r48.tr;
 
 import gabien.datum.DatumSrcLoc;
+import r48.dbs.DatumLoader;
 
 /**
  * Dynamic translation proxy.
@@ -23,5 +24,12 @@ public interface IDynTrProxy {
      */
     default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, String text) {
         return dynTrBase(srcLoc, id, text);
+    }
+
+    /**
+     * Dynamically translate a Datum object (as usual, for compilation)
+     */
+    default DynTrSlot dTrCode(DatumSrcLoc srcLoc, String id, String text) {
+        return dynTrBase(srcLoc, id, DatumLoader.readInline(srcLoc, text));
     }
 }

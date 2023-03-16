@@ -7,9 +7,11 @@
 package r48.dbs;
 
 import java.io.InputStreamReader;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import gabien.GaBIEn;
-import gabien.datum.DatumDecodingVisitor;
+import gabien.datum.DatumDecToLambdaVisitor;
 import gabien.datum.DatumReaderTokenSource;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumVisitor;
@@ -21,18 +23,27 @@ import gabien.uslx.append.IConsumer;
  */
 public class DatumLoader {
     /**
+     * Loads an inline value.
+     */
+    public static Object readInline(DatumSrcLoc base, String text) {
+        AtomicReference<Object> result = new AtomicReference<>();
+        AtomicBoolean hasResult = new AtomicBoolean();
+        new DatumReaderTokenSource(base.toString(), text).visit(new DatumDecToLambdaVisitor((obj, srcLoc) -> {
+            if (hasResult.get())
+                throw new RuntimeException(">1 object at inline Datum at " + base);
+            hasResult.set(true);
+            result.set(obj);
+        }));
+        if (!hasResult.get())
+            throw new RuntimeException("No object at inline Datum at " + base);
+        return result.get();
+    }
+
+    /**
      * Loads the given file into this context.
      */
-    public static boolean read(String filename, IConsumer<String> loadProgress, Handler eval) {
-        return read(filename, loadProgress, new DatumDecodingVisitor() {
-            @Override
-            public void visitTree(Object obj, DatumSrcLoc srcLoc) {
-                eval.accept(obj, srcLoc);
-            }
-            @Override
-            public void visitEnd(DatumSrcLoc srcLoc) {
-            }
-        });
+    public static boolean read(String filename, IConsumer<String> loadProgress, DatumDecToLambdaVisitor.Handler eval) {
+        return read(filename, loadProgress, new DatumDecToLambdaVisitor(eval));
     }
 
     /**
@@ -54,9 +65,5 @@ public class DatumLoader {
         }
         System.out.println("<<" + filename);
         return true;
-    }
-
-    public interface Handler {
-        void accept(Object val, DatumSrcLoc srcLoc);
     }
 }

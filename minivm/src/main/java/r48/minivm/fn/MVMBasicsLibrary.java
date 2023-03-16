@@ -12,6 +12,8 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 
 import static gabien.datum.DatumTreeUtils.*;
+
+import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.ISupplier;
 import r48.minivm.MVMU;
@@ -72,6 +74,13 @@ public class MVMBasicsLibrary {
         // not strictly standard in Scheme, but is standard in Common Lisp, but exact details differ
         ctx.defLib("gensym", () -> ctx.gensym())
             .attachHelp("(gensym) : Creates a new uniqueish symbol.");
+        // Technically implement just enough of R5RS environments that the parts we're cheating on don't stick out like sore thumbs.
+        ctx.defLib("eval", (a0, a1) -> {
+            return ((MVMEnv) a1).evalObject(a0, DatumSrcLoc.NONE);
+        }).attachHelp("(eval EXPR ENV) : Evaluates EXPR in ENV. Note EXPR is unquoted, so you can dynamically generate it.");
+        ctx.defLib("interaction-environment", () -> {
+            return ctx;
+        }).attachHelp("(interaction-environment) : To put it nicely, this is cheating. It returns the global environment it was defined in, to let eval work.");
     }
 
     /**

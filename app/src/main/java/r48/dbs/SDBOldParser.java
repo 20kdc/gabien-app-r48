@@ -35,6 +35,7 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
+import r48.tr.TrPage.FF2;
 import r48.ui.dialog.UIEnumChoice;
 import r48.ui.dialog.UIEnumChoice.EntryMode;
 
@@ -657,10 +658,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(app, b), Integer.parseInt(a), c, d), getFunctionToReturn(T.s.selectTileGraphic));
                 }
                 if (text.equals("windowTitleAttachment")) {
-                    FF0 txt = trAnon(args[point++]);
-                    return new WindowTitleAttachmentSchemaElement(app, (targetElement, lastArrayIndex) -> {
-                        return app.fmt.formatNameExtended(txt.r(), (RORIO) targetElement, new RORIO[] {(RORIO) lastArrayIndex}, null);
-                    });
+                    FF2 txt = app.dTrCode(srcLoc, TrNames.sdbWindowTitle(outerContext), args[point++]);
+                    return new WindowTitleAttachmentSchemaElement(app, txt);
                 }
                 if (text.equals("soundPlayer")) {
                     String a = args[point++];

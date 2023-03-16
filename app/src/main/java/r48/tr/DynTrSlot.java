@@ -52,18 +52,27 @@ public final class DynTrSlot implements IDynTr {
             if (valueCompiled instanceof String)
                 return (String) valueCompiled;
             if (valueCompiled instanceof MVMFn) {
+                Object res = null;
                 switch (ac) {
                 case 0:
-                    return (String) ((MVMFn) valueCompiled).clDirect();
+                    res = ((MVMFn) valueCompiled).clDirect();
+                    break;
                 case 1:
-                    return (String) ((MVMFn) valueCompiled).clDirect(a0);
+                    res = ((MVMFn) valueCompiled).clDirect(a0);
+                    break;
                 case 2:
-                    return (String) ((MVMFn) valueCompiled).clDirect(a0, a1);
+                    res = ((MVMFn) valueCompiled).clDirect(a0, a1);
+                    break;
                 case 3:
-                    return (String) ((MVMFn) valueCompiled).clDirect(a0, a1, a2);
+                    res = ((MVMFn) valueCompiled).clDirect(a0, a1, a2);
+                    break;
                 case 4:
-                    return (String) ((MVMFn) valueCompiled).clDirect(a0, a1, a2, a3);
+                    res = ((MVMFn) valueCompiled).clDirect(a0, a1, a2, a3);
+                    break;
                 }
+                if (res == null)
+                    return "!!!(null DynTrSlot return @ " + id + ")!!!";
+                return res.toString();
             }
             return valueCompiled.toString();
         } catch (Exception ex) {

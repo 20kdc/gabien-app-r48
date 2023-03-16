@@ -51,7 +51,18 @@ public class MVMIntegrationLibrary {
             this.ctx = ctx;
         }
         public String textToHTML(String txt) {
-            return txt.replace("\n", "<br/>");
+            StringBuilder sb = new StringBuilder();
+            for (char c : txt.toCharArray()) {
+                if (c == '\n') {
+                    sb.append("<br/>");
+                } else {
+                    sb.append("&");
+                    sb.append("#");
+                    sb.append((int) c);
+                    sb.append(";");
+                }
+            }
+            return sb.toString();
         }
         public String encodeAnchor(String txt) {
             StringBuilder a = new StringBuilder();
