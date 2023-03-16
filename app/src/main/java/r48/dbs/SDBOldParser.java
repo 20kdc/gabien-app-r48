@@ -324,15 +324,18 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (text.equals("lengthAdjust") || text.equals("lengthAdjustDef")) {
                     String text2 = args[point++];
                     int len = Integer.parseInt(args[point++]);
-                    String cond = "{@[@Interp.lang-Common-arrayLen]|" + len + "|1|0}";
+                    InitButtonSchemaElement.Condition cond = (obj) -> {
+                        return obj.getALen() == len;
+                    };
                     SchemaElement reinit = new StandardArraySchemaElement(app, new OpaqueSchemaElement(app), len, 0, 0, null);
                     return new InitButtonSchemaElement(trAnon(text2), cond, reinit, false, text.equals("lengthAdjustDef"));
                 }
                 if (text.equals("initButton")) {
                     String text2 = args[point++];
                     String cond = args[point++];
+                    InitButtonSchemaElement.Condition c = (target) -> !app.fmt.formatNameExtended(cond, target, new IRIO[0], null).equals("0");
                     SchemaElement reinit = get();
-                    return new InitButtonSchemaElement(trAnon(text2), cond, reinit, true, false);
+                    return new InitButtonSchemaElement(trAnon(text2), c, reinit, true, false);
                 }
                 /*
                  * Command buffers are assembled by putting entries into commandBufferNames (which is ValueSyntax, Text),
@@ -652,7 +655,9 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 }
                 if (text.equals("windowTitleAttachment")) {
                     FF0 txt = trAnon(args[point++]);
-                    return new WindowTitleAttachmentSchemaElement(app, txt);
+                    return new WindowTitleAttachmentSchemaElement(app, (targetElement, lastArrayIndex) -> {
+                        return app.fmt.formatNameExtended(txt.r(), (RORIO) targetElement, new RORIO[] {(RORIO) lastArrayIndex}, null);
+                    });
                 }
                 if (text.equals("soundPlayer")) {
                     String a = args[point++];

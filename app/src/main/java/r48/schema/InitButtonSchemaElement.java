@@ -12,6 +12,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;
@@ -30,11 +31,11 @@ import r48.tr.TrPage.FF0;
  */
 public class InitButtonSchemaElement extends SchemaElement {
     private final FF0 text;
-    private final String condition;
+    private final Condition condition;
     private final SchemaElement reinitializer;
     private final boolean defaulting, asDefault;
 
-    public InitButtonSchemaElement(FF0 text2, String cond, @NonNull SchemaElement reinit, boolean runDef, boolean def) {
+    public InitButtonSchemaElement(@NonNull FF0 text2, @NonNull Condition cond, @NonNull SchemaElement reinit, boolean runDef, boolean def) {
         super(reinit.app);
         text = text2;
         condition = cond;
@@ -53,12 +54,8 @@ public class InitButtonSchemaElement extends SchemaElement {
                 reinitializer.modifyVal(target, path, asDefault);
                 path.changeOccurred(false);
             }
-        }).togglable(evaluateCondition(target));
+        }).togglable(condition.eval(target));
         return utb;
-    }
-
-    private boolean evaluateCondition(IRIO target) {
-        return !app.fmt.formatNameExtended(condition, target, new IRIO[0], null).equals("0");
     }
 
     @Override
@@ -66,5 +63,9 @@ public class InitButtonSchemaElement extends SchemaElement {
         // No need to perform a second changeOccurred
         if (defaulting && setDefault)
             reinitializer.modifyVal(target, path, true);
+    }
+
+    public interface Condition {
+        boolean eval(RORIO target);
     }
 }

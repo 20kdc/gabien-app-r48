@@ -8,6 +8,7 @@ package r48.minivm.fn;
 
 import gabien.datum.DatumSymbol;
 import r48.dbs.PathSyntax;
+import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMU;
 import r48.minivm.compiler.MVMCompileScope;
@@ -20,11 +21,47 @@ import r48.minivm.expr.MVMCExpr;
 public class MVMDMLibrary {
     public static void add(MVMEnv ctx) {
         ctx.defineSlot(new DatumSymbol("dm-at")).v = new DMAt(0)
-                .attachHelp("(dm-at TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), #nil on failure");
+            .attachHelp("(dm-at TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), #nil on failure");
         ctx.defineSlot(new DatumSymbol("dm-add-at")).v = new DMAt(1)
-                .attachHelp("(dm-add-at TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), adds entry if possible, #nil on failure");
+            .attachHelp("(dm-add-at TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), adds entry if possible, #nil on failure");
         ctx.defineSlot(new DatumSymbol("dm-del-at")).v = new DMAt(2)
-                .attachHelp("(dm-del-at TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), deletes entry, #nil on failure");
+            .attachHelp("(dm-del-at TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), deletes entry, #nil on failure");
+        ctx.defLib("dm-a-len", (a) -> {
+            if (a == null)
+                return null;
+            if (((RORIO) a).getType() != '[')
+                return null;
+            return ((RORIO) a).getALen();
+        }).attachHelp("(dm-a-len TARGET) : Gets array length of TARGET. Returns #nil if not-an-array.");
+        ctx.defLib("dm-a-ref", (a, i) -> {
+            if (a == null)
+                return null;
+            RORIO ro = (RORIO) a;
+            if (ro.getType() != '[')
+                return null;
+            int idx = MVMU.cInt(i);
+            if (idx < 0 || idx >= ro.getALen())
+                return null;
+            return ro.getAElem(idx);
+        }).attachHelp("(dm-a-ref TARGET INDEX) : Gets an array element of TARGET. Returns #nil if not-an-array or index invalid.");
+        ctx.defLib("dm-decode", (a) -> {
+            if (a == null)
+                return null;
+            RORIO ro = (RORIO) a;
+            switch (ro.getType()) {
+            case 'T':
+                return Boolean.TRUE;
+            case 'F':
+                return Boolean.FALSE;
+            case '"':
+                return ro.decString();
+            case ':':
+                return ro.getSymbol();
+            case 'i':
+                return ro.getFX();
+            }
+            return null;
+        }).attachHelp("(dm-decode TARGET) : Converts TARGET from DM terms into Datum terms. Returns #nil on failure.");
     }
     public static final class DMAt extends MVMMacro {
         public final int mode;

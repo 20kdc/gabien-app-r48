@@ -16,6 +16,8 @@
 (define (list? v) (instance? java.util.List v))
 (help-set! list? "(list? V) : Returns true if V is a list.")
 
+(define (not v) (if v #f #t))
+
 ; other stuff
 (include "vm/namespacing")
 

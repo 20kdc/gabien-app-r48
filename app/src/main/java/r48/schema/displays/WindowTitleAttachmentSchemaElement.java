@@ -12,20 +12,19 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.ui.UIElement;
 import r48.App;
 import r48.io.data.IRIO;
-import r48.io.data.RORIO;
 import r48.schema.HiddenSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.tr.TrPage.FF0;
+import r48.tr.TrPage.FF2;
 
 /**
  * Created on 1st August 2022.
  */
 public class WindowTitleAttachmentSchemaElement extends SchemaElement {
-    public final FF0 suffixRoutine;
+    public final FF2 suffixRoutine;
 
-    public WindowTitleAttachmentSchemaElement(App app, FF0 sr) {
+    public WindowTitleAttachmentSchemaElement(App app, FF2 sr) {
         super(app);
         suffixRoutine = sr;
     }
@@ -41,6 +40,6 @@ public class WindowTitleAttachmentSchemaElement extends SchemaElement {
 
     @Override
     public @Nullable String windowTitleSuffix(SchemaPath path) {
-        return app.fmt.formatNameExtended(suffixRoutine.r(), path.targetElement, new RORIO[] {path.lastArrayIndex}, null);
+        return suffixRoutine.r(path.targetElement, path.lastArrayIndex);
     }
 }

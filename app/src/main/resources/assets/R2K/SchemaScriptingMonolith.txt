@@ -311,10 +311,8 @@ e timer_operation_type 0 setTime 1 setFlagsAndStart 2 stop
  R48 has to avoid messing with this, avoid getting it wrong, and maintain a sane UI,
   so "initButton" was invented to force specific settings in juuust the right way.
 
- Unfortunately initButton comes at a horrible cost.
- To implement the flexible functionality, it needs a way of specifying arbitrary boolean expressions.
- And since forcing people to learn EVEN MORE languages is a terrible idea,
-  I'm reusing the existing FormatSyntax for this job.
+ Previously, a paragraph existed here about having to use FormatSyntax because reasons.
+ Now we don't strictly need to, but some things need to be dealt with first...
 
  This name routine outputs 1 for 'Wait For Action' and 0 otherwise.
 C logic Interp.waitForAction_control_pos :length ]1 | {A=3={B=0=1|0}|0}
