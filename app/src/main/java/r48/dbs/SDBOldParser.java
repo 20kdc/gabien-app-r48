@@ -103,7 +103,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     }
 
     private @Nullable FF0 trAnonExUnderscoreNull(String text) {
-        if (text == "_")
+        if (text.equals("_"))
             return null;
         return trAnon(outerContext, text);
     }
