@@ -22,22 +22,14 @@ public class MVMU {
      * Ensure the object is a long.
      */
     public static long cLong(Object v) {
-        Number n = (Number) v;
-        // How bytes, shorts, and characters get into this code is left as an exercise for the reader.
-        if (n instanceof Byte || n instanceof Short || n instanceof Integer || n instanceof Long)
-            return n.longValue();
-        throw new RuntimeException(n + " not an integer");
+        return (Long) v;
     }
 
     /**
      * Ensure the object is an integer.
      */
     public static int cInt(Object v) {
-        Number n = (Number) v;
-        // How bytes, shorts, and characters get into this code is left as an exercise for the reader.
-        if (n instanceof Byte || n instanceof Short || n instanceof Integer || n instanceof Long)
-            return n.intValue();
-        throw new RuntimeException(n + " not an integer");
+        return (int) (long) (Long) v;
     }
 
     /**
@@ -230,17 +222,8 @@ public class MVMU {
      * For sanity's sake, these are implemented to roughly act like Guile.
      */
     public static boolean eqQ(Object a, Object b) {
-        // pretend that valuetypes are directly comparable
-        if (a instanceof Number) {
-            // note that this is distinct from = behaviour, which considers 1 and 1.0 the same number
-            // for integer numbers
-            if ((a instanceof Byte || a instanceof Short || a instanceof Integer || a instanceof Long) && (b instanceof Byte || b instanceof Short || b instanceof Integer || b instanceof Long))
-                return ((Number) a).longValue() == ((Number) b).longValue();
-            // for floating-point numbers
-            if ((a instanceof Double || a instanceof Float) && (b instanceof Double || b instanceof Float))
-                return ((Number) a).doubleValue() == ((Number) b).doubleValue();
-        } else if (a instanceof Character || a instanceof DatumSymbol) {
-            // types Scheme considers interned
+        if (a instanceof Long || a instanceof Double || a instanceof Boolean || a instanceof Character || a instanceof DatumSymbol) {
+            // types Scheme usually considers interned
             return a.equals(b);
         }
         // but for, say, Strings, they don't count!
@@ -252,16 +235,7 @@ public class MVMU {
      * For sanity's sake, these are implemented to roughly act like Guile.
      */
     public static boolean eqvQ(Object a, Object b) {
-        // pretend that value types are directly comparable, but also treat String as a value type
-        if (a instanceof Number) {
-            // note that this is distinct from = behaviour, which considers 1 and 1.0 the same number
-            // for integer numbers
-            if ((a instanceof Byte || a instanceof Short || a instanceof Integer || a instanceof Long) && (b instanceof Byte || b instanceof Short || b instanceof Integer || b instanceof Long))
-                return ((Number) a).longValue() == ((Number) b).longValue();
-            // for floating-point numbers
-            if ((a instanceof Double || a instanceof Float) && (b instanceof Double || b instanceof Float))
-                return ((Number) a).doubleValue() == ((Number) b).doubleValue();
-        } else if (a instanceof Character || a instanceof DatumSymbol || a instanceof String) {
+        if (a instanceof Long || a instanceof Double || a instanceof Boolean || a instanceof Character || a instanceof DatumSymbol || a instanceof String) {
             // interned + types that don't require deep comparison
             return a.equals(b);
         }
@@ -287,15 +261,9 @@ public class MVMU {
                 if (!equalQ(ia.next(), ib.next()))
                     return false;
             return true;
-        } else if (a instanceof Number) {
-            // note that this is distinct from = behaviour, which considers 1 and 1.0 the same number
-            // for integer numbers
-            if ((a instanceof Byte || a instanceof Short || a instanceof Integer || a instanceof Long) && (b instanceof Byte || b instanceof Short || b instanceof Integer || b instanceof Long))
-                return ((Number) a).longValue() == ((Number) b).longValue();
-            // for floating-point numbers
-            if ((a instanceof Double || a instanceof Float) && (b instanceof Double || b instanceof Float))
-                return ((Number) a).doubleValue() == ((Number) b).doubleValue();
-        } else if (a == null || b == null)
+        }
+        // ensure that we don't do a null.equals
+        if (a == null)
             return a == b;
         return a.equals(b);
     }

@@ -22,7 +22,7 @@ public class MVMStringLibrary {
         // strings
         ctx.defineSlot(new DatumSymbol("string-append")).v = new Add()
                 .attachHelp("(string-append V...) : Appends items into a big string.");
-        ctx.defLib("string-length", (a0) -> ((String) a0).length())
+        ctx.defLib("string-length", (a0) -> (long) ((String) a0).length())
             .attachHelp("(string-length V) : Returns the length of a string.");
         ctx.defineSlot(new DatumSymbol("number->string")).v = new N2S()
                 .attachHelp("(number->string V [R]) : Converts a number to a string with possible conversion.");
@@ -43,7 +43,7 @@ public class MVMStringLibrary {
         ctx.defLib("value->string", (a0) -> String.valueOf(a0))
             .attachHelp("(value->string V) : Converts any value to a string.");
         // chars
-        ctx.defLib("char->integer", (a0) -> (int) (Character) a0)
+        ctx.defLib("char->integer", (a0) -> (long) (Character) a0)
             .attachHelp("(char->integer V) : Character to integer.");
         ctx.defLib("integer->char", (a0) -> (char) MVMU.cInt(a0))
             .attachHelp("(integer->char V) : Integer to Character.");
@@ -146,12 +146,12 @@ public class MVMStringLibrary {
         }
 
         public String core(Number a0, int radix) {
-            if (a0 instanceof Float || a0 instanceof Double) {
+            if (a0 instanceof Double) {
                 if (radix != 10)
                     throw new RuntimeException("can't convert float/double to non-decimal");
                 return Double.toString(a0.doubleValue());
             }
-            return Long.toString(a0.longValue(), radix);
+            return Long.toString((Long) a0, radix);
         }
     }
 

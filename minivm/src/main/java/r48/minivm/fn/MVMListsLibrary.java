@@ -31,7 +31,7 @@ public class MVMListsLibrary {
                 .attachHelp("(append! T L...) : Modifies an existing list to append a set of lists.");
         ctx.defineSlot(new DatumSymbol("sublist")).v = new Sublist()
             .attachHelp("(sublist L START END) : Substring, but on lists!");
-        ctx.defLib("list-length", (a0) -> MVMU.cList(a0).size())
+        ctx.defLib("list-length", (a0) -> (long) MVMU.cList(a0).size())
             .attachHelp("(list-length L) : List length");
         ctx.defLib("list-ref", (a0, a1) -> MVMU.cList(a0).get(MVMU.cInt(a1)))
             .attachHelp("(list-ref L I) : List get");

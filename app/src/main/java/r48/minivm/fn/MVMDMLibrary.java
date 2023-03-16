@@ -31,7 +31,7 @@ public class MVMDMLibrary {
                 return null;
             if (((RORIO) a).getType() != '[')
                 return null;
-            return ((RORIO) a).getALen();
+            return (long) ((RORIO) a).getALen();
         }).attachHelp("(dm-a-len TARGET) : Gets array length of TARGET. Returns #nil if not-an-array.");
         ctx.defLib("dm-a-ref", (a, i) -> {
             if (a == null)
