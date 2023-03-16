@@ -22,7 +22,7 @@
 			(if (list? value)
 				; the key is a list, so it's actually a sub-group
 				(append! result (list
-					(append
+					(append!
 						(list
 							prefixer
 							(string->symbol
@@ -63,7 +63,7 @@
 ))
 
 (define-syntax (define-group prefix . entries)
-	(append
+	(append!
 		(list define-prefix
 			(string->symbol (string-append (value->string prefix) "."))
 		)
@@ -73,17 +73,22 @@
 (help-set! define-group "(define-group PREFIX K/V...) : See define-prefix, but the outer prefix has a dot appended.")
 
 ; translation namespacing
+(define-syntax (tr-set-quoted! k v)
+	(list tr-set! k (list quote v))
+)
+(help-set! tr-set-quoted! "(tr-set-quoted! K V) : Like tr-set!, but the value is quoted. This is better because a compilation step is performed by tr-set! itself.")
+
 (define-syntax (tr-prefix prefix . entries)
-	(define-prefix-core prefix tr-set! entries tr-prefix)
+	(define-prefix-core prefix tr-set-quoted! entries tr-prefix)
 )
 (help-set! tr-prefix (string-append
 	"(tr-prefix PREFIX K/V...) : "
 	"Sets a prefixed group of dynamic translation pairs as key/value pairs with a given symbol prefix.\n"
-	"Essentially like define-prefix, but using tr-set!\n"
+	"Essentially like define-prefix, but using tr-set-quoted!\n"
 ))
 
 (define-syntax (tr-group prefix . entries)
-	(append
+	(append!
 		(list tr-prefix
 			(string->symbol (string-append (value->string prefix) "."))
 		)

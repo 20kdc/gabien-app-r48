@@ -108,7 +108,7 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
             new DatumWriter(sb).visitComment(Application.BRAND_C + " Version: " + Coco.getVersion() + ", Language: " + langID);
             for (TrDumpSection section : dynTrDumpSections()) {
                 if (section.prefix.equals("")) {
-                    sb.append("(tr-set!\n");
+                    sb.append("(tr-prefix #{}#\n");
                 } else if (section.prefix.endsWith(".")) {
                     DatumSymbol ds = new DatumSymbol(section.prefix.substring(0, section.prefix.length() - 1));
                     sb.append("(tr-group " + DatumWriter.objectToString(ds) + "\n");

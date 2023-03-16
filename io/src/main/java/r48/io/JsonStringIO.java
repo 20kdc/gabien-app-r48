@@ -15,6 +15,10 @@ import java.io.Reader;
  * Created on February 19th, 2018.
  */
 public class JsonStringIO {
+    /**
+     * Reads the latter part of a JSON string.
+     * Note that DBLoader depends on this treating newlines as part of the string.
+     */
     public static String readString(Reader r) throws IOException {
         // String
         StringBuilder s = new StringBuilder();

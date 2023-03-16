@@ -48,30 +48,41 @@ public class DBLoader {
         }
     }
 
-    private DBLoader(String fn, BufferedReader br, IDatabase db) throws IOException {
-        int ln = 1;
+    private DBLoader(String fn, Reader rRaw, IDatabase db) throws IOException {
+        LineNumberTrackingReader r = new LineNumberTrackingReader(rRaw);
         try {
-            while (br.ready()) {
-                db.updateSrcLoc(new DatumSrcLoc(fn, ln));
-                String l = br.readLine();
-                if (l.length() > 0) {
-                    char cmd = l.charAt(0);
-                    if (cmd != ' ') {
-                        String[] ll = tokenize(new StringReader(l.substring(1).trim()));
-                        if (cmd >= '0' && cmd <= '9') {
-                            int a = l.indexOf(':');
-                            if (a == -1)
-                                throw new RuntimeException("Bad DB entry");
-                            db.newObj(Integer.parseInt(l.substring(0, a)), l.substring(a + 1).trim());
-                        } else {
-                            db.execCmd(cmd, ll);
-                        }
-                    }
+            while (true) {
+                db.updateSrcLoc(new DatumSrcLoc(fn, r.lineNumber));
+                int firstChar = r.read();
+                if (firstChar == -1) {
+                    break;
+                } else if (firstChar <= 32) {
+                    // comments/blank lines
+                    while (firstChar != -1 && firstChar != 10)
+                        firstChar = r.read();
+                    continue;
                 }
-                ln++;
+                if (firstChar >= '0' && firstChar <= '9') {
+                    StringBuilder line = new StringBuilder();
+                    line.append((char) firstChar);
+                    while (true) {
+                        int chr = r.read();
+                        if (chr == 10 || chr == -1)
+                            break;
+                        line.append((char) chr);
+                    }
+                    String l = line.toString();
+                    int a = l.indexOf(':');
+                    if (a == -1)
+                        throw new RuntimeException("Bad DB entry");
+                    db.newObj(Integer.parseInt(l.substring(0, a)), l.substring(a + 1).trim());
+                } else {
+                    String[] ll = tokenize(r);
+                    db.execCmd((char) firstChar, ll);
+                }
             }
         } catch (RuntimeException re) {
-            throw new RuntimeException("at line " + ln, re);
+            throw new RuntimeException("at line " + r.lineNumber, re);
         }
     }
 
@@ -81,20 +92,15 @@ public class DBLoader {
             StringBuilder sb = new StringBuilder();
             while (true) {
                 int ch = trim.read();
-                if (ch < 0)
+                if (ch < 0 || ch == 10)
                     break;
-                if (ch == ' ') {
+                if (ch <= 32) {
                     if (sb.length() > 0) {
                         lls.add(sb.toString());
                         sb = new StringBuilder();
                     }
                 } else if ((sb.length() == 0) && (ch == '"')) {
-                    //System.err.println("Used SDB1.1 String");
-                    String tx = JsonStringIO.readString(trim);
-                    // Was used to port stuff to SDB1.1
-                    //if (!tx.equals("\""))
-                    //    throw new RuntimeException("Detected bad SDB1.1 string");
-                    lls.add(tx);
+                    lls.add(JsonStringIO.readString(trim));
                 } else {
                     sb.append((char) ch);
                 }
@@ -105,6 +111,37 @@ public class DBLoader {
         } catch (IOException ioe) {
             // only used with strings
             throw new RuntimeException(ioe);
+        }
+    }
+
+    private static class LineNumberTrackingReader extends Reader {
+        public final Reader reader;
+        public int lineNumber = 1;
+        public LineNumberTrackingReader(Reader r) {
+            reader = r;
+        }
+
+        @Override
+        public int read() throws IOException {
+            int v = reader.read();
+            if (v == 10)
+                lineNumber++;
+            return v;
+        }
+
+        @Override
+        public int read(char[] var1, int ofs, int len) throws IOException {
+            int res = reader.read(var1, ofs, len);
+            if (res > 0)
+                for (int i = 0; i < len; i++)
+                    if (var1[ofs + i] == 10)
+                        lineNumber++;
+            return res;
+        }
+
+        @Override
+        public void close() throws IOException {
+            // shouldn't be the task of this code
         }
     }
 }

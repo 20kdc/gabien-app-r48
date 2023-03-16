@@ -23,6 +23,6 @@ public class MVMTrLibrary {
         ctx.defLib("tr-set!", (a0, a1) -> {
             ((DynTrSlot) a0).setValue(a1);
             return a1;
-        }).attachHelp("(tr-set! DYNTR VALUE) : Compiles a value into a dynamic translation entry.");
+        }).attachHelp("(tr-set! DYNTR VALUE) : Compiles a value into a dynamic translation entry. Beware VALUE is unquoted, and tr-set! itself does it's own form of compilation, so writing code directly as VALUE may have unexpected effects.");
     }
 }
