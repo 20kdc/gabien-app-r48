@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import gabien.TestKickstart;
+import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMR48GlobalLibraries;
 
@@ -51,9 +52,9 @@ public class MVMRoutinesTest {
         MVMR48GlobalLibraries.add(env);
         env.include("vm/global", false);
 
-        assertEquals(1L, env.evalString("(or 1 2 3)"));
-        assertEquals(1L, env.evalString("(or 1 #f 3)"));
-        assertEquals(false, env.evalString("(or)"));
-        assertEquals(1L, env.evalString("(or 1)"));
+        assertEquals(true, env.evalString("(cond (#t) (#f) (#f))"));
+        assertEquals(new DatumSymbol("yes"), env.evalString("(cond ((> 1 2) 'no) ((> 2 1) 'yes) (else 'never))"));
+        assertEquals(false, env.evalString("(cond)"));
+        assertEquals(new DatumSymbol("yes"), env.evalString("(cond ((> 1 2) 'no) (else 'yes))"));
     }
 }
