@@ -37,6 +37,6 @@ public final class MVMCIf extends MVMCExpr {
 
     @Override
     public Object disasm() {
-        return MVMU.l(sym("if"), c, a, b);
+        return MVMU.l(sym("if"), c.disasm(), a != null ? a.disasm() : null, b != null ? b.disasm() : null);
     }
 }
