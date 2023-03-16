@@ -50,26 +50,12 @@ public class MVMBasicsLibrary {
                 .attachHelp("(or BRANCH...) : Or conditional primitive, with short-circuiting and returning the value.");
         ctx.defineSlot(sym("set!")).v = new Set()
                 .attachHelp("(set! VAR V) : Sets a variable.");
-        ctx.defLib("equal?", (a0, a1) -> {
-            // This is a bit awkward because it needs to make number equality work properly.
-            // Things get even more awkward in eqv... think maybe this logic should be promoted to MVMU...
-            if (a0 == a1)
-                return true;
-            else if (a0 == null)
-                return false;
-            else {
-                if (a0 instanceof Number && a1 instanceof Number) {
-                    // copied out of MVMMathsLibrary
-                    if (a0 instanceof Float || a0 instanceof Double || a1 instanceof Float || a1 instanceof Double)
-                        return ((Number) a0).doubleValue() == ((Number) a1).doubleValue();
-                    return ((Number) a0).longValue() == ((Number) a1).longValue();
-                }
-                return a0.equals(a1);
-            }
-        }).attachHelp("(equal? A B) : Checks two values for equality (Java .equals but with special rules for numbers).");
-        // this is definitely not in-spec, but what can 'ya do?
-        ctx.defLib("eq?", (a0, a1) -> a0 == a1)
-            .attachHelp("(eq? A B) : Checks two values for Java pointer equality.");
+        ctx.defLib("eq?", MVMU::eqQ)
+            .attachHelp("(eq? A B) : Checks two values for near-exact equality, except value types (Character, Long, Double, DatumSymbol).");
+        ctx.defLib("eqv?", MVMU::eqvQ)
+            .attachHelp("(eqv? A B) : Checks two values for near-exact equality, except value types and strings.");
+        ctx.defLib("equal?", MVMU::equalQ)
+            .attachHelp("(equal? A B) : Checks two values for deep equality.");
         // not strictly standard in Scheme, but is standard in Common Lisp, but exact details differ
         ctx.defLib("gensym", () -> ctx.gensym())
             .attachHelp("(gensym) : Creates a new uniqueish symbol.");

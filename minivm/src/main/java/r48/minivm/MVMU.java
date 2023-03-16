@@ -6,6 +6,7 @@
  */
 package r48.minivm;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -222,5 +223,80 @@ public class MVMU {
      */
     public static boolean isFalsy(Object v) {
         return (v instanceof Boolean) && (false == (Boolean) v);
+    }
+
+    /**
+     * Implements the eq? operation.
+     * For sanity's sake, these are implemented to roughly act like Guile.
+     */
+    public static boolean eqQ(Object a, Object b) {
+        // pretend that valuetypes are directly comparable
+        if (a instanceof Number) {
+            // note that this is distinct from = behaviour, which considers 1 and 1.0 the same number
+            // for integer numbers
+            if ((a instanceof Byte || a instanceof Short || a instanceof Integer || a instanceof Long) && (b instanceof Byte || b instanceof Short || b instanceof Integer || b instanceof Long))
+                return ((Number) a).longValue() == ((Number) b).longValue();
+            // for floating-point numbers
+            if ((a instanceof Double || a instanceof Float) && (b instanceof Double || b instanceof Float))
+                return ((Number) a).doubleValue() == ((Number) b).doubleValue();
+        } else if (a instanceof Character || a instanceof DatumSymbol) {
+            // types Scheme considers interned
+            return a.equals(b);
+        }
+        // but for, say, Strings, they don't count!
+        return a == b;
+    }
+
+    /**
+     * Implements the eqv? operation.
+     * For sanity's sake, these are implemented to roughly act like Guile.
+     */
+    public static boolean eqvQ(Object a, Object b) {
+        // pretend that value types are directly comparable, but also treat String as a value type
+        if (a instanceof Number) {
+            // note that this is distinct from = behaviour, which considers 1 and 1.0 the same number
+            // for integer numbers
+            if ((a instanceof Byte || a instanceof Short || a instanceof Integer || a instanceof Long) && (b instanceof Byte || b instanceof Short || b instanceof Integer || b instanceof Long))
+                return ((Number) a).longValue() == ((Number) b).longValue();
+            // for floating-point numbers
+            if ((a instanceof Double || a instanceof Float) && (b instanceof Double || b instanceof Float))
+                return ((Number) a).doubleValue() == ((Number) b).doubleValue();
+        } else if (a instanceof Character || a instanceof DatumSymbol || a instanceof String) {
+            // interned + types that don't require deep comparison
+            return a.equals(b);
+        }
+        return a == b;
+    }
+
+    /**
+     * Implements the equal? operation.
+     * For sanity's sake, these are implemented to roughly act like Guile.
+     */
+    public static boolean equalQ(Object a, Object b) {
+        // need to ensure List recursive equals makes actual sense
+        if (a instanceof List && b instanceof List) {
+            @SuppressWarnings("unchecked")
+            List<Object> la = ((List<Object>) a);
+            @SuppressWarnings("unchecked")
+            List<Object> lb = ((List<Object>) b);
+            if (la.size() != lb.size())
+                return false;
+            Iterator<Object> ia = la.iterator();
+            Iterator<Object> ib = lb.iterator();
+            while (ia.hasNext())
+                if (!equalQ(ia.next(), ib.next()))
+                    return false;
+            return true;
+        } else if (a instanceof Number) {
+            // note that this is distinct from = behaviour, which considers 1 and 1.0 the same number
+            // for integer numbers
+            if ((a instanceof Byte || a instanceof Short || a instanceof Integer || a instanceof Long) && (b instanceof Byte || b instanceof Short || b instanceof Integer || b instanceof Long))
+                return ((Number) a).longValue() == ((Number) b).longValue();
+            // for floating-point numbers
+            if ((a instanceof Double || a instanceof Float) && (b instanceof Double || b instanceof Float))
+                return ((Number) a).doubleValue() == ((Number) b).doubleValue();
+        } else if (a == null || b == null)
+            return a == b;
+        return a.equals(b);
     }
 }
