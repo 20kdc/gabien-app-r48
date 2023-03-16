@@ -39,7 +39,7 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
         this.logTrIssues = logTrIssues;
         dynMap = new HashMap<>();
         dynList = new LinkedList<>();
-        langID = lid;;
+        langID = lid;
     }
 
     protected MVMEnvR48(MVMEnvR48 p) {

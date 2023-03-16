@@ -21,11 +21,9 @@ import r48.minivm.compiler.MVMCompileFrame;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.compiler.MVMSubScope;
 import r48.minivm.compiler.MVMSubScope.LocalRoot;
-import r48.minivm.expr.MVMCAnd;
 import r48.minivm.expr.MVMCBegin;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCIf;
-import r48.minivm.expr.MVMCOr;
 
 /**
  * MiniVM standard library.
@@ -35,21 +33,36 @@ public class MVMBasicsLibrary {
     public static void add(MVMEnv ctx) {
         // Scheme library
         ctx.defineSlot(sym("quote")).v = new Quote()
-                .attachHelp("(quote A) | 'A : A is not evaluated. Allows expressing complex structures inline.");
+            .attachHelp("(quote A) | 'A : A is not evaluated. Allows expressing complex structures inline.");
         ctx.defineSlot(sym("begin")).v = new Begin()
-                .attachHelp("(begin ...) : Runs a series of expressions and returns the result from the last.");
+            .attachHelp("(begin ...) : Runs a series of expressions and returns the result from the last.");
         ctx.defineSlot(sym("define")).v = new Define()
-                .attachHelp("(define K V) | function define: (define (K ARG... [. VA]) STMT...) | bulk define: (define K V K V...) : Defines mutable variables or functions. Bulk define is an R48 extension.");
+            .attachHelp("(define K V) | function define: (define (K ARG... [. VA]) STMT...) | bulk define: (define K V K V...) : Defines mutable variables or functions. Bulk define is an R48 extension.");
         ctx.defineSlot(sym("lambda")).v = new Lambda()
-                .attachHelp("(lambda (ARG... [. VA]) STMT...) : Creates first-class functions. The symbol . splits main args from a var-arg list arg.");
-        ctx.defineSlot(sym("if")).v = new If()
-                .attachHelp("(if C T [F]) : Conditional primitive.");
-        ctx.defineSlot(sym("and")).v = new AndOr(false)
-                .attachHelp("(and BRANCH...) : And conditional primitive, with short-circuiting and returning the value.");
-        ctx.defineSlot(sym("or")).v = new AndOr(true)
-                .attachHelp("(or BRANCH...) : Or conditional primitive, with short-circuiting and returning the value.");
+            .attachHelp("(lambda (ARG... [. VA]) STMT...) : Creates first-class functions. The symbol . splits main args from a var-arg list arg.");
+        ctx.defineSlot(sym("if")).v = new If(false)
+            .attachHelp(
+                "(if C T [F]) : Conditional primitive.\n" +
+                "If C is truthy (any value but #f), then T is executed and the result returned.\n" +
+                "If C is falsy (not truthy), then F is executed and the result returned.\n" +
+                "If F is not provided, the value provided by C is returned.\n" +
+                "Rationale: R2RS, R5RS, and R7RS do not define if's return value in this situation.\n" +
+                "Defining it this way makes (and A B C) into (if A (if B C)).\n" +
+                "Theoretically, since #f is the only falsy value, this isn't always necessary here.\n" +
+                "However, it's important for if-not (useful to implement cond, or...)"
+            );
+        ctx.defineSlot(sym("if-not")).v = new If(true)
+            .attachHelp(
+                "(if-not C F [T]) : Conditional primitive.\n" +
+                "If C is truthy (any value but #f), then F is executed and the result returned.\n" +
+                "If C is falsy (not truthy), then T is executed and the result returned.\n" +
+                "If T is not provided, the value provided by C is returned.\n" +
+                "Rationale: This is a custom extension to implement or with very little Java code.\n" +
+                "So (or A B C) becomes (if-not A (if-not B C)).\n" +
+                "In addition this is used for guard-only cond branches."
+            );
         ctx.defineSlot(sym("set!")).v = new Set()
-                .attachHelp("(set! VAR V) : Sets a variable.");
+            .attachHelp("(set! VAR V) : Sets a variable.");
         ctx.defLib("eq?", MVMU::eqQ)
             .attachHelp("(eq? A B) : Checks two values for near-exact equality, except value types (Character, Long, Double, DatumSymbol).");
         ctx.defLib("eqv?", MVMU::eqvQ)
@@ -227,8 +240,10 @@ public class MVMBasicsLibrary {
     }
 
     public static final class If extends MVMMacro {
-        public If() {
-            super("if");
+        public final boolean invert;
+        public If(boolean inv) {
+            super(inv ? "if-not" : "if");
+            invert = inv;
         }
 
         @Override
@@ -237,25 +252,14 @@ public class MVMBasicsLibrary {
                 throw new RuntimeException("If needs at least the condition and true branch");
             else if (call.length > 3)
                 throw new RuntimeException("If cannot have too many parameters");
-            else if (call.length == 2)
-                return new MVMCIf(cs.compile(call[0]), cs.compile(call[1]), new MVMCExpr.Const(null));
+            else if (call.length == 2) {
+                if (invert)
+                    return new MVMCIf(cs.compile(call[0]), null, cs.compile(call[1]));
+                return new MVMCIf(cs.compile(call[0]), cs.compile(call[1]), null);
+            }
+            if (invert)
+                return new MVMCIf(cs.compile(call[0]), cs.compile(call[2]), cs.compile(call[1]));
             return new MVMCIf(cs.compile(call[0]), cs.compile(call[1]), cs.compile(call[2]));
-        }
-    }
-
-    public static final class AndOr extends MVMMacro {
-        public final boolean isOr;
-        public AndOr(boolean or) {
-            super(or ? "or" : "and");
-            isOr = or;
-        }
-
-        @Override
-        public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
-            MVMCExpr[] exprs = new MVMCExpr[call.length];
-            for (int i = 0; i < exprs.length; i++)
-                exprs[i] = cs.compile(call[i]);
-            return isOr ? new MVMCOr(exprs) : new MVMCAnd(exprs);
         }
     }
 

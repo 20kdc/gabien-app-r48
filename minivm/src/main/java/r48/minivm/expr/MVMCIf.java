@@ -7,6 +7,7 @@
 package r48.minivm.expr;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import static gabien.datum.DatumTreeUtils.*;
 
@@ -18,9 +19,10 @@ import r48.minivm.MVMU;
  * Created 2nd March 2023.
  */
 public final class MVMCIf extends MVMCExpr {
-    public final MVMCExpr c, a, b;
+    public final @NonNull MVMCExpr c;
+    public final @Nullable MVMCExpr a, b;
 
-    public MVMCIf(MVMCExpr c, MVMCExpr a, MVMCExpr b) {
+    public MVMCIf(@NonNull MVMCExpr c, @Nullable MVMCExpr a, @Nullable MVMCExpr b) {
         this.c = c;
         this.a = a;
         this.b = b;
@@ -28,9 +30,9 @@ public final class MVMCIf extends MVMCExpr {
 
     @Override
     public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-        if (MVMU.isTruthy(c.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7)))
-            return a.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-        return b.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+        Object res = c.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+        MVMCExpr x = MVMU.isTruthy(res) ? a : b;
+        return x != null ? x.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7) : res;
     }
 
     @Override
