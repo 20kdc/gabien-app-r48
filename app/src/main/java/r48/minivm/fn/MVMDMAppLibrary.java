@@ -20,7 +20,7 @@ import r48.minivm.MVMU;
 public class MVMDMAppLibrary {
     public static void add(MVMEnv ctx, App app) {
         ctx.defineSlot(new DatumSymbol("dm-fmt")).v = new DMFmt(app.fmt)
-                .attachHelp("(dm-fmt TARGET) : Passes to FormatSyntax.interpretParameter. Important: Because of schemas and stuff this doesn't exist in the static translation context.");
+                .attachHelp("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. Important: Because of schemas and stuff this doesn't exist in the static translation context.");
     }
     public static final class DMFmt extends MVMFn.Fixed {
         public final FormatSyntax fmt;
