@@ -49,7 +49,7 @@ public class MVMExtensionsLibrary {
             throw new RuntimeException("Can't disassemble " + MVMU.userStr(a0));
         }).attachHelp("(mvm-disasm LAMBDA) : Disassembles the given lambda.");
         ctx.defineSlot(sym("help")).v = new Help(ctx)
-                .attachHelp("(help [TOPIC]) : Helpful information on the given value (if any), or lists symbols in the root context.");
+                .attachHelp("(help [TOPIC]) : Helpful information on the given value (if any), or lists helpable symbols in the root context.\nUsed to list all symbols, then crashed.");
         ctx.defLib("help-set!", (a0, a1) -> {
             return ((MVMHelpable) a0).attachHelp((String) a1);
         }).attachHelp("(help-set! TOPIC VALUE) : Sets information on the given value.");
@@ -80,7 +80,8 @@ public class MVMExtensionsLibrary {
         public Object callDirect() {
             LinkedList<DatumSymbol> ds = new LinkedList<>();
             for (MVMSlot s : ctx.listSlots())
-                ds.add(s.s);
+                if (s.v instanceof MVMHelpable)
+                    ds.add(s.s);
             return ds;
         }
 
