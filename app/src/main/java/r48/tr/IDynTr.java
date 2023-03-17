@@ -8,6 +8,7 @@ package r48.tr;
 
 /**
  * Generic dynamic translation entry.
+ * Code that doesn't need to write into a DynTrSlot should use this.
  * Created 13th March 2023.
  */
 public interface IDynTr extends TrPage.FF0, TrPage.FF1, TrPage.FF2, TrPage.FF3, TrPage.FF4 {

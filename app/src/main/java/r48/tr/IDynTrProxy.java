@@ -6,8 +6,6 @@
  */
 package r48.tr;
 
-import java.util.List;
-
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import r48.dbs.DatumLoader;
@@ -20,33 +18,33 @@ public interface IDynTrProxy {
     /**
      * Dynamically translate something.
      */
-    DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text);
+    IDynTr dynTrBase(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text);
 
     /**
      * Dynamically translate a string.
      */
-    default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, String text) {
+    default IDynTr dTr(DatumSrcLoc srcLoc, String id, String text) {
         return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_CALL_API, text);
     }
 
     /**
      * Dynamically translate a Datum object (as usual, for compilation)
      */
-    default DynTrSlot dTrCode(DatumSrcLoc srcLoc, String id, String text) {
+    default IDynTr dTrCode(DatumSrcLoc srcLoc, String id, String text) {
         return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_CALL_API, DatumLoader.readInline(srcLoc, text));
     }
 
     /**
      * Legacy
      */
-    default DynTrSlot dTrFmtSyn(DatumSrcLoc srcLoc, String id, List<String> text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.FORMATSYNTAX, text);
+    default IDynTr dTrName(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text) {
+        return dynTrBase(srcLoc, TrNames.nameRoutine(id), mode, text);
     }
 
     /**
      * Legacy 2
      */
-    default DynTrSlot dTrFmtSynCM(DatumSrcLoc srcLoc, String id, String text) {
+    default IDynTr dTrFmtSynCM(DatumSrcLoc srcLoc, String id, String text) {
         return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX, text);
     }
 }

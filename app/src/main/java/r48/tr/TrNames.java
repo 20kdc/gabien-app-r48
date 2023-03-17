@@ -21,36 +21,40 @@ public class TrNames {
     }
 
     public static String cmdbCat(String dbId, int cat) {
-        return "CMDB_" + dbId + "_cat.c" + cat;
+        return "TrCMDB_" + dbId + "_cat.c" + cat;
     }
 
     public static String cmdbName(String dbId, int commandId) {
-        return "CMDB_" + dbId + "_c" + commandId + ".n";
+        return "TrCMDB_" + dbId + "_c" + commandId + ".n";
     }
 
     public static String cmdbDesc(String dbId, int commandId) {
-        return "CMDB_" + dbId + "_c" + commandId + ".d";
+        return "TrCMDB_" + dbId + "_c" + commandId + ".d";
     }
 
     // has "." and more appended for disambiguation
     public static String cmdbParam(String dbId, int commandId, int paramIdx) {
-        return "CMDB_" + dbId + "_c" + commandId + ".p" + paramIdx;
+        return "TrCMDB_" + dbId + "_c" + commandId + ".p" + paramIdx;
     }
 
     // pretty much just whatever could be made up
     public static String sdbAnon(String ovc, String text) {
-        return "SDB_" + ovc + ".$" + text;
+        return "TrSDB_" + ovc + ".$" + text;
     }
 
     public static String sdbEnum(String string, int k) {
-        return "SDB_" + string + ".e" + k;
+        return "TrSDB_" + string + ".e" + k;
     }
 
     public static String sdbWindowTitle(String ovc) {
-        return "SDB_" + ovc + ".title";
+        return "TrSDB_" + ovc + ".title";
     }
 
-    public static String sdbNameRoutine(String name, String text) {
-        return "FMT_" + name + "." + text;
+    public static String nameRoutine(String name) {
+        return "TrName." + name;
+    }
+
+    public static String sdbSpritesheet(String imgPfx) {
+        return "TrSpritesheet." + imgPfx;
     }
 }

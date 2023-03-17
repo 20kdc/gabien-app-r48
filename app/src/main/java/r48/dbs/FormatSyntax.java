@@ -7,16 +7,20 @@
 
 package r48.dbs;
 
+import gabien.datum.DatumSymbol;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
 import r48.io.data.RORIO;
+import r48.minivm.MVMSlot;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
+import r48.tr.IDynTrSystemNameRoutine;
+import r48.tr.TrNames;
+import r48.tr.TrPage.FF1;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -27,7 +31,6 @@ import org.eclipse.jdt.annotation.Nullable;
  * Created on 11/06/17.
  */
 public class FormatSyntax extends App.Svc {
-    public HashMap<String, IFunction<RORIO, String>> nameDB = new HashMap<>();
     public static final ParameterAccessor ACC_ARRAY = (root, idx) -> {
         if (root == null)
             return null;
@@ -44,14 +47,16 @@ public class FormatSyntax extends App.Svc {
         super(app);
         // Note: The current NameDB initial state is a "bare minimum" maintenance mode.
         // Name routines are going to get farmed out to MiniVM as soon as possible.
-        nameDB.put("Interp.lang-Common-add", (rubyIO) -> {
+        addNameDBFixed("Interp.lang-Common-add", (x) -> {
+            RORIO rubyIO = (RORIO) x;
             String[] range = rubyIO.decString().split(" ");
             int v = 0;
             for (String s : range)
                 v += Integer.valueOf(s);
             return Integer.toString(v);
         });
-        nameDB.put("Interp.lang-Common-r2kTsConverter", (rubyIO) -> {
+        addNameDBFixed("Interp.lang-Common-r2kTsConverter", (x) -> {
+            RORIO rubyIO = (RORIO) x;
             double d = Double.parseDouble(rubyIO.decString());
             // WARNING: THIS IS MADNESS, and could be off by a few seconds.
             // In practice I tested it and it somehow wasn't off at all.
@@ -76,6 +81,17 @@ public class FormatSyntax extends App.Svc {
             // NOTE: This converts to local time zone.
             return new Date(v).toString();
         });
+    }
+
+    private void addNameDBFixed(String name, IDynTrSystemNameRoutine routine) {
+        app.vmCtx.ensureSlot(new DatumSymbol(TrNames.nameRoutine(name))).v = routine;
+    }
+
+    public @Nullable FF1 getNameDB(String name) {
+        MVMSlot slot = app.vmCtx.getSlot(new DatumSymbol(TrNames.nameRoutine(name)));
+        if (slot != null)
+            return (FF1) slot.v;
+        return null;
     }
 
     /**
@@ -207,9 +223,11 @@ public class FormatSyntax extends App.Svc {
                         // At this point, it's gone recursive.
                         // Need to safely skip over this lot...
                         StringBuilder tx = new StringBuilder();
-                        // need to skip over the [ so we're at level 0, then skip over the ] that explodeComponent will return the index of
+                        // need to skip over the [ so we're at level 0
                         // this is still more comprehensible than the ad-hoc monolith for no reason being replaced here
-                        i = explodeComponent(tx, data, i + 1, "]") + 1;
+                        // explodeComponent then returns the index of the ]
+                        // but the for loop will do its own increment
+                        i = explodeComponent(tx, data, i + 1, "]");
                         // ... then parse it.
                         ICompiledFormatSyntax out = compile(tx.toString(), paramAcc);
                         final boolean thisPrefixNext = prefixNext;
@@ -234,10 +252,10 @@ public class FormatSyntax extends App.Svc {
                         if (root == null)
                             return;
                         // Meta-interpretation syntax
-                        IFunction<RORIO, String> n = nameDB.get(tp);
+                        FF1 n = getNameDB(tp);
                         if (n == null)
                             throw new RuntimeException("Expected NDB " + tp);
-                        sb.append(n.apply(root));
+                        sb.append(n.r(root));
                     });
                 }
                 prefixNext = false;
@@ -347,9 +365,9 @@ public class FormatSyntax extends App.Svc {
         if (rubyIO == null)
             return "";
         if (st != null) {
-            IFunction<RORIO, String> handler = nameDB.get("Interp." + st);
+            FF1 handler = getNameDB("Interp." + st);
             if (handler != null) {
-                return handler.apply(rubyIO);
+                return handler.r(rubyIO);
             } else {
                 SchemaElement ise = app.sdb.getSDBEntry(st);
                 return interpretParameter(rubyIO, ise, prefixEnums);
@@ -369,9 +387,9 @@ public class FormatSyntax extends App.Svc {
     public String interpretParameter(RORIO rubyIO, SchemaElement ise, boolean prefixEnums) {
         // Basically, Class. overrides go first, then everything else comes after.
         if (rubyIO.getType() == 'o') {
-            IFunction<RORIO, String> handler = nameDB.get("Class." + rubyIO.getSymbol());
+            FF1 handler = getNameDB("Class." + rubyIO.getSymbol());
             if (handler != null)
-                return handler.apply(rubyIO);
+                return handler.r(rubyIO);
         }
         String r = null;
         if (ise != null) {

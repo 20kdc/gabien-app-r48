@@ -32,9 +32,9 @@ import r48.schema.specialized.cmgb.*;
 import r48.schema.specialized.tbleditors.*;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.DynTrSlot;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
-import r48.tr.TrPage.FF1;
 import r48.tr.TrPage.FF2;
 import r48.ui.dialog.UIEnumChoice;
 import r48.ui.dialog.UIEnumChoice.EntryMode;
@@ -386,7 +386,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     if (text2.startsWith("@")) {
                         final String textFinal = text2.substring(1);
                         return new SubwindowSchemaElement(get(), (rubyIO) -> {
-                            return app.fmt.nameDB.get("Interp." + textFinal).apply(rubyIO);
+                            return app.fmt.getNameDB("Interp." + textFinal).r(rubyIO);
                         });
                     } else {
                         final FF0 translation = trAnon(outerContext, text2);
@@ -868,9 +868,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 }
                 arguments.add(text);
                 // Important to note: the expected format is (PATH... NAME)
-                final FF1 textF = app.dTrFmtSyn(srcLoc, TrNames.sdbNameRoutine(args[1], text), arguments);
-
-                app.fmt.nameDB.put(args[1], textF::r);
+                // Another important thing to note is that simply translating the name routine now creates the name routine.
+                app.dTrName(srcLoc, args[1], DynTrSlot.FORMATSYNTAX, arguments);
             } else if (args[0].equals("spritesheet[")) {
                 // Defines a spritesheet for spriteSelector.
                 int point = 1;

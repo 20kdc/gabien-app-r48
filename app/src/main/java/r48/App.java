@@ -65,10 +65,11 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
      */
     public App(InterlaunchGlobals ilg, EngineDef gp, String rp, String sip, IConsumer<String> loadProgress) {
         super(ilg, gp, rp, sip, loadProgress);
-        fmt = new FormatSyntax(this);
         vmCtx = new MVMEnvR48((str) -> {
             loadProgress.accept(t.g.loadingProgress.r(str));
         }, ilg.logTrIssues, ilg.c.language);
+        // needs to init after vmCtx to install system name routines
+        fmt = new FormatSyntax(this);
         MVMR48AppLibraries.add(vmCtx, this);
         vmCtx.include("vm/global", false);
         vmCtx.include("vm/app", false);

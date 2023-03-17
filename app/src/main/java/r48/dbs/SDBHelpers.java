@@ -19,6 +19,7 @@ import r48.schema.displays.HWNDSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBindingSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
+import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 import r48.tr.pages.TrSchema;
 import r48.ui.dialog.ISpritesheetProvider;
@@ -103,7 +104,7 @@ class SDBHelpers extends App.Svc {
 
     public int createSpritesheet(DatumSrcLoc srcLoc, String[] args, int point, String text2) {
         final String imgPfx = args[point];
-        spritesheetN.put(args[point], app.dTr(srcLoc, "TrSpritesheet." + imgPfx, text2));
+        spritesheetN.put(args[point], app.dTr(srcLoc, TrNames.sdbSpritesheet(imgPfx), text2));
         if (args[point + 1].equals("r2kCharacter")) {
             spritesheets.put(args[point], new IFunction<String, ISpritesheetProvider>() {
                 @Override
