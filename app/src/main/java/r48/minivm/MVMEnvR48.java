@@ -70,10 +70,10 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
      * Dynamic translation slot.
      */
     @Override
-    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, Object base) {
+    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object base) {
         DynTrSlot res = dynMap.get(id);
         if (res == null) {
-            res = new DynTrSlot(this, srcLoc, id, base);
+            res = new DynTrSlot(this, srcLoc, id, mode, base);
             ensureSlot(new DatumSymbol(id)).v = res;
             dynMap.put(id, res);
             dynList.add(id);

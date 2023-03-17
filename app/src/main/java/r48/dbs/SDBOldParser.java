@@ -36,6 +36,7 @@ import r48.schema.util.SchemaPath;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 import r48.tr.TrPage.FF2;
+import r48.tr.TrPage.FF3;
 import r48.ui.dialog.UIEnumChoice;
 import r48.ui.dialog.UIEnumChoice.EntryMode;
 
@@ -101,6 +102,10 @@ public class SDBOldParser extends App.Svc implements IDatabase {
 
     private @NonNull FF0 trAnon(String ovc, String text) {
         return app.dTr(srcLoc, TrNames.sdbAnon(ovc, text), text);
+    }
+
+    private @NonNull FF3 trAnonFmtSyn(String ovc, String text) {
+        return app.dTrFmtSyn(srcLoc, TrNames.sdbAnon(ovc, text), text);
     }
 
     private @Nullable FF0 trAnonExUnderscoreNull(String text) {
@@ -849,7 +854,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             } else if (args[0].equals("magicR2kSystemDefaults")) {
                 // Really special schema
                 workingObj.aggregate.add(new R2kSystemDefaultsInstallerSchemaElement(app, Integer.parseInt(args[1])));
-            } else if (args[0].equals("name") || args[0].equals("logic")) {
+            } else if (args[0].equals("name")) {
                 final LinkedList<String> arguments = new LinkedList<String>();
                 String text = "";
                 boolean nextState = false;
@@ -866,26 +871,22 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                         }
                     }
                 }
-                final String textFPre = text; 
-                final FF0 textF = args[0].equals("name") ? trAnon(args[1], text) : () -> textFPre;
+                final FF3 textF = trAnonFmtSyn(args[1], text);
 
                 final PathSyntax[] argumentsPS = new PathSyntax[arguments.size()];
                 int idx = 0;
                 for (String ps : arguments)
                     argumentsPS[idx++] = compilePS(ps);
 
-                app.fmt.nameDB.put(args[1], new IFunction<RORIO, String>() {
-                    @Override
-                    public String apply(RORIO rubyIO) {
-                        LinkedList<RORIO> parameters = new LinkedList<RORIO>();
-                        for (PathSyntax arg : argumentsPS) {
-                            RORIO res = arg.get(rubyIO);
-                            if (res == null)
-                                break;
-                            parameters.add(res);
-                        }
-                        return app.fmt.compile(textF.r()).r(rubyIO, parameters.toArray(new RORIO[0]), null);
+                app.fmt.nameDB.put(args[1], (rubyIO) -> {
+                    LinkedList<RORIO> parameters = new LinkedList<RORIO>();
+                    for (PathSyntax arg : argumentsPS) {
+                        RORIO res = arg.get(rubyIO);
+                        if (res == null)
+                            break;
+                        parameters.add(res);
                     }
+                    return textF.r(rubyIO, parameters.toArray(new RORIO[0]), null);
                 });
             } else if (args[0].equals("spritesheet[")) {
                 // Defines a spritesheet for spriteSelector.

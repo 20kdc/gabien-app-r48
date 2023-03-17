@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import gabien.GaBIEn;
 import gabien.datum.DatumSrcLoc;
+import gabien.datum.DatumSymbol;
 import gabien.uslx.append.IConsumer;
 import r48.cfg.Config;
 import r48.minivm.MVMEnv;
@@ -42,8 +43,8 @@ public class InterlaunchGlobals implements IDynTrProxy {
     }
 
     @Override
-    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, Object text) {
-        return langVM.dynTrBase(srcLoc, id, text);
+    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text) {
+        return langVM.dynTrBase(srcLoc, id, mode, text);
     }
 
     public void launcherDynTrDump(String fn) {

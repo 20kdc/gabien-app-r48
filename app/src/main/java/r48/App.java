@@ -13,6 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.GaBIEn;
 import gabien.datum.DatumSrcLoc;
+import gabien.datum.DatumSymbol;
 import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIPanel;
 import gabien.ui.UIElement.UIProxy;
@@ -74,8 +75,8 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     }
 
     @Override
-    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, Object text) {
-        return vmCtx.dynTrBase(srcLoc, id, text);
+    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text) {
+        return vmCtx.dynTrBase(srcLoc, id, mode, text);
     }
 
     public void performTranslatorDump(String fn) {

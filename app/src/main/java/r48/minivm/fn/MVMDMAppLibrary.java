@@ -21,6 +21,9 @@ public class MVMDMAppLibrary {
     public static void add(MVMEnv ctx, App app) {
         ctx.defineSlot(new DatumSymbol("dm-fmt")).v = new DMFmt(app.fmt)
                 .attachHelp("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. If the passed-in object is null (say, due to a PathSyntax failure) returns the empty string. Important: Because of schemas and stuff this doesn't exist in the static translation context.");
+        ctx.defLib("dm-formatsyntax", (text) -> {
+            return app.fmt.compile((String) text);
+        }).attachHelp("(dm-formatsyntax TEXT) : Compiles FormatSyntax. This is a workaround to run FormatSyntax through the DynTrSlot stuff, so it counts as a compiled DynTrSlot value, but...");
     }
     public static final class DMFmt extends MVMFn.Fixed {
         public final FormatSyntax fmt;

@@ -9,6 +9,7 @@ package gabienapp;
 import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.datum.DatumSrcLoc;
+import gabien.datum.DatumSymbol;
 import gabien.ui.UIElement;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabienapp.state.LSMain;
@@ -115,8 +116,8 @@ public class Launcher {
         public abstract void tick(double dT);
 
         @Override
-        public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, Object text) {
-            return lun.ilg.dynTrBase(srcLoc, id, text);
+        public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text) {
+            return lun.ilg.dynTrBase(srcLoc, id, mode, text);
         }
     }
 }

@@ -7,6 +7,7 @@
 package r48.tr;
 
 import gabien.datum.DatumSrcLoc;
+import gabien.datum.DatumSymbol;
 import r48.dbs.DatumLoader;
 
 /**
@@ -17,19 +18,26 @@ public interface IDynTrProxy {
     /**
      * Dynamically translate something.
      */
-    DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, Object text);
+    DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text);
 
     /**
      * Dynamically translate a string.
      */
     default DynTrSlot dTr(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, text);
+        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_CALL_API, text);
     }
 
     /**
      * Dynamically translate a Datum object (as usual, for compilation)
      */
     default DynTrSlot dTrCode(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DatumLoader.readInline(srcLoc, text));
+        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_CALL_API, DatumLoader.readInline(srcLoc, text));
+    }
+
+    /**
+     * Legacy
+     */
+    default DynTrSlot dTrFmtSyn(DatumSrcLoc srcLoc, String id, String text) {
+        return dynTrBase(srcLoc, id, DynTrSlot.FORMATSYNTAX, text);
     }
 }

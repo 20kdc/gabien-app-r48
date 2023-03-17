@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 /**
  * Yet another class solely to hold a common syntax in an obvious place.
  * Created on 11/06/17.
@@ -68,9 +66,10 @@ public class FormatSyntax extends App.Svc {
     }
 
     /**
-     * This is sort of fake for now. Roll with it, please...?
+     * Compiles a FormatSyntax for easier debugging.
      */
     public ICompiledFormatSyntax compile(String name) {
+        // System.out.println("fs compile: " + name);
         LinkedList<ICompiledFormatSyntaxChunk> r = new LinkedList<>();
         compileChunk(r, name);
         optimizeChunks(r);
@@ -85,7 +84,7 @@ public class FormatSyntax extends App.Svc {
     /**
      * Still pretty fake.
      */
-    public void compileChunk(LinkedList<ICompiledFormatSyntaxChunk> r, String name) {
+    private void compileChunk(LinkedList<ICompiledFormatSyntaxChunk> r, String name) {
         char[] data = name.toCharArray();
         boolean prefixNext = false;
         // C: A fully parsable formatNameExtended string.

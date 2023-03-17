@@ -9,35 +9,43 @@ package r48.tr;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.datum.DatumWriter;
+import gabien.uslx.append.IFunction;
+import r48.dbs.FormatSyntax;
+import r48.io.data.RORIO;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMFn;
+import r48.schema.SchemaElement;
 
 /**
  * Dynamic translation slot.
  * Created 12th March 2023.
  */
 public final class DynTrSlot implements IDynTr {
-    private final DatumSymbol DYNTR_CALL_API = new DatumSymbol("tr-dyn-compiler");
+    public static final DatumSymbol DYNTR_CALL_API = new DatumSymbol("tr-dyn-compiler");
+    // indirect binding to FormatSyntax, see MVMDMAppLibrary
+    public static final DatumSymbol FORMATSYNTAX = new DatumSymbol("dm-formatsyntax");
 
     public final MVMEnvR48 env;
     public final DatumSrcLoc sourceLoc;
     public final String id;
     public final String originalSrc;
+    public final DatumSymbol mode;
     // The source of the value is cached so that dynamic translation can work properly.
     private String valueSrc;
     private Object valueCompiled;
 
-    public DynTrSlot(MVMEnvR48 e, DatumSrcLoc sl, String i, Object base) {
+    public DynTrSlot(MVMEnvR48 e, DatumSrcLoc sl, String i, DatumSymbol m, Object base) {
         env = e;
         sourceLoc = sl;
         id = i;
+        mode = m;
         setValue(base);
         originalSrc = valueSrc;
     }
 
     public void setValue(Object v) {
         valueSrc = DatumWriter.objectToString(v);
-        valueCompiled = ((MVMFn) env.getSlot(DYNTR_CALL_API).v).clDirect(v);
+        valueCompiled = ((MVMFn) env.getSlot(mode).v).clDirect(v);
     }
 
     /**
@@ -47,11 +55,12 @@ public final class DynTrSlot implements IDynTr {
         return valueSrc;
     }
 
+    @SuppressWarnings("unchecked")
     private String resolve(int ac, Object a0, Object a1, Object a2, Object a3) {
         try {
-            if (valueCompiled instanceof String)
+            if (valueCompiled instanceof String) {
                 return (String) valueCompiled;
-            if (valueCompiled instanceof MVMFn) {
+            } else if (valueCompiled instanceof MVMFn) {
                 Object res = null;
                 switch (ac) {
                 case 0:
@@ -73,6 +82,10 @@ public final class DynTrSlot implements IDynTr {
                 if (res == null)
                     return "!!!(null DynTrSlot return @ " + id + ")!!!";
                 return res.toString();
+            } else if (valueCompiled instanceof FormatSyntax.ICompiledFormatSyntax) {
+                if (ac != 3)
+                    return "!!!(FormatSyntax args bad @ " + id + ")!!!";
+                return ((FormatSyntax.ICompiledFormatSyntax) valueCompiled).r((RORIO) a0, (RORIO[]) a1, (IFunction<RORIO, SchemaElement>[]) a2);
             }
             return valueCompiled.toString();
         } catch (Exception ex) {
