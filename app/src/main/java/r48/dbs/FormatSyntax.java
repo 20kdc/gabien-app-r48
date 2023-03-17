@@ -464,7 +464,7 @@ public class FormatSyntax extends App.Svc {
 
     private String interpretCMLocalParameter(RORIO root, int pi, boolean prefixEnums, IFunction<RORIO, SchemaElement>[] parameterSchemas) {
         RORIO parameter = root.getAElem(pi);
-        if (pi < 0 || pi >= parameterSchemas.length)
+        if (parameterSchemas == null || pi < 0 || pi >= parameterSchemas.length)
             return app.fmt.interpretParameter(parameter, app.sdb.getSDBEntry("genericScriptParameter"), prefixEnums);
         return app.fmt.interpretParameter(parameter, parameterSchemas[pi].apply(root), prefixEnums);
     }

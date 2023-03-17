@@ -21,7 +21,6 @@ import r48.App;
 import r48.DictionaryUpdaterRunnable;
 import r48.RubyIO;
 import r48.io.data.IRIO;
-import r48.io.data.RORIO;
 import r48.minivm.MVMU;
 import r48.minivm.fn.MVMFn;
 import r48.schema.*;
@@ -35,8 +34,8 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
+import r48.tr.TrPage.FF1;
 import r48.tr.TrPage.FF2;
-import r48.tr.TrPage.FF3;
 import r48.ui.dialog.UIEnumChoice;
 import r48.ui.dialog.UIEnumChoice.EntryMode;
 
@@ -869,9 +868,9 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 }
                 arguments.add(text);
                 // Important to note: the expected format is (PATH... NAME)
-                final FF2 textF = app.dTrFmtSyn(srcLoc, TrNames.sdbNameRoutine(args[1], text), arguments);
+                final FF1 textF = app.dTrFmtSyn(srcLoc, TrNames.sdbNameRoutine(args[1], text), arguments);
 
-                app.fmt.nameDB.put(args[1], (rubyIO) -> textF.r(rubyIO, null));
+                app.fmt.nameDB.put(args[1], textF::r);
             } else if (args[0].equals("spritesheet[")) {
                 // Defines a spritesheet for spriteSelector.
                 int point = 1;

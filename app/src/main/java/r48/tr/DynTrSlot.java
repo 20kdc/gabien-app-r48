@@ -89,6 +89,10 @@ public final class DynTrSlot implements IDynTr {
                     return "!!!(null DynTrSlot return @ " + id + ")!!!";
                 return res.toString();
             } else if (valueCompiled instanceof FormatSyntax.ICompiledFormatSyntax) {
+                if (ac == 1)
+                    return ((FormatSyntax.ICompiledFormatSyntax) valueCompiled).r((RORIO) a0, null);
+                // ideally, the parameter schema grabbers are forwarded at compile-time as a list
+                // however, that world doesn't exist yet (#justCMDBThings), so this is in place in the meantime
                 if (ac != 2)
                     return "!!!(FormatSyntax args bad @ " + id + ")!!!";
                 return ((FormatSyntax.ICompiledFormatSyntax) valueCompiled).r((RORIO) a0, (IFunction<RORIO, SchemaElement>[]) a2);
