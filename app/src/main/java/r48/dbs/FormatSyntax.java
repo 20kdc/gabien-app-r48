@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Yet another class solely to hold a common syntax in an obvious place.
  * Created on 11/06/17.
@@ -68,13 +70,21 @@ public class FormatSyntax extends App.Svc {
      * This is sort of fake for now. Roll with it, please...?
      */
     public ICompiledFormatSyntax compile(String name) {
-        return (a, b, c) -> formatNameExtended(name, a, b, c);
+        LinkedList<ICompiledFormatSyntaxChunk> r = new LinkedList<>();
+        compileChunk(r, name);
+        optimizeChunks(r);
+        return (a, b, c) -> {
+            StringBuilder sb = new StringBuilder();
+            for (ICompiledFormatSyntaxChunk chk : r)
+                chk.r(sb, a, b, c);
+            return sb.toString();
+        };
     }
 
-    // The new format allows for more precise setups,
-    // but isn't as neat.
-    private String formatNameExtended(String name, RORIO root, RORIO[] parameters, IFunction<RORIO, SchemaElement>[] parameterSchemas) {
-        StringBuilder r = new StringBuilder();
+    /**
+     * Still pretty fake.
+     */
+    public void compileChunk(LinkedList<ICompiledFormatSyntaxChunk> r, String name) {
         char[] data = name.toCharArray();
         boolean prefixNext = false;
         // C: A fully parsable formatNameExtended string.
@@ -100,53 +110,67 @@ public class FormatSyntax extends App.Svc {
                     //  at the start and end respectively.
                     // Of course, since the first component is removed instantly,
                     //  the check is for odd.
-                    String val = formatNameExtended(components.removeFirst(), root, parameters, parameterSchemas);
-                    String def = "";
-                    if ((components.size() & 1) != 0)
-                        def = components.removeLast();
-                    for (int j = 0; j < components.size(); j += 2) {
-                        if (val.equals(formatNameExtended(components.get(j), root, parameters, parameterSchemas))) {
-                            def = components.get(j + 1);
-                            break;
+                    final ICompiledFormatSyntax valComp = compile(components.removeFirst());
+                    LinkedList<ICompiledFormatSyntax> componentsComp = new LinkedList<>();
+                    for (String s : components)
+                        componentsComp.add(compile(s));
+                    ICompiledFormatSyntax def = (root, parameters, parameterSchemas) -> "";
+                    if ((componentsComp.size() & 1) != 0)
+                        def = componentsComp.removeLast();
+                    final ICompiledFormatSyntax fDef = def;
+                    r.add((sb, root, parameters, parameterSchemas) -> {
+                        ICompiledFormatSyntax res = fDef;
+                        String val = valComp.r(root, parameters, parameterSchemas);
+                        for (int j = 0; j < componentsComp.size(); j += 2) {
+                            if (val.equals(componentsComp.get(j).r(root, parameters, parameterSchemas))) {
+                                res = componentsComp.get(j + 1);
+                                break;
+                            }
                         }
-                    }
-                    def = formatNameExtended(def, root, parameters, parameterSchemas);
-                    r.append(def);
+                        sb.append(res.r(root, parameters, parameterSchemas));
+                    });
                 } else if (data[i + 1] == ':') {
-                    char v = data[i];
+                    final char v = data[i];
                     // variable exists form.
                     i = explodeComponentsAndAdvance(components, data, i + 2, '}');
-                    boolean result = parameters != null;
-                    if (result)
-                        result = (v - 'A') < parameters.length;
-                    determineBooleanComponent(r, components, result, root, parameters, parameterSchemas);
+                    determineBooleanComponent(r, components, (root, parameters, parameterSchemas) -> {
+                        boolean result = parameters != null;
+                        if (result)
+                            result = (v - 'A') < parameters.length;
+                        return result;
+                    });
                 } else if (data[i + 1] == '=') {
                     char va = data[i];
                     // vt equality form.
-                    StringBuilder eqTarget = new StringBuilder();
-                    i = explodeComponent(eqTarget, data, i + 2, "=");
+                    StringBuilder eqTargetB = new StringBuilder();
+                    i = explodeComponent(eqTargetB, data, i + 2, "=");
                     i = explodeComponentsAndAdvance(components, data, i + 1, '}');
-                    boolean result = parameters != null;
-                    if (result) {
-                        SchemaElement as = getParameterDisplaySchemaFromArray(root, parameterSchemas, va - 'A');
-                        String a = interpretParameter(parameters[va - 'A'], as, false);
-                        result = a.equals(eqTarget.toString());
-                    }
-                    determineBooleanComponent(r, components, result, root, parameters, parameterSchemas);
+                    final String eqTarget = eqTargetB.toString();
+                    determineBooleanComponent(r, components, (root, parameters, parameterSchemas) -> {
+                        boolean result = parameters != null;
+                        if (result) {
+                            SchemaElement as = getParameterDisplaySchemaFromArray(root, parameterSchemas, va - 'A');
+                            String a = interpretParameter(parameters[va - 'A'], as, false);
+                            result = a.equals(eqTarget);
+                        }
+                        return result;
+                    });
                 } else if (data[i + 2] == ':') {
                     // vv equality form.
-                    char va = data[i];
-                    char vb = data[i + 1];
-                    boolean result = parameters != null;
-                    if (result) {
-                        SchemaElement as = getParameterDisplaySchemaFromArray(root, parameterSchemas, va - 'A');
-                        SchemaElement bs = getParameterDisplaySchemaFromArray(root, parameterSchemas, vb - 'A');
-                        String a = interpretParameter(parameters[va - 'A'], as, false);
-                        String b = interpretParameter(parameters[vb - 'A'], bs, false);
-                        result = a.equals(b);
-                    }
+                    final char va = data[i];
+                    final char vb = data[i + 1];
                     i = explodeComponentsAndAdvance(components, data, i + 3, '}');
-                    determineBooleanComponent(r, components, result, root, parameters, parameterSchemas);
+                    determineBooleanComponent(r, components, (root, parameters, parameterSchemas) -> {
+                        boolean result = parameters != null;
+                        if (result) {
+                            SchemaElement as = getParameterDisplaySchemaFromArray(root, parameterSchemas, va - 'A');
+                            SchemaElement bs = getParameterDisplaySchemaFromArray(root, parameterSchemas, vb - 'A');
+                            String a = interpretParameter(parameters[va - 'A'], as, false);
+                            String b = interpretParameter(parameters[vb - 'A'], bs, false);
+                            result = a.equals(b);
+                        }
+                        return result;
+                    });
                 } else {
                     throw new RuntimeException("Unknown conditional type!");
                 }
@@ -158,83 +182,121 @@ public class FormatSyntax extends App.Svc {
                 // [I][C]
                 // [I]V
                 // commence reinterpretation.
-                StringBuilder type = new StringBuilder();
+                StringBuilder typeB = new StringBuilder();
                 int indexOfAt = -1;
                 while (data[++i] != ']') {
                     if (indexOfAt == -1)
                         if (data[i] == '@')
-                            indexOfAt = type.length();
-                    type.append(data[i]);
+                            indexOfAt = typeB.length();
+                    typeB.append(data[i]);
                 }
-                if (parameters != null) {
-                    if (indexOfAt != 0) {
-                        char ch = data[++i];
-                        RORIO p;
-                        if (ch == '[') {
-                            // At this point, it's gone recursive.
-                            // Need to safely skip over this lot...
-                            StringBuilder tx = new StringBuilder();
-                            int escapeCount = 1;
-                            while (escapeCount > 0) {
-                                char ch2 = data[++i];
-                                if (ch2 == '#') {
-                                    tx.append(ch2);
-                                    tx.append(data[++i]);
-                                    continue;
-                                }
-                                if (ch2 == '[')
-                                    escapeCount++;
-                                if (ch2 == ']') {
-                                    escapeCount--;
-                                    if (escapeCount == 0)
-                                        break;
-                                }
-                                if (ch2 == '{')
-                                    escapeCount++;
-                                if (ch2 == '}') {
-                                    escapeCount--;
-                                    if (escapeCount == 0)
-                                        return "Mismatched []{} error.";
-                                }
+                final String type = typeB.toString();
+                if (indexOfAt != 0) {
+                    char ch = data[++i];
+                    if (ch == '[') {
+                        // At this point, it's gone recursive.
+                        // Need to safely skip over this lot...
+                        StringBuilder tx = new StringBuilder();
+                        int escapeCount = 1;
+                        while (escapeCount > 0) {
+                            char ch2 = data[++i];
+                            if (ch2 == '#') {
                                 tx.append(ch2);
+                                tx.append(data[++i]);
+                                continue;
                             }
-                            // ... then parse it.
-                            String out = formatNameExtended(tx.toString(), root, parameters, parameterSchemas);
-                            p = new RubyIO().setString(out, true);
-                        } else {
-                            p = parameters[ch - 'A'];
+                            if (ch2 == '[')
+                                escapeCount++;
+                            if (ch2 == ']') {
+                                escapeCount--;
+                                if (escapeCount == 0)
+                                    break;
+                            }
+                            if (ch2 == '{')
+                                escapeCount++;
+                            if (ch2 == '}') {
+                                escapeCount--;
+                                if (escapeCount == 0)
+                                    throw new RuntimeException("Mismatched []{} error.");
+                            }
+                            tx.append(ch2);
                         }
-                        r.append(interpretParameter(p, type.toString(), prefixNext));
+                        // ... then parse it.
+                        ICompiledFormatSyntax out = compile(tx.toString());
+                        final boolean thisPrefixNext = prefixNext;
+                        r.add((sb, root, parameters, parameterSchemas) -> {
+                            if (parameters == null)
+                                return;
+                            RORIO p = new RubyIO().setString(out.r(root, parameters, parameterSchemas), true);
+                            sb.append(interpretParameter(p, type, thisPrefixNext));
+                        });
                     } else {
+                        final boolean thisPrefixNext = prefixNext;
+                        r.add((sb, root, parameters, parameterSchemas) -> {
+                            if (parameters == null)
+                                return;
+                            RORIO p = parameters[ch - 'A'];
+                            sb.append(interpretParameter(p, type, thisPrefixNext));
+                        });
+                    }
+                } else {
+                    final String tp = type.substring(1);
+                    r.add((sb, root, parameters, parameterSchemas) -> {
+                        if (parameters == null)
+                            return;
                         // Meta-interpretation syntax
-                        String tp = type.substring(1);
                         IFunction<RORIO, String> n = nameDB.get(tp);
                         if (n == null)
                             throw new RuntimeException("Expected NDB " + tp);
-                        r.append(n.apply(root));
-                    }
+                        sb.append(n.apply(root));
+                    });
                 }
                 prefixNext = false;
             } else if (data[i] == '#') {
-                if (parameters != null) {
-                    int pid = data[++i] - 'A';
-                    if ((pid >= 0) && (pid < parameters.length)) {
-                        r.append(interpretParameter(parameters[pid], getParameterDisplaySchemaFromArray(root, parameterSchemas, pid), prefixNext));
+                final boolean thisPrefixNext = prefixNext;
+                final char ltr = data[++i];
+                final int pid = ltr - 'A';
+                r.add((sb, root, parameters, parameterSchemas) -> {
+                    if (parameters != null && (pid >= 0) && (pid < parameters.length)) {
+                        sb.append(interpretParameter(parameters[pid], getParameterDisplaySchemaFromArray(root, parameterSchemas, pid), thisPrefixNext));
                     } else {
-                        r.append(data[i]);
+                        sb.append(ltr);
                     }
-                }
+                });
                 prefixNext = false;
             } else {
-                r.append(data[i]);
+                cChar(r, data[i]);
             }
         }
-        return r.toString();
     }
 
-    private void determineBooleanComponent(StringBuilder r, LinkedList<String> components, boolean result, RORIO root, RORIO[] parameters, IFunction<RORIO, SchemaElement>[] parameterSchemas) {
-        for (int i = (result ? 0 : 1); i < components.size(); i += 2)
-            r.append(formatNameExtended(components.get(i), root, parameters, parameterSchemas));
+    private void cChar(LinkedList<ICompiledFormatSyntaxChunk> r, char c) {
+        r.add(new StringChunk(Character.toString(c)));
+    }
+
+    private void optimizeChunks(LinkedList<ICompiledFormatSyntaxChunk> ch) {
+        
+    }
+
+    private void determineBooleanComponent(LinkedList<ICompiledFormatSyntaxChunk> r, LinkedList<String> components, ICompiledFormatSyntaxPredicate p) {
+        LinkedList<ICompiledFormatSyntaxChunk> cT = new LinkedList<ICompiledFormatSyntaxChunk>();
+        LinkedList<ICompiledFormatSyntaxChunk> cF = new LinkedList<ICompiledFormatSyntaxChunk>();
+        for (int i = 0; i < components.size(); i++) {
+            String elm = components.get(i);
+            if ((i & 1) == 0) {
+                // true
+                compileChunk(cT, elm);
+            } else {
+                // false
+                compileChunk(cF, elm);
+            }
+        }
+        optimizeChunks(cT);
+        optimizeChunks(cF);
+        r.add((sb, root, parameters, parameterSchemas) -> {
+            for (ICompiledFormatSyntaxChunk c : (p.r(root, parameters, parameterSchemas) ? cT : cF))
+                c.r(sb, root, parameters, parameterSchemas);
+        });
     }
 
     private static int explodeComponent(StringBuilder eqTarget, char[] data, int i, String s) {
@@ -331,5 +393,33 @@ public class FormatSyntax extends App.Svc {
 
     public interface ICompiledFormatSyntax {
         String r(RORIO root, RORIO[] parameters, IFunction<RORIO, SchemaElement>[] parameterSchemas);
+    }
+
+    public interface ICompiledFormatSyntaxChunk {
+        void r(StringBuilder sb, RORIO root, RORIO[] parameters, IFunction<RORIO, SchemaElement>[] parameterSchemas);
+        default @Nullable ICompiledFormatSyntaxChunk tryCombine(ICompiledFormatSyntaxChunk previous) {
+            return null;
+        }
+    }
+
+    private interface ICompiledFormatSyntaxPredicate {
+        boolean r(RORIO root, RORIO[] parameters, IFunction<RORIO, SchemaElement>[] parameterSchemas);
+    }
+
+    private final class StringChunk implements ICompiledFormatSyntaxChunk {
+        public final String str;
+        public StringChunk(String s) {
+            str = s;
+        }
+        @Override
+        public void r(StringBuilder sb, RORIO root, RORIO[] parameters, IFunction<RORIO, SchemaElement>[] parameterSchemas) {
+            sb.append(str);
+        }
+        @Override
+        public @Nullable ICompiledFormatSyntaxChunk tryCombine(ICompiledFormatSyntaxChunk previous) {
+            if (previous instanceof StringChunk)
+                return new StringChunk(((StringChunk) previous).str + str);
+            return null;
+        }
     }
 }
