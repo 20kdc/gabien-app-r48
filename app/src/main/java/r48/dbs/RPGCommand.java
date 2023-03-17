@@ -39,7 +39,10 @@ public class RPGCommand extends App.Svc {
     public LinkedList<SpecialTag> paramSpecialTags = new LinkedList<SpecialTag>();
     public LinkedList<Param> params = new LinkedList<Param>();
     public int indentPre;
-    // This is conditional solely because of Show Inn (R2k).
+    /**
+     * This is conditional solely because of Show Inn (R2k).
+     * Importantly, this accepts the parameters object, like all roots here. There have been some callers disrespecting this.
+     */
     public IFunction<IRIO, Integer> indentPost = new IFunction<IRIO, Integer>() {
         @Override
         public Integer apply(IRIO rubyIO) {
@@ -102,12 +105,12 @@ public class RPGCommand extends App.Svc {
         return params.get(i).name.apply(root);
     }
 
-    public boolean isAnchor(IRIO root) {
-        return (indentPre + (indentPost.apply(root))) > 0;
+    public boolean isAnchor(IRIO params) {
+        return (indentPre + (indentPost.apply(params))) > 0;
     }
 
-    public boolean isAnchorVis(IRIO root) {
-        return indentPre != 0 || (indentPost.apply(root) != 0);
+    public boolean isAnchorVis(IRIO params) {
+        return indentPre != 0 || (indentPost.apply(params) != 0);
     }
 
     public static class SpecialTag {

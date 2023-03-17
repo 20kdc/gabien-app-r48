@@ -305,8 +305,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         boolean anchor = false;
         boolean shouldShowAnchor = false;
         if (cmd != null) {
-            anchor = cmd.isAnchor(tracker);
-            shouldShowAnchor = cmd.isAnchorVis(tracker);
+            IRIO param = tracker.getIVar("@parameters");
+            anchor = cmd.isAnchor(param);
+            shouldShowAnchor = cmd.isAnchorVis(param);
         }
         String st = "";
         if (shouldShowAnchor) {
