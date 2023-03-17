@@ -16,6 +16,7 @@ public class GrandInitializers {
         gtb.thenSetPhase("initSynthesis2k3");
         gtb.thenWaitWC(2);
         gtb.thenClick("button:Continue");
+        gtb.thenWaitFrame();
         gtb.thenClick("button:RPG Maker 2000, 2003, or EasyRPG. (Android users, go here.)"); // R2k
         gtb.thenWaitFrame();
         gtb.thenClick("button:R2K[3?] (UTF-8) (Use for new games or languages not shown.)"); // Some encoding or another...
@@ -34,6 +35,7 @@ public class GrandInitializers {
         gtb.thenSetPhase("initSynthesisRXP");
         gtb.thenWaitWC(2);
         gtb.thenClick("button:Continue");
+        gtb.thenWaitFrame();
         gtb.thenClick("button:RGSS Engines (RPG Maker XP, VX Ace)");
         gtb.thenWaitFrame();
         gtb.thenClick("button:RXP");
