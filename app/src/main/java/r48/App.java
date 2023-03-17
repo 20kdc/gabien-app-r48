@@ -23,6 +23,7 @@ import r48.app.AppUI;
 import r48.app.EngineDef;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
+import r48.dbs.FormatSyntax;
 import r48.io.data.RORIO;
 import r48.map.StuffRenderer;
 import r48.minivm.MVMEnvR48;
@@ -52,6 +53,8 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
         c.applyUIGlobals();
     };
 
+    public FormatSyntax fmt;
+
     // VM context
     public final MVMEnvR48 vmCtx;
 
@@ -61,6 +64,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
      */
     public App(InterlaunchGlobals ilg, EngineDef gp, String rp, String sip, IConsumer<String> loadProgress) {
         super(ilg, gp, rp, sip, loadProgress);
+        fmt = new FormatSyntax(this);
         vmCtx = new MVMEnvR48((str) -> {
             loadProgress.accept(t.g.loadingProgress.r(str));
         }, ilg.logTrIssues, ilg.c.language);

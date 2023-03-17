@@ -8,8 +8,8 @@
 package r48.dbs;
 
 import gabien.uslx.append.*;
+import r48.App;
 import r48.RubyIO;
-import r48.app.AppCore;
 import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
@@ -23,52 +23,47 @@ import java.util.LinkedList;
  * Yet another class solely to hold a common syntax in an obvious place.
  * Created on 11/06/17.
  */
-public class FormatSyntax extends AppCore.Csv {
+public class FormatSyntax extends App.Svc {
     public HashMap<String, IFunction<RORIO, String>> nameDB = new HashMap<>();
 
-    public FormatSyntax(AppCore app) {
+    public FormatSyntax(App app) {
         super(app);
         // Note: The current NameDB initial state is a "bare minimum" maintenance mode.
         // Name routines are going to get farmed out to MiniVM as soon as possible.
-        nameDB.put("Interp.lang-Common-add", new IFunction<RORIO, String>() {
-            @Override
-            public String apply(RORIO rubyIO) {
-                String[] range = rubyIO.decString().split(" ");
-                int v = 0;
-                for (String s : range)
-                    v += Integer.valueOf(s);
-                return Integer.toString(v);
-            }
+        nameDB.put("Interp.lang-Common-add", (rubyIO) -> {
+            String[] range = rubyIO.decString().split(" ");
+            int v = 0;
+            for (String s : range)
+                v += Integer.valueOf(s);
+            return Integer.toString(v);
         });
-        nameDB.put("Interp.lang-Common-r2kTsConverter", new IFunction<RORIO, String>() {
-            @Override
-            public String apply(RORIO rubyIO) {
-                double d = Double.parseDouble(rubyIO.decString());
-                // WARNING: THIS IS MADNESS, and could be off by a few seconds.
-                // In practice I tested it and it somehow wasn't off at all.
-                // Command used given here:
-                // [gamemanj@archways ~]$ date --date="12/30/1899 12:00 am" +%s
-                // -2209161600
-                // since we want ms, 3 more 0s have been added
-                long v = -2209161600000L;
-                long dayLen = 24L * 60L * 60L * 1000L;
-                // Ok, so, firstly, fractional part is considered completely separately and absolutely.
-                double fractional = Math.abs(d);
-                fractional -= Math.floor(fractional);
-                // Now get rid of fractional in the "right way" (round towards 0)
-                if (d < 0) {
-                    d += fractional;
-                } else {
-                    d -= fractional;
-                }
-                v += ((long) d) * dayLen;
-                v += (long) (fractional * dayLen);
-
-                // NOTE: This converts to local time zone.
-                return new Date(v).toString();
+        nameDB.put("Interp.lang-Common-r2kTsConverter", (rubyIO) -> {
+            double d = Double.parseDouble(rubyIO.decString());
+            // WARNING: THIS IS MADNESS, and could be off by a few seconds.
+            // In practice I tested it and it somehow wasn't off at all.
+            // Command used given here:
+            // [gamemanj@archways ~]$ date --date="12/30/1899 12:00 am" +%s
+            // -2209161600
+            // since we want ms, 3 more 0s have been added
+            long v = -2209161600000L;
+            long dayLen = 24L * 60L * 60L * 1000L;
+            // Ok, so, firstly, fractional part is considered completely separately and absolutely.
+            double fractional = Math.abs(d);
+            fractional -= Math.floor(fractional);
+            // Now get rid of fractional in the "right way" (round towards 0)
+            if (d < 0) {
+                d += fractional;
+            } else {
+                d -= fractional;
             }
+            v += ((long) d) * dayLen;
+            v += (long) (fractional * dayLen);
+
+            // NOTE: This converts to local time zone.
+            return new Date(v).toString();
         });
     }
+
     // The new format allows for more precise setups,
     // but isn't as neat.
     public String formatNameExtended(String name, RORIO root, RORIO[] parameters, IFunction<RORIO, SchemaElement>[] parameterSchemas) {

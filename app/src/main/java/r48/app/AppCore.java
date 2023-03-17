@@ -20,7 +20,6 @@ import r48.RubyIO;
 import r48.cfg.Config;
 import r48.cfg.FontSizes;
 import r48.dbs.ATDB;
-import r48.dbs.FormatSyntax;
 import r48.dbs.ObjectDB;
 import r48.dbs.ObjectInfo;
 import r48.dbs.SDB;
@@ -46,7 +45,6 @@ public class AppCore {
     // Main
     public ObjectDB odb;
     public SDB sdb;
-    public FormatSyntax fmt;
     public MapSystem system;
     public ImageIOFormat[] imageIOFormats;
 
@@ -72,7 +70,6 @@ public class AppCore {
         rootPath = rp;
         secondaryImagePath = sip;
         loadProgress = lp;
-        fmt = new FormatSyntax(this);
         imageIOFormats = ImageIOFormat.initializeFormats(this);
     }
 
