@@ -40,4 +40,11 @@ public interface IDynTrProxy {
     default DynTrSlot dTrFmtSyn(DatumSrcLoc srcLoc, String id, String text) {
         return dynTrBase(srcLoc, id, DynTrSlot.FORMATSYNTAX, text);
     }
+
+    /**
+     * Legacy 2
+     */
+    default DynTrSlot dTrFmtSynCM(DatumSrcLoc srcLoc, String id, String text) {
+        return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX, text);
+    }
 }

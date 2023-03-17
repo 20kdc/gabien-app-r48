@@ -82,7 +82,7 @@ public class DBLoader {
                 }
             }
         } catch (RuntimeException re) {
-            throw new RuntimeException("at line " + r.lineNumber, re);
+            throw new RuntimeException("at " + fn + " line " + r.lineNumber, re);
         }
     }
 

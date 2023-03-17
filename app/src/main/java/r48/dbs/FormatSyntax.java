@@ -82,7 +82,7 @@ public class FormatSyntax extends App.Svc {
     }
 
     /**
-     * Still pretty fake.
+     * Compiles a part of a FormatSyntax.
      */
     private void compileChunk(LinkedList<ICompiledFormatSyntaxChunk> r, String name) {
         char[] data = name.toCharArray();
@@ -197,30 +197,9 @@ public class FormatSyntax extends App.Svc {
                         // At this point, it's gone recursive.
                         // Need to safely skip over this lot...
                         StringBuilder tx = new StringBuilder();
-                        int escapeCount = 1;
-                        while (escapeCount > 0) {
-                            char ch2 = data[++i];
-                            if (ch2 == '#') {
-                                tx.append(ch2);
-                                tx.append(data[++i]);
-                                continue;
-                            }
-                            if (ch2 == '[')
-                                escapeCount++;
-                            if (ch2 == ']') {
-                                escapeCount--;
-                                if (escapeCount == 0)
-                                    break;
-                            }
-                            if (ch2 == '{')
-                                escapeCount++;
-                            if (ch2 == '}') {
-                                escapeCount--;
-                                if (escapeCount == 0)
-                                    throw new RuntimeException("Mismatched []{} error.");
-                            }
-                            tx.append(ch2);
-                        }
+                        // need to skip over the [ so we're at level 0, then skip over the ] that explodeComponent will return the index of
+                        // this is still more comprehensible than the ad-hoc monolith for no reason being replaced here
+                        i = explodeComponent(tx, data, i + 1, "]") + 1;
                         // ... then parse it.
                         ICompiledFormatSyntax out = compile(tx.toString());
                         final boolean thisPrefixNext = prefixNext;
@@ -399,6 +378,69 @@ public class FormatSyntax extends App.Svc {
         if (ise.length <= i)
             return null;
         return ise[i].apply(root);
+    }
+
+    private static ICompiledFormatSyntax wrapWithCMDisclaimer(String name, ICompiledFormatSyntax v) {
+        return (root, parameters, parameterSchemas) -> {
+            try {
+                return v.r(root, parameters, parameterSchemas);
+            } catch (IndexOutOfBoundsException e) {
+                System.err.println("While processing name " + name + ", an IndexOutOfBounds exception occurred. This suggests badly checked parameters.");
+                e.printStackTrace();
+                if (parameters != null)
+                    return v.r(root, null, parameterSchemas);
+                throw e;
+            }
+        };
+    }
+    public ICompiledFormatSyntax compileCM(String nameGet) {
+        if (nameGet.startsWith("@@")) {
+            return wrapWithCMDisclaimer(nameGet, compile(nameGet.substring(2)));
+        } else {
+            return wrapWithCMDisclaimer(nameGet, (root, parameters, parameterSchemas) -> {
+                String sn = "";
+                int pi = 0;
+                for (char c : nameGet.toCharArray()) {
+                    if (c == '!') {
+                        if (parameters != null) {
+                            sn += " to " + interpretCMLocalParameter(root, pi, parameters[pi], true, parameterSchemas);
+                            pi++;
+                        }
+                        continue;
+                    }
+                    if (c == '$') {
+                        if (parameters != null) {
+                            sn += " " + interpretCMLocalParameter(root, pi, parameters[pi], true, parameterSchemas);
+                            pi++;
+                        }
+                        continue;
+                    }
+                    if (c == '#') {
+                        if (parameters != null) {
+                            String beginning = interpretCMLocalParameter(root, pi, parameters[pi], true, parameterSchemas);
+                            pi++;
+                            String end = interpretCMLocalParameter(root, pi, parameters[pi], true, parameterSchemas);
+                            pi++;
+                            if (beginning.equals(end)) {
+                                sn += " " + beginning;
+                            } else {
+                                sn += "s " + beginning + " through " + end;
+                            }
+                            continue;
+                        }
+                        // Notably, the '#' is kept if parameters are missing.
+                    }
+                    sn += c;
+                }
+                return sn;
+            });
+        }
+    }
+
+    private String interpretCMLocalParameter(RORIO root, int pi, RORIO parameter, boolean prefixEnums, IFunction<RORIO, SchemaElement>[] parameterSchemas) {
+        if (pi < 0 || pi >= parameterSchemas.length)
+            return app.fmt.interpretParameter(parameter, app.sdb.getSDBEntry("genericScriptParameter"), prefixEnums);
+        return app.fmt.interpretParameter(parameter, parameterSchemas[pi].apply(root), prefixEnums);
     }
 
     public interface ICompiledFormatSyntax {

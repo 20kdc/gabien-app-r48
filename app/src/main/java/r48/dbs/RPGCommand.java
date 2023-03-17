@@ -18,6 +18,7 @@ import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;
+import r48.tr.TrPage.FF3;
 
 import java.util.LinkedList;
 
@@ -30,7 +31,7 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class RPGCommand extends App.Svc {
     public final int commandId;
-    public FF0 name;
+    public FF3 name;
 
     public SchemaElement specialSchema;
 
@@ -78,61 +79,11 @@ public class RPGCommand extends App.Svc {
     // Pass null for parameters if this is for combobox display.
     @SuppressWarnings("unchecked")
     public String formatName(IRIO root, IRIO[] parameters) {
-        String nameGet = name.r();
-        try {
-            if (nameGet.startsWith("@@")) {
-                IFunction<RORIO, SchemaElement>[] paramTypes = new IFunction[params.size()];
-                int idx = 0;
-                for (Param p : params)
-                    paramTypes[idx++] = p.schema;
-                return app.fmt.compile(nameGet.substring(2)).r(root, parameters, paramTypes);
-            }
-            String sn = "";
-            int pi = 0;
-            for (char c : nameGet.toCharArray()) {
-                if (c == '!') {
-                    if (parameters != null) {
-                        sn += " to " + interpretLocalParameter(root, pi, parameters[pi], true);
-                        pi++;
-                    }
-                    continue;
-                }
-                if (c == '$') {
-                    if (parameters != null) {
-                        sn += " " + interpretLocalParameter(root, pi, parameters[pi], true);
-                        pi++;
-                    }
-                    continue;
-                }
-                if (c == '#') {
-                    if (parameters != null) {
-                        String beginning = interpretLocalParameter(root, pi, parameters[pi], true);
-                        pi++;
-                        String end = interpretLocalParameter(root, pi, parameters[pi], true);
-                        pi++;
-                        if (beginning.equals(end)) {
-                            sn += " " + beginning;
-                        } else {
-                            sn += "s " + beginning + " through " + end;
-                        }
-                        continue;
-                    }
-                    // Notably, the '#' is kept if parameters are missing.
-                }
-                sn += c;
-            }
-            return sn;
-        } catch (IndexOutOfBoundsException e) {
-            System.err.println("While processing name " + name + ", an IndexOutOfBounds exception occurred. This suggests badly checked parameters.");
-            e.printStackTrace();
-            if (parameters != null)
-                return formatName(root, null);
-            throw e;
-        }
-    }
-
-    private String interpretLocalParameter(IRIO root, int pi, IRIO parameter, boolean prefixEnums) {
-        return app.fmt.interpretParameter(parameter, getParameterSchema(root, pi), prefixEnums);
+        IFunction<RORIO, SchemaElement>[] paramTypes = new IFunction[params.size()];
+        int idx = 0;
+        for (Param p : params)
+            paramTypes[idx++] = p.schema;
+        return name.r(root, parameters, paramTypes);
     }
 
     public SchemaElement getParameterSchema(IRIO root, int i) {

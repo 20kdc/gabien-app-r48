@@ -38,8 +38,6 @@ GOAL 1, PREPARATION
 GOAL 1. The Biggest Problem With R48, Part 1
  this is all just theory right now
 + Name routines are "pure formatsyntax" as opposed to the messy magical knows-all-schemas-in-advance kind. Can this preknowledge be utilized to recompile them?
-+ Look into trying to precompile formatsyntax, not to stabilize it like with pathsyntax, but to find a way to check, auto-translate, etc. it.
-  This can be used to start deprecating FormatSyntax features in favour of passing off these cases to MVM.
 + Implement a 2-parameter name routine for the sole purpose of porting old command ranges.
   If everything's forced onto Extended FormatSyntax, that avoids needing a temp prefix for the new MVM command names.
 

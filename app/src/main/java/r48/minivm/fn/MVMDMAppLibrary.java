@@ -24,6 +24,9 @@ public class MVMDMAppLibrary {
         ctx.defLib("dm-formatsyntax", (text) -> {
             return app.fmt.compile((String) text);
         }).attachHelp("(dm-formatsyntax TEXT) : Compiles FormatSyntax. This is a workaround to run FormatSyntax through the DynTrSlot stuff, so it counts as a compiled DynTrSlot value, but...");
+        ctx.defLib("dm-cmsyntax", (text) -> {
+            return app.fmt.compileCM((String) text);
+        }).attachHelp("(dm-cmsyntax TEXT) : Compiles CMSyntax. This is an even worse workaround.");
     }
     public static final class DMFmt extends MVMFn.Fixed {
         public final FormatSyntax fmt;

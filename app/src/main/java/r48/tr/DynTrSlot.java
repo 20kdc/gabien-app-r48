@@ -24,6 +24,7 @@ public final class DynTrSlot implements IDynTr {
     public static final DatumSymbol DYNTR_CALL_API = new DatumSymbol("tr-dyn-compiler");
     // indirect binding to FormatSyntax, see MVMDMAppLibrary
     public static final DatumSymbol FORMATSYNTAX = new DatumSymbol("dm-formatsyntax");
+    public static final DatumSymbol CMSYNTAX = new DatumSymbol("dm-cmsyntax");
 
     public final MVMEnvR48 env;
     public final DatumSrcLoc sourceLoc;
@@ -46,6 +47,11 @@ public final class DynTrSlot implements IDynTr {
     public void setValue(Object v) {
         valueSrc = DatumWriter.objectToString(v);
         valueCompiled = ((MVMFn) env.getSlot(mode).v).clDirect(v);
+    }
+
+    @Override
+    public String toString() {
+        return id + "@" + sourceLoc;
     }
 
     /**

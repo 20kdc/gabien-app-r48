@@ -90,7 +90,7 @@ public class CMDB extends App.Svc {
                 rc = new RPGCommand(sdb.app, objId);
                 rc.category = categories.length - 1;
                 // Names use NDB syntax, thus, separate context
-                rc.name = app.dTr(srcLoc, TrNames.cmdbName(dbId, objId), objName);
+                rc.name = app.dTrFmtSynCM(srcLoc, TrNames.cmdbName(dbId, objId), objName);
                 if (knownCommands.containsKey(objId))
                     throw new RuntimeException("Redefined " + objId);
                 knownCommands.put(objId, rc);
@@ -576,7 +576,7 @@ public class CMDB extends App.Svc {
         int fails1 = 0;
         for (RPGCommand rc : knownCommands.values()) {
             if (rc.description == null) {
-                System.err.print(rc.name.r() + " ");
+                System.err.print(rc.name.toString() + " ");
                 fails1++;
             }
         }
