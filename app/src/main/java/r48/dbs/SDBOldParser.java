@@ -884,7 +884,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                                 break;
                             parameters.add(res);
                         }
-                        return app.fmt.formatNameExtended(textF.r(), rubyIO, parameters.toArray(new RORIO[0]), null);
+                        return app.fmt.compile(textF.r()).r(rubyIO, parameters.toArray(new RORIO[0]), null);
                     }
                 });
             } else if (args[0].equals("spritesheet[")) {

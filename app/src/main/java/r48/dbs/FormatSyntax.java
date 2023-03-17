@@ -64,9 +64,16 @@ public class FormatSyntax extends App.Svc {
         });
     }
 
+    /**
+     * This is sort of fake for now. Roll with it, please...?
+     */
+    public ICompiledFormatSyntax compile(String name) {
+        return (a, b, c) -> formatNameExtended(name, a, b, c);
+    }
+
     // The new format allows for more precise setups,
     // but isn't as neat.
-    public String formatNameExtended(String name, RORIO root, RORIO[] parameters, IFunction<RORIO, SchemaElement>[] parameterSchemas) {
+    private String formatNameExtended(String name, RORIO root, RORIO[] parameters, IFunction<RORIO, SchemaElement>[] parameterSchemas) {
         StringBuilder r = new StringBuilder();
         char[] data = name.toCharArray();
         boolean prefixNext = false;
@@ -320,5 +327,9 @@ public class FormatSyntax extends App.Svc {
         if (ise.length <= i)
             return null;
         return ise[i].apply(root);
+    }
+
+    public interface ICompiledFormatSyntax {
+        String r(RORIO root, RORIO[] parameters, IFunction<RORIO, SchemaElement>[] parameterSchemas);
     }
 }

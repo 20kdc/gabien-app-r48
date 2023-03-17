@@ -85,7 +85,7 @@ public class RPGCommand extends App.Svc {
                 int idx = 0;
                 for (Param p : params)
                     paramTypes[idx++] = p.schema;
-                return app.fmt.formatNameExtended(nameGet.substring(2), root, parameters, paramTypes);
+                return app.fmt.compile(nameGet.substring(2)).r(root, parameters, paramTypes);
             }
             String sn = "";
             int pi = 0;
