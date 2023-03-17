@@ -11,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.GaBIEn;
 import gabien.datum.DatumDecToLambdaVisitor;
 import gabien.datum.DatumSrcLoc;
@@ -70,7 +72,7 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
      * Dynamic translation slot.
      */
     @Override
-    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object base) {
+    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object base) {
         DynTrSlot res = dynMap.get(id);
         if (res == null) {
             res = new DynTrSlot(this, srcLoc, id, mode, base);

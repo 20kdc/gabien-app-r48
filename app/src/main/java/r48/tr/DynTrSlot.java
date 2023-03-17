@@ -6,6 +6,8 @@
  */
 package r48.tr;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.datum.DatumWriter;
@@ -30,12 +32,12 @@ public final class DynTrSlot implements IDynTr {
     public final DatumSrcLoc sourceLoc;
     public final String id;
     public final String originalSrc;
-    public final DatumSymbol mode;
+    public final @Nullable DatumSymbol mode;
     // The source of the value is cached so that dynamic translation can work properly.
     private String valueSrc;
     private Object valueCompiled;
 
-    public DynTrSlot(MVMEnvR48 e, DatumSrcLoc sl, String i, DatumSymbol m, Object base) {
+    public DynTrSlot(MVMEnvR48 e, DatumSrcLoc sl, String i, @Nullable DatumSymbol m, Object base) {
         env = e;
         sourceLoc = sl;
         id = i;
@@ -46,7 +48,7 @@ public final class DynTrSlot implements IDynTr {
 
     public void setValue(Object v) {
         valueSrc = DatumWriter.objectToString(v);
-        valueCompiled = ((MVMFn) env.getSlot(mode).v).clDirect(v);
+        valueCompiled = mode != null ? ((MVMFn) env.getSlot(mode).v).clDirect(v) : v;
     }
 
     @Override

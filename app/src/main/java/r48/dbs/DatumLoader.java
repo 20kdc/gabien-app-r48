@@ -7,8 +7,7 @@
 package r48.dbs;
 
 import java.io.InputStreamReader;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.LinkedList;
 
 import gabien.GaBIEn;
 import gabien.datum.DatumDecToLambdaVisitor;
@@ -25,21 +24,28 @@ public class DatumLoader {
     // DatumLoader and DBLoader are so critical that I couldn't put this behind a config option even if I wanted to.
     // But this is very, very spammy.
     public static final boolean reportLoadSE = false;
+
     /**
      * Loads an inline value.
      */
     public static Object readInline(DatumSrcLoc base, String text) {
-        AtomicReference<Object> result = new AtomicReference<>();
-        AtomicBoolean hasResult = new AtomicBoolean();
-        new DatumReaderTokenSource(base.toString(), text).visit(new DatumDecToLambdaVisitor((obj, srcLoc) -> {
-            if (hasResult.get())
-                throw new RuntimeException(">1 object at inline Datum at " + base);
-            hasResult.set(true);
-            result.set(obj);
-        }));
-        if (!hasResult.get())
+        LinkedList<Object> result = readInlineList(base, text);
+        if (result.size() == 0)
             throw new RuntimeException("No object at inline Datum at " + base);
-        return result.get();
+        if (result.size() > 1)
+            throw new RuntimeException("Too many objects at inline Datum at " + base);
+        return result.get(0);
+    }
+
+    /**
+     * Loads an inline value.
+     */
+    public static LinkedList<Object> readInlineList(DatumSrcLoc base, String text) {
+        LinkedList<Object> result = new LinkedList<>();
+        new DatumReaderTokenSource(base.toString(), text).visit(new DatumDecToLambdaVisitor((obj, srcLoc) -> {
+            result.add(obj);
+        }));
+        return result;
     }
 
     /**

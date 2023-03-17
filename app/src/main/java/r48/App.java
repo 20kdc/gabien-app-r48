@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
 import gabien.datum.DatumSrcLoc;
@@ -76,7 +77,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     }
 
     @Override
-    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text) {
+    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text) {
         return vmCtx.dynTrBase(srcLoc, id, mode, text);
     }
 

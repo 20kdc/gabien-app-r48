@@ -7,7 +7,8 @@
 package r48.tr;
 
 /**
- * Used to implement all sorts of fun stuff
+ * This is used for system name routines so they can use the nice lambda syntax.
+ * That's it.
  * Created 17th March 2023.
  */
 public interface IDynTrSystemNameRoutine extends IDynTr {

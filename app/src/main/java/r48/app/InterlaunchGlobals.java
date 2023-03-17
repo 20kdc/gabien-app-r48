@@ -8,6 +8,8 @@ package r48.app;
 
 import java.util.HashMap;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.GaBIEn;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
@@ -43,7 +45,7 @@ public class InterlaunchGlobals implements IDynTrProxy {
     }
 
     @Override
-    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text) {
+    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text) {
         return langVM.dynTrBase(srcLoc, id, mode, text);
     }
 

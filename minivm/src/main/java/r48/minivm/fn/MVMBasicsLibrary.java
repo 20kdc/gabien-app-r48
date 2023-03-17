@@ -81,6 +81,8 @@ public class MVMBasicsLibrary {
         ctx.defLib("interaction-environment", () -> {
             return ctx;
         }).attachHelp("(interaction-environment) : To put it nicely, this is cheating. It returns the global environment it was defined in, to let eval work.");
+        ctx.defineSlot(sym("error")).v = new Errorer()
+            .attachHelp("(error MSG V...) : Throws an exception. No, there's no way to catch these in MVM...");
     }
 
     /**
@@ -282,6 +284,38 @@ public class MVMBasicsLibrary {
             if (call.length != 2)
                 throw new RuntimeException("Set needs variable name and value, no more or less");
             return cs.writeLookup((DatumSymbol) call[0], cs.compile(call[1]));
+        }
+    }
+
+    public static final class Errorer extends MVMFn {
+        public Errorer() {
+            super("error");
+        }
+        @Override
+        protected Object callDirect() {
+            throw new RuntimeException("error needs at least a message");
+        }
+        @Override
+        protected Object callDirect(Object a0) {
+            throw new MVMUserException((String) a0);
+        }
+        @Override
+        protected Object callDirect(Object a0, Object a1) {
+            throw new MVMUserException((String) a0, a1);
+        }
+        @Override
+        protected Object callDirect(Object a0, Object a1, Object a2) {
+            throw new MVMUserException((String) a0, a1, a2);
+        }
+        @Override
+        protected Object callDirect(Object a0, Object a1, Object a2, Object a3) {
+            throw new MVMUserException((String) a0, a1, a2, a3);
+        }
+        @Override
+        protected Object callIndirect(Object[] args) {
+            Object[] reduced = new Object[args.length - 1];
+            System.arraycopy(args, 1, reduced, 0, reduced.length);
+            throw new MVMUserException((String) args[0], reduced);
         }
     }
 }

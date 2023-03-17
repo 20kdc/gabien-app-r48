@@ -7,17 +7,25 @@
 
 ; all Java classes we care about
 (define java.util.List (string->class "java.util.List"))
+(define java.lang.String (string->class "java.lang.String"))
+
+; obvious operations - type predicates
+
+(define (list? v) (instance? java.util.List v))
+(help-set! list? "(list? V) : Returns true if V is a list.")
+
+(define (string? v) (instance? java.lang.String v))
+(help-set! string? "(string? V) : Returns true if V is a string.")
 
 ; obvious operations - lists
 
 (define (list . v) v)
 (help-set! list "(list V...) : Creates a list of values.")
 
-(define (list? v) (instance? java.util.List v))
-(help-set! list? "(list? V) : Returns true if V is a list.")
-
 (define (car v) (list-ref v 0))
+(help-set! car "(car V) : Returns the first element of the list.")
 (define (cdr v) (sublist v 1 (list-length v)))
+(help-set! cdr "(cdr V) : Returns the remainder of the list. This is created with sublist because cons pairs aren't real here.")
 
 ; obvious operations - cadr composites
 

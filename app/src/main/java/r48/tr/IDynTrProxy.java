@@ -6,6 +6,8 @@
  */
 package r48.tr;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import r48.dbs.DatumLoader;
@@ -18,20 +20,20 @@ public interface IDynTrProxy {
     /**
      * Dynamically translate something.
      */
-    IDynTr dynTrBase(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text);
+    IDynTr dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text);
 
     /**
      * Dynamically translate a string.
      */
     default IDynTr dTr(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_CALL_API, text);
+        return dynTrBase(srcLoc, id, null, text);
     }
 
     /**
      * Dynamically translate a Datum object (as usual, for compilation)
      */
     default IDynTr dTrCode(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_CALL_API, DatumLoader.readInline(srcLoc, text));
+        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_CALL_API, DatumLoader.readInlineList(srcLoc, text));
     }
 
     /**

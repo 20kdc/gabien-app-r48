@@ -6,6 +6,8 @@
  */
 package gabienapp;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.datum.DatumSrcLoc;
@@ -116,7 +118,7 @@ public class Launcher {
         public abstract void tick(double dT);
 
         @Override
-        public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text) {
+        public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text) {
             return lun.ilg.dynTrBase(srcLoc, id, mode, text);
         }
     }
