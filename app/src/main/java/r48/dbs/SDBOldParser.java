@@ -658,7 +658,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(app, b), Integer.parseInt(a), c, d), getFunctionToReturn(T.s.selectTileGraphic));
                 }
                 if (text.equals("windowTitleAttachment")) {
-                    FF2 txt = app.dTrCode(srcLoc, TrNames.sdbWindowTitle(outerContext), args[point++]);
+                    FF2 txt = app.dTrFF2(srcLoc, TrNames.sdbWindowTitle(outerContext), args[point++]);
                     return new WindowTitleAttachmentSchemaElement(app, txt);
                 }
                 if (text.equals("soundPlayer")) {

@@ -23,7 +23,8 @@ import r48.schema.SchemaElement;
  * Created 12th March 2023.
  */
 public final class DynTrSlot implements IDynTr {
-    public static final DatumSymbol DYNTR_CALL_API = new DatumSymbol("tr-dyn-compiler");
+    public static final DatumSymbol DYNTR_FF1 = new DatumSymbol("tr-dyn-compiler-ff1");
+    public static final DatumSymbol DYNTR_FF2 = new DatumSymbol("tr-dyn-compiler-ff2");
     // indirect binding to FormatSyntax, see MVMDMAppLibrary
     public static final DatumSymbol FORMATSYNTAX = new DatumSymbol("dm-formatsyntax");
     public static final DatumSymbol CMSYNTAX = new DatumSymbol("dm-cmsyntax");

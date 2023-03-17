@@ -32,7 +32,3 @@
 
 (define-syntax (fl4 . entries) (list lambda '(a0 a1 a2 a3) (append '(..) entries)))
 (help-set! fl4 "(fl4 V...) : Formatting Lambda 4: equivalent to (lambda (a0 a1 a2 a3) (.. V...))")
-
-; Translation compiler
-(define (tr-dyn-compiler code) code)
-(help-set! tr-dyn-compiler "(tr-dyn-compiler code) : Dynamic translation compiler, invoked Javaside. Pass-through in this (launcher) context.")

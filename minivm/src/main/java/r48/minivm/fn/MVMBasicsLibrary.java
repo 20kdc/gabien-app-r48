@@ -83,6 +83,9 @@ public class MVMBasicsLibrary {
         }).attachHelp("(interaction-environment) : To put it nicely, this is cheating. It returns the global environment it was defined in, to let eval work.");
         ctx.defineSlot(sym("error")).v = new Errorer()
             .attachHelp("(error MSG V...) : Throws an exception. No, there's no way to catch these in MVM...");
+        ctx.defLib("apply", (a0, a1) -> {
+            return ((MVMFn) a0).callIndirect(MVMU.cList(a1).toArray());
+        }).attachHelp("(apply FN ARGS) : Runs FN with the list of args as ARGS.");
     }
 
     /**

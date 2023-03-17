@@ -11,6 +11,9 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import r48.dbs.DatumLoader;
+import r48.tr.TrPage.FF0;
+import r48.tr.TrPage.FF1;
+import r48.tr.TrPage.FF2;
 
 /**
  * Dynamic translation proxy.
@@ -25,28 +28,35 @@ public interface IDynTrProxy {
     /**
      * Dynamically translate a string.
      */
-    default IDynTr dTr(DatumSrcLoc srcLoc, String id, String text) {
+    default FF0 dTr(DatumSrcLoc srcLoc, String id, String text) {
         return dynTrBase(srcLoc, id, null, text);
     }
 
     /**
      * Dynamically translate a Datum object (as usual, for compilation)
      */
-    default IDynTr dTrCode(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_CALL_API, DatumLoader.readInlineList(srcLoc, text));
+    default FF1 dTrFF1(DatumSrcLoc srcLoc, String id, String text) {
+        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF1, DatumLoader.readInlineList(srcLoc, text));
+    }
+
+    /**
+     * Dynamically translate a Datum object (as usual, for compilation)
+     */
+    default FF2 dTrFF2(DatumSrcLoc srcLoc, String id, String text) {
+        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF2, DatumLoader.readInlineList(srcLoc, text));
     }
 
     /**
      * Legacy
      */
-    default IDynTr dTrName(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text) {
+    default FF1 dTrName(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text) {
         return dynTrBase(srcLoc, TrNames.nameRoutine(id), mode, text);
     }
 
     /**
      * Legacy 2
      */
-    default IDynTr dTrFmtSynCM(DatumSrcLoc srcLoc, String id, String text) {
+    default FF2 dTrFmtSynCM(DatumSrcLoc srcLoc, String id, String text) {
         return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX, text);
     }
 }

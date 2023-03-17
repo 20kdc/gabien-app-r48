@@ -8,6 +8,7 @@
 ; all Java classes we care about
 (define java.util.List (string->class "java.util.List"))
 (define java.lang.String (string->class "java.lang.String"))
+(define gabien.datum.DatumSymbol (string->class "gabien.datum.DatumSymbol"))
 
 ; obvious operations - type predicates
 
@@ -16,6 +17,9 @@
 
 (define (string? v) (instance? java.lang.String v))
 (help-set! string? "(string? V) : Returns true if V is a string.")
+
+(define (symbol? v) (instance? gabien.datum.DatumSymbol v))
+(help-set! symbol? "(symbol? V) : Returns true if V is a symbol.")
 
 ; obvious operations - lists
 

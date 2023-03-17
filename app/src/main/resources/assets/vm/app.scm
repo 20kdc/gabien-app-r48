@@ -5,21 +5,8 @@
 
 ; MiniVM app context additions
 
-; Translation compiler
-; (vm EXPR) : regular D/MVM code
-; anything else is returned as-is
-(define (tr-dyn-compiler code) (cond
-	(
-		(and
-			(list? code)
-			(> (list-length code) 1)
-			(eq? (car code) 'vm)
-		)
-		(eval (list-ref code 1) (interaction-environment))
-	)
-	(else code)
-))
-(help-set! tr-dyn-compiler "(tr-dyn-compiler CODE) : Dynamic translation compiler, invoked Javaside.")
+(include "vm/trc")
+(include "vm/trc-lib")
 
 (define-syntax (fmt-at base path) (list dm-fmt (list dm-at base path)))
 (help-set! fmt-at "(fmt-at BASE PATH) : (dm-fmt (dm-at BASE PATH))")

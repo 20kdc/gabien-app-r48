@@ -30,11 +30,15 @@ public class MVMListsLibrary {
         ctx.defineSlot(new DatumSymbol("append!")).v = new AppendM()
                 .attachHelp("(append! T L...) : Modifies an existing list to append a set of lists.");
         ctx.defineSlot(new DatumSymbol("sublist")).v = new Sublist()
-            .attachHelp("(sublist L START END) : Substring, but on lists!");
+                .attachHelp("(sublist L START END) : Substring, but on lists!");
         ctx.defLib("list-length", (a0) -> (long) MVMU.cList(a0).size())
-            .attachHelp("(list-length L) : List length");
+                .attachHelp("(list-length L) : List length");
         ctx.defLib("list-ref", (a0, a1) -> MVMU.cList(a0).get(MVMU.cInt(a1)))
-            .attachHelp("(list-ref L I) : List get");
+                .attachHelp("(list-ref L I) : List get");
+        ctx.defLib("list-set!", (a0, a1, a2) -> {
+            MVMU.cList(a0).set(MVMU.cInt(a1), a2);
+            return a2;
+        }).attachHelp("(list-set! L I V) : List set");
     }
 
     public static final class ForEach extends MVMFn {
