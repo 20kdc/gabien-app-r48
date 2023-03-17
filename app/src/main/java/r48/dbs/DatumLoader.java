@@ -22,6 +22,9 @@ import gabien.uslx.append.IConsumer;
  * Created 1st March 2023.
  */
 public class DatumLoader {
+    // DatumLoader and DBLoader are so critical that I couldn't put this behind a config option even if I wanted to.
+    // But this is very, very spammy.
+    public static final boolean reportLoadSE = false;
     /**
      * Loads an inline value.
      */
@@ -52,10 +55,12 @@ public class DatumLoader {
     public static boolean read(String filename, IConsumer<String> loadProgress, DatumVisitor ddv) {
         try (InputStreamReader ins = GaBIEn.getTextResource(filename)) {
             if (ins == null) {
-                System.out.println("X " + filename);
+                if (reportLoadSE)
+                    System.out.println("X " + filename);
                 return false;
             }
-            System.out.println(">>" + filename);
+            if (reportLoadSE)
+                System.out.println(">>" + filename);
             if (loadProgress != null)
                 loadProgress.accept(filename);
             DatumReaderTokenSource drts = new DatumReaderTokenSource(filename, ins);
@@ -63,7 +68,8 @@ public class DatumLoader {
         } catch (Exception ex) {
             throw new RuntimeException("During read-in @ " + filename, ex);
         }
-        System.out.println("<<" + filename);
+        if (reportLoadSE)
+            System.out.println("<<" + filename);
         return true;
     }
 }

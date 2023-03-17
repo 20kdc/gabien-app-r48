@@ -397,42 +397,54 @@ public class FormatSyntax extends App.Svc {
         if (nameGet.startsWith("@@")) {
             return wrapWithCMDisclaimer(nameGet, compile(nameGet.substring(2)));
         } else {
-            return wrapWithCMDisclaimer(nameGet, (root, parameters, parameterSchemas) -> {
-                String sn = "";
-                int pi = 0;
-                for (char c : nameGet.toCharArray()) {
-                    if (c == '!') {
+            LinkedList<ICompiledFormatSyntaxChunk> r = new LinkedList<>();
+            int pi = 0;
+            for (char c : nameGet.toCharArray()) {
+                if (c == '!') {
+                    final int setPI = pi++;
+                    r.add((sb, root, parameters, parameterSchemas) -> {
                         if (parameters != null) {
-                            sn += " to " + interpretCMLocalParameter(root, pi, parameters[pi], true, parameterSchemas);
-                            pi++;
+                            sb.append(" to ");
+                            sb.append(interpretCMLocalParameter(root, setPI, parameters[setPI], true, parameterSchemas));
                         }
-                        continue;
-                    }
-                    if (c == '$') {
+                    });
+                } else if (c == '$') {
+                    final int setPI = pi++;
+                    r.add((sb, root, parameters, parameterSchemas) -> {
                         if (parameters != null) {
-                            sn += " " + interpretCMLocalParameter(root, pi, parameters[pi], true, parameterSchemas);
-                            pi++;
+                            sb.append(" ");
+                            sb.append(interpretCMLocalParameter(root, setPI, parameters[setPI], true, parameterSchemas));
                         }
-                        continue;
-                    }
-                    if (c == '#') {
+                    });
+                } else if (c == '#') {
+                    final int setPI = pi++;
+                    r.add((sb, root, parameters, parameterSchemas) -> {
                         if (parameters != null) {
-                            String beginning = interpretCMLocalParameter(root, pi, parameters[pi], true, parameterSchemas);
-                            pi++;
-                            String end = interpretCMLocalParameter(root, pi, parameters[pi], true, parameterSchemas);
-                            pi++;
+                            String beginning = interpretCMLocalParameter(root, setPI, parameters[setPI], true, parameterSchemas);
+                            String end = interpretCMLocalParameter(root, setPI + 1, parameters[setPI + 1], true, parameterSchemas);
                             if (beginning.equals(end)) {
-                                sn += " " + beginning;
+                                sb.append(" ");
+                                sb.append(beginning);
                             } else {
-                                sn += "s " + beginning + " through " + end;
+                                sb.append("s ");
+                                sb.append(beginning);
+                                sb.append(" through ");
+                                sb.append(end);
                             }
-                            continue;
+                        } else {
+                            sb.append("#");
                         }
-                        // Notably, the '#' is kept if parameters are missing.
-                    }
-                    sn += c;
+                    });
+                } else {
+                    r.add(new StringChunk(Character.toString(c)));
                 }
-                return sn;
+            }
+            optimizeChunks(r);
+            return wrapWithCMDisclaimer(nameGet, (root, parameters, parameterSchemas) -> {
+                StringBuilder sb = new StringBuilder();
+                for (ICompiledFormatSyntaxChunk chk : r)
+                    chk.r(sb, root, parameters, parameterSchemas);
+                return sb.toString();
             });
         }
     }

@@ -25,7 +25,8 @@ import org.eclipse.jdt.annotation.Nullable;
 public class DBLoader {
 
     public static void readFile(@Nullable AppCore app, @NonNull String s, @NonNull IDatabase db) {
-        System.out.println(">>" + s + " as " + db);
+        if (DatumLoader.reportLoadSE)
+            System.out.println(">>" + s + " as " + db);
         if (app != null)
             app.loadProgress.accept(app.t.g.loadingProgress.r(s));
         try {
@@ -34,7 +35,8 @@ public class DBLoader {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        System.out.println("<<" + s);
+        if (DatumLoader.reportLoadSE)
+            System.out.println("<<" + s);
     }
 
     public static void readFile(String fn, InputStream helpStream, IDatabase db) {
