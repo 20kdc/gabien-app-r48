@@ -17,6 +17,7 @@ import r48.schema.SchemaElement;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -275,7 +276,17 @@ public class FormatSyntax extends App.Svc {
     }
 
     private void optimizeChunks(LinkedList<ICompiledFormatSyntaxChunk> ch) {
-        
+        Iterator<ICompiledFormatSyntaxChunk> ci = ch.iterator();
+        ICompiledFormatSyntaxChunk prev = null;
+        while (ci.hasNext()) {
+            ICompiledFormatSyntaxChunk chk = ci.next();
+            if (prev != null && prev.tryCombine(chk)) {
+                // remove by combination
+                ci.remove();
+            } else {
+                prev = chk;
+            }
+        }
     }
 
     private void determineBooleanComponent(LinkedList<ICompiledFormatSyntaxChunk> r, LinkedList<String> components, ICompiledFormatSyntaxPredicate p) {
@@ -397,8 +408,11 @@ public class FormatSyntax extends App.Svc {
 
     public interface ICompiledFormatSyntaxChunk {
         void r(StringBuilder sb, RORIO root, RORIO[] parameters, IFunction<RORIO, SchemaElement>[] parameterSchemas);
-        default @Nullable ICompiledFormatSyntaxChunk tryCombine(ICompiledFormatSyntaxChunk previous) {
-            return null;
+        /**
+         * Tries combining with a given "next" chunk. This is in-place.
+         */
+        default boolean tryCombine(ICompiledFormatSyntaxChunk next) {
+            return false;
         }
     }
 
@@ -407,7 +421,7 @@ public class FormatSyntax extends App.Svc {
     }
 
     private final class StringChunk implements ICompiledFormatSyntaxChunk {
-        public final String str;
+        public String str;
         public StringChunk(String s) {
             str = s;
         }
@@ -416,10 +430,12 @@ public class FormatSyntax extends App.Svc {
             sb.append(str);
         }
         @Override
-        public @Nullable ICompiledFormatSyntaxChunk tryCombine(ICompiledFormatSyntaxChunk previous) {
-            if (previous instanceof StringChunk)
-                return new StringChunk(((StringChunk) previous).str + str);
-            return null;
+        public boolean tryCombine(ICompiledFormatSyntaxChunk next) {
+            if (next instanceof StringChunk) {
+                str += ((StringChunk) next).str;
+                return true;
+            }
+            return false;
         }
     }
 }
