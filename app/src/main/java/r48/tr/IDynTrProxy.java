@@ -6,6 +6,8 @@
  */
 package r48.tr;
 
+import java.util.List;
+
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import r48.dbs.DatumLoader;
@@ -37,7 +39,7 @@ public interface IDynTrProxy {
     /**
      * Legacy
      */
-    default DynTrSlot dTrFmtSyn(DatumSrcLoc srcLoc, String id, String text) {
+    default DynTrSlot dTrFmtSyn(DatumSrcLoc srcLoc, String id, List<String> text) {
         return dynTrBase(srcLoc, id, DynTrSlot.FORMATSYNTAX, text);
     }
 

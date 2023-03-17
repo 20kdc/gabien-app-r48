@@ -6,9 +6,12 @@
  */
 package r48.minivm.fn;
 
+import java.util.List;
+
 import gabien.datum.DatumSymbol;
 import r48.App;
 import r48.dbs.FormatSyntax;
+import r48.dbs.PathSyntax;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMU;
@@ -22,8 +25,19 @@ public class MVMDMAppLibrary {
         ctx.defineSlot(new DatumSymbol("dm-fmt")).v = new DMFmt(app.fmt)
                 .attachHelp("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. If the passed-in object is null (say, due to a PathSyntax failure) returns the empty string. Important: Because of schemas and stuff this doesn't exist in the static translation context.");
         ctx.defLib("dm-formatsyntax", (text) -> {
-            return app.fmt.compile((String) text);
-        }).attachHelp("(dm-formatsyntax TEXT) : Compiles FormatSyntax. This is a workaround to run FormatSyntax through the DynTrSlot stuff, so it counts as a compiled DynTrSlot value, but...");
+            // ("path1" "path2" "path3" "name")
+            List<Object> lo = MVMU.cList(text);
+            final PathSyntax[] paths = new PathSyntax[lo.size() - 1];
+            for (int i = 0; i < paths.length; i++)
+                paths[i] = PathSyntax.compile(app, (String) lo.get(i));
+            return app.fmt.compile((String) (lo.get(lo.size() - 1)), (root, idx) -> {
+                if (idx < 0)
+                    return null;
+                if (idx >= paths.length)
+                    return null;
+                return paths[idx].get(root);
+            });
+        }).attachHelp("(dm-formatsyntax THING) : Compiles FormatSyntax. This is a workaround to run FormatSyntax through the DynTrSlot stuff, so it counts as a compiled DynTrSlot value, but...");
         ctx.defLib("dm-cmsyntax", (text) -> {
             return app.fmt.compileCM((String) text);
         }).attachHelp("(dm-cmsyntax TEXT) : Compiles CMSyntax. This is an even worse workaround.");

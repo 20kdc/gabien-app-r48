@@ -49,4 +49,8 @@ public class TrNames {
     public static String sdbWindowTitle(String ovc) {
         return "SDB_" + ovc + ".title";
     }
+
+    public static String sdbNameRoutine(String name, String text) {
+        return "FMT_" + name + "." + text;
+    }
 }

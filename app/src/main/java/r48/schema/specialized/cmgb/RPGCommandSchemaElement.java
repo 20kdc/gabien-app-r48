@@ -99,7 +99,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     String title = code + " : ";
                     String result = T.z.l166;
                     if (rc != null) {
-                        title += rc.formatName(null, null);
+                        title += rc.formatName(null);
                         if (rc.description == null) {
                             result = T.z.l167;
                         } else {
@@ -165,7 +165,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             LinkedList<UIEnumChoice.Option> llo = new LinkedList<UIEnumChoice.Option>();
             for (Integer key : database.knownCommandOrder) {
                 RPGCommand rc = database.knownCommands.get(key);
-                String text = key + ";" + rc.formatName(null, null);
+                String text = key + ";" + rc.formatName(null);
                 if (rc.category == i)
                     llo.add(new UIEnumChoice.Option(text, new IRIOFixnum(key)));
             }

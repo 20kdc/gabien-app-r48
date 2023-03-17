@@ -589,8 +589,7 @@ public class CMDB extends App.Svc {
         int cid = (int) target.getIVar("@code").getFX();
         if (knownCommands.containsKey(cid)) {
             RPGCommand cmd = knownCommands.get(cid);
-            IRIO params = target.getIVar("@parameters");
-            ext = cmd.formatName(params, params.getANewArray());
+            ext = cmd.formatName(target.getIVar("@parameters"));
         }
         String spc = full ? lenForm(cid) + " " : "";
         IRIO indentValue = target.getIVar("@indent");

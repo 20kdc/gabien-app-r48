@@ -18,7 +18,7 @@ import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;
-import r48.tr.TrPage.FF3;
+import r48.tr.TrPage.FF2;
 
 import java.util.LinkedList;
 
@@ -31,7 +31,7 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class RPGCommand extends App.Svc {
     public final int commandId;
-    public FF3 name;
+    public FF2 name;
 
     public SchemaElement specialSchema;
 
@@ -43,12 +43,7 @@ public class RPGCommand extends App.Svc {
      * This is conditional solely because of Show Inn (R2k).
      * Importantly, this accepts the parameters object, like all roots here. There have been some callers disrespecting this.
      */
-    public IFunction<IRIO, Integer> indentPost = new IFunction<IRIO, Integer>() {
-        @Override
-        public Integer apply(IRIO rubyIO) {
-            return 0;
-        }
-    };
+    public IFunction<IRIO, Integer> indentPost = (params) -> 0;
     // Something that can also go before this command instead of a block leave
     public int blockLeaveReplacement = -1;
     public boolean needsBlockLeavePre;
@@ -81,36 +76,36 @@ public class RPGCommand extends App.Svc {
 
     // Pass null for parameters if this is for combobox display.
     @SuppressWarnings("unchecked")
-    public String formatName(IRIO root, IRIO[] parameters) {
+    public String formatName(@Nullable IRIO paramsObj) {
         IFunction<RORIO, SchemaElement>[] paramTypes = new IFunction[params.size()];
         int idx = 0;
         for (Param p : params)
             paramTypes[idx++] = p.schema;
-        return name.r(root, parameters, paramTypes);
+        return name.r(paramsObj, paramTypes);
     }
 
-    public SchemaElement getParameterSchema(IRIO root, int i) {
+    public SchemaElement getParameterSchema(IRIO paramsObj, int i) {
         if (params.size() <= i)
             return app.sdb.getSDBEntry("genericScriptParameter");
-        return params.get(i).schema.apply(root);
+        return params.get(i).schema.apply(paramsObj);
     }
 
     /**
      * Returns the contextual name of the given parameter index.
      * This is nullable - if null, the parameter is hidden.
      */
-    public @Nullable String getParameterName(IRIO root, int i) {
+    public @Nullable String getParameterName(IRIO paramsObj, int i) {
         if (params.size() <= i)
             return T.s.cmdb_unkParamName;
-        return params.get(i).name.apply(root);
+        return params.get(i).name.apply(paramsObj);
     }
 
-    public boolean isAnchor(IRIO params) {
-        return (indentPre + (indentPost.apply(params))) > 0;
+    public boolean isAnchor(IRIO paramsObj) {
+        return (indentPre + (indentPost.apply(paramsObj))) > 0;
     }
 
-    public boolean isAnchorVis(IRIO params) {
-        return indentPre != 0 || (indentPost.apply(params) != 0);
+    public boolean isAnchorVis(IRIO paramsObj) {
+        return indentPre != 0 || (indentPost.apply(paramsObj) != 0);
     }
 
     public static class SpecialTag {

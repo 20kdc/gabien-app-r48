@@ -89,9 +89,9 @@ public final class DynTrSlot implements IDynTr {
                     return "!!!(null DynTrSlot return @ " + id + ")!!!";
                 return res.toString();
             } else if (valueCompiled instanceof FormatSyntax.ICompiledFormatSyntax) {
-                if (ac != 3)
+                if (ac != 2)
                     return "!!!(FormatSyntax args bad @ " + id + ")!!!";
-                return ((FormatSyntax.ICompiledFormatSyntax) valueCompiled).r((RORIO) a0, (RORIO[]) a1, (IFunction<RORIO, SchemaElement>[]) a2);
+                return ((FormatSyntax.ICompiledFormatSyntax) valueCompiled).r((RORIO) a0, (IFunction<RORIO, SchemaElement>[]) a2);
             }
             return valueCompiled.toString();
         } catch (Exception ex) {

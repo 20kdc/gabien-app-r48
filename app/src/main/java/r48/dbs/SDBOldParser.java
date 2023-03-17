@@ -104,10 +104,6 @@ public class SDBOldParser extends App.Svc implements IDatabase {
         return app.dTr(srcLoc, TrNames.sdbAnon(ovc, text), text);
     }
 
-    private @NonNull FF3 trAnonFmtSyn(String ovc, String text) {
-        return app.dTrFmtSyn(srcLoc, TrNames.sdbAnon(ovc, text), text);
-    }
-
     private @Nullable FF0 trAnonExUnderscoreNull(String text) {
         if (text.equals("_"))
             return null;
@@ -871,23 +867,11 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                         }
                     }
                 }
-                final FF3 textF = trAnonFmtSyn(args[1], text);
+                arguments.add(text);
+                // Important to note: the expected format is (PATH... NAME)
+                final FF2 textF = app.dTrFmtSyn(srcLoc, TrNames.sdbNameRoutine(args[1], text), arguments);
 
-                final PathSyntax[] argumentsPS = new PathSyntax[arguments.size()];
-                int idx = 0;
-                for (String ps : arguments)
-                    argumentsPS[idx++] = compilePS(ps);
-
-                app.fmt.nameDB.put(args[1], (rubyIO) -> {
-                    LinkedList<RORIO> parameters = new LinkedList<RORIO>();
-                    for (PathSyntax arg : argumentsPS) {
-                        RORIO res = arg.get(rubyIO);
-                        if (res == null)
-                            break;
-                        parameters.add(res);
-                    }
-                    return textF.r(rubyIO, parameters.toArray(new RORIO[0]), null);
-                });
+                app.fmt.nameDB.put(args[1], (rubyIO) -> textF.r(rubyIO, null));
             } else if (args[0].equals("spritesheet[")) {
                 // Defines a spritesheet for spriteSelector.
                 int point = 1;
