@@ -101,7 +101,7 @@
 > Help/Tips/Entry:8 Show Another Tip...
 
 515: Tip7EmptyWorld
-. You go out into the world, but no matter how far you go you're.
+. You go out into the world, but no matter how far you go, you see nothing.
 . You've even lost sight of the cat.
 . And inevitably, time takes you.
 > Help/Tips/Entry:8 Show Another Tip...

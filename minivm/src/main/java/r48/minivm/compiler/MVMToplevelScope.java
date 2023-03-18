@@ -37,11 +37,6 @@ public class MVMToplevelScope extends MVMCompileScope {
     }
 
     @Override
-    public MVMToplevelScope extendMayFrame() {
-        return new MVMToplevelScope(this);
-    }
-
-    @Override
     public MVMSubScope extendWithFrame() {
         return new MVMSubScope(this);
     }

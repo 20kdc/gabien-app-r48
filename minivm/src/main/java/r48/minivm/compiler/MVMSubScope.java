@@ -21,7 +21,12 @@ import r48.minivm.expr.MVMCLocal;
 public class MVMSubScope extends MVMCompileScope {
     // Stack frame.
     public final MVMCompileFrame frame;
-    // Changes as stuff is added to the scope. Locals that haven't been defined "yet" compile-time aren't in here yet.
+    /**
+     * Changes as stuff is added to the scope. Locals that haven't been defined "yet" compile-time aren't in here yet.
+     * Beware: if a local is *not* wrapped in an FV barrier, it cannot be "re-wrapped" later.
+     * This is because the wrapping wouldn't apply to already compiled code.
+     * The "good news" is that in all such cases, it can be "fixed" by forcibly deoptimizing the local.
+     */
     protected final HashMap<DatumSymbol, Local> locals;
 
     public MVMSubScope(MVMToplevelScope tl) {
@@ -38,7 +43,7 @@ public class MVMSubScope extends MVMCompileScope {
         frame = new MVMCompileFrame(cs.frame);
     }
 
-    public int getFreeFastLocalSlot() {
+    private int getFreeFastLocalSlot() {
         boolean[] slots = new boolean[8];
         for (Local v : locals.values()) {
             int slot = v.occupiesLocalFVSlot();
@@ -51,7 +56,7 @@ public class MVMSubScope extends MVMCompileScope {
         return -1;
     }
 
-    public boolean isLocalSlotFree(int f) {
+    private boolean isLocalSlotFree(int f) {
         for (Local v : locals.values())
             if (v.occupiesLocalFVSlot() == f)
                 return false;
@@ -90,11 +95,6 @@ public class MVMSubScope extends MVMCompileScope {
         LocalRoot local = new LocalRoot();
         locals.put(sym, local);
         return local.setter(value.get());
-    }
-
-    @Override
-    public MVMSubScope extendMayFrame() {
-        return new MVMSubScope(this);
     }
 
     @Override

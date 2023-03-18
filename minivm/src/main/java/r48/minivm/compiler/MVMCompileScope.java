@@ -14,7 +14,6 @@ import gabien.uslx.append.ISupplier;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMSlot;
 import r48.minivm.expr.MVMCExpr;
-import r48.minivm.expr.MVMCNewEmptyList;
 import r48.minivm.expr.MVMCSetSlot;
 import r48.minivm.fn.MVMMacro;
 
@@ -46,11 +45,6 @@ public abstract class MVMCompileScope {
      * This means you're responsible for frame.wrapRoot!
      */
     public abstract MVMSubScope extendWithFrame();
-
-    /**
-     * Extends in a chill manner.
-     */
-    public abstract MVMCompileScope extendMayFrame();
 
     /**
      * Compiles a symbol read.
@@ -86,7 +80,7 @@ public abstract class MVMCompileScope {
             int olSize = ol.size();
             // Tradition states this is AOK, shush...
             if (olSize == 0)
-                return new MVMCNewEmptyList();
+                throw new RuntimeException("Cannot compile empty list.");
             // Split into ol1o (first arg) and oa (rest of args)
             Object[] oa = new Object[olSize - 1];
             int idx = -1;
@@ -118,10 +112,6 @@ public abstract class MVMCompileScope {
             for (int i = 0; i < exprs.length; i++)
                 exprs[i] = compile(oa[i]);
             return MVMFnCallCompiler.compile(this, ol1v, exprs);
-        } else if (o instanceof MVMCExpr) {
-            // Expression compiles to itself.
-            // If you're even messing around with these objects, you're expected to know what you're doing.
-            return (MVMCExpr) o;
         } else {
             return new MVMCExpr.Const(o);
         }

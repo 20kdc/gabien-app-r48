@@ -25,24 +25,6 @@ public abstract class MVMCExpr {
     public final Object exc(@NonNull MVMScope ctx, Object l0) {
         return execute(ctx, l0, null, null, null, null, null, null, null);
     }
-    public final Object exc(@NonNull MVMScope ctx, Object l0, Object l1) {
-        return execute(ctx, l0, l1, null, null, null, null, null, null);
-    }
-    public final Object exc(@NonNull MVMScope ctx, Object l0, Object l1, Object l2) {
-        return execute(ctx, l0, l1, l2, null, null, null, null, null);
-    }
-    public final Object exc(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3) {
-        return execute(ctx, l0, l1, l2, l3, null, null, null, null);
-    }
-    public final Object exc(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4) {
-        return execute(ctx, l0, l1, l2, l3, l4, null, null, null);
-    }
-    public final Object exc(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5) {
-        return execute(ctx, l0, l1, l2, l3, l4, l5, null, null);
-    }
-    public final Object exc(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6) {
-        return execute(ctx, l0, l1, l2, l3, l4, l5, l6, null);
-    }
     public abstract Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7);
     /**
      * Disassembles the expression for user analysis.
