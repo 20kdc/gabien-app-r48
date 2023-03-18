@@ -14,6 +14,7 @@ import r48.minivm.MVMEnv;
  */
 public class MVMCoreLibraries {
     public static void add(MVMEnv ctx) {
+        MVMScopingLibrary.add(ctx);
         MVMBasicsLibrary.add(ctx);
         MVMExtensionsLibrary.add(ctx);
         MVMMathsLibrary.add(ctx);

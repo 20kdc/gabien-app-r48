@@ -90,47 +90,6 @@ public final class MVMCLocal {
             return MVMU.l(sym("localRead"), frameID, localID);
         }
     }
-    public final class Let extends MVMCExpr {
-        public final MVMCExpr val, ret;
-        public Let(MVMCExpr v, MVMCExpr r) {
-            val = v;
-            ret = r;
-        }
-        @Override
-        public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-            Object v = val.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-            if (frameID == -1) {
-                switch (localID) {
-                case 0:
-                    l0 = v;
-                case 1:
-                    l1 = v;
-                case 2:
-                    l2 = v;
-                case 3:
-                    l3 = v;
-                case 4:
-                    l4 = v;
-                case 5:
-                    l5 = v;
-                case 6:
-                    l6 = v;
-                case 7:
-                    l7 = v;
-                default:
-                    throw new RuntimeException("Invalid fast-local ID");
-                }
-            } else {
-                ctx.set(frameID, localID, v);
-            }
-            return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-        }
-
-        @Override
-        public Object disasm() {
-            return Arrays.asList(sym("localLet"), frameID, localID, val.disasm(), ret.disasm());
-        }
-    }
 
     public MVMCExpr write(final MVMCExpr val) {
         if (frameID == -1)

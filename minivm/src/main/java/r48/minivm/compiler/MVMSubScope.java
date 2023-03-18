@@ -9,6 +9,8 @@ package r48.minivm.compiler;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.ISupplier;
 import r48.minivm.expr.MVMCExpr;
@@ -19,8 +21,14 @@ import r48.minivm.expr.MVMCLocal;
  * Created 1st March 2023.
  */
 public class MVMSubScope extends MVMCompileScope {
-    // Stack frame.
-    public final MVMCompileFrame frame;
+    /**
+     * Stack frame layout etc.
+     */
+    private final MVMCompileFrame frame;
+    /**
+     * If this instance originated frame.
+     */
+    private final boolean ownsFrame;
     /**
      * Changes as stuff is added to the scope. Locals that haven't been defined "yet" compile-time aren't in here yet.
      * Beware: if a local is *not* wrapped in an FV barrier, it cannot be "re-wrapped" later.
@@ -32,15 +40,29 @@ public class MVMSubScope extends MVMCompileScope {
     public MVMSubScope(MVMToplevelScope tl) {
         super(tl);
         frame = new MVMCompileFrame();
+        ownsFrame = true;
         locals = new HashMap<>();
     }
-    private MVMSubScope(MVMSubScope cs) {
+    private MVMSubScope(MVMSubScope cs, boolean hard) {
         super(cs);
-        locals = new HashMap<>();
-        // Wrap locals with the new frame barrier.
-        for (Map.Entry<DatumSymbol, Local> entry : cs.locals.entrySet())
-            locals.put(entry.getKey(), entry.getValue().wrapFVBarrier());
-        frame = new MVMCompileFrame(cs.frame);
+        if (hard) {
+            locals = new HashMap<>();
+            for (Map.Entry<DatumSymbol, Local> entry : cs.locals.entrySet())
+                locals.put(entry.getKey(), entry.getValue().wrapFVBarrier());
+            frame = new MVMCompileFrame(cs.frame);
+            ownsFrame = true;
+        } else {
+            locals = new HashMap<>(cs.locals);
+            frame = cs.frame;
+            ownsFrame = false;
+        }
+    }
+
+    /**
+     * Returns the stack frame if and only if this scope owns it.
+     */
+    public @Nullable MVMCompileFrame getFrameIfOwned() {
+        return ownsFrame ? frame : null;
     }
 
     private int getFreeFastLocalSlot() {
@@ -56,20 +78,16 @@ public class MVMSubScope extends MVMCompileScope {
         return -1;
     }
 
-    private boolean isLocalSlotFree(int f) {
-        for (Local v : locals.values())
-            if (v.occupiesLocalFVSlot() == f)
-                return false;
-        return true;
-    }
-
     /**
      * Creates a new local, directly.
      */
-    public LocalRoot newLocal(DatumSymbol aSym) {
+    public MVMCLocal newLocal(DatumSymbol aSym) {
         LocalRoot lr = new LocalRoot();
+        // Overwriting of existing locals dereferences them and frees them up for fast-local allocation.
+        // That's fine. (We'll never see those locals again, so fast local reuse is just creative budgeting.)
+        // Existing references are also fine because whatever changes those fast locals can't be retroactive.
         locals.put(aSym, lr);
-        return lr;
+        return lr.local;
     }
 
     @Override
@@ -99,7 +117,12 @@ public class MVMSubScope extends MVMCompileScope {
 
     @Override
     public MVMSubScope extendWithFrame() {
-        return new MVMSubScope(this);
+        return new MVMSubScope(this, true);
+    }
+
+    @Override
+    public MVMSubScope extendMayFrame() {
+        return new MVMSubScope(this, false);
     }
 
     /**
@@ -108,7 +131,7 @@ public class MVMSubScope extends MVMCompileScope {
      * In particular it needs to calculate deoptimization.
      * Another thing is there is a wrapped version of this value for when past barriers that remove FVs.
      */
-    public abstract class Local {
+    private abstract class Local {
         /**
          * Returns the local FV slot this occupies.
          * Note that this returns -1 if past an FV barrier (and thus the difference is nil)
@@ -130,7 +153,7 @@ public class MVMSubScope extends MVMCompileScope {
         public abstract MVMCExpr setter(MVMCExpr val);
     }
 
-    public final class LocalRoot extends Local {
+    private final class LocalRoot extends Local {
         // Local.
         public final MVMCLocal local;
         public LocalRoot() {
@@ -141,10 +164,6 @@ public class MVMSubScope extends MVMCompileScope {
             } else {
                 local = frame.allocateLocal();
             }
-        }
-        public LocalRoot(int f) {
-            assert isLocalSlotFree(f);
-            local = new MVMCLocal(f);
         }
 
         @Override

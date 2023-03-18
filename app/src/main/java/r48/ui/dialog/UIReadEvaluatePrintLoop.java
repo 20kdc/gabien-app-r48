@@ -67,6 +67,8 @@ public class UIReadEvaluatePrintLoop extends UIProxy {
     }
 
     public void write(String string) {
+        // for ease of copying
+        System.out.println(string);
         view.panelsAdd(new UILabel(string, c.f.dialogWindowTH));
     }
 }

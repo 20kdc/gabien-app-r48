@@ -22,14 +22,26 @@ import r48.minivm.compiler.MVMCompileScope;
 public final class MVMCBegin extends MVMCExpr {
     public final MVMCExpr[] exprs;
 
-    public MVMCBegin(MVMCExpr[] ex) {
+    private MVMCBegin(MVMCExpr[] ex) {
         exprs = ex;
     }
 
-    public MVMCBegin(MVMCompileScope cs, Object[] obj, int base, int len) {
+    private MVMCBegin(MVMCompileScope cs, Object[] obj, int base, int len) {
         exprs = new MVMCExpr[len];
         for (int i = 0; i < len; i++)
             exprs[i] = cs.compile(obj[base + i]);
+    }
+
+    public static MVMCExpr of(MVMCExpr... content) {
+        if (content.length == 1)
+            return content[0];
+        return new MVMCBegin(content);
+    }
+
+    public static MVMCExpr of(MVMCompileScope cs, Object[] obj, int base, int len) {
+        if (len == 1)
+            return cs.compile(obj[base]);
+        return new MVMCBegin(cs, obj, base, len);
     }
 
     @Override

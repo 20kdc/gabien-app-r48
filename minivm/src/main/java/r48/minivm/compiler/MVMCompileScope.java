@@ -41,10 +41,19 @@ public abstract class MVMCompileScope {
     public abstract MVMCExpr compileDefine(DatumSymbol sym, ISupplier<MVMCExpr> value);
 
     /**
-     * Extends with a formal frame boundary.
-     * This means you're responsible for frame.wrapRoot!
+     * Extends with a formal frame boundary (into a lambdas for example)
+     * This means you're responsible for wrapRuntimeScope.
      */
     public abstract MVMSubScope extendWithFrame();
+
+    /**
+     * Extends while trying to avoid a formal frame boundary.
+     * Beware, this MAY or MAY NOT create a formal frame boundary.
+     * So you're still responsible for wrapRuntimeScope.
+     * The big advantage is that extendMayFrame won't always frame, so inner-loop lets won't suddenly become storms of endless allocation.
+     * A notable disadvantage is that means that having a function complex enough that such a thing is possible will allocate (but once).
+     */
+    public abstract MVMSubScope extendMayFrame();
 
     /**
      * Compiles a symbol read.

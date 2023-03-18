@@ -6,10 +6,10 @@
  */
 package r48.minivm.compiler;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import r48.minivm.MVMScope;
-import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCLocal;
-import r48.minivm.expr.MVMCScopeFrame;
 
 /**
  * A "physical frame".
@@ -57,17 +57,12 @@ public final class MVMCompileFrame {
     }
 
     /**
-     * Ensures that, assuming the given expression is a root, the frame exists.
+     * Allocates a scope if necessary. Meant to go well with MVMSubScope.getFrameIfOwned.
      */
-    public MVMCExpr wrapRoot(MVMCExpr base) {
-        return expectedToExist ? new MVMCScopeFrame(base, frameID, allocatedLocals) : base;
-    }
-
-    /**
-     * MVMCScopeFrame but "outside".
-     */
-    public MVMScope wrapRuntimeScope(MVMScope scope) {
-        return expectedToExist ? new MVMScope(scope, frameID, allocatedLocals) : scope;
+    public static MVMScope wrapRuntimeScope(@Nullable MVMCompileFrame frame, MVMScope scope) {
+        if (frame == null)
+            return scope;
+        return frame.expectedToExist ? new MVMScope(scope, frame.frameID, frame.allocatedLocals) : scope;
     }
 
     /**

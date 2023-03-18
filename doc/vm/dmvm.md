@@ -33,8 +33,6 @@ scheme@(guile-user)> (abc)
 $1 = 123
 ```
 
-
-
 ## Compilation
 
 This defines, and follows some simple rules.
@@ -87,15 +85,9 @@ Compilation occurs in a given *compile scope*. These have potentially unique imp
   
   - Lambdas use this to setup their (fast-local unless there's >8 of them) args. The process for calling into a lambda orchestrates loading the locals.
   
-  - This can't deallocate existing locals, because if it hits a local that's *not* already behind an FV barrier, it would have to forcefully deoptimize it even if it's never used here. The good news is that since lambdas don't inherit their parent's fast-locals, there's not really usually a reason to need to deallocate existing locals. Fast-locals are a short-lambda optimization and they aren't really in *that* short of a supply anyway.
+  - `let` also uses this. Same basic idea, try to fast-local when possible.
   
-  - `let` hasn't been implemented yet. Lambdas had to deal with similar problems, though, so there's a known pattern for how to implement it.
-    
-    - Compile the expressions in the parent scope, create a sub-scope without deoptimization barriers, and use a dedicated MVM expression to atomically execute the compiled expressions in the parent, create a frame if necessary, copy the fast-locals, and execute the expressions, writing into the (inner) locals from the expressions run using the (outer) locals.
-      
-      - The reason to ensure the expressions are run using the outer locals is in case newLocal gets replaced with something like `letrec`, in which case it's maybe possible that some of the inner fast-locals may be overwritten half-way through, and because the expressions are compiled in the outer scope, this won't cause a deoptimization (which would be annoying, anyway). At the same time, though, the inner fast-locals must default to the values of the outer fast-locals, because some outer fast-locals may survive.
-    
-    - Unfortunately, code reuse is not possible due the highly variadic yet GC-optimized nature of everything involved.
+  - Compiler must be careful not to "revive" any local erased through shadowing, so as a rule only use the MVMCLocal instance returned to compile a single write to and nothing else. When done in groups, handle in the order of creation. Unfortunately, the complexities of implementing various particular scoping requirements make enforcing this basically impossible.
 
 The actual operation of compiling an expression occurs on a given MVMCompileScope, starting with an MVMToplevelScope, in the `compile` method.
 
@@ -155,4 +147,4 @@ The following macros are essentially paired to internal functionality built just
 
 * `set!` uses `writeLookup`.
 
-* If/when `let` is implemented, it will presumably be using at *least* a "lightened" version of `extendWithFrame` that doesn't guarantee an FV barrier.
+* `let` uses `extendMayFrame` and `newLocal`.

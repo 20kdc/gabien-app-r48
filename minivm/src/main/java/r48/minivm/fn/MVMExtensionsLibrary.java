@@ -62,8 +62,8 @@ public class MVMExtensionsLibrary {
 
         @Override
         public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
-            return MVMBasicsLibrary.compileFnDefine(cs, call, (head, args) -> {
-                final MVMCExpr fnx = MVMBasicsLibrary.lambda(head.toString(), cs, args, call, 1);
+            return MVMScopingLibrary.compileFnDefine(cs, call, (head, args) -> {
+                final MVMCExpr fnx = MVMScopingLibrary.lambda(head.toString(), cs, args, call, 1);
                 return new MVMCMacroify(fnx);
             });
         }

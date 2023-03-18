@@ -6,9 +6,10 @@
  */
 package r48.minivm.fn;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import r48.minivm.MVMScope;
 import r48.minivm.compiler.MVMCompileFrame;
-import r48.minivm.compiler.MVMSubScope;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCLocal;
 
@@ -19,9 +20,9 @@ import r48.minivm.expr.MVMCLocal;
 public class MVMLambdaFn extends MVMFn {
     public final MVMScope scope;
     public final MVMCExpr content;
-    public final MVMSubScope.LocalRoot[] argL;
-    public final MVMCompileFrame rootFrame;
-    public MVMLambdaFn(String nh, MVMScope scope, MVMCExpr content, MVMSubScope.LocalRoot[] args, MVMCompileFrame rootFrame) {
+    public final MVMCLocal[] argL;
+    public final @Nullable MVMCompileFrame rootFrame;
+    public MVMLambdaFn(String nh, MVMScope scope, MVMCExpr content, MVMCLocal[] args, MVMCompileFrame rootFrame) {
         super(nh);
         this.scope = scope;
         this.content = content;
@@ -39,7 +40,7 @@ public class MVMLambdaFn extends MVMFn {
         // no args, fast-path
         if (argL.length != 0)
             throw new RuntimeException(this + " expects " + argL.length + " args, not 0");
-        MVMScope sc = rootFrame.wrapRuntimeScope(scope);
+        MVMScope sc = MVMCompileFrame.wrapRuntimeScope(rootFrame, scope);
         return content.execute(sc, null, null, null, null, null, null, null, null);
     }
 
@@ -74,12 +75,12 @@ public class MVMLambdaFn extends MVMFn {
     public Object callIndirect(Object[] argv) {
         if (argv.length != argL.length)
             throw new RuntimeException(this + " expects " + argL.length + " args, not " + argv.length);
-        MVMScope sc = rootFrame.wrapRuntimeScope(scope);
+        MVMScope sc = MVMCompileFrame.wrapRuntimeScope(rootFrame, scope);
         Object l0 = null, l1 = null, l2 = null, l3 = null, l4 = null, l5 = null, l6 = null, l7 = null;
         // load args into locals
         for (int i = 0; i < argv.length; i++) {
             Object aV = argv[i];
-            MVMCLocal cLocal = argL[i].local;
+            MVMCLocal cLocal = argL[i];
             switch (cLocal.getFastSlot()) {
             case 0:
                 l0 = aV;
@@ -120,7 +121,7 @@ public class MVMLambdaFn extends MVMFn {
     public Object execSmall(int ac, Object a0, Object a1, Object a2, Object a3, Object a4) {
         if (ac != argL.length)
             throw new RuntimeException(this + " expects " + argL.length + " args, not " + ac);
-        MVMScope sc = rootFrame.wrapRuntimeScope(scope);
+        MVMScope sc = MVMCompileFrame.wrapRuntimeScope(rootFrame, scope);
         Object l0 = null, l1 = null, l2 = null, l3 = null, l4 = null, l5 = null, l6 = null, l7 = null;
         // load args into locals
         for (int i = 0; i < ac; i++) {
@@ -144,7 +145,7 @@ public class MVMLambdaFn extends MVMFn {
             default:
                 throw new RuntimeException("Shouldn't be calling execSmall for > 4 args");
             }
-            MVMCLocal cLocal = argL[i].local;
+            MVMCLocal cLocal = argL[i];
             switch (cLocal.getFastSlot()) {
             case 0:
                 l0 = aV;
