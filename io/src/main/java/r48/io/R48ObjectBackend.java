@@ -168,9 +168,8 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
         DataOutputStream dis = new DataOutputStream(oup);
         // Marshal v4.8
         dis.write(new byte[] {4, 8});
-        LinkedList<IRIO> objCache = new LinkedList<IRIO>();
         LinkedList<String> strCache = new LinkedList<String>();
-        saveValue(dis, object, objCache, strCache);
+        saveValue(dis, object, strCache);
         dis.close();
     }
 
@@ -193,16 +192,9 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
         }
     }
 
-    private void saveValue(DataOutputStream dis, IRIO rio, LinkedList<IRIO> objCache, LinkedList<String> strCache) throws IOException {
+    private void saveValue(DataOutputStream dis, IRIO rio, LinkedList<String> strCache) throws IOException {
         // Deduplicatables
         int b = rio.getType();
-        int objIndex = objCache.indexOf(rio);
-        if (objIndex != -1) {
-            // Seen this object before.
-            dis.write((int) '@');
-            save32(dis, objIndex);
-            return;
-        }
         if (b == ':') {
             saveSymbol(dis, rio.getSymbol(), strCache);
             return;
@@ -213,7 +205,6 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
         boolean ivarData = iVarKeys != null;
         if (ivarData)
             ivarData = iVarKeys.length > 0;
-        boolean shouldWriteObjCacheLate = false;
         if (b == 'o')
             ivarData = false;
         if (ivarData)
@@ -221,31 +212,25 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
         // -- Actually write stuff
         dis.write(b);
         if (b == 'o') {
-            objCache.add(rio);
             saveSymbol(dis, rio.getSymbol(), strCache);
-            saveIVarsCore(dis, rio, objCache, strCache);
+            saveIVarsCore(dis, rio, strCache);
         } else if (b == '{') {
-            objCache.add(rio);
-            saveHashCore(dis, rio, objCache, strCache);
+            saveHashCore(dis, rio, strCache);
         } else if (b == '}') {
-            objCache.add(rio);
-            saveHashCore(dis, rio, objCache, strCache);
-            saveValue(dis, rio.getHashDefVal(), objCache, strCache);
+            saveHashCore(dis, rio, strCache);
+            saveValue(dis, rio.getHashDefVal(), strCache);
         } else if (b == '[') {
-            objCache.add(rio);
             int alen = rio.getALen();
             save32(dis, alen);
             for (int i = 0; i < alen; i++)
-                saveValue(dis, rio.getAElem(i), objCache, strCache);
+                saveValue(dis, rio.getAElem(i), strCache);
         } else if (b == 'i') {
             save32(dis, rio.getFX());
         } else if ((b == '"') || (b == 'f')) {
-            objCache.add(rio);
             byte[] data = rio.getBuffer();
             save32(dis, data.length);
             dis.write(data);
         } else if (b == 'l') {
-            objCache.add(rio);
             byte[] dat = rio.getBuffer();
             dis.write(dat[0]);
             // the + 1 is implied thanks to the extra sign byte
@@ -255,7 +240,6 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             if ((dat.length & 1) == 0)
                 dis.write(0);
         } else if (b == 'u') {
-            shouldWriteObjCacheLate = true;
             saveSymbol(dis, rio.getSymbol(), strCache);
             save32(dis, rio.getBuffer().length);
             dis.write(rio.getBuffer());
@@ -263,26 +247,24 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             throw new IOException("Cannot save " + rio.getType() + " : " + ((char) rio.getType()));
         }
         if (ivarData)
-            saveIVarsCore(dis, rio, objCache, strCache);
-        if (shouldWriteObjCacheLate)
-            objCache.add(rio);
+            saveIVarsCore(dis, rio, strCache);
     }
 
-    private void saveHashCore(DataOutputStream dis, IRIO content, LinkedList<IRIO> objCache, LinkedList<String> strCache) throws IOException {
+    private void saveHashCore(DataOutputStream dis, IRIO content, LinkedList<String> strCache) throws IOException {
         // damned if you do (IDE warning), damned if you don't (compiler warning).
         IRIO[] me = content.getHashKeys();
         save32(dis, me.length);
         for (IRIO cKey : me) {
             try {
-                saveValue(dis, cKey, objCache, strCache);
-                saveValue(dis, content.getHashVal(cKey), objCache, strCache);
+                saveValue(dis, cKey, strCache);
+                saveValue(dis, content.getHashVal(cKey), strCache);
             } catch (Exception ex) {
                 throw new IOException("Hit catch at HK " + cKey, ex);
             }
         }
     }
 
-    private void saveIVarsCore(DataOutputStream dis, IRIO iVars, LinkedList<IRIO> objCache, LinkedList<String> strCache) throws IOException {
+    private void saveIVarsCore(DataOutputStream dis, IRIO iVars, LinkedList<String> strCache) throws IOException {
         String[] iVarKeys = iVars.getIVars();
         if (iVarKeys == null) {
             save32(dis, 0);
@@ -294,8 +276,8 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             key.type = ':';
             key.symVal = iVarKeys[i];
             try {
-                saveValue(dis, key, objCache, strCache);
-                saveValue(dis, iVars.getIVar(key.symVal), objCache, strCache);
+                saveValue(dis, key, strCache);
+                saveValue(dis, iVars.getIVar(key.symVal), strCache);
             } catch (Exception ex) {
                 throw new IOException("Hit catch at IVar " + iVarKeys[i], ex);
             }
