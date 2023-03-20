@@ -125,7 +125,7 @@ d Adds/removes equipment to/from an actor. (If the equipment is not available, i
 C category 2
 p actor actor_id
 p type actor_equip_type
-P 0 equip int
+P 1 equip int
 v 0 equipWeapon weapon_id
 v 1 equipArmour armour_id
 v 2 equipArmour armour_id
