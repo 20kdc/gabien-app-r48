@@ -178,6 +178,7 @@ public class TestKickstart {
         };
         GaBIEn.internalFileBrowser = impl;
         GaBIEn.internalWindowing = impl;
+        GaBIEn.setupAssets();
         // Cleanup any possible contamination of application state between tests.
         AppMain.shutdown();
         // Also resets FontManager because that's tied into config.
