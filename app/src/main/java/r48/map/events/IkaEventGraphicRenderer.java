@@ -9,6 +9,7 @@ package r48.map.events;
 
 import gabien.IGrDriver;
 import gabien.IImage;
+import gabien.FontManager;
 import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;
 
@@ -81,6 +82,6 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
             fail = false;
         }
         if (fail)
-            igd.drawText(ox, oy, 255, 255, 255, 8, "EV" + type);
+            FontManager.drawString(igd, ox, oy, "EV" + type, false, false, 8);
     }
 }

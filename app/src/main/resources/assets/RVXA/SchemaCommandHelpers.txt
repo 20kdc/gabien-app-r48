@@ -30,7 +30,7 @@ e conditional_branch_actor_types 0 inParty 1 name= 2 class 3 skill? 4 weapon= 5 
  This is the VXA specific actor field
 
 .conditional_branch_actor_class
-C name conditional_branch_actor_class ]3 |class @[class_id]A
+C name conditional_branch_actor_class ]3 | class @[class_id]A
 ]3 class class_id
 
 .conditional_branch_actor

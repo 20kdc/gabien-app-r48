@@ -11,9 +11,11 @@
 
 # Start with leaving the releaser folder first
 cd ../../gabien-common &&
+mvn clean &&
 mvn install &&
 cd ../gabien-app-r48 &&
 # Testing requires manual IDE intervention at the moment due to LTE.
+mvn clean &&
 mvn install -DskipTests &&
 mkdir -p staging &&
 rm -r staging &&
@@ -21,6 +23,7 @@ mkdir -p staging &&
 cd staging &&
 # Note that JavaSE never gets put into staging - instead R48 and Common are injected into the JavaSE Jar.
 unzip -o ../../gabien-common/uslx/target/gabien-uslx-0.666-SNAPSHOT.jar &&
+unzip -o ../../gabien-common/datum/target/gabien-datum-0.666-SNAPSHOT.jar &&
 unzip -o ../../gabien-common/media/target/gabien-media-0.666-SNAPSHOT.jar &&
 unzip -o ../../gabien-common/common/target/gabien-common-0.666-SNAPSHOT.jar &&
 unzip -o ../io/target/r48-io-0.666-SNAPSHOT.jar &&

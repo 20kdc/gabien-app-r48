@@ -56,6 +56,7 @@ public class TestKickstart {
     public static void kickstartRFS() {
         FontManager.fontsReady = true;
         GaBIEnImpl.mobileEmulation = true;
+        GaBIEnImpl.fontsAlwaysMeasure16 = true;
         windowCount = 0;
         mockFS.clear();
         mockDFS.clear();
@@ -84,11 +85,6 @@ public class TestKickstart {
             @Override
             public void startFileBrowser(String text, boolean saving, String exts, IConsumer<String> result, String initialName) {
                 waitingFileDialog = result;
-            }
-
-            @Override
-            public int measureText(int i, String text) {
-                return 16;
             }
         };
         GaBIEn.internal = impl;
