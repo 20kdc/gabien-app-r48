@@ -25,7 +25,7 @@ So, by using R48 with EasyRPG Player, you get a *free, open-source, game creatio
 To start using R48 for independent game development:
 
     1. Download a release
-    2. Run it (it's a JAR - you may need to get Java. R48 *should* run on Java 6, but no guarantees.)
+    2. Run it (it's a JAR - you may need to get Java. R48 is built and tested using OpenJDK 8.)
     3. Select the UTF-8 encoding, and accept creating a skeleton project.
     4. Download EasyRPG Player so you have a way to run your game, put it in the game directory, make sure to include license details and be sure to mark to indicate they apply to EasyRPG Player and not your game.
     5. (Optional) Create the RPG_RT.ini file for your game. Example below.
