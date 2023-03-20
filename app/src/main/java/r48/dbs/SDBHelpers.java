@@ -102,74 +102,63 @@ class SDBHelpers extends App.Svc {
         });
     }
 
-    public int createSpritesheet(DatumSrcLoc srcLoc, String[] args, int point, String text2) {
-        final String imgPfx = args[point];
-        spritesheetN.put(args[point], app.dTr(srcLoc, TrNames.sdbSpritesheet(imgPfx), text2));
-        if (args[point + 1].equals("r2kCharacter")) {
-            spritesheets.put(args[point], new IFunction<String, ISpritesheetProvider>() {
-                @Override
-                public ISpritesheetProvider apply(String imgTxt) {
-                    final boolean extended = imgTxt.startsWith("$");
-                    int effectiveW = 288;
-                    int effectiveH = 256;
-                    final IImage img = app.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
-                    if (extended) {
-                        // EasyRPG Extended Mode
-                        effectiveW = img.getWidth();
-                        effectiveH = img.getHeight();
-                    }
-                    final int useW = effectiveW / 12;
-                    final int useH = effectiveH / 8;
+    public void createSpritesheet(DatumSrcLoc srcLoc, String[] args) {
+        final String text2 = args[1];
+        final String imgPfx = args[2];
+        spritesheetN.put(imgPfx, app.dTr(srcLoc, TrNames.sdbSpritesheet(imgPfx), text2));
+        if (args[3].equals("r2kCharacter")) {
+            spritesheets.put(imgPfx, (imgTxt) -> {
+                final boolean extended = imgTxt.startsWith("$");
+                int effectiveW = 288;
+                int effectiveH = 256;
+                final IImage img = app.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
+                if (extended) {
+                    // EasyRPG Extended Mode
+                    effectiveW = img.getWidth();
+                    effectiveH = img.getHeight();
+                }
+                final int useW = effectiveW / 12;
+                final int useH = effectiveH / 8;
 
-                    final int cellW = useW * 3;
-                    final int cellH = useH * 4;
-                    final int useX = useW;
-                    final int useY = useH * 2;
-                    final int rowCells = 4;
-                    return createSpritesheetProviderCore(imgTxt, img, useW, useH, rowCells, cellW, cellH, useX, useY, -1);
-                }
+                final int cellW = useW * 3;
+                final int cellH = useH * 4;
+                final int useX = useW;
+                final int useY = useH * 2;
+                final int rowCells = 4;
+                return createSpritesheetProviderCore(imgTxt, img, useW, useH, rowCells, cellW, cellH, useX, useY, -1);
             });
-            return point + 1;
-        } else if (args[point + 1].equals("vxaCharacter")) {
-            spritesheets.put(args[point], new IFunction<String, ISpritesheetProvider>() {
-                @Override
-                public ISpritesheetProvider apply(String imgTxt) {
-                    final IImage img = app.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
-                    int cellW = img.getWidth() / 4;
-                    int cellH = img.getHeight() / 2;
-                    int sprW = cellW / 3;
-                    int sprH = cellH / 4;
-                    int ovr = 8;
-                    if (imgTxt.startsWith("!$") || imgTxt.startsWith("$")) {
-                        // Character index doesn't work on these
-                        sprW = img.getWidth() / 3;
-                        sprH = img.getHeight() / 4;
-                        cellW = 0;
-                        cellH = 0;
-                        ovr = 1;
-                    }
-                    int useX = sprW;
-                    int useY = 0;
-                    return createSpritesheetProviderCore(imgTxt, img, sprW, sprH, 4, cellW, cellH, useX, useY, ovr);
+        } else if (args[3].equals("vxaCharacter")) {
+            spritesheets.put(imgPfx, (imgTxt) -> {
+                final IImage img = app.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
+                int cellW = img.getWidth() / 4;
+                int cellH = img.getHeight() / 2;
+                int sprW = cellW / 3;
+                int sprH = cellH / 4;
+                int ovr = 8;
+                if (imgTxt.startsWith("!$") || imgTxt.startsWith("$")) {
+                    // Character index doesn't work on these
+                    sprW = img.getWidth() / 3;
+                    sprH = img.getHeight() / 4;
+                    cellW = 0;
+                    cellH = 0;
+                    ovr = 1;
                 }
+                int useX = sprW;
+                int useY = 0;
+                return createSpritesheetProviderCore(imgTxt, img, sprW, sprH, 4, cellW, cellH, useX, useY, ovr);
             });
-            return point + 1;
         } else {
-            final int cellW = Integer.parseInt(args[point + 1]);
-            final int cellH = Integer.parseInt(args[point + 2]);
-            final int rowCells = Integer.parseInt(args[point + 3]);
-            final int useX = Integer.parseInt(args[point + 4]);
-            final int useY = Integer.parseInt(args[point + 5]);
-            final int useW = Integer.parseInt(args[point + 6]);
-            final int useH = Integer.parseInt(args[point + 7]);
-            spritesheets.put(args[point], new IFunction<String, ISpritesheetProvider>() {
-                @Override
-                public ISpritesheetProvider apply(final String imgTxt) {
-                    final IImage img = app.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
-                    return createSpritesheetProviderCore(imgTxt, img, useW, useH, rowCells, cellW, cellH, useX, useY, -1);
-                }
+            final int cellW = Integer.parseInt(args[3]);
+            final int cellH = Integer.parseInt(args[4]);
+            final int rowCells = Integer.parseInt(args[5]);
+            final int useX = Integer.parseInt(args[6]);
+            final int useY = Integer.parseInt(args[7]);
+            final int useW = Integer.parseInt(args[8]);
+            final int useH = Integer.parseInt(args[9]);
+            spritesheets.put(imgPfx, (imgTxt) -> {
+                final IImage img = app.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
+                return createSpritesheetProviderCore(imgTxt, img, useW, useH, rowCells, cellW, cellH, useX, useY, -1);
             });
-            return point + 8;
         }
     }
 

@@ -52,8 +52,8 @@ D internal_battlecommandDictionary 1 RPG_RT.ldb@battle_commands_2k3@commands 0 @
 > f_battle_name { string imgSelector Battle/ Battle/ }
 > f_battle2_name { string imgSelector Battle2/ Battle2/ }
 
-C spritesheet[ Select character index... ] CharSet/ r2kCharacter
-C spritesheet[ Select face index... ] FaceSet/ 48 48 4 0 0 48 48 0
+C spritesheet "Select character index..." CharSet/ r2kCharacter
+C spritesheet "Select face index..." FaceSet/ 48 48 4 0 0 48 48 0
 
 > var_id internal_variableDictionary
 E var_or_none_id__ Var.ID 0 None

@@ -458,7 +458,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     return new HalfsplitSchemaElement(a, b);
                 }
                 if (text.equals("spriteSelector")) {
-                    // C spritesheet[ Select face index... ] FaceSets/ 48 48 4 0 0 48 48 0
+                    // C spritesheet "Select face index..." FaceSets/ 48 48 4 0 0 48 48 0
                     // +spriteSelector @face_index @face_name FaceSets/
                     final PathSyntax varPath = getPathSyntax();
                     final PathSyntax imgPath = getPathSyntax();
@@ -870,15 +870,9 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 // Important to note: the expected format is (PATH... NAME)
                 // Another important thing to note is that simply translating the name routine now creates the name routine.
                 app.dTrName(srcLoc, args[1], DynTrSlot.FORMATSYNTAX, arguments);
-            } else if (args[0].equals("spritesheet[")) {
+            } else if (args[0].equals("spritesheet")) {
                 // Defines a spritesheet for spriteSelector.
-                int point = 1;
-                String text2 = args[point++];
-                while (!args[point].equals("]"))
-                    text2 += " " + args[point++];
-                point++; // skip ]
-                // returns new point
-                sdb.helpers.createSpritesheet(srcLoc, args, point, text2);
+                sdb.helpers.createSpritesheet(srcLoc, args);
             } else if (args[0].equals("datum")) {
                 // this is used to help port over existing code to be more Datumy
                 for (int i = 1; i < args.length; i++)

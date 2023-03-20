@@ -91,8 +91,8 @@ e blend_type 0 Normal 1 Add 2 Sub
 > f_parallax_name { string imgSelector Graphics/Parallaxes/ Parallaxes/ }
 > f_tileset_name { string imgSelector Graphics/Tilesets/ Tilesets/ }
 
-C spritesheet[ Select character index... ] Characters/ vxaCharacter
-C spritesheet[ Select face index... ] Faces/ 96 96 4 0 0 96 96 0
+C spritesheet "Select character index..." Characters/ vxaCharacter
+C spritesheet "Select face index..." Faces/ 96 96 4 0 0 96 96 0
 
  yay native objects
 > Color CTNative Color
