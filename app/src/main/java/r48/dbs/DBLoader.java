@@ -92,11 +92,18 @@ public class DBLoader {
         try {
             LinkedList<String> lls = new LinkedList<String>();
             StringBuilder sb = new StringBuilder();
+            boolean blockQuoteFlag = false;
             while (true) {
                 int ch = trim.read();
-                if (ch < 0 || ch == 10)
+                if (ch < 0) {
                     break;
-                if (ch <= 32) {
+                } else if (ch == '`') {
+                    blockQuoteFlag = !blockQuoteFlag;
+                } else if (blockQuoteFlag) {
+                    sb.append((char) ch);
+                } else if (ch == 10) {
+                    break;
+                } else if (ch <= 32) {
                     if (sb.length() > 0) {
                         lls.add(sb.toString());
                         sb = new StringBuilder();
@@ -107,6 +114,8 @@ public class DBLoader {
                     sb.append((char) ch);
                 }
             }
+            if (blockQuoteFlag)
+                throw new RuntimeException("unfinished block quote");
             if (sb.length() > 0)
                 lls.add(sb.toString());
             return lls.toArray(new String[0]);
