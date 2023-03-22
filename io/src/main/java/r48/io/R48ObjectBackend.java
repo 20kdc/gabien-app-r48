@@ -375,7 +375,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             if (dis.read(data) != len)
                 throw new IOException("Didn't read all of data");
             rio.setStringNoEncodingIVars();
-            rio.userVal = data;
+            rio.putBuffer(data);
         } else if (b == 'f') {
             objs.add(rio);
             long len = load32(dis);

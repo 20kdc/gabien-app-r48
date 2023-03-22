@@ -49,7 +49,7 @@ public class RubyIO extends IRIO {
     public IRIO[] arrVal;
     // actual meaning depends on iVars.
     // For string-likes (f, "): Should be treated as immutable - replace strVal on change
-    public byte[] userVal;
+    private byte[] userVal;
     private long fixnumVal;
 
     public RubyIO() {

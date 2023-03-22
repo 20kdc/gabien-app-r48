@@ -189,7 +189,7 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO> {
     }
 
     private void savePXA(ByteArrayOutputStream baos, RubyIO o) throws IOException {
-        RubyTable rt = new RubyTable(o.userVal);
+        RubyTable rt = new RubyTable(o.getBuffer());
         for (int j = 0; j < 16; j++)
             for (int i = 0; i < 16; i++)
                 baos.write(rt.getTiletype(i, j, 0));
@@ -200,7 +200,7 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO> {
         baos.write('X');
         baos.write('M');
         baos.write(0x10);
-        RubyTable rt = new RubyTable(o.userVal);
+        RubyTable rt = new RubyTable(o.getBuffer());
         if (rt.width > 0xFFFF)
             throw new RuntimeException("Width > 0xFFFF!");
         if (rt.height > 0xFFFF)
