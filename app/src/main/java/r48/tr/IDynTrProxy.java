@@ -57,6 +57,11 @@ public interface IDynTrProxy {
      * Legacy 2
      */
     default FF2 dTrFmtSynCM(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX, text);
+        if (text.startsWith("@@")) {
+            return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX_NEW, text.substring(2));
+        } else {
+            System.out.println("CMSyntax OLD @ " + srcLoc + " : " + text);
+            return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX_OLD, text);
+        }
     }
 }

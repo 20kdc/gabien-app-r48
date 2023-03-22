@@ -424,61 +424,59 @@ public class FormatSyntax extends App.Svc {
             }
         };
     }
-    public ICompiledFormatSyntax compileCM(String nameGet) {
-        if (nameGet.startsWith("@@")) {
-            return wrapWithCMDisclaimer(nameGet, compile(nameGet.substring(2), ACC_ARRAY));
-        } else {
-            System.out.println("Old syntax: " + nameGet);
-            LinkedList<CompiledChunk> r = new LinkedList<>();
-            int pi = 0;
-            for (char c : nameGet.toCharArray()) {
-                if (c == '!') {
-                    final int setPI = pi++;
-                    r.add((sb, root, parameterSchemas) -> {
-                        if (root != null) {
-                            sb.append(" to ");
-                            sb.append(interpretCMLocalParameter(root, setPI, true, parameterSchemas));
-                        }
-                    });
-                } else if (c == '$') {
-                    final int setPI = pi++;
-                    r.add((sb, root, parameterSchemas) -> {
-                        if (root != null) {
+    public ICompiledFormatSyntax compileCMNew(String nameGet) {
+        return wrapWithCMDisclaimer(nameGet, compile(nameGet, ACC_ARRAY));
+    }
+    public ICompiledFormatSyntax compileCMOld(String nameGet) {
+        LinkedList<CompiledChunk> r = new LinkedList<>();
+        int pi = 0;
+        for (char c : nameGet.toCharArray()) {
+            if (c == '!') {
+                final int setPI = pi++;
+                r.add((sb, root, parameterSchemas) -> {
+                    if (root != null) {
+                        sb.append(" to ");
+                        sb.append(interpretCMLocalParameter(root, setPI, true, parameterSchemas));
+                    }
+                });
+            } else if (c == '$') {
+                final int setPI = pi++;
+                r.add((sb, root, parameterSchemas) -> {
+                    if (root != null) {
+                        sb.append(" ");
+                        sb.append(interpretCMLocalParameter(root, setPI, true, parameterSchemas));
+                    }
+                });
+            } else if (c == '#') {
+                final int setPI = pi++;
+                r.add((sb, root, parameterSchemas) -> {
+                    if (root != null) {
+                        String beginning = interpretCMLocalParameter(root, setPI, true, parameterSchemas);
+                        String end = interpretCMLocalParameter(root, setPI + 1, true, parameterSchemas);
+                        if (beginning.equals(end)) {
                             sb.append(" ");
-                            sb.append(interpretCMLocalParameter(root, setPI, true, parameterSchemas));
-                        }
-                    });
-                } else if (c == '#') {
-                    final int setPI = pi++;
-                    r.add((sb, root, parameterSchemas) -> {
-                        if (root != null) {
-                            String beginning = interpretCMLocalParameter(root, setPI, true, parameterSchemas);
-                            String end = interpretCMLocalParameter(root, setPI + 1, true, parameterSchemas);
-                            if (beginning.equals(end)) {
-                                sb.append(" ");
-                                sb.append(beginning);
-                            } else {
-                                sb.append("s ");
-                                sb.append(beginning);
-                                sb.append(" through ");
-                                sb.append(end);
-                            }
+                            sb.append(beginning);
                         } else {
-                            sb.append("#");
+                            sb.append("s ");
+                            sb.append(beginning);
+                            sb.append(" through ");
+                            sb.append(end);
                         }
-                    });
-                } else {
-                    r.add(new StringChunk(Character.toString(c)));
-                }
+                    } else {
+                        sb.append("#");
+                    }
+                });
+            } else {
+                r.add(new StringChunk(Character.toString(c)));
             }
-            optimizeChunks(r);
-            return wrapWithCMDisclaimer(nameGet, (root, parameterSchemas) -> {
-                StringBuilder sb = new StringBuilder();
-                for (CompiledChunk chk : r)
-                    chk.r(sb, root, parameterSchemas);
-                return sb.toString();
-            });
         }
+        optimizeChunks(r);
+        return wrapWithCMDisclaimer(nameGet, (root, parameterSchemas) -> {
+            StringBuilder sb = new StringBuilder();
+            for (CompiledChunk chk : r)
+                chk.r(sb, root, parameterSchemas);
+            return sb.toString();
+        });
     }
 
     private String interpretCMLocalParameter(RORIO root, int pi, boolean prefixEnums, IFunction<RORIO, SchemaElement>[] parameterSchemas) {

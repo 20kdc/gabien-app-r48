@@ -27,7 +27,8 @@ public final class DynTrSlot implements IDynTr {
     public static final DatumSymbol DYNTR_FF2 = new DatumSymbol("tr-dyn-compiler-ff2");
     // indirect binding to FormatSyntax, see MVMDMAppLibrary
     public static final DatumSymbol FORMATSYNTAX = new DatumSymbol("dm-formatsyntax");
-    public static final DatumSymbol CMSYNTAX = new DatumSymbol("dm-cmsyntax");
+    public static final DatumSymbol CMSYNTAX_OLD = new DatumSymbol("dm-cmsyntax-old");
+    public static final DatumSymbol CMSYNTAX_NEW = new DatumSymbol("dm-cmsyntax-new");
 
     public final MVMEnvR48 env;
     public final DatumSrcLoc sourceLoc;
