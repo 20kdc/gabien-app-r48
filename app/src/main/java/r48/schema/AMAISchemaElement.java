@@ -28,6 +28,9 @@ public class AMAISchemaElement extends OpaqueSchemaElement {
 
     @Override
     public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+        // this only works properly given lastArrayIndex
+        if (path.lastArrayIndex == null)
+            return;
         if (checkType(target, 'i', null, setDefault || !IRIO.rubyEquals(target, path.lastArrayIndex))) {
             // always must be set to this
             target.setDeepClone(path.lastArrayIndex);

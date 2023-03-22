@@ -40,8 +40,8 @@ public class SchemaPath extends App.Svc {
 
     // If editor is null, targetElement must be null, and vice versa.
     // Host may be there or not.
-    public SchemaElement editor;
-    public IRIO targetElement;
+    public final @Nullable SchemaElement editor;
+    public final @Nullable IRIO targetElement;
 
     // Should only ever be set to true by tagSEMonitor.
     // Implies editor and target.
@@ -51,23 +51,26 @@ public class SchemaPath extends App.Svc {
     // Constructor guarantees ensure this.
     public final Runnable additionalModificationCallback;
 
-    // At the root object, this is guaranteed to be the object itself.
+    // At the root object, this is guaranteed to be null.
     // Otherwise, it should propagate whenever unchanged.
     // lastArray does a similar thing, except it points to the object whose targetElement is the array/hash itself.
     // This allows "inside" elements to cause consistency checks.
-    public RORIO lastArrayIndex;
+    public final @Nullable RORIO lastArrayIndex;
 
     // Null for "no human readable index here".
     // The root is the intended ObjectID index, but this is a visual property only.
-    public String hrIndex;
+    public final String hrIndex;
 
     public final HashMap<String, SchemaElement> contextualSchemas = new HashMap<String, SchemaElement>();
 
-    private SchemaPath(SchemaPath sp) {
+    private SchemaPath(SchemaPath sp, SchemaElement editor, IRIO targetElement, RORIO lastArrayIndex, String hrIndex) {
         super(sp.app);
         parent = sp;
         root = sp.root;
-        lastArrayIndex = sp.lastArrayIndex;
+        this.editor = editor;
+        this.targetElement = targetElement;
+        this.lastArrayIndex = lastArrayIndex;
+        this.hrIndex = hrIndex;
         additionalModificationCallback = null;
         contextualSchemas.putAll(sp.contextualSchemas);
     }
@@ -82,11 +85,11 @@ public class SchemaPath extends App.Svc {
         parent = null;
         additionalModificationCallback = amc;
         this.root = root;
-        hrIndex = app.odb.getIdByObject(root);
-        if (hrIndex == null)
-            hrIndex = "AnonObject";
+        String maybeHrIndex = app.odb.getIdByObject(root);
+        hrIndex = maybeHrIndex == null ? "AnonObject" : maybeHrIndex;
         editor = heldElement;
-        lastArrayIndex = targetElement = root.getObject();
+        targetElement = root.getObject();
+        lastArrayIndex = null;
     }
 
     // Used for default value setup bootstrapping.
@@ -94,6 +97,8 @@ public class SchemaPath extends App.Svc {
         super(app);
         parent = null;
         root = null;
+        editor = null;
+        targetElement = null;
         additionalModificationCallback = null;
         lastArrayIndex = lai;
         hrIndex = "AnonObject";
@@ -153,27 +158,19 @@ public class SchemaPath extends App.Svc {
     // -- Important Stuff (always used) --
 
     public SchemaPath arrayHashIndex(RORIO index, String indexS) {
-        SchemaPath sp = new SchemaPath(this);
-        sp.lastArrayIndex = index;
-        sp.hrIndex = indexS;
-        return sp;
+        return new SchemaPath(this, null, null, index, indexS);
     }
 
     // -- Display Stuff (used in buildHoldingEditor) --
 
     public SchemaPath newWindow(SchemaElement heldElement, IRIO target) {
-        SchemaPath sp = new SchemaPath(this);
-        sp.editor = heldElement;
-        sp.targetElement = target;
-        return sp;
+        return new SchemaPath(this, heldElement, target, lastArrayIndex, hrIndex);
     }
 
     // Not so much used, and quite unimportant
 
     public SchemaPath otherIndex(String index) {
-        SchemaPath sp = new SchemaPath(this);
-        sp.hrIndex = index;
-        return sp;
+        return new SchemaPath(this, null, null, lastArrayIndex, index);
     }
 
     public SchemaPath tagSEMonitor(IRIO target, SchemaElement ise, boolean upwards) {
@@ -191,9 +188,7 @@ public class SchemaPath extends App.Svc {
             if (sppLast != spp)
                 sppLast.monitorsSubelements = true;
         }
-        SchemaPath sp = new SchemaPath(this);
-        sp.targetElement = target;
-        sp.editor = ise;
+        SchemaPath sp = new SchemaPath(this, ise, target, lastArrayIndex, null);
         sp.monitorsSubelements = true;
         return sp;
     }
@@ -254,7 +249,7 @@ public class SchemaPath extends App.Svc {
         return false;
     }
     public SchemaPath contextSchema(String contextName, SchemaElement enumSchemaElement) {
-        SchemaPath sp = new SchemaPath(this);
+        SchemaPath sp = new SchemaPath(this, null, null, lastArrayIndex, null);
         sp.contextualSchemas.put(contextName, enumSchemaElement);
         return sp;
     }
