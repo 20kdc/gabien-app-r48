@@ -10,131 +10,131 @@
 
 C digitCount 2
 
-0: Move North 1 Tile
+0: "Move North 1 Tile"
 d Move(/walk) a tile north.
 p _ string
 X movecommand_default_nothing
-1: Move East 1 Tile
+1: "Move East 1 Tile"
 d Move(/walk) a tile east.
 p _ string
 X movecommand_default_nothing
-2: Move South 1 Tile
+2: "Move South 1 Tile"
 d Move(/walk) a tile south.
 p _ string
 X movecommand_default_nothing
-3: Move West 1 Tile
+3: "Move West 1 Tile"
 d Move(/walk) a tile west.
 p _ string
 X movecommand_default_nothing
-4: Move North-East 1 Tile
+4: "Move North-East 1 Tile"
 d Move(/walk) a tile north-east.
 p _ string
 X movecommand_default_nothing
-5: Move South-East 1 Tile
+5: "Move South-East 1 Tile"
 d Move(/walk) a tile south-east.
 p _ string
 X movecommand_default_nothing
-6: Move South-West 1 Tile
+6: "Move South-West 1 Tile"
 d Move(/walk) a tile south-west.
 p _ string
 X movecommand_default_nothing
-7: Move North-West 1 Tile
+7: "Move North-West 1 Tile"
 d Move(/walk) a tile north-west.
 p _ string
 X movecommand_default_nothing
-8: Move Randomly 1 Tile
+8: "Move Randomly 1 Tile"
 d Move(/walk) a tile in some random direction.
 p _ string
 X movecommand_default_nothing
-9: Move Towards Player 1 Tile
+9: "Move Towards Player 1 Tile"
 d Move(/walk) a tile towards the player.
 p _ string
 X movecommand_default_nothing
-10: Move Away From Player 1 Tile
+10: "Move Away From Player 1 Tile"
 d Move(/walk) a tile away from the player.
 p _ string
 X movecommand_default_nothing
-11: Move Forward 1 Tile
+11: "Move Forward 1 Tile"
 d Move(/walk) a tile in whatever direction the event faces.
 p _ string
 X movecommand_default_nothing
-12: Face North
+12: "Face North"
 d Face north!
 p _ string
 X movecommand_default_nothing
-13: Face East
+13: "Face East"
 d Face east!
 p _ string
 X movecommand_default_nothing
-14: Face South
+14: "Face South"
 d Face south!
 p _ string
 X movecommand_default_nothing
-15: Face West
+15: "Face West"
 d Face west!
 p _ string
 X movecommand_default_nothing
-16: Turn Right
+16: "Turn Right"
 d Turn clockwise!
 p _ string
 X movecommand_default_nothing
-17: Turn Left
+17: "Turn Left"
 d Turn anti-clockwise!
 p _ string
 X movecommand_default_nothing
-18: Turn To Opposite Direction
+18: "Turn To Opposite Direction"
 d If facing North, face South, if facing East, face West, and vice versa.
 p _ string
 X movecommand_default_nothing
-19: Turn Left Or Right (random)
+19: "Turn Left Or Right (random)"
 d Turn clockwise, or anti-clockwise (one of the two)
 p _ string
 X movecommand_default_nothing
-20: Face Random Direction
+20: "Face Random Direction"
 d Turn to any of the 4 directions!
 p _ string
 X movecommand_default_nothing
-21: Face Player
+21: "Face Player"
 d Turn to face the player!
 p _ string
 X movecommand_default_nothing
-22: Face Away From Player
+22: "Face Away From Player"
 d Turn to flee the player!
 p _ string
 X movecommand_default_nothing
-23: Wait 20 Frames
+23: "Wait 20 Frames"
 d Wait 20 frames, or... a third of a second? Something like that.
 p _ string
 X movecommand_default_nothing
-24: Begin Jump...
+24: "Begin Jump..."
 d Begin planning a jump!
 p _ string
 X movecommand_default_nothing
-25: End Jump
+25: "End Jump"
 d End planning a jump (and execute it)
 p _ string
 X movecommand_default_nothing
-26: Lock Faced Direction
+26: "Lock Faced Direction"
 d Lock direction, looking that way no matter which way the event walks!
 p _ string
 X movecommand_default_nothing
-27: Unlock Faced Direction
+27: "Unlock Faced Direction"
 d Unlock direction, so the event will look where it's going.
 p _ string
 X movecommand_default_nothing
-28: Speed Up (Speed)
+28: "Speed Up (Speed)"
 d @move_speed increases!
 p _ string
 X movecommand_default_nothing
-29: Slow Down (Speed)
+29: "Slow Down (Speed)"
 d @move_speed decreases.
 p _ string
 X movecommand_default_nothing
-30: Speed Up (Freq.)
+30: "Speed Up (Freq.)"
 d @move_freq increases!
 p _ string
 X movecommand_default_nothing
-31: Slow Down (Freq.)
+31: "Slow Down (Freq.)"
 d @move_freq decreases.
 p _ string
 X movecommand_default_nothing
@@ -153,7 +153,7 @@ p switch switch_id
 p _ int
 p _ int
 
-34: Set Graphic!$
+34: "Set Graphic" ($ " to " ]0) ($ " " ]1)
 d Change the spritesheet and character index of the event!
 p graphic f_charset_name
 C spritesheet 0 CharSet/
@@ -163,7 +163,7 @@ p _ int
 
  note: this, and it's schema, is shared between MC/35 and EC/11550
 
-35: Play Sound$
+35: "Play Sound" ($ " " ]0)
 d Plays a sound effect.
 p sound f_sound_name
 p volume int_default_100
@@ -171,27 +171,27 @@ p tempo int_default_100
 p balance int_default_50
 x play_sound_move_parameters
 
-36: Disable Collision
+36: "Disable Collision"
 d Gain the ability to walk through walls.
 p _ string
 X movecommand_default_nothing
-37: Enable Collision
+37: "Enable Collision"
 d Lose the ability to walk through walls.
 p _ string
 X movecommand_default_nothing
-38: Disable Animation
+38: "Disable Animation"
 d Disables walking animations.
 p _ string
 X movecommand_default_nothing
-39: Enable Animation
+39: "Enable Animation"
 d Enables walking animations.
 p _ string
 X movecommand_default_nothing
-40: Decrease Opacity
+40: "Decrease Opacity"
 d Become less visible.
 p _ string
 X movecommand_default_nothing
-41: Increase Opacity
+41: "Increase Opacity"
 d Become more visible.
 p _ string
 X movecommand_default_nothing

@@ -27,6 +27,7 @@
  Datum Format (prefix "(" or """)
   These prefixes are temporary so that Original Format can be moved over to either Datum (simple cases) or Extended Format (harder cases).
   This has yet to be fully finalized, but the basic idea is a clean nameroutine but not carrying the magical schema detection.
+  vm/trc-lib.scm is where new commands for this are defined.
 
  Extended Format (prefix '@@')
 

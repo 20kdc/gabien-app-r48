@@ -63,12 +63,12 @@ L
 
  Comments
 
-108: //*$
+108: "//*" ($ " " ]0)
 d The beginning of a comment.
 p note string
 C groupBehavior messagebox 408
 
-408: //$
+408: "//" ($ " " ]0)
 d A comment continues.
 p note string
 

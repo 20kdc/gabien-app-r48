@@ -14,32 +14,32 @@
 
 C digitCount 5
 
-0: >> insert point
+0: ">> insert point"
 C category 5
 d A placeholder that allows for insertion.
 p _ string
 Llist
 Lstrict
 
-10: >> E.O.B. insert point
+10: ">> E.O.B. insert point"
 C category 5
 d A placeholder that allows for insertion.
 p _ string
 Lblock
 Lstrict
 
-12410: //* $
+12410: "//*" ($ " " ]0)
 C category 5
 d A comment.
 p text string
 C groupBehavior messagebox 22410
 
-22410: //. $
+22410: "//." ($ " " ]0)
 C category 5
 d A continuation of a comment.
 p text string
 
-10110: Say$
+10110: "Say" ($ " " ]0)
 C category 0
 d Begins a message to show to the player.
 C translatable
@@ -47,7 +47,7 @@ C textArg 0
 p text textbox_string
 C groupBehavior messagebox 20110
 
-20110: Say (cont.)$
+20110: "Say (cont.)" ($ " " ]0)
 C category 0
 d Continues a 10110 'Say' - should only be used from there.
 C textArg 0
@@ -75,7 +75,7 @@ K10140
 i-1
 I1
 
-20141: End Choices
+20141: "End Choices"
 C category 0
 d The end of a set of choices.
 p _ string
@@ -129,7 +129,7 @@ d Modify a variable or range of variables in various ways dependent on a given v
 p _ string
 X set_variables_parameters
 
-10230: Timer Operation
+10230: "Timer Operation"
 C category 1
 d Alters the settings on either timer ID 0 (if unspecified) or a given timer. Can set the timer, change it's visibility + if it counts in bettle, or stop it.
 p _ string
@@ -156,7 +156,7 @@ p countIsVar int_boolean
 P 4 countVar var_id
 v 0 count int_default_1
 
-10330: Change Party Member
+10330: "Change Party Member"
 C category 2
 d Adds or removes a party member, selected by ID or the value in a variable.
 p _ string
@@ -165,7 +165,7 @@ p actorIsVar int_boolean
 P 2 actorVar var_id
 v 0 actor actor_id
 
-10410: Change EXP
+10410: "Change EXP"
 C category 2
 d Modifies the amount of experience a given set of party members has.
 p _ string
@@ -181,7 +181,7 @@ v 0 exp int_default_100
 
 p showLvlUp int_boolean
 
-10420: Change Exp.Level
+10420: "Change Exp.Level"
 C category 2
 d Modifies the levels a given set of party members have.
 p _ string
@@ -197,7 +197,7 @@ v 0 lvl int_default_1
 
 p showLvlUp int_boolean
 
-10430: Change Battle Parameters
+10430: "Change Battle Parameters"
 C category 2
 d Modifies the parameters a given set of party members have.
 p _ string
@@ -212,7 +212,7 @@ p plIsVar int_boolean
 P 5 plVar var_id
 v 0 pl int_default_10
 
-10440: Change Skills
+10440: "Change Skills"
 C category 2
 d Adds or removes skills a given set of party members have.
 p _ string
@@ -226,13 +226,13 @@ p skillIsVar int_boolean
 P 4 skillVar var_id
 v 0 skill skill_id
 
-10450: Change Equipment
+10450: "Change Equipment"
 C category 2
 d Equips a given piece of equipment to, or unequips all equipment from a given set of party members
 p _ string
 X change_equipment_parameters
 
-10460: Change HP
+10460: "Change HP"
 C category 2
 d Heals or hurts a given set of party members. Can trigger Game Over if allowed to.
 p _ string
@@ -249,7 +249,7 @@ v 0 amount int_default_100
 
 p allowDeath int_boolean
 
-10470: Change SP
+10470: "Change SP"
 C category 2
 d Gives or takes SP from a given set of party members.
 p _ string
@@ -263,7 +263,7 @@ p amountIsVar int_boolean
 P 4 amountVar var_id
 v 0 amount int_default_10
 
-10480: Add/Remove State
+10480: "Add/Remove State"
 C category 2
 d Adds to or removes a State from a given set of party members.
 p _ string
@@ -275,7 +275,7 @@ v 2 targetVar var_id
 p remove int_boolean
 p state state_id
 
-10490: Full Heal + Recharge
+10490: "Full Heal + Recharge"
 C category 2
 d Fills HP and SP to maximum possible for a given set of party members.
 p _ string
@@ -284,7 +284,7 @@ P 1 _ int
 v 1 target actor_id
 v 2 targetVar var_id
 
-10500: Simulate Attack
+10500: "Simulate Attack"
 C category 4
 d Causes an attack of damage atk - (((actor.def * defMod) / 400) + ((actor.spi * spiMod) / 800)), with the result being varied by *up to, in either direction* (variance * 5) / 100.
 p _ string
@@ -305,7 +305,7 @@ d Wait for some amount of time. If 0, waits a single frame, which may be useful 
 p _ string
 X wait_illogical_parameters
 
-11510: Play BGM$
+11510: "Play BGM" ($ " " ]0)
 d Plays some background music.
 p bgm f_music_name
 p fadeTime int
@@ -314,14 +314,14 @@ p tempo int_default_100
 p balance int_default_50
 x play_bgm_parameters
 
-11520: Fade Out BGM
+11520: "Fade Out BGM"
 d Fades out the background music.
 p _ string
 p fadeTime int
 
  note: this, and it's schema, is shared between MC/35 and EC/11550
 
-11550: Play Sound$
+11550: "Play Sound" ($ " " ]0)
 d Plays a sound effect.
 p sound f_sound_name
 p volume int_default_100
@@ -329,13 +329,13 @@ p tempo int_default_100
 p balance int_default_50
 x play_sound_parameters
 
-12310: End Event Processing
+12310: "End Event Processing"
 d Jump to the end of the code, thus, stop running it.
 p _ string
 
  The comments you were expecting have been moved up.
 
-12420: Game Over
+12420: "Game Over"
 d Show the game over screen, and such.
 p _ string
 
@@ -353,7 +353,7 @@ d Change the title of a party member.
 p title string
 p actor actor_id
 
-10630: Change Actor G/I/T
+10630: "Change Actor G/I/T"
 C category 2
 d Change how a party member appears in battle.
 p graphic f_charset_name
@@ -370,7 +370,7 @@ p actor actor_id
 C spritesheet 0 FaceSet/
 p index int
 
-10650: Change Vehicle Appearance
+10650: "Change Vehicle Appearance"
 C category 3
 d Change the appearance of a vehicle.
 p graphic f_charset_name
@@ -378,7 +378,7 @@ p vehicle scripting_vehicletype
 C spritesheet 0 CharSet/
 p index int
 
-10660: Change System BGM
+10660: "Change System BGM"
 d Change a System BGM.
 p bgm f_music_name
 p bgmId change_sys_bgm_id
@@ -399,45 +399,45 @@ p tempo int_default_100
 p balance int_default_50
 x change_system_sfx_parameters
 
-10680: Change Sys.GFX
+10680: "Change Sys.GFX"
 d Change the current set of graphics used by the system.
 p systemGfx f_system_name
 p useTiling int_boolean
 p font change_sys_gfx_font
 
-10690: Change Transition
+10690: "Change Transition"
 d Change a transition used by the system.
 p _ string
 p situation change_transition_situation
 p transition change_transition_type
 
-10820: Store Player Location
+10820: "Store Player Location"
 d Stores the player's location.
 p _ string
 p mapVar var_id
 p xVar var_id
 p yVar var_id
 
-10850: Teleport Vehicle
+10850: "Teleport Vehicle"
 C category 3
 d Teleports a vehicle.
 p _ string
 X teleport_vehicle_parameters
 
-10860: Teleport Event
+10860: "Teleport Event"
 C category 3
 d Teleports an event. (Can set direction on 2k3.)
 p _ string
 X teleport_event_parameters
 
-10870: Swap Events
+10870: "Swap Events"
 C category 3
 d Swaps the positions of two events / the event and the player.
 p _ string
 p eventA character_id
 p eventB character_id
 
-10910: Store Terrain Tag
+10910: "Store Terrain Tag"
 C category 3
 d Stores the terrain tag of a given point on the map. These come from Tileset/@terrain_id_data.
 p _ string
@@ -448,7 +448,7 @@ P 1 yVar var_id
 v 0 y int
 p resultVar var_id
 
-10920: Store Event ID
+10920: "Store Event ID"
 C category 3
 d Stores the event ID of whatever event is on a given point on the map, or 0 if none exists there.
 p _ string
@@ -459,19 +459,19 @@ P 1 yVar var_id
 v 0 y int
 p resultVar var_id
 
-11010: Hide Map
+11010: "Hide Map"
 C category 3
 d Hides the map.
 p _ string
 p transition transition_type
 
-11020: Show Map
+11020: "Show Map"
 C category 3
 d Shows the map.
 p _ string
 p transition transition_type
 
-11030: Tint Screen
+11030: "Tint Screen"
 d Tints the screen with given parameters.
 p _ string
 p red% percent
@@ -482,17 +482,17 @@ p saturation% percent
 p fadeSecs/10 int
 p waitForFade int_boolean
 
-11040: Flash Screen
+11040: "Flash Screen"
 d Flashes the screen with a temporary tint. Please ensure the correct warnings are attached when using this.
 p _ string
 X flash_screen_parameters
 
-11050: Shake Screen
+11050: "Shake Screen"
 d Shakes the screen.
 p _ string
 X shake_screen_parameters
 
-11070: Weather Control
+11070: "Weather Control"
 C category 3
 d Controls the weather. Your forecast today: Rain. Which is good, because the clouds will protect you from the burning, uncaring sun.
 p _ string
@@ -511,27 +511,27 @@ d Sends a list of MoveCommands to an event.
 p _ string
 X move_event_parameters
 
-11530: Copy Current BGM
+11530: "Copy Current BGM"
 d Copies the current BGM for future use.
 p _ string
 
-11540: Use Copied BGM
+11540: "Use Copied BGM"
 d Uses a previously-made BGM copy.
 p _ string
 
-11610: Key Input Information
+11610: "Key Input Information"
 d Gets (and possibly waits for) a keypress, returning the result in a variable. Has a gazillion options varying by version.
 p _ string
  Injects a help window, does opt.param stuff
 X key_input_information_parameters
 
-11710: Set Map Tileset
+11710: "Set Map Tileset"
 C category 3
 d Sets the map's tileset. Hopefully you've designed the map and tilesets with this in mind.
 p _ string
 p tilesetId tileset_id
 
-11720: Change Parallax Setup
+11720: "Change Parallax Setup"
 C category 3
 d Change the parallax on the map.
 p parallax f_parallax_name
@@ -542,13 +542,13 @@ p scrollHSpeed int
 p scrollVAuto int_boolean
 p scrollVSpeed int
 
-11740: Change Encounter Rate
+11740: "Change Encounter Rate"
 C category 3
 d Change the encounter rate on the map.
 p _ string
 p newRate int
 
-11750: Substitute Tiles
+11750: "Substitute Tiles"
 C category 3
 d Change all tiles of one ID for another. Note that these IDs are *relative* to the tile plane. That is, 5000 for the Lower Layer, 10000 for the Upper Layer.
 p _ string
@@ -556,19 +556,19 @@ p upperLayer int_boolean
 p tileA int
 p tileB int
 
-11810: Add/Remove Teleport Target
+11810: "Add/Remove Teleport Target"
 C category 2
 d Adds a teleport target to, or removes a teleport target from, the menu.
 p _ string
 X ar_teleport_target_parameters
 
-11820: Enable/Disable Teleport
+11820: "Enable/Disable Teleport"
 C category 2
 d Enable or disable the teleportation menu.
 p _ string
 p enable int_boolean
 
-11830: Set Escape Target
+11830: "Set Escape Target"
 C category 2
 d Set the target position to escape to for a given map.
 p _ string
@@ -602,7 +602,7 @@ C groupBehavior form 22010 Else 22011
 X cbranch_parameters
 I1
 
-22010: Else Branch
+22010: "Else Branch"
 C category 1
 d Indicates that if the containing branch was false, the following code should be executed. (Otherwise, the previous code will be executed, and this will not.)
 p _ string
@@ -611,7 +611,7 @@ i-1
 I1
 l
 
-22011: End Branch
+22011: "End Branch"
 C category 1
 d Indicates the end of a conditional branch.
 p _ string
@@ -631,19 +631,19 @@ d Jump to a label.
 p _ string
 p labelId int
 
-12210: Start Loop
+12210: "Start Loop"
 C category 1
 d Begins a loop, which will run forever unless broken.
 p _ string
 C groupBehavior form 22210
 I1
 
-12220: Break Loop
+12220: "Break Loop"
 C category 1
 d Leaves the loop.
 p _ string
 
-22210: End Loop
+22210: "End Loop"
 C category 1
 d Indicates the end of a loop - will go back to the start.
 p _ string
@@ -651,7 +651,7 @@ C groupBehavior expectHead 12210
 i-1
 l
 
-12320: Temp. Erase This Event
+12320: "Temp. Erase This Event"
 C category 3
 d Attempts to temporarily erase this event (if this is, in fact, a map event)
 p _ string
@@ -673,11 +673,11 @@ v 0 _ int
 v 1 page int
 v 2 pageVar var_id
 
-12510: Return To Title
+12510: "Return To Title"
 d Returns to the title screen.
 p _ string
 
-1008: Change Party Member Class (2K3 Only)
+1008: "Change Party Member Class (2K3 Only)"
 C category 2
 d Changes a party member's class. (EasyRPG only supports Single Actor at time of writing - the GetActors usage is only a suspicion)
 p _ string
@@ -692,7 +692,7 @@ p skillEffect change_actor_class_skillfx
 p statsEffect change_actor_class_statsfx
 p showClassChange int_boolean
 
-1009: Add/Remove Party Member Battle Command (2K3 Only)
+1009: "Add/Remove Party Member Battle Command (2K3 Only)"
 C category 2
 d Adds or removes a battle command from a party member. (EasyRPG only supports Single Actor at time of writing - the GetActors usage is only a suspicion)
 p _ string
@@ -704,10 +704,10 @@ v 2 targetVar var_id
 p command battlecommand_id
 p add int_boolean
 
-5002: Shutdown RPG_RT (2K3-E Only)
+5002: "Shutdown RPG_RT (2K3-E Only)"
 d Goodnight.
 p _ string
 
-5004: Toggle Fullscreen (2K3-E Only)
+5004: "Toggle Fullscreen (2K3-E Only)"
 d Allows you to fry the player's graphics card.
 p _ string

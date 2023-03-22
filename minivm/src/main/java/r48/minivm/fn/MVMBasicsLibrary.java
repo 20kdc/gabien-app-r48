@@ -59,7 +59,11 @@ public class MVMBasicsLibrary {
             .attachHelp("(gensym) : Creates a new uniqueish symbol.");
         // Technically implement just enough of R5RS environments that the parts we're cheating on don't stick out like sore thumbs.
         ctx.defLib("eval", (a0, a1) -> {
-            return ((MVMEnv) a1).evalObject(a0, DatumSrcLoc.NONE);
+            try {
+                return ((MVMEnv) a1).evalObject(a0, DatumSrcLoc.NONE);
+            } catch (Exception ex) {
+                throw new RuntimeException("During eval: " + a0, ex);
+            }
         }).attachHelp("(eval EXPR ENV) : Evaluates EXPR in ENV. Note EXPR is unquoted, so you can dynamically generate it.");
         ctx.defLib("interaction-environment", () -> {
             return ctx;
