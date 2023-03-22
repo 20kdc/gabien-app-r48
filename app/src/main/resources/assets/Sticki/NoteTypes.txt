@@ -4,7 +4,7 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-000:$
+000:(@ ]0)
 d A comment in the plan.
 p text string
 
@@ -12,37 +12,37 @@ p text string
 d Test samples using Anti-Mass Spectrometer testtextteststext
 X ams_setting_host
 
-985: @@Time {A=F=doesn't exist|exists} here.
-d Welcome to a world where the air I breathe is mine, nothing to overwhelm me and nothing to grab my mind...
-p timeExists boolean
+985: @@Enable big scary thing {A=F=later|now}.
+d This is a description.
+p bigScaryThing boolean
 
-990: Need!
+990: "Need" ($ " to " ]0)
 d Indicate that at this point you need to (non-optional)...
 p text string
 
-991: Want!
+991: "Want" ($ " to " ]0)
 d Indicate that at this point you want to (optional)...
 p text string
 
-992: Nb.$
+992: "Nb." ($ " " ]0)
 d A comment.
 p text string
 C groupBehavior messagebox 992
 
-993: Consider$ (
+993: "Consider" ($ " " ]0) " ("
 d Begins a consideration block.
 p text string
 i0
 I1
 C groupBehavior form 982 "Add Alternative" 994
 
-982: ) Alternatively Via (
+982: ") Alternatively Via ("
 d Suggests an alternative method of consideration.
 i-1
 I1
 C groupBehavior expectHead 982 993
 
-994: )
+994: ")"
 d Ends a consideration block.
 i-1
 I0
@@ -54,16 +54,16 @@ p name string
 p planType ltp_type
 p plan Plan
 
-996: Long Note
+996: "Long Note"
 d This is a long note - it is stored via a zlib-deflated blob.
 p desc string
 p contents zlibBlobEditor
 
-997: Table$
+997: "Table" ($ " " ]0)
 d This is a map of strings to other strings.
 p of string
 p table NoteTable
 
-998: Test JSONlike Disambiguation
+998: "Test JSONlike Disambiguation"
 d Test for JSON-like disambiguation (Hash As Object) and other such stuff.
 p object JLDV

@@ -6,41 +6,41 @@
 
  Movement commands for VX Ace.
 
-0: Terminate
+0: "Terminate"
 d Do I really need to describe this?
 L
 
-1: Move South
+1: "Move South"
 d Walk, or maybe glide, in the direction clearly stated.
-2: Move West
+2: "Move West"
 d Walk, or maybe glide, in the direction clearly stated.
-3: Move East
+3: "Move East"
 d Walk, or maybe glide, in the direction clearly stated.
-4: Move North
-d Walk, or maybe glide, in the direction clearly stated.
-
-5: Move S-W
-d Walk, or maybe glide, in the direction clearly stated.
-6: Move S-E
-d Walk, or maybe glide, in the direction clearly stated.
-7: Move N-W
-d Walk, or maybe glide, in the direction clearly stated.
-8: Move N-E
+4: "Move North"
 d Walk, or maybe glide, in the direction clearly stated.
 
-9: Move Randomly
+5: "Move S-W"
+d Walk, or maybe glide, in the direction clearly stated.
+6: "Move S-E"
+d Walk, or maybe glide, in the direction clearly stated.
+7: "Move N-W"
+d Walk, or maybe glide, in the direction clearly stated.
+8: "Move N-E"
+d Walk, or maybe glide, in the direction clearly stated.
+
+9: "Move Randomly"
 d Walk, or maybe glide, in a random direction.
 
-10: Move towards Player
+10: "Move towards Player"
 d Walk, or maybe glide, in a direction that's more or less player-oriented.
 
-11: Move away from Player
+11: "Move away from Player"
 d Walk, or maybe glide, in a direction that's more or less NOT player-oriented.
 
-12: 1 Step forward
+12: "1 Step forward"
 d Walk, or maybe glide, forward.
 
-13: 1 Step back
+13: "1 Step back"
 d Walk, or maybe glide, backward.
 
 14: Jump relatively!$
@@ -52,30 +52,30 @@ p yOfs int
 d Wait a while, let everything synchronize.
 p frames int
 
-16: Turn South
+16: "Turn South"
 d Turn to the direction indicated.
-17: Turn West
+17: "Turn West"
 d Turn to the direction indicated.
-18: Turn East
+18: "Turn East"
 d Turn to the direction indicated.
-19: Turn North
+19: "Turn North"
 d Turn to the direction indicated.
 
-20: Turn clockwise 90d (Right)
+20: "Turn clockwise 90d (Right)"
 d Turn in the direction indicated.
-21: Turn anticlockwise 90d (Left)
-d Turn in the direction indicated.
-
-22: Turn 180d (Opposite direction)
+21: "Turn anticlockwise 90d (Left)"
 d Turn in the direction indicated.
 
-23: Turn either left or right (random)
+22: "Turn 180d (Opposite direction)"
+d Turn in the direction indicated.
+
+23: "Turn either left or right (random)"
 d Turn in one direction or another, randomly.
-24: Turn to any direction (random)
+24: "Turn to any direction (random)"
 d Turn to a cardinal direction, randomly.
-25: Turn towards player
+25: "Turn towards player"
 d Turn to face the player.
-26: Turn away from player
+26: "Turn away from player"
 d Turn to avoid facing the player.
 
 27: Enable switch$
@@ -94,26 +94,26 @@ p speed int
 d Change move frequency.
 p frequency int
 
-31: Enable walk animation
+31: "Enable walk animation"
 d ...
-32: Disable walk animation
+32: "Disable walk animation"
 d ...
-33: Enable step animation
+33: "Enable step animation"
 d ...
-34: Disable step animation
+34: "Disable step animation"
 d ...
-35: Enable fixed direction
+35: "Enable fixed direction"
 d ...
-36: Disable fixed direction
+36: "Disable fixed direction"
 d ...
 
-37: Disable collision
+37: "Disable collision"
 d ...
-38: Enable collision
+38: "Enable collision"
 d ...
-39: Enable transparency
+39: "Enable transparency"
 d I would assume *translucency* is the correct*GACK!*
-40: Disable transparency
+40: "Disable transparency"
 d ...
 
 41: Set graphic!$
@@ -122,11 +122,11 @@ p characterName f_char_name
 C spritesheet 0 Characters/
 p characterIndex int
 
-42: Change Opacity!
+42: "Change Opacity" ($ " to " ]0 opacity)
 d Change the opacity of the character.
 p opacity opacity
 
-43: Change BlendType
+43: "Change BlendType" ($ " to " ]0 blend_type)
 d Change the blend type (how translucency interacts with the environment) of the character.
 p blendType blend_type
 

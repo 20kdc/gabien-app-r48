@@ -6,7 +6,7 @@
 
  Event commands for VX Ace.
 
-0: >> insert point
+0: ">> insert point"
 d Inserter. This is how Macrotons enter the system, where they move about, charging as they go. Wait, wrong manual. Insert point. Totally useless.
 L
 
@@ -22,7 +22,7 @@ p backInvisible int_boolean
 p position change_text_options_position
 C groupBehavior messagebox 401
 
-401: Tx.$
+401: "Tx." ($ " " ]0)
 d Continues the text.
 C textArg 0
 p text string
@@ -37,7 +37,7 @@ I1
 
  See IRB_CMDB.txt for indentation logic docs, and the 'K command'.
 
-402: When Choice =$
+402: "When Choice =" ($ " " ]0)
 d When a given choice index is chosen...
 p choice int
 p textRef string
@@ -46,14 +46,14 @@ i-1
 I1
 K102
 
-403: When cancelled (idx 4)
+403: "When cancelled (idx 4)"
 d When choice index 4 (cancel) is chosen...
 C groupBehavior expectHead 102 402 403
 i-1
 I1
 K102
 
-404: End Choice
+404: "End Choice"
 d The end of a choice block.
 C groupBehavior expectHead 102 402 403
 i-1
@@ -70,7 +70,7 @@ p digits int
 d Lets the player choose an item... for some reason.
 p var var_id
 
-105: Show Scrolling Text (c.405)
+105: "Show Scrolling Text (c.405)"
 d Begins some scrolling text.
 p speed int
 p notFast boolean
@@ -99,35 +99,35 @@ C groupBehavior form 411 "Else" 412
 X conditional_branch_parameters
 I1
 
-411: Else
+411: "Else"
 d A conditional branch will go here if the answer is 'false'. Otherwise, this is skipped entirely.
 C groupBehavior expectHead 111
 i-1
 I1
 l
 
-412: End Conditional
+412: "End Conditional"
 d Ends a conditional branch.
 C groupBehavior expectHead 111 411
 i-1
 l
 
-112: Start Loop (c.113/413)
+112: "Start Loop (c.113/413)"
 d Begins a loop.
 C groupBehavior form 413
  this is a blank 'placeholder' command
 I1
 
-113: Break Loop
+113: "Break Loop"
 d Leave a loop formed between a Start Loop and End Loop.
 
-413: End Loop/Repeat Above
+413: "End Loop/Repeat Above"
 d The end of a loop (goes back to the start)
 C groupBehavior expectHead 112
 i-1
 l
 
-115: Exit Event Processing
+115: "Exit Event Processing"
 d Stop running the code in this page.
 
 117: Common Event$
@@ -397,10 +397,10 @@ p bgm RPG::BGM
 d Fade out the current music track over some amount of time.
 p seconds int
 
-243: Save BGM
+243: "Save BGM"
 d Note down the current music track so you can play something else without worrying about what you were playing before.
 
-244: Resume BGM
+244: "Resume BGM"
 d Play the last noted-down music track (see 243)
 
 245: Play BGS$
@@ -419,7 +419,7 @@ p me RPG::ME
 d Play a sound effect.
 p se RPG::SE
 
-251: Stop SE
+251: "Stop SE"
 d Stop any playing sound effect.
 
 261: Play Movie$
@@ -447,7 +447,7 @@ p loop_y boolean
 p sx int
 p sy int
 
-285: Get Info On Location
+285: "Get Info On Location"
 d Note down a specific attribute about a given tile in a variable.
 p resultVar var_id
 p infoType get_location_info_type
@@ -458,7 +458,7 @@ P 2 yVar var_id
 v 0 y int
 
 
-301: Start Battle (c.601/602/603/604)
+301: "Start Battle (c.601/602/603/604)"
 d Begin a battle.
 p type battle_processing_type
 P 0 _ int
@@ -467,33 +467,33 @@ v 1 troopVar var_id
 p canEscape boolean
 p losingDoesNotGameover boolean
 
-601: Battle Result Branches Start: If Win
+601: "Battle Result Branches Start: If Win"
 d This is the beginning of the optional result branches section for a Start Battle (301), should be immediately below it, and contains the win code.
 C groupBehavior expectHead 301
 C groupBehavior expectTail 602 603 604
 C template 602 603 604
 I1
 
-602: Battle Result Branch: If Escape
+602: "Battle Result Branch: If Escape"
 d This contains the escape code. See 'canEscape' in the relevant Start Battle.
 C groupBehavior expectHead 301 601
 C groupBehavior expectTail 603 604
 i-1
 I1
 
-603: Battle Result Branch: If Lose
+603: "Battle Result Branch: If Lose"
 d This contains the lose code. See 'losingDoesNotGameover' in the relevant Start Battle.
 C groupBehavior expectHead 301 601 602
 C groupBehavior expectTail 604
 i-1
 I1
 
-604: Battle Result Branches End
+604: "Battle Result Branches End"
 d Ends the Battle Result Branches.
 C groupBehavior expectHead 301 601 602 603
 i-1
 
-302: Shop Processing (c.605)
+302: "Shop Processing (c.605)"
 d The start of a shop. This describes a single item - 605 describes an additional item, repeat as desired.
 p itemType shop_item_type
 P 0 thing int
@@ -506,7 +506,7 @@ v 0 _ int
 p purchaseOnly boolean
 C groupBehavior messagebox 605
 
-605: Additional Shop Item
+605: "Additional Shop Item"
 d An additional shop item.
 p itemType shop_item_type
 P 0 thing int
@@ -679,7 +679,7 @@ d Play an animation on the enemy, presumably before something bad happens to it 
 p enemy iterate_enemy_index
 p animation animation_id
 
-339: Force Battle Action
+339: "Force Battle Action"
 d Force something in the battle to do something. Not very specific.
 p userIsEnemy int_boolean
 P 0 userEnemy iterate_enemy_index
@@ -687,19 +687,19 @@ v 0 userActor iterate_actor_id
 p skill skill_id
 p target force_action_target
 
-340: Abort Battle
+340: "Abort Battle"
 d Simply refuse to let the battle continue.
 
-351: Open Menuscreen
+351: "Open Menuscreen"
 d Opens the menu screen.
 
-352: Open Savescreen
+352: "Open Savescreen"
 d Opens the save screen.
 
-353: Game Over
+353: "Game Over"
 d Instantly causes a game over.
 
-354: Return to Title
+354: "Return to Title"
 d Return to the title screen.
 
 355: Ruby>$
