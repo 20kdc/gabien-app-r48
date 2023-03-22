@@ -41,7 +41,7 @@
 	((= (list-length extra) 2) (tr-dyni-at ctx path (list-ref extra 0) (list-ref extra 1)))
 	(else (error "bad arg count to @"))
 ))
-; ($ APFX PATH [INTERP [PREFIX]]) : if present, display value with prefix
+; ($ APFX PATH [INTERP [PREFIX-ENUMS]]) : if present, display value with prefix
 (define (tr-dyni-sat ctx apfx path interp prefix)
 	(append!
 		(tr-dyn-cctx-target ctx)

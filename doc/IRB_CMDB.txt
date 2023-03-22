@@ -11,23 +11,24 @@
 
  -- MOVED FROM THE RXP CMDB, cleaned up --
 
- Original Format (no prefix)
+ Datum Format
 
-  A very simple format for cases when you can get away with it.
-
-  Note that '$' is replaced with " <nice looking string>",
-   while '!' is replaced with " to <nice looking string>".
-   '#' defines a range, for "A through B" commands.
-  Both are replaced with nothing if just entering the command name.
-
-  an example: 108: Comment$
-  a more advanced example: 103: Input Number!$ digits
-   (As this format is crude, this shows as "Input Number digits" in the selection box.)
-
- Datum Format (prefix "(" or """)
-  These prefixes are temporary so that Original Format can be moved over to either Datum (simple cases) or Extended Format (harder cases).
   This has yet to be fully finalized, but the basic idea is a clean nameroutine but not carrying the magical schema detection.
   vm/trc-lib.scm is where new commands for this are defined.
+
+  Essentially, the command name is represented in S-expression format as a list of elements to be formatted together.
+  Of the functions that exist (defined in vm/trc-lib.scm):
+
+   + (vm CODE...)
+     Injects D/MVM code into the result directly. Almost certainly unnecessary as TRC can be extended.
+   + (with FOCUS CODE...)
+     Changes the "focus", i.e. what PATHs are relative to, for the given CODE...
+   + (@ PATH [INTERP [PREFIX-ENUMS]])
+     If the PATH exists, formats (possibly modified by INTERP and PREFIX-ENUMS).
+     Otherwise will always do nothing.
+   + ($ PFX PATH [INTERP [PREFIX-ENUMS]]) :
+     If the PATH exists, formats (possibly modified by INTERP and PREFIX-ENUMS), prepending PFX.
+     Otherwise will always do nothing.
 
  Extended Format (prefix '@@')
 

@@ -90,13 +90,10 @@ public class CMDB extends App.Svc {
                 rc = new RPGCommand(sdb.app, objId);
                 rc.category = categories.length - 1;
                 // Names use NDB syntax, thus, separate context
-                if (objName.startsWith("\"") || objName.startsWith("(")) {
-                    // This is temporary. Idea is to get rid of old-format names in favour of EF,
-                    //  then make this the default when the EF prefix isn't used.
-                    // Thus CM-syntax is removed entirely.
-                    rc.name = app.dTrFF2(srcLoc, TrNames.cmdbName(dbId, objId), objName);
+                if (objName.startsWith("@@")) {
+                    rc.name = app.dTrFmtSynCM(srcLoc, TrNames.cmdbName(dbId, objId), objName.substring(2));
                 } else {
-                    rc.name = app.dTrFmtSynCM(srcLoc, TrNames.cmdbName(dbId, objId), objName);
+                    rc.name = app.dTrFF2(srcLoc, TrNames.cmdbName(dbId, objId), objName);
                 }
                 if (knownCommands.containsKey(objId))
                     throw new RuntimeException("Redefined " + objId);

@@ -38,9 +38,6 @@ public class MVMDMAppLibrary {
                 return paths[idx].get(root);
             });
         }).attachHelp("(dm-formatsyntax THING) : Compiles FormatSyntax. This is a workaround to run FormatSyntax through the DynTrSlot stuff, so it counts as a compiled DynTrSlot value, but...");
-        ctx.defLib("dm-cmsyntax-old", (text) -> {
-            return app.fmt.compileCMOld((String) text);
-        }).attachHelp("(dm-cmsyntax-old TEXT) : Compiles old CMSyntax. This is an even worse workaround.");
         ctx.defLib("dm-cmsyntax-new", (text) -> {
             return app.fmt.compileCMNew((String) text);
         }).attachHelp("(dm-cmsyntax-new TEXT) : Compiles new CMSyntax. This is an even worse workaround.");
