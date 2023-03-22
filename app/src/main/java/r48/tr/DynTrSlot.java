@@ -102,6 +102,7 @@ public final class DynTrSlot implements IDynTr {
             }
             return valueCompiled.toString();
         } catch (Exception ex) {
+            System.err.println("at " + id + ":");
             ex.printStackTrace();
             return "!!!" + id + "!!!";
         }
