@@ -112,11 +112,10 @@ public class R2kUtil {
     public static void unkToRio(RubyIO map, HashMap<Integer, byte[]> unknownChunks) {
         if (unknownChunks.isEmpty())
             return;
-        RubyIO hash = new RubyIO();
+        RubyIO hash = map.addIVar("@__LCF__unknown");
         hash.setHash();
         for (Map.Entry<Integer, byte[]> e : unknownChunks.entrySet())
             hash.hashVal.put(new RubyIO().setFX(e.getKey()), new RubyIO().setUser("Blob", e.getValue()));
-        map.addIVar("@__LCF__unknown", hash);
     }
 
     public static void rioToUnk(IRIO mt, HashMap<Integer, byte[]> unknownChunks) {

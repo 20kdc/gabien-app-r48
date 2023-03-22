@@ -20,6 +20,7 @@ import r48.map.systems.MapSystem;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.util.SchemaPath;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -70,32 +71,39 @@ public class AppMain {
     // Is this messy? Yes. Is it required? After someone lost some work to R48? YES IT DEFINITELY IS.
     // Later: I've reduced the amount of backups performed because it appears spikes were occurring all the time.
     public static void performSystemDump(App app, boolean emergency, String addendumData) {
-        RubyIO n = new RubyIO();
-        n.setHash();
-        n.addIVar("@description").setString(addendumData, true);
-        for (IObjectBackend.ILoadedObject rio : app.odb.modifiedObjects) {
-            String s = app.odb.getIdByObject(rio);
-            if (s != null)
-                n.addHashVal(new RubyIO().setString(s, true)).setDeepClone(rio.getObject());
-        }
+        IRIO n;
         if (!emergency) {
-            RubyIO n2 = new RubyIO();
-            n2.setString(app.t.g.msgNonEmergencyBackup, true);
+            n = new RubyIO();
+            n.setStringNoEncodingIVars();
+            n.putBuffer(app.t.g.msgNonEmergencyBackup.getBytes(StandardCharsets.UTF_8));
             RubyIO n3 = AdHocSaveLoad.load("r48.revert.YOUR_SAVED_DATA");
             if (n3 != null) {
                 // Unlink for disk space & memory usage reasons.
                 // Already this is going to eat RAM.
                 n3.rmIVar("@last");
-                n2.addIVar("@last", n3);
+                n.addIVar("@last").setDeepClone(n3);
             }
-            n2.addIVar("@current", n);
-            n = n2;
+            performSystemDumpBodyInto(app, n.addIVar("@current"), addendumData);
+        } else {
+            n = new RubyIO();
+            performSystemDumpBodyInto(app, n, addendumData);
         }
         if (emergency)
             System.err.println("emergency dump is now actually occurring. Good luck.");
         AdHocSaveLoad.save(emergency ? "r48.error.YOUR_SAVED_DATA" : "r48.revert.YOUR_SAVED_DATA", n);
         if (emergency)
             System.err.println("emergency dump is complete.");
+    }
+    private static void performSystemDumpBodyInto(App app, IRIO n, String addendumData) {
+        n.setHash();
+        IRIO desc = n.addIVar("@description");
+        desc.setStringNoEncodingIVars();
+        desc.putBuffer(addendumData.getBytes(StandardCharsets.UTF_8));
+        for (IObjectBackend.ILoadedObject rio : app.odb.modifiedObjects) {
+            String s = app.odb.getIdByObject(rio);
+            if (s != null)
+                n.addHashVal(new RubyIO().setString(s, true)).setDeepClone(rio.getObject());
+        }
     }
 
     public static void reloadSystemDump(App app) {
@@ -104,7 +112,7 @@ public class AppMain {
             app.ui.launchDialog(app.t.g.dlgNoSysDump);
             return;
         }
-        RubyIO possibleActualDump = sysDump.getInstVarBySymbol("@current");
+        RubyIO possibleActualDump = sysDump.getIVar("@current");
         if (possibleActualDump != null)
             sysDump = possibleActualDump;
         for (Map.Entry<IRIO, IRIO> rio : sysDump.hashVal.entrySet()) {

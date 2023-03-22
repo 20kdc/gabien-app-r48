@@ -136,7 +136,7 @@ public class RubyIO extends IRIO {
         return this;
     }
 
-    public RubyIO setSymlike(String s, boolean object) {
+    private RubyIO setSymlike(String s, boolean object) {
         setNull();
         type = object ? 'o' : ':';
         symVal = s;
@@ -224,7 +224,7 @@ public class RubyIO extends IRIO {
         return this;
     }
 
-    public void addIVar(String s, RubyIO rio) {
+    private void addIVar(String s, RubyIO rio) {
         if (iVarKeys == null) {
             iVarKeys = new String[] {s};
             iVarVals = new RubyIO[] {rio};
@@ -239,16 +239,6 @@ public class RubyIO extends IRIO {
         System.arraycopy(oldVals, 0, iVarVals, 1, iVarVals.length - 1);
         iVarKeys[0] = s;
         iVarVals[0] = rio;
-    }
-
-    public RubyIO getInstVarBySymbol(String cmd) {
-        if (iVarKeys == null)
-            return null;
-        for (int i = 0; i < iVarKeys.length; i++)
-            if (cmd.equals(iVarKeys[i]))
-                return iVarVals[i];
-        return null;
-        // return iVars.get(cmd);
     }
 
     @Override
@@ -312,7 +302,13 @@ public class RubyIO extends IRIO {
 
     @Override
     public RubyIO getIVar(String sym) {
-        return getInstVarBySymbol(sym);
+        if (iVarKeys == null)
+            return null;
+        for (int i = 0; i < iVarKeys.length; i++)
+            if (sym.equals(iVarKeys[i]))
+                return iVarVals[i];
+        return null;
+        // return iVars.get(cmd);
     }
 
     @Override

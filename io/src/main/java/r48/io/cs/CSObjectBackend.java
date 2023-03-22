@@ -69,9 +69,7 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO> {
         int stages = inp.available() / 200;
         RubyIO rio = new RubyIO();
         rio.setArray();
-        RubyIO[] stageArray = new RubyIO[stages];
-        rio.arrVal = stageArray;
-        for (int i = 0; i < stageArray.length; i++) {
+        for (int i = 0; i < stages; i++) {
             RubyIO tileset = loadFixedFormatString(inp, 0x20);
             RubyIO filename = loadFixedFormatString(inp, 0x20);
             int backgroundScroll = inp.read();
@@ -84,16 +82,15 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO> {
             int boss = inp.read();
             RubyIO name = loadFixedFormatString(inp, 0x23);
 
-            RubyIO rio2 = new RubyIO().setSymlike("Stage", true);
-            rio2.addIVar("@tileset", tileset);
-            rio2.addIVar("@filename", filename);
-            rio2.addIVar("@background_scroll", new RubyIO().setFX(backgroundScroll));
-            rio2.addIVar("@sf_bkg", bkg);
-            rio2.addIVar("@sf_npc1", npc1);
-            rio2.addIVar("@sf_npc2", npc2);
-            rio2.addIVar("@boss", new RubyIO().setFX(boss));
-            rio2.addIVar("@name", name);
-            stageArray[i] = rio2;
+            IRIO rio2 = rio.addAElem(i).setObject("Stage");
+            rio2.addIVar("@tileset").setDeepClone(tileset);
+            rio2.addIVar("@filename").setDeepClone(filename);
+            rio2.addIVar("@background_scroll").setFX(backgroundScroll);
+            rio2.addIVar("@sf_bkg").setDeepClone(bkg);
+            rio2.addIVar("@sf_npc1").setDeepClone(npc1);
+            rio2.addIVar("@sf_npc2").setDeepClone(npc2);
+            rio2.addIVar("@boss").setFX(boss);
+            rio2.addIVar("@name").setDeepClone(name);
         }
         return rio;
     }

@@ -6,6 +6,7 @@
  */
 package r48.cfg;
 
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 import gabien.GaBIEn;
@@ -26,29 +27,33 @@ public class ConfigIO {
         RubyIO prepare = new RubyIO();
         prepare.setObject("R48::FontConfig");
         for (FontSizeField fsf : c.f.getFields())
-            prepare.addIVar("@" + fsf.configID, new RubyIO().setFX(fsf.get()));
+            prepare.addIVar("@" + fsf.configID).setFX(fsf.get());
 
-        prepare.addIVar("@secondary_images_list", encodeStringList(c.secondaryImageLoadLocationBackup));
-        prepare.addIVar("@saved_rootpath_list", encodeStringList(c.rootPathBackup));
+        encodeStringList(prepare.addIVar("@secondary_images_list"), c.secondaryImageLoadLocationBackup);
+        encodeStringList(prepare.addIVar("@saved_rootpath_list"), c.rootPathBackup);
 
-        prepare.addIVar("@lang", new RubyIO().setString(c.language, true));
+        setString(prepare.addIVar("@lang"), c.language);
         if (c.fontOverride != null) {
-            prepare.addIVar("@sysfont", new RubyIO().setString(c.fontOverride, true));
-            prepare.addIVar("@sysfont_ue8", new RubyIO().setBool(c.fontOverrideUE8));
+            setString(prepare.addIVar("@sysfont"), c.fontOverride);
+            prepare.addIVar("@sysfont_ue8").setBool(c.fontOverrideUE8);
         }
-        prepare.addIVar("@theme_variant", new RubyIO().setFX(c.borderTheme));
-        prepare.addIVar("@actual_blending", new RubyIO().setBool(c.allowBlending));
-        prepare.addIVar("@windowing_external", new RubyIO().setBool(c.windowingExternal));
+        prepare.addIVar("@theme_variant").setFX(c.borderTheme);
+        prepare.addIVar("@actual_blending").setBool(c.allowBlending);
+        prepare.addIVar("@windowing_external").setBool(c.windowingExternal);
         AdHocSaveLoad.save("fonts", prepare);
     }
+    private static void setString(IRIO i, String s) {
+        i.setStringNoEncodingIVars();
+        i.putBuffer(s.getBytes(StandardCharsets.UTF_8));
+    }
 
-    private static RubyIO encodeStringList(LinkedList<String> values) {
-        RubyIO arr = new RubyIO().setArray();
-        arr.arrVal = new IRIO[values.size()];
+    private static void encodeStringList(IRIO arr, LinkedList<String> values) {
+        arr.setArray();
         int idx = 0;
-        for (String s : values)
-            arr.arrVal[idx++] = new RubyIO().setString(s, true);
-        return arr;
+        for (String s : values) {
+            IRIO elm = arr.addAElem(idx++);
+            setString(elm, s);
+        }
     }
 
     public static boolean load(boolean first, Config c) {
@@ -60,7 +65,7 @@ public class ConfigIO {
             boolean shouldResetWSZ = false;
 
             for (FontSizeField fsf : c.f.getFields()) {
-                RubyIO f = dat.getInstVarBySymbol("@" + fsf.configID);
+                RubyIO f = dat.getIVar("@" + fsf.configID);
                 if (f != null) {
                     fsf.accept((int) f.getFX());
                 } else {
@@ -76,43 +81,43 @@ public class ConfigIO {
             if (shouldResetWSZ)
                 c.f.maintabsS = c.f.mapToolbarS;
 
-            RubyIO sys = dat.getInstVarBySymbol("@sysfont");
+            RubyIO sys = dat.getIVar("@sysfont");
             if (sys != null) {
                 c.fontOverride = sys.decString();
             } else {
                 c.fontOverride = null;
             }
-            RubyIO sys2 = dat.getInstVarBySymbol("@sysfont_ue8");
+            RubyIO sys2 = dat.getIVar("@sysfont_ue8");
             if (sys2 != null)
                 c.fontOverrideUE8 = sys2.getType() == 'T';
             // old paths
-            RubyIO sys3 = dat.getInstVarBySymbol("@secondary_images");
+            RubyIO sys3 = dat.getIVar("@secondary_images");
             if (sys3 != null)
                 c.secondaryImageLoadLocationBackup.add(sys3.decString());
-            RubyIO sys4 = dat.getInstVarBySymbol("@saved_rootpath");
+            RubyIO sys4 = dat.getIVar("@saved_rootpath");
             if (sys4 != null)
                 c.rootPathBackup.add(sys4.decString());
             // new paths
-            RubyIO sys3a = dat.getInstVarBySymbol("@secondary_images_list");
+            RubyIO sys3a = dat.getIVar("@secondary_images_list");
             if (sys3a != null) {
                 c.secondaryImageLoadLocationBackup.clear();
                 for (IRIO rio : sys3a.arrVal)
                     c.secondaryImageLoadLocationBackup.add(rio.decString());
             }
-            RubyIO sys4a = dat.getInstVarBySymbol("@saved_rootpath_list");
+            RubyIO sys4a = dat.getIVar("@saved_rootpath_list");
             if (sys4a != null) {
                 c.rootPathBackup.clear();
                 for (IRIO rio : sys4a.arrVal)
                     c.rootPathBackup.add(rio.decString());
             }
             // ...
-            RubyIO sys5 = dat.getInstVarBySymbol("@theme_variant");
+            RubyIO sys5 = dat.getIVar("@theme_variant");
             if (sys5 != null)
                 c.borderTheme = (int) sys5.getFX();
-            RubyIO sys6 = dat.getInstVarBySymbol("@actual_blending");
+            RubyIO sys6 = dat.getIVar("@actual_blending");
             if (sys6 != null)
                 c.allowBlending = sys6.getType() == 'T';
-            RubyIO sys7 = dat.getInstVarBySymbol("@windowing_external");
+            RubyIO sys7 = dat.getIVar("@windowing_external");
             if (sys7 != null)
                 c.windowingExternal = sys7.getType() == 'T';
             return true;

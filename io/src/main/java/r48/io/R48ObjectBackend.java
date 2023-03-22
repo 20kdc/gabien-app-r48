@@ -135,6 +135,10 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
 
     @Override
     public RubyIO loadObjectFromFile(String filename) {
+        return loadObjectFromFile(new RubyIO(), filename);
+    }
+
+    public RubyIO loadObjectFromFile(RubyIO rio, String filename) {
         try {
             String fullPath = PathUtils.autoDetectWindows(prefix + filename + postfix);
             InputStream inp = GaBIEn.getInFile(fullPath);
@@ -150,7 +154,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
                 throw new IOException("mgk[1]!=0x08");
             LinkedList<RubyIO> objCache = new LinkedList<RubyIO>();
             LinkedList<String> strCache = new LinkedList<String>();
-            RubyIO rio = loadValue(dis, objCache, strCache);
+            loadValue(rio, dis, objCache, strCache);
             dis.close();
             return rio;
         } catch (Exception ioe) {
@@ -423,8 +427,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             long vars = load32(dis);
             for (long i = 0; i < vars; i++) {
                 RubyIO k = loadValue(dis, objs, syms);
-                RubyIO v = loadValue(dis, objs, syms);
-                rio.addIVar(k.getSymbol(), v);
+                loadValue(rio.addIVar(k.getSymbol()), dis, objs, syms);
             }
         }
         if (shouldWriteObjCacheLate)
