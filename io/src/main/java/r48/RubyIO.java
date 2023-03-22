@@ -44,7 +44,7 @@ public class RubyIO extends IRIO {
     // public HashMap<String, RubyIO> iVars = new HashMap<String, RubyIO>();
     private String[] iVarKeys;
     private RubyIO[] iVarVals;
-    public HashMap<IRIO, IRIO> hashVal;
+    private HashMap<IRIO, IRIO> hashVal;
     private RubyIO hashDefVal;
     private IRIO[] arrVal;
     // actual meaning depends on iVars.

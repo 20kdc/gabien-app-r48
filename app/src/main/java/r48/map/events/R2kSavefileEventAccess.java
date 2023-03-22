@@ -54,7 +54,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
         IRIO se = getSaveEvents();
         for (IRIO k : se.getHashKeys())
             if (eventsHash.getHashVal(k) == null)
-                eventsHash.hashVal.put(k, new RubyIO().setDeepClone(se.getHashVal(k)));
+                eventsHash.addHashVal(k).setDeepClone(se.getHashVal(k));
     }
 
     private long getMapId() {
@@ -68,12 +68,14 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     private void sfveInjectEvent(String s, int mapId, IRIO instVarBySymbol) {
         if (instVarBySymbol.getIVar("@map").getFX() != mapId)
             return;
-        eventsHash.hashVal.put(new RubyIO().setString(s, true), new RubyIO().setDeepClone(instVarBySymbol));
+        eventsHash.addHashVal(new RubyIO().setString(s, true)).setDeepClone(instVarBySymbol);
     }
 
     @Override
     public LinkedList<IRIO> getEventKeys() {
-        LinkedList<IRIO> keys = new LinkedList<IRIO>(eventsHash.hashVal.keySet());
+        LinkedList<IRIO> keys = new LinkedList<IRIO>();
+        for (IRIO k : eventsHash.getHashKeys())
+            keys.add(k);
         IRIO map = getMap();
         if (map != null)
             if (getSaveCount(map).getFX() != saveFileRoot.getObject().getIVar("@party_pos").getIVar("@map_save_count").getFX())

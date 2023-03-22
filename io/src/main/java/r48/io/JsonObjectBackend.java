@@ -77,7 +77,7 @@ public class JsonObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
                 if (!tokens.removeFirst().equals(":"))
                     throw new RuntimeException("Couldn't find KV separator");
                 RubyIO val = loadFromTokens(tokens);
-                hash.hashVal.put(key, val);
+                hash.addHashVal(key).setDeepClone(val);
             }
         }
         if (n.equals("[")) {

@@ -21,7 +21,6 @@ import r48.schema.OpaqueSchemaElement;
 import r48.schema.util.SchemaPath;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
 
 /**
  * Used to contain static variables, now just initialization routines.
@@ -115,11 +114,11 @@ public class AppMain {
         RubyIO possibleActualDump = sysDump.getIVar("@current");
         if (possibleActualDump != null)
             sysDump = possibleActualDump;
-        for (Map.Entry<IRIO, IRIO> rio : sysDump.hashVal.entrySet()) {
-            String name = rio.getKey().decString();
+        for (IRIO rk : sysDump.getHashKeys()) {
+            String name = rk.decString();
             IObjectBackend.ILoadedObject root = app.odb.getObject(name);
             if (root != null) {
-                root.getObject().setDeepClone(rio.getValue());
+                root.getObject().setDeepClone(sysDump.getHashVal(rk));
                 app.odb.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(app), root));
             }
         }
