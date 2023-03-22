@@ -35,8 +35,8 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class SchemaPath extends App.Svc {
     public final SchemaPath parent;
-    // Can be null!
-    public final IObjectBackend.ILoadedObject root;
+    // Can be null! (A nullable root indicates this isn't directly connected to a branch.)
+    public final @Nullable IObjectBackend.ILoadedObject root;
 
     // If editor is null, targetElement must be null, and vice versa.
     // Host may be there or not.

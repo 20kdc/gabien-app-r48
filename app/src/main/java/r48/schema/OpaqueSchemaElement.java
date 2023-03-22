@@ -31,7 +31,7 @@ public class OpaqueSchemaElement extends SchemaElement {
         return new UITextButton(getMessage(target), app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
-                launcher.launchOther(new UITest(launcher.getApp(), target));
+                launcher.launchOther(new UITest(launcher.getApp(), target, path.root));
             }
         });
     }

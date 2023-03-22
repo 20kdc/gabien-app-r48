@@ -168,7 +168,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         if (obj == null) {
                             app.ui.launchDialog(T.z.l57);
                         } else {
-                            app.ui.wm.createWindow(new UITest(app, obj.getObject()));
+                            app.ui.wm.createWindow(new UITest(app, obj.getObject(), obj));
                         }
                     });
                 },
@@ -361,7 +361,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     if (app.theClipboard == null) {
                         app.ui.launchDialog(T.z.dlgClipEmpty);
                     } else {
-                        app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard));
+                        app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard, new IObjectBackend.MockLoadedObject((IRIO) app.theClipboard)));
                     }
                 }
         }, app.f.statusBarTH);

@@ -84,7 +84,7 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
     private UIAppendButton toolbarI = new UIAppendButton(Art.Symbol.Inspect, toolbarS, new Runnable() {
         @Override
         public void run() {
-            app.ui.wm.createWindow(new UITest(app, innerElem.targetElement));
+            app.ui.wm.createWindow(new UITest(app, innerElem.targetElement, innerElem.root));
         }
     }, app.f.schemaPathTH);
     private UIAppendButton toolbarC = new UIAppendButton(Art.Symbol.CloneFrame, toolbarI, new Runnable() {

@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.datum.DatumSymbol;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -22,6 +23,8 @@ import r48.ui.UINSVertLayout;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.*;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * At first was a break-into-console - now a proper window, if crude.
@@ -42,33 +45,48 @@ public class UITest extends App.Prx {
     // UITest -> outerPanel -> Back/PRINT
     //                      -> masterPanel
     public UIScrollLayout masterPanel = new UIScrollLayout(true, app.f.generalS);
-    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(T.u.test_toREPL, new UIAppendButton(T.u.test_PTS, new UIAppendButton(T.u.test_PTF, new UITextButton(T.u.test_back, app.f.inspectorBackTH, () -> {
-        if (back.size() > 0)
-            loadObject(back.removeLast());
-    }), () -> {
-        try {
-            OutputStream fos = GaBIEn.getOutFile(getPrintPath(app));
-            PrintStream ps = new PrintStream(fos);
-            ps.print(currentObj.toStringLong(""));
-            fos.close();
-            app.ui.launchDialog(T.u.test_prOk);
-        } catch (Exception e) {
-            app.ui.launchDialog(T.u.test_prFail, e);
-        }
-    }, app.f.inspectorBackTH), () -> {
-        app.ui.launchDialog(currentObj.toStringLong(""));
-    }, app.f.inspectorBackTH), () -> {
-        app.vmCtx.ensureSlot(new DatumSymbol("$obj")).v = currentObj;
-        app.ui.launchDialog(T.u.test_toREPLOk);
-    }, app.f.inspectorBackTH), masterPanel);
 
     public static String getPrintPath(App app) {
         return PathUtils.autoDetectWindows(app.rootPath + "PRINT.txt");
     }
 
-    public UITest(App app, IRIO obj) {
+    public UITest(App app, RORIO obj, final @Nullable IObjectBackend.ILoadedObject rootObj) {
         super(app);
         loadObject(obj);
+        UIElement topBar = new UITextButton(T.u.test_back, app.f.inspectorBackTH, () -> {
+            if (back.size() > 0)
+                loadObject(back.removeLast());
+        });
+        topBar = new UIAppendButton(T.u.test_PTF, topBar, () -> {
+            try {
+                OutputStream fos = GaBIEn.getOutFile(getPrintPath(app));
+                PrintStream ps = new PrintStream(fos);
+                ps.print(currentObj.toStringLong(""));
+                fos.close();
+                app.ui.launchDialog(T.u.test_prOk);
+            } catch (Exception e) {
+                app.ui.launchDialog(T.u.test_prFail, e);
+            }
+        }, app.f.inspectorBackTH);
+        topBar = new UIAppendButton(T.u.test_PTS, topBar, () -> {
+            app.ui.launchDialog(currentObj.toStringLong(""));
+        }, app.f.inspectorBackTH);
+        topBar = new UIAppendButton(T.u.test_toREPL, topBar, () -> {
+            app.vmCtx.ensureSlot(new DatumSymbol("$obj")).v = currentObj;
+            app.ui.launchDialog(T.u.test_toREPLOk);
+        }, app.f.inspectorBackTH);
+        if (rootObj != null) {
+            topBar = new UIAppendButton(T.u.test_withSchema, topBar, () -> {
+                app.ui.launchPrompt(T.z.prSchemaID, (res) -> {
+                    if (currentObj == rootObj.getObject()) {
+                        app.ui.launchSchema(res, rootObj, null);
+                    } else {
+                        app.ui.launchNonRootSchema(rootObj, "OPAQUE", (IRIO) currentObj, (IRIO) currentObj, res, "", null);
+                    }
+                });
+            }, app.f.inspectorBackTH);
+        }
+        UINSVertLayout outerPanel = new UINSVertLayout(topBar, masterPanel);
         proxySetElement(outerPanel, false);
         setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(320), app.f.scaleGuess(240)));
     }

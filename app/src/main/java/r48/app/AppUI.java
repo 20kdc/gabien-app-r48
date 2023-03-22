@@ -10,6 +10,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.GaBIEn;
 import gabien.ui.Rect;
 import gabien.ui.Size;
@@ -326,14 +328,14 @@ public class AppUI extends App.Svc {
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
-    public ISchemaHost launchSchema(String s, IObjectBackend.ILoadedObject rio, UIMapView context) {
+    public ISchemaHost launchSchema(String s, @NonNull IObjectBackend.ILoadedObject rio, UIMapView context) {
         // Responsible for keeping listeners in place so nothing breaks.
         SchemaHostImpl watcher = new SchemaHostImpl(app, context);
         watcher.pushObject(new SchemaPath(app.sdb.getSDBEntry(s), rio));
         return watcher;
     }
 
-    public ISchemaHost launchNonRootSchema(IObjectBackend.ILoadedObject root, String rootSchema, IRIO arrayIndex, IRIO element, String elementSchema, String indexText, UIMapView context) {
+    public ISchemaHost launchNonRootSchema(@NonNull IObjectBackend.ILoadedObject root, String rootSchema, IRIO arrayIndex, IRIO element, String elementSchema, String indexText, UIMapView context) {
         // produce a valid (and false) parent chain, that handles all required guarantees.
         ISchemaHost shi = launchSchema(rootSchema, root, context);
         SchemaPath sp = new SchemaPath(app.sdb.getSDBEntry(rootSchema), root);

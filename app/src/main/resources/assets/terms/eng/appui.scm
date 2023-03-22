@@ -42,6 +42,7 @@
 		back "Back..."
 		toREPL "To REPL"
 		toREPLOk "Accessible from REPL as $obj"
+		withSchema "With Schema"
 	)
 	(np_
 		synthOk "The synthesis was completed successfully."
