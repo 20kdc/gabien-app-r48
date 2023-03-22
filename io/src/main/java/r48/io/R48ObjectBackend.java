@@ -287,21 +287,23 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
         }
         save32(dis, iVarKeys.length);
         for (int i = 0; i < iVarKeys.length; i++) {
-            RubyIO key = new RubyIO();
-            key.type = ':';
-            key.symVal = iVarKeys[i];
+            String key = iVarKeys[i];
             try {
-                saveValue(dis, key, caches);
-                saveValue(dis, iVars.getIVar(key.symVal), caches);
+                saveSymbol(dis, key, caches);
+                saveValue(dis, iVars.getIVar(key), caches);
             } catch (Exception ex) {
-                throw new IOException("Hit catch at IVar " + iVarKeys[i], ex);
+                throw new IOException("Hit catch at IVar " + key, ex);
             }
         }
     }
 
     private RubyIO loadValue(DataInputStream dis, LinkedList<RubyIO> objs, LinkedList<String> syms) throws IOException {
-        int b = dis.readUnsignedByte();
         RubyIO rio = new RubyIO();
+        loadValue(rio, dis, objs, syms);
+        return rio;
+    }
+    private void loadValue(RubyIO rio, DataInputStream dis, LinkedList<RubyIO> objs, LinkedList<String> syms) throws IOException {
+        int b = dis.readUnsignedByte();
         // r_entry0 is responsible for adding into the object cache.
         boolean handlingInstVars = false;
         boolean shouldWriteObjCacheLate = false;
@@ -310,12 +312,11 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             b = dis.readUnsignedByte();
             handlingInstVars = true;
         }
-        rio.type = b;
         // "nocareivar" means it will run Ivar stuff if the I prefix is given in theory
         if (b == 'o') {
             // 1889 runs entry before iVars, nocareivar.
             objs.add(rio);
-            rio.symVal = loadValue(dis, objs, syms).symVal;
+            rio.setObject(loadValue(dis, objs, syms).getSymbol());
             if (handlingInstVars)
                 throw new IOException("Can't stack instance variables");
             handlingInstVars = true;
@@ -329,18 +330,22 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             // How did I not think of this EARLIER?
             rio.setDeepClone(objs.get((int) load32(dis)));
         } else if ((b == '{') || (b == '}')) {
+            if (b == '{') {
+                rio.setHash();    
+            } else if (b == '}') {
+                rio.setHashWithDef();
+            }
             // 1772: Runs entry first thing after creating the hash, nocareivar
             objs.add(rio);
-            rio.hashVal = new HashMap<IRIO, IRIO>();
             long vars = load32(dis);
             for (long i = 0; i < vars; i++) {
                 RubyIO k = loadValue(dis, objs, syms);
-                RubyIO v = loadValue(dis, objs, syms);
-                rio.hashVal.put(k, v);
+                loadValue(rio.addHashVal(k), dis, objs, syms);
             }
             if (b == '}')
-                rio.hashDefVal = loadValue(dis, objs, syms);
+                loadValue(rio.hashDefVal, dis, objs, syms);
         } else if (b == '[') {
+            rio.setArray();
             // 1756: Runs entry first thing after creating the array, nocareivar
             objs.add(rio);
             rio.arrVal = new RubyIO[(int) load32(dis)];
@@ -353,15 +358,15 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             byte[] data = new byte[(int) len];
             if (dis.read(data) != len)
                 throw new IOException("Didn't read all of data");
-            rio.symVal = new String(data, Charset.forName("UTF-8"));
-            syms.add(rio.symVal);
+            String str = new String(data, Charset.forName("UTF-8"));
+            rio.setSymbol(str);
+            syms.add(str);
         } else if (b == ';') {
             // 1969, Never performs an entry, nocareivar
-            rio.type = ':';
-            rio.symVal = syms.get((int) load32(dis));
+            rio.setSymbol(syms.get((int) load32(dis)));
         } else if (b == 'i') {
             // Never performs an entry, nocareivar
-            rio.fixnumVal = load32(dis);
+            rio.setFX(load32(dis));
         } else if (b == '"') {
             // 1715, nocareivar, just runs entry.
             objs.add(rio);
@@ -369,6 +374,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             byte[] data = new byte[(int) len];
             if (dis.read(data) != len)
                 throw new IOException("Didn't read all of data");
+            rio.setStringNoEncodingIVars();
             rio.userVal = data;
         } else if (b == 'f') {
             objs.add(rio);
@@ -376,7 +382,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             byte[] data = new byte[(int) len];
             if (dis.read(data) != len)
                 throw new IOException("Didn't read all of data");
-            rio.userVal = data;
+            rio.setFloat(data);
         } else if (b == 'l') {
             objs.add(rio);
             byte posneg = dis.readByte();
@@ -388,18 +394,22 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             data[0] = posneg;
             if (dis.read(data, 1, len) != len)
                 throw new IOException("Didn't read all of data");
-            rio.userVal = data;
+            rio.setBignum(data);
         } else if (b == 'u') {
             // 1832, performs ivars before entry.
             shouldWriteObjCacheLate = true;
-            rio.symVal = loadValue(dis, objs, syms).symVal;
-            rio.userVal = new byte[(int) load32(dis)];
-            if (dis.read(rio.userVal) != rio.userVal.length)
+            String str = loadValue(dis, objs, syms).getSymbol();
+            byte[] userData = new byte[(int) load32(dis)];
+            if (dis.read(userData) != userData.length)
                 throw new IOException("Interrupted Userval");
+            rio.setUser(str, userData);
             // The following 3 just don't add themselves to the object table
         } else if (b == 'T') {
+            rio.setBool(true);
         } else if (b == 'F') {
+            rio.setBool(false);
         } else if (b == '0') {
+            rio.setNull();
         } else {
             // Unknown Marshal value. This implies we totally desynced.
             int cA = dis.read();
@@ -414,11 +424,10 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             for (long i = 0; i < vars; i++) {
                 RubyIO k = loadValue(dis, objs, syms);
                 RubyIO v = loadValue(dis, objs, syms);
-                rio.addIVar(k.symVal, v);
+                rio.addIVar(k.getSymbol(), v);
             }
         }
         if (shouldWriteObjCacheLate)
             objs.add(rio);
-        return rio;
     }
 }

@@ -68,7 +68,7 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO> {
     private RubyIO loadStageTBL(InputStream inp) throws IOException {
         int stages = inp.available() / 200;
         RubyIO rio = new RubyIO();
-        rio.type = '[';
+        rio.setArray();
         RubyIO[] stageArray = new RubyIO[stages];
         rio.arrVal = stageArray;
         for (int i = 0; i < stageArray.length; i++) {
@@ -168,7 +168,7 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO> {
         for (IRIO rio : o.arrVal) {
             writeFixedFormatString(baos, rio.getIVar("@tileset"), 0x20);
             writeFixedFormatString(baos, rio.getIVar("@filename"), 0x20);
-            int backgroundScroll = (int) o.getIVar("@background_scroll").fixnumVal;
+            int backgroundScroll = (int) o.getIVar("@background_scroll").getFX();
             baos.write(backgroundScroll);
             baos.write(backgroundScroll >> 8);
             baos.write(backgroundScroll >> 16);

@@ -110,8 +110,7 @@ public class UIEnumChoice extends App.Prx {
                 public void run() {
                     if (!wantsSelfClose) {
                         RubyIO rio = new RubyIO();
-                        rio.type = ':';
-                        rio.symVal = nb.text;
+                        rio.setSymbol(nb.text);
                         result.accept(rio);
                     }
                     wantsSelfClose = true;

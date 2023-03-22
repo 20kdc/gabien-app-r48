@@ -108,7 +108,7 @@ public class PagerArrayInterface implements IArrayInterface {
                     @Override
                     public void run() {
                         RubyIO rio = new RubyIO();
-                        rio.type = '[';
+                        rio.setArray();
 
                         rio.arrVal = new IRIO[copyMe.length];
                         for (int j = 0; j < copyMe.length; j++)

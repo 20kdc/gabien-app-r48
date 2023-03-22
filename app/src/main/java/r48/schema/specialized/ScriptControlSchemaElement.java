@@ -212,7 +212,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
             }
 
             RubyIO scr = new RubyIO();
-            scr.type = '[';
+            scr.setArray();
             scr.arrVal = new RubyIO[3];
             scr.arrVal[0] = new RubyIO().setFX(0);
             scr.arrVal[1] = new RubyIO().setString(s, false);
@@ -231,7 +231,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
         }
         br.close();
         RubyIO scriptsArrayFinal = new RubyIO();
-        scriptsArrayFinal.type = '[';
+        scriptsArrayFinal.setArray();
         scriptsArrayFinal.arrVal = scripts.toArray(new RubyIO[0]);
         return scriptsArrayFinal;
     }

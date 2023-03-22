@@ -218,7 +218,7 @@ public class StandardArrayInterface implements IArrayInterface {
             private void copyRange(int fixedStart, int fixedEnd) {
                 // the clipboard is very lenient...
                 RubyIO rio = new RubyIO();
-                rio.type = '[';
+                rio.setArray();
 
                 LinkedList<RubyIO> resBuild = new LinkedList<RubyIO>();
                 for (int j = fixedStart; j <= fixedEnd; j++)

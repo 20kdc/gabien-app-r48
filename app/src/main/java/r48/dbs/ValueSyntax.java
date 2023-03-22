@@ -32,8 +32,7 @@ public class ValueSyntax {
             return new RubyIO().setString(unescape.substring(1), true);
         } else if (unescape.startsWith(":")) {
             RubyIO sym = new RubyIO();
-            sym.type = ':';
-            sym.symVal = unescape.substring(1);
+            sym.setSymbol(unescape.substring(1));
             return sym;
         } else {
             long i = Long.parseLong(unescape);

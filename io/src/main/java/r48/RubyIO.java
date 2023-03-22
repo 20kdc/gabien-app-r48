@@ -38,19 +38,19 @@ public class RubyIO extends IRIO {
      * [       : arrVal
      * l       : userVal (first byte is the +/- byte, remainder is data)
      */
-    public int type;
-    public String symVal;
+    private int type;
+    private String symVal;
     // Reduced for memory usage. *sigh*
     // public HashMap<String, RubyIO> iVars = new HashMap<String, RubyIO>();
-    public String[] iVarKeys;
-    public RubyIO[] iVarVals;
+    private String[] iVarKeys;
+    private RubyIO[] iVarVals;
     public HashMap<IRIO, IRIO> hashVal;
     public RubyIO hashDefVal;
     public IRIO[] arrVal;
     // actual meaning depends on iVars.
     // For string-likes (f, "): Should be treated as immutable - replace strVal on change
     public byte[] userVal;
-    public long fixnumVal;
+    private long fixnumVal;
 
     public RubyIO() {
 

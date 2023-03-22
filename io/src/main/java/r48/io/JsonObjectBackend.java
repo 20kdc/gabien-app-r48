@@ -12,6 +12,7 @@ import r48.RubyIO;
 import r48.io.data.IRIO;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 /**
@@ -91,7 +92,7 @@ public class JsonObjectBackend extends OldObjectBackend<RubyIO> {
                 if (n.equals("]")) {
                     tokens.removeFirst();
                     RubyIO arr = new RubyIO().setNull();
-                    arr.type = '[';
+                    arr.setArray();
                     arr.arrVal = new RubyIO[array.size()];
                     for (int i = 0; i < arr.arrVal.length; i++)
                         arr.arrVal[i] = array.removeFirst();
@@ -111,8 +112,8 @@ public class JsonObjectBackend extends OldObjectBackend<RubyIO> {
         float f = Float.parseFloat(n);
         if ((((long) f) == f) && (!n.contains(".")))
             return new RubyIO().setFX((long) f);
-        RubyIO str = new RubyIO().setString(n, true);
-        str.type = 'f';
+        RubyIO str = new RubyIO();
+        str.setFloat(n.getBytes(StandardCharsets.UTF_8));
         return str;
     }
 

@@ -12,10 +12,10 @@ import r48.io.data.IRIO;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Various functions moved here because IMI automatic cleanup may/will target the r2k package.
@@ -95,11 +95,9 @@ public class IntUtils {
         }
         try {
             Double.parseDouble(text);
-            target.setFloat(text.getBytes("UTF-8"));
+            target.setFloat(text.getBytes(StandardCharsets.UTF_8));
             return true;
         } catch (NumberFormatException e) {
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
         }
         return false;
     }

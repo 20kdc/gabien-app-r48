@@ -59,12 +59,13 @@ public class HashSchemaElement extends SchemaElement {
             }
         });
 
-        if (keyWorkspace.type == 'i') {
+        if (keyWorkspace.getType() == 'i') {
             while (target.getHashVal(keyWorkspace) != null) {
                 // Try adding 1
-                long plannedVal = ++keyWorkspace.fixnumVal;
+                long plannedVal = keyWorkspace.getFX() + 1;
+                keyWorkspace.setFX(plannedVal);
                 keyElem.modifyVal(keyWorkspace, rioPath, false);
-                if ((keyWorkspace.type != 'i') || (keyWorkspace.fixnumVal != plannedVal)) {
+                if ((keyWorkspace.getType() != 'i') || (keyWorkspace.getFX() != plannedVal)) {
                     // Let's not try that again
                     break;
                 }

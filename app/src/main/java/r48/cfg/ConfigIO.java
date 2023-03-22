@@ -24,8 +24,7 @@ public class ConfigIO {
 
     public static void save(Config c) {
         RubyIO prepare = new RubyIO();
-        prepare.type = 'o';
-        prepare.symVal = "R48::FontConfig";
+        prepare.setObject("R48::FontConfig");
         for (FontSizeField fsf : c.f.getFields())
             prepare.addIVar("@" + fsf.configID, new RubyIO().setFX(fsf.get()));
 
@@ -63,7 +62,7 @@ public class ConfigIO {
             for (FontSizeField fsf : c.f.getFields()) {
                 RubyIO f = dat.getInstVarBySymbol("@" + fsf.configID);
                 if (f != null) {
-                    fsf.accept((int) f.fixnumVal);
+                    fsf.accept((int) f.getFX());
                 } else {
                     if (fsf.configID.equals("imageEditorTextHeight"))
                         shouldResetIETH = true;
@@ -85,7 +84,7 @@ public class ConfigIO {
             }
             RubyIO sys2 = dat.getInstVarBySymbol("@sysfont_ue8");
             if (sys2 != null)
-                c.fontOverrideUE8 = sys2.type == 'T';
+                c.fontOverrideUE8 = sys2.getType() == 'T';
             // old paths
             RubyIO sys3 = dat.getInstVarBySymbol("@secondary_images");
             if (sys3 != null)
@@ -109,13 +108,13 @@ public class ConfigIO {
             // ...
             RubyIO sys5 = dat.getInstVarBySymbol("@theme_variant");
             if (sys5 != null)
-                c.borderTheme = (int) sys5.fixnumVal;
+                c.borderTheme = (int) sys5.getFX();
             RubyIO sys6 = dat.getInstVarBySymbol("@actual_blending");
             if (sys6 != null)
-                c.allowBlending = sys6.type == 'T';
+                c.allowBlending = sys6.getType() == 'T';
             RubyIO sys7 = dat.getInstVarBySymbol("@windowing_external");
             if (sys7 != null)
-                c.windowingExternal = sys7.type == 'T';
+                c.windowingExternal = sys7.getType() == 'T';
             return true;
         } else if (first) {
             c.fontOverride = GaBIEn.getFontOverrides()[0];
