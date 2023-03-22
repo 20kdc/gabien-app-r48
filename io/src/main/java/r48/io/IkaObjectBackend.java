@@ -21,7 +21,7 @@ import java.io.OutputStream;
 /**
  * Created on 1/27/17.
  */
-public class IkaObjectBackend extends OldObjectBackend<IkaMap> {
+public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
 
     private String root;
 

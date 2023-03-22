@@ -275,12 +275,12 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
             system.addIVar("@save_count_2k3en").setFX(0);
         if (system.getIVar("@menu_commands_2k3") == null) {
             IRIO mc23 = system.addIVar("@menu_commands_2k3");
-            mc23.setArray();
-            mc23.addAElem(0).setFX(5);
-            mc23.addAElem(1).setFX(1);
-            mc23.addAElem(2).setFX(2);
-            mc23.addAElem(3).setFX(3);
-            mc23.addAElem(4).setFX(4);
+            mc23.setArray(5);
+            mc23.getAElem(0).setFX(5);
+            mc23.getAElem(1).setFX(1);
+            mc23.getAElem(2).setFX(2);
+            mc23.getAElem(3).setFX(3);
+            mc23.getAElem(4).setFX(4);
         }
     }
 }

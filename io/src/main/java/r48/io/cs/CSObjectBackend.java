@@ -24,7 +24,7 @@ import java.io.OutputStream;
  * This is now the only thing remaining out of the CSOEdit experiment.
  * Created on May 11th 2018.
  */
-public class CSObjectBackend extends OldObjectBackend<RubyIO> {
+public class CSObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
     public String pfx;
 
     public CSObjectBackend(String prefix) {
@@ -68,7 +68,7 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO> {
     private RubyIO loadStageTBL(InputStream inp) throws IOException {
         int stages = inp.available() / 200;
         RubyIO rio = new RubyIO();
-        rio.setArray();
+        rio.setArray(stages);
         for (int i = 0; i < stages; i++) {
             RubyIO tileset = loadFixedFormatString(inp, 0x20);
             RubyIO filename = loadFixedFormatString(inp, 0x20);
@@ -82,7 +82,7 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO> {
             int boss = inp.read();
             RubyIO name = loadFixedFormatString(inp, 0x23);
 
-            IRIO rio2 = rio.addAElem(i).setObject("Stage");
+            IRIO rio2 = rio.getAElem(i).setObject("Stage");
             rio2.addIVar("@tileset").setDeepClone(tileset);
             rio2.addIVar("@filename").setDeepClone(filename);
             rio2.addIVar("@background_scroll").setFX(backgroundScroll);

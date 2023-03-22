@@ -72,6 +72,11 @@ public abstract class IRIOFixed extends IRIO {
     }
 
     @Override
+    public IRIO setArray(int length) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public IRIO setObject(String symbol) {
         throw new UnsupportedOperationException(getClass() + " can't be set to object of symbol " + symbol);
     }

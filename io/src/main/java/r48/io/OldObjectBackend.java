@@ -8,6 +8,7 @@
 package r48.io;
 
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 
 import java.io.IOException;
 
@@ -15,10 +16,10 @@ import java.io.IOException;
  * A simpler object backend interface that's somewhat less typesafe (but oh well)
  * Created on November 21, 2018.
  */
-public abstract class OldObjectBackend<O extends IRIO> implements IObjectBackend {
+public abstract class OldObjectBackend<R extends RORIO, W extends IRIO> implements IObjectBackend {
     @Override
     public ILoadedObject loadObject(String filename) {
-        O rio = loadObjectFromFile(filename);
+        W rio = loadObjectFromFile(filename);
         if (rio == null)
             return null;
         return new OldObjectBackendLoadedObject(rio, filename);
@@ -29,11 +30,11 @@ public abstract class OldObjectBackend<O extends IRIO> implements IObjectBackend
         return new OldObjectBackendLoadedObject(newObjectO(filename), filename);
     }
 
-    public abstract O newObjectO(String filename);
+    public abstract W newObjectO(String filename);
 
-    public abstract O loadObjectFromFile(String filename);
+    public abstract W loadObjectFromFile(String filename);
 
-    public abstract void saveObjectToFile(String filename, O obj) throws IOException;
+    public abstract void saveObjectToFile(String filename, R obj) throws IOException;
 
     @Override
     public String userspaceBindersPrefix() {
@@ -41,10 +42,10 @@ public abstract class OldObjectBackend<O extends IRIO> implements IObjectBackend
     }
 
     private class OldObjectBackendLoadedObject implements ILoadedObject {
-        private O intern;
+        private W intern;
         private final String fn;
 
-        public OldObjectBackendLoadedObject(O rio, String filename) {
+        public OldObjectBackendLoadedObject(W rio, String filename) {
             intern = rio;
             fn = filename;
         }
@@ -54,9 +55,10 @@ public abstract class OldObjectBackend<O extends IRIO> implements IObjectBackend
             return intern;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public void save() throws IOException {
-            saveObjectToFile(fn, intern);
+            saveObjectToFile(fn, (R) intern);
         }
 
         @SuppressWarnings("unchecked")

@@ -95,6 +95,13 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     }
 
     @Override
+    public IRIO setArray(int length) {
+        target.setArray(length);
+        nulled = false;
+        return this;
+    }
+
+    @Override
     public IRIO setObject(String symbol) {
         target.setObject(symbol);
         nulled = false;

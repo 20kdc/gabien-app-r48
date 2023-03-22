@@ -10,6 +10,7 @@ package r48.io;
 import gabien.GaBIEn;
 import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.files.DatabaseIO;
 import r48.io.r2k.files.MapIO;
@@ -29,7 +30,7 @@ import java.io.OutputStream;
  * A beginning?
  * Created on 30/05/17.
  */
-public class R2kObjectBackend extends OldObjectBackend<IRIO> {
+public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public final String root;
 
     public R2kObjectBackend(String rootPath) {
@@ -110,7 +111,7 @@ public class R2kObjectBackend extends OldObjectBackend<IRIO> {
     }
 
     @Override
-    public void saveObjectToFile(String filename, IRIO object) throws IOException {
+    public void saveObjectToFile(String filename, RORIO object) throws IOException {
         filename = root + filename;
         String str = PathUtils.autoDetectWindows(filename);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

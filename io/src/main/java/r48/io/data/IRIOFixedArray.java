@@ -23,6 +23,14 @@ public abstract class IRIOFixedArray<T extends IRIO> extends IRIOFixed {
         return this;
     }
 
+    @Override
+    public IRIO setArray(int length) {
+        arrVal = new IRIO[length];
+        for (int i = 0; i < length; i++)
+            arrVal[i] = newValue();
+        return this;
+    }
+
     public abstract T newValue();
 
     @Override

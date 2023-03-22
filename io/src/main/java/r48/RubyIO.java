@@ -178,6 +178,16 @@ public class RubyIO extends IRIO {
     }
 
     @Override
+    public IRIO setArray(int length) {
+        setArray();
+        if (length != 0)
+            arrVal = new RubyIO[length];
+        for (int i = 0; i < length; i++)
+            arrVal[i] = new RubyIO();
+        return this;
+    }
+
+    @Override
     public IRIO setObject(String symbol) {
         return setSymlike(symbol, true);
     }

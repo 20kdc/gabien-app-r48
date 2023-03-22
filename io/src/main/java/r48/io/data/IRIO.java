@@ -54,7 +54,15 @@ public abstract class IRIO extends RORIO {
 
     public abstract IRIO setHashWithDef();
 
+    /**
+     * Sets to an empty array.
+     */
     public abstract IRIO setArray();
+
+    /**
+     * Sets to an array of a given size. Destroys existing data.
+     */
+    public abstract IRIO setArray(int length);
 
     public abstract IRIO setObject(String symbol);
 
@@ -144,18 +152,10 @@ public abstract class IRIO extends RORIO {
         } else if (type == 'l') {
             setBignum(copyByteArray(clone.getBuffer()));
         } else if (type == '[') {
-            setArray();
-            int myi = getALen();
             int ai = clone.getALen();
-            for (int i = 0; i < ai; i++) {
-                IRIO ir;
-                if (myi <= i) {
-                    ir = addAElem(i);
-                } else {
-                    ir = getAElem(i);
-                }
-                ir.setDeepClone(clone.getAElem(i));
-            }
+            setArray(ai);
+            for (int i = 0; i < ai; i++)
+                getAElem(i).setDeepClone(clone.getAElem(i));
         } else if ((type == '{') || (type == '}')) {
             if (type == '{') {
                 setHash();

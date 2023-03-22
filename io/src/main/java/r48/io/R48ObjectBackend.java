@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.uslx.append.HexByteEncoding;
 import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -18,10 +19,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
- * NOTE! Additions to what this code writes need to be replicated in luahead or LS-mode needs to disable them
  * Created on 1/27/17.
  */
-public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
+public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     private final String prefix, postfix;
 
     public R48ObjectBackend(String s, String dataExt) {
@@ -152,8 +152,8 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
                 throw new IOException("mgk[0]!=0x04");
             if (dis.readUnsignedByte() != 0x08)
                 throw new IOException("mgk[1]!=0x08");
-            LinkedList<RubyIO> objCache = new LinkedList<RubyIO>();
-            LinkedList<String> strCache = new LinkedList<String>();
+            LinkedList<IRIO> objCache = new LinkedList<>();
+            LinkedList<String> strCache = new LinkedList<>();
             loadValue(rio, dis, objCache, strCache);
             dis.close();
             return rio;
@@ -165,7 +165,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
     }
 
     @Override
-    public void saveObjectToFile(String filename, RubyIO object) throws IOException {
+    public void saveObjectToFile(String filename, RORIO object) throws IOException {
         OutputStream oup = GaBIEn.getOutFile(PathUtils.autoDetectWindows(prefix + filename + postfix));
         if (oup == null)
             throw new IOException("Unable to open file!");
@@ -210,7 +210,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
         }
     }
 
-    private void saveValue(DataOutputStream dis, IRIO rio, SaveCaches caches) throws IOException {
+    private void saveValue(DataOutputStream dis, RORIO rio, SaveCaches caches) throws IOException {
         // Deduplicatables
         int b = rio.getType();
         // there used to be code that wrote @ here, but seeing as we haven't been crosslinking symbols for ages...
@@ -269,11 +269,11 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             saveIVarsCore(dis, rio, caches);
     }
 
-    private void saveHashCore(DataOutputStream dis, IRIO content, SaveCaches caches) throws IOException {
+    private void saveHashCore(DataOutputStream dis, RORIO content, SaveCaches caches) throws IOException {
         // damned if you do (IDE warning), damned if you don't (compiler warning).
-        IRIO[] me = content.getHashKeys();
+        RORIO[] me = content.getHashKeys();
         save32(dis, me.length);
-        for (IRIO cKey : me) {
+        for (RORIO cKey : me) {
             try {
                 saveValue(dis, cKey, caches);
                 saveValue(dis, content.getHashVal(cKey), caches);
@@ -283,7 +283,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
         }
     }
 
-    private void saveIVarsCore(DataOutputStream dis, IRIO iVars, SaveCaches caches) throws IOException {
+    private void saveIVarsCore(DataOutputStream dis, RORIO iVars, SaveCaches caches) throws IOException {
         String[] iVarKeys = iVars.getIVars();
         if (iVarKeys == null) {
             save32(dis, 0);
@@ -301,12 +301,12 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
         }
     }
 
-    private RubyIO loadValue(DataInputStream dis, LinkedList<RubyIO> objs, LinkedList<String> syms) throws IOException {
+    private RubyIO loadValue(DataInputStream dis, LinkedList<IRIO> objs, LinkedList<String> syms) throws IOException {
         RubyIO rio = new RubyIO();
         loadValue(rio, dis, objs, syms);
         return rio;
     }
-    private void loadValue(RubyIO rio, DataInputStream dis, LinkedList<RubyIO> objs, LinkedList<String> syms) throws IOException {
+    private void loadValue(IRIO rio, DataInputStream dis, LinkedList<IRIO> objs, LinkedList<String> syms) throws IOException {
         int b = dis.readUnsignedByte();
         // r_entry0 is responsible for adding into the object cache.
         boolean handlingInstVars = false;
@@ -347,14 +347,14 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
                 loadValue(rio.addHashVal(k), dis, objs, syms);
             }
             if (b == '}')
-                loadValue(rio.hashDefVal, dis, objs, syms);
+                loadValue(rio.getHashDefVal(), dis, objs, syms);
         } else if (b == '[') {
-            rio.setArray();
             // 1756: Runs entry first thing after creating the array, nocareivar
             objs.add(rio);
-            rio.arrVal = new RubyIO[(int) load32(dis)];
-            for (long i = 0; i < rio.arrVal.length; i++)
-                rio.arrVal[(int) i] = loadValue(dis, objs, syms);
+            int arrLen = (int) load32(dis);
+            rio.setArray(arrLen);
+            for (int i = 0; i < arrLen; i++)
+                loadValue(rio.getAElem(i), dis, objs, syms);
         } else if (b == ':') {
             // 1957, Never performs an entry, explicitly cancels out iVar
             handlingInstVars = false;

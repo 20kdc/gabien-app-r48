@@ -43,6 +43,13 @@ public class BattleParamBlock extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
+    public IRIO setArray(int length) {
+        if (length != array.length)
+            throw new UnsupportedOperationException();
+        return setArray();
+    }
+
+    @Override
     public void importData(InputStream bais) throws IOException {
         for (int i = 0; i < array.length; i++)
             array[i].val = IntUtils.readU16(bais);

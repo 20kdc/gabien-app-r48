@@ -48,10 +48,10 @@ public class ConfigIO {
     }
 
     private static void encodeStringList(IRIO arr, LinkedList<String> values) {
-        arr.setArray();
+        arr.setArray(values.size());
         int idx = 0;
         for (String s : values) {
-            IRIO elm = arr.addAElem(idx++);
+            IRIO elm = arr.getAElem(idx++);
             setString(elm, s);
         }
     }
