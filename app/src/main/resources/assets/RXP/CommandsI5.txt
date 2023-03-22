@@ -44,7 +44,7 @@ C category 3
 p opacity opacity
 p duration int
 
-207: Show Animation!.$
+207: "Show Animation" ($ " on " ]0 character_id) ($ ": " ]1 animation_id)
 C category 3
 p event character_id
 p anim animation_id
@@ -53,7 +53,7 @@ p anim animation_id
 C category 2
 p opaque int_boolean
 
-209: Set event$ route$
+209: "Set event" ($ " " ]0 character_id) " route" ($ " " ]1)
 C category 3
 p eID character_id
 p route RPG::MoveRoute
@@ -105,7 +105,7 @@ p power int
 p speed int
 p duration int
 
-231: Set/show picture$!
+231: "Set/show picture" ($ " " ]0) ($ " to " ]1)
 C category 3
 p pictureId int
 p image f_picture_name
@@ -120,7 +120,7 @@ p zoom_y zoom
 p opacity opacity
 p blendType blend_type
 
-232: Move picture$
+232: "Move picture" ($ " " ]0)
 C category 3
 p pictureId int
 p duration int
@@ -135,42 +135,42 @@ p zoom_y zoom
 p opacity opacity
 p blendType blend_type
 
-233: Rotate picture$
+233: "Rotate picture" ($ " " ]0)
 C category 3
 p pictureId int
 p speed int
 
-234: Change picture$ tone!$
+234: "Change picture" ($ " " ]0) " tone" ($ " to " ]1) ($ " " ]2)
 C category 3
 p pictureId int
 p picTone1 Tone
 p picTone2 int
 
-235: Erase picture$
+235: "Erase picture" ($ " " ]0)
 C category 3
 p pictureId int
 
-236: Weather set!
+236: "Weather set" ($ " to " ]0 weather_type)
 C category 3
 p type weather_type
 p power int
 p fadeDuration int
 
-241: Set BGM!
+241: "Set BGM" ($ " to " ]0)
 C category 5
 p track RPG::AudioFile
 
-242: Fade out BGM over$ seconds
+242: "Fade out BGM over" ($ " " ]0) " seconds"
 C category 5
 p seconds int
 
  [ gap here, perfectly fine ]
 
-245: Set BGS!
+245: "Set BGS" ($ " to " ]0)
 C category 5
 p track RPG::AudioFile
 
-246: Fade out BGS over$ seconds
+246: "Fade out BGS over" ($ " " ]0) " seconds"
 C category 5
 p seconds int
 
@@ -180,11 +180,11 @@ C category 5
 248: "Start BGM/BGS from backup"
 C category 5
 
-249: Play ME$
+249: "Play ME" ($ " " ]0)
 C category 5
 p track RPG::AudioFile
 
-250: Play SE$
+250: "Play SE" ($ " " ]0)
 C category 5
 p track RPG::AudioFile
 

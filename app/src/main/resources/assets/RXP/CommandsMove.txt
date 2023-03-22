@@ -10,111 +10,30 @@
 d Mostly harmless.
 L
 
-1: "Move South 1 Tile"
-d Move a tile in the indicated direction!
-2: "Move West 1 Tile"
-d Move a tile in the indicated direction!
-3: "Move East 1 Tile"
-d Move a tile in the indicated direction!
-4: "Move North 1 Tile"
-d Move a tile in the indicated direction!
-5: "Move South-West 1 Tile"
-d Move a tile in the indicated direction!
-6: "Move South-East 1 Tile"
-d Move a tile in the indicated direction!
-7: "Move North-West 1 Tile"
-d Move a tile in the indicated direction!
-8: "Move North-East 1 Tile"
-d Move a tile in the indicated direction!
-9: "Move randomly"
-d Move a tile in a random direction!
-10: "Approach player"
-d Move a tile towards the player.
-11: "Flee player"
-d Move a tile away from the player.
-12: "Step forward"
-d Move a tile forward.
-13: "Step backward"
-d Move a tile backward.
-14: Jump To Ofs.$
-d Jump somewhere!
-p ofsX int
-p ofsY int
-15: Wait$
-d Wait some time.
-p time int
-16: "Turn to South"
-d Turn to the indicated direction!
-17: "Turn to West"
-d Turn to the indicated direction!
-18: "Turn to East"
-d Turn to the indicated direction!
-19: "Turn to North"
-d Turn to the indicated direction!
-20: Turn 90-deg right (clockwise)
-d Turn clockwise!
-21: Turn 90-deg left (anti-clockwise)
-d Turn anti-clockwise!
-22: Turn 180-deg around
-d Turn to the opposite direction.
-23: Turn 90-deg left or right (random)
-d Turn clockwise or anti-clockwise.
-24: Turn to random direction
-d Turn to a random direction.
-25: Turn to approach player
-d Turn to follow the player.
-26: Turn to flee player
-d Turn to evade the player.
+# RCOM/CommonMove.txt
 
  I am now very glad I reused the EventCommand code for this
 
-27: Switch$ on
-d Turns a switch on.
-p switch switch_id
-28: Switch$ off
-d Turns a switch off.
-p switch switch_id
-29: Set Speed$
-d Changes the @move_speed.
-p newSpeed int
-30: Set Freq.$
-d Changes the @move_freq.
-p newFreq int
-31: "Animate movement"
-d ...
-32: "Don't animate movement"
-d ...
-33: "Step animation(?)"
-d ...
-34: "No step animation"
-d ...
-35: "Fixed direction"
-d ...
-36: "Disable fixed direction"
-d ...
-37: "No collision"
-d ...
-38: "Collision On"
-d ...
 39: "Ignore Z Depth On"
 d ...
 40: "Ignore Z Depth Off"
 d ...
-41:@@Set Graphic{A: to #A:#D, facing #C}
+
+41:@@Set graphic{A: to #A:#D, facing #C}
 d Changes the graphics of this event.
 p name f_char_name
 p hue hue
 p dir direction
 p pattern int
-42: Set Opacity!
+
+42: "Set opacity" ($ " to " ]0 opacity)
 d Changes the opacity of this event.
 p opacity opacity
-43: Change blend_type!
+
+43: "Change blend_type" ($ " to " ]0 blend_type)
 d Changes the @blend_type of this event.
 p blendType blend_type
-44: Play SE$
+
+44: "Play SE" ($ " " ]0)
 d Plays a sound effect.
 p audio RPG::AudioFile
-45: Ruby$
-d Executes some Ruby code.
-p code string

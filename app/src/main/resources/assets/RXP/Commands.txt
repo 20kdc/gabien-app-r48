@@ -57,7 +57,7 @@
 
 C categories "1 - Text" "2 - Flow" "3 - Party" "4 - Map" "5 - Battle" "6 - Misc"
 
-0: >> insert point
+0: ">> insert point"
 d An insertion point. This acts as something to replace to add new commands.
 L
 
