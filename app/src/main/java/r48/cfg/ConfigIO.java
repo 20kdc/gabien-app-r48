@@ -101,13 +101,13 @@ public class ConfigIO {
             RubyIO sys3a = dat.getIVar("@secondary_images_list");
             if (sys3a != null) {
                 c.secondaryImageLoadLocationBackup.clear();
-                for (IRIO rio : sys3a.arrVal)
+                for (IRIO rio : sys3a.getANewArray())
                     c.secondaryImageLoadLocationBackup.add(rio.decString());
             }
             RubyIO sys4a = dat.getIVar("@saved_rootpath_list");
             if (sys4a != null) {
                 c.rootPathBackup.clear();
-                for (IRIO rio : sys4a.arrVal)
+                for (IRIO rio : sys4a.getANewArray())
                     c.rootPathBackup.add(rio.decString());
             }
             // ...

@@ -81,7 +81,7 @@ public class JsonObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
             }
         }
         if (n.equals("[")) {
-            LinkedList<RubyIO> array = new LinkedList<RubyIO>();
+            RubyIO array = new RubyIO().setArray();
             // comma policy is very liberal here since it's never ambiguous
             while (true) {
                 n = tokens.getFirst();
@@ -91,14 +91,9 @@ public class JsonObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
                 }
                 if (n.equals("]")) {
                     tokens.removeFirst();
-                    RubyIO arr = new RubyIO().setNull();
-                    arr.setArray();
-                    arr.arrVal = new RubyIO[array.size()];
-                    for (int i = 0; i < arr.arrVal.length; i++)
-                        arr.arrVal[i] = array.removeFirst();
-                    return arr;
+                    return array;
                 }
-                array.add(loadFromTokens(tokens));
+                array.addAElem(array.getALen()).setDeepClone(loadFromTokens(tokens));
             }
         }
         if (n.equals("true"))

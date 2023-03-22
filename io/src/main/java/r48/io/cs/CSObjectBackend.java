@@ -162,7 +162,7 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
     }
 
     private void saveStageTBL(ByteArrayOutputStream baos, RubyIO o) throws IOException {
-        for (IRIO rio : o.arrVal) {
+        for (IRIO rio : o.getANewArray()) {
             writeFixedFormatString(baos, rio.getIVar("@tileset"), 0x20);
             writeFixedFormatString(baos, rio.getIVar("@filename"), 0x20);
             int backgroundScroll = (int) o.getIVar("@background_scroll").getFX();

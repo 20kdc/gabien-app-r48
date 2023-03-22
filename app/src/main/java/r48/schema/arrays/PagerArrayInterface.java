@@ -108,11 +108,10 @@ public class PagerArrayInterface implements IArrayInterface {
                     @Override
                     public void run() {
                         RubyIO rio = new RubyIO();
-                        rio.setArray();
+                        rio.setArray(copyMe.length);
 
-                        rio.arrVal = new IRIO[copyMe.length];
                         for (int j = 0; j < copyMe.length; j++)
-                            rio.arrVal[j] = new RubyIO().setDeepClone(copyMe[j]);
+                            rio.getAElem(j).setDeepClone(copyMe[j]);
 
                         app.theClipboard = rio;
                     }

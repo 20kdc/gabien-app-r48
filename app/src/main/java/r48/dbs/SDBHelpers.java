@@ -203,10 +203,9 @@ class SDBHelpers extends App.Svc {
                     }
                 }
                 RubyIO base = new RubyIO();
-                base.setArray();
-                base.arrVal = new RubyIO[2];
-                base.arrVal[0] = new RubyIO().setFX(type);
-                base.arrVal[1] = new RubyIO().setFX(t);
+                base.setArray(2);
+                base.getAElem(0).setFX(type);
+                base.getAElem(1).setFX(t);
                 return base;
             }
 
@@ -259,10 +258,9 @@ class SDBHelpers extends App.Svc {
                     type++;
                 }
                 RubyIO base = new RubyIO();
-                base.setArray();
-                base.arrVal = new RubyIO[2];
-                base.arrVal[0] = new RubyIO().setFX(type);
-                base.arrVal[1] = new RubyIO().setFX(t);
+                base.setArray(2);
+                base.getAElem(0).setFX(type);
+                base.getAElem(1).setFX(t);
                 return base;
             }
 

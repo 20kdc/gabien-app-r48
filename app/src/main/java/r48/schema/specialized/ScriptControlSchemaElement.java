@@ -24,7 +24,6 @@ import r48.schema.util.SchemaPath;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
@@ -190,7 +189,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
     private RubyIO importScripts() throws IOException {
         // A particular difference that's going to show up here is that empty-named or #-prefixed files won't get removed.
         // This way, the conversion is bi-directional.
-        LinkedList<RubyIO> scripts = new LinkedList<RubyIO>();
+        RubyIO scripts = new RubyIO();
         InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
         if (inp == null) {
             app.ui.launchDialog(T.z.l152);
@@ -211,13 +210,12 @@ public class ScriptControlSchemaElement extends SchemaElement {
                 ok = false;
             }
 
-            RubyIO scr = new RubyIO();
-            scr.setArray();
-            scr.arrVal = new RubyIO[3];
-            scr.arrVal[0] = new RubyIO().setFX(0);
-            scr.arrVal[1] = new RubyIO().setString(s, false);
+            RubyIO scr = scripts.addAElem(scripts.getALen());
+            scr.setArray(3);
+            scr.getAElem(0).setFX(0);
+            scr.getAElem(1).setString(s);
             DeflaterInputStream def = new DeflaterInputStream(new ByteArrayInputStream(new byte[0]));
-            scr.arrVal[2] = new RubyIO().setString(StringBlobSchemaElement.readStream(def), "UTF-8");
+            scr.getAElem(2).setString(StringBlobSchemaElement.readStream(def), "UTF-8");
             def.close();
             if (ok) {
                 byte[] data = loadScript(s);
@@ -225,15 +223,11 @@ public class ScriptControlSchemaElement extends SchemaElement {
                     app.ui.launchDialog(T.z.l153 + s);
                     return null;
                 }
-                scr.arrVal[2].putBuffer(data);
+                scr.getAElem(2).putBuffer(data);
             }
-            scripts.add(scr);
         }
         br.close();
-        RubyIO scriptsArrayFinal = new RubyIO();
-        scriptsArrayFinal.setArray();
-        scriptsArrayFinal.arrVal = scripts.toArray(new RubyIO[0]);
-        return scriptsArrayFinal;
+        return scripts;
     }
 
     private byte[] loadScript(String s) throws IOException {

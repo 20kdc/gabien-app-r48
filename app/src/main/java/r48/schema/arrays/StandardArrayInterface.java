@@ -220,12 +220,10 @@ public class StandardArrayInterface implements IArrayInterface {
                 RubyIO rio = new RubyIO();
                 rio.setArray();
 
-                LinkedList<RubyIO> resBuild = new LinkedList<RubyIO>();
                 for (int j = fixedStart; j <= fixedEnd; j++)
                     if (positions[j].elements != null)
                         for (IRIO rio2 : positions[j].elements)
-                            resBuild.add(new RubyIO().setDeepClone(rio2));
-                rio.arrVal = resBuild.toArray(new RubyIO[0]);
+                            rio.addAElem(rio.getALen()).setDeepClone(rio2);
                 app.theClipboard = rio;
             }
 
