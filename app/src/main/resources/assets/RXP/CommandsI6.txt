@@ -6,7 +6,7 @@
 
  [Interpreter Part 6]
 
-301: Start Battle (c.601/602/603/604)
+301: "Start Battle (c.601/602/603/604)"
 d Starts a battle. If one of the Battle Result Branch commands follows, then all of them should (allowing gaps for each branch).
 C category 4
 p troop troop_id
@@ -36,7 +36,7 @@ C category 0
 d Shop items. This gets followed by 605 additional items.
 X shop_items_parameters
 C groupBehavior messagebox 605
-605: Additional Item
+605: "Additional Item"
 C category 0
 d An additional item for 302. Otherwise pointless.
 X shop_items_parameters
@@ -70,14 +70,14 @@ p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int_default_10
 
-313: Change Actor$ State (remove$,state$)
+313: "Change Actor" ($ " " ]0) " State (remove" ($ " " ]1) ",state" ($ " " ]2) ")"
 d Adds/removes a state to/from actor/party.
 C category 2
 p actor iterate_actor
 p remove int_boolean
 p state state_id
 
-314: Full recovery!
+314: "Full recovery" ($ " to " ]0)
 d Fully recovers actor/party to full health and SP.
 C category 2
 p actor iterate_actor
@@ -113,14 +113,14 @@ p modIsVar int_boolean
 P 3 modVar var_id
 v 0 mod int_default_10
 
-318: Actor$ (Un =$)learn Skill$
+318: "Actor" ($ " " ]0 actor_id) " (Un =" ($ " " ]1) ")learn Skill" ($ " " ]2 skill_id)
 d Adds/removes a skill to/from an actor.
 C category 2
 p actor actor_id
 p unlearn boolean
 p skill skill_id
 
-319: Actor$ equips$$
+319: @@Actor{A: #A} equips{B: #B}{C: #C}
 d Adds/removes equipment to/from an actor. (If the equipment is not available, it is automatically given, but only if it is not already available.)
 C category 2
 p actor actor_id
@@ -132,19 +132,19 @@ v 2 equipArmour armour_id
 v 3 equipArmour armour_id
 v 4 equipArmour armour_id
 
-320: Rename Actor$!
+320: "Rename Actor" ($ " " ]0 actor_id)  ($ " to " ]1)
 d Forcefully renames an actor.
 C category 2
 p actor actor_id
 p newName string
 
-321: Reclass Actor$!
+321: "Reclass Actor" ($ " " ]0 actor_id)  ($ " to " ]1 class_id)
 d Changes the class of an actor.
 C category 2
 p actor actor_id
 p newClass class_id
 
-322: Change Actor$ Graphic!
+322: "Change Actor" ($ " " ]0 actor_id) " Graphic" ($ " to " ]1)
 d Changes the graphics of an actor.
 C category 2
 p actor actor_id
