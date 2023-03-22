@@ -25,7 +25,11 @@
 					(tr-dyn-cctx-focus ctx)
 					path
 				)
-				interp
+				; this is so interp can be a symbol
+				(if (eq? interp #nil)
+					#nil
+					(value->string interp)
+				)
 				prefix
 			)
 		)
@@ -68,7 +72,11 @@
 						(list
 							dm-fmt
 							'tmp$
-							interp
+							; this is so interp can be a symbol
+							(if (eq? interp #nil)
+								#nil
+								(value->string interp)
+							)
 							prefix
 						)
 					)

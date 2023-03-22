@@ -15,23 +15,23 @@ p canLose boolean
 
  Notably, these 4 are optional, but they always show up in a group of 4.
 
-601: Battle Result Branches Start: If Win
+601: "Battle Result Branches Start: If Win"
 C category 4
 I1
-602: Battle Result Branch: If Escape
-C category 4
-i-1
-I1
-603: Battle Result Branch: If Lose
+602: "Battle Result Branch: If Escape"
 C category 4
 i-1
 I1
-604: Battle Result Branches End
+603: "Battle Result Branch: If Lose"
+C category 4
+i-1
+I1
+604: "Battle Result Branches End"
 C category 4
 i-1
 
  These 2 have identical schemas
-302: Shop Items (c.605)
+302: "Shop Items (c.605)"
 C category 0
 d Shop items. This gets followed by 605 additional items.
 X shop_items_parameters

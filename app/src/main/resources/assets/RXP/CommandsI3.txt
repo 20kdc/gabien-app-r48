@@ -6,7 +6,7 @@
 
  [Interpreter Part 3]
 
-101: Say$
+101: "Say" ($ " " ]0)
 C category 0
 d Begins showing a message.
 C translatable
@@ -14,7 +14,7 @@ C textArg 0
 p text string
 C groupBehavior messagebox 401
 
-401: Say(Cont.)$
+401: "Say (cont.)" ($ " " ]0)
 C category 0
 d Continues a message.
 C textArg 0
@@ -43,7 +43,7 @@ I1
  Er, right, to myself who might have thought up a solution to the conundrum,
   it got resolved with the introduction of the 'K' command, which acts as 'l' but adds an exception.
 
-402: When Choice =$
+402: "When Choice ="($ " " ]0)
 C category 0
 d Within a choice block, contains the code for a specific choice.
 p choice int
@@ -53,20 +53,20 @@ i-1
 I1
 K102
 
-403: When cancelled (idx 4)
+403: "When cancelled (idx 4)"
 C category 0
 d Within a choice block, contains the code for if the cancel button is pressed.
 i-1
 I1
 K102
 
-404: End Choice
+404: "End Choice"
 C category 0
 d Ends a choice block.
 i-1
 K102
 
-103: Input Number!
+103: "Input Number" ($ " to " ]0)
 C category 0
 d Asks the player to input a number, and store the result in a variable.
 p varId var_id
@@ -78,12 +78,12 @@ d Changes the settings used to display text.
 p position change_text_options_position
 p frameTransparent int_boolean
 
-105: Button Input!
+105: "Button Input" ($ " to " ]0)
 C category 5
 d Stores a pressed button in a variable.
 p varId var_id
 
-106: Wait$
+106: "Wait" ($ " " ]0)
 C category 5
 d Waits some amount of time.
 p time int
@@ -96,30 +96,30 @@ p type conditional_branch_types
 X conditional_branch_parameters
 I1
 
-411: Else
+411: "Else"
 C category 1
 d Splits a conditional - begins the code run if and only if the condition is false.
 i-1
 I1
 l
 
-412: End Conditional
+412: "End Conditional"
 C category 1
 d Ends a conditional branch block.
 i-1
 l
 
-112: Start Loop (c.113/413)
+112: "Start Loop (c.113/413)"
 C category 1
 d Begins a loop, see 113 and 413.
  this is a blank 'placeholder' command
 I1
 
-113: Break Loop
+113: "Break Loop"
 C category 1
 d Leaves a loop.
 
-413: End Loop/Repeat Above
+413: "End Loop/Repeat Above"
 C category 1
 d Goes back to the start of a loop.
 i-1
@@ -127,20 +127,20 @@ l
 
  [A perfectly ordinary gap.]
 
-115: Exit Event Processing
+115: "Exit Event Processing"
 C category 1
 d Stops running the code in this page.
 
-116: Temp. Erase Calling Event
+116: "Temp. Erase Calling Event"
 C category 3
 d Erases the running event until next map load.
 
-117: Call Common Event$
+117: "Call Common Event" ($ " " ]0 commonevent_id)
 C category 1
 d A common event is a code list loaded from the CommonEvents file. Start one. (Execution will return here when done.)
 p eventId commonevent_id
 
-118: Label$
+118: "Label" ($ " " ]0)
 C category 1
 d A label. Can be jumped to.
 p labelName string

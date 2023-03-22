@@ -73,7 +73,7 @@ v 2 actItem item_id
 p target force_action_target
 p runNow int_boolean
 
-340: Abort Battle
+340: "Abort Battle"
 C category 4
 351: 'Call Menu Screen' (aborts battle?)
 C category 5

@@ -23,7 +23,7 @@ x transfer_player_paramassist
 C category 3
 X set_event_location_paramassist
 
-203: Scroll map
+203: "Scroll map"
 C category 3
 p direction direction
 p distance int
@@ -34,12 +34,12 @@ C category 3
 p type cms_type
 X change_map_settings_parameters
 
-205: Fog Colour Tone
+205: "Fog Colour Tone"
 C category 3
 p colour Tone
 p duration int
 
-206: Fog Opacity Change
+206: "Fog Opacity Change"
 C category 3
 p opacity opacity
 p duration int
@@ -49,7 +49,7 @@ C category 3
 p event character_id
 p anim animation_id
 
-208: Set Player Opacity
+208: "Set Player Opacity"
 C category 2
 p opaque int_boolean
 
@@ -73,33 +73,33 @@ p route RPG::MoveRoute
 
        the actual truth of the matter, and the terminating NOP, being abstracted away.
 
-509: MoveRoute Editor Helper NOP
+509: "(MoveRoute Editor Helper)"
 C category 3
 p ex genericScriptParameter
 
-210: Wait for move end
+210: "Wait for move end"
 C category 3
 
  Yes, there is a gap here.
 
-221: Prepare for transition
+221: "Prepare for transition"
 C category 3
 
-222: Transition
+222: "Transition" ($ " " ]0)
 C category 3
 p transition string
 
-223: Change Screen Tone
+223: "Change Screen Tone"
 C category 3
 p tone Tone
 p duration int
 
-224: Screen flash
+224: "Screen flash"
 C category 3
 p colour Color
 p duration int
 
-225: Screen shake
+225: "Screen shake"
 C category 3
 p power int
 p speed int
@@ -174,10 +174,10 @@ p track RPG::AudioFile
 C category 5
 p seconds int
 
-247: Backup BGM/BGS
+247: "Backup BGM/BGS"
 C category 5
 
-248: Start BGM/BGS from backup
+248: "Start BGM/BGS from backup"
 C category 5
 
 249: Play ME$
@@ -188,5 +188,5 @@ p track RPG::AudioFile
 C category 5
 p track RPG::AudioFile
 
-251: Stop Last SE
+251: "Stop Last SE"
 C category 5

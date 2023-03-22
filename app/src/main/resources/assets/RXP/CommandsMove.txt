@@ -6,35 +6,35 @@
 
  MoveCommands stuff.
 
-0: Insert Point
+0: ">> insert point"
 d Mostly harmless.
 L
 
-1: Move South 1 Tile
+1: "Move South 1 Tile"
 d Move a tile in the indicated direction!
-2: Move West 1 Tile
+2: "Move West 1 Tile"
 d Move a tile in the indicated direction!
-3: Move East 1 Tile
+3: "Move East 1 Tile"
 d Move a tile in the indicated direction!
-4: Move North 1 Tile
+4: "Move North 1 Tile"
 d Move a tile in the indicated direction!
-5: Move South-West 1 Tile
+5: "Move South-West 1 Tile"
 d Move a tile in the indicated direction!
-6: Move South-East 1 Tile
+6: "Move South-East 1 Tile"
 d Move a tile in the indicated direction!
-7: Move North-West 1 Tile
+7: "Move North-West 1 Tile"
 d Move a tile in the indicated direction!
-8: Move North-East 1 Tile
+8: "Move North-East 1 Tile"
 d Move a tile in the indicated direction!
-9: Move randomly
+9: "Move randomly"
 d Move a tile in a random direction!
-10: Approach player
+10: "Approach player"
 d Move a tile towards the player.
-11: Flee player
+11: "Flee player"
 d Move a tile away from the player.
-12: Step forward
+12: "Step forward"
 d Move a tile forward.
-13: Step backward
+13: "Step backward"
 d Move a tile backward.
 14: Jump To Ofs.$
 d Jump somewhere!
@@ -43,13 +43,13 @@ p ofsY int
 15: Wait$
 d Wait some time.
 p time int
-16: Turn to South
+16: "Turn to South"
 d Turn to the indicated direction!
-17: Turn to West
+17: "Turn to West"
 d Turn to the indicated direction!
-18: Turn to East
+18: "Turn to East"
 d Turn to the indicated direction!
-19: Turn to North
+19: "Turn to North"
 d Turn to the indicated direction!
 20: Turn 90-deg right (clockwise)
 d Turn clockwise!
@@ -80,25 +80,25 @@ p newSpeed int
 30: Set Freq.$
 d Changes the @move_freq.
 p newFreq int
-31: Animate movement
+31: "Animate movement"
 d ...
-32: Don't animate movement
+32: "Don't animate movement"
 d ...
-33: Step animation(?)
+33: "Step animation(?)"
 d ...
-34: No step animation
+34: "No step animation"
 d ...
-35: Fixed direction
+35: "Fixed direction"
 d ...
-36: Disable fixed direction
+36: "Disable fixed direction"
 d ...
-37: No collision
+37: "No collision"
 d ...
-38: Collision On
+38: "Collision On"
 d ...
-39: Ignore Z Depth On
+39: "Ignore Z Depth On"
 d ...
-40: Ignore Z Depth Off
+40: "Ignore Z Depth Off"
 d ...
 41:@@Set Graphic{A: to #A:#D, facing #C}
 d Changes the graphics of this event.
