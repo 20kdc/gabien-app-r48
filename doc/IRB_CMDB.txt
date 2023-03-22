@@ -24,6 +24,10 @@
   a more advanced example: 103: Input Number!$ digits
    (As this format is crude, this shows as "Input Number digits" in the selection box.)
 
+ Datum Format (prefix "(" or """)
+  These prefixes are temporary so that Original Format can be moved over to either Datum (simple cases) or Extended Format (harder cases).
+  This has yet to be fully finalized, but the basic idea is a clean nameroutine but not carrying the magical schema detection.
+
  Extended Format (prefix '@@')
 
   A format which has grown to be used in quite a lot of things (SDB can use it, for example)

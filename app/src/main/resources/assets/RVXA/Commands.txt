@@ -270,7 +270,7 @@ d Takes control of a character (event or player)'s MoveRoute.
 p target character_id
 p route RPG::MoveRoute
 
-505: (MoveRoute Editing Helper)
+505: NOP (MoveRoute Editing Helper)
 d Totally useless outside of the VX Ace editor itself - displays the command.
 p command RPG::MoveCommand
 

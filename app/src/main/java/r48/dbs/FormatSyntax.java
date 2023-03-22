@@ -428,6 +428,7 @@ public class FormatSyntax extends App.Svc {
         if (nameGet.startsWith("@@")) {
             return wrapWithCMDisclaimer(nameGet, compile(nameGet.substring(2), ACC_ARRAY));
         } else {
+            System.out.println("Old syntax: " + nameGet);
             LinkedList<CompiledChunk> r = new LinkedList<>();
             int pi = 0;
             for (char c : nameGet.toCharArray()) {
