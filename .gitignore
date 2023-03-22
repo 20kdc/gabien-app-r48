@@ -12,8 +12,7 @@
 
 # Other
 !attic
-!attic/lamb.py
-!attic/field.py
+!attic/**
 
 # Documentation
 !doc
