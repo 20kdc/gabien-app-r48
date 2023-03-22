@@ -145,7 +145,7 @@ C category 1
 d A label. Can be jumped to.
 p labelName string
 
-119:@@Jump to label{A: #A}
+119: "Jump to label" ($ " " ]0)
 C category 1
-d Jump to a label. May act odd under certain indentation situations.
+d Jump to a label. May act odd if it enters/leaves conditional blocks or such.
 p labelName string

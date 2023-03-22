@@ -75,20 +75,26 @@ p runNow int_boolean
 
 340: "Abort Battle"
 C category 4
+d Simply refuse to let the battle continue.
+
 351: "'Call Menu Screen' (aborts battle?)"
 C category 5
 352: "'Call Save Screen' (aborts battle?)"
 C category 5
+
 353: "Game Over"
 C category 5
-354: "Title Screen"
+
+354: "Return to Title"
 C category 5
 
 355: "Ruby>" ($ " " ]0)
 C category 5
+d Run some Ruby.
 p code string
 C groupBehavior messagebox 655
 
 655: "Ruby." ($ " " ]0)
 C category 5
+d Continuation of embedded Ruby.
 p code string
