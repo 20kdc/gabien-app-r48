@@ -12,7 +12,6 @@ import gabien.datum.DatumSymbol;
 import r48.App;
 import r48.dbs.FormatSyntax;
 import r48.dbs.PathSyntax;
-import r48.dbs.RPGCommand.ISchemaGetterWithAttitude;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMU;
@@ -37,10 +36,10 @@ public class MVMDMAppLibrary {
                 if (idx >= paths.length)
                     return null;
                 return paths[idx].get(root);
-            }, null, "dm-formatsyntax, idk");
+            });
         }).attachHelp("(dm-formatsyntax THING) : Compiles FormatSyntax. This is a workaround to run FormatSyntax through the DynTrSlot stuff, so it counts as a compiled DynTrSlot value, but...");
-        ctx.defLib("dm-cmsyntax-new", (text, ps) -> {
-            return app.fmt.compileCMNew((String) text, (ISchemaGetterWithAttitude[]) ps);
+        ctx.defLib("dm-cmsyntax-new", (text) -> {
+            return app.fmt.compileCMNew((String) text);
         }).attachHelp("(dm-cmsyntax-new TEXT) : Compiles new CMSyntax. This is an even worse workaround.");
     }
     public static final class DMFmt extends MVMFn.Fixed {

@@ -4,15 +4,12 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-GOAL 1. The Biggest Problem With R48, Part 3
-+ Try to remove/reduce FormatSyntax dynamic name routine dispatch
-  This is in prep. for conversion to DTC
-  + In general, the goal is to remove parameterSchemas/getParameterDisplaySchemaFromArray
-  + Perhaps try to compile-in getParameterDisplaySchemaFromArray calls for more detailed checking?
-    Would allow pointing at specific problem sites i.e. name routines that would change behaviour
-    Fix those and then drop calls to getParameterDisplaySchemaFromArray entirely
+GOAL 1. The Biggest Problem With R48, Part 4
++ Figure out what else needs to be done for Goal 2
+  + prefixEnums has been more of a liability than expected, kind of feels like the enum should choose?
+  + try to incrementally force FormatSyntax to fit the Datum syntax's structure, convert all at once?
 
-GOAL 2. The Biggest Problem With R48, Part 4
+GOAL 2. The Biggest Problem With R48, Part 5
 + Successfully port every CMDB command name.
 + Drop support for unported command names.
 

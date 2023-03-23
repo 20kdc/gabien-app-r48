@@ -59,5 +59,11 @@ Note the hardcoding of " to ", any other language would have to substitute these
    (For example, [add-one-to-integer][[add-one-to-integer][0]] would be a theoretical way to get 2.)
   Note, however, that in order for this to work properly the text goes through the system encoding in the interim.
   Thus, DO NOT use this syntax to handle translation text!!!
+```
 
+* It used to be that command names in particular would magically feed their parameter schemas to FormatSyntax. This is no longer the case. This wasn't really directly documented because it was "magic".
+
+```
+  @ causes the next outputted value to be prefixed if it's an enumeration.
+  This is more-or-less always used as the "command" "@#A" or "@#B" or such, for "output prefixed enumeration".
 ```

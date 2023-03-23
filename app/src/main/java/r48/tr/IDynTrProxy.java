@@ -10,10 +10,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.IFunction;
 import r48.dbs.DatumLoader;
-import r48.io.data.RORIO;
-import r48.schema.SchemaElement;
 import r48.tr.TrPage.FF0;
 import r48.tr.TrPage.FF1;
 import r48.tr.TrPage.FF2;
@@ -26,40 +23,40 @@ public interface IDynTrProxy {
     /**
      * Dynamically translate something.
      */
-    DynTrBase dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, @Nullable Object addCtx, boolean isNLS);
+    DynTrBase dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, boolean isNLS);
 
     /**
      * Dynamically translate a string.
      */
     default FF0 dTr(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, null, text, null, false);
+        return dynTrBase(srcLoc, id, null, text, false);
     }
 
     /**
      * Dynamically translate a Datum object (as usual, for compilation)
      */
     default FF1 dTrFF1(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF1, DatumLoader.readInlineList(srcLoc, text), null, false);
+        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF1, DatumLoader.readInlineList(srcLoc, text), false);
     }
 
     /**
      * Dynamically translate a Datum object (as usual, for compilation)
      */
     default FF2 dTrFF2(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF2, DatumLoader.readInlineList(srcLoc, text), null, false);
+        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF2, DatumLoader.readInlineList(srcLoc, text), false);
     }
 
     /**
      * Legacy
      */
     default FF1 dTrName(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text, boolean isNLS) {
-        return dynTrBase(srcLoc, TrNames.nameRoutine(id), mode, text, null, isNLS);
+        return dynTrBase(srcLoc, TrNames.nameRoutine(id), mode, text, isNLS);
     }
 
     /**
      * Legacy 2
      */
-    default FF1 dTrFmtSynCM(DatumSrcLoc srcLoc, String id, String text, IFunction<RORIO, SchemaElement>[] parameterSchemas) {
-        return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX_NEW, text, parameterSchemas, false);
+    default FF1 dTrFmtSynCM(DatumSrcLoc srcLoc, String id, String text) {
+        return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX_NEW, text, false);
     }
 }

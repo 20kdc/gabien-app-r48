@@ -118,8 +118,8 @@ public class Launcher {
         public abstract void tick(double dT);
 
         @Override
-        public DynTrBase dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, @Nullable Object addCtx, boolean isNLS) {
-            return lun.ilg.dynTrBase(srcLoc, id, mode, text, addCtx, isNLS);
+        public DynTrBase dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, boolean isNLS) {
+            return lun.ilg.dynTrBase(srcLoc, id, mode, text, isNLS);
         }
     }
 }

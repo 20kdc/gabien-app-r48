@@ -74,18 +74,18 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
      * Dynamic translation slot.
      */
     @Override
-    public DynTrBase dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object base, @Nullable Object addCtx, boolean isNLS) {
+    public DynTrBase dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object base, boolean isNLS) {
         DynTrSlot res = dynMap.get(id);
         if (res == null) {
             MVMSlot slot = ensureSlot(new DatumSymbol(id));
             if (slot.v != null)
                 throw new RuntimeException("DynTr can't overwrite unrelated (NLS?) value " + id + ".");
             if (isNLS) {
-                NLSTr nls = new NLSTr(this, srcLoc, id, mode, base, addCtx);
+                NLSTr nls = new NLSTr(this, srcLoc, id, mode, base);
                 slot.v = nls;
                 return nls;
             }
-            res = new DynTrSlot(this, srcLoc, id, mode, base, addCtx);
+            res = new DynTrSlot(this, srcLoc, id, mode, base);
             slot.v = res;
             dynMap.put(id, res);
             dynList.add(id);

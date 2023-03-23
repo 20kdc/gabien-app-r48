@@ -10,7 +10,6 @@ package r48.dbs;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import r48.App;
-import r48.dbs.RPGCommand.ISchemaGetterWithAttitude;
 import r48.io.data.RORIO;
 import r48.minivm.MVMSlot;
 import r48.schema.AggregateSchemaElement;
@@ -103,10 +102,10 @@ public class FormatSyntax extends App.Svc {
     /**
      * Compiles a FormatSyntax for easier debugging.
      */
-    public ICompiledFormatSyntax compile(String name, ParameterAccessor paramAcc, @Nullable ISchemaGetterWithAttitude[] parameterSchemas, String locHint) {
+    public ICompiledFormatSyntax compile(String name, ParameterAccessor paramAcc) {
         // System.out.println("fs compile: " + name);
         LinkedList<CompiledChunk> r = new LinkedList<>();
-        compileChunk(r, name, paramAcc, parameterSchemas, locHint);
+        compileChunk(r, name, paramAcc);
         optimizeChunks(r);
         return (a) -> {
             StringBuilder sb = new StringBuilder();
@@ -119,7 +118,7 @@ public class FormatSyntax extends App.Svc {
     /**
      * Compiles a part of a FormatSyntax.
      */
-    private void compileChunk(LinkedList<CompiledChunk> r, String name, ParameterAccessor paramAcc, @Nullable ISchemaGetterWithAttitude[] parameterSchemas, String locHint) {
+    private void compileChunk(LinkedList<CompiledChunk> r, String name, ParameterAccessor paramAcc) {
         char[] data = name.toCharArray();
         boolean prefixNext = false;
         // C: A fully parsable formatNameExtended string.
@@ -145,10 +144,10 @@ public class FormatSyntax extends App.Svc {
                     //  at the start and end respectively.
                     // Of course, since the first component is removed instantly,
                     //  the check is for odd.
-                    final ICompiledFormatSyntax valComp = compile(components.removeFirst(), paramAcc, parameterSchemas, locHint);
+                    final ICompiledFormatSyntax valComp = compile(components.removeFirst(), paramAcc);
                     LinkedList<ICompiledFormatSyntax> componentsComp = new LinkedList<>();
                     for (String s : components)
-                        componentsComp.add(compile(s, paramAcc, parameterSchemas, locHint));
+                        componentsComp.add(compile(s, paramAcc));
                     ICompiledFormatSyntax def = (root) -> "";
                     if ((componentsComp.size() & 1) != 0)
                         def = componentsComp.removeLast();
@@ -170,7 +169,7 @@ public class FormatSyntax extends App.Svc {
                     i = explodeComponentsAndAdvance(components, data, i + 2, '}');
                     determineBooleanComponent(r, components, (root) -> {
                         return paramAcc.get(root, v - 'A') != null;
-                    }, paramAcc, parameterSchemas, locHint);
+                    }, paramAcc);
                 } else if (data[i + 1] == '=') {
                     char va = data[i];
                     // vt equality form.
@@ -183,7 +182,7 @@ public class FormatSyntax extends App.Svc {
                         if (result)
                             result = paramAcc.get(root, va - 'A').toString().equals(eqTarget);
                         return result;
-                    }, paramAcc, parameterSchemas, locHint);
+                    }, paramAcc);
                 } else if (data[i + 2] == ':') {
                     // vv equality form.
                     final char va = data[i];
@@ -194,7 +193,7 @@ public class FormatSyntax extends App.Svc {
                         if (result)
                             return RORIO.rubyEquals(paramAcc.get(root, va - 'A'), paramAcc.get(root, vb - 'A'));
                         return result;
-                    }, paramAcc, parameterSchemas, locHint);
+                    }, paramAcc);
                 } else {
                     throw new RuntimeException("Unknown conditional type!");
                 }
@@ -241,11 +240,10 @@ public class FormatSyntax extends App.Svc {
                 final boolean thisPrefixNext = prefixNext;
                 final char ltr = data[++i];
                 final int pid = ltr - 'A';
-                final ISchemaGetterWithAttitude dsgfa = getParameterDSGFA(parameterSchemas, pid, locHint, "(#" + ltr + ")");
                 r.add((sb, root) -> {
                     RORIO v = paramAcc.get(root, pid);
                     if (v != null) {
-                        sb.append(interpretParameter(v, getParameterDS(root, dsgfa), thisPrefixNext));
+                        sb.append(interpretParameter(v, (SchemaElement) null, thisPrefixNext));
                     } else {
                         sb.append(ltr);
                     }
@@ -275,17 +273,17 @@ public class FormatSyntax extends App.Svc {
         }
     }
 
-    private void determineBooleanComponent(LinkedList<CompiledChunk> r, LinkedList<String> components, CompiledPredicate p, ParameterAccessor paramAcc, @Nullable ISchemaGetterWithAttitude[] parameterSchemas, String locHint) {
+    private void determineBooleanComponent(LinkedList<CompiledChunk> r, LinkedList<String> components, CompiledPredicate p, ParameterAccessor paramAcc) {
         LinkedList<CompiledChunk> cT = new LinkedList<CompiledChunk>();
         LinkedList<CompiledChunk> cF = new LinkedList<CompiledChunk>();
         for (int i = 0; i < components.size(); i++) {
             String elm = components.get(i);
             if ((i & 1) == 0) {
                 // true
-                compileChunk(cT, elm, paramAcc, parameterSchemas, locHint);
+                compileChunk(cT, elm, paramAcc);
             } else {
                 // false
-                compileChunk(cF, elm, paramAcc, parameterSchemas, locHint);
+                compileChunk(cF, elm, paramAcc);
             }
         }
         optimizeChunks(cT);
@@ -381,36 +379,6 @@ public class FormatSyntax extends App.Svc {
         return r;
     }
 
-    /**
-     * Used to determine if interpretParameter would do magic stuff here.
-     */
-    public static boolean willInterpretSpecial(SchemaElement ise) {
-        if (ise != null) {
-            ise = AggregateSchemaElement.extractField(ise, null);
-            if (ise instanceof EnumSchemaElement)
-                return true;
-        }
-        return false;
-    }
-
-    private static @Nullable ISchemaGetterWithAttitude getParameterDSGFA(ISchemaGetterWithAttitude[] ise, int i, String locHint, String cause) {
-        if (ise == null)
-            return null;
-        if (ise.length <= i)
-            return null;
-        if (ise[i].shouldWarnFmt()) {
-            // can insert cause filtering here
-            System.out.println("WARN: " + locHint + " (" + cause + ")");
-        }
-        return ise[i];
-    }
-
-    private static @Nullable SchemaElement getParameterDS(RORIO root, ISchemaGetterWithAttitude ise) {
-        if (ise == null)
-            return null;
-        return ise.apply(root);
-    }
-
     private static ICompiledFormatSyntax wrapWithCMDisclaimer(String name, ICompiledFormatSyntax v) {
         return (root) -> {
             try {
@@ -424,8 +392,8 @@ public class FormatSyntax extends App.Svc {
             }
         };
     }
-    public ICompiledFormatSyntax compileCMNew(String nameGet, @Nullable ISchemaGetterWithAttitude[] parameterSchemas) {
-        return wrapWithCMDisclaimer(nameGet, compile(nameGet, ACC_ARRAY, parameterSchemas, nameGet));
+    public ICompiledFormatSyntax compileCMNew(String nameGet) {
+        return wrapWithCMDisclaimer(nameGet, compile(nameGet, ACC_ARRAY));
     }
 
     /**

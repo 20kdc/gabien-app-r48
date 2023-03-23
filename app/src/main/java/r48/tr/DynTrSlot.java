@@ -30,21 +30,18 @@ public final class DynTrSlot extends DynTrBase {
     // The source of the value is cached so that dynamic translation can work properly.
     private String valueSrc;
     private Object valueCompiled;
-    // useful for stuff that can't be directly included in the source
-    private Object directPassContext;
 
-    public DynTrSlot(MVMEnvR48 e, DatumSrcLoc sl, String i, @Nullable DatumSymbol m, Object base, @Nullable Object directPassContext) {
+    public DynTrSlot(MVMEnvR48 e, DatumSrcLoc sl, String i, @Nullable DatumSymbol m, Object base) {
         super(i, sl);
         env = e;
         mode = m;
-        this.directPassContext = directPassContext;
         setValue(base);
         originalSrc = valueSrc;
     }
 
     public void setValue(Object v) {
         valueSrc = DatumWriter.objectToString(v);
-        valueCompiled = compileValue(env, mode, sourceLoc, v, directPassContext);
+        valueCompiled = compileValue(env, mode, sourceLoc, v);
     }
 
     /**

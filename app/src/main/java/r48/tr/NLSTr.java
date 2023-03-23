@@ -19,9 +19,9 @@ import r48.minivm.MVMEnv;
  */
 public final class NLSTr extends DynTrBase {
     private final Object compiled;
-    public NLSTr(@NonNull MVMEnv env, DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object v, @Nullable Object directPassContext) {
+    public NLSTr(@NonNull MVMEnv env, DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object v) {
         super(id, srcLoc);
-        compiled = compileValue(env, mode, srcLoc, v, directPassContext);
+        compiled = compileValue(env, mode, srcLoc, v);
     }
 
     @Override

@@ -35,13 +35,11 @@ public abstract class DynTrBase extends MVMFn.Fixed implements TrPage.FF0, TrPag
         return id + "@" + sourceLoc;
     }
 
-    public static Object compileValue(@NonNull MVMEnv env, @Nullable DatumSymbol mode, DatumSrcLoc srcLoc, Object v, @Nullable Object directPassContext) {
+    public static Object compileValue(@NonNull MVMEnv env, @Nullable DatumSymbol mode, DatumSrcLoc srcLoc, Object v) {
         if (mode == null) {
             return env.evalObject(v, srcLoc);
-        } else if (directPassContext == null) {
-            return ((MVMFn) env.getSlot(mode).v).clDirect(v);
         } else {
-            return ((MVMFn) env.getSlot(mode).v).clDirect(v, directPassContext);
+            return ((MVMFn) env.getSlot(mode).v).clDirect(v);
         }
     }
 

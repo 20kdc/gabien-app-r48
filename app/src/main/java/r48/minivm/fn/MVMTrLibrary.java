@@ -65,7 +65,7 @@ public class MVMTrLibrary {
         public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
             if (call.length != 2)
                 throw new RuntimeException("define-tr has a name and a value");
-            ((MVMEnvR48) cs.context).dynTrBase(cs.topLevelSrcLoc, ((DatumSymbol) call[0]).id, mode, call[1], null, isNLS);
+            ((MVMEnvR48) cs.context).dynTrBase(cs.topLevelSrcLoc, ((DatumSymbol) call[0]).id, mode, call[1], isNLS);
             return null;
         }
     }
