@@ -27,4 +27,6 @@ Note the hardcoding of " to ", any other language would have to substitute these
 
 ## Extended Format-Syntax
 
-...is still in use, so it doesn't yet belong here.
+...is still in use, so it doesn't yet belong here. But some features have been removed!
+
+* In the `[@Class.RPG::AudioFile]` syntax, name routines are now looked up at initial language compilation time, which occurs during the `ensureAllExpectationsMet` phase (core has loaded, but translations haven't)

@@ -80,6 +80,9 @@
   An example call treating the *current structure* as a Class.RPG::AudioFile:
    [@Class.RPG::AudioFile]
 
+  NOTE: The lookup for [@] syntax now occurs at compile-time, see notes below for commands.
+  For "C name" routines, compilation happens as they are defined.
+
   Another example call, equally valid, but treating parameter A as the audio file, and running through the typical interpretation mechanism:
    [RPG::AudioFile]A
 
@@ -161,6 +164,7 @@
 
  Subcomms:
   '<number>:<name>' defines a command and it's name-routine.
+  - The name routine is compiled during the `ensureAllExpectationsMet` phase (core has loaded, but translations haven't).
   'p' defines a parameter. The parameter can only be a type name, chaining language is restricted to SDB.
   'd' defines the description of the command. You will be warned for omitting this.
   'T' doesn't exist anymore, why was this still doc'd

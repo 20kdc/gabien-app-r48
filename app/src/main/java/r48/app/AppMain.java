@@ -36,7 +36,6 @@ public class AppMain {
         app.sdb = new SDB(app);
 
         app.vmCtx.include(engine.initDir + "init", false);
-        app.vmCtx.include(engine.initDir + "lang/" + ilg.c.language + "/init.txt", true);
 
         // initialize everything else that needs initializing, starting with ObjectDB
         IObjectBackend backend = IObjectBackend.Factory.create(engine.odbBackend, app.rootPath, engine.dataPath, engine.dataExt);
@@ -58,6 +57,10 @@ public class AppMain {
         app.sdb.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
         app.sdb.updateDictionaries(null);
         app.sdb.confirmAllExpectationsMet();
+
+        // Now that everything that could possibly reasonably create DynTrSlots has been initialized, now load the language file.
+        app.vmCtx.include(engine.initDir + "lang/" + ilg.c.language + "/init", true);
+
         return app;
     }
 
