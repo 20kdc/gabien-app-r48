@@ -4,45 +4,21 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-GOAL 1, PREPARATION
-2. RECURSIVE SPECIAL FORM-HEAVY SYNTAX. dyn-tr-compiler knows we're an fl2, so it can build the lambda (outer shell).
-   better yet, why not just assume a0 always contains the thing of interest?
-   because of command names? add more dyn-tr-compiler modes!
-   (dyn-tr-compiler V ARGS FOCUS)
-   ARGS: (v index)
-   FOCUS: v
-   +windowTitleAttachment "(@ @name)"
-   elements:
-   "(@ PATH [INTERP [PREFIX]])" is fmt-at but without needing to specify which object
+GOAL 1. The Biggest Problem With R48, Part 2
++ Try to remove FormatSyntax dynamic name routine dispatch
+  This is in prep. for conversion to DTC
+
+GOAL 2. The Biggest Problem With R48, Part 3
++ Finish unfinished DTC elements
    todo "(? PATH [TRUE [FALSE]])" checks for existence
    todo "(= PATH [VAL RES]... DEF)" uses dm-decode to do non-string-based comparison between a path and fixed values similar to our old friend the inline disambiguator
-   "(vm EXPR)" is the "I know this is getting too complicated" operator
-   "(with X Y)" is used to "focus" on other args
    todo "(call PATH RID)" calls a name routine
    (actually, can DynTrSlots ALSO be MVMFns? functions of any argcount translatable = good, and it "incentivizes" folding nameroutines into DynTrSlots as closely as possible)
-   strings: are strings
-   todo lists: if a list element starts with a list or string, autoconcatenation, otherwise see above
-   +windowTitleAttachment "(@ @name)"
-   "\"Do Something With Range \" (vm (rcmd-range ]1 ]2))" <- yes this is stupidly double-escaped. why? well basically, uh... SDB parser sucks?
-   can I do something about that re: '
-   look, none of the code was using `, it's perfectly fine if I just, you know, use it as another kind of string quote, riiiiight?
-   stupid question, but, why not just *prefix all the symbols and define them in the actual namespace???*
-   "but you can't lookup arbitrary slots in the scheme namespace" just eval it
-   `"Do Something With Range " (rcmd-range ]1 ]2)` looook it's magic, just please for the love of kittens hope ` never comes up because this SDB token variant won't have escaping
+   (EDIT FROM THE FUTURE: DynTrSlots aren't MVMFns, but name routines are now held in the global namespace)
 
-GOAL 1. The Biggest Problem With R48, Part 1
- this is all just theory right now
-+ Name routines are "pure formatsyntax" as opposed to the messy magical knows-all-schemas-in-advance kind. Can this preknowledge be utilized to recompile them?
-+ Implement a 2-parameter name routine for the sole purpose of porting old command ranges.
-  If everything's forced onto Extended FormatSyntax, that avoids needing a temp prefix for the new MVM command names.
-
-GOAL 2. The Biggest Problem With R48, Part 2
-+ Introduce a fancy new prefix for CMDB command names for them to be run on MiniVM.
+GOAL 3. The Biggest Problem With R48, Part 4
 + Successfully port every CMDB command name.
 + Drop support for unported command names.
-+ Remove the prefix and error if the prefix is received.
-+ Successfully de-prefix every CMDB command name.
-+ Rather than loading FormatSyntax into MVM slots, do things the sensible way instead.
 
 -- DELAYED --
 
