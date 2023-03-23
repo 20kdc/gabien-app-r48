@@ -4,18 +4,15 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-GOAL 1. The Biggest Problem With R48, Part 2
+GOAL 1. The Biggest Problem With R48, Part 3
 + Try to remove/reduce FormatSyntax dynamic name routine dispatch
   This is in prep. for conversion to DTC
   + In general, the goal is to remove parameterSchemas/getParameterDisplaySchemaFromArray
+  + Perhaps try to compile-in getParameterDisplaySchemaFromArray calls for more detailed checking?
+    Would allow pointing at specific problem sites i.e. name routines that would change behaviour
+    Fix those and then drop calls to getParameterDisplaySchemaFromArray entirely
 
-GOAL 2. The Biggest Problem With R48, Part 3
-+ Finish unfinished DTC elements
-   todo "(call PATH RID)" calls a name routine
-   (actually, can DynTrSlots ALSO be MVMFns? functions of any argcount translatable = good, and it "incentivizes" folding nameroutines into DynTrSlots as closely as possible)
-   (EDIT FROM THE FUTURE: DynTrSlots aren't MVMFns, but name routines are now held in the global namespace)
-
-GOAL 3. The Biggest Problem With R48, Part 4
+GOAL 2. The Biggest Problem With R48, Part 4
 + Successfully port every CMDB command name.
 + Drop support for unported command names.
 
