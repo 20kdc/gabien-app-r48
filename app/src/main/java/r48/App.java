@@ -77,8 +77,8 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     }
 
     @Override
-    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text) {
-        return vmCtx.dynTrBase(srcLoc, id, mode, text);
+    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, @Nullable Object addCtx) {
+        return vmCtx.dynTrBase(srcLoc, id, mode, text, addCtx);
     }
 
     public void performTranslatorDump(String fn) {

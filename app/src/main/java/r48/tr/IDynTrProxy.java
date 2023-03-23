@@ -23,40 +23,40 @@ public interface IDynTrProxy {
     /**
      * Dynamically translate something.
      */
-    IDynTr dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text);
+    IDynTr dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, @Nullable Object addCtx);
 
     /**
      * Dynamically translate a string.
      */
     default FF0 dTr(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, null, text);
+        return dynTrBase(srcLoc, id, null, text, null);
     }
 
     /**
      * Dynamically translate a Datum object (as usual, for compilation)
      */
     default FF1 dTrFF1(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF1, DatumLoader.readInlineList(srcLoc, text));
+        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF1, DatumLoader.readInlineList(srcLoc, text), null);
     }
 
     /**
      * Dynamically translate a Datum object (as usual, for compilation)
      */
     default FF2 dTrFF2(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF2, DatumLoader.readInlineList(srcLoc, text));
+        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF2, DatumLoader.readInlineList(srcLoc, text), null);
     }
 
     /**
      * Legacy
      */
     default FF1 dTrName(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text) {
-        return dynTrBase(srcLoc, TrNames.nameRoutine(id), mode, text);
+        return dynTrBase(srcLoc, TrNames.nameRoutine(id), mode, text, null);
     }
 
     /**
      * Legacy 2
      */
     default FF2 dTrFmtSynCM(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX_NEW, text);
+        return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX_NEW, text, null);
     }
 }

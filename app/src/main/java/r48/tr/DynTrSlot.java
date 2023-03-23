@@ -37,19 +37,28 @@ public final class DynTrSlot implements IDynTr {
     // The source of the value is cached so that dynamic translation can work properly.
     private String valueSrc;
     private Object valueCompiled;
+    // useful for stuff that can't be directly included in the source
+    private Object directPassContext;
 
-    public DynTrSlot(MVMEnvR48 e, DatumSrcLoc sl, String i, @Nullable DatumSymbol m, Object base) {
+    public DynTrSlot(MVMEnvR48 e, DatumSrcLoc sl, String i, @Nullable DatumSymbol m, Object base, @Nullable Object directPassContext) {
         env = e;
         sourceLoc = sl;
         id = i;
         mode = m;
+        this.directPassContext = directPassContext;
         setValue(base);
         originalSrc = valueSrc;
     }
 
     public void setValue(Object v) {
         valueSrc = DatumWriter.objectToString(v);
-        valueCompiled = mode != null ? ((MVMFn) env.getSlot(mode).v).clDirect(v) : v;
+        if (mode == null) {
+            valueCompiled = v;
+        } else if (directPassContext == null) {
+            valueCompiled = ((MVMFn) env.getSlot(mode).v).clDirect(v);
+        } else {
+            valueCompiled = ((MVMFn) env.getSlot(mode).v).clDirect(v, directPassContext);
+        }
     }
 
     @Override

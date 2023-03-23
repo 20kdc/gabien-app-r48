@@ -45,8 +45,8 @@ public class InterlaunchGlobals implements IDynTrProxy {
     }
 
     @Override
-    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text) {
-        return langVM.dynTrBase(srcLoc, id, mode, text);
+    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, @Nullable Object addCtx) {
+        return langVM.dynTrBase(srcLoc, id, mode, text, addCtx);
     }
 
     public void launcherDynTrDump(String fn) {
