@@ -47,12 +47,9 @@
 		(list
 			(list
 				let
-				(list
-					(list
-						'tmp$
-						(tr-dyni-path ctx path)
-					)
-				)
+				(list (list
+					'tmp$ (tr-dyni-path ctx path)
+				))
 				(list
 					if
 					(list
@@ -88,23 +85,13 @@
 ))
 ; (? PATH TRUE [FALSE]) : check for presence
 (define (tr-dyni-exists ctx path true false)
-	; create true/false contexts
-	(define false-ctx (tr-dyn-cctx-copy ctx))
-	(define true-ctx (tr-dyn-cctx-copy ctx))
-	; init
-	(tr-dyn-cctx-target-set! false-ctx (list ..))
-	(tr-dyn-cctx-target-set! true-ctx (list ..))
-	; compile
-	(tr-dyn-compiler false ctx)
-	(tr-dyn-compiler true ctx)
-	; actually create the resulting conditional
 	(append!
 		(tr-dyn-cctx-target ctx)
 		(list
 			(list if
 				(list eq? (tr-dyni-path ctx path) #nil)
-				(tr-dyn-cctx-target false-ctx)
-				(tr-dyn-cctx-target true-ctx)
+				(tr-dyn-compiler-expr false ctx)
+				(tr-dyn-compiler-expr true ctx)
 			)
 		)
 	)
@@ -114,3 +101,44 @@
 	((= (list-length extra) 1) (tr-dyni-exists ctx path true (list-ref extra 0)))
 	(else (error "bad arg count to ?"))
 ))
+; (= PATH DEF (VAL RES)...) : check for equality
+; responsible for "(VAL RES)..." into a usable set of cond clauses
+(define (tr-dyni-eqci ctx extra)
+	(define clauses (list))
+	(for-each (lambda (v)
+		(assert (list? v) "= clauses must be lists")
+		(assert (= (list-length v) 2) "= clauses must be two-element lists")
+		(append! clauses (list
+			(list
+				; condition
+				(list equal? 'tmp$ (list quote (list-ref v 0)))
+				; clause contents
+				(tr-dyn-compiler-expr (list-ref v 1) ctx)
+			)
+		))
+	) extra)
+	clauses
+)
+(define (tr-dynx-= ctx path def . extra)
+	(append!
+		(tr-dyn-cctx-target ctx)
+		; (let (tmp$ PATH) COND)
+		(list
+			(list
+				let
+				(list (list
+					'tmp$ (dm-decode (tr-dyni-path ctx path))
+				))
+				; (cond ... (else DEF))
+				(append!
+					(list cond)
+					(tr-dyni-eqci ctx extra)
+					(list
+						; (else DEF)
+						(list 'else (tr-dyn-compiler-expr def ctx))
+					)
+				)
+			)
+		)
+	)
+)

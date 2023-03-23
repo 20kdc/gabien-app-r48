@@ -7,6 +7,14 @@
 
 (include "vm/rxrs")
 
+(define-syntax (assert expr . err)
+	; (if-not EXPR (error ERR...))
+	(list if-not expr
+		(append! (list error) err)
+	)
+)
+(help-set! assert "(assert EXPR ERR...) : Macro to error if a condition is not fulfilled.")
+
 ; other stuff
 (include "vm/namespacing")
 

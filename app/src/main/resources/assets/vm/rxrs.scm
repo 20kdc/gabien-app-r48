@@ -31,6 +31,9 @@
 (define (cdr v) (sublist v 1 (list-length v)))
 (help-set! cdr "(cdr V) : Returns the remainder of the list. This is created with sublist because cons pairs aren't real here.")
 
+(define (list-tail v i) (sublist v i (list-length v)))
+(help-set! list-tail "(list-tail V I) : Returns the remainder of the list (index I and onwards). This is created with sublist because cons pairs aren't real here.")
+
 ; obvious operations - cadr composites
 
 (define (caar v) (list-ref (list-ref v 0) 0))

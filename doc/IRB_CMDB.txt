@@ -31,6 +31,8 @@
      Otherwise will always do nothing.
    + (? PATH TRUE [FALSE])
      If the PATH exists, see TRUE, otherwise FALSE.
+   + (= PATH DEF (VAL RES)...)
+     Compares various values against PATH, picking the first that matches or DEF on failure. (A missing value is considered null.)
 
  Extended Format (prefix '@@')
 

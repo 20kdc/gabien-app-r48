@@ -56,6 +56,14 @@
 ) code))
 (help-set! tr-dyn-compiler-list "(tr-dyn-compiler-list CODE CTX) : Contributes compiled DTL elements from CODE list.")
 
+(define (tr-dyn-compiler-expr code ctx)
+	(define nctx (tr-dyn-cctx-copy ctx))
+	(tr-dyn-cctx-target-set! nctx (list ..))
+	(tr-dyn-compiler code nctx)
+	(tr-dyn-cctx-target nctx)
+)
+(help-set! tr-dyn-compiler-expr "(tr-dyn-compiler-expr CODE CTX) : Compiles a single expression from some code.")
+
 (define (tr-dyn-compiler-root code base)
 	; setup initial context
 	(define ctx (list

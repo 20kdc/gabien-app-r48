@@ -68,9 +68,13 @@ public class MVMEnv {
      * Evaluates an object
      */
     public Object evalObject(Object obj, DatumSrcLoc srcLoc) {
-        MVMCompileScope mcs = new MVMToplevelScope(this, srcLoc);
-        MVMCExpr exp = mcs.compile(obj);
-        return exp.exc(MVMScope.ROOT);
+        try {
+            MVMCompileScope mcs = new MVMToplevelScope(this, srcLoc);
+            MVMCExpr exp = mcs.compile(obj);
+            return exp.exc(MVMScope.ROOT);
+        } catch (Exception ex) {
+            throw new RuntimeException("at " + srcLoc, ex);
+        }
     }
 
     public @Nullable MVMSlot getSlot(DatumSymbol d) {

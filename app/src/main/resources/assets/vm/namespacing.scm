@@ -29,7 +29,7 @@
 								(string-append (value->string prefix) (value->string (list-ref value 0)))
 							)
 						)
-						(sublist value 1 (list-length value))
+						(cdr value)
 					)
 				))
 				(begin
