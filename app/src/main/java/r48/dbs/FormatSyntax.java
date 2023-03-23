@@ -46,14 +46,6 @@ public class FormatSyntax extends App.Svc {
         super(app);
         // Note: The current NameDB initial state is a "bare minimum" maintenance mode.
         // Name routines are going to get farmed out to MiniVM as soon as possible.
-        addNameDBFixed("Interp.lang-Common-add", (x) -> {
-            RORIO rubyIO = (RORIO) x;
-            String[] range = rubyIO.decString().split(" ");
-            int v = 0;
-            for (String s : range)
-                v += Integer.valueOf(s);
-            return Integer.toString(v);
-        });
         addNameDBFixed("Interp.lang-Common-r2kTsConverter", (x) -> {
             RORIO rubyIO = (RORIO) x;
             double d = Double.parseDouble(rubyIO.decString());

@@ -139,12 +139,6 @@
   These all follow the scheme "lang-<language>-<methodCamelCase>".
   Common is used for routines which aren't targetted at a specific language.
 
-  lang-Common-add:
-   Example:
-    [lang-Common-add][5 5]
-   Splits to words, converts words to integers, then adds them together to get a result.
-   Useful for, say, r2k LSD save interpreter stack depth adjustment.
-
   lang-Common-r2kTsConverter:
    Example:
     [lang-Common-r2kTsConverter]A

@@ -25,6 +25,21 @@ Note the hardcoding of " to ", any other language would have to substitute these
    (As this format is crude, this shows as "Input Number digits" in the selection box.)
 ```
 
+## Built-In Name Routines
+
+Some of these only really made sense when the `[][]` syntax was around anyway:
+
+```
+  lang-Common-add:
+   Example:
+    [lang-Common-add][5 5]
+   Splits to words, converts words to integers, then adds them together to get a result.
+   Useful for, say, r2k LSD save interpreter stack depth adjustment.
+
+```
+
+`Interp.lang-Common-r2kTsConverter` doesn't still exist because I want it to exist, but because it needs to exist. The alternative is moving it into an MVM function.
+
 ## Extended Format-Syntax
 
 ...is still in use, so it doesn't yet belong here. But some features have been removed!
