@@ -11,7 +11,6 @@ GOAL 1. The Biggest Problem With R48, Part 2
 
 GOAL 2. The Biggest Problem With R48, Part 3
 + Finish unfinished DTC elements
-   todo "(? PATH [TRUE [FALSE]])" checks for existence
    todo "(= PATH [VAL RES]... DEF)" uses dm-decode to do non-string-based comparison between a path and fixed values similar to our old friend the inline disambiguator
    todo "(call PATH RID)" calls a name routine
    (actually, can DynTrSlots ALSO be MVMFns? functions of any argcount translatable = good, and it "incentivizes" folding nameroutines into DynTrSlots as closely as possible)

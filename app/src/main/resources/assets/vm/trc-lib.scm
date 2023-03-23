@@ -5,6 +5,9 @@
 
 ; Dynamic translation compiler primitives
 
+; Compiles some generic tr-at business
+(define (tr-dyni-path ctx path) (list dm-at (tr-dyn-cctx-focus ctx) path))
+
 ; (vm CODE...) : raw VM
 (define (tr-dynx-vm ctx . content) (append! (tr-dyn-cctx-target ctx) content))
 ; (with FOCUS CODE...) : change focus
@@ -20,11 +23,7 @@
 		(list
 			(list
 				dm-fmt
-				(list
-					dm-at
-					(tr-dyn-cctx-focus ctx)
-					path
-				)
+				(tr-dyni-path ctx path)
 				; this is so interp can be a symbol
 				(if (eq? interp #nil)
 					#nil
@@ -51,11 +50,7 @@
 				(list
 					(list
 						'tmp$
-						(list
-							dm-at
-							(tr-dyn-cctx-focus ctx)
-							path
-						)
+						(tr-dyni-path ctx path)
 					)
 				)
 				(list
@@ -90,4 +85,32 @@
 	((= (list-length extra) 1) (tr-dyni-sat ctx apfx path (list-ref extra 0) #f))
 	((= (list-length extra) 2) (tr-dyni-sat ctx apfx path (list-ref extra 0) (list-ref extra 1)))
 	(else (error "bad arg count to $"))
+))
+; (? PATH TRUE [FALSE]) : check for presence
+(define (tr-dyni-exists ctx path true false)
+	; create true/false contexts
+	(define false-ctx (tr-dyn-cctx-copy ctx))
+	(define true-ctx (tr-dyn-cctx-copy ctx))
+	; init
+	(tr-dyn-cctx-target-set! false-ctx (list ..))
+	(tr-dyn-cctx-target-set! true-ctx (list ..))
+	; compile
+	(tr-dyn-compiler false ctx)
+	(tr-dyn-compiler true ctx)
+	; actually create the resulting conditional
+	(append!
+		(tr-dyn-cctx-target ctx)
+		(list
+			(list if
+				(list eq? (tr-dyni-path ctx path) #nil)
+				(tr-dyn-cctx-target false-ctx)
+				(tr-dyn-cctx-target true-ctx)
+			)
+		)
+	)
+)
+(define (tr-dynx-? ctx path true . extra) (cond
+	((= (list-length extra) 0) (tr-dyni-exists ctx path true ""))
+	((= (list-length extra) 1) (tr-dyni-exists ctx path true (list-ref extra 0)))
+	(else (error "bad arg count to ?"))
 ))

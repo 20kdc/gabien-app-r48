@@ -12,11 +12,23 @@
 
 ; for quick formatting
 (define-syntax (.. . entries)
-	(define result (list string-append))
-	(for-each (lambda (entry)
-		(append! result (list (list value->string entry)))
-	) entries)
-	result
+	(cond
+		; optimization: empty becomes ""
+		((= (list-length entries) 0) "")
+		; optimization: single constant string just becomes that string
+		((and
+			(= (list-length entries) 1)
+			(string? (list-ref entries 0))
+		) (list-ref entries 0))
+		; everything else
+		(else
+			(define result (list string-append))
+			(for-each (lambda (entry)
+				(append! result (list (list value->string entry)))
+			) entries)
+			result
+		)
+	)
 )
 (help-set! .. "(.. V...) : Macro that wraps each parameter in value->string and the whole in string-append.")
 

@@ -231,6 +231,7 @@ public class FormatSyntax extends App.Svc {
                         // ... then parse it.
                         ICompiledFormatSyntax out = compile(tx.toString(), paramAcc, parameterSchemas);
                         final boolean thisPrefixNext = prefixNext;
+                        System.out.println("scary code : " + name);
                         r.add((sb, root) -> {
                             if (root == null)
                                 return;

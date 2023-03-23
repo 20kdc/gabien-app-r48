@@ -41,14 +41,19 @@
 			)
 		)
 	)
+	; Lists where otherwise not covered are lists
+	(
+		(list? code)
+		(for-each (lambda (v)
+			(tr-dyn-compiler v ctx)
+		) code)
+	)
 	(else (error (.. "Unable to recognize code: " code)))
 ))
 
-(define (tr-dyn-compiler-list code ctx) (for-each
-	(lambda (v)
-		(tr-dyn-compiler v ctx)
-	) code
-))
+(define (tr-dyn-compiler-list code ctx) (for-each (lambda (v)
+	(tr-dyn-compiler v ctx)
+) code))
 (help-set! tr-dyn-compiler-list "(tr-dyn-compiler-list CODE CTX) : Contributes compiled DTL elements from CODE list.")
 
 (define (tr-dyn-compiler-root code base)

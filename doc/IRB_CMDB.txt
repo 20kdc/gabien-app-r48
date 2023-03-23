@@ -29,6 +29,8 @@
    + ($ PFX PATH [INTERP [PREFIX-ENUMS]]) :
      If the PATH exists, formats (possibly modified by INTERP and PREFIX-ENUMS), prepending PFX.
      Otherwise will always do nothing.
+   + (? PATH TRUE [FALSE])
+     If the PATH exists, see TRUE, otherwise FALSE.
 
  Extended Format (prefix '@@')
 
