@@ -10,7 +10,7 @@ package r48.dbs;
 import gabien.datum.DatumSrcLoc;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.RPGCommand.SGWADyn;
+import r48.dbs.RPGCommand.PDyn;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
@@ -56,15 +56,7 @@ public class CMDB extends App.Svc {
             HashMap<String, SchemaElement> localAliasing = new HashMap<String, SchemaElement>();
 
             String currentPvHLocPrefix;
-            HashMap<Integer, PVHEntry> currentPvH;
-            // this is unbound because it needs to cross-connect to the RPGCommand.SGWADyn stuff
-            HashMap<Integer, SchemaElement> currentPvHSchema;
-            class PVHEntry {
-                final @Nullable FF0 name;
-                public PVHEntry(@Nullable FF0 n) {
-                    name = n;
-                }
-            }
+            HashMap<Integer, RPGCommand.Param> currentPvH;
 
             String baseFile = readFile;
             // sorting order seems to work well enough:
@@ -397,12 +389,10 @@ public class CMDB extends App.Svc {
                     final FF0 fv = dTrExUnderscoreNull(TrNames.cmdbParam(dbId, rc.commandId, paramIdx), args[0]);
                     String s = args[1].trim();
                     final SchemaElement se = aliasingAwareSG(s);
-                    rc.params.add(new RPGCommand.Param((fv != null) ? ((irio) -> fv.r()) : (irio) -> null, new RPGCommand.SGWAStatic(se)));
+                    rc.params.add(new RPGCommand.PStatic(fv, se));
                     useTag();
                 } else if (c == 'P') {
                     int paramIdx = rc.params.size();
-                    final HashMap<Integer, PVHEntry> h = new HashMap<>();
-                    currentPvH = h;
                     // Pv-syntax:
                     // P arrayDI defaultName defaultType
                     // v specificVal name type
@@ -411,25 +401,16 @@ public class CMDB extends App.Svc {
                     final int arrayDI = Integer.parseInt(args[0]);
                     final SchemaElement defaultSE = aliasingAwareSG(args[2]);
                     // prepare the schema stuff which now has special requirements
-                    final SGWADyn sd = new RPGCommand.SGWADyn(defaultSE, arrayDI);
-                    currentPvHSchema = sd.contents;
+                    final PDyn sd = new RPGCommand.PDyn(new RPGCommand.PStatic(defName, defaultSE), arrayDI);
+                    currentPvH = sd.contents;
                     // and actually add
-                    rc.params.add(new RPGCommand.Param((irio) -> {
-                        if (irio != null && irio.getType() == '[' && irio.getALen() > arrayDI) {
-                            int p = (int) irio.getAElem(arrayDI).getFX();
-                            PVHEntry ise = h.get(p);
-                            if (ise != null)
-                                return ise.name != null ? ise.name.r() : null;
-                        }
-                        return defName != null ? defName.r() : null;
-                    }, sd));
+                    rc.params.add(sd);
                     useTag();
                 } else if (c == 'v') {
                     // v specificVal name type
                     final int idx = Integer.parseInt(args[0]);
                     FF0 name = dTrExUnderscoreNull(currentPvHLocPrefix + idx, args[1]);
-                    currentPvH.put(idx, new PVHEntry(name));
-                    currentPvHSchema.put(idx, aliasingAwareSG(args[2]));
+                    currentPvH.put(idx, new RPGCommand.PStatic(name, aliasingAwareSG(args[2])));
                 } else if (c == 'd') {
                     String desc = "";
                     for (String s : args)

@@ -99,7 +99,7 @@ public class RPGCommand extends App.Svc {
     public SchemaElement getParameterSchema(IRIO paramsObj, int i) {
         if (params.size() <= i)
             return app.sdb.getSDBEntry("genericScriptParameter");
-        return params.get(i).schema.apply(paramsObj);
+        return params.get(i).getSchema(paramsObj);
     }
 
     /**
@@ -109,7 +109,7 @@ public class RPGCommand extends App.Svc {
     public @Nullable String getParameterName(IRIO paramsObj, int i) {
         if (params.size() <= i)
             return T.s.cmdb_unkParamName;
-        return params.get(i).name.apply(paramsObj);
+        return params.get(i).getName(paramsObj);
     }
 
     public boolean isAnchor(IRIO paramsObj) {
@@ -141,56 +141,65 @@ public class RPGCommand extends App.Svc {
         }
     }
 
-    public static class Param {
+    public static abstract class Param {
         /**
-         * This can return null, which makes the parameter invisible.
+         * Gets the contextual name of the parameter.
+         * Can return null, making the parameter invisible.
          */
-        public final @NonNull IFunction<RORIO, String> name;
-        public final @NonNull ISchemaGetter schema;
-        public Param(@NonNull IFunction<RORIO, String> n, @NonNull ISchemaGetter s) {
+        public abstract @Nullable String getName(RORIO paramsObj);
+        public abstract @NonNull SchemaElement getSchema(RORIO paramsObj);
+    }
+
+    public static class PStatic extends Param {
+        public final @Nullable FF0 name;
+        public final @NonNull SchemaElement se;
+
+        public PStatic(@Nullable FF0 n, @NonNull SchemaElement e) {
             name = n;
-            schema = s;
-        }
-    }
-
-    /**
-     * refactoring creates interesting problems
-     * This is kept around at this point mainly to avoid reintroducing the generic array problem
-     */
-    public interface ISchemaGetter extends IFunction<RORIO, SchemaElement> {
-    }
-
-    public static class SGWAStatic implements ISchemaGetter {
-        public final SchemaElement se;
-
-        public SGWAStatic(SchemaElement e) {
             se = e;
         }
+
         @Override
-        public SchemaElement apply(RORIO a) {
+        public @Nullable String getName(RORIO paramsObj) {
+            if (name == null)
+                return null;
+            return name.r();
+        }
+        
+        @Override
+        public @NonNull SchemaElement getSchema(RORIO paramsObj) {
             return se;
         }
     }
 
-    public static class SGWADyn implements ISchemaGetter {
-        public final SchemaElement def;
-        public final HashMap<Integer, SchemaElement> contents = new HashMap<>();
+    public static class PDyn extends Param {
+        public final @NonNull Param def;
+        public final HashMap<Integer, Param> contents = new HashMap<>();
         public final int arrayDI;
 
-        public SGWADyn(SchemaElement e, int di) {
-            def = e;
+        public PDyn(Param base, int di) {
+            def = base;
             arrayDI = di;
         }
 
-        @Override
-        public SchemaElement apply(RORIO irio) {
-            if (irio != null && irio.getType() == '[' && irio.getALen() > arrayDI) {
-                int p = (int) irio.getAElem(arrayDI).getFX();
-                SchemaElement ise = contents.get(p);
+        private Param getParam(RORIO paramsObj) {
+            if (paramsObj != null && paramsObj.getType() == '[' && paramsObj.getALen() > arrayDI) {
+                int p = (int) paramsObj.getAElem(arrayDI).getFX();
+                Param ise = contents.get(p);
                 if (ise != null)
                     return ise;
             }
             return def;
+        }
+
+        @Override
+        public @Nullable String getName(RORIO paramsObj) {
+            return getParam(paramsObj).getName(paramsObj);
+        }
+
+        @Override
+        public @NonNull SchemaElement getSchema(RORIO paramsObj) {
+            return getParam(paramsObj).getSchema(paramsObj);
         }
     }
 }
