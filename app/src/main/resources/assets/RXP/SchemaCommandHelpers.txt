@@ -56,13 +56,13 @@ e set_variables_source_enemy_var 0 HP 1 SP 2 MaxHP 3 MaxSP 4 strength 5 dexterit
 e set_variables_source_char_var 0 x 1 y 2 direction 3 screenX 4 screenY 5 terrainTag
 e set_variables_source_other_var 0 mapID 1 partySize 2 gold 3 steps 4 playTime 5 timer 6 saveCount
 
-i RCOM/CommonSV.txt
-
  Notably, the majority of the Set Variables command's pattern is in the Commands.txt file.
  Furthermore, CommonSV handles the int/var/random cases, and lets the parent schema control any further cases using set_variables_parameters_ext.
  It used to be that CommonSV defined this by default, but that now counts as a dodgy translation conflict.
 
 C name set_variables_parameters_ext ]3 ]4 ]5 | [set_variables_source]A{@#A|3|: @[item_id]B|4|: @[actor_id]B [set_variables_source_actor_var]C|5|: [troop_enemy_id]B [set_variables_source_enemy_var]C|6|: [character_id]B [set_variables_source_char_var]C|7|: [set_variables_source_other_var]B}
+
+i RCOM/CommonSV.txt
 
 .set_variables_itemCount
 +set_variables_base

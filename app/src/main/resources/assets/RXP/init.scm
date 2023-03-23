@@ -5,18 +5,20 @@
 
 ; RXP MVM init
 
+(sdb-load-old "RXP/Schema.txt")
+
+; Everything needed for map editing.
+(sdb-load-old "RCOM/SchemaScript.txt")
+
+(sdb-load-old "RXP/SchemaCommandHelpers.txt")
+
 (cmdb-init "event")
 (cmdb-load-old "event" "RXP/Commands.txt")
 
 (cmdb-init "move")
 (cmdb-load-old "move" "RXP/CommandsMove.txt")
 
-(sdb-load-old "RXP/Schema.txt")
-
-; Everything needed for map editing.
-
 (sdb-load-old "RXP/SchemaEditing.txt")
-(sdb-load-old "RXP/SchemaCommandHelpers.txt")
 
 ; Defining 'non-essential' bits & pieces, that the system could conceivably survive without.
 ; Though in some cases they may be used to attempt to create stand-ins for missing files,

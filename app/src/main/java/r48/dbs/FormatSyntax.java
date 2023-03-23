@@ -248,13 +248,13 @@ public class FormatSyntax extends App.Svc {
                     }
                 } else {
                     final String tp = type.substring(1);
+                    final FF1 n = getNameDB(tp);
+                    if (n == null)
+                        throw new RuntimeException("Expected NDB " + tp);
                     r.add((sb, root, parameterSchemas) -> {
                         if (root == null)
                             return;
                         // Meta-interpretation syntax
-                        FF1 n = getNameDB(tp);
-                        if (n == null)
-                            throw new RuntimeException("Expected NDB " + tp);
                         sb.append(n.r(root));
                     });
                 }

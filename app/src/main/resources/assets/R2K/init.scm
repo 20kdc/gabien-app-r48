@@ -5,12 +5,6 @@
 
 ; R2K MVM init
 
-(cmdb-init "event")
-(cmdb-load-old "event" "R2K/Commands.txt")
-
-(cmdb-init "move")
-(cmdb-load-old "move" "R2K/CommandsMove.txt")
-
 ; The R2k/R2k3 Schema. It acts as both, it's your job to figure out what gets ignored or errors if on 2k.
 ; Things postfixed with _2k3 were marked as such in the file format information I got.
 ; _2KO means '2k only'
@@ -27,6 +21,14 @@
 (sdb-load-old "R2K/SchemaScriptingMonolith.txt")
 (sdb-load-old "R2K/SchemaScriptingMonolith2.txt")
 (sdb-load-old "R2K/SchemaScriptingMonolith3.txt")
+
+(cmdb-init "event")
+(cmdb-load-old "event" "R2K/Commands.txt")
+
+(cmdb-init "move")
+(cmdb-load-old "move" "R2K/CommandsMove.txt")
+
+(sdb-load-old "R2K/SchemaScriptingFooter.txt")
 
 ; The main files
 (sdb-load-old "R2K/SchemaLMU.txt")

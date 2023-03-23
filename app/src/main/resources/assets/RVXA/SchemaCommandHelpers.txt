@@ -57,13 +57,13 @@ C name conditional_branch_parameters ]0 | {A=0=[@conditional_branch_switch]|{A=1
 
 e set_variables_source 0 int 1 var 2 random 3 gameData 4 script
 
-i RCOM/CommonSV.txt
-
  Notably, the majority of the Set Variables command's pattern is in the Commands.txt file.
  Furthermore, CommonSV handles the int/var/random cases, and lets the parent schema control any further cases using set_variables_parameters_ext.
  It used to be that CommonSV defined this by default, but that now counts as a dodgy translation conflict.
 
 C name set_variables_parameters_ext ]3 | [set_variables_source]A
+
+i RCOM/CommonSV.txt
 
 .set_variables_script
 +set_variables_base

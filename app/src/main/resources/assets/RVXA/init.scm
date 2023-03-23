@@ -5,13 +5,15 @@
 
 ; RVXA MVM init
 
+(sdb-load-old "RVXA/Schema.txt")
+(sdb-load-old "RVXA/SchemaCommandHelpers.txt")
+(sdb-load-old "RCOM/SchemaScript.txt")
+
 (cmdb-init "event")
 (cmdb-load-old "event" "RVXA/Commands.txt")
 
 (cmdb-init "move")
 (cmdb-load-old "move" "RVXA/CommandsMove.txt")
 
-(sdb-load-old "RVXA/Schema.txt")
-(sdb-load-old "RVXA/SchemaCommandHelpers.txt")
 (sdb-load-old "RVXA/SchemaEditing.txt")
 (sdb-load-old "RVXA/SchemaFiles.txt")

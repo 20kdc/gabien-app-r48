@@ -8,8 +8,6 @@
 
 > genericScriptParameter typeChanger{ genericScriptParametersSW [ RPG::MoveRoute oRPG::MoveRoute RPG::MoveCommand oRPG::MoveCommand RPG::BGM oRPG::BGM RPG::BGS oRPG::BGS string "\"" boolean T boolean F int i }
 
-i RCOM/SchemaScript.txt
-
 > EventListEditor subwindow arrayCS RPG::EventCommand EventCommandEditor_Most event
 > MoveListEditor subwindow arrayMS RPG::MoveCommand MoveCommandEditor_Most move
 
