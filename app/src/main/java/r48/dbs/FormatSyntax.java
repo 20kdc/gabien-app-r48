@@ -10,7 +10,6 @@ package r48.dbs;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import r48.App;
-import r48.RubyIO;
 import r48.dbs.RPGCommand.ISchemaGetterWithAttitude;
 import r48.io.data.RORIO;
 import r48.minivm.MVMSlot;
@@ -179,14 +178,10 @@ public class FormatSyntax extends App.Svc {
                     i = explodeComponent(eqTargetB, data, i + 2, "=");
                     i = explodeComponentsAndAdvance(components, data, i + 1, '}');
                     final String eqTarget = eqTargetB.toString();
-                    final ISchemaGetterWithAttitude dsa = getParameterDSGFA(parameterSchemas, va - 'A', locHint + " (=)");
                     determineBooleanComponent(r, components, (root) -> {
                         boolean result = root != null;
-                        if (result) {
-                            SchemaElement as = getParameterDS(root, dsa);
-                            String a = interpretParameter(paramAcc.get(root, va - 'A'), as, false);
-                            result = a.equals(eqTarget);
-                        }
+                        if (result)
+                            result = paramAcc.get(root, va - 'A').toString().equals(eqTarget);
                         return result;
                     }, paramAcc, parameterSchemas, locHint);
                 } else if (data[i + 2] == ':') {
@@ -194,17 +189,10 @@ public class FormatSyntax extends App.Svc {
                     final char va = data[i];
                     final char vb = data[i + 1];
                     i = explodeComponentsAndAdvance(components, data, i + 3, '}');
-                    final ISchemaGetterWithAttitude dsa = getParameterDSGFA(parameterSchemas, va - 'A', locHint + " (:A)");
-                    final ISchemaGetterWithAttitude dsb = getParameterDSGFA(parameterSchemas, vb - 'A', locHint + " (:B)");
                     determineBooleanComponent(r, components, (root) -> {
                         boolean result = root != null;
-                        if (result) {
-                            SchemaElement as = getParameterDS(root, dsa);
-                            SchemaElement bs = getParameterDS(root, dsb);
-                            String a = interpretParameter(paramAcc.get(root, va - 'A'), as, false);
-                            String b = interpretParameter(paramAcc.get(root, vb - 'A'), bs, false);
-                            result = a.equals(b);
-                        }
+                        if (result)
+                            return RORIO.rubyEquals(paramAcc.get(root, va - 'A'), paramAcc.get(root, vb - 'A'));
                         return result;
                     }, paramAcc, parameterSchemas, locHint);
                 } else {
@@ -229,34 +217,13 @@ public class FormatSyntax extends App.Svc {
                 final String type = typeB.toString();
                 if (indexOfAt != 0) {
                     char ch = data[++i];
-                    if (ch == '[') {
-                        // At this point, it's gone recursive.
-                        // Need to safely skip over this lot...
-                        StringBuilder tx = new StringBuilder();
-                        // need to skip over the [ so we're at level 0
-                        // this is still more comprehensible than the ad-hoc monolith for no reason being replaced here
-                        // explodeComponent then returns the index of the ]
-                        // but the for loop will do its own increment
-                        i = explodeComponent(tx, data, i + 1, "]");
-                        // ... then parse it.
-                        ICompiledFormatSyntax out = compile(tx.toString(), paramAcc, parameterSchemas, locHint);
-                        final boolean thisPrefixNext = prefixNext;
-                        System.out.println("scary code : " + name);
-                        r.add((sb, root) -> {
-                            if (root == null)
-                                return;
-                            RORIO p = new RubyIO().setString(out.r(root), true);
-                            sb.append(interpretParameter(p, type, thisPrefixNext));
-                        });
-                    } else {
-                        final boolean thisPrefixNext = prefixNext;
-                        r.add((sb, root) -> {
-                            if (root == null)
-                                return;
-                            RORIO p = paramAcc.get(root, ch - 'A');
-                            sb.append(interpretParameter(p, type, thisPrefixNext));
-                        });
-                    }
+                    final boolean thisPrefixNext = prefixNext;
+                    r.add((sb, root) -> {
+                        if (root == null)
+                            return;
+                        RORIO p = paramAcc.get(root, ch - 'A');
+                        sb.append(interpretParameter(p, type, thisPrefixNext));
+                    });
                 } else {
                     final String tp = type.substring(1);
                     final FF1 n = getNameDB(tp);
@@ -274,7 +241,7 @@ public class FormatSyntax extends App.Svc {
                 final boolean thisPrefixNext = prefixNext;
                 final char ltr = data[++i];
                 final int pid = ltr - 'A';
-                final ISchemaGetterWithAttitude dsgfa = getParameterDSGFA(parameterSchemas, pid, locHint + " (#" + ltr + ")");
+                final ISchemaGetterWithAttitude dsgfa = getParameterDSGFA(parameterSchemas, pid, locHint, "(#" + ltr + ")");
                 r.add((sb, root) -> {
                     RORIO v = paramAcc.get(root, pid);
                     if (v != null) {
@@ -426,13 +393,15 @@ public class FormatSyntax extends App.Svc {
         return false;
     }
 
-    private static @Nullable ISchemaGetterWithAttitude getParameterDSGFA(ISchemaGetterWithAttitude[] ise, int i, String locHint) {
+    private static @Nullable ISchemaGetterWithAttitude getParameterDSGFA(ISchemaGetterWithAttitude[] ise, int i, String locHint, String cause) {
         if (ise == null)
             return null;
         if (ise.length <= i)
             return null;
-        if (ise[i].shouldWarnFmt())
-            System.err.println("WARN: " + locHint);
+        if (ise[i].shouldWarnFmt()) {
+            // can insert cause filtering here
+            System.out.println("WARN: " + locHint + " (" + cause + ")");
+        }
         return ise[i];
     }
 

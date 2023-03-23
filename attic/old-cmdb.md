@@ -35,4 +35,29 @@ Note the hardcoding of " to ", any other language would have to substitute these
 
 * In the `[@Class.RPG::AudioFile]` syntax, name routines are now looked up at compilation time. This used to be at runtime.
 
-* 
+* The conditional syntaxes `=` and `:`  no longer use `interpretParameter` at all.
+  In particular the details on `=` used to read:
+
+```
+  The third checks if a parameter, interpreted as '#A' where A is the parameter-character, with prefixes always disabled,
+   is equal to a literal text string.
+  This should only be used for numbers/enums and booleans, really.
+  This can be used as a nicer way to output int_booleans...
+  {A=1=(enable)|(disable)}
+  ... or as a way to handle "invert" options. (Note the inverted order of the text.)
+  {A=1=OFF|ON}
+```
+
+*Except for the very small problem that every use of this functionality assumed it never interpreted the parameter, leading to bugs with r2k's camera pan control command...*
+
+* The section on interpretations used to have the ability to perform a name routine on a dynamically constructed string, as that version's closest equivalent to function calls, with the syntax `[my-routine][some extendedformatsyntax]`.
+
+```
+  If the character '@' prefixes the interpretation type, the type name is considered to be the full name routine's ID,
+   and all the parameters are given to the new name routine (no parameter is postfixed)
+  If a parameter is supposed to be postfixed, and that parameter is '[', then the parameter is the formatted text within there (treated as RubyIO string)
+   (For example, [add-one-to-integer][[add-one-to-integer][0]] would be a theoretical way to get 2.)
+  Note, however, that in order for this to work properly the text goes through the system encoding in the interim.
+  Thus, DO NOT use this syntax to handle translation text!!!
+
+```

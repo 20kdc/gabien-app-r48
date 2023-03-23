@@ -62,6 +62,7 @@ public class SchemaParseTest {
 
     @Test
     public void testParses() {
+        System.out.println("SchemaParseTest START: " + gamepak);
         App app = new TestKickstart().kickstart("RAM/", "UTF-8", gamepak);
         // ... Also does this.
         // Not really parsing, but a good safety measure none-the-less.
@@ -75,5 +76,6 @@ public class SchemaParseTest {
                 st.baseElement.modifyVal(rio, new SchemaPath(st, new IObjectBackend.MockLoadedObject(rio)), false);
             }
         }
+        System.out.println("SchemaParseTest END: " + gamepak);
     }
 }

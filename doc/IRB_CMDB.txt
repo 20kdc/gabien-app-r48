@@ -70,10 +70,6 @@
 
   If the character '@' prefixes the interpretation type, the type name is considered to be the full name routine's ID,
    and all the parameters are given to the new name routine (no parameter is postfixed)
-  If a parameter is supposed to be postfixed, and that parameter is '[', then the parameter is the formatted text within there (treated as RubyIO string)
-   (For example, [add-one-to-integer][[add-one-to-integer][0]] would be a theoretical way to get 2.)
-  Note, however, that in order for this to work properly the text goes through the system encoding in the interim.
-  Thus, DO NOT use this syntax to handle translation text!!!
 
   If no interpretation exists for the type given, it fails completely,
    and will result in a no-variables-interpretation (An error in a case where no variables are allowed causes an exception.)
@@ -103,12 +99,11 @@
    {A:Previous attempts to listen to this tape will have found it blank.}
    {A:(with parameter)|(without parameter)}
 
-  The second checks if a parameter is the same as another.
+  The second checks if a parameter is the same as another. (This check is based on RORIO.rubyEquals)
   This can be used for range specification (emulating # in the Original Format, but with flexibility):
    {AB:#A|@#A..@#B}
 
-  The third checks if a parameter, interpreted as '#A' where A is the parameter-character, with prefixes always disabled,
-   is equal to a literal text string.
+  The third checks if a parameter, as run through RORIO.toString, is equal to a text string.
   This should only be used for numbers/enums and booleans, really.
   This can be used as a nicer way to output int_booleans...
   {A=1=(enable)|(disable)}
