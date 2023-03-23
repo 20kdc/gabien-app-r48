@@ -5,8 +5,9 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
 GOAL 1. The Biggest Problem With R48, Part 2
-+ Try to remove FormatSyntax dynamic name routine dispatch
++ Try to remove/reduce FormatSyntax dynamic name routine dispatch
   This is in prep. for conversion to DTC
+  + In general, the goal is to remove parameterSchemas/getParameterDisplaySchemaFromArray
 
 GOAL 2. The Biggest Problem With R48, Part 3
 + Finish unfinished DTC elements

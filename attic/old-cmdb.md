@@ -29,4 +29,10 @@ Note the hardcoding of " to ", any other language would have to substitute these
 
 ...is still in use, so it doesn't yet belong here. But some features have been removed!
 
-* In the `[@Class.RPG::AudioFile]` syntax, name routines are now looked up at initial language compilation time, which occurs during the `ensureAllExpectationsMet` phase (core has loaded, but translations haven't)
+* FormatSyntax used to be entirely runtime, which lead to some funny bugs (including basically being *the* reason there is a `v1.4-3`).
+  
+  * These days it's not completely dealt with, but the worst "this will crash" cases have proper exceptions for them.
+
+* In the `[@Class.RPG::AudioFile]` syntax, name routines are now looked up at compilation time. This used to be at runtime.
+
+* 
