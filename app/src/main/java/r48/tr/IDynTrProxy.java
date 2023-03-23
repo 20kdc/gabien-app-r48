@@ -26,40 +26,40 @@ public interface IDynTrProxy {
     /**
      * Dynamically translate something.
      */
-    IDynTr dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, @Nullable Object addCtx);
+    DynTrBase dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, @Nullable Object addCtx, boolean isNLS);
 
     /**
      * Dynamically translate a string.
      */
     default FF0 dTr(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, null, text, null);
+        return dynTrBase(srcLoc, id, null, text, null, false);
     }
 
     /**
      * Dynamically translate a Datum object (as usual, for compilation)
      */
     default FF1 dTrFF1(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF1, DatumLoader.readInlineList(srcLoc, text), null);
+        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF1, DatumLoader.readInlineList(srcLoc, text), null, false);
     }
 
     /**
      * Dynamically translate a Datum object (as usual, for compilation)
      */
     default FF2 dTrFF2(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF2, DatumLoader.readInlineList(srcLoc, text), null);
+        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF2, DatumLoader.readInlineList(srcLoc, text), null, false);
     }
 
     /**
      * Legacy
      */
-    default FF1 dTrName(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text) {
-        return dynTrBase(srcLoc, TrNames.nameRoutine(id), mode, text, null);
+    default FF1 dTrName(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text, boolean isNLS) {
+        return dynTrBase(srcLoc, TrNames.nameRoutine(id), mode, text, null, isNLS);
     }
 
     /**
      * Legacy 2
      */
     default FF1 dTrFmtSynCM(DatumSrcLoc srcLoc, String id, String text, IFunction<RORIO, SchemaElement>[] parameterSchemas) {
-        return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX_NEW, text, parameterSchemas);
+        return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX_NEW, text, parameterSchemas, false);
     }
 }

@@ -7,6 +7,7 @@
 
 package r48.dbs;
 
+import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.*;
 import r48.App;
@@ -16,7 +17,7 @@ import r48.minivm.MVMSlot;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
-import r48.tr.IDynTrSystemNameRoutine;
+import r48.tr.DynTrBase;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF1;
 
@@ -83,8 +84,14 @@ public class FormatSyntax extends App.Svc {
         });
     }
 
-    private void addNameDBFixed(String name, IDynTrSystemNameRoutine routine) {
-        app.vmCtx.ensureSlot(new DatumSymbol(TrNames.nameRoutine(name))).v = routine;
+    private void addNameDBFixed(String name, FF1 routine) {
+        String id = TrNames.nameRoutine(name);
+        app.vmCtx.ensureSlot(new DatumSymbol(id)).v = new DynTrBase(id, DatumSrcLoc.NONE) {
+            @Override
+            public Object getCompiledValue() {
+                return routine;
+            }
+        };
     }
 
     public @Nullable FF1 getNameDB(String name) {

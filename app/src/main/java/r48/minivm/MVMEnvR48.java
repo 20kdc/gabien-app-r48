@@ -21,8 +21,10 @@ import gabien.datum.DatumWriter;
 import gabien.uslx.append.IConsumer;
 import gabienapp.Application;
 import r48.dbs.DatumLoader;
+import r48.tr.DynTrBase;
 import r48.tr.DynTrSlot;
 import r48.tr.IDynTrProxy;
+import r48.tr.NLSTr;
 import r48.wm.Coco;
 
 /**
@@ -72,14 +74,24 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
      * Dynamic translation slot.
      */
     @Override
-    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object base, @Nullable Object addCtx) {
+    public DynTrBase dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object base, @Nullable Object addCtx, boolean isNLS) {
         DynTrSlot res = dynMap.get(id);
         if (res == null) {
+            MVMSlot slot = ensureSlot(new DatumSymbol(id));
+            if (slot.v != null)
+                throw new RuntimeException("DynTr can't overwrite unrelated (NLS?) value " + id + ".");
+            if (isNLS) {
+                NLSTr nls = new NLSTr(this, srcLoc, id, mode, base, addCtx);
+                slot.v = nls;
+                return nls;
+            }
             res = new DynTrSlot(this, srcLoc, id, mode, base, addCtx);
-            ensureSlot(new DatumSymbol(id)).v = res;
+            slot.v = res;
             dynMap.put(id, res);
             dynList.add(id);
         } else {
+            if (isNLS)
+                throw new RuntimeException("Can't overwrite " + id + " with an NLS slot.");
             String srcOld = res.sourceDump();
             res.setValue(base);
             if (!srcOld.equals(res.sourceDump()))

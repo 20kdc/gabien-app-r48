@@ -136,16 +136,18 @@ public abstract class MVMFn extends MVMHelpable {
 
         @Override
         public final Object callIndirect(Object[] args) {
-            if (args.length == 0)
+            switch (args.length) {
+            case 0:
                 return callDirect();
-            if (args.length == 1)
+            case 1:
                 return callDirect(args[0]);
-            if (args.length == 2)
+            case 2:
                 return callDirect(args[0], args[1]);
-            if (args.length == 3)
+            case 3:
                 return callDirect(args[0], args[1], args[2]);
-            if (args.length == 4)
+            case 4:
                 return callDirect(args[0], args[1], args[2], args[3]);
+            }
             throw new RuntimeException(this + " supplied " + args.length + " args");
         }
     }

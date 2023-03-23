@@ -6,39 +6,31 @@
  */
 package r48.tr;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
+import gabien.datum.DatumSrcLoc;
+import gabien.datum.DatumSymbol;
+import r48.minivm.MVMEnv;
+
 /**
- * Wrapper for non-localizable strings that still looks like a DynTrSlot.
+ * Wrapper for non-localizable stuff that still looks like a DynTrSlot.
  * Created 13th March 2023.
  */
-public final class NLSTr implements IDynTr {
-    public final String v;
-    public NLSTr(String val) {
-        v = val;
+public final class NLSTr extends DynTrBase {
+    private final Object compiled;
+    public NLSTr(@NonNull MVMEnv env, DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object v, @Nullable Object directPassContext) {
+        super(id, srcLoc);
+        compiled = compileValue(env, mode, srcLoc, v, directPassContext);
     }
 
     @Override
-    public String r() {
-        return v;
+    public String toString() {
+        return id + "@" + sourceLoc + "(NLS)";
     }
 
     @Override
-    public String r(Object a0) {
-        return v;
+    public Object getCompiledValue() {
+        return compiled;
     }
-
-    @Override
-    public String r(Object a0, Object a1) {
-        return v;
-    }
-
-    @Override
-    public String r(Object a0, Object a1, Object a2) {
-        return v;
-    }
-
-    @Override
-    public String r(Object a0, Object a1, Object a2, Object a3) {
-        return v;
-    }
-
 }

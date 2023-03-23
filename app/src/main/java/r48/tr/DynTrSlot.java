@@ -11,16 +11,13 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.datum.DatumWriter;
-import r48.dbs.FormatSyntax;
-import r48.io.data.RORIO;
 import r48.minivm.MVMEnvR48;
-import r48.minivm.fn.MVMFn;
 
 /**
  * Dynamic translation slot.
  * Created 12th March 2023.
  */
-public final class DynTrSlot implements IDynTr {
+public final class DynTrSlot extends DynTrBase {
     public static final DatumSymbol DYNTR_FF1 = new DatumSymbol("tr-dyn-compiler-ff1");
     public static final DatumSymbol DYNTR_FF2 = new DatumSymbol("tr-dyn-compiler-ff2");
     // indirect binding to FormatSyntax, see MVMDMAppLibrary
@@ -28,8 +25,6 @@ public final class DynTrSlot implements IDynTr {
     public static final DatumSymbol CMSYNTAX_NEW = new DatumSymbol("dm-cmsyntax-new");
 
     public final MVMEnvR48 env;
-    public final DatumSrcLoc sourceLoc;
-    public final String id;
     public final String originalSrc;
     public final @Nullable DatumSymbol mode;
     // The source of the value is cached so that dynamic translation can work properly.
@@ -39,9 +34,8 @@ public final class DynTrSlot implements IDynTr {
     private Object directPassContext;
 
     public DynTrSlot(MVMEnvR48 e, DatumSrcLoc sl, String i, @Nullable DatumSymbol m, Object base, @Nullable Object directPassContext) {
+        super(i, sl);
         env = e;
-        sourceLoc = sl;
-        id = i;
         mode = m;
         this.directPassContext = directPassContext;
         setValue(base);
@@ -50,18 +44,7 @@ public final class DynTrSlot implements IDynTr {
 
     public void setValue(Object v) {
         valueSrc = DatumWriter.objectToString(v);
-        if (mode == null) {
-            valueCompiled = v;
-        } else if (directPassContext == null) {
-            valueCompiled = ((MVMFn) env.getSlot(mode).v).clDirect(v);
-        } else {
-            valueCompiled = ((MVMFn) env.getSlot(mode).v).clDirect(v, directPassContext);
-        }
-    }
-
-    @Override
-    public String toString() {
-        return id + "@" + sourceLoc;
+        valueCompiled = compileValue(env, mode, sourceLoc, v, directPassContext);
     }
 
     /**
@@ -71,62 +54,8 @@ public final class DynTrSlot implements IDynTr {
         return valueSrc;
     }
 
-    private String resolve(int ac, Object a0, Object a1, Object a2, Object a3) {
-        try {
-            if (valueCompiled instanceof String) {
-                return (String) valueCompiled;
-            } else if (valueCompiled instanceof MVMFn) {
-                Object res = null;
-                switch (ac) {
-                case 0:
-                    res = ((MVMFn) valueCompiled).clDirect();
-                    break;
-                case 1:
-                    res = ((MVMFn) valueCompiled).clDirect(a0);
-                    break;
-                case 2:
-                    res = ((MVMFn) valueCompiled).clDirect(a0, a1);
-                    break;
-                case 3:
-                    res = ((MVMFn) valueCompiled).clDirect(a0, a1, a2);
-                    break;
-                case 4:
-                    res = ((MVMFn) valueCompiled).clDirect(a0, a1, a2, a3);
-                    break;
-                }
-                if (res == null)
-                    return "!!!(null DynTrSlot return @ " + id + ")!!!";
-                return res.toString();
-            } else if (valueCompiled instanceof FormatSyntax.ICompiledFormatSyntax) {
-                if (ac != 1)
-                    return "!!!(FormatSyntax args bad @ " + id + ")!!!";
-                return ((FormatSyntax.ICompiledFormatSyntax) valueCompiled).r((RORIO) a0);
-            }
-            return valueCompiled.toString();
-        } catch (Exception ex) {
-            System.err.println("at " + id + ":");
-            ex.printStackTrace();
-            return "!!!" + id + "!!!";
-        }
-    }
-
-    public String r() {
-        return resolve(0, null, null, null, null);
-    }
-
-    public String r(Object a0) {
-        return resolve(1, a0, null, null, null);
-    }
-
-    public String r(Object a0, Object a1) {
-        return resolve(2, a0, a1, null, null);
-    }
-
-    public String r(Object a0, Object a1, Object a2) {
-        return resolve(3, a0, a1, a2, null);
-    }
-
-    public String r(Object a0, Object a1, Object a2, Object a3) {
-        return resolve(4, a0, a1, a2, a3);
+    @Override
+    public Object getCompiledValue() {
+        return valueCompiled;
     }
 }

@@ -150,18 +150,16 @@ e rpg_savesystem_screen 5 save
  Regarding this routine, {A=0=1|#A} makes an A of 0 show as 1,
   because of the Ix1 - then 1 is changed to "empty" and other values are changed to the original count minus 1.
 C datum `
-(let ((DISCARD '
-(define-name Class.RPG::Interpreter (= @stack:length 0 "empty"
-	(
-		(vm (-
-			(dm-a-len (dm-at a0 @stack))
-		1))
-		"-deep interpreter"
+(define-tr TrNStr.rpg_interpreter_empty "empty")
+(define-tr TrNStr.rpg_interpreter_depth (fl1 a0 "-deep interpreter"))
+(define-name-nls Class.RPG::Interpreter (vm (let
+	((stack-len (dm-a-len (dm-at a0 @stack))))
+	(if (= stack-len 0)
+		(tr TrNStr.rpg_interpreter_empty a0)
+		(tr TrNStr.rpg_interpreter_depth (- stack-len 1))
 	)
-))
 )))
 `
-C name Class.RPG::Interpreter @stack:length | {@{A=0=1|#A}|1|empty|[lang-Common-add][#A -1]-deep interpreter}
 @stack arrayIx1 subwindow RPG::InterpreterStackLevel
 @shown_message boolean
 @waiting_for_nmovement boolean

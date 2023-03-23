@@ -30,7 +30,7 @@ import r48.io.data.RORIO;
 import r48.map.StuffRenderer;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMR48AppLibraries;
-import r48.tr.DynTrSlot;
+import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
 import r48.tr.pages.TrRoot;
 
@@ -77,8 +77,8 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     }
 
     @Override
-    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, @Nullable Object addCtx) {
-        return vmCtx.dynTrBase(srcLoc, id, mode, text, addCtx);
+    public DynTrBase dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, @Nullable Object addCtx, boolean isNLS) {
+        return vmCtx.dynTrBase(srcLoc, id, mode, text, addCtx, isNLS);
     }
 
     public void performTranslatorDump(String fn) {

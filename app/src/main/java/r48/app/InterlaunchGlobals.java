@@ -18,7 +18,7 @@ import r48.cfg.Config;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMR48GlobalLibraries;
-import r48.tr.DynTrSlot;
+import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
 import r48.tr.LanguageList;
 import r48.tr.pages.TrRoot;
@@ -45,8 +45,8 @@ public class InterlaunchGlobals implements IDynTrProxy {
     }
 
     @Override
-    public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, @Nullable Object addCtx) {
-        return langVM.dynTrBase(srcLoc, id, mode, text, addCtx);
+    public DynTrBase dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, @Nullable Object addCtx, boolean isNLS) {
+        return langVM.dynTrBase(srcLoc, id, mode, text, addCtx, isNLS);
     }
 
     public void launcherDynTrDump(String fn) {

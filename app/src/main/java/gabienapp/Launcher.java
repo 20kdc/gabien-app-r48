@@ -21,7 +21,7 @@ import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.cfg.FontSizes.FontSizeField;
 import r48.minivm.MVMEnv;
-import r48.tr.DynTrSlot;
+import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
 import r48.tr.LanguageList;
 
@@ -118,8 +118,8 @@ public class Launcher {
         public abstract void tick(double dT);
 
         @Override
-        public DynTrSlot dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, @Nullable Object addCtx) {
-            return lun.ilg.dynTrBase(srcLoc, id, mode, text, addCtx);
+        public DynTrBase dynTrBase(DatumSrcLoc srcLoc, String id, @Nullable DatumSymbol mode, Object text, @Nullable Object addCtx, boolean isNLS) {
+            return lun.ilg.dynTrBase(srcLoc, id, mode, text, addCtx, isNLS);
         }
     }
 }

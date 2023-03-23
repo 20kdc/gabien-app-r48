@@ -869,7 +869,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 arguments.add(text);
                 // Important to note: the expected format is (PATH... NAME)
                 // Another important thing to note is that simply translating the name routine now creates the name routine.
-                app.dTrName(srcLoc, args[1], DynTrSlot.FORMATSYNTAX, arguments);
+                app.dTrName(srcLoc, args[1], DynTrSlot.FORMATSYNTAX, arguments, false);
             } else if (args[0].equals("spritesheet")) {
                 // Defines a spritesheet for spriteSelector.
                 sdb.helpers.createSpritesheet(srcLoc, args);
