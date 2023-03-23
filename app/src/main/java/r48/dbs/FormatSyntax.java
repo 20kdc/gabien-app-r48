@@ -9,9 +9,9 @@ package r48.dbs;
 
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
+import r48.dbs.RPGCommand.ISchemaGetterWithAttitude;
 import r48.io.data.RORIO;
 import r48.minivm.MVMSlot;
 import r48.schema.AggregateSchemaElement;
@@ -104,10 +104,10 @@ public class FormatSyntax extends App.Svc {
     /**
      * Compiles a FormatSyntax for easier debugging.
      */
-    public ICompiledFormatSyntax compile(String name, ParameterAccessor paramAcc, @Nullable IFunction<RORIO, SchemaElement>[] parameterSchemas) {
+    public ICompiledFormatSyntax compile(String name, ParameterAccessor paramAcc, @Nullable ISchemaGetterWithAttitude[] parameterSchemas, String locHint) {
         // System.out.println("fs compile: " + name);
         LinkedList<CompiledChunk> r = new LinkedList<>();
-        compileChunk(r, name, paramAcc, parameterSchemas);
+        compileChunk(r, name, paramAcc, parameterSchemas, locHint);
         optimizeChunks(r);
         return (a) -> {
             StringBuilder sb = new StringBuilder();
@@ -120,7 +120,7 @@ public class FormatSyntax extends App.Svc {
     /**
      * Compiles a part of a FormatSyntax.
      */
-    private void compileChunk(LinkedList<CompiledChunk> r, String name, ParameterAccessor paramAcc, @Nullable IFunction<RORIO, SchemaElement>[] parameterSchemas) {
+    private void compileChunk(LinkedList<CompiledChunk> r, String name, ParameterAccessor paramAcc, @Nullable ISchemaGetterWithAttitude[] parameterSchemas, String locHint) {
         char[] data = name.toCharArray();
         boolean prefixNext = false;
         // C: A fully parsable formatNameExtended string.
@@ -146,10 +146,10 @@ public class FormatSyntax extends App.Svc {
                     //  at the start and end respectively.
                     // Of course, since the first component is removed instantly,
                     //  the check is for odd.
-                    final ICompiledFormatSyntax valComp = compile(components.removeFirst(), paramAcc, parameterSchemas);
+                    final ICompiledFormatSyntax valComp = compile(components.removeFirst(), paramAcc, parameterSchemas, locHint);
                     LinkedList<ICompiledFormatSyntax> componentsComp = new LinkedList<>();
                     for (String s : components)
-                        componentsComp.add(compile(s, paramAcc, parameterSchemas));
+                        componentsComp.add(compile(s, paramAcc, parameterSchemas, locHint));
                     ICompiledFormatSyntax def = (root) -> "";
                     if ((componentsComp.size() & 1) != 0)
                         def = componentsComp.removeLast();
@@ -171,7 +171,7 @@ public class FormatSyntax extends App.Svc {
                     i = explodeComponentsAndAdvance(components, data, i + 2, '}');
                     determineBooleanComponent(r, components, (root) -> {
                         return paramAcc.get(root, v - 'A') != null;
-                    }, paramAcc, parameterSchemas);
+                    }, paramAcc, parameterSchemas, locHint);
                 } else if (data[i + 1] == '=') {
                     char va = data[i];
                     // vt equality form.
@@ -179,31 +179,34 @@ public class FormatSyntax extends App.Svc {
                     i = explodeComponent(eqTargetB, data, i + 2, "=");
                     i = explodeComponentsAndAdvance(components, data, i + 1, '}');
                     final String eqTarget = eqTargetB.toString();
+                    final ISchemaGetterWithAttitude dsa = getParameterDSGFA(parameterSchemas, va - 'A', locHint + " (=)");
                     determineBooleanComponent(r, components, (root) -> {
                         boolean result = root != null;
                         if (result) {
-                            SchemaElement as = getParameterDisplaySchemaFromArray(root, parameterSchemas, va - 'A');
+                            SchemaElement as = getParameterDS(root, dsa);
                             String a = interpretParameter(paramAcc.get(root, va - 'A'), as, false);
                             result = a.equals(eqTarget);
                         }
                         return result;
-                    }, paramAcc, parameterSchemas);
+                    }, paramAcc, parameterSchemas, locHint);
                 } else if (data[i + 2] == ':') {
                     // vv equality form.
                     final char va = data[i];
                     final char vb = data[i + 1];
                     i = explodeComponentsAndAdvance(components, data, i + 3, '}');
+                    final ISchemaGetterWithAttitude dsa = getParameterDSGFA(parameterSchemas, va - 'A', locHint + " (:A)");
+                    final ISchemaGetterWithAttitude dsb = getParameterDSGFA(parameterSchemas, vb - 'A', locHint + " (:B)");
                     determineBooleanComponent(r, components, (root) -> {
                         boolean result = root != null;
                         if (result) {
-                            SchemaElement as = getParameterDisplaySchemaFromArray(root, parameterSchemas, va - 'A');
-                            SchemaElement bs = getParameterDisplaySchemaFromArray(root, parameterSchemas, vb - 'A');
+                            SchemaElement as = getParameterDS(root, dsa);
+                            SchemaElement bs = getParameterDS(root, dsb);
                             String a = interpretParameter(paramAcc.get(root, va - 'A'), as, false);
                             String b = interpretParameter(paramAcc.get(root, vb - 'A'), bs, false);
                             result = a.equals(b);
                         }
                         return result;
-                    }, paramAcc, parameterSchemas);
+                    }, paramAcc, parameterSchemas, locHint);
                 } else {
                     throw new RuntimeException("Unknown conditional type!");
                 }
@@ -236,7 +239,7 @@ public class FormatSyntax extends App.Svc {
                         // but the for loop will do its own increment
                         i = explodeComponent(tx, data, i + 1, "]");
                         // ... then parse it.
-                        ICompiledFormatSyntax out = compile(tx.toString(), paramAcc, parameterSchemas);
+                        ICompiledFormatSyntax out = compile(tx.toString(), paramAcc, parameterSchemas, locHint);
                         final boolean thisPrefixNext = prefixNext;
                         System.out.println("scary code : " + name);
                         r.add((sb, root) -> {
@@ -271,10 +274,11 @@ public class FormatSyntax extends App.Svc {
                 final boolean thisPrefixNext = prefixNext;
                 final char ltr = data[++i];
                 final int pid = ltr - 'A';
+                final ISchemaGetterWithAttitude dsgfa = getParameterDSGFA(parameterSchemas, pid, locHint + " (#" + ltr + ")");
                 r.add((sb, root) -> {
                     RORIO v = paramAcc.get(root, pid);
                     if (v != null) {
-                        sb.append(interpretParameter(v, getParameterDisplaySchemaFromArray(root, parameterSchemas, pid), thisPrefixNext));
+                        sb.append(interpretParameter(v, getParameterDS(root, dsgfa), thisPrefixNext));
                     } else {
                         sb.append(ltr);
                     }
@@ -304,17 +308,17 @@ public class FormatSyntax extends App.Svc {
         }
     }
 
-    private void determineBooleanComponent(LinkedList<CompiledChunk> r, LinkedList<String> components, CompiledPredicate p, ParameterAccessor paramAcc, @Nullable IFunction<RORIO, SchemaElement>[] parameterSchemas) {
+    private void determineBooleanComponent(LinkedList<CompiledChunk> r, LinkedList<String> components, CompiledPredicate p, ParameterAccessor paramAcc, @Nullable ISchemaGetterWithAttitude[] parameterSchemas, String locHint) {
         LinkedList<CompiledChunk> cT = new LinkedList<CompiledChunk>();
         LinkedList<CompiledChunk> cF = new LinkedList<CompiledChunk>();
         for (int i = 0; i < components.size(); i++) {
             String elm = components.get(i);
             if ((i & 1) == 0) {
                 // true
-                compileChunk(cT, elm, paramAcc, parameterSchemas);
+                compileChunk(cT, elm, paramAcc, parameterSchemas, locHint);
             } else {
                 // false
-                compileChunk(cF, elm, paramAcc, parameterSchemas);
+                compileChunk(cF, elm, paramAcc, parameterSchemas, locHint);
             }
         }
         optimizeChunks(cT);
@@ -410,13 +414,32 @@ public class FormatSyntax extends App.Svc {
         return r;
     }
 
-    // NOTE: This can return null.
-    private static SchemaElement getParameterDisplaySchemaFromArray(RORIO root, IFunction<RORIO, SchemaElement>[] ise, int i) {
+    /**
+     * Used to determine if interpretParameter would do magic stuff here.
+     */
+    public static boolean willInterpretSpecial(SchemaElement ise) {
+        if (ise != null) {
+            ise = AggregateSchemaElement.extractField(ise, null);
+            if (ise instanceof EnumSchemaElement)
+                return true;
+        }
+        return false;
+    }
+
+    private static @Nullable ISchemaGetterWithAttitude getParameterDSGFA(ISchemaGetterWithAttitude[] ise, int i, String locHint) {
         if (ise == null)
             return null;
         if (ise.length <= i)
             return null;
-        return ise[i].apply(root);
+        if (ise[i].shouldWarnFmt())
+            System.err.println("WARN: " + locHint);
+        return ise[i];
+    }
+
+    private static @Nullable SchemaElement getParameterDS(RORIO root, ISchemaGetterWithAttitude ise) {
+        if (ise == null)
+            return null;
+        return ise.apply(root);
     }
 
     private static ICompiledFormatSyntax wrapWithCMDisclaimer(String name, ICompiledFormatSyntax v) {
@@ -432,8 +455,8 @@ public class FormatSyntax extends App.Svc {
             }
         };
     }
-    public ICompiledFormatSyntax compileCMNew(String nameGet, @Nullable IFunction<RORIO, SchemaElement>[] parameterSchemas) {
-        return wrapWithCMDisclaimer(nameGet, compile(nameGet, ACC_ARRAY, parameterSchemas));
+    public ICompiledFormatSyntax compileCMNew(String nameGet, @Nullable ISchemaGetterWithAttitude[] parameterSchemas) {
+        return wrapWithCMDisclaimer(nameGet, compile(nameGet, ACC_ARRAY, parameterSchemas, nameGet));
     }
 
     /**

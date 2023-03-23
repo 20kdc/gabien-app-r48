@@ -22,6 +22,7 @@ import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 import r48.tr.TrPage.FF1;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -81,11 +82,10 @@ public class RPGCommand extends App.Svc {
         nameRawUnlocalized = nru;
     }
 
-    @SuppressWarnings("unchecked")
     public void finish() {
         // Names use NDB syntax, thus, separate context
         if (nameRawUnlocalized.startsWith("@@")) {
-            IFunction<RORIO, SchemaElement>[] paramTypes = new IFunction[params.size()];
+            ISchemaGetterWithAttitude[] paramTypes = new ISchemaGetterWithAttitude[params.size()];
             int idx = 0;
             for (Param p : params)
                 paramTypes[idx++] = p.schema;
@@ -150,10 +150,67 @@ public class RPGCommand extends App.Svc {
          * This can return null, which makes the parameter invisible.
          */
         public final @NonNull IFunction<RORIO, String> name;
-        public final @NonNull IFunction<RORIO, SchemaElement> schema;
-        public Param(@NonNull IFunction<RORIO, String> n, @NonNull IFunction<RORIO, SchemaElement> s) {
+        public final @NonNull ISchemaGetterWithAttitude schema;
+        public Param(@NonNull IFunction<RORIO, String> n, @NonNull ISchemaGetterWithAttitude s) {
             name = n;
             schema = s;
+        }
+    }
+
+    /**
+     * refactoring creates interesting problems
+     */
+    public interface ISchemaGetterWithAttitude extends IFunction<RORIO, SchemaElement> {
+        /**
+         * If this actually has any effect on formatting
+         */
+        boolean shouldWarnFmt();
+    }
+
+    public static class SGWAStatic implements ISchemaGetterWithAttitude {
+        public final SchemaElement se;
+
+        public SGWAStatic(SchemaElement e) {
+            se = e;
+        }
+        @Override
+        public SchemaElement apply(RORIO a) {
+            return se;
+        }
+
+        @Override
+        public boolean shouldWarnFmt() {
+            return FormatSyntax.willInterpretSpecial(se);
+        }
+    }
+
+    public static class SGWADyn implements ISchemaGetterWithAttitude {
+        public final SchemaElement def;
+        public final HashMap<Integer, SchemaElement> contents = new HashMap<>();
+        public final int arrayDI;
+
+        public SGWADyn(SchemaElement e, int di) {
+            def = e;
+            arrayDI = di;
+        }
+
+        @Override
+        public SchemaElement apply(RORIO irio) {
+            if (irio != null && irio.getType() == '[' && irio.getALen() > arrayDI) {
+                int p = (int) irio.getAElem(arrayDI).getFX();
+                SchemaElement ise = contents.get(p);
+                if (ise != null)
+                    return ise;
+            }
+            return def;
+        }
+
+        @Override
+        public boolean shouldWarnFmt() {
+            for (SchemaElement s : contents.values())
+                if (FormatSyntax.willInterpretSpecial(s))
+                    return true;
+            return FormatSyntax.willInterpretSpecial(def);
         }
     }
 }

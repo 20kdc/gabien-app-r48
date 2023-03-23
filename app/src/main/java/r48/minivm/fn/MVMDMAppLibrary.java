@@ -9,21 +9,19 @@ package r48.minivm.fn;
 import java.util.List;
 
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.IFunction;
 import r48.App;
 import r48.dbs.FormatSyntax;
 import r48.dbs.PathSyntax;
+import r48.dbs.RPGCommand.ISchemaGetterWithAttitude;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMU;
-import r48.schema.SchemaElement;
 
 /**
  * MiniVM standard library.
  * Created 8th March 2023.
  */
 public class MVMDMAppLibrary {
-    @SuppressWarnings("unchecked")
     public static void add(MVMEnv ctx, App app) {
         ctx.defineSlot(new DatumSymbol("dm-fmt")).v = new DMFmt(app.fmt)
                 .attachHelp("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. If the passed-in object is null (say, due to a PathSyntax failure) returns the empty string. Important: Because of schemas and stuff this doesn't exist in the static translation context.");
@@ -39,10 +37,10 @@ public class MVMDMAppLibrary {
                 if (idx >= paths.length)
                     return null;
                 return paths[idx].get(root);
-            }, null);
+            }, null, "dm-formatsyntax, idk");
         }).attachHelp("(dm-formatsyntax THING) : Compiles FormatSyntax. This is a workaround to run FormatSyntax through the DynTrSlot stuff, so it counts as a compiled DynTrSlot value, but...");
         ctx.defLib("dm-cmsyntax-new", (text, ps) -> {
-            return app.fmt.compileCMNew((String) text, (IFunction<RORIO, SchemaElement>[]) ps);
+            return app.fmt.compileCMNew((String) text, (ISchemaGetterWithAttitude[]) ps);
         }).attachHelp("(dm-cmsyntax-new TEXT) : Compiles new CMSyntax. This is an even worse workaround.");
     }
     public static final class DMFmt extends MVMFn.Fixed {
