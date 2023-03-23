@@ -6,7 +6,7 @@
 
  GI-M Command List
 
-10830: @@Teleport Player By Vars{D: @#B, @#C, @#D}
+10830: @@Teleport Player By Vars{D: @[var_id]B, @[var_id]C, @[var_id]D}
 C category 3
 d Like Teleport Player, except more complicated.
 p _ string
@@ -126,7 +126,7 @@ C groupBehavior expectHead 10730 20730 20731
 i-1
 l
 
-10740: @@Enter Party Member{B: @#B's} Name
+10740: @@Enter Party Member{B: @[actor_id]B's} Name
 C category 2
 d For changing the name of a party member. Because players really don't care about Crono's parents or their naming decisions.
 p _ string
@@ -148,7 +148,7 @@ C category 2
 d Enters or leaves an airship occupying the same space as the player, or a ship/boat directly in front of the player. It is extremely picky about this.
 p _ string
 
-11060: @@Camera Pan{F: {B=2=[direction]C #D tiles speed #E|#B}{B=3= speed #E} ({F=0=no }wait)| Control}
+11060: @@Camera Pan{F: {B=2=[direction]C #D tiles speed #E|[camera_pan_control_mode]B}{B=3= speed #E} ({F=0=no }wait)| Control}
 C category 3
 d Controls where the 'camera' is looking.
 p _ string
@@ -185,7 +185,7 @@ X erase_picture_parameters
 
  ---
 
-11210: @@Show Animation{E: @#B at @#C{D=0=| (wait)}{E=0=| (global)}}
+11210: @@Show Animation{E: @[animation_id]B at @[character_id]C{D=0=| (wait)}{E=0=| (global)}}
 C category 3
 d Show an animation on an event/the player.
 p _ string
@@ -194,7 +194,7 @@ p char character_id
 p wait int_boolean
 p global int_boolean
 
-11320: @@Flash Character{H: @#B #[#C,#D,#E,#F#] for #G/10 seconds{H=0=| (wait)}}
+11320: @@Flash Character{H: @[character_id]B #[#C,#D,#E,#F#] for #G/10 seconds{H=0=| (wait)}}
 C category 3
 d Make an event/the player flash in a given way for a given length of time (given in tenths of a second.)
 p _ string

@@ -19,7 +19,7 @@ d ...
 40: "Ignore Z Depth Off"
 d ...
 
-41:@@Set graphic{A: to #A:#D, facing #C}
+41:@@Set graphic{A: to #A:#D, facing [direction]C}
 d Changes the graphics of this event.
 p name f_char_name
 p hue hue

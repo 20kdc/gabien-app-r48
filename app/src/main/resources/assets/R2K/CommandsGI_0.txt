@@ -55,7 +55,7 @@ p text textbox_string
 
  Need to automate this later.
 
-10140: @@Show Choices{B: {B=0=no cancel|cancel choice: #B}| (20140/20141 follows)}
+10140: @@Show Choices{B: {B=0=no cancel|cancel choice: [choice_begin_magic]B}| (20140/20141 follows)}
 C category 0
 d Shows a set of choices to the player. (editorChoices is for editor display purposes only.)
 p editorChoices string
@@ -83,14 +83,14 @@ C groupBehavior expectHead 10140 20140
 i-1
 l
 
-10150: @@Input Number{C: to var. @#C (#B digits)}
+10150: @@Input Number{C: to var. @[var_id]C (#B digits)}
 C category 0
 d Shows a numeric input to the player, with a set amount of digits, and stores the result in a variable.
 p _ string
 p digits int
 p var var_id
 
-10120: @@Message Options{E: {B=0=opaque|transparent},#C,{D=0=fixed|unfixed},events{E=0= don't} continue}
+10120: @@Message Options{E: {B=0=opaque|transparent},[message_options_position]C,{D=0=fixed|unfixed},events{E=0= don't} continue}
 C category 0
 d Sets if the text box is transparent, where it is, if it will move to avoid hiding the player, and if events can move about (I think).
 p _ string
@@ -110,7 +110,7 @@ p faceFlipped int_boolean
 
  Control Switches follows. Uhoh.
 
-10210: @@Control Switch{E:{B=1=es @#C .. @#D|{B=2= #[Var(@#C)| @#C}} = #E|es}
+10210: @@Control Switch{E:{B=1=es @[switch_id]C .. @[switch_id]D|{B=2= Var(@[var_id]C)| @[switch_id]C}} = [control_switches_change_mode]E|es}
 C category 1
 d Control switches in various ways. Single alters one switch. Range alters a group of switches. Indirect alters one switch, numbered by a variable.
 p _ string
@@ -135,7 +135,7 @@ d Alters the settings on either timer ID 0 (if unspecified) or a given timer. Ca
 p _ string
 X timer_operation_parameters
 
-10310: @@{B:{B=0=Give|Take From}|Give/Take From} Player:{D: {C=0=#D|Var(@#D)}} Gold
+10310: @@{B:{B=0=Give|Take From}|Give/Take From} Player:{D: {C=0=[int]D|Var(@[var_id]D)}} Gold
 C category 2
 d Adds or removes gold by a constant amount or the value in a variable.
 p _ string
@@ -144,7 +144,7 @@ p goldIsVar int_boolean
 P 2 goldVar var_id
 v 0 gold int_default_100
 
-10320: @@{F:{B=0=Give|Take From}|Give/Take From} Player:{F: {E=0=@#F|Var(@#F)} Of} Item{F: {C=0=@#D|Var(@#D)}}
+10320: @@{F:{B=0=Give|Take From}|Give/Take From} Player:{F: {E=0=@[int]F|Var(@[var_id]F)} Of} Item{F: {C=0=@[item_id]D|Var(@[var_id]D)}}
 C category 2
 d Adds or removes the amount of an item (selected by ID or the value in a variable) by a constant amount or the value in a variable.
 p _ string
@@ -390,7 +390,7 @@ x change_system_bgm_parameters
 
  NT. OS uses below for hax, so it gets priority on the "should we name this right today" roulette wheel
 
-10670: @@Change Sys.SFX{E: @#B to #A}
+10670: @@Change Sys.SFX{E: @[change_sys_sfx_id]B to #A}
 d Change a sound effect used by the system.
 p sfx f_sound_name
 p sfxId change_sys_sfx_id
@@ -656,7 +656,7 @@ C category 3
 d Attempts to temporarily erase this event (if this is, in fact, a map event)
 p _ string
 
-12330: @@Call{B:{@#B|commonEvent| Common Event @#C|mapEvent| Map Event @#C, Page #D|indirectMapEvent| Map Event Var(@#C), Page Var(@#D)| #B Event}| Event}
+12330: @@Call {B:{@[int]B|0|Common Event @[commonevent_id]C|1|Map Event @[character_id]C, Page [int]D|2|Map Event Var(@[var_id]C), Page Var(@[var_id]D)|[callevent_type]B Event}| Event}
 C category 1
 d Calls a page in another event, or calls a common event.
 p _ string

@@ -7,12 +7,12 @@
  Event commands for VX Ace.
 
 0: ">> insert point"
-d Inserter. This is how Macrotons enter the system, where they move about, charging as they go. Wait, wrong manual. Insert point. Totally useless.
+d This is a placeholder. The idea is that you replace this command with the one you actually want to have. R48 doesn't really need these.
 L
 
  LINE 251
 
-101:@@Start Text {A:w/face #A:#B ({C=1=no }bkg, #D)|(c.401/102/103/104)}
+101:@@Start Text {A:w/face #A:#B ({C=1=no }bkg, [change_text_options_position]D)|(c.401/102/103/104)}
 d Begins a segment of text.
 C translatable
 p faceName f_face_name
@@ -145,13 +145,13 @@ p labelName string
 d Jump to a label. May act odd if it enters/leaves conditional blocks or such.
 p labelName string
 
-121:@@Control Switch{AB: @#A|es @#A..@#B}{C:->{C=1=OFF|ON}}
+121:@@Control Switch{AB: @[switch_id]A|es @[switch_id]A..@[switch_id]B}{C:->{C=1=OFF|ON}}
 d Enable or disable a given range of switches.
 p first switch_id
 p last switch_id
 p disable int_boolean
 
-122:@@Set Variable{A:{AB: @#A|s @#A..@#B} #C [@set_variables_parameters]}
+122:@@Set Variable{A:{AB: @[var_id]A|s @[var_id]A..@[var_id]B} [set_variables_operation]C [@set_variables_parameters]}
 d Modify a given range of variables in a given way.
  note: the parameters given here are for formatting reasons, since the X overrides any actual use.
 p firstVar var_id
@@ -178,7 +178,7 @@ p amountIsVar int_boolean
 P 1 amountVar var_id
 v 0 amount int_default_100
 
-126:@@Item{A: #A += [@operate_value_1]| Add/Remove}
+126:@@Item{A: @[item_id]A += [@operate_value_1]| Add/Remove}
 d Give or take items from the player.
 p item item_id
 p negate int_boolean
@@ -186,15 +186,15 @@ p amountIsVar int_boolean
 P 2 amountVar var_id
 v 0 amount int_default_1
 
-127:@@Weapon{A: @#A += [@operate_value_1]| Add/Remove}
+127:@@Weapon{A: @[weapon_id]A += [@operate_value_1]| Add/Remove}
 d Give or take weapons from the player.
 X weapon_add_remove_parameters
 
-128:@@Armour{A: #A += [@operate_value_1]| Add/Remove}
+128:@@Armour{A: @[armour_id]A += [@operate_value_1]| Add/Remove}
 d Give or take armour from the player.
 X armour_add_remove_parameters
 
-129:@@{A:{B=0=Remove actor @#A from party|Add actor @#A to party{C=0= without} resetting}|Add/remove actor to party}
+129:@@{A:{B=0=Remove actor @[actor_id]A from party|Add actor @[actor_id]A to party{C=0= without} resetting}|Add/remove actor to party}
 d Adds or removes a party member from/to the player's party.
 p actor actor_id
 p add int_boolean
@@ -543,7 +543,7 @@ p modIsVar int_boolean
 P 3 modVar var_id
 v 0 mod int_default_10
 
-313:@@{A:{C=0=Add|Remove}|Change} State{A: @#D} on actor{A: [@iterate_actor_var]}
+313:@@{A:{C=0=Add|Remove}|Change} State{A: @[state_id]D} on actor{A: [@iterate_actor_var]}
 d Heal or harm a party member by giving them a state.
 p actorIsVar int_boolean
 P 0 actorVar var_id
@@ -579,7 +579,7 @@ P 3 modVar var_id
 v 0 mod int_default_1
 p showLevelUp boolean
 
-317:@@Modify parameter{C: @#C} in actor{A: [@iterate_actor_var] by [@operate_value_3]}
+317:@@Modify parameter{C: @[parameter_id]C} in actor{A: [@iterate_actor_var] by [@operate_value_3]}
 d Modify a party member in confusing battle-related ways.
 p actorIsVar int_boolean
 P 0 actorVar var_id
@@ -590,7 +590,7 @@ p modIsVar int_boolean
 P 4 modVar var_id
 v 0 mod int_default_10
 
-318:@@{A:{C=0=Add|Remove}|Change} Skill{A: @#D} on actor{A: [@iterate_actor_var]}
+318:@@{A:{C=0=Add|Remove}|Change} Skill{A: @[skill_id]D} on actor{A: [@iterate_actor_var]}
 d Add or remove a skill from/to a party member.
 p actorIsVar int_boolean
 P 0 actorVar var_id
@@ -598,7 +598,7 @@ v 0 actor iterate_actor_id
 p remove int_boolean
 p skill skill_id
 
-319:@@Change Equipment on actor{A: @#A}
+319:"Change Equipment on actor" ($ " " ]0 actor_id)
 d Change what a party member has equipped. Note that one of the slots can vary between weapon and armour, so you will have to enter the ID manually.
 p actor actor_id
 p slot equipment_slot
@@ -638,7 +638,7 @@ C translatable
 p actor actor_id
 p nickname string
 
-331:@@HP of enemy{A: @#A += [@operate_value_1]}
+331:@@HP of enemy{A: @[iterate_enemy_index]A += [@operate_value_1]}
 d Heal or harm an enemy.
 p enemy iterate_enemy_index
 p negateMod int_boolean
@@ -647,7 +647,7 @@ P 2 modVar var_id
 v 0 mod int_default_100
 p canKill boolean
 
-332:@@MP of enemy{A: @#A += [@operate_value_1]}
+332:@@MP of enemy{A: @[iterate_enemy_index]A += [@operate_value_1]}
 d Heal or harm an enemy's magical abilities.
 p enemy iterate_enemy_index
 p negateMod int_boolean
@@ -655,7 +655,7 @@ p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int_default_10
 
-333:@@{A:{B=0=Add|Remove}|Change} enemy{A: @#A state @#C| state}
+333:@@{A:{B=0=Add|Remove}|Change} enemy{A: @[iterate_enemy_index]A state @[state_id]C| state}
 d Heal or harm an enemy by giving them a state.
 p enemy iterate_enemy_index
 p remove int_boolean
@@ -669,7 +669,7 @@ p enemy iterate_enemy_index
 d Make a previously hidden enemy become unhidden.
 p enemy iterate_enemy_index
 
-336: @@{B:Enemy #A transforms into #B|Enemy transforms into...}
+336: @@{B:Enemy @[iterate_enemy_index]A transforms into @[enemy_id]B|Enemy transforms into...}
 d Transforms an enemy into another enemy. TODO: Side effects?
 p enemy iterate_enemy_index
 p transform enemy_id
