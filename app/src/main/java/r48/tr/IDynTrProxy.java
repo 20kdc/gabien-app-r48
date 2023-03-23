@@ -10,7 +10,10 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
+import gabien.uslx.append.IFunction;
 import r48.dbs.DatumLoader;
+import r48.io.data.RORIO;
+import r48.schema.SchemaElement;
 import r48.tr.TrPage.FF0;
 import r48.tr.TrPage.FF1;
 import r48.tr.TrPage.FF2;
@@ -56,7 +59,7 @@ public interface IDynTrProxy {
     /**
      * Legacy 2
      */
-    default FF2 dTrFmtSynCM(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX_NEW, text, null);
+    default FF1 dTrFmtSynCM(DatumSrcLoc srcLoc, String id, String text, IFunction<RORIO, SchemaElement>[] parameterSchemas) {
+        return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX_NEW, text, parameterSchemas);
     }
 }

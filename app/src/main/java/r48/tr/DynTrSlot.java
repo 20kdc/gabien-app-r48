@@ -11,12 +11,10 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.datum.DatumWriter;
-import gabien.uslx.append.IFunction;
 import r48.dbs.FormatSyntax;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMFn;
-import r48.schema.SchemaElement;
 
 /**
  * Dynamic translation slot.
@@ -73,7 +71,6 @@ public final class DynTrSlot implements IDynTr {
         return valueSrc;
     }
 
-    @SuppressWarnings("unchecked")
     private String resolve(int ac, Object a0, Object a1, Object a2, Object a3) {
         try {
             if (valueCompiled instanceof String) {
@@ -101,13 +98,9 @@ public final class DynTrSlot implements IDynTr {
                     return "!!!(null DynTrSlot return @ " + id + ")!!!";
                 return res.toString();
             } else if (valueCompiled instanceof FormatSyntax.ICompiledFormatSyntax) {
-                if (ac == 1)
-                    return ((FormatSyntax.ICompiledFormatSyntax) valueCompiled).r((RORIO) a0, null);
-                // ideally, the parameter schema grabbers are forwarded at compile-time as a list
-                // however, that world doesn't exist yet (#justCMDBThings), so this is in place in the meantime
-                if (ac != 2)
+                if (ac != 1)
                     return "!!!(FormatSyntax args bad @ " + id + ")!!!";
-                return ((FormatSyntax.ICompiledFormatSyntax) valueCompiled).r((RORIO) a0, (IFunction<RORIO, SchemaElement>[]) a2);
+                return ((FormatSyntax.ICompiledFormatSyntax) valueCompiled).r((RORIO) a0);
             }
             return valueCompiled.toString();
         } catch (Exception ex) {

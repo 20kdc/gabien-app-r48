@@ -97,15 +97,15 @@ public class FormatSyntax extends App.Svc {
     /**
      * Compiles a FormatSyntax for easier debugging.
      */
-    public ICompiledFormatSyntax compile(String name, ParameterAccessor paramAcc) {
+    public ICompiledFormatSyntax compile(String name, ParameterAccessor paramAcc, @Nullable IFunction<RORIO, SchemaElement>[] parameterSchemas) {
         // System.out.println("fs compile: " + name);
         LinkedList<CompiledChunk> r = new LinkedList<>();
-        compileChunk(r, name, paramAcc);
+        compileChunk(r, name, paramAcc, parameterSchemas);
         optimizeChunks(r);
-        return (a, c) -> {
+        return (a) -> {
             StringBuilder sb = new StringBuilder();
             for (CompiledChunk chk : r)
-                chk.r(sb, a, c);
+                chk.r(sb, a);
             return sb.toString();
         };
     }
@@ -113,7 +113,7 @@ public class FormatSyntax extends App.Svc {
     /**
      * Compiles a part of a FormatSyntax.
      */
-    private void compileChunk(LinkedList<CompiledChunk> r, String name, ParameterAccessor paramAcc) {
+    private void compileChunk(LinkedList<CompiledChunk> r, String name, ParameterAccessor paramAcc, @Nullable IFunction<RORIO, SchemaElement>[] parameterSchemas) {
         char[] data = name.toCharArray();
         boolean prefixNext = false;
         // C: A fully parsable formatNameExtended string.
@@ -139,32 +139,32 @@ public class FormatSyntax extends App.Svc {
                     //  at the start and end respectively.
                     // Of course, since the first component is removed instantly,
                     //  the check is for odd.
-                    final ICompiledFormatSyntax valComp = compile(components.removeFirst(), paramAcc);
+                    final ICompiledFormatSyntax valComp = compile(components.removeFirst(), paramAcc, parameterSchemas);
                     LinkedList<ICompiledFormatSyntax> componentsComp = new LinkedList<>();
                     for (String s : components)
-                        componentsComp.add(compile(s, paramAcc));
-                    ICompiledFormatSyntax def = (root, parameterSchemas) -> "";
+                        componentsComp.add(compile(s, paramAcc, parameterSchemas));
+                    ICompiledFormatSyntax def = (root) -> "";
                     if ((componentsComp.size() & 1) != 0)
                         def = componentsComp.removeLast();
                     final ICompiledFormatSyntax fDef = def;
-                    r.add((sb, root, parameterSchemas) -> {
+                    r.add((sb, root) -> {
                         ICompiledFormatSyntax res = fDef;
-                        String val = valComp.r(root, parameterSchemas);
+                        String val = valComp.r(root);
                         for (int j = 0; j < componentsComp.size(); j += 2) {
-                            if (val.equals(componentsComp.get(j).r(root, parameterSchemas))) {
+                            if (val.equals(componentsComp.get(j).r(root))) {
                                 res = componentsComp.get(j + 1);
                                 break;
                             }
                         }
-                        sb.append(res.r(root, parameterSchemas));
+                        sb.append(res.r(root));
                     });
                 } else if (data[i + 1] == ':') {
                     final char v = data[i];
                     // variable exists form.
                     i = explodeComponentsAndAdvance(components, data, i + 2, '}');
-                    determineBooleanComponent(r, components, (root, parameterSchemas) -> {
+                    determineBooleanComponent(r, components, (root) -> {
                         return paramAcc.get(root, v - 'A') != null;
-                    }, paramAcc);
+                    }, paramAcc, parameterSchemas);
                 } else if (data[i + 1] == '=') {
                     char va = data[i];
                     // vt equality form.
@@ -172,7 +172,7 @@ public class FormatSyntax extends App.Svc {
                     i = explodeComponent(eqTargetB, data, i + 2, "=");
                     i = explodeComponentsAndAdvance(components, data, i + 1, '}');
                     final String eqTarget = eqTargetB.toString();
-                    determineBooleanComponent(r, components, (root, parameterSchemas) -> {
+                    determineBooleanComponent(r, components, (root) -> {
                         boolean result = root != null;
                         if (result) {
                             SchemaElement as = getParameterDisplaySchemaFromArray(root, parameterSchemas, va - 'A');
@@ -180,13 +180,13 @@ public class FormatSyntax extends App.Svc {
                             result = a.equals(eqTarget);
                         }
                         return result;
-                    }, paramAcc);
+                    }, paramAcc, parameterSchemas);
                 } else if (data[i + 2] == ':') {
                     // vv equality form.
                     final char va = data[i];
                     final char vb = data[i + 1];
                     i = explodeComponentsAndAdvance(components, data, i + 3, '}');
-                    determineBooleanComponent(r, components, (root, parameterSchemas) -> {
+                    determineBooleanComponent(r, components, (root) -> {
                         boolean result = root != null;
                         if (result) {
                             SchemaElement as = getParameterDisplaySchemaFromArray(root, parameterSchemas, va - 'A');
@@ -196,7 +196,7 @@ public class FormatSyntax extends App.Svc {
                             result = a.equals(b);
                         }
                         return result;
-                    }, paramAcc);
+                    }, paramAcc, parameterSchemas);
                 } else {
                     throw new RuntimeException("Unknown conditional type!");
                 }
@@ -229,17 +229,17 @@ public class FormatSyntax extends App.Svc {
                         // but the for loop will do its own increment
                         i = explodeComponent(tx, data, i + 1, "]");
                         // ... then parse it.
-                        ICompiledFormatSyntax out = compile(tx.toString(), paramAcc);
+                        ICompiledFormatSyntax out = compile(tx.toString(), paramAcc, parameterSchemas);
                         final boolean thisPrefixNext = prefixNext;
-                        r.add((sb, root, parameterSchemas) -> {
+                        r.add((sb, root) -> {
                             if (root == null)
                                 return;
-                            RORIO p = new RubyIO().setString(out.r(root, parameterSchemas), true);
+                            RORIO p = new RubyIO().setString(out.r(root), true);
                             sb.append(interpretParameter(p, type, thisPrefixNext));
                         });
                     } else {
                         final boolean thisPrefixNext = prefixNext;
-                        r.add((sb, root, parameterSchemas) -> {
+                        r.add((sb, root) -> {
                             if (root == null)
                                 return;
                             RORIO p = paramAcc.get(root, ch - 'A');
@@ -251,7 +251,7 @@ public class FormatSyntax extends App.Svc {
                     final FF1 n = getNameDB(tp);
                     if (n == null)
                         throw new RuntimeException("Expected NDB " + tp);
-                    r.add((sb, root, parameterSchemas) -> {
+                    r.add((sb, root) -> {
                         if (root == null)
                             return;
                         // Meta-interpretation syntax
@@ -263,7 +263,7 @@ public class FormatSyntax extends App.Svc {
                 final boolean thisPrefixNext = prefixNext;
                 final char ltr = data[++i];
                 final int pid = ltr - 'A';
-                r.add((sb, root, parameterSchemas) -> {
+                r.add((sb, root) -> {
                     RORIO v = paramAcc.get(root, pid);
                     if (v != null) {
                         sb.append(interpretParameter(v, getParameterDisplaySchemaFromArray(root, parameterSchemas, pid), thisPrefixNext));
@@ -296,24 +296,24 @@ public class FormatSyntax extends App.Svc {
         }
     }
 
-    private void determineBooleanComponent(LinkedList<CompiledChunk> r, LinkedList<String> components, CompiledPredicate p, ParameterAccessor paramAcc) {
+    private void determineBooleanComponent(LinkedList<CompiledChunk> r, LinkedList<String> components, CompiledPredicate p, ParameterAccessor paramAcc, @Nullable IFunction<RORIO, SchemaElement>[] parameterSchemas) {
         LinkedList<CompiledChunk> cT = new LinkedList<CompiledChunk>();
         LinkedList<CompiledChunk> cF = new LinkedList<CompiledChunk>();
         for (int i = 0; i < components.size(); i++) {
             String elm = components.get(i);
             if ((i & 1) == 0) {
                 // true
-                compileChunk(cT, elm, paramAcc);
+                compileChunk(cT, elm, paramAcc, parameterSchemas);
             } else {
                 // false
-                compileChunk(cF, elm, paramAcc);
+                compileChunk(cF, elm, paramAcc, parameterSchemas);
             }
         }
         optimizeChunks(cT);
         optimizeChunks(cF);
-        r.add((sb, root, parameterSchemas) -> {
-            for (CompiledChunk c : (p.r(root, parameterSchemas) ? cT : cF))
-                c.r(sb, root, parameterSchemas);
+        r.add((sb, root) -> {
+            for (CompiledChunk c : (p.r(root) ? cT : cF))
+                c.r(sb, root);
         });
     }
 
@@ -412,20 +412,20 @@ public class FormatSyntax extends App.Svc {
     }
 
     private static ICompiledFormatSyntax wrapWithCMDisclaimer(String name, ICompiledFormatSyntax v) {
-        return (root, parameterSchemas) -> {
+        return (root) -> {
             try {
-                return v.r(root, parameterSchemas);
+                return v.r(root);
             } catch (IndexOutOfBoundsException e) {
                 System.err.println("While processing name " + name + ", an IndexOutOfBounds exception occurred. This suggests badly checked parameters.");
                 e.printStackTrace();
                 if (root != null)
-                    return v.r(null, parameterSchemas);
+                    return v.r(null);
                 throw e;
             }
         };
     }
-    public ICompiledFormatSyntax compileCMNew(String nameGet) {
-        return wrapWithCMDisclaimer(nameGet, compile(nameGet, ACC_ARRAY));
+    public ICompiledFormatSyntax compileCMNew(String nameGet, @Nullable IFunction<RORIO, SchemaElement>[] parameterSchemas) {
+        return wrapWithCMDisclaimer(nameGet, compile(nameGet, ACC_ARRAY, parameterSchemas));
     }
 
     /**
@@ -443,11 +443,11 @@ public class FormatSyntax extends App.Svc {
         /**
          * Outputs a string given a root and parameter schemas.
          */
-        String r(RORIO root, IFunction<RORIO, SchemaElement>[] parameterSchemas);
+        String r(RORIO root);
     }
 
     public interface CompiledChunk {
-        void r(StringBuilder sb, RORIO root, IFunction<RORIO, SchemaElement>[] parameterSchemas);
+        void r(StringBuilder sb, RORIO root);
         /**
          * Tries combining with a given "next" chunk. This is in-place.
          */
@@ -457,7 +457,7 @@ public class FormatSyntax extends App.Svc {
     }
 
     private interface CompiledPredicate {
-        boolean r(RORIO root, IFunction<RORIO, SchemaElement>[] parameterSchemas);
+        boolean r(RORIO root);
     }
 
     private final class StringChunk implements CompiledChunk {
@@ -466,7 +466,7 @@ public class FormatSyntax extends App.Svc {
             str = s;
         }
         @Override
-        public void r(StringBuilder sb, RORIO root, IFunction<RORIO, SchemaElement>[] parameterSchemas) {
+        public void r(StringBuilder sb, RORIO root) {
             sb.append(str);
         }
         @Override

@@ -87,14 +87,8 @@ public class CMDB extends App.Svc {
 
             @Override
             public void newObj(int objId, String objName) {
-                rc = new RPGCommand(sdb.app, objId);
+                rc = new RPGCommand(sdb.app, objId, srcLoc, dbId, objName);
                 rc.category = categories.length - 1;
-                // Names use NDB syntax, thus, separate context
-                if (objName.startsWith("@@")) {
-                    rc.name = app.dTrFmtSynCM(srcLoc, TrNames.cmdbName(dbId, objId), objName.substring(2));
-                } else {
-                    rc.name = app.dTrFF2(srcLoc, TrNames.cmdbName(dbId, objId), objName);
-                }
                 if (knownCommands.containsKey(objId))
                     throw new RuntimeException("Redefined " + objId);
                 knownCommands.put(objId, rc);
@@ -579,6 +573,7 @@ public class CMDB extends App.Svc {
         // see if I need to be informed that the schema doesn't support the latest and greatest features
         int fails1 = 0;
         for (RPGCommand rc : knownCommands.values()) {
+            rc.finish();
             if (rc.description == null) {
                 System.err.print(rc.name.toString() + " ");
                 fails1++;

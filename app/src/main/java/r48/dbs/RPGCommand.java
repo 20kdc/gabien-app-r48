@@ -8,6 +8,7 @@
 package r48.dbs;
 
 import gabien.uslx.append.*;
+import gabien.datum.DatumSrcLoc;
 import gabien.ui.UIScrollLayout;
 import r48.App;
 import r48.io.data.IRIO;
@@ -17,8 +18,9 @@ import r48.schema.displays.TonePickerSchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
-import r48.tr.TrPage.FF2;
+import r48.tr.TrPage.FF1;
 
 import java.util.LinkedList;
 
@@ -31,7 +33,9 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class RPGCommand extends App.Svc {
     public final int commandId;
-    public FF2 name;
+    public final DatumSrcLoc srcLoc;
+    public final String dbId, nameRawUnlocalized;
+    public FF1 name;
 
     public SchemaElement specialSchema;
 
@@ -69,19 +73,31 @@ public class RPGCommand extends App.Svc {
     // For copy all text
     public int textArg = -1;
 
-    public RPGCommand(App app, int objId) {
+    public RPGCommand(App app, int objId, DatumSrcLoc srcLoc, String dbId, String nru) {
         super(app);
         commandId = objId;
+        this.srcLoc = srcLoc;
+        this.dbId = dbId;
+        nameRawUnlocalized = nru;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void finish() {
+        // Names use NDB syntax, thus, separate context
+        if (nameRawUnlocalized.startsWith("@@")) {
+            IFunction<RORIO, SchemaElement>[] paramTypes = new IFunction[params.size()];
+            int idx = 0;
+            for (Param p : params)
+                paramTypes[idx++] = p.schema;
+            name = app.dTrFmtSynCM(srcLoc, TrNames.cmdbName(dbId, commandId), nameRawUnlocalized.substring(2), paramTypes);
+        } else {
+            name = app.dTrFF1(srcLoc, TrNames.cmdbName(dbId, commandId), nameRawUnlocalized);
+        }
     }
 
     // Pass null for parameters if this is for combobox display.
-    @SuppressWarnings("unchecked")
     public String formatName(@Nullable IRIO paramsObj) {
-        IFunction<RORIO, SchemaElement>[] paramTypes = new IFunction[params.size()];
-        int idx = 0;
-        for (Param p : params)
-            paramTypes[idx++] = p.schema;
-        return name.r(paramsObj, paramTypes);
+        return name.r(paramsObj);
     }
 
     public SchemaElement getParameterSchema(IRIO paramsObj, int i) {
