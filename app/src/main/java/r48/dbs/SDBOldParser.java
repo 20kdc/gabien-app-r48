@@ -875,8 +875,9 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 sdb.helpers.createSpritesheet(srcLoc, args);
             } else if (args[0].equals("datum")) {
                 // this is used to help port over existing code to be more Datumy
+                String srcLocStr = srcLoc.toString();
                 for (int i = 1; i < args.length; i++)
-                    app.vmCtx.evalString(args[i]);
+                    app.vmCtx.evalString(args[i], srcLocStr);
             } else {
                 throw new RuntimeException("C-command " + args[0] + " is not supported.");
             }

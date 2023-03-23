@@ -53,12 +53,20 @@ public class MVMEnv {
         return new DatumSymbol(" g" + (gensymCounter.getAndIncrement()));
     }
 
+    
     /**
      * Evaluates a string (for REPL)
      */
     public Object evalString(String str) {
+        return evalString(str, "REPL");
+    }
+
+    /**
+     * Evaluates a string
+     */
+    public Object evalString(String str, String src) {
         AtomicReference<Object> ar = new AtomicReference<>();
-        new DatumReaderTokenSource("REPL", str).visit(decVisitor((obj, srcLoc) -> {
+        new DatumReaderTokenSource(src, str).visit(decVisitor((obj, srcLoc) -> {
             ar.set(evalObject(obj, srcLoc));
         }));
         return ar.get();
