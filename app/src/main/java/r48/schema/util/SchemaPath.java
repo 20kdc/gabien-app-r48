@@ -164,7 +164,7 @@ public class SchemaPath extends App.Svc {
     // -- Display Stuff (used in buildHoldingEditor) --
 
     public SchemaPath newWindow(SchemaElement heldElement, IRIO target) {
-        return new SchemaPath(this, heldElement, target, lastArrayIndex, hrIndex);
+        return new SchemaPath(this, heldElement, target, lastArrayIndex, null);
     }
 
     // Not so much used, and quite unimportant

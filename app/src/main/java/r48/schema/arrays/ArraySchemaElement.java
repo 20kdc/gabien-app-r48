@@ -254,14 +254,21 @@ public abstract class ArraySchemaElement extends SchemaElement {
             if (target.getALen() < atLeast)
                 IntUtils.resizeArrayTo(target, atLeast);
         }
+        boolean debugMod = false;
         boolean modified = setDefault;
+        if (debugMod && modified)
+            System.out.println("MOD: setDefault");
         if (sizeFixed != -1) {
             if (target.getALen() != sizeFixed) {
+                if (debugMod)
+                    System.out.println("MOD: size = " + sizeFixed + ", was " + target.getALen());
                 IntUtils.resizeArrayTo(target, sizeFixed);
                 modified = true;
             }
         } else if (target.getALen() < atLeast) {
             IntUtils.resizeArrayTo(target, atLeast);
+            if (debugMod)
+                System.out.println("MOD: size AL " + atLeast);
             modified = true;
         }
         HashMap<Integer, Integer> indentAnchors = new HashMap<Integer, Integer>();
@@ -286,6 +293,8 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 getElementContextualSchema(target, j, groupStep, indentAnchors).element.modifyVal(target, path, setDefault);
             }
             boolean aca = autoCorrectArray(target, path);
+            if (debugMod && aca)
+                System.out.println("MOD: ACA");
             modified = modified || aca;
             if (!aca)
                 break;

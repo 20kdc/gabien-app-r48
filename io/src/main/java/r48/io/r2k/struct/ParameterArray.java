@@ -19,6 +19,11 @@ public class ParameterArray extends IRIOFixedArray<IRIO> {
     public final StringR2kStruct text = new StringR2kStruct();
 
     @Override
+    public IRIO setArray(int length) {
+        return super.setArray(length - 1);
+    }
+
+    @Override
     public int getALen() {
         return super.getALen() + 1;
     }
