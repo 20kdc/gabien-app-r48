@@ -20,11 +20,12 @@ import r48.minivm.fn.MVMFn;
  * Dynamic translation slot base.
  * Split from DynTrSlot 23rd March 2023.
  */
-public abstract class DynTrBase implements TrPage.FF0, TrPage.FF1, TrPage.FF2, TrPage.FF3, TrPage.FF4 {
+public abstract class DynTrBase extends MVMFn.Fixed implements TrPage.FF0, TrPage.FF1, TrPage.FF2, TrPage.FF3, TrPage.FF4 {
     public final String id;
     public final DatumSrcLoc sourceLoc;
 
     public DynTrBase(String i, DatumSrcLoc srcLoc) {
+        super(i);
         id = i;
         sourceLoc = srcLoc;
     }
@@ -99,23 +100,53 @@ public abstract class DynTrBase implements TrPage.FF0, TrPage.FF1, TrPage.FF2, T
         }
     }
 
+    @Override
     public String r() {
         return resolve(0, null, null, null, null);
     }
 
+    @Override
     public String r(Object a0) {
         return resolve(1, a0, null, null, null);
     }
 
+    @Override
     public String r(Object a0, Object a1) {
         return resolve(2, a0, a1, null, null);
     }
 
+    @Override
     public String r(Object a0, Object a1, Object a2) {
         return resolve(3, a0, a1, a2, null);
     }
 
+    @Override
     public String r(Object a0, Object a1, Object a2, Object a3) {
         return resolve(4, a0, a1, a2, a3);
+    }
+
+    @Override
+    public Object callDirect() {
+        return r();
+    }
+
+    @Override
+    public Object callDirect(Object a0) {
+        return r(a0);
+    }
+
+    @Override
+    public Object callDirect(Object a0, Object a1) {
+        return r(a0, a1);
+    }
+
+    @Override
+    public Object callDirect(Object a0, Object a1, Object a2) {
+        return r(a0, a1, a2);
+    }
+
+    @Override
+    public Object callDirect(Object a0, Object a1, Object a2, Object a3) {
+        return r(a0, a1, a2, a3);
     }
 }

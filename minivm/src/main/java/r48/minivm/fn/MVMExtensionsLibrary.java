@@ -81,7 +81,8 @@ public class MVMExtensionsLibrary {
             LinkedList<DatumSymbol> ds = new LinkedList<>();
             for (MVMSlot s : ctx.listSlots())
                 if (s.v instanceof MVMHelpable)
-                    ds.add(s.s);
+                    if (!((MVMHelpable) s.v).excludeFromHelp)
+                        ds.add(s.s);
             return ds;
         }
 

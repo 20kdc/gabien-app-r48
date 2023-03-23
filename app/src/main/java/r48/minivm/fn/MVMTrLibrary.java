@@ -12,7 +12,6 @@ import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.expr.MVMCExpr;
-import r48.tr.DynTrBase;
 import r48.tr.DynTrSlot;
 
 /**
@@ -26,9 +25,6 @@ public class MVMTrLibrary {
             ((DynTrSlot) a0).setValue(a1);
             return a1;
         }).attachHelp("(tr-set! DYNTR VALUE) : Compiles a value into a dynamic translation entry. Beware VALUE is unquoted, and tr-set! itself does it's own form of compilation, so writing code directly as VALUE may have unexpected effects.");
-
-        ctx.defineSlot(new DatumSymbol("tr")).v = new Tr()
-                .attachHelp("(tr VAL ARGS...) : Runs a translation routine.");
 
         ctx.defineSlot(new DatumSymbol("define-name")).v = new DefineName("define-name", false)
                 .attachHelp("(define-name KEY CONTENT...) : Defines a name routine.");
@@ -71,47 +67,6 @@ public class MVMTrLibrary {
                 throw new RuntimeException("define-tr has a name and a value");
             ((MVMEnvR48) cs.context).dynTrBase(cs.topLevelSrcLoc, ((DatumSymbol) call[0]).id, mode, call[1], null, isNLS);
             return null;
-        }
-    }
-    public static class Tr extends MVMFn {
-        public Tr() {
-            super("tr");
-        }
-        @Override
-        protected Object callDirect() {
-            throw new RuntimeException("Invalid arg count");
-        }
-        @Override
-        public Object callDirect(Object a0) {
-            return ((DynTrBase) a0).r();
-        }
-        @Override
-        public Object callDirect(Object a0, Object a1) {
-            return ((DynTrBase) a0).r(a1);
-        }
-        @Override
-        public Object callDirect(Object a0, Object a1, Object a2) {
-            return ((DynTrBase) a0).r(a1, a2);
-        }
-        @Override
-        public Object callDirect(Object a0, Object a1, Object a2, Object a3) {
-            return ((DynTrBase) a0).r(a1, a2, a3);
-        }
-        @Override
-        protected Object callIndirect(Object[] args) {
-            switch (args.length) {
-            case 1:
-                return ((DynTrBase) args[0]).r();
-            case 2:
-                return ((DynTrBase) args[0]).r(args[1]);
-            case 3:
-                return ((DynTrBase) args[0]).r(args[1], args[2]);
-            case 4:
-                return ((DynTrBase) args[0]).r(args[1], args[2], args[3]);
-            case 5:
-                return ((DynTrBase) args[0]).r(args[1], args[2], args[3], args[4]);
-            }
-            throw new RuntimeException("Invalid arg count");
         }
     }
 }

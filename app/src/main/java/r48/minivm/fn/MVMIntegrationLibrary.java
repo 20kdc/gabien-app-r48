@@ -86,10 +86,15 @@ public class MVMIntegrationLibrary {
                 return a.s.id.compareTo(b.s.id);
             });
             sb.append("Central index: <ul>");
+            LinkedList<MVMSlot> confirmed = new LinkedList<>();
             for (MVMSlot s : slots) {
                 Object v = s.v;
                 if (v instanceof MVMHelpable) {
-                    String help = ((MVMHelpable) v).help;
+                    MVMHelpable vh = (MVMHelpable) v;
+                    if (vh.excludeFromHelp)
+                        continue;
+                    confirmed.add(s);
+                    String help = vh.help;
                     if (help != null) {
                         sb.append("<li><a href=\"#");
                         sb.append(encodeAnchor(s.s.id));
@@ -100,36 +105,34 @@ public class MVMIntegrationLibrary {
                 }
             }
             sb.append("</ul>");
-            for (MVMSlot s : slots) {
-                Object v = s.v;
-                if (v instanceof MVMHelpable) {
-                    String help = ((MVMHelpable) v).help;
-                    if (help != null) {
-                        sb.append("<a name=\"");
-                        sb.append(encodeAnchor(s.s.id));
-                        sb.append("\">");
-                        sb.append("<h2>");
-                        sb.append(textToHTML(s.s.id));
-                        sb.append(": ");
-                        sb.append(v);
-                        sb.append("</h2>");
-                        sb.append("</a>");
-                        sb.append(textToHTML(help));
-                    }
+            for (MVMSlot s : confirmed) {
+                MVMHelpable vh = (MVMHelpable) s.v;
+                String name = s.s.id;
+                String help = vh.help;
+                if (help != null) {
+                    sb.append("<a name=\"");
+                    sb.append(encodeAnchor(name));
+                    sb.append("\">");
+                    sb.append("<h2>");
+                    sb.append(textToHTML(name));
+                    sb.append(": ");
+                    sb.append(vh);
+                    sb.append("</h2>");
+                    sb.append("</a>");
+                    sb.append(textToHTML(help));
                 }
             }
             sb.append("<h2>No help available for...</h2>");
             sb.append("only worry if one of these isn't a translation routine");
             sb.append("<ul>");
-            for (MVMSlot s : slots) {
-                Object v = s.v;
-                if (v instanceof MVMHelpable) {
-                    String help = ((MVMHelpable) v).help;
-                    if (help == null) {
-                        sb.append("<li>");
-                        sb.append(textToHTML(s.s.id));
-                        sb.append("</li>");
-                    }
+            for (MVMSlot s : confirmed) {
+                MVMHelpable vh = (MVMHelpable) s.v;
+                String name = s.s.id;
+                String help = vh.help;
+                if (help == null) {
+                    sb.append("<li>");
+                    sb.append(textToHTML(name));
+                    sb.append("</li>");
                 }
             }
             sb.append("</ul>");
