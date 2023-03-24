@@ -90,4 +90,7 @@
 	shcIncompatible "Incompatible clipboard and target."
 	shNoCloneTmp "Cannot clone, this contains a temporary dialog."
 	openAud "Open sound file..."
+	(bts_
+		ramObj "Edit RAM Object"
+	)
 )

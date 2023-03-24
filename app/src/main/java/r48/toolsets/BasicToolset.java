@@ -122,6 +122,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 T.z.mDiffObj,
                 T.z.mAllStr,
                 T.z.mLoadIMI,
+                T.u.bts_ramObj,
         }, new Runnable[] {
                 () -> {
                     app.ui.launchPrompt(T.z.prObjectName, (s) -> {
@@ -259,6 +260,18 @@ public class BasicToolset extends App.Svc implements IToolset {
                                     app.ui.launchDialog(ioe);
                                 }
                             }
+                        }
+                    });
+                },
+                () -> {
+                    RubyIO tmp = new RubyIO();
+                    final IObjectBackend.ILoadedObject rio = new IObjectBackend.MockLoadedObject(tmp);
+                    app.ui.launchPrompt(T.z.prSchemaID, new IConsumer<String>() {
+                        @Override
+                        public void accept(String s) {
+                            SchemaElement se = app.sdb.getSDBEntry(s);
+                            SchemaPath.setDefaultValue(tmp, se, tmp);
+                            app.ui.launchSchema(s, rio, null);
                         }
                     });
                 }

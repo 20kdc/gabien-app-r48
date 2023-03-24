@@ -42,7 +42,7 @@ public class TrNames {
         return "TrSDB_" + ovc + ".$" + text;
     }
 
-    public static String sdbEnum(String string, int k) {
+    public static String sdbEnum(String string, String k) {
         return "TrSDB_" + string + ".e" + k;
     }
 

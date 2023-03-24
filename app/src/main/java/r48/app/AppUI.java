@@ -11,6 +11,7 @@ import java.io.StringWriter;
 import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
 import gabien.ui.Rect;
@@ -30,6 +31,7 @@ import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
 import r48.map.UIMapView;
+import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
@@ -328,10 +330,15 @@ public class AppUI extends App.Svc {
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
-    public ISchemaHost launchSchema(String s, @NonNull IObjectBackend.ILoadedObject rio, UIMapView context) {
+    public ISchemaHost launchSchema(String s, @NonNull IObjectBackend.ILoadedObject rio, @Nullable UIMapView context) {
+        return launchSchema(app.sdb.getSDBEntry(s), rio, context);
+    }
+
+    // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
+    public ISchemaHost launchSchema(SchemaElement s, @NonNull IObjectBackend.ILoadedObject rio, @Nullable UIMapView context) {
         // Responsible for keeping listeners in place so nothing breaks.
         SchemaHostImpl watcher = new SchemaHostImpl(app, context);
-        watcher.pushObject(new SchemaPath(app.sdb.getSDBEntry(s), rio));
+        watcher.pushObject(new SchemaPath(s, rio));
         return watcher;
     }
 

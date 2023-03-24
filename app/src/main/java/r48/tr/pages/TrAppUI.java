@@ -40,4 +40,5 @@ public class TrAppUI extends TrPage {
     public String shcEmpty, shcIncompatible;
     public String shNoCloneTmp;
     public String openAud;
+    public String bts_ramObj;
 }

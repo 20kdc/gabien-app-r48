@@ -731,8 +731,9 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 int k = Integer.parseInt(args[i]);
                 if (i == 1)
                     defVal = k;
-                FF0 nam = app.dTr(srcLoc, TrNames.sdbEnum(args[0], k), args[i + 1]);
-                options.put(Integer.toString(k), nam);
+                String ks = Integer.toString(k);
+                FF0 nam = app.dTr(srcLoc, TrNames.sdbEnum(args[0], ks), args[i + 1]);
+                options.put(ks, nam);
             }
             // INT: is part of the format
             EnumSchemaElement e = new EnumSchemaElement(app, options, new RubyIO().setFX(defVal), EntryMode.INT, () -> T.s.enum_int);
@@ -741,7 +742,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             // Symbols
             HashMap<String, FF0> options = new HashMap<String, FF0>();
             for (int i = 1; i < args.length; i++) {
-                FF0 nam = trAnon(args[0], args[i]);
+                FF0 nam = app.dTr(srcLoc, TrNames.sdbEnum(args[0], args[i]), args[i]);
                 options.put(":" + args[i], nam);
             }
 
@@ -750,7 +751,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
         } else if (c == 'E') {
             HashMap<String, FF0> options = new HashMap<String, FF0>();
             for (int i = 2; i < args.length; i += 2) {
-                FF0 nam = trAnon(args[0], args[i]);
+                FF0 nam = app.dTr(srcLoc, TrNames.sdbEnum(args[0], args[i]), args[i + 1]);
                 options.put(args[i], nam);
             }
             EnumSchemaElement e = new EnumSchemaElement(app, options, ValueSyntax.decode(args[2]), EntryMode.INT, trAnon(args[0], args[1]));
