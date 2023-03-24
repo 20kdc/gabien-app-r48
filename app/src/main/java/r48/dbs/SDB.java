@@ -24,6 +24,7 @@ import r48.schema.specialized.*;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -46,7 +47,6 @@ public class SDB extends App.Svc {
     // On another note, app.engine.allowIndentControl now contains the option this comment block refers to.
 
     private HashMap<String, SchemaElement> schemaDatabase = new HashMap<String, SchemaElement>();
-    protected HashMap<String, SchemaElement> schemaTrueDatabase = new HashMap<String, SchemaElement>();
     private LinkedList<DictionaryUpdaterRunnable> dictionaryUpdaterRunnables = new LinkedList<DictionaryUpdaterRunnable>();
     private LinkedList<Runnable> mergeRunnables = new LinkedList<Runnable>();
     private LinkedList<String> remainingExpected = new LinkedList<String>();
@@ -95,8 +95,6 @@ public class SDB extends App.Svc {
                 schemaDatabase.put("indent", new IntegerSchemaElement(app, 0));
             }
         }
-
-        schemaTrueDatabase.putAll(schemaDatabase);
     }
 
     public void newCMDB(String a0) {
@@ -129,10 +127,14 @@ public class SDB extends App.Svc {
 
     public void setSDBEntry(final String text, SchemaElement ise) {
         remainingExpected.remove(text);
-        // If a placeholder exists, keep using that
-        if (!schemaDatabase.containsKey(text))
+        SchemaElement se = schemaDatabase.get(text);
+        if (se == null) {
             schemaDatabase.put(text, ise);
-        schemaTrueDatabase.put(text, ise);
+        } else if (se instanceof NameProxySchemaElement) {
+            ((NameProxySchemaElement) se).cache = ise;
+        } else {
+            throw new RuntimeException("Cannot override SE " + text);
+        }
     }
 
     public SchemaElement getSDBEntry(final String text) {
@@ -141,19 +143,22 @@ public class SDB extends App.Svc {
             return tmp;
         // Notably, the proxy is put in the database so the expectation is only added once.
         remainingExpected.add(text);
-        SchemaElement ise = new NameProxySchemaElement(app, text, true);
+        SchemaElement ise = new NameProxySchemaElement(app, text);
         schemaDatabase.put(text, ise);
         return ise;
     }
 
     // Use if and only if you deliberately need the changing nature of a proxy (this disables the cache)
-    public void ensureSDBProxy(String text) {
+    public DynamicSchemaElement ensureSDBProxy(String text) {
         if (schemaDatabase.containsKey(text)) {
-            // Implicitly asserts that this is a proxy.
-            ((NameProxySchemaElement) schemaDatabase.get(text)).useCache = false;
+            SchemaElement se = schemaDatabase.get(text);
+            if (!(se instanceof DynamicSchemaElement))
+                throw new RuntimeException("DynamicSchemaElement expected: " + text);
+            return (DynamicSchemaElement) se;
         } else {
-            NameProxySchemaElement npse = new NameProxySchemaElement(app, text, false);
+            DynamicSchemaElement npse = new DynamicSchemaElement(app, text);
             schemaDatabase.put(text, npse);
+            return npse;
         }
     }
 
@@ -197,41 +202,45 @@ public class SDB extends App.Svc {
     public void kickAllDictionariesForMapChange() {
         for (DictionaryUpdaterRunnable dur : dictionaryUpdaterRunnables)
             dur.run();
+        for (Runnable merge : mergeRunnables)
+            merge.run();
     }
 
     public void addDUR(DictionaryUpdaterRunnable dur) {
-        ensureSDBProxy(dur.dict);
         dictionaryUpdaterRunnables.add(dur);
     }
 
     public void addMergeRunnable(String id, ISupplier<SchemaElement> s) {
-        ensureSDBProxy(id);
+        final DynamicSchemaElement dse = ensureSDBProxy(id);
         mergeRunnables.add(() -> {
-            setSDBEntry(id, s.get());
+            dse.setEntry(s.get());
         });
     }
 
-    private class NameProxySchemaElement extends SchemaElement implements IProxySchemaElement {
-        private final String tx;
-        private boolean useCache;
-        private SchemaElement cache = null;
+    public Collection<SchemaElement> getAllEntryValues() {
+        LinkedList<SchemaElement> res = new LinkedList<>();
+        for (SchemaElement se : schemaDatabase.values()) {
+            if (se instanceof BaseProxySchemaElement) {
+                res.add(((BaseProxySchemaElement) se).getEntry());
+            } else {
+                res.add(se);
+            }
+        }
+        return res;
+    }
 
-        public NameProxySchemaElement(App app, String text, boolean useCach) {
+    private static abstract class BaseProxySchemaElement extends SchemaElement implements IProxySchemaElement {
+        protected SchemaElement cache = null;
+
+        public BaseProxySchemaElement(App app) {
             super(app);
-            tx = text;
-            useCache = useCach;
         }
 
         @Override
         public SchemaElement getEntry() {
-            if (cache != null)
-                return cache;
-            SchemaElement r = schemaTrueDatabase.get(tx);
-            if (r == null)
-                throw new RuntimeException("Schema used " + tx + ", but it didn't exist when invoked.");
-            if (useCache)
-                cache = r;
-            return r;
+            if (cache == null)
+                throw new RuntimeException("Schema used " + this + ", but it didn't exist when invoked.");
+            return cache;
         }
 
         @Override
@@ -247,6 +256,38 @@ public class SDB extends App.Svc {
         @Override
         public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
             getEntry().modifyVal(target, path, setDefault);
+        }
+    }
+
+    private class NameProxySchemaElement extends BaseProxySchemaElement implements IProxySchemaElement {
+        private final String tx;
+
+        public NameProxySchemaElement(App app, String text) {
+            super(app);
+            tx = text;
+        }
+
+        @Override
+        public String toString() {
+            return "(name proxy " + tx + ")";
+        }
+    }
+
+    public class DynamicSchemaElement extends BaseProxySchemaElement implements IProxySchemaElement {
+        private final String tx;
+
+        private DynamicSchemaElement(App app, String text) {
+            super(app);
+            tx = text;
+        }
+
+        @Override
+        public String toString() {
+            return "(dynamic proxy " + tx + ")";
+        }
+
+        public void setEntry(SchemaElement se) {
+            cache = se;
         }
     }
 }

@@ -8,6 +8,7 @@
 package r48;
 
 import gabien.uslx.append.*;
+import r48.dbs.SDB.DynamicSchemaElement;
 import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -30,7 +31,8 @@ import org.eclipse.jdt.annotation.Nullable;
 public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
     // act soon after init.
     private boolean actNow = true;
-    public final String dict, targ;
+    public final DynamicSchemaElement dict;
+    public final String targ;
     // Responsible for removing any wrapping
     // fieldA gets the root's wrapping, iVar gets the inner wrapping
     public final IFunction<IRIO, IRIO> fieldA, iVar;
@@ -42,7 +44,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
     public final SchemaElement dataSchema;
 
     // NOTE: targetDictionary must always be referenced by proxy to ensure setSDBEntry works later.
-    public DictionaryUpdaterRunnable(App app, String targetDictionary, String target, IFunction<IRIO, IRIO> iFunction, boolean b, IFunction<IRIO, IRIO> ivar, int def, String ip, SchemaElement ds) {
+    public DictionaryUpdaterRunnable(App app, DynamicSchemaElement targetDictionary, String target, IFunction<IRIO, IRIO> iFunction, boolean b, IFunction<IRIO, IRIO> ivar, int def, String ip, SchemaElement ds) {
         super(app);
         dict = targetDictionary;
         targ = target;
@@ -130,7 +132,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
     private void finalizeVals(LinkedList<UIEnumChoice.Option> finalMap) {
         Collections.sort(finalMap, UIEnumChoice.COMPARATOR_OPTION);
         SchemaElement ise = new EnumSchemaElement(app, finalMap, new RubyIO().setFX(defaultVal), EntryMode.INT, () -> T.s.enum_id);
-        app.sdb.setSDBEntry(dict, ise);
+        dict.setEntry(ise);
     }
 
     private static void handleVal(App app, LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> iVar, final @Nullable IObjectBackend.ILoadedObject targetILO, final @Nullable SchemaElement dataSchema, IRIO rio, IRIO k, String interpret) {

@@ -20,7 +20,7 @@ import java.util.Set;
 public class TestDBUtils {
     public static Set<EventCommandArraySchemaElement> getLoadedCSLs(App app) {
         HashSet<EventCommandArraySchemaElement> ecase = new HashSet<EventCommandArraySchemaElement>();
-        for (SchemaElement se : app.sdb.schemaTrueDatabase.values())
+        for (SchemaElement se : app.sdb.getAllEntryValues())
             if (se instanceof EventCommandArraySchemaElement)
                 ecase.add((EventCommandArraySchemaElement) se);
         return ecase;

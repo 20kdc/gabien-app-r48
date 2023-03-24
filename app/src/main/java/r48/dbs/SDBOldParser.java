@@ -20,6 +20,7 @@ import gabien.uslx.append.ISupplier;
 import r48.App;
 import r48.DictionaryUpdaterRunnable;
 import r48.RubyIO;
+import r48.dbs.SDB.DynamicSchemaElement;
 import r48.io.data.IRIO;
 import r48.minivm.MVMU;
 import r48.minivm.fn.MVMFn;
@@ -514,7 +515,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     // D <name> <base or '.'> <default value> <outer path, including root> <'1' means hash> <inner path> <inner path interpretation id> <element to surround with this>
                     // contextDictionary <ctxId> <default 0 @name rpg_troop_core
                     final String contextName = args[point++];
-                    final String base = args[point++];
+                    final String baseText = args[point++];
+                    final SchemaElement base = baseText.equals(".") ? null : sdb.getSDBEntry(baseText);
                     final RubyIO defVal = ValueSyntax.decode(args[point++]);
                     final PathSyntax outer = getPathSyntax();
                     final boolean hash = args[point++].equals("1");
@@ -532,8 +534,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                                 @Override
                                 public void liveUpdate() {
                                     viewOptions.clear();
-                                    if (!base.equals(".")) {
-                                        EnumSchemaElement baseEnum = (EnumSchemaElement) sdb.schemaTrueDatabase.get(base);
+                                    if (base != null) {
+                                        EnumSchemaElement baseEnum = (EnumSchemaElement) AggregateSchemaElement.extractField(base, null);
                                         viewOptions.addAll(baseEnum.viewOptions);
                                         entryMode = baseEnum.entryMode;
                                         // Default val doesn't get carried over since it gets specced here
@@ -755,11 +757,13 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             setSDBEntry(args[0], e);
         } else if (c == 'M') {
             // Make a proxy (because we change the backing element all the time)
+            final SchemaElement srcA = sdb.getSDBEntry(args[0]);
+            final SchemaElement srcB = sdb.getSDBEntry(args[1]);
             sdb.ensureSDBProxy(args[2]);
             sdb.addMergeRunnable(args[2], () -> {
                 // Proxies are bad for this.
-                EnumSchemaElement mergeA = (EnumSchemaElement) sdb.schemaTrueDatabase.get(args[0]);
-                EnumSchemaElement mergeB = (EnumSchemaElement) sdb.schemaTrueDatabase.get(args[1]);
+                EnumSchemaElement mergeA = (EnumSchemaElement) AggregateSchemaElement.extractField(srcA, null);
+                EnumSchemaElement mergeB = (EnumSchemaElement) AggregateSchemaElement.extractField(srcB, null);
                 HashMap<String, UIEnumChoice.Option> finalMap = new HashMap<String, UIEnumChoice.Option>();
                 finalMap.putAll(mergeA.lookupOptions);
                 finalMap.putAll(mergeB.lookupOptions);
@@ -784,7 +788,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             } else if (args.length != 5) {
                 throw new RuntimeException("Expects D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID / empty string] [data schema]");
             }
-            sdb.addDUR(new DictionaryUpdaterRunnable(app, args[0], root[0], compilePS(root[1]), args[3].equals("1"), compilePS(args[4]), Integer.parseInt(args[1]), interpret, dataSchema));
+            final DynamicSchemaElement dict = sdb.ensureSDBProxy(args[0]);
+            sdb.addDUR(new DictionaryUpdaterRunnable(app, dict, root[0], compilePS(root[1]), args[3].equals("1"), compilePS(args[4]), Integer.parseInt(args[1]), interpret, dataSchema));
         } else if (c == 'A') {
             // This is needed so the engine actually understands which autotiles map to what
             int p = 0;
