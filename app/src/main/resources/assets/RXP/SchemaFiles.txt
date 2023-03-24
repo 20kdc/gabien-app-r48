@@ -405,6 +405,7 @@ C name Class.RPG::Tileset @id @name | Tileset #A: #B
 @name string
 @pages subwindow arrayAL1 RPG::Troop::Page
 @members subwindow array 0 RPG::Troop::Member
+C magicGenpos xpTroop . . . . 0
 
 > rpg_troop_s2 contextDictionary iterate_enemy iterate_enemy_base 1 @members 0 @enemy_id enemy_id rpg_troop_core
 

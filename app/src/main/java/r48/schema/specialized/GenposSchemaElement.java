@@ -16,6 +16,7 @@ import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.genpos.GenposAnimRootPanel;
 import r48.schema.specialized.genpos.GenposFramePanelController;
+import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.specialized.genpos.backend.*;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -142,25 +143,30 @@ public class GenposSchemaElement extends SchemaElement {
                         }
                     }, boot, path);
                 } else if (genposType.equals("r2kTroop")) {
-                    final GenposFramePanelController rmarp = new GenposFramePanelController(new TroopGenposFrame(app, target, path, new Runnable() {
-                        @Override
-                        public void run() {
-                            path.changeOccurred(false);
-                        }
-                    }), null, launcher);
-                    rmarp.frameChanged();
-                    // Setup automatic-update safety net
-                    safetyWrap(rmarp.rootLayout, launcher, new Runnable() {
-                        @Override
-                        public void run() {
-                            rmarp.frameChanged();
-                        }
-                    }, boot, path);
+                    launchFrame(launcher, path, new R2kTroopGenposFrame(app, target, path, () -> {
+                        path.changeOccurred(false);
+                    }), boot);
+                } else if (genposType.equals("xpTroop")) {
+                    launchFrame(launcher, path, new XPTroopGenposFrame(app, target, path, () -> {
+                        path.changeOccurred(false);
+                    }), boot);
                 } else {
                     throw new RuntimeException("Unknown GP type");
                 }
             }
         });
+    }
+
+    private void launchFrame(ISchemaHost launcher, SchemaPath path, IGenposFrame gpf, TempDialogSchemaChoice boot) {
+        final GenposFramePanelController rmarp = new GenposFramePanelController(gpf, null, launcher);
+        rmarp.frameChanged();
+        // Setup automatic-update safety net
+        safetyWrap(rmarp.rootLayout, launcher, new Runnable() {
+            @Override
+            public void run() {
+                rmarp.frameChanged();
+            }
+        }, boot, path);
     }
 
     private void safetyWrap(UIElement rmarp, ISchemaHost shi, Runnable update, TempDialogSchemaChoice sc, final SchemaPath path) {

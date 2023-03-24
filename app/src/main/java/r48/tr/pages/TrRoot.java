@@ -20,4 +20,5 @@ public class TrRoot extends TrPage {
     public final TrSchema s = new TrSchema();
     public final TrFontSizes fontSizes = new TrFontSizes();
     public final TrAutoGen z = new TrAutoGen();
+    public final TrGenpos gp = new TrGenpos();
 }

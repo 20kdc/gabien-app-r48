@@ -42,12 +42,12 @@ public class R2kGenposFrame extends App.Svc implements IGenposFrame {
 
     @Override
     public int[] getIndicators() {
-        int[] cp = new int[TroopGenposFrame.gameBattleDisplay.length + 2];
+        int[] cp = new int[R2kTroopGenposFrame.gameBattleDisplay.length + 2];
         int resW = 160;
         int resH = 120;
-        for (int i = 0; i < TroopGenposFrame.gameBattleDisplay.length; i += 2) {
-            cp[i] = TroopGenposFrame.gameBattleDisplay[i] - resW;
-            cp[i + 1] = TroopGenposFrame.gameBattleDisplay[i + 1] - resH;
+        for (int i = 0; i < R2kTroopGenposFrame.gameBattleDisplay.length; i += 2) {
+            cp[i] = R2kTroopGenposFrame.gameBattleDisplay[i] - resW;
+            cp[i + 1] = R2kTroopGenposFrame.gameBattleDisplay[i + 1] - resH;
         }
         return cp;
     }
