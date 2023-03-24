@@ -8,7 +8,8 @@
 package r48;
 
 import gabien.uslx.append.*;
-import r48.dbs.SDB.DynamicSchemaElement;
+
+import r48.dbs.SDB;
 import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -28,10 +29,10 @@ import org.eclipse.jdt.annotation.Nullable;
  * Used to build convenient dictionaries for selecting things.
  * Created on 1/3/17.
  */
-public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
+public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSchemaUpdater {
     // act soon after init.
     private boolean actNow = true;
-    public final DynamicSchemaElement dict;
+    public final SDB.DynamicSchemaElement dict;
     public final String targ;
     // Responsible for removing any wrapping
     // fieldA gets the root's wrapping, iVar gets the inner wrapping
@@ -44,7 +45,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
     public final SchemaElement dataSchema;
 
     // NOTE: targetDictionary must always be referenced by proxy to ensure setSDBEntry works later.
-    public DictionaryUpdaterRunnable(App app, DynamicSchemaElement targetDictionary, String target, IFunction<IRIO, IRIO> iFunction, boolean b, IFunction<IRIO, IRIO> ivar, int def, String ip, SchemaElement ds) {
+    public DictionaryUpdaterRunnable(App app, SDB.DynamicSchemaElement targetDictionary, String target, IFunction<IRIO, IRIO> iFunction, boolean b, IFunction<IRIO, IRIO> ivar, int def, String ip, SchemaElement ds) {
         super(app);
         dict = targetDictionary;
         targ = target;

@@ -10,8 +10,8 @@ package r48.dbs;
 import gabien.ui.UIElement;
 import gabien.uslx.append.ISupplier;
 import r48.App;
-import r48.DictionaryUpdaterRunnable;
 import r48.io.IObjectBackend;
+import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.IRIO;
 import r48.schema.*;
 import r48.schema.arrays.*;
@@ -46,12 +46,12 @@ public class SDB extends App.Svc {
     // I have no idea how this was managed.
     // On another note, app.engine.allowIndentControl now contains the option this comment block refers to.
 
-    private HashMap<String, SchemaElement> schemaDatabase = new HashMap<String, SchemaElement>();
-    private LinkedList<DictionaryUpdaterRunnable> dictionaryUpdaterRunnables = new LinkedList<DictionaryUpdaterRunnable>();
-    private LinkedList<Runnable> mergeRunnables = new LinkedList<Runnable>();
-    private LinkedList<String> remainingExpected = new LinkedList<String>();
+    private HashMap<String, SchemaElement> schemaDatabase = new HashMap<>();
+    private LinkedList<DynamicSchemaUpdater> dictionaryUpdaterRunnables = new LinkedList<>();
+    private LinkedList<Runnable> mergeRunnables = new LinkedList<>();
+    private LinkedList<String> remainingExpected = new LinkedList<>();
 
-    protected HashMap<String, CMDB> cmdbs = new HashMap<String, CMDB>();
+    protected HashMap<String, CMDB> cmdbs = new HashMap<>();
     public final SDBHelpers helpers;
 
     public final StandardArrayInterface standardArrayUi = new StandardArrayInterface();
@@ -184,7 +184,7 @@ public class SDB extends App.Svc {
     }
 
     public void startupSanitizeDictionaries() {
-        for (DictionaryUpdaterRunnable dur : dictionaryUpdaterRunnables)
+        for (DynamicSchemaUpdater dur : dictionaryUpdaterRunnables)
             dur.sanitize();
         for (Runnable merge : mergeRunnables)
             merge.run();
@@ -192,7 +192,7 @@ public class SDB extends App.Svc {
 
     public void updateDictionaries(IObjectBackend.ILoadedObject map) {
         boolean needsMerge = false;
-        for (DictionaryUpdaterRunnable dur : dictionaryUpdaterRunnables)
+        for (DynamicSchemaUpdater dur : dictionaryUpdaterRunnables)
             needsMerge |= dur.actIfRequired(map);
         if (needsMerge)
             for (Runnable merge : mergeRunnables)
@@ -200,13 +200,12 @@ public class SDB extends App.Svc {
     }
 
     public void kickAllDictionariesForMapChange() {
-        for (DictionaryUpdaterRunnable dur : dictionaryUpdaterRunnables)
+        // this just marks them for update
+        for (DynamicSchemaUpdater dur : dictionaryUpdaterRunnables)
             dur.run();
-        for (Runnable merge : mergeRunnables)
-            merge.run();
     }
 
-    public void addDUR(DictionaryUpdaterRunnable dur) {
+    public void addDUR(DynamicSchemaUpdater dur) {
         dictionaryUpdaterRunnables.add(dur);
     }
 
@@ -227,6 +226,18 @@ public class SDB extends App.Svc {
             }
         }
         return res;
+    }
+
+    public interface DynamicSchemaUpdater extends Runnable {
+        /**
+         * This initializes the DUR the first time to a "blank slate".
+         */
+        void sanitize();
+        /**
+         * If required, updates the DUR.
+         * Returns true if this is done.
+         */
+        boolean actIfRequired(ILoadedObject map);
     }
 
     private static abstract class BaseProxySchemaElement extends SchemaElement implements IProxySchemaElement {
