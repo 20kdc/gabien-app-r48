@@ -108,7 +108,7 @@ public class HashSchemaElement extends SchemaElement {
 
                     boolean relevantToSearch = false;
                     relevantToSearch |= keyText.contains(searchBox.text);
-                    relevantToSearch |= app.fmt.interpretParameter(value, valElem, true).contains(searchBox.text);
+                    relevantToSearch |= app.fmt.interpretParameter(value, valElem, EnumSchemaElement.Prefix.Prefix).contains(searchBox.text);
                     if (!relevantToSearch)
                         continue;
 
@@ -160,7 +160,7 @@ public class HashSchemaElement extends SchemaElement {
     private String getKeyText(RORIO v) {
         SchemaElement ke = AggregateSchemaElement.extractField(keyElem, v);
         if (ke instanceof EnumSchemaElement)
-            return ((EnumSchemaElement) ke).viewValue(v, true);
+            return ((EnumSchemaElement) ke).viewValue(v, EnumSchemaElement.Prefix.Prefix);
         if (ke instanceof OSStrHashMapSchemaElement)
             return OSStrHashMapSchemaElement.decode(app, v);
         return T.z.l109 + v;

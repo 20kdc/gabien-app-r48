@@ -15,6 +15,7 @@ import r48.dbs.PathSyntax;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMU;
+import r48.schema.EnumSchemaElement;
 
 /**
  * MiniVM standard library.
@@ -23,7 +24,7 @@ import r48.minivm.MVMU;
 public class MVMDMAppLibrary {
     public static void add(MVMEnv ctx, App app) {
         ctx.defineSlot(new DatumSymbol("dm-fmt")).v = new DMFmt(app.fmt)
-                .attachHelp("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. If the passed-in object is null (say, due to a PathSyntax failure) returns the empty string. Important: Because of schemas and stuff this doesn't exist in the static translation context.");
+                .attachHelp("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. If the passed-in object is null (say, due to a PathSyntax failure) returns the empty string. Important: Because of schemas and stuff this doesn't exist in the static translation context. PREFIXENUMS can be #f, #t or #nil (default).");
         ctx.defLib("dm-formatsyntax", (text) -> {
             // ("path1" "path2" "path3" "name")
             List<Object> lo = MVMU.cList(text);
@@ -52,21 +53,24 @@ public class MVMDMAppLibrary {
         public Object callDirect(Object a0) {
             if (a0 == null)
                 return "";
-            return fmt.interpretParameter((RORIO) a0, (String) null, false);
+            return fmt.interpretParameter((RORIO) a0, (String) null, EnumSchemaElement.Prefix.Default);
         }
 
         @Override
         public Object callDirect(Object a0, Object a1) {
             if (a0 == null)
                 return "";
-            return fmt.interpretParameter((RORIO) a0, (String) a1, false);
+            return fmt.interpretParameter((RORIO) a0, (String) a1, EnumSchemaElement.Prefix.Default);
         }
 
         @Override
         public Object callDirect(Object a0, Object a1, Object a2) {
             if (a0 == null)
                 return "";
-            return fmt.interpretParameter((RORIO) a0, (String) a1, MVMU.isTruthy(a2));
+            EnumSchemaElement.Prefix pfx = EnumSchemaElement.Prefix.Default;
+            if (a2 != null)
+                pfx = MVMU.isTruthy(a2) ? EnumSchemaElement.Prefix.Prefix : EnumSchemaElement.Prefix.NoPrefix;
+            return fmt.interpretParameter((RORIO) a0, (String) a1, pfx);
         }
     }
 }

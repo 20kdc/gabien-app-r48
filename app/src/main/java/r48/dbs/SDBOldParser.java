@@ -785,18 +785,6 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 throw new RuntimeException("Expects D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID / empty string] [data schema]");
             }
             sdb.addDUR(new DictionaryUpdaterRunnable(app, args[0], root[0], compilePS(root[1]), args[3].equals("1"), compilePS(args[4]), Integer.parseInt(args[1]), interpret, dataSchema));
-        } else if (c == 'd') {
-            // OLD SYSTEM
-            System.err.println("'d'-format is old. It'll stay around as long as this format does but won't get updated. Use 'D'-format instead. " + args[0]);
-            // Cause a proxy to be generated. (NOTE: This *must* be referenced via nocache proxy!)
-            sdb.addDUR(new DictionaryUpdaterRunnable(app, args[0], args[2], new IFunction<IRIO, IRIO>() {
-                @Override
-                public IRIO apply(IRIO rubyIO) {
-                    for (int i = 3; i < args.length; i++)
-                        rubyIO = rubyIO.getIVar(args[i]);
-                    return rubyIO;
-                }
-            }, false, null, Integer.parseInt(args[1]), null, null));
         } else if (c == 'A') {
             // This is needed so the engine actually understands which autotiles map to what
             int p = 0;

@@ -112,7 +112,7 @@ public class FormatSyntax extends App.Svc {
      */
     private void compileChunk(LinkedList<CompiledChunk> r, String name, ParameterAccessor paramAcc) {
         char[] data = name.toCharArray();
-        boolean prefixNext = false;
+        EnumSchemaElement.Prefix prefixNext = EnumSchemaElement.Prefix.NoPrefix;
         // C: A fully parsable formatNameExtended string.
         // A: A component array of the form C or C|A.
         // V: A single letter from 'A' through 'Z', representing a parameter.
@@ -190,7 +190,7 @@ public class FormatSyntax extends App.Svc {
                     throw new RuntimeException("Unknown conditional type!");
                 }
             } else if (data[i] == '@') {
-                prefixNext = true;
+                prefixNext = EnumSchemaElement.Prefix.Prefix;
             } else if (data[i] == '[') {
                 // Parse precedence order:
                 // [@R]
@@ -208,7 +208,7 @@ public class FormatSyntax extends App.Svc {
                 final String type = typeB.toString();
                 if (indexOfAt != 0) {
                     char ch = data[++i];
-                    final boolean thisPrefixNext = prefixNext;
+                    final EnumSchemaElement.Prefix thisPrefixNext = prefixNext;
                     r.add((sb, root) -> {
                         if (root == null)
                             return;
@@ -227,9 +227,9 @@ public class FormatSyntax extends App.Svc {
                         sb.append(n.r(root));
                     });
                 }
-                prefixNext = false;
+                prefixNext = EnumSchemaElement.Prefix.NoPrefix;
             } else if (data[i] == '#') {
-                final boolean thisPrefixNext = prefixNext;
+                final EnumSchemaElement.Prefix thisPrefixNext = prefixNext;
                 final char ltr = data[++i];
                 final int pid = ltr - 'A';
                 r.add((sb, root) -> {
@@ -240,7 +240,7 @@ public class FormatSyntax extends App.Svc {
                         sb.append(ltr);
                     }
                 });
-                prefixNext = false;
+                prefixNext = EnumSchemaElement.Prefix.NoPrefix;
             } else {
                 cChar(r, data[i]);
             }
@@ -330,7 +330,7 @@ public class FormatSyntax extends App.Svc {
         throw new RuntimeException("Hit end-of-data without reaching end character.");
     }
 
-    public String interpretParameter(RORIO rubyIO, String st, boolean prefixEnums) {
+    public String interpretParameter(RORIO rubyIO, String st, EnumSchemaElement.Prefix prefixEnums) {
         if (rubyIO == null)
             return "";
         if (st != null) {
@@ -350,10 +350,10 @@ public class FormatSyntax extends App.Svc {
      * This is replacing a lot of really silly FormatSyntax use.
      */
     public String interpretParameter(RORIO rubyIO) {
-        return interpretParameter(rubyIO, (SchemaElement) null, false);
+        return interpretParameter(rubyIO, (SchemaElement) null, EnumSchemaElement.Prefix.NoPrefix);
     }
 
-    public String interpretParameter(RORIO rubyIO, SchemaElement ise, boolean prefixEnums) {
+    public String interpretParameter(RORIO rubyIO, SchemaElement ise, EnumSchemaElement.Prefix prefixEnums) {
         // Basically, Class. overrides go first, then everything else comes after.
         if (rubyIO.getType() == 'o') {
             FF1 handler = getNameDB("Class." + rubyIO.getSymbol());

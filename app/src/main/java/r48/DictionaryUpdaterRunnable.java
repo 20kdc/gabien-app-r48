@@ -158,7 +158,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
                     };
                 }
             } else {
-                text = app.fmt.interpretParameter(rio, interpret, false);
+                text = app.fmt.interpretParameter(rio, interpret, EnumSchemaElement.Prefix.NoPrefix);
             }
             finalMap.add(EnumSchemaElement.makeStandardOption(kc, () -> text, editor, dataSchemaPath));
         }

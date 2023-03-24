@@ -136,8 +136,9 @@ public class SDB extends App.Svc {
     }
 
     public SchemaElement getSDBEntry(final String text) {
-        if (schemaDatabase.containsKey(text))
-            return schemaDatabase.get(text);
+        SchemaElement tmp = schemaDatabase.get(text);
+        if (tmp != null)
+            return tmp;
         // Notably, the proxy is put in the database so the expectation is only added once.
         remainingExpected.add(text);
         SchemaElement ise = new NameProxySchemaElement(app, text, true);

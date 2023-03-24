@@ -41,6 +41,11 @@ public class EnumSchemaElement extends SchemaElement {
     // Options for use in enum choice dialogs
     public final LinkedList<UIEnumChoice.Option> viewOptions = new LinkedList<UIEnumChoice.Option>();
 
+    /**
+     * Default prefix disposition.
+     */
+    public boolean displayPrefixDefault;
+
     public FF0 buttonText;
     public UIEnumChoice.EntryMode entryMode;
     public IRIO defaultVal;
@@ -88,7 +93,7 @@ public class EnumSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIEnumChoice.Option opt = findOption(target);
-        UITextButton button = new UITextButton(viewValue(target, true, opt), app.f.schemaFieldTH, new Runnable() {
+        UITextButton button = new UITextButton(viewValue(target, Prefix.Prefix, opt), app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 liveUpdate();
@@ -127,13 +132,20 @@ public class EnumSchemaElement extends SchemaElement {
         return st;
     }
 
-    public String viewValue(RORIO val, boolean prefix) {
+    public String viewValue(RORIO val, Prefix prefix) {
         return viewValue(val, prefix, findOption(val));
     }
 
-    public String viewValue(RORIO val, boolean prefix, @Nullable UIEnumChoice.Option option) {
+    public String viewValue(RORIO val, Prefix prefix, @Nullable UIEnumChoice.Option option) {
         if (option != null) {
-            if (!prefix)
+            // prefix disposition changes how display works
+            boolean shouldPrefix = false;
+            if (prefix == Prefix.Prefix)
+                shouldPrefix = true;
+            else if (prefix == Prefix.Default)
+                shouldPrefix = displayPrefixDefault;
+            // continue...
+            if (!shouldPrefix)
                 return option.textSuffix.r();
             return option.getTextMerged();
         }
@@ -147,5 +159,11 @@ public class EnumSchemaElement extends SchemaElement {
             target.setDeepClone(defaultVal);
             path.changeOccurred(true);
         }
+    }
+
+    public enum Prefix {
+        Default,
+        Prefix,
+        NoPrefix
     }
 }
