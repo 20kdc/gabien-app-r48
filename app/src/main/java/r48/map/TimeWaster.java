@@ -19,8 +19,8 @@ import java.util.Random;
  */
 public class TimeWaster {
     private double moveTime = 16;
-    private double iconPlanX = 0;
-    private double iconPlanY = 0;
+    private int iconPlanX = 0;
+    private int iconPlanY = 0;
     private final int iconSize;
     private Random madness = new Random();
 
@@ -28,7 +28,7 @@ public class TimeWaster {
         iconSize = 64 * app.f.getSpriteScale();
     }
 
-    public void draw(IGrDriver igd, int ox, int oy, double deltaTime, int sw, int sh) {
+    public void draw(IGrDriver igd, double deltaTime, int sw, int sh) {
         int stage = ((int) (moveTime / 8)) % 6;
         int type = 0;
         int mul = 1;
@@ -64,7 +64,11 @@ public class TimeWaster {
                 break;
         }
         moveTime += deltaTime * mul;
-        igd.blitScaledImage(type * 64, 0, 64, 64, ox + (int) iconPlanX, oy + (int) iconPlanY, iconSize, iconSize, Art.noMap);
+        igd.blitScaledImage(0, 0, 64, 64, iconPlanX, iconPlanY, iconSize, iconSize, Art.noMap);
+        type *= 127;
+        if (type > 240)
+            type = 255;
+        igd.clearRectAlpha(0, 0, 0, type, iconPlanX, iconPlanY, iconSize, iconSize);
     }
 
     // x/y is a position to stay away from.

@@ -119,7 +119,7 @@ public class UIMapViewContainer extends App.Pan {
             return;
         }
         Size r = getSize();
-        timeWaster.draw(igd, 0, 0, deltaTimeAccum, r.width, r.height);
+        timeWaster.draw(igd, deltaTimeAccum, r.width, r.height);
         deltaTimeAccum = 0;
     }
 
