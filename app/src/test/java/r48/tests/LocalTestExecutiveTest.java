@@ -22,6 +22,7 @@ import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -38,7 +39,9 @@ public class LocalTestExecutiveTest {
         final LinkedList<Object[]> tests = new LinkedList<Object[]>();
         new TestKickstart().kickstartRFS();
         try {
-            DBLoader.readFile(null, "LTE.txt", new IDatabase() {
+            String fn = findBasePath() + "LTE.txt";
+            System.out.println("LocalTestExecutive manifest: " + fn);
+            DBLoader.readFile(fn, new FileInputStream(fn), new IDatabase() {
                 @Override
                 public void newObj(int objId, final String objName) {
                 }
@@ -61,13 +64,17 @@ public class LocalTestExecutiveTest {
         return tests;
     }
 
+    public static String findBasePath() {
+        return "/home/20kdc/R48LTE/assets/";
+    }
+
     private final String name;
     @SuppressWarnings("unused")
     private final String friendlyName, schema, charset;
     private final boolean dynamic;
 
     public LocalTestExecutiveTest(String nam, String friendlyNam, String sc, String charse, String dyn) {
-        name = nam;
+        name = findBasePath() + nam + "/";
         friendlyName = friendlyNam;
         schema = sc;
         charset = charse;
@@ -76,7 +83,7 @@ public class LocalTestExecutiveTest {
 
     @Test
     public void test() {
-        App app = new TestKickstart().kickstart(name + "/", charset, schema);
+        App app = new TestKickstart().kickstart(name, charset, schema);
         for (ObjectInfo s : dynamic ? app.getObjectInfos() : app.sdb.listFileDefs())
             testObject(app, s.idName);
     }

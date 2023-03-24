@@ -145,11 +145,23 @@ public class TestKickstart {
 
             @Override
             public InputStream openRead(String fileName) throws IOException {
+                // System.out.println("openRead: " + fileName);
                 byte[] data = mockFS.get(fileName);
                 if (data == null) {
-                    if (fileName.startsWith("./"))
+                    boolean relativeIntended = false;
+                    if (fileName.startsWith("./")) {
                         fileName = fileName.substring(2);
-                    return impl.getResource(fileName);
+                        relativeIntended = true;
+                    }
+                    InputStream inp = impl.getResource(fileName);
+                    if (inp == null && !relativeIntended) {
+                        try {
+                            inp = new FileInputStream(fileName);
+                        } catch (Exception ex) {
+                            // oh well
+                        }
+                    }
+                    return inp;
                 }
                 return new ByteArrayInputStream(data);
             }
