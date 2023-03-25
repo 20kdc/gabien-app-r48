@@ -12,7 +12,6 @@ import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.schema.util.SchemaPath;

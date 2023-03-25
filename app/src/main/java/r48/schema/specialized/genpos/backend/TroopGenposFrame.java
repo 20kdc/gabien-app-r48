@@ -14,7 +14,6 @@ import gabien.ui.Rect;
 import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOGeneric;
 import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.specialized.genpos.IGenposTweeningProp;
 import r48.schema.util.SchemaPath;

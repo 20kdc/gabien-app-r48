@@ -19,7 +19,6 @@ import r48.dbs.RPGCommand;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixnum;
 import r48.map.UIMapView;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;

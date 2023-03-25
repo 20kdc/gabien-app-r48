@@ -12,7 +12,6 @@ import r48.App;
 import r48.dbs.RPGCommand.PDyn;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOGeneric;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.SchemaPath;

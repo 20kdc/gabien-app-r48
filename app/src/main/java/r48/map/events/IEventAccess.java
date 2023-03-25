@@ -9,7 +9,6 @@ package r48.map.events;
 
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 
 import java.util.LinkedList;

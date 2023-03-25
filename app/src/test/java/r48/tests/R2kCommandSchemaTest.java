@@ -15,7 +15,6 @@ import r48.dbs.CMDB;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixnum;
 import r48.io.r2k.obj.Event;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;

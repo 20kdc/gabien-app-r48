@@ -9,7 +9,6 @@ package r48.schema.specialized;
 
 import r48.App;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 
 import java.lang.ref.WeakReference;

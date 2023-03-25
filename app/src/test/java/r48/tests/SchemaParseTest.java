@@ -19,7 +19,6 @@ import r48.dbs.TestDBUtils;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixnum;
 import r48.io.data.IRIOGeneric;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.SchemaPath;

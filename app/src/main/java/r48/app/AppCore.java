@@ -24,7 +24,6 @@ import r48.dbs.ObjectInfo;
 import r48.dbs.SDB;
 import r48.imageio.ImageIOFormat;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOGeneric;
 import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
 import r48.schema.specialized.IMagicalBinder;

@@ -9,7 +9,6 @@ package r48.maptools;
 
 import gabien.ui.UILabel;
 import r48.io.data.DMKey;
-import r48.io.data.IRIO;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;

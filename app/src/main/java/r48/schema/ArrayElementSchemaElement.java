@@ -15,7 +15,6 @@ import gabien.ui.UITextButton;
 import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixnum;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;

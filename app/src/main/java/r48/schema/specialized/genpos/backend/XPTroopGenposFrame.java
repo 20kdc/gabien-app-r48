@@ -12,7 +12,6 @@ import r48.App;
 import r48.imagefx.HueShiftImageEffect;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOGeneric;
 import r48.map.imaging.IImageLoader;
 import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;

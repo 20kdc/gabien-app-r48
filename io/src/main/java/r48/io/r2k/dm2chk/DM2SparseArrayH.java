@@ -11,7 +11,6 @@ import gabien.uslx.append.*;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedHash;
-import r48.io.data.IRIOFixnum;
 import r48.io.data.RORIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;

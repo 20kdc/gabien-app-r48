@@ -17,7 +17,6 @@ import r48.io.IntUtils;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
-import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.OpaqueSchemaElement;
