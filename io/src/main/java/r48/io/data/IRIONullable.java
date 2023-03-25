@@ -7,6 +7,8 @@
 
 package r48.io.data;
 
+import java.nio.charset.Charset;
+
 /**
  * An annoying but necessary wrapper for cases where an IRIO may be null.
  * Created on December 06, 2018.
@@ -60,7 +62,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     }
 
     @Override
-    public IRIO setString(byte[] s, String jenc) {
+    public IRIO setString(byte[] s, Charset jenc) {
         target.setString(s, jenc);
         nulled = false;
         return this;
@@ -160,7 +162,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     }
 
     @Override
-    public String getBufferEnc() {
+    public Charset getBufferEnc() {
         if (nulled)
             throw new UnsupportedOperationException();
         return target.getBufferEnc();
@@ -216,28 +218,28 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     }
 
     @Override
-    public IRIO[] getHashKeys() {
+    public DMKey[] getHashKeys() {
         if (nulled)
             throw new UnsupportedOperationException();
         return target.getHashKeys();
     }
 
     @Override
-    public IRIO addHashVal(RORIO key) {
+    public IRIO addHashVal(DMKey key) {
         if (nulled)
             throw new UnsupportedOperationException();
         return target.addHashVal(key);
     }
 
     @Override
-    public IRIO getHashVal(RORIO key) {
+    public IRIO getHashVal(DMKey key) {
         if (nulled)
             throw new UnsupportedOperationException();
         return target.getHashVal(key);
     }
 
     @Override
-    public void removeHashVal(RORIO key) {
+    public void removeHashVal(DMKey key) {
         if (nulled)
             throw new UnsupportedOperationException();
         target.removeHashVal(key);

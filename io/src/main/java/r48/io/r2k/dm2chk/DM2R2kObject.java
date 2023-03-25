@@ -60,8 +60,8 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
             }
 
             @Override
-            public IRIO convertKeyToIRIO(Integer i) {
-                return new IRIOFixnum(i);
+            public DMKey convertKeyToIRIO(Integer i) {
+                return DMKey.of(i);
             }
 
             @Override

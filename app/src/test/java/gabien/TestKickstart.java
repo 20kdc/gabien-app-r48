@@ -22,6 +22,8 @@ import r48.tests.grand.GrandExecutionError;
 import r48.wm.GrandWindowManagerUtils;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -55,7 +57,11 @@ public class TestKickstart {
         currentTestPhase = "Initial Phase";
         kickstartRFS();
         // In case unset.
-        IObjectBackend.Factory.encoding = encoding;
+        try {
+            IObjectBackend.Factory.encoding = Charset.forName(encoding);
+        } catch (UnsupportedCharsetException uce) {
+            throw new RuntimeException(uce);
+        }
         Config c = new Config(false);
         c.applyUIGlobals();
         InterlaunchGlobals ilg = new InterlaunchGlobals(c, (vm) -> {}, (str) -> {}, (str) -> {

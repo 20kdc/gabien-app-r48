@@ -7,7 +7,7 @@
 
 package r48.dbs;
 
-import r48.RubyIO;
+import r48.io.data.DMKey;
 import r48.io.data.RORIO;
 
 /**
@@ -20,23 +20,20 @@ import r48.io.data.RORIO;
  * Created on 10/06/17.
  */
 public class ValueSyntax {
-    public static RubyIO decode(String unescape) {
+    public static DMKey decode(String unescape) {
         if (unescape.equals("nil"))
-            return new RubyIO().setNull();
+            return DMKey.NULL;
         if (unescape.equals("true"))
-            return new RubyIO().setBool(true);
+            return DMKey.TRUE;
         if (unescape.equals("false"))
-            return new RubyIO().setBool(false);
+            return DMKey.FALSE;
         boolean str = unescape.startsWith("$");
         if (str) {
-            return new RubyIO().setString(unescape.substring(1), true);
+            return DMKey.ofStr(unescape.substring(1));
         } else if (unescape.startsWith(":")) {
-            RubyIO sym = new RubyIO();
-            sym.setSymbol(unescape.substring(1));
-            return sym;
+            return DMKey.ofSym(unescape.substring(1));
         } else {
-            long i = Long.parseLong(unescape);
-            return new RubyIO().setFX(i);
+            return DMKey.of(Long.parseLong(unescape));
         }
     }
 

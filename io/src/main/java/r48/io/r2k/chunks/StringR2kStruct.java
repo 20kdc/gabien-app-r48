@@ -15,7 +15,7 @@ import r48.io.data.IRIOFixed;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 /**
  * the difficulty is getting this stuff into memory...
@@ -36,16 +36,12 @@ public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
 
     @Override
     public IRIO setString(String s) {
-        try {
-            data = s.getBytes(IObjectBackend.Factory.encoding);
-            return this;
-        } catch (UnsupportedEncodingException ue) {
-            throw new RuntimeException(ue);
-        }
+        data = s.getBytes(IObjectBackend.Factory.encoding);
+        return this;
     }
 
     @Override
-    public IRIO setString(byte[] s, String jenc) {
+    public IRIO setString(byte[] s, Charset jenc) {
         if (jenc.equals(IObjectBackend.Factory.encoding)) {
             data = s;
             return this;
@@ -79,7 +75,7 @@ public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
-    public String getBufferEnc() {
+    public Charset getBufferEnc() {
         return IObjectBackend.Factory.encoding;
     }
 

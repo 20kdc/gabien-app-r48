@@ -11,6 +11,7 @@ import r48.RubyBigNum;
 import r48.io.IMIUtils;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 /**
  * Read-only IRIO subset.
@@ -25,7 +26,7 @@ public abstract class RORIO {
     public abstract RORIO getIVar(String sym);
 
     // '"'
-    public abstract String getBufferEnc();
+    public abstract Charset getBufferEnc();
 
     // ':', 'o'
     public abstract String getSymbol();
@@ -40,12 +41,7 @@ public abstract class RORIO {
         // the specific details are that:
         // SOME (not all) strings, are tagged with an ":encoding" iVar.
         // This specifies their encoding.
-        try {
-            return new String(getBuffer(), getBufferEnc());
-        } catch (UnsupportedEncodingException e) {
-            // If this ever occurs, RubyEncodingTranslator's broke
-            throw new RuntimeException(e);
-        }
+        return new String(getBuffer(), getBufferEnc());
     }
 
     // '"', 'f', 'u', 'l'
@@ -59,9 +55,9 @@ public abstract class RORIO {
     public abstract RORIO getAElem(int i);
 
     // '{', '}'
-    public abstract RORIO[] getHashKeys();
+    public abstract DMKey[] getHashKeys();
 
-    public abstract RORIO getHashVal(RORIO key);
+    public abstract RORIO getHashVal(DMKey key);
 
     // '}' only
     public abstract RORIO getHashDefVal();
@@ -69,7 +65,7 @@ public abstract class RORIO {
     // Utils
 
     // Outputs IMI-code for something so that there's a basically human-readable version of it.
-    public String toStringLong(String indent) {
+    public final String toStringLong(String indent) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             IMIUtils.createIMIDump(new DataOutputStream(baos), this, indent);
@@ -82,20 +78,15 @@ public abstract class RORIO {
         }
     }
 
-    public byte[] getBufferInEncoding(String encoding) {
-        String enc = getBufferEnc();
-        if (!enc.equals(encoding)) {
-            try {
-                return decString().getBytes(encoding);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    public final byte[] getBufferInEncoding(Charset encoding) {
+        Charset enc = getBufferEnc();
+        if (!enc.equals(encoding))
+            return decString().getBytes(encoding);
         return getBuffer();
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         // NOTE: The following rules are relied upon by schema name-routines, at least in theory:
         // 1. "null" means t0.
         // 2. Any valid number is a number.
@@ -155,7 +146,10 @@ public abstract class RORIO {
         return true;
     }
 
-    // used to check Hash stuff
+    /**
+     * Used to check Hash stuff.
+     * Remember to also keep DMKey.hashCode and friends in sync.
+     */
     public static boolean rubyEquals(RORIO a, RORIO b) {
         if (a == b)
             return true;

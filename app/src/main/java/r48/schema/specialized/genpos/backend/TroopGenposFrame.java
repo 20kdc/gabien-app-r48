@@ -12,8 +12,9 @@ import gabien.IImage;
 import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import r48.App;
-import r48.RubyIO;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.specialized.genpos.IGenposTweeningProp;
 import r48.schema.util.SchemaPath;
@@ -42,7 +43,7 @@ public abstract class TroopGenposFrame extends App.Svc implements IGenposFrame {
     @Override
     public void addCell(int i2) {
         IRIO rio = troop.getIVar("@members").addAElem(i2 + 1);
-        SchemaPath.setDefaultValue(rio, app.sdb.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(i2 + 1));
+        SchemaPath.setDefaultValue(rio, app.sdb.getSDBEntry("RPG::Troop::Member"), DMKey.of(i2 + 1));
         changed.run();
     }
 
@@ -59,7 +60,7 @@ public abstract class TroopGenposFrame extends App.Svc implements IGenposFrame {
 
     @Override
     public void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y) {
-        SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(new RubyIO().setFX(ct + 1), "[" + (ct + 1) + "]");
+        SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(DMKey.of(ct + 1), "[" + (ct + 1) + "]");
         IRIO member = troop.getIVar("@members").getAElem(ct + 1);
         member.getIVar("@x").setFX(x.apply((int) member.getIVar("@x").getFX()));
         member.getIVar("@y").setFX(y.apply((int) member.getIVar("@y").getFX()));

@@ -8,9 +8,9 @@
 package r48.io.r2k;
 
 import gabien.uslx.append.*;
-import r48.RubyIO;
 import r48.io.IObjectBackend;
 import r48.io.IntUtils;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.IR2kInterpretable;
 
@@ -91,38 +91,30 @@ public class R2kUtil {
     // You should NEVER, EVER, *EVER* be decoding these otherwise,
     //  instead passing the binary data directly to RIO
     public static String decodeLcfString(byte[] data) {
-        try {
-            return new String(data, IObjectBackend.Factory.encoding);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        return new String(data, IObjectBackend.Factory.encoding);
     }
 
     // See above for when to use this
     public static byte[] encodeLcfString(String text) {
-        try {
-            return text.getBytes(IObjectBackend.Factory.encoding);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        return text.getBytes(IObjectBackend.Factory.encoding);
     }
 
     // --
 
-    public static void unkToRio(RubyIO map, HashMap<Integer, byte[]> unknownChunks) {
+    public static void unkToRio(IRIO map, HashMap<Integer, byte[]> unknownChunks) {
         if (unknownChunks.isEmpty())
             return;
-        RubyIO hash = map.addIVar("@__LCF__unknown");
+        IRIO hash = map.addIVar("@__LCF__unknown");
         hash.setHash();
         for (Map.Entry<Integer, byte[]> e : unknownChunks.entrySet()) {
-            hash.addHashVal(new RubyIO().setFX(e.getKey())).setUser("Blob", e.getValue());
+            hash.addHashVal(DMKey.of(e.getKey())).setUser("Blob", e.getValue());
         }
     }
 
     public static void rioToUnk(IRIO mt, HashMap<Integer, byte[]> unknownChunks) {
         mt = mt.getIVar("@__LCF__unknown");
         if (mt != null)
-            for (IRIO k : mt.getHashKeys())
+            for (DMKey k : mt.getHashKeys())
                 unknownChunks.put((int) k.getFX(), mt.getHashVal(k).getBuffer());
     }
 

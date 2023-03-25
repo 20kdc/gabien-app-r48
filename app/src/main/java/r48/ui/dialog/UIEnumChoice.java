@@ -10,8 +10,9 @@ package r48.ui.dialog;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.RubyIO;
 import r48.UITest;
+import r48.io.IObjectBackend;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;
@@ -99,7 +100,7 @@ public class UIEnumChoice extends App.Prx {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
-                        result.accept(new RubyIO().setString(nb.text, false));
+                        result.accept(new IRIOGeneric(IObjectBackend.Factory.encoding).setString(nb.text));
                     wantsSelfClose = true;
                 }
             }), false, 1, 3);
@@ -109,7 +110,7 @@ public class UIEnumChoice extends App.Prx {
                 @Override
                 public void run() {
                     if (!wantsSelfClose) {
-                        RubyIO rio = new RubyIO();
+                        IRIOGeneric rio = new IRIOGeneric(IObjectBackend.Factory.encoding);
                         rio.setSymbol(nb.text);
                         result.accept(rio);
                     }
@@ -122,7 +123,7 @@ public class UIEnumChoice extends App.Prx {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
-                        result.accept(new RubyIO().setFX(nb.number));
+                        result.accept(new IRIOGeneric(IObjectBackend.Factory.encoding).setFX(nb.number));
                     wantsSelfClose = true;
                 }
             }), false, 1, 3);

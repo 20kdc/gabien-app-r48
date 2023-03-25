@@ -10,10 +10,11 @@ package r48.schema;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.RubyIO;
 import r48.UITest;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.schema.specialized.OSStrHashMapSchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -40,14 +41,14 @@ public class HashSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
-        RubyIO preWorkspace = (RubyIO) launcher.getEmbedObject(this, target, "keyWorkspace");
+        IRIO preWorkspace = (IRIO) launcher.getEmbedObject(this, target, "keyWorkspace");
         if (preWorkspace == null) {
-            preWorkspace = new RubyIO().setNull();
+            preWorkspace = new IRIOGeneric(IObjectBackend.Factory.encoding);
             SchemaPath.setDefaultValue(preWorkspace, keyElem, null);
         } else {
-            preWorkspace = new RubyIO().setDeepClone(preWorkspace);
+            preWorkspace = new IRIOGeneric(IObjectBackend.Factory.encoding).setDeepClone(preWorkspace);
         }
-        final RubyIO keyWorkspace = preWorkspace;
+        final IRIO keyWorkspace = preWorkspace;
 
         final SchemaPath setLocalePath = launcher.getCurrentObject();
 
@@ -55,12 +56,12 @@ public class HashSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 // This may occur from a different page (say, an enum selector), so the more complicated form must be used.
-                launcher.setEmbedObject(setLocalePath, HashSchemaElement.this, target, "keyWorkspace", new RubyIO().setDeepClone(keyWorkspace));
+                launcher.setEmbedObject(setLocalePath, HashSchemaElement.this, target, "keyWorkspace", new IRIOGeneric(IObjectBackend.Factory.encoding).setDeepClone(keyWorkspace));
             }
         });
 
         if (keyWorkspace.getType() == 'i') {
-            while (target.getHashVal(keyWorkspace) != null) {
+            while (target.getHashVal(new DMKey(keyWorkspace)) != null) {
                 // Try adding 1
                 long plannedVal = keyWorkspace.getFX() + 1;
                 keyWorkspace.setFX(plannedVal);
@@ -96,7 +97,7 @@ public class HashSchemaElement extends SchemaElement {
 
                 AtomicInteger fw = new AtomicInteger(0);
 
-                for (RORIO key : UITest.sortedKeysArr(target.getHashKeys(), new IFunction<RORIO, String>() {
+                for (DMKey key : UITest.sortedKeysArr(target.getHashKeys(), new IFunction<RORIO, String>() {
                     @Override
                     public String apply(RORIO rubyIO) {
                         return getKeyText(rubyIO);
@@ -112,7 +113,7 @@ public class HashSchemaElement extends SchemaElement {
                     if (!relevantToSearch)
                         continue;
 
-                    final RORIO kss = key;
+                    final DMKey kss = key;
                     // keys are opaque - this prevents MANY issues
                     UIElement hsA = new UILabel(keyText, app.f.schemaFieldTH);
                     UIElement hsB = valElem.buildHoldingEditor(value, launcher, path.arrayHashIndex(key, "{" + keyText + "}"));
@@ -138,12 +139,12 @@ public class HashSchemaElement extends SchemaElement {
                 UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(T.z.l108, app.f.schemaFieldTH, new Runnable() {
                     @Override
                     public void run() {
-                        if (target.getHashVal(keyWorkspace) == null) {
-                            RubyIO finWorkspace = new RubyIO().setDeepClone(keyWorkspace);
-                            IRIO rio2 = target.addHashVal(finWorkspace);
+                        DMKey dmk = new DMKey(keyWorkspace);
+                        if (target.getHashVal(dmk) == null) {
+                            IRIO rio2 = target.addHashVal(dmk);
                             // Don't YET link this value into the schema path stuff.
                             // If we do that stuff might crash.
-                            SchemaPath.setDefaultValue(rio2, valElem, finWorkspace);
+                            SchemaPath.setDefaultValue(rio2, valElem, dmk);
                             // the deep clone prevents further modification of the key
                             path.changeOccurred(false);
                             // auto-updates
@@ -172,7 +173,7 @@ public class HashSchemaElement extends SchemaElement {
         if (setDefault) {
             target.setHash();
         } else {
-            for (IRIO e : target.getHashKeys()) {
+            for (DMKey e : target.getHashKeys()) {
                 IRIO ek = target.getHashVal(e);
                 valElem.modifyVal(ek, path.arrayHashIndex(e, "{" + getKeyText(e) + "}"), false);
             }

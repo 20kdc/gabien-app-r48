@@ -6,6 +6,7 @@
  */
 package r48.ui.dialog;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -27,10 +28,11 @@ import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.IFunction;
 import r48.AdHocSaveLoad;
 import r48.App;
-import r48.RubyIO;
 import r48.dbs.ObjectInfo;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.BasicToolset;
@@ -129,14 +131,14 @@ public class UIRMUniversalStringLocator extends App.Prx {
         layout.panelsAdd(new UITextButton(T.g.wordSave, app.f.dialogWindowTH, new Runnable() {
             @Override
             public void run() {
-                RubyIO rio = new RubyIO();
+                IRIO rio = new IRIOGeneric(StandardCharsets.UTF_8);
                 rio.setObject("R48::UniversalStringLocatorSettings");
                 settingsFull.saveTo(rio.addIVar("@replacements_full"));
                 settingsPartial.saveTo(rio.addIVar("@replacements_partial"));
-                RubyIO files = rio.addIVar("@files");
+                IRIO files = rio.addIVar("@files");
                 files.setArray();
                 for (ObjectInfo oi : setSelector.getSet())
-                    files.addAElem(files.getALen()).setString(oi.idName, true);
+                    files.addAElem(files.getALen()).setString(oi.idName);
                 AdHocSaveLoad.save("replacer", rio);
             }
         }));
@@ -257,18 +259,18 @@ public class UIRMUniversalStringLocator extends App.Prx {
             return title;
         }
 
-        public void saveTo(RubyIO replacements) {
+        public void saveTo(IRIO replacements) {
             replacements.setArray();
             for (Replacement key : settings) {
-                RubyIO replacement = replacements.addAElem(replacements.getALen());
+                IRIO replacement = replacements.addAElem(replacements.getALen());
                 replacement.setObject("R48::UniversalStringLocatorReplacement");
-                replacement.addIVar("@key").setString(key.key, true);
-                replacement.addIVar("@value").setString(key.value, true);
+                replacement.addIVar("@key").setString(key.key);
+                replacement.addIVar("@value").setString(key.value);
             }
         }
 
         private void loadFromHash(IRIO irio) {
-            for (IRIO hk : irio.getHashKeys())
+            for (DMKey hk : irio.getHashKeys())
                 settings.add(new Replacement(hk.decString(), irio.getHashVal(hk).decString()));
         }
 

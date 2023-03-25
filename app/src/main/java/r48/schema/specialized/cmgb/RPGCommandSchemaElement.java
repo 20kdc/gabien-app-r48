@@ -10,13 +10,14 @@ package r48.schema.specialized.cmgb;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.PathSyntax;
 import r48.dbs.RPGCommand;
 import r48.io.IntUtils;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.OpaqueSchemaElement;
@@ -146,7 +147,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             for (int i = 0; i < labels.length; i++) {
                 if (labels[i] != null) {
                     SchemaElement ise = rc.getParameterSchema(param, i);
-                    UIElement uie = ise.buildHoldingEditor(param.getAElem(i), launcher, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
+                    UIElement uie = ise.buildHoldingEditor(param.getAElem(i), launcher, path.arrayHashIndex(DMKey.of(i), "[" + i + "]"));
                     uiSVL.panelsAdd(new UIFieldLayout(labels[i], uie, labelWidth, true));
                     rc.paramSpecialTags.get(i).applyTo(i, uiSVL, param, launcher, path);
                 }
@@ -191,7 +192,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     for (int i = 0; i < size; i++) {
                         IRIO rio = param.getAElem(i);
                         SchemaElement ise = rc.getParameterSchema(param, i);
-                        ise.modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), true);
+                        ise.modifyVal(rio, path.arrayHashIndex(DMKey.of(i), "[" + i + "]"), true);
                     }
                     if (rc.specialSchema != null) {
                         SchemaElement schemaElement = rc.specialSchema;
@@ -227,7 +228,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 int alen = param.getALen();
                 for (int i = 0; i < alen; i++) {
                     SchemaElement ise = rc.getParameterSchema(param, i);
-                    ise.modifyVal(param.getAElem(i), path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), setDefault);
+                    ise.modifyVal(param.getAElem(i), path.arrayHashIndex(DMKey.of(i), "[" + i + "]"), setDefault);
                 }
             }
         }

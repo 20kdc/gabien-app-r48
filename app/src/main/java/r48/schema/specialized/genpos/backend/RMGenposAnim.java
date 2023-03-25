@@ -8,8 +8,9 @@
 package r48.schema.specialized.genpos.backend;
 
 import r48.App;
-import r48.RubyIO;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.genpos.IGenposAnim;
@@ -66,7 +67,7 @@ public class RMGenposAnim extends App.Svc implements IGenposAnim {
             while (target.getALen() < min)
                 target.addAElem(0);
             // Create a frame from scratch to avoid crashing
-            RubyIO copy = new RubyIO().setNull();
+            IRIO copy = new IRIOGeneric(IObjectBackend.Factory.encoding).setNull();
             SchemaPath.setDefaultValue(copy, app.sdb.getSDBEntry("RPG::Animation::Frame"), null);
             frameIdx = min - 1;
             insertFrame(copy);

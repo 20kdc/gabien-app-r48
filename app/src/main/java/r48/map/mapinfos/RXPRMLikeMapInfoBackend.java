@@ -9,9 +9,10 @@ package r48.map.mapinfos;
 
 import gabien.uslx.append.*;
 import r48.App;
-import r48.RubyIO;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.schema.util.SchemaPath;
 import r48.tr.pages.TrRoot;
 import r48.ui.Art;
@@ -46,25 +47,25 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     @Override
     public Set<Long> getHashKeys() {
         HashSet<Long> hs = new HashSet<Long>();
-        for (IRIO rio : mapInfos.getObject().getHashKeys())
+        for (DMKey rio : mapInfos.getObject().getHashKeys())
             hs.add(rio.getFX());
         return hs;
     }
 
     @Override
     public IRIO getHashBID(long k) {
-        return mapInfos.getObject().getHashVal(new RubyIO().setFX(k));
+        return mapInfos.getObject().getHashVal(DMKey.of(k));
     }
 
     @Override
     public int getOrderOfMap(long k) {
-        return (int) mapInfos.getObject().getHashVal(new RubyIO().setFX(k)).getIVar("@order").getFX();
+        return (int) mapInfos.getObject().getHashVal(DMKey.of(k)).getIVar("@order").getFX();
     }
 
     @Override
     public long getMapOfOrder(int order) {
         IRIO obj = mapInfos.getObject();
-        for (IRIO rio : obj.getHashKeys())
+        for (DMKey rio : obj.getHashKeys())
             if (obj.getHashVal(rio).getIVar("@order").getFX() == order)
                 return rio.getFX();
         return -1;
@@ -82,7 +83,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
 
     @Override
     public void triggerEditInfoOf(long k) {
-        app.ui.launchNonRootSchema(mapInfos, "File.MapInfos", new RubyIO().setFX(k), getHashBID(k), "RPG::MapInfo", "M" + k, null);
+        app.ui.launchNonRootSchema(mapInfos, "File.MapInfos", DMKey.of(k), getHashBID(k), "RPG::MapInfo", "M" + k, null);
     }
 
     @Override
@@ -110,7 +111,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     @Override
     public void removeMap(long k) {
         MapInfoReparentUtil.removeMapHelperSALT(k, this);
-        mapInfos.getObject().removeHashVal(new RubyIO().setFX(k));
+        mapInfos.getObject().removeHashVal(DMKey.of(k));
     }
 
     @Override
@@ -119,8 +120,8 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
         long l = getMapOfOrder(targetOrder);
         if (l == -1)
             l = 0;
-        IRIO mi = mapInfos.getObject().addHashVal(new RubyIO().setFX(k));
-        SchemaPath.setDefaultValue(mi, app.sdb.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
+        IRIO mi = mapInfos.getObject().addHashVal(DMKey.of(k));
+        SchemaPath.setDefaultValue(mi, app.sdb.getSDBEntry("RPG::MapInfo"), DMKey.of(k));
         mi.getIVar("@parent_id").setFX(l);
         mi.getIVar("@order").setFX(targetOrder + 1);
         return targetOrder;

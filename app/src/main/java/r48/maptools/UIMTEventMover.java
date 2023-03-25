@@ -8,6 +8,7 @@
 package r48.maptools;
 
 import gabien.ui.UILabel;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
@@ -19,10 +20,10 @@ import r48.ui.Art;
  * Created on 1/1/17.
  */
 public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
-    private IRIO targetEventKey;
+    private DMKey targetEventKey;
     private UIMapView mapView;
 
-    public UIMTEventMover(IMapToolContext mv, IRIO evK) {
+    public UIMTEventMover(IMapToolContext mv, DMKey evK) {
         super(mv);
         mapView = mv.getMapView();
         targetEventKey = evK;

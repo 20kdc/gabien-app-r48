@@ -7,8 +7,10 @@
 
 package r48.map.events;
 
-import r48.RubyIO;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
+import r48.io.data.RORIO;
 
 import java.util.LinkedList;
 
@@ -22,14 +24,14 @@ import java.util.LinkedList;
 public interface IEventAccess {
     // Note that you should call the relevant modification trigger after all modifications.
     // This should be empty for non-Map event renderers.
-    LinkedList<IRIO> getEventKeys();
+    LinkedList<DMKey> getEventKeys();
 
     // Should return null on event not available
-    IRIO getEvent(IRIO key);
+    IRIO getEvent(DMKey key);
 
     // Should do nothing on event not available
     // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
-    void delEvent(IRIO key);
+    void delEvent(DMKey key);
 
     // Returns the "add event" strings (strings may or may not be null, but the array must not be null)
     String[] eventTypes();
@@ -38,36 +40,36 @@ public interface IEventAccess {
     // null for fail & do nothing
     // the key
     // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
-    IRIO addEvent(RubyIO eve, int type);
+    DMKey addEvent(RORIO eve, int type);
 
     // {eventSchema, root, rootSchema, keyValueSyntax}
     // Should return null on event not available
-    String[] getEventSchema(IRIO key);
+    String[] getEventSchema(DMKey key);
 
-    int getEventType(IRIO evK);
+    int getEventType(DMKey evK);
 
     // If this returns something, then the event is read-only, but has a button marked "Sync" which is expected to cause modifications
     // Yes, this is a cop-out because I can't think of a better design r/n
     // everything else I thought up was just hacky or overabstracting
-    Runnable hasSync(IRIO evK);
+    Runnable hasSync(DMKey evK);
 
     // Name of "Events" panel. Cannot be null
     String customEventsName();
 
     // Given an event key, return X.
     // Can error if the event does not exist.
-    long getEventX(IRIO key);
+    long getEventX(DMKey key);
 
     // Given an event key, return Y.
     // Can error if the event does not exist.
-    long getEventY(IRIO key);
+    long getEventY(DMKey key);
 
     // Given an event key, set XY.
     // Does nothing if the event does not exist.
     // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
-    void setEventXY(IRIO key, long x, long y);
+    void setEventXY(DMKey key, long x, long y);
 
     // Given an event key, return a name or null.
     // Can error if the event does not exist.
-    String getEventName(IRIO key);
+    String getEventName(DMKey key);
 }

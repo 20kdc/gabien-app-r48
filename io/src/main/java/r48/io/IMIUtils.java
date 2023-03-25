@@ -7,11 +7,14 @@
 
 package r48.io;
 
-import r48.RubyIO;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixnum;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Support for the mostly ASCII 'IMI' format
@@ -144,13 +147,13 @@ public class IMIUtils {
                 break;
             case '{':
                 dos.writeBytes("?" + ((char) target.getType()) + "\n");
-                for (IRIO rk : source.getHashKeys())
+                for (DMKey rk : source.getHashKeys())
                     if (target.getHashVal(rk) == null) {
                         dos.writeBytes(id2 + "->");
                         createIMIDump(dos, target, id2);
                         flagMod = true;
                     }
-                for (IRIO meKey : target.getHashKeys()) {
+                for (DMKey meKey : target.getHashKeys()) {
                     IRIO meVal = target.getHashVal(meKey);
                     IRIO rio = source.getHashVal(meKey);
                     if (rio == null) {
@@ -222,7 +225,7 @@ public class IMIUtils {
                 while (mappingsTarget[i] != currentSourceIndex) {
                     mod = true;
                     dos.writeBytes(id2 + "->");
-                    createIMIDump(dos, new RubyIO().setFX(i), id2);
+                    createIMIDump(dos, new IRIOFixnum(i), id2);
                     currentSourceIndex++;
                 }
                 byte[] patch = createIMIData(source.getAElem(currentSourceIndex), target.getAElem(i), incrementIndent(id2));
@@ -235,7 +238,7 @@ public class IMIUtils {
             } else {
                 mod = true;
                 dos.writeBytes(id2 + ">");
-                createIMIDump(dos, new RubyIO().setFX(i), id2);
+                createIMIDump(dos, new IRIOFixnum(i), id2);
                 dos.writeBytes(id2);
                 createIMIDump(dos, target.getAElem(i), incrementIndent(id2));
             }
@@ -244,7 +247,7 @@ public class IMIUtils {
         while (currentSourceIndex < srcAVL) {
             mod = true;
             dos.writeBytes(id2 + "->");
-            createIMIDump(dos, new RubyIO().setFX(tgtAVL), id2);
+            createIMIDump(dos, new IRIOFixnum(tgtAVL), id2);
             dos.writeBytes("\n");
             currentSourceIndex++;
         }
@@ -369,7 +372,7 @@ public class IMIUtils {
             case '}':
                 createIMIDump(dos, target.getHashDefVal(), incrementIndent(indent));
             case '{':
-                for (RORIO key : target.getHashKeys()) {
+                for (DMKey key : target.getHashKeys()) {
                     if (!didNLYet) {
                         dos.writeByte('\n');
                         didNLYet = true;
@@ -569,10 +572,7 @@ public class IMIUtils {
                                 break;
                             case '\"':
                                 // Force into default encoding, then change contents.
-                                // Some object backends use encoding IVars. In this case,
-                                //  things get complicated because we do NOT want their
-                                //  presence or lack of to generate issues.
-                                obj.setStringNoEncodingIVars();
+                                obj.setString("");
                                 obj.putBuffer(readIMIStringBody(inp));
                                 break;
                             case 'f':
@@ -604,16 +604,17 @@ public class IMIUtils {
                     }
                     break;
                 case '>':
-                    tmp2 = new RubyIO();
+                    tmp2 = new IRIOGeneric(StandardCharsets.UTF_8);
                     runIMISegment(inp, tmp2);
                     if (obj.getType() == '[') {
                         if (tmp2.getType() != 'i')
                             throw new IOException("Expected integer index for removal from array");
                         runIMISegment(inp, obj.addAElem((int) tmp2.getFX()));
                     } else {
-                        IRIO newObj = obj.getHashVal(tmp2);
+                        DMKey key = new DMKey(tmp2);
+                        IRIO newObj = obj.getHashVal(key);
                         if (newObj == null)
-                            newObj = obj.addHashVal(tmp2);
+                            newObj = obj.addHashVal(key);
                         runIMISegment(inp, newObj);
                     }
                     break;
@@ -627,14 +628,14 @@ public class IMIUtils {
                             }
                             break;
                         case '>':
-                            tmp2 = new RubyIO();
+                            tmp2 = new IRIOGeneric(StandardCharsets.UTF_8);
                             runIMISegment(inp, tmp2);
                             if (obj.getType() == '[') {
                                 if (tmp2.getType() != 'i')
                                     throw new IOException("Expected integer index for removal from array");
                                 obj.rmAElem((int) tmp2.getFX());
                             } else {
-                                obj.removeHashVal(tmp2);
+                                obj.removeHashVal(new DMKey(tmp2));
                             }
                             break;
                         default:

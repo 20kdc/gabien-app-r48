@@ -13,6 +13,7 @@ import org.junit.Test;
 import r48.App;
 import r48.dbs.CMDB;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
 import r48.io.r2k.obj.Event;
@@ -52,7 +53,7 @@ public class R2kCommandSchemaTest {
 
     private IRIO addCommandInto(App app, String listType, IRIO iVar) {
         IRIO res = iVar.addAElem(0);
-        SchemaPath.setDefaultValue(res, app.sdb.getSDBEntry(listType), new IRIOFixnum(0));
+        SchemaPath.setDefaultValue(res, app.sdb.getSDBEntry(listType), DMKey.of(0));
         rpgEv.modifyVal(rpgEvInst, rpgEvP, false);
         return res;
     }

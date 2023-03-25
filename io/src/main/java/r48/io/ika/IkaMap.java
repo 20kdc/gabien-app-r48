@@ -46,8 +46,8 @@ public class IkaMap extends IRIOFixedObject {
                 }
 
                 @Override
-                public IRIO convertKeyToIRIO(Integer i) {
-                    return new IRIOFixnum(i);
+                public DMKey convertKeyToIRIO(Integer i) {
+                    return DMKey.of(i);
                 }
 
                 @Override

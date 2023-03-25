@@ -19,6 +19,7 @@ import r48.RubyTable;
 import r48.dbs.ObjectInfo;
 import r48.io.IObjectBackend;
 import r48.io.IObjectBackend.ILoadedObject;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.*;
 import r48.map.drawlayers.*;
@@ -168,7 +169,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     public RMMapData[] getAllMaps() {
         LinkedList<RMMapData> rmdList = new LinkedList<RMMapData>();
         IRIO mi = app.odb.getObject("MapInfos").getObject();
-        for (final IRIO rio : mi.getHashKeys()) {
+        for (final DMKey rio : mi.getHashKeys()) {
             int id = (int) rio.getFX();
             RMMapData rmd = new RMMapData(app, new ISupplier<String>() {
                 @Override

@@ -12,6 +12,8 @@ import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class DoubleR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public double v;
@@ -45,8 +47,8 @@ public class DoubleR2kStruct extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
-    public String getBufferEnc() {
-        return "UTF-8";
+    public Charset getBufferEnc() {
+        return StandardCharsets.UTF_8;
     }
 
     @Override

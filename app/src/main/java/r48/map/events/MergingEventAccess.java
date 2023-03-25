@@ -7,9 +7,11 @@
 
 package r48.map.events;
 
-import r48.RubyIO;
 import r48.dbs.ValueSyntax;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
+import r48.io.data.RORIO;
 
 import java.util.LinkedList;
 
@@ -50,27 +52,27 @@ public class MergingEventAccess implements IEventAccess {
     }
 
     @Override
-    public LinkedList<IRIO> getEventKeys() {
-        LinkedList<IRIO> newKeys = new LinkedList<IRIO>();
+    public LinkedList<DMKey> getEventKeys() {
+        LinkedList<DMKey> newKeys = new LinkedList<>();
         for (int i = 0; i < accesses.length; i++)
-            for (IRIO key : accesses[i].getEventKeys())
+            for (DMKey key : accesses[i].getEventKeys())
                 newKeys.add(convertEventKey(i, key));
         return newKeys;
     }
 
-    private RubyIO convertEventKey(int i, IRIO key) {
-        return new RubyIO().setString(((char) ('0' + i)) + ValueSyntax.encode(key), true);
+    private DMKey convertEventKey(int i, DMKey key) {
+        return DMKey.ofStr(((char) ('0' + i)) + ValueSyntax.encode(key));
     }
 
     @Override
-    public IRIO getEvent(IRIO key) {
+    public IRIO getEvent(DMKey key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
         return accesses[in].getEvent(ValueSyntax.decode(ks.substring(1)));
     }
 
     @Override
-    public void delEvent(IRIO key) {
+    public void delEvent(DMKey key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
         accesses[in].delEvent(ValueSyntax.decode(ks.substring(1)));
@@ -82,32 +84,32 @@ public class MergingEventAccess implements IEventAccess {
     }
 
     @Override
-    public IRIO addEvent(RubyIO eve, int type) {
+    public DMKey addEvent(RORIO eve, int type) {
         int accessId = eventTypesToAccess[type];
         IEventAccess iea = accesses[accessId];
         type -= accessEVTBases[accessId];
-        IRIO res = iea.addEvent(eve, type);
+        DMKey res = iea.addEvent(eve, type);
         if (res == null)
             return null;
         return convertEventKey(accessId, res);
     }
 
     @Override
-    public String[] getEventSchema(IRIO key) {
+    public String[] getEventSchema(DMKey key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
         return accesses[in].getEventSchema(ValueSyntax.decode(ks.substring(1)));
     }
 
     @Override
-    public int getEventType(IRIO key) {
+    public int getEventType(DMKey key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
         return accesses[in].getEventType(ValueSyntax.decode(ks.substring(1))) + accessEVTBases[in];
     }
 
     @Override
-    public Runnable hasSync(IRIO key) {
+    public Runnable hasSync(DMKey key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
         return accesses[in].hasSync(ValueSyntax.decode(ks.substring(1)));
@@ -119,28 +121,28 @@ public class MergingEventAccess implements IEventAccess {
     }
 
     @Override
-    public long getEventX(IRIO a) {
+    public long getEventX(DMKey a) {
         String ks = a.decString();
         int in = ks.charAt(0) - '0';
         return accesses[in].getEventX(ValueSyntax.decode(ks.substring(1)));
     }
 
     @Override
-    public long getEventY(IRIO a) {
+    public long getEventY(DMKey a) {
         String ks = a.decString();
         int in = ks.charAt(0) - '0';
         return accesses[in].getEventY(ValueSyntax.decode(ks.substring(1)));
     }
 
     @Override
-    public void setEventXY(IRIO a, long x, long y) {
+    public void setEventXY(DMKey a, long x, long y) {
         String ks = a.decString();
         int in = ks.charAt(0) - '0';
         accesses[in].setEventXY(ValueSyntax.decode(ks.substring(1)), x, y);
     }
 
     @Override
-    public String getEventName(IRIO a) {
+    public String getEventName(DMKey a) {
         String ks = a.decString();
         int in = ks.charAt(0) - '0';
         return accesses[in].getEventName(ValueSyntax.decode(ks.substring(1)));

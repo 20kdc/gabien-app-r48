@@ -12,9 +12,10 @@ import gabien.IImage;
 import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import r48.App;
-import r48.RubyIO;
 import r48.RubyTable;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
@@ -201,9 +202,9 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
         // oh, this'll be *hilarious*. NOT.
         SchemaElement se = new MagicalBindingSchemaElement(app, new IMagicalBinder() {
             @Override
-            public RubyIO targetToBoundNCache(IRIO target) {
+            public IRIO targetToBoundNCache(IRIO target) {
                 short val = new RubyTable(target.getBuffer()).getTiletype(ct, i, 0);
-                return new RubyIO().setFX(val);
+                return new IRIOGeneric(IObjectBackend.Factory.encoding).setFX(val);
             }
 
             @Override

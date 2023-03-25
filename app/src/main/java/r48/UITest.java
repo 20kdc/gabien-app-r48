@@ -13,6 +13,7 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.specialized.IMagicalBinder;
@@ -81,7 +82,7 @@ public class UITest extends App.Prx {
                     if (currentObj == rootObj.getObject()) {
                         app.ui.launchSchema(res, rootObj, null);
                     } else {
-                        app.ui.launchNonRootSchema(rootObj, "OPAQUE", (IRIO) currentObj, (IRIO) currentObj, res, "", null);
+                        app.ui.launchNonRootSchema(rootObj, "OPAQUE", DMKey.NULL, (IRIO) currentObj, res, "", null);
                     }
                 });
             }, app.f.inspectorBackTH);
@@ -102,7 +103,7 @@ public class UITest extends App.Prx {
             targs.add(obj.getIVar(s));
         }
         if (obj.getType() == '{') {
-            for (RORIO s : sortedKeysArr(obj.getHashKeys())) {
+            for (DMKey s : sortedKeysArr(obj.getHashKeys())) {
                 strings.add(s + " -> " + obj.getHashVal(s));
                 targs.add(obj.getHashVal(s));
             }
@@ -196,25 +197,25 @@ public class UITest extends App.Prx {
         return sortedKeysStr(hs);
     }
 
-    public static LinkedList<RORIO> sortedKeys(Set<RORIO> rubyIOs) {
+    public static LinkedList<DMKey> sortedKeys(Set<DMKey> rubyIOs) {
         return sortedKeys(rubyIOs, RORIO::toString);
     }
 
-    public static LinkedList<RORIO> sortedKeys(Set<RORIO> rubyIOs, final IFunction<RORIO, String> toString) {
-        LinkedList<RORIO> ios = new LinkedList<RORIO>(rubyIOs);
+    public static LinkedList<DMKey> sortedKeys(Set<DMKey> rubyIOs, final IFunction<RORIO, String> toString) {
+        LinkedList<DMKey> ios = new LinkedList<>(rubyIOs);
         Collections.sort(ios, (t0, t1) -> natStrComp(toString.apply(t0), toString.apply(t1)));
         return ios;
     }
 
-    public static LinkedList<RORIO> sortedKeysArr(RORIO[] iVarKeys) {
-        HashSet<RORIO> hs = new HashSet<RORIO>();
+    public static LinkedList<DMKey> sortedKeysArr(DMKey[] iVarKeys) {
+        HashSet<DMKey> hs = new HashSet<>();
         if (iVarKeys != null)
             Collections.addAll(hs, iVarKeys);
         return sortedKeys(hs);
     }
 
-    public static LinkedList<RORIO> sortedKeysArr(RORIO[] iVarKeys, final IFunction<RORIO, String> toString) {
-        HashSet<RORIO> hs = new HashSet<RORIO>();
+    public static LinkedList<DMKey> sortedKeysArr(DMKey[] iVarKeys, final IFunction<RORIO, String> toString) {
+        HashSet<DMKey> hs = new HashSet<>();
         if (iVarKeys != null)
             Collections.addAll(hs, iVarKeys);
         return sortedKeys(hs, toString);

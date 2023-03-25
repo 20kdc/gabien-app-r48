@@ -8,13 +8,16 @@
 package r48.map.events;
 
 import r48.App;
-import r48.RubyIO;
 import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
+import r48.io.data.RORIO;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.schema.util.SchemaPath;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import static r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement.getSaveCount;
@@ -36,7 +39,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
 
     // This only contains the living.
     // The ghosts are added dynamically by getEventKeys & getEvent
-    public final RubyIO eventsHash = new RubyIO().setHash();
+    public final HashMap<DMKey, IRIO> eventsHash = new HashMap<>();
 
     public R2kSavefileEventAccess(App app, String rootId, IObjectBackend.ILoadedObject root, String rootSchema) {
         super(app);
@@ -52,9 +55,9 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
         sfveInjectEvent("Airship", mapId, sfr.getIVar("@airship_pos"));
         // Inject actual events
         IRIO se = getSaveEvents();
-        for (IRIO k : se.getHashKeys())
-            if (eventsHash.getHashVal(k) == null)
-                eventsHash.addHashVal(k).setDeepClone(se.getHashVal(k));
+        for (DMKey k : se.getHashKeys())
+            if (eventsHash.get(k) == null)
+                eventsHash.put(k, se.getHashVal(k));
     }
 
     private long getMapId() {
@@ -68,26 +71,24 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     private void sfveInjectEvent(String s, int mapId, IRIO instVarBySymbol) {
         if (instVarBySymbol.getIVar("@map").getFX() != mapId)
             return;
-        eventsHash.addHashVal(new RubyIO().setString(s, true)).setDeepClone(instVarBySymbol);
+        eventsHash.put(DMKey.ofStr(s), instVarBySymbol);
     }
 
     @Override
-    public LinkedList<IRIO> getEventKeys() {
-        LinkedList<IRIO> keys = new LinkedList<IRIO>();
-        for (IRIO k : eventsHash.getHashKeys())
-            keys.add(k);
+    public LinkedList<DMKey> getEventKeys() {
+        LinkedList<DMKey> keys = new LinkedList<DMKey>(eventsHash.keySet());
         IRIO map = getMap();
         if (map != null)
             if (getSaveCount(map).getFX() != saveFileRoot.getObject().getIVar("@party_pos").getIVar("@map_save_count").getFX())
-                for (IRIO rio : map.getIVar("@events").getHashKeys())
-                    if (eventsHash.getHashVal(rio) == null)
-                        keys.add(rio); // Add ghost
+                for (DMKey k : map.getIVar("@events").getHashKeys())
+                    if (eventsHash.get(k) == null)
+                        keys.add(k); // Add ghost
         return keys;
     }
 
     @Override
-    public IRIO getEvent(IRIO key) {
-        IRIO v = eventsHash.getHashVal(key);
+    public IRIO getEvent(DMKey key) {
+        IRIO v = eventsHash.get(key);
         if (v != null)
             return v;
         // Ghost! (?)
@@ -105,12 +106,12 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
         return ilo.getObject();
     }
 
-    private IRIO getMapEvent(IRIO map, IRIO key) {
+    private IRIO getMapEvent(IRIO map, DMKey key) {
         return map.getIVar("@events").getHashVal(key);
     }
 
     @Override
-    public void delEvent(IRIO key) {
+    public void delEvent(DMKey key) {
         if (key.getType() == '"') {
             if (key.decString().equals("Player")) {
                 app.ui.launchDialog(T.z.l224);
@@ -152,12 +153,12 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public RubyIO addEvent(RubyIO eve, int type) {
+    public DMKey addEvent(RORIO eve, int type) {
         app.ui.launchDialog(T.z.l230);
         return null;
     }
 
-    public static void eventAsSaveEvent(App app, IRIO rMap, long mapId, IRIO key, IRIO event) {
+    public static void eventAsSaveEvent(App app, IRIO rMap, long mapId, DMKey key, IRIO event) {
         IRIO rio = rMap.addHashVal(key);
         SchemaPath.setDefaultValue(rio, app.sdb.getSDBEntry("RPG::SaveMapEvent"), key);
         rio.getIVar("@map").setFX(mapId);
@@ -186,7 +187,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public String[] getEventSchema(IRIO key) {
+    public String[] getEventSchema(DMKey key) {
         if (key.getType() == '"') {
             if (key.decString().equals("Party"))
                 return new String[] {"RPG::SavePartyLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
@@ -198,42 +199,39 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
                 return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
         }
         // Used for ghosts
-        if (eventsHash.getHashVal(key) == null)
+        if (eventsHash.get(key) == null)
             return new String[] {"OPAQUE", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
         return new String[] {"RPG::SaveMapEvent", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
     }
 
     @Override
-    public int getEventType(IRIO evK) {
+    public int getEventType(DMKey evK) {
         // for cloning
         return 1;
     }
 
     @Override
-    public Runnable hasSync(final IRIO evK) {
+    public Runnable hasSync(final DMKey evK) {
         // Ghost...!
-        if (eventsHash.getHashVal(evK) == null)
-            return new Runnable() {
-                @Override
-                public void run() {
-                    // "Naw! Ghostie want biscuits!"
-                    if (eventsHash.getHashVal(evK) != null) {
-                        // "Dere's already a ghostie here, and 'e's nomming on biscuits!"
-                        app.ui.launchDialog(T.z.l231);
-                    } else {
-                        IRIO map = getMap();
-                        if (map == null) {
-                            app.ui.launchDialog(T.z.l232);
-                            return;
-                        }
-                        IRIO ev = map.getIVar("@events").getHashVal(evK);
-                        if (ev == null) {
-                            app.ui.launchDialog(T.z.l233);
-                            return;
-                        }
-                        eventAsSaveEvent(app, getSaveEvents(), getMapId(), evK, ev);
-                        pokeHive();
+        if (eventsHash.get(evK) == null)
+            return () -> {
+                // "Naw! Ghostie want biscuits!"
+                if (eventsHash.get(evK) != null) {
+                    // "Dere's already a ghostie here, and 'e's nomming on biscuits!"
+                    app.ui.launchDialog(T.z.l231);
+                } else {
+                    IRIO map = getMap();
+                    if (map == null) {
+                        app.ui.launchDialog(T.z.l232);
+                        return;
                     }
+                    IRIO ev = map.getIVar("@events").getHashVal(evK);
+                    if (ev == null) {
+                        app.ui.launchDialog(T.z.l233);
+                        return;
+                    }
+                    eventAsSaveEvent(app, getSaveEvents(), getMapId(), evK, ev);
+                    pokeHive();
                 }
             };
         return null;
@@ -245,17 +243,17 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public long getEventX(IRIO a) {
+    public long getEventX(DMKey a) {
         return getEvent(a).getIVar("@x").getFX();
     }
 
     @Override
-    public long getEventY(IRIO a) {
+    public long getEventY(DMKey a) {
         return getEvent(a).getIVar("@y").getFX();
     }
 
     @Override
-    public String getEventName(IRIO a) {
+    public String getEventName(DMKey a) {
         IRIO rio = getEvent(a).getIVar("@name");
         if (rio == null)
             return null;
@@ -263,15 +261,15 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public void setEventXY(IRIO a, long x, long y) {
+    public void setEventXY(DMKey a, long x, long y) {
         IRIO se = getSaveEvents();
-        a = se.getHashVal(a);
-        if (a == null) {
+        IRIO ev = se.getHashVal(a);
+        if (ev == null) {
             app.ui.launchDialog(T.z.l235);
             return;
         }
-        a.getIVar("@x").setFX(x);
-        a.getIVar("@y").setFX(y);
+        ev.getIVar("@x").setFX(x);
+        ev.getIVar("@y").setFX(y);
         pokeHive();
     }
 

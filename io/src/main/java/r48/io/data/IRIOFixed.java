@@ -7,6 +7,8 @@
 
 package r48.io.data;
 
+import java.nio.charset.Charset;
+
 /**
  * An IRIO with a fixed type.
  * The IRIO cannot be changed from this type.
@@ -102,7 +104,7 @@ public abstract class IRIOFixed extends IRIO {
     }
 
     @Override
-    public String getBufferEnc() {
+    public Charset getBufferEnc() {
         throw new UnsupportedOperationException();
     }
 
@@ -142,22 +144,22 @@ public abstract class IRIOFixed extends IRIO {
     }
 
     @Override
-    public IRIO[] getHashKeys() {
+    public DMKey[] getHashKeys() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public IRIO addHashVal(RORIO key) {
+    public IRIO addHashVal(DMKey key) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public IRIO getHashVal(RORIO key) {
+    public IRIO getHashVal(DMKey key) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void removeHashVal(RORIO key) {
+    public void removeHashVal(DMKey key) {
         throw new UnsupportedOperationException();
     }
 

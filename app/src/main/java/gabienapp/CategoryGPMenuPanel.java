@@ -22,6 +22,8 @@ import r48.tr.TrPage.FF0;
 import r48.tr.pages.TrRoot;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -105,7 +107,11 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
         @Override
         public void run() {
             if (ls.lun.currentState == ls) {
-                IObjectBackend.Factory.encoding = box.get();
+                try {
+                    IObjectBackend.Factory.encoding = Charset.forName(box.get());
+                } catch (UnsupportedCharsetException uce) {
+                    throw new RuntimeException(uce);
+                }
                 final String rootPath = PathUtils.fixRootPath(ls.uiLauncher.rootBox.text.text);
                 final String silPath = PathUtils.fixRootPath(ls.uiLauncher.sillBox.text.text);
 

@@ -12,8 +12,9 @@ import gabien.IImage;
 import gabien.datum.DatumSrcLoc;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.RubyIO;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.schema.*;
 import r48.schema.displays.HWNDSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
@@ -178,7 +179,7 @@ class SDBHelpers extends App.Svc {
         disambiguations.put("", new ArrayElementSchemaElement(app, 1, () -> S.ppp_idFN, val, null, false));
         AggregateSchemaElement inner = new AggregateSchemaElement(app, new SchemaElement[] {
                 new HalfsplitSchemaElement(
-                        new ArrayElementSchemaElement(app, 0, () -> S.ppp_typeFN, new EnumSchemaElement(app, types, new RubyIO().setFX(0), EntryMode.LOCK, () -> ""), null, false),
+                        new ArrayElementSchemaElement(app, 0, () -> S.ppp_typeFN, new EnumSchemaElement(app, types, new IRIOGeneric(IObjectBackend.Factory.encoding).setFX(0), EntryMode.LOCK, () -> ""), null, false),
                         new DisambiguatorSchemaElement(app, PathSyntax.compile(app, "]0"), disambiguations)
                 ),
                 new SubwindowSchemaElement(new HWNDSchemaElement(app, PathSyntax.compile(app, "]0"), "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {
@@ -190,7 +191,7 @@ class SDBHelpers extends App.Svc {
         });
         return new MagicalBindingSchemaElement(app, new IMagicalBinder() {
             @Override
-            public RubyIO targetToBoundNCache(IRIO target) {
+            public IRIOGeneric targetToBoundNCache(IRIO target) {
                 // Split PPP address into components
                 long t = target.getFX();
                 long type = 0;
@@ -202,7 +203,7 @@ class SDBHelpers extends App.Svc {
                         type++;
                     }
                 }
-                RubyIO base = new RubyIO();
+                IRIOGeneric base = new IRIOGeneric(IObjectBackend.Factory.encoding);
                 base.setArray(2);
                 base.getAElem(0).setFX(type);
                 base.getAElem(1).setFX(t);
@@ -249,7 +250,7 @@ class SDBHelpers extends App.Svc {
         );
         return new MagicalBindingSchemaElement(app, new IMagicalBinder() {
             @Override
-            public RubyIO targetToBoundNCache(IRIO target) {
+            public IRIOGeneric targetToBoundNCache(IRIO target) {
                 // Split PPP address into components
                 long t = target.getFX();
                 long type = 0;
@@ -257,7 +258,7 @@ class SDBHelpers extends App.Svc {
                     t -= 10000;
                     type++;
                 }
-                RubyIO base = new RubyIO();
+                IRIOGeneric base = new IRIOGeneric(IObjectBackend.Factory.encoding);
                 base.setArray(2);
                 base.getAElem(0).setFX(type);
                 base.getAElem(1).setFX(t);

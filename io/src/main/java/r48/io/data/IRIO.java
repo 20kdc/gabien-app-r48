@@ -7,7 +7,7 @@
 
 package r48.io.data;
 
-import java.io.*;
+import java.nio.charset.Charset;
 
 /**
  * Ok, so here's the deal. Data Model 2 implementation attempt 1 *failed miserably*.
@@ -39,12 +39,8 @@ public abstract class IRIO extends RORIO {
     // The resulting encoding may not be the one provided.
     // This *should* be overridden for the specific encoding logic.
     // The byte buffer must be copied by the caller.
-    public IRIO setString(byte[] s, String jenc) {
-        try {
-            return setString(new String(s, jenc));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+    public IRIO setString(byte[] src, Charset srcCharset) {
+        return setString(new String(src, srcCharset));
     }
 
     // This is weird...
@@ -107,24 +103,20 @@ public abstract class IRIO extends RORIO {
 
     // '{', '}'
     @Override
-    public abstract IRIO[] getHashKeys();
+    public abstract DMKey[] getHashKeys();
 
     // Actually key-based but marked 'Val' for consistency with the old API
-    public abstract IRIO addHashVal(RORIO key);
+    public abstract IRIO addHashVal(DMKey key);
 
     @Override
-    public abstract IRIO getHashVal(RORIO key);
+    public abstract IRIO getHashVal(DMKey key);
 
-    public abstract void removeHashVal(RORIO key);
+    public abstract void removeHashVal(DMKey key);
 
     @Override
     public abstract IRIO getHashDefVal();
 
     // Utils
-
-    public IRIO setStringNoEncodingIVars() {
-        return setString("");
-    }
 
     public IRIO setDeepClone(RORIO clone) {
         int type = clone.getType();
@@ -163,7 +155,7 @@ public abstract class IRIO extends RORIO {
                 setHashWithDef();
                 getHashDefVal().setDeepClone(clone.getHashDefVal());
             }
-            for (RORIO key : clone.getHashKeys()) {
+            for (DMKey key : clone.getHashKeys()) {
                 IRIO v = addHashVal(key);
                 v.setDeepClone(clone.getHashVal(key));
             }

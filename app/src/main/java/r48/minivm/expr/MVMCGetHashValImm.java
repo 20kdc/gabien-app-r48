@@ -10,6 +10,7 @@ import static gabien.datum.DatumTreeUtils.sym;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.minivm.MVMScope;
@@ -21,9 +22,9 @@ import r48.minivm.MVMU;
  */
 public class MVMCGetHashValImm extends MVMCExpr {
     public final MVMCExpr base;
-    public final RORIO key;
+    public final DMKey key;
 
-    public MVMCGetHashValImm(MVMCExpr base, RORIO k) {
+    public MVMCGetHashValImm(MVMCExpr base, DMKey k) {
         this.base = base;
         key = k;
     }

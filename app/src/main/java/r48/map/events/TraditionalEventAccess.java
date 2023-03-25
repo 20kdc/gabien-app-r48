@@ -8,11 +8,13 @@
 package r48.map.events;
 
 import r48.App;
-import r48.RubyIO;
 import r48.dbs.PathSyntax;
 import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
+import r48.io.data.RORIO;
 import r48.schema.util.SchemaPath;
 
 import java.util.Collections;
@@ -55,21 +57,21 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public LinkedList<IRIO> getEventKeys() {
-        LinkedList<IRIO> contents = new LinkedList<IRIO>();
+    public LinkedList<DMKey> getEventKeys() {
+        LinkedList<DMKey> contents = new LinkedList<>();
         IRIO mapEvents = getMapEvents();
         Collections.addAll(contents, mapEvents.getHashKeys());
         return contents;
     }
 
     @Override
-    public IRIO getEvent(IRIO key) {
+    public IRIO getEvent(DMKey key) {
         IRIO mapEvents = getMapEvents();
         return mapEvents.getHashVal(key);
     }
 
     @Override
-    public void delEvent(IRIO key) {
+    public void delEvent(DMKey key) {
         IRIO mapEvents = getMapEvents();
         mapEvents.removeHashVal(key);
         pokeHive();
@@ -83,8 +85,8 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public RubyIO addEvent(RubyIO eve, int type) {
-        RubyIO key = getFreeIndex();
+    public DMKey addEvent(RORIO eve, int type) {
+        DMKey key = getFreeIndex();
         IRIO mapEvents = getMapEvents();
         IRIO eveTarget = mapEvents.addHashVal(key);
         if (eve == null) {
@@ -97,7 +99,7 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public String[] getEventSchema(IRIO key) {
+    public String[] getEventSchema(DMKey key) {
         return new String[] {
                 eventSchema,
                 mapRootId,
@@ -107,12 +109,12 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public int getEventType(IRIO evK) {
+    public int getEventType(DMKey evK) {
         return 0;
     }
 
     @Override
-    public Runnable hasSync(IRIO evK) {
+    public Runnable hasSync(DMKey evK) {
         return null;
     }
 
@@ -122,17 +124,17 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public long getEventX(IRIO a) {
+    public long getEventX(DMKey a) {
         return propPathX.get(getEvent(a)).getFX();
     }
 
     @Override
-    public long getEventY(IRIO a) {
+    public long getEventY(DMKey a) {
         return propPathY.get(getEvent(a)).getFX();
     }
 
     @Override
-    public void setEventXY(IRIO a, long x, long y) {
+    public void setEventXY(DMKey a, long x, long y) {
         IRIO ev = getEvent(a);
         if (ev == null)
             return;
@@ -142,14 +144,14 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public String getEventName(IRIO a) {
+    public String getEventName(DMKey a) {
         IRIO iv = propPathName.get(getEvent(a));
         if (iv == null)
             return null;
         return iv.decString();
     }
 
-    private RubyIO getFreeIndex() {
+    private DMKey getFreeIndex() {
         long unusedIndex = eventIdBase;
         IRIO mapEvents = getMapEvents();
         while (mapEvents.getHashVal(convIndex(unusedIndex)) != null)
@@ -157,8 +159,8 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
         return convIndex(unusedIndex);
     }
 
-    protected RubyIO convIndex(long unusedIndex) {
-        return new RubyIO().setFX(unusedIndex);
+    protected DMKey convIndex(long unusedIndex) {
+        return DMKey.of(unusedIndex);
     }
 
     public IRIO getMapEvents() {

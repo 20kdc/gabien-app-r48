@@ -11,14 +11,16 @@ import gabien.TestKickstart;
 import org.junit.Test;
 
 import r48.App;
-import r48.RubyIO;
 import r48.io.IMIUtils;
+import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.schema.util.SchemaPath;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created on December 09, 2018.
@@ -28,12 +30,12 @@ public class IMIBasicTest {
     public void testEncode2kDatabase() {
         App app = new TestKickstart().kickstart("RAM/", "UTF-8", "r2k");
         // Use RubyIOs both in and out to deal with encoding oddities
-        RubyIO newObj = new RubyIO().setNull();
+        IRIO newObj = new IRIOGeneric(StandardCharsets.UTF_8);
         SchemaPath.setDefaultValue(newObj, app.sdb.getSDBEntry("RPG::Database"), null);
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             IMIUtils.createIMIDump(new DataOutputStream(baos), newObj, "");
-            RubyIO test = new RubyIO();
+            IRIOGeneric test = new IRIOGeneric(StandardCharsets.UTF_8);
             byte[] data = baos.toByteArray();
             IMIUtils.runIMISegment(new ByteArrayInputStream(data), test);
             byte[] diff = IMIUtils.createIMIData(newObj, test, "");

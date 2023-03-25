@@ -9,8 +9,8 @@ package r48.schema.util;
 
 import r48.App;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
 
@@ -55,7 +55,7 @@ public class SchemaPath extends App.Svc {
     // Otherwise, it should propagate whenever unchanged.
     // lastArray does a similar thing, except it points to the object whose targetElement is the array/hash itself.
     // This allows "inside" elements to cause consistency checks.
-    public final @Nullable RORIO lastArrayIndex;
+    public final @Nullable DMKey lastArrayIndex;
 
     // Null for "no human readable index here".
     // The root is the intended ObjectID index, but this is a visual property only.
@@ -63,7 +63,7 @@ public class SchemaPath extends App.Svc {
 
     public final HashMap<String, SchemaElement> contextualSchemas = new HashMap<String, SchemaElement>();
 
-    private SchemaPath(SchemaPath sp, SchemaElement editor, IRIO targetElement, RORIO lastArrayIndex, String hrIndex) {
+    private SchemaPath(SchemaPath sp, SchemaElement editor, IRIO targetElement, DMKey lastArrayIndex, String hrIndex) {
         super(sp.app);
         parent = sp;
         root = sp.root;
@@ -93,7 +93,7 @@ public class SchemaPath extends App.Svc {
     }
 
     // Used for default value setup bootstrapping.
-    private SchemaPath(App app, IRIO lai) {
+    private SchemaPath(App app, DMKey lai) {
         super(app);
         parent = null;
         root = null;
@@ -104,7 +104,7 @@ public class SchemaPath extends App.Svc {
         hrIndex = "AnonObject";
     }
 
-    public static void setDefaultValue(IRIO target, SchemaElement ise, IRIO arrayIndex) {
+    public static void setDefaultValue(IRIO target, SchemaElement ise, DMKey arrayIndex) {
         ise.modifyVal(target, new SchemaPath(ise.app, arrayIndex), true);
     }
 
@@ -157,7 +157,7 @@ public class SchemaPath extends App.Svc {
 
     // -- Important Stuff (always used) --
 
-    public SchemaPath arrayHashIndex(RORIO index, String indexS) {
+    public SchemaPath arrayHashIndex(DMKey index, String indexS) {
         return new SchemaPath(this, null, null, index, indexS);
     }
 

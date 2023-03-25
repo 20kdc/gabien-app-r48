@@ -11,9 +11,10 @@ import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.RubyIO;
 import r48.UITest;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.schema.SchemaElement;
@@ -49,7 +50,7 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
     private UIAppendButton toolbarCp = new UIAppendButton(T.g.bCopy, toolbarP, new Runnable() {
         @Override
         public void run() {
-            app.theClipboard = new RubyIO().setDeepClone(innerElem.targetElement);
+            app.theClipboard = new IRIOGeneric(IObjectBackend.Factory.encoding).setDeepClone(innerElem.targetElement);
         }
     }, app.f.schemaPathTH);
     private UIAppendButton toolbarPs = new UIAppendButton(T.g.bPaste, toolbarCp, new Runnable() {

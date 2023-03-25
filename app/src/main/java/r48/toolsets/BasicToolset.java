@@ -16,7 +16,9 @@ import r48.dbs.ObjectInfo;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.map.systems.IRMMapSystem;
 import r48.schema.OpaqueSchemaElement;
@@ -264,13 +266,13 @@ public class BasicToolset extends App.Svc implements IToolset {
                     });
                 },
                 () -> {
-                    RubyIO tmp = new RubyIO();
+                    IRIOGeneric tmp = new IRIOGeneric(IObjectBackend.Factory.encoding);
                     final IObjectBackend.ILoadedObject rio = new IObjectBackend.MockLoadedObject(tmp);
                     app.ui.launchPrompt(T.z.prSchemaID, new IConsumer<String>() {
                         @Override
                         public void accept(String s) {
                             SchemaElement se = app.sdb.getSDBEntry(s);
-                            SchemaPath.setDefaultValue(tmp, se, tmp);
+                            SchemaPath.setDefaultValue(tmp, se, DMKey.NULL);
                             app.ui.launchSchema(s, rio, null);
                         }
                     });
@@ -342,7 +344,7 @@ public class BasicToolset extends App.Svc implements IToolset {
             @Override
             public void run() {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
-                RORIO clipGet = (app.theClipboard == null) ? new RubyIO().setNull() : app.theClipboard;
+                RORIO clipGet = (app.theClipboard == null) ? new IRIOGeneric(IObjectBackend.Factory.encoding) : app.theClipboard;
                 String clipText = app.fmt.interpretParameter(clipGet);
                 uiStatusLabel.text = T.z.l82.r(app.odb.modifiedObjects.size(), clipText);
                 app.uiPendingRunnables.add(this);
@@ -362,7 +364,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     }
                 },
                 () -> {
-                    RubyIO newClip = AdHocSaveLoad.load("clip");
+                    IRIOGeneric newClip = AdHocSaveLoad.load("clip");
                     if (newClip == null) {
                         app.ui.launchDialog(T.z.l89);
                     } else {
@@ -412,7 +414,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         if (type == '"')
             total += string.apply(rio);
         if ((type == '{') || (type == '}'))
-            for (IRIO me : rio.getHashKeys())
+            for (DMKey me : rio.getHashKeys())
                 total += universalStringLocator(app, rio.getHashVal(me), string, writing);
         if (type == '[') {
             int arrLen = rio.getALen();

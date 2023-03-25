@@ -9,8 +9,9 @@ package r48.maptools;
 
 import gabien.GaBIEn;
 import gabien.ui.UILabel;
-import r48.RubyIO;
 import r48.RubyTable;
+import r48.io.IObjectBackend;
+import r48.io.data.IRIOGeneric;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
@@ -78,7 +79,7 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
                         for (int j = minY; j <= maxY; j++)
                             if (!map.mapTable.outOfBounds(i, j))
                                 rt.setTiletype(i - minX, j - minY, l, map.mapTable.getTiletype(i, j, l));
-                RubyIO rb = new RubyIO();
+                IRIOGeneric rb = new IRIOGeneric(IObjectBackend.Factory.encoding);
                 rb.setUser("Table", rt.innerBytes);
                 map.app.theClipboard = rb;
                 mapToolContext.accept(null);

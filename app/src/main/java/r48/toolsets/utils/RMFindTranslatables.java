@@ -17,6 +17,7 @@ import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
 import r48.map.UIMapView;
@@ -49,7 +50,7 @@ public class RMFindTranslatables extends App.Svc {
         final SchemaPath rootSchemaPath = new SchemaPath(app.sdb.getSDBEntry("RPG::Map"), objRoot);
 
         IRIO events = objRoot.getObject().getIVar("@events");
-        for (IRIO eventKey : events.getHashKeys()) {
+        for (DMKey eventKey : events.getHashKeys()) {
             IRIO event = events.getHashVal(eventKey);
 
             final SchemaPath eventSchemaPath = rootSchemaPath
@@ -64,7 +65,7 @@ public class RMFindTranslatables extends App.Svc {
 
                 // enter page
                 final SchemaPath pageSchemaPath = eventSchemaPath
-                        .arrayHashIndex(new IRIOFixnum(page), "P" + page)
+                        .arrayHashIndex(DMKey.of(page), "P" + page)
                         .newWindow(app.sdb.getSDBEntry(eventPage), pageObj);
 
                 IRIO eventList = pageObj.getIVar("@list");
@@ -129,7 +130,7 @@ public class RMFindTranslatables extends App.Svc {
                 sp = sp.newWindow(cmdbEditor, listObj);
                 shi.pushObject(sp);
                 // enter command
-                sp = sp.arrayHashIndex(new IRIOFixnum(codeIndex), "C" + codeIndex);
+                sp = sp.arrayHashIndex(DMKey.of(codeIndex), "C" + codeIndex);
                 sp = sp.newWindow(cmdbEditor.getElementContextualWindowSchema(command), listObj);
                 shi.pushObject(sp);
             }

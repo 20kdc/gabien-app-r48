@@ -9,9 +9,10 @@ package r48.schema.specialized.genpos.backend;
 
 import gabien.IImage;
 import r48.App;
-import r48.RubyIO;
 import r48.imagefx.HueShiftImageEffect;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.map.imaging.IImageLoader;
 import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
@@ -65,7 +66,7 @@ public class XPTroopGenposFrame extends TroopGenposFrame {
 
     @Override
     public SchemaPath getCellProp(int ct, int i) {
-        SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(new RubyIO().setFX(ct + 1), "[" + (ct + 1) + "]");
+        SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(DMKey.of(ct + 1), "[" + (ct + 1) + "]");
         IRIO member = troop.getIVar("@members").getAElem(ct + 1);
         SchemaElement se = getCellPropSchemas()[i];
         if (i == 0)

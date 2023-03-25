@@ -13,6 +13,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
 import r48.App;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
 import r48.schema.util.ISchemaHost;
@@ -58,11 +59,11 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
             return new UITextButton(tx, app.f.schemaFieldTH, () -> {
                 // resize to include and set default
                 resizeToInclude(target);
-                subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(new IRIOFixnum(index), "." + name), true);
+                subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), "." + name), true);
                 path.changeOccurred(false);
             });
         }
-        UIElement core = subSchema.buildHoldingEditor(target.getAElem(index), launcher, path.arrayHashIndex(new IRIOFixnum(index), "." + name));
+        UIElement core = subSchema.buildHoldingEditor(target.getAElem(index), launcher, path.arrayHashIndex(DMKey.of(index), "." + name));
 
         if (!name.equals("")) {
             UILabel label = new UILabel(name, app.f.schemaFieldTH);
@@ -112,7 +113,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
             changed |= resizeToInclude(target);
         if (target.getALen() > index) {
             String indexStr = nameCb != null ? "." + nameCb.r() : ("]" + index);
-            subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(new IRIOFixnum(index), indexStr), setDefault);
+            subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), indexStr), setDefault);
         }
         if (changed)
             path.changeOccurred(true);

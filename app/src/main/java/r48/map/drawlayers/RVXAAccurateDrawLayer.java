@@ -9,6 +9,7 @@ package r48.map.drawlayers;
 
 import r48.App;
 import r48.RubyTable;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.events.IEventAccess;
 import r48.map.events.RMEventGraphicRenderer;
@@ -36,7 +37,7 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
         for (int i = -1; i < tbl.height + 5; i++)
             zSorting.add(new RVXAPriorityPlane(tils.app, i));
         // Very specific choice of algorithm.
-        for (IRIO r : eventList.getEventKeys()) {
+        for (DMKey r : eventList.getEventKeys()) {
             IRIO ed = eventList.getEvent(r);
             // Determine Z location.
             int eventLayer = events.determineEventLayer(ed);

@@ -9,8 +9,9 @@ package r48.io;
 
 import gabien.GaBIEn;
 import gabien.uslx.append.HexByteEncoding;
-import r48.RubyIO;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 
 import java.io.*;
@@ -23,15 +24,17 @@ import java.util.LinkedList;
  */
 public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     private final String prefix, postfix;
+    public final Charset charset;
 
-    public R48ObjectBackend(String s, String dataExt) {
+    public R48ObjectBackend(String s, String dataExt, Charset cs) {
         prefix = s;
         postfix = dataExt;
+        charset = cs;
     }
 
     @Override
-    public RubyIO newObjectO(String n) {
-        return new RubyIO().setNull();
+    public IRIOGeneric newObjectO(String n) {
+        return new IRIOGeneric(charset);
     }
 
     public static long load32(DataInputStream dis) throws IOException {
@@ -134,11 +137,11 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     }
 
     @Override
-    public RubyIO loadObjectFromFile(String filename) {
-        return loadObjectFromFile(new RubyIO(), filename);
+    public IRIOGeneric loadObjectFromFile(String filename) {
+        return loadObjectFromFile(new IRIOGeneric(charset), filename);
     }
 
-    public RubyIO loadObjectFromFile(RubyIO rio, String filename) {
+    public IRIOGeneric loadObjectFromFile(IRIOGeneric rio, String filename) {
         try {
             String fullPath = PathUtils.autoDetectWindows(prefix + filename + postfix);
             InputStream inp = GaBIEn.getInFile(fullPath);
@@ -270,10 +273,9 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     }
 
     private void saveHashCore(DataOutputStream dis, RORIO content, SaveCaches caches) throws IOException {
-        // damned if you do (IDE warning), damned if you don't (compiler warning).
-        RORIO[] me = content.getHashKeys();
+        DMKey[] me = content.getHashKeys();
         save32(dis, me.length);
-        for (RORIO cKey : me) {
+        for (DMKey cKey : me) {
             try {
                 saveValue(dis, cKey, caches);
                 saveValue(dis, content.getHashVal(cKey), caches);
@@ -301,8 +303,8 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         }
     }
 
-    private RubyIO loadValue(DataInputStream dis, LinkedList<IRIO> objs, LinkedList<String> syms) throws IOException {
-        RubyIO rio = new RubyIO();
+    private IRIOGeneric loadValue(DataInputStream dis, LinkedList<IRIO> objs, LinkedList<String> syms) throws IOException {
+        IRIOGeneric rio = new IRIOGeneric(charset);
         loadValue(rio, dis, objs, syms);
         return rio;
     }
@@ -343,8 +345,8 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             objs.add(rio);
             long vars = load32(dis);
             for (long i = 0; i < vars; i++) {
-                RubyIO k = loadValue(dis, objs, syms);
-                loadValue(rio.addHashVal(k), dis, objs, syms);
+                IRIOGeneric k = loadValue(dis, objs, syms);
+                loadValue(rio.addHashVal(new DMKey(k)), dis, objs, syms);
             }
             if (b == '}')
                 loadValue(rio.getHashDefVal(), dis, objs, syms);
@@ -378,7 +380,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             byte[] data = new byte[(int) len];
             if (dis.read(data) != len)
                 throw new IOException("Didn't read all of data");
-            rio.setStringNoEncodingIVars();
+            rio.setString("");
             rio.putBuffer(data);
         } else if (b == 'f') {
             objs.add(rio);
@@ -426,7 +428,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         if (handlingInstVars) {
             long vars = load32(dis);
             for (long i = 0; i < vars; i++) {
-                RubyIO k = loadValue(dis, objs, syms);
+                IRIOGeneric k = loadValue(dis, objs, syms);
                 loadValue(rio.addIVar(k.getSymbol()), dis, objs, syms);
             }
         }

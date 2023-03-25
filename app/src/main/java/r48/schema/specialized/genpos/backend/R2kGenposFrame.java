@@ -12,7 +12,7 @@ import gabien.IImage;
 import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import r48.App;
-import r48.RubyIO;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
@@ -60,7 +60,7 @@ public class R2kGenposFrame extends App.Svc implements IGenposFrame {
     @Override
     public void addCell(int i2) {
         IRIO rio = frameSource.get().getIVar("@cells").addAElem(i2);
-        SchemaPath.setDefaultValue(rio, app.sdb.getSDBEntry("RPG::Animation::Cell"), new RubyIO().setFX(i2));
+        SchemaPath.setDefaultValue(rio, app.sdb.getSDBEntry("RPG::Animation::Cell"), DMKey.of(i2));
         updateNotify.run();
     }
 
@@ -84,7 +84,7 @@ public class R2kGenposFrame extends App.Svc implements IGenposFrame {
                 "@tone_grey",
                 "@transparency"
         };
-        SchemaPath memberPath = rootPath.otherIndex("FX").arrayHashIndex(new RubyIO().setFX(ct + 1), "[" + (ct + 1) + "]");
+        SchemaPath memberPath = rootPath.otherIndex("FX").arrayHashIndex(DMKey.of(ct + 1), "[" + (ct + 1) + "]");
         IRIO member = frameSource.get().getIVar("@cells").getAElem(ct + 1);
         SchemaElement se = new IntegerSchemaElement(app, 0);
         if (i == 0)

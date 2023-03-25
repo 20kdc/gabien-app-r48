@@ -10,9 +10,11 @@ package r48;
 import gabien.GaBIEn;
 import gabienapp.Application;
 import r48.io.R48ObjectBackend;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -31,18 +33,16 @@ public class AdHocSaveLoad {
     public static void save(String fonts, RORIO prepare) {
         prepare();
         // workaround because R48ObjectBackend still hasn't undergone some sort of reform
-        RubyIO tmp = new RubyIO();
-        tmp.setDeepClone(prepare);
-        R48ObjectBackend rob = new R48ObjectBackend(PREFIX, ".r48");
+        R48ObjectBackend rob = new R48ObjectBackend(PREFIX, ".r48", StandardCharsets.UTF_8);
         try {
-            rob.saveObjectToFile(fonts, tmp);
+            rob.saveObjectToFile(fonts, prepare);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static @Nullable RubyIO load(String fonts) {
-        R48ObjectBackend rob = new R48ObjectBackend(PREFIX, ".r48");
+    public static @Nullable IRIOGeneric load(String fonts) {
+        R48ObjectBackend rob = new R48ObjectBackend(PREFIX, ".r48", StandardCharsets.UTF_8);
         return rob.loadObjectFromFile(fonts);
     }
 

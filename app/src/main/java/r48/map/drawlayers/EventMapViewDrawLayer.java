@@ -8,6 +8,7 @@
 package r48.map.drawlayers;
 
 import r48.App;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.MapViewDrawContext;
 import r48.map.events.IEventAccess;
@@ -47,10 +48,10 @@ public class EventMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer 
         // Event Enable
         // Having it here is more efficient than having it as a tool overlay,
         // and sometimes the user might want to see events when using other tools.
-        LinkedList<IRIO> ev = eventList.getEventKeys();
-        Collections.sort(ev, new Comparator<IRIO>() {
+        LinkedList<DMKey> ev = eventList.getEventKeys();
+        Collections.sort(ev, new Comparator<DMKey>() {
             @Override
-            public int compare(IRIO a, IRIO b) {
+            public int compare(DMKey a, DMKey b) {
                 int yA = (int) eventList.getEventY(a);
                 int yB = (int) eventList.getEventY(b);
                 if (yA < yB)
@@ -60,7 +61,7 @@ public class EventMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer 
                 return 0;
             }
         });
-        for (IRIO evK : ev) {
+        for (DMKey evK : ev) {
             int x = (int) eventList.getEventX(evK);
             int y = (int) eventList.getEventY(evK);
             if (!mvdc.camTMargin.contains(x, y))

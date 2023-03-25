@@ -13,9 +13,10 @@ import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextBox;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.RubyIO;
+import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -44,7 +45,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 try {
-                    RubyIO scripts = importScripts();
+                    IRIO scripts = importScripts();
                     if (scripts != null) {
                         target.setDeepClone(scripts);
                         path.changeOccurred(true);
@@ -186,10 +187,10 @@ public class ScriptControlSchemaElement extends SchemaElement {
         return new UISplitterLayout(impExp, search, true, 0);
     }
 
-    private RubyIO importScripts() throws IOException {
+    private IRIO importScripts() throws IOException {
         // A particular difference that's going to show up here is that empty-named or #-prefixed files won't get removed.
         // This way, the conversion is bi-directional.
-        RubyIO scripts = new RubyIO();
+        IRIO scripts = new IRIOGeneric(IObjectBackend.Factory.encoding);
         InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
         if (inp == null) {
             app.ui.launchDialog(T.z.l152);
@@ -210,12 +211,12 @@ public class ScriptControlSchemaElement extends SchemaElement {
                 ok = false;
             }
 
-            RubyIO scr = scripts.addAElem(scripts.getALen());
+            IRIO scr = scripts.addAElem(scripts.getALen());
             scr.setArray(3);
             scr.getAElem(0).setFX(0);
             scr.getAElem(1).setString(s);
             DeflaterInputStream def = new DeflaterInputStream(new ByteArrayInputStream(new byte[0]));
-            scr.getAElem(2).setString(StringBlobSchemaElement.readStream(def), "UTF-8");
+            scr.getAElem(2).setString(StringBlobSchemaElement.readStream(def), StandardCharsets.UTF_8);
             def.close();
             if (ok) {
                 byte[] data = loadScript(s);

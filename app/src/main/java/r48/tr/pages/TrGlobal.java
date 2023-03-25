@@ -30,7 +30,6 @@ public class TrGlobal extends TrPage {
     // app
     public FF1 loadingProgress;
     public String loadingDCO;
-    public String msgNonEmergencyBackup;
     public String dlgReloadPFD, dlgReloadED, dlgNoSysDump;
     // img
     public FF1 img_bmpX;

@@ -9,8 +9,8 @@ package r48.schema.specialized.genpos.backend;
 
 import gabien.IImage;
 import r48.App;
-import r48.RubyIO;
 import r48.imagefx.HueShiftImageEffect;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;
 import r48.schema.BooleanSchemaElement;
@@ -46,10 +46,10 @@ public class R2kTroopGenposFrame extends TroopGenposFrame {
 
         IRIO enemi = database.getIVar("@enemies");
 
-        for (IRIO rio : enemi.getHashKeys())
+        for (DMKey rio : enemi.getHashKeys())
             max = Math.max(max, rio.getFX());
         enemies = new IImage[(int) (max + 1)];
-        for (IRIO map : enemi.getHashKeys())
+        for (DMKey map : enemi.getHashKeys())
             enemies[(int) (map.getFX())] = readEnemy(enemi.getHashVal(map), img);
     }
 
@@ -74,7 +74,7 @@ public class R2kTroopGenposFrame extends TroopGenposFrame {
 
     @Override
     public SchemaPath getCellProp(int ct, int i) {
-        SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(new RubyIO().setFX(ct + 1), "[" + (ct + 1) + "]");
+        SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(DMKey.of(ct + 1), "[" + (ct + 1) + "]");
         IRIO member = troop.getIVar("@members").getAElem(ct + 1);
         SchemaElement se = getCellPropSchemas()[i];
         if (i == 0)

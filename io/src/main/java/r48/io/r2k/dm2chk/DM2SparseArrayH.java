@@ -8,6 +8,7 @@
 package r48.io.r2k.dm2chk;
 
 import gabien.uslx.append.*;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedHash;
 import r48.io.data.IRIOFixnum;
@@ -36,8 +37,8 @@ public class DM2SparseArrayH<V extends IRIO> extends IRIOFixedHash<Integer, V> i
     }
 
     @Override
-    public IRIO convertKeyToIRIO(Integer i) {
-        return new IRIOFixnum(i);
+    public DMKey convertKeyToIRIO(Integer i) {
+        return DMKey.of(i);
     }
 
     @Override

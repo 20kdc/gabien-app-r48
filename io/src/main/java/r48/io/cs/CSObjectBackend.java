@@ -8,12 +8,12 @@
 package r48.io.cs;
 
 import gabien.GaBIEn;
-import r48.RubyIO;
 import r48.RubyTable;
 import r48.io.IObjectBackend;
 import r48.io.OldObjectBackend;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.io.OutputStream;
  * This is now the only thing remaining out of the CSOEdit experiment.
  * Created on May 11th 2018.
  */
-public class CSObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
+public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
     public String pfx;
 
     public CSObjectBackend(String prefix) {
@@ -32,19 +32,19 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
     }
 
     @Override
-    public RubyIO newObjectO(String nt) {
-        return new RubyIO().setNull();
+    public IRIOGeneric newObjectO(String nt) {
+        return new IRIOGeneric(IObjectBackend.Factory.encoding);
     }
 
     @Override
-    public RubyIO loadObjectFromFile(String filename) {
+    public IRIO loadObjectFromFile(String filename) {
         InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(pfx + filename));
         if (inp == null) {
             System.err.println("Couldn't load CS " + pfx + filename);
             return null;
         }
         try {
-            RubyIO res = null;
+            IRIO res = null;
             String fnl = filename.toLowerCase();
             if (fnl.endsWith("pxm")) {
                 res = loadPXM(inp);
@@ -65,22 +65,22 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
         return null;
     }
 
-    private RubyIO loadStageTBL(InputStream inp) throws IOException {
+    private IRIOGeneric loadStageTBL(InputStream inp) throws IOException {
         int stages = inp.available() / 200;
-        RubyIO rio = new RubyIO();
+        IRIOGeneric rio = newObjectO("");
         rio.setArray(stages);
         for (int i = 0; i < stages; i++) {
-            RubyIO tileset = loadFixedFormatString(inp, 0x20);
-            RubyIO filename = loadFixedFormatString(inp, 0x20);
+            IRIO tileset = loadFixedFormatString(inp, 0x20);
+            IRIO filename = loadFixedFormatString(inp, 0x20);
             int backgroundScroll = inp.read();
             backgroundScroll |= inp.read() << 8;
             backgroundScroll |= inp.read() << 16;
             backgroundScroll |= inp.read() << 24;
-            RubyIO bkg = loadFixedFormatString(inp, 0x20);
-            RubyIO npc1 = loadFixedFormatString(inp, 0x20);
-            RubyIO npc2 = loadFixedFormatString(inp, 0x20);
+            IRIO bkg = loadFixedFormatString(inp, 0x20);
+            IRIO npc1 = loadFixedFormatString(inp, 0x20);
+            IRIO npc2 = loadFixedFormatString(inp, 0x20);
             int boss = inp.read();
-            RubyIO name = loadFixedFormatString(inp, 0x23);
+            IRIO name = loadFixedFormatString(inp, 0x23);
 
             IRIO rio2 = rio.getAElem(i).setObject("Stage");
             rio2.addIVar("@tileset").setDeepClone(tileset);
@@ -95,7 +95,7 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
         return rio;
     }
 
-    private RubyIO loadFixedFormatString(InputStream inp, int i) throws IOException {
+    private IRIO loadFixedFormatString(InputStream inp, int i) throws IOException {
         byte[] bt = new byte[i];
         if (inp.read(bt) != i)
             throw new IOException("Insufficient data");
@@ -107,14 +107,14 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
                 break;
             }
         }
-        return new RubyIO().setString(bt, Factory.encoding);
+        return newObjectO("").setString(bt, Factory.encoding);
     }
 
-    private RubyIO loadPXA(InputStream inp) throws IOException {
+    private IRIO loadPXA(InputStream inp) throws IOException {
         return loadRT(inp, 16, 16);
     }
 
-    private RubyIO loadPXM(InputStream inp) throws IOException {
+    private IRIO loadPXM(InputStream inp) throws IOException {
         if (inp.read() != 'P')
             throw new IOException("Magic PXM 0x10 incorrect");
         if (inp.read() != 'X')
@@ -130,16 +130,16 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
         return loadRT(inp, w, h);
     }
 
-    private RubyIO loadRT(InputStream inp, int w, int h) throws IOException {
+    private IRIO loadRT(InputStream inp, int w, int h) throws IOException {
         RubyTable rt = new RubyTable(2, w, h, 1, new int[] {0});
         for (int j = 0; j < h; j++)
             for (int i = 0; i < w; i++)
                 rt.setTiletype(i, j, 0, (short) inp.read());
-        return new RubyIO().setUser("Table", rt.innerBytes);
+        return newObjectO("").setUser("Table", rt.innerBytes);
     }
 
     @Override
-    public void saveObjectToFile(String filename, RubyIO object) throws IOException {
+    public void saveObjectToFile(String filename, IRIO object) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         String fnl = filename.toLowerCase();
         if (fnl.endsWith("pxm")) {
@@ -161,7 +161,7 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
         }
     }
 
-    private void saveStageTBL(ByteArrayOutputStream baos, RubyIO o) throws IOException {
+    private void saveStageTBL(ByteArrayOutputStream baos, IRIO o) throws IOException {
         for (IRIO rio : o.getANewArray()) {
             writeFixedFormatString(baos, rio.getIVar("@tileset"), 0x20);
             writeFixedFormatString(baos, rio.getIVar("@filename"), 0x20);
@@ -185,14 +185,14 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
         baos.write(bt);
     }
 
-    private void savePXA(ByteArrayOutputStream baos, RubyIO o) throws IOException {
+    private void savePXA(ByteArrayOutputStream baos, IRIO o) throws IOException {
         RubyTable rt = new RubyTable(o.getBuffer());
         for (int j = 0; j < 16; j++)
             for (int i = 0; i < 16; i++)
                 baos.write(rt.getTiletype(i, j, 0));
     }
 
-    private void savePXM(ByteArrayOutputStream baos, RubyIO o) throws IOException {
+    private void savePXM(ByteArrayOutputStream baos, IRIO o) throws IOException {
         baos.write('P');
         baos.write('X');
         baos.write('M');

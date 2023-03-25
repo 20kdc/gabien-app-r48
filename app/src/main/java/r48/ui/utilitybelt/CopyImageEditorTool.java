@@ -8,10 +8,11 @@
 package r48.ui.utilitybelt;
 
 import r48.App;
-import r48.RubyIO;
 import r48.io.BMPConnection;
+import r48.io.data.IRIOGeneric;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * ...Yes, it uses BMPs. (Using the full ImageIO stack seemed like overcomplicating things a little.)
@@ -57,7 +58,7 @@ public class CopyImageEditorTool extends RectangleImageEditorTool {
                 throw new RuntimeException(e);
             }
         }
-        view.app.theClipboard = new RubyIO().setUser("Image", data);
+        view.app.theClipboard = new IRIOGeneric(StandardCharsets.UTF_8).setUser("Image", data);
     }
 
     @Override

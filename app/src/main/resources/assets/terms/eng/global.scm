@@ -32,7 +32,6 @@
 
 	loadingProgress (fl1 "Loading... " a0)
 	loadingDCO "Initializing dictionaries & creating objects..."
-	msgNonEmergencyBackup "R48 Non-Emergency Backup File. This file can be used in place of r48.error.YOUR_SAVED_DATA.r48 in case of power failure or corrupting error. Assuming you actually save often it won't get too big - otherwise you need the reliability."
 	dlgNoSysDump "The system dump was unloadable. It should be: r48.error.YOUR_SAVED_DATA.r48"
 	dlgReloadPFD "Power failure dump loaded."
 	dlgReloadED "Error dump loaded."

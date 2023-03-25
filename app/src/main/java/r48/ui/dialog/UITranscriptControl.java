@@ -18,9 +18,9 @@ import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.systems.IRMMapSystem;
@@ -143,11 +143,11 @@ public class UITranscriptControl extends App.Prx {
             app.sdb.updateDictionaries(map);
             app.sdb.kickAllDictionariesForMapChange();
             LinkedList<Integer> orderedEVN = new LinkedList<Integer>();
-            for (IRIO i : map.getObject().getIVar("@events").getHashKeys())
+            for (DMKey i : map.getObject().getIVar("@events").getHashKeys())
                 orderedEVN.add((int) i.getFX());
             Collections.sort(orderedEVN);
             for (int k : orderedEVN) {
-                IRIO event = map.getObject().getIVar("@events").getHashVal(new RubyIO().setFX(k));
+                IRIO event = map.getObject().getIVar("@events").getHashVal(DMKey.of(k));
                 int pageId = 1;
                 IRIO pages = event.getIVar("@pages");
                 int alen = pages.getALen();

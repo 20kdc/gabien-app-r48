@@ -9,10 +9,11 @@ package r48.maptools;
 
 import gabien.ui.*;
 import r48.App;
-import r48.RubyIO;
 import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
@@ -30,7 +31,7 @@ import org.eclipse.jdt.annotation.NonNull;
 public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public UIMapView mapView;
     public UIScrollLayout svl = new UIScrollLayout(true, app.f.generalS);
-    public HashMap<String, IRIO> eventCache = new HashMap<String, IRIO>();
+    public HashMap<String, DMKey> eventCache = new HashMap<String, DMKey>();
 
     public UIMTEventPicker(IMapToolContext mv) {
         super(mv);
@@ -54,7 +55,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public int wantOverlay(boolean minimap) {
         // use this time to cache the essentials, this should vastly speed up drawing
         eventCache.clear();
-        for (IRIO evK : mapView.mapTable.eventAccess.getEventKeys()) {
+        for (DMKey evK : mapView.mapTable.eventAccess.getEventKeys()) {
             long x = mapView.mapTable.eventAccess.getEventX(evK);
             long y = mapView.mapTable.eventAccess.getEventY(evK);
             eventCache.put(x + ";" + y, evK);
@@ -75,7 +76,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     @Override
     public void confirmAt(final int x, final int y, int pixx, int pixy, final int layer, boolean first) {
         svl.panelsClear();
-        for (final IRIO evK : mapView.mapTable.eventAccess.getEventKeys()) {
+        for (final DMKey evK : mapView.mapTable.eventAccess.getEventKeys()) {
             final long eventX = mapView.mapTable.eventAccess.getEventX(evK);
             final long eventY = mapView.mapTable.eventAccess.getEventY(evK);
             String eventName = mapView.mapTable.eventAccess.getEventName(evK);
@@ -130,8 +131,8 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     confirmAt(x, y, 123, 123, layer, true);
                                     return;
                                 }
-                                RubyIO newEvent = new RubyIO().setDeepClone(evI);
-                                IRIO nevK = mapView.mapTable.eventAccess.addEvent(newEvent, mapView.mapTable.eventAccess.getEventType(evK));
+                                IRIO newEvent = new IRIOGeneric(IObjectBackend.Factory.encoding).setDeepClone(evI);
+                                DMKey nevK = mapView.mapTable.eventAccess.addEvent(newEvent, mapView.mapTable.eventAccess.getEventType(evK));
                                 if (nevK == null)
                                     return;
                                 mapToolContext.accept(new UIMTEventMover(mapToolContext, nevK));
@@ -179,7 +180,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
             svl.panelsAdd(new UITextButton(types[i], app.f.eventPickerEntryTH, new Runnable() {
                 @Override
                 public void run() {
-                    IRIO k = mapView.mapTable.eventAccess.addEvent(null, i2);
+                    DMKey k = mapView.mapTable.eventAccess.addEvent(null, i2);
                     if (k == null)
                         return;
                     IRIO v = mapView.mapTable.eventAccess.getEvent(k);
@@ -204,7 +205,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         return T.z.l27.r(eventCache.size());
     }
 
-    public static void showEvent(IRIO key, @NonNull UIMapView map, IRIO event) {
+    public static void showEvent(DMKey key, @NonNull UIMapView map, IRIO event) {
         String[] root = map.mapTable.eventAccess.getEventSchema(key);
         if (root == null)
             return;
@@ -212,7 +213,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         map.app.ui.launchNonRootSchema(map.app.odb.getObject(root[1]), root[2], key, event, root[0], "E" + key, map);
     }
 
-    public static void showEventDivorced(App app, IRIO key, IObjectBackend.ILoadedObject map, String mapSchema, IRIO event, String eventSchema) {
+    public static void showEventDivorced(App app, DMKey key, IObjectBackend.ILoadedObject map, String mapSchema, IRIO event, String eventSchema) {
         app.ui.launchNonRootSchema(map, mapSchema, key, event, eventSchema, "E" + key, null);
     }
 }

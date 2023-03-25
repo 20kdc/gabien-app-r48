@@ -9,20 +9,24 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import r48.App;
-import r48.RubyIO;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 
+/**
+ * This was probably meant for JSON. Time of introduction unknown.
+ */
 public class HashObjectSchemaElement extends SchemaElement {
 
-    public final LinkedList<RubyIO> allowedKeys;
+    public final HashSet<DMKey> allowedKeys;
     // disables setDefault
     public final boolean inner;
 
-    public HashObjectSchemaElement(App app, LinkedList<RubyIO> allowedKey, boolean hashObjectInner) {
+    public HashObjectSchemaElement(App app, HashSet<DMKey> allowedKey, boolean hashObjectInner) {
         super(app);
         allowedKeys = allowedKey;
         inner = hashObjectInner;
@@ -39,19 +43,11 @@ public class HashObjectSchemaElement extends SchemaElement {
             target.setHash();
             path.changeOccurred(true);
         } else {
-            LinkedList<IRIO> keys = new LinkedList<IRIO>();
-            for (IRIO key : target.getHashKeys()) {
-                boolean okay = false;
-                for (RubyIO k2 : allowedKeys) {
-                    if (IRIO.rubyEquals(key, k2)) {
-                        okay = true;
-                        break;
-                    }
-                }
-                if (!okay)
+            LinkedList<DMKey> keys = new LinkedList<DMKey>();
+            for (DMKey key : target.getHashKeys())
+                if (!allowedKeys.contains(key))
                     keys.add(key);
-            }
-            for (IRIO k : keys)
+            for (DMKey k : keys)
                 target.removeHashVal(k);
             if (keys.size() > 0)
                 path.changeOccurred(true);

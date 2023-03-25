@@ -11,6 +11,7 @@ import r48.io.cs.CSObjectBackend;
 import r48.io.data.IRIO;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * Allows for the creation of non-standard backends which don't use the normal Ruby marshal format.
@@ -61,11 +62,11 @@ public interface IObjectBackend {
 
     abstract class Factory {
         // Null so that things will error if it's unset.
-        public static String encoding;
+        public static Charset encoding;
 
         public static IObjectBackend create(String odbBackend, String rootPath, String dataPath, String dataExt) {
             if (odbBackend.equals("r48")) {
-                return new R48ObjectBackend(rootPath + dataPath, dataExt);
+                return new R48ObjectBackend(rootPath + dataPath, dataExt, IObjectBackend.Factory.encoding);
             } else if (odbBackend.equals("ika")) {
                 return new IkaObjectBackend(rootPath + dataPath);
             } else if (odbBackend.equals("lcf2000")) {

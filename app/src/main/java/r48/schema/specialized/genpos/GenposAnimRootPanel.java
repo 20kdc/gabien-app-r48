@@ -11,7 +11,8 @@ import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import r48.App;
-import r48.RubyIO;
+import r48.io.IObjectBackend;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.schema.util.ISchemaHost;
 import r48.ui.UIAppendButton;
@@ -90,7 +91,7 @@ public class GenposAnimRootPanel extends App.Prx {
         toolbar = new UIAppendButton(T.z.l139, toolbar, new Runnable() {
             @Override
             public void run() {
-                app.theClipboard = new RubyIO().setDeepClone(target.getFrame());
+                app.theClipboard = new IRIOGeneric(IObjectBackend.Factory.encoding).setDeepClone(target.getFrame());
             }
         }, app.f.rmaTimeframeTH);
         toolbar = new UIAppendButton(T.z.l140, toolbar, new Runnable() {
@@ -107,7 +108,7 @@ public class GenposAnimRootPanel extends App.Prx {
         toolbar = new UIAppendButton("+", toolbar, new Runnable() {
             @Override
             public void run() {
-                target.insertFrame(new RubyIO().setDeepClone(target.getFrame()));
+                target.insertFrame(new IRIOGeneric(IObjectBackend.Factory.encoding).setDeepClone(target.getFrame()));
                 incomingModification();
             }
         }, app.f.rmaTimeframeTH);

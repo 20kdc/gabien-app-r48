@@ -8,8 +8,8 @@
 package r48.io;
 
 import gabien.GaBIEn;
-import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.files.DatabaseIO;
@@ -48,7 +48,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             return new Database();
         if (fn.endsWith(".lsd"))
             return new Save();
-        return new RubyIO().setNull();
+        return new IRIOGeneric(IObjectBackend.Factory.encoding);
     }
 
     @Override

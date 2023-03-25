@@ -8,9 +8,10 @@
 package r48.toolsets.utils;
 
 import r48.App;
-import r48.RubyIO;
 import r48.dbs.CMDB;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 
 import java.io.PrintStream;
 import java.util.Collections;
@@ -141,13 +142,13 @@ public class RMTranscriptDumper extends App.Svc {
 
     public void dumpSVListHash(String n, IRIO arrHashVal) {
         LinkedList<Long> l = new LinkedList<Long>();
-        for (IRIO rio : arrHashVal.getHashKeys())
+        for (DMKey rio : arrHashVal.getHashKeys())
             l.add(rio.getFX());
         Collections.sort(l);
         output.println("<h3>" + escapeHtml(n) + "</h3>");
         output.print("<ul>");
         for (Long ll : l)
-            output.println("<li>" + escapeHtml(ll + " : " + arrHashVal.getHashVal(new RubyIO().setFX(ll))) + "</li>");
+            output.println("<li>" + escapeHtml(ll + " : " + arrHashVal.getHashVal(DMKey.of(ll))) + "</li>");
         output.println("</ul>");
     }
 

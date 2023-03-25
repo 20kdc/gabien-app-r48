@@ -8,18 +8,20 @@
 package r48.io;
 
 import gabien.GaBIEn;
-import r48.RubyIO;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
+import r48.io.data.RORIO;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 /**
- * Because everybody needs a public domain JSON parser.
+ * Because everybody needs (yet another) public domain JSON parser.
  * October 9th, 2017
  */
-public class JsonObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
+public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public String root, ext;
 
     public JsonObjectBackend(String rootPath, String dataExt) {
@@ -28,12 +30,12 @@ public class JsonObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
     }
 
     @Override
-    public RubyIO newObjectO(String n) {
-        return new RubyIO().setNull();
+    public IRIO newObjectO(String n) {
+        return new IRIOGeneric(StandardCharsets.UTF_8);
     }
 
     @Override
-    public RubyIO loadObjectFromFile(String filename) {
+    public IRIO loadObjectFromFile(String filename) {
         InputStream inp = null;
         try {
             inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(root + filename + ext));
@@ -56,12 +58,12 @@ public class JsonObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
         }
     }
 
-    private RubyIO loadFromTokens(LinkedList<String> tokens) {
+    private IRIO loadFromTokens(LinkedList<String> tokens) {
         String n = tokens.removeFirst();
         if (n.startsWith("\""))
-            return new RubyIO().setString(n.substring(1), true);
+            return new IRIOGeneric(StandardCharsets.UTF_8).setString(n.substring(1));
         if (n.equals("{")) {
-            RubyIO hash = new RubyIO().setHash();
+            IRIO hash = new IRIOGeneric(StandardCharsets.UTF_8).setHash();
             // comma policy is very liberal here since it's never ambiguous
             while (true) {
                 n = tokens.getFirst();
@@ -73,15 +75,15 @@ public class JsonObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
                     tokens.removeFirst();
                     return hash;
                 }
-                RubyIO key = loadFromTokens(tokens);
+                IRIO key = loadFromTokens(tokens);
                 if (!tokens.removeFirst().equals(":"))
                     throw new RuntimeException("Couldn't find KV separator");
-                RubyIO val = loadFromTokens(tokens);
-                hash.addHashVal(key).setDeepClone(val);
+                IRIO val = loadFromTokens(tokens);
+                hash.addHashVal(new DMKey(key)).setDeepClone(val);
             }
         }
         if (n.equals("[")) {
-            RubyIO array = new RubyIO().setArray();
+            IRIO array = new IRIOGeneric(StandardCharsets.UTF_8).setArray();
             // comma policy is very liberal here since it's never ambiguous
             while (true) {
                 n = tokens.getFirst();
@@ -97,17 +99,17 @@ public class JsonObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
             }
         }
         if (n.equals("true"))
-            return new RubyIO().setBool(true);
+            return new IRIOGeneric(StandardCharsets.UTF_8).setBool(true);
         if (n.equals("false"))
-            return new RubyIO().setBool(false);
+            return new IRIOGeneric(StandardCharsets.UTF_8).setBool(false);
         if (n.equals("null"))
-            return new RubyIO().setNull();
+            return new IRIOGeneric(StandardCharsets.UTF_8).setNull();
         // Number. Please see "3.10.2. Floating-Point Literals" for an explaination,
         //  and see the relevant notes on parseFloat for why spaces had to be removed during tokenization.
         float f = Float.parseFloat(n);
         if ((((long) f) == f) && (!n.contains(".")))
-            return new RubyIO().setFX((long) f);
-        RubyIO str = new RubyIO();
+            return new IRIOGeneric(StandardCharsets.UTF_8).setFX((long) f);
+        IRIOGeneric str = new IRIOGeneric(StandardCharsets.UTF_8);
         str.setFloat(n.getBytes(StandardCharsets.UTF_8));
         return str;
     }
@@ -160,7 +162,7 @@ public class JsonObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
     }
 
     @Override
-    public void saveObjectToFile(String filename, RubyIO object) throws IOException {
+    public void saveObjectToFile(String filename, RORIO object) throws IOException {
         OutputStream oup = GaBIEn.getOutFile(PathUtils.autoDetectWindows(root + filename + ext));
         if (oup == null)
             throw new IOException("Unable to open file!");
@@ -174,7 +176,7 @@ public class JsonObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
         return null;
     }
 
-    private void saveValue(DataOutputStream dos, IRIO object) throws IOException {
+    private void saveValue(DataOutputStream dos, RORIO object) throws IOException {
         boolean first = true; // for collections
         int alen; // for arrays
         switch (object.getType()) {
@@ -199,7 +201,7 @@ public class JsonObjectBackend extends OldObjectBackend<RubyIO, RubyIO> {
                 break;
             case '{':
                 dos.write('{');
-                for (IRIO kv : object.getHashKeys()) {
+                for (DMKey kv : object.getHashKeys()) {
                     if (!first)
                         dos.write(',');
                     saveValue(dos, kv);

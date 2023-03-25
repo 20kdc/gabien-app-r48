@@ -8,8 +8,8 @@
 package r48.schema.specialized;
 
 import r48.App;
-import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 
 import java.lang.ref.WeakReference;
@@ -51,14 +51,14 @@ public class MagicalBinders {
         return null;
     }
 
-    public static RubyIO toBoundWithCache(App app, IMagicalBinder binder, IRIO trueTarget) {
-        HashMap<IMagicalBinder, WeakReference<RubyIO>> hm = app.magicalBindingCache.get(trueTarget);
+    public static IRIO toBoundWithCache(App app, IMagicalBinder binder, IRIO trueTarget) {
+        HashMap<IMagicalBinder, WeakReference<IRIO>> hm = app.magicalBindingCache.get(trueTarget);
         if (hm == null) {
-            hm = new HashMap<IMagicalBinder, WeakReference<RubyIO>>();
+            hm = new HashMap<>();
             app.magicalBindingCache.put(trueTarget, hm);
         }
-        WeakReference<RubyIO> b = hm.get(binder);
-        RubyIO v = null;
+        WeakReference<IRIO> b = hm.get(binder);
+        IRIO v = null;
         if (b != null) {
             v = b.get();
             if (v == null)
@@ -66,7 +66,7 @@ public class MagicalBinders {
         }
         if (b == null) {
             v = binder.targetToBoundNCache(trueTarget);
-            b = new WeakReference<RubyIO>(v);
+            b = new WeakReference<>(v);
             hm.put(binder, b);
         }
         return v;

@@ -29,6 +29,7 @@ import r48.IMapContext;
 import r48.imagefx.ImageFXCache;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.UIMapView;
 import r48.schema.SchemaElement;
@@ -342,7 +343,7 @@ public class AppUI extends App.Svc {
         return watcher;
     }
 
-    public ISchemaHost launchNonRootSchema(@NonNull IObjectBackend.ILoadedObject root, String rootSchema, IRIO arrayIndex, IRIO element, String elementSchema, String indexText, UIMapView context) {
+    public ISchemaHost launchNonRootSchema(@NonNull IObjectBackend.ILoadedObject root, String rootSchema, DMKey arrayIndex, IRIO element, String elementSchema, String indexText, UIMapView context) {
         // produce a valid (and false) parent chain, that handles all required guarantees.
         ISchemaHost shi = launchSchema(rootSchema, root, context);
         SchemaPath sp = new SchemaPath(app.sdb.getSDBEntry(rootSchema), root);

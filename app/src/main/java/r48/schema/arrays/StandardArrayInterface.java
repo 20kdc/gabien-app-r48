@@ -10,8 +10,9 @@ package r48.schema.arrays;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.RubyIO;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.tr.pages.TrRoot;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
@@ -217,7 +218,7 @@ public class StandardArrayInterface implements IArrayInterface {
 
             private void copyRange(int fixedStart, int fixedEnd) {
                 // the clipboard is very lenient...
-                RubyIO rio = new RubyIO();
+                IRIOGeneric rio = new IRIOGeneric(IObjectBackend.Factory.encoding);
                 rio.setArray();
 
                 for (int j = fixedStart; j <= fixedEnd; j++)

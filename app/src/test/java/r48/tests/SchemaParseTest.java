@@ -13,15 +13,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import r48.App;
-import r48.RubyIO;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.TestDBUtils;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
+import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
+import r48.io.data.IRIOGeneric;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.SchemaPath;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -67,10 +70,10 @@ public class SchemaParseTest {
         // ... Also does this.
         // Not really parsing, but a good safety measure none-the-less.
         for (EventCommandArraySchemaElement st : TestDBUtils.getLoadedCSLs(app)) {
-            final RubyIO rio = new RubyIO();
+            final IRIOGeneric rio = new IRIOGeneric(StandardCharsets.UTF_8);
             SchemaPath.setDefaultValue(rio, st, null);
-            RubyIO rio2 = rio.addAElem(0);
-            SchemaPath.setDefaultValue(rio2, st.baseElement, new IRIOFixnum(0));
+            IRIO rio2 = rio.addAElem(0);
+            SchemaPath.setDefaultValue(rio2, st.baseElement, DMKey.of(0));
             for (int i : st.database.knownCommandOrder) {
                 rio2.getIVar("@code").setFX(i);
                 st.baseElement.modifyVal(rio, new SchemaPath(st, new IObjectBackend.MockLoadedObject(rio)), false);

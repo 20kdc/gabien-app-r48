@@ -11,8 +11,8 @@ import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import r48.App;
-import r48.RubyIO;
 import r48.io.IntUtils;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
 import r48.io.data.RORIO;
@@ -112,7 +112,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
             int pLevel = elementPermissionsLevel(i, target);
             if (pLevel < 1)
                 continue;
-            SchemaPath ind = path.arrayHashIndex(new RubyIO().setFX(i), "[" + (i + indexDisplayOffset) + "]");
+            SchemaPath ind = path.arrayHashIndex(DMKey.of(i), "[" + (i + indexDisplayOffset) + "]");
 
             SchemaElement subelem = getElementSchema(i);
             int subelemId = 0;
@@ -155,7 +155,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
         for (int i = 0; i < 4; i++) {
             int idx = target.getALen() + i;
             if (elementPermissionsLevel(idx, target) != 0) {
-                SchemaPath ind = path.arrayHashIndex(new RubyIO().setFX(idx), "[" + (idx + indexDisplayOffset) + "]");
+                SchemaPath ind = path.arrayHashIndex(DMKey.of(idx), "[" + (idx + indexDisplayOffset) + "]");
                 IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition((idx + indexDisplayOffset) + " ", null, null, 0, null, getAdditionCallback(target, launcher, idx, path, ind), getClipAdditionCallback(target, idx, path));
                 positions.add(position);
                 break;
@@ -282,7 +282,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 //  it will lead to an infinite loop!
                 // So it has to be able to see it's own object for the loop to terminate.
                 // (Later: This got changed around a bit in a restructuring. Point is, target.arrVal[j] == rio)
-                getElementSchema(j).modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(j), "[" + j + "]"), setDefault);
+                getElementSchema(j).modifyVal(rio, path.arrayHashIndex(DMKey.of(j), "[" + j + "]"), setDefault);
             }
             int groupStep;
             for (int j = 0; j < alen; j += groupStep) {

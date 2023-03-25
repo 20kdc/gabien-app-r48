@@ -11,11 +11,13 @@ import gabien.TestKickstart;
 import org.junit.Test;
 
 import r48.App;
-import r48.RubyIO;
 import r48.io.IMIUtils;
+import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.schema.util.SchemaPath;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created on November 21, 2018.
@@ -24,9 +26,9 @@ public class DeepCloneTest {
     @Test
     public void testDeepCloneRPGMap() {
         App app = new TestKickstart().kickstart("RAM/", "UTF-8", "rxp");
-        RubyIO newObj = new RubyIO().setNull();
+        IRIO newObj = new IRIOGeneric(StandardCharsets.UTF_8);
         SchemaPath.setDefaultValue(newObj, app.sdb.getSDBEntry("RPG::Map"), null);
-        RubyIO newObj2 = new RubyIO().setDeepClone(newObj);
+        IRIO newObj2 = new IRIOGeneric(StandardCharsets.UTF_8).setDeepClone(newObj);
         try {
             byte[] dat = IMIUtils.createIMIData(newObj, newObj2, "");
             if (dat != null)

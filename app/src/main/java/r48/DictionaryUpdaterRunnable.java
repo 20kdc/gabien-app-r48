@@ -12,7 +12,9 @@ import gabien.uslx.append.*;
 import r48.dbs.SDB;
 import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.schema.EnumSchemaElement;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
@@ -20,6 +22,7 @@ import r48.schema.util.SchemaPath;
 import r48.ui.dialog.UIEnumChoice;
 import r48.ui.dialog.UIEnumChoice.EntryMode;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -119,29 +122,29 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
 
     public static void coreLogic(App app, LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> innerMap, final @Nullable IObjectBackend.ILoadedObject targetILO, @Nullable SchemaElement dataSchema, IRIO target, boolean hash, String interpret) {
         if (hash) {
-            for (IRIO key : target.getHashKeys())
+            for (DMKey key : target.getHashKeys())
                 handleVal(app, finalMap, innerMap, targetILO, dataSchema, target.getHashVal(key), key, interpret);
         } else {
             int alen = target.getALen();
             for (int i = 0; i < alen; i++) {
                 IRIO rio = target.getAElem(i);
-                handleVal(app, finalMap, innerMap, targetILO, dataSchema, rio, new RubyIO().setFX(i), interpret);
+                handleVal(app, finalMap, innerMap, targetILO, dataSchema, rio, DMKey.of(i), interpret);
             }
         }
     }
 
     private void finalizeVals(LinkedList<UIEnumChoice.Option> finalMap) {
         Collections.sort(finalMap, UIEnumChoice.COMPARATOR_OPTION);
-        SchemaElement ise = new EnumSchemaElement(app, finalMap, new RubyIO().setFX(defaultVal), EntryMode.INT, () -> T.s.enum_id);
+        SchemaElement ise = new EnumSchemaElement(app, finalMap, new IRIOGeneric(StandardCharsets.UTF_8).setFX(defaultVal), EntryMode.INT, () -> T.s.enum_id);
         dict.setEntry(ise);
     }
 
-    private static void handleVal(App app, LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> iVar, final @Nullable IObjectBackend.ILoadedObject targetILO, final @Nullable SchemaElement dataSchema, IRIO rio, IRIO k, String interpret) {
+    private static void handleVal(App app, LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> iVar, final @Nullable IObjectBackend.ILoadedObject targetILO, final @Nullable SchemaElement dataSchema, IRIO rio, DMKey k, String interpret) {
         int type = rio.getType();
         if (type != '0') {
             // Key details
             String p = ValueSyntax.encode(k);
-            RubyIO kc = ValueSyntax.decode(p);
+            DMKey kc = ValueSyntax.decode(p);
             if (p == null)
                 return;
             // Actual found name

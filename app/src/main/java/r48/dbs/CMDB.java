@@ -9,9 +9,10 @@ package r48.dbs;
 
 import gabien.datum.DatumSrcLoc;
 import r48.App;
-import r48.RubyIO;
 import r48.dbs.RPGCommand.PDyn;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.SchemaPath;
@@ -334,7 +335,7 @@ public class CMDB extends App.Svc {
                     } else {
                         idx = PathSyntax.compile(app.vmCtx, s);
                     }
-                    final RubyIO v = ValueSyntax.decode(gbStateArgs[gbStatePosition++]);
+                    final DMKey v = ValueSyntax.decode(gbStateArgs[gbStatePosition++]);
                     final IGroupBehavior igb = getGroupBehavior();
                     return new IGroupBehavior() {
                         private boolean checkCondition(IRIO command) {
@@ -470,7 +471,7 @@ public class CMDB extends App.Svc {
                             return 1;
                         };
                     } else if (args[0].equals("commandIndentConditionalOF")) {
-                        final RubyIO[] iargs = new RubyIO[(args.length - 1) / 2];
+                        final DMKey[] iargs = new DMKey[(args.length - 1) / 2];
                         final int[] ikeys = new int[iargs.length];
                         for (int i = 0; i < iargs.length; i++) {
                             ikeys[i] = Integer.parseInt(args[(i * 2) + 1]);

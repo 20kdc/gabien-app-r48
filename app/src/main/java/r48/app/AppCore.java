@@ -16,7 +16,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.uslx.append.IConsumer;
-import r48.RubyIO;
 import r48.cfg.Config;
 import r48.cfg.FontSizes;
 import r48.dbs.ATDB;
@@ -25,6 +24,7 @@ import r48.dbs.ObjectInfo;
 import r48.dbs.SDB;
 import r48.imageio.ImageIOFormat;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
 import r48.schema.specialized.IMagicalBinder;
@@ -49,7 +49,7 @@ public class AppCore {
     public ImageIOFormat[] imageIOFormats;
 
     // All magical bindings in use
-    public WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache = new WeakHashMap<>();
+    public WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<IRIO>>> magicalBindingCache = new WeakHashMap<>();
 
     public ATDB[] autoTiles = new ATDB[0];
     public final @NonNull String rootPath;

@@ -11,9 +11,9 @@ import java.util.LinkedList;
 
 import gabien.GaBIEn;
 import r48.AdHocSaveLoad;
-import r48.RubyIO;
 import r48.cfg.FontSizes.FontSizeField;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 
 /**
  * Here goes nothing...
@@ -24,7 +24,7 @@ public class ConfigIO {
     // This is on purpose.
 
     public static void save(Config c) {
-        RubyIO prepare = new RubyIO();
+        IRIOGeneric prepare = new IRIOGeneric(StandardCharsets.UTF_8);
         prepare.setObject("R48::FontConfig");
         for (FontSizeField fsf : c.f.getFields())
             prepare.addIVar("@" + fsf.configID).setFX(fsf.get());
@@ -43,8 +43,7 @@ public class ConfigIO {
         AdHocSaveLoad.save("fonts", prepare);
     }
     private static void setString(IRIO i, String s) {
-        i.setStringNoEncodingIVars();
-        i.putBuffer(s.getBytes(StandardCharsets.UTF_8));
+        i.setString(s);
     }
 
     private static void encodeStringList(IRIO arr, LinkedList<String> values) {
@@ -58,14 +57,14 @@ public class ConfigIO {
 
     public static boolean load(boolean first, Config c) {
         // NOTE: Use internal string methods here, this is a game-independent file
-        RubyIO dat = AdHocSaveLoad.load("fonts");
+        IRIOGeneric dat = AdHocSaveLoad.load("fonts");
         if (dat != null) {
             // Compatibility flags
             boolean shouldResetIETH = false;
             boolean shouldResetWSZ = false;
 
             for (FontSizeField fsf : c.f.getFields()) {
-                RubyIO f = dat.getIVar("@" + fsf.configID);
+                IRIO f = dat.getIVar("@" + fsf.configID);
                 if (f != null) {
                     fsf.accept((int) f.getFX());
                 } else {
@@ -81,43 +80,43 @@ public class ConfigIO {
             if (shouldResetWSZ)
                 c.f.maintabsS = c.f.mapToolbarS;
 
-            RubyIO sys = dat.getIVar("@sysfont");
+            IRIO sys = dat.getIVar("@sysfont");
             if (sys != null) {
                 c.fontOverride = sys.decString();
             } else {
                 c.fontOverride = null;
             }
-            RubyIO sys2 = dat.getIVar("@sysfont_ue8");
+            IRIO sys2 = dat.getIVar("@sysfont_ue8");
             if (sys2 != null)
                 c.fontOverrideUE8 = sys2.getType() == 'T';
             // old paths
-            RubyIO sys3 = dat.getIVar("@secondary_images");
+            IRIO sys3 = dat.getIVar("@secondary_images");
             if (sys3 != null)
                 c.secondaryImageLoadLocationBackup.add(sys3.decString());
-            RubyIO sys4 = dat.getIVar("@saved_rootpath");
+            IRIO sys4 = dat.getIVar("@saved_rootpath");
             if (sys4 != null)
                 c.rootPathBackup.add(sys4.decString());
             // new paths
-            RubyIO sys3a = dat.getIVar("@secondary_images_list");
+            IRIO sys3a = dat.getIVar("@secondary_images_list");
             if (sys3a != null) {
                 c.secondaryImageLoadLocationBackup.clear();
                 for (IRIO rio : sys3a.getANewArray())
                     c.secondaryImageLoadLocationBackup.add(rio.decString());
             }
-            RubyIO sys4a = dat.getIVar("@saved_rootpath_list");
+            IRIO sys4a = dat.getIVar("@saved_rootpath_list");
             if (sys4a != null) {
                 c.rootPathBackup.clear();
                 for (IRIO rio : sys4a.getANewArray())
                     c.rootPathBackup.add(rio.decString());
             }
             // ...
-            RubyIO sys5 = dat.getIVar("@theme_variant");
+            IRIO sys5 = dat.getIVar("@theme_variant");
             if (sys5 != null)
                 c.borderTheme = (int) sys5.getFX();
-            RubyIO sys6 = dat.getIVar("@actual_blending");
+            IRIO sys6 = dat.getIVar("@actual_blending");
             if (sys6 != null)
                 c.allowBlending = sys6.getType() == 'T';
-            RubyIO sys7 = dat.getIVar("@windowing_external");
+            IRIO sys7 = dat.getIVar("@windowing_external");
             if (sys7 != null)
                 c.windowingExternal = sys7.getType() == 'T';
             return true;

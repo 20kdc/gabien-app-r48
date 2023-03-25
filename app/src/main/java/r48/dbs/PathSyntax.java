@@ -12,6 +12,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.IFunction;
 import r48.App;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
@@ -155,7 +156,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
             if (f == ':') {
                 if (subcom.startsWith("{")) {
                     String esc = subcom.substring(1);
-                    IRIO hashVal = ValueSyntax.decode(esc);
+                    DMKey hashVal = ValueSyntax.decode(esc);
                     MVMCExpr currentGet = new MVMCGetHashValImm(base, hashVal);
                     if (lastElement)
                         return new PathSyntax(parentContext, currentGet, new MVMCPathHashAdd(base, hashVal), new MVMCPathHashDel(base, hashVal), arg);

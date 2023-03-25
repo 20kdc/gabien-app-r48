@@ -9,9 +9,10 @@ package r48.map.mapinfos;
 
 import gabien.uslx.append.*;
 import r48.App;
-import r48.RubyIO;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 
@@ -65,7 +66,7 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     }
 
     public static String sTranslateToGUM(App app, long k) {
-        final IRIO map = app.odb.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos").getHashVal(new RubyIO().setFX(k));
+        final IRIO map = app.odb.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos").getHashVal(DMKey.of(k));
         if (map == null)
             return null;
         String pfx = map.getIVar("@type").getFX() == 2 ? "Area." : "Map.";
@@ -90,7 +91,7 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
 
     @Override
     public void triggerEditInfoOf(long k) {
-        app.ui.launchNonRootSchema(mapTree, "RPG::MapTree", new RubyIO().setFX(k), getHashBID(k), "RPG::MapInfo", "M" + k, null);
+        app.ui.launchNonRootSchema(mapTree, "RPG::MapTree", DMKey.of(k), getHashBID(k), "RPG::MapInfo", "M" + k, null);
     }
 
     @Override
@@ -103,7 +104,7 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
         // Remove last from array
         mapTreeOrders.rmAElem(mapTreeOrders.getALen() - 1);
         // Eliminate from hash
-        mapTreeHash.removeHashVal(new RubyIO().setFX(k));
+        mapTreeHash.removeHashVal(DMKey.of(k));
     }
 
     @Override
@@ -116,10 +117,11 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
         if (l == -1)
             l = 0;
 
-        IRIO key = mapTreeOrders.addAElem(mapTreeOrders.getALen()).setFX(k);
+        mapTreeOrders.addAElem(mapTreeOrders.getALen()).setFX(k);
+        DMKey key = DMKey.of(k);
 
         IRIO mi = mapTreeHash.addHashVal(key);
-        SchemaPath.setDefaultValue(mi, app.sdb.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
+        SchemaPath.setDefaultValue(mi, app.sdb.getSDBEntry("RPG::MapInfo"), key);
         mi.getIVar("@parent_id").setFX(l);
 
         return (int) k - 1;
@@ -183,7 +185,7 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
         // The job of this is to hide that there *ever was* a Map 0.
         // Map 0 is reserved.
         HashSet<Long> hs = new HashSet<Long>();
-        for (IRIO i : mapTreeHash.getHashKeys())
+        for (DMKey i : mapTreeHash.getHashKeys())
             if (i.getFX() != 0)
                 hs.add(i.getFX());
         return hs;
@@ -191,7 +193,7 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
 
     @Override
     public IRIO getHashBID(long k) {
-        return getMapHash().getHashVal(new RubyIO().setFX(k));
+        return getMapHash().getHashVal(DMKey.of(k));
     }
 
     @Override

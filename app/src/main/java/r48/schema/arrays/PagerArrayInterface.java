@@ -11,8 +11,9 @@ import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.RubyIO;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.tr.pages.TrRoot;
 
 import java.util.LinkedList;
@@ -107,7 +108,7 @@ public class PagerArrayInterface implements IArrayInterface {
                 barLayout.panelsAdd(new UITextButton(T.z.l139, app.f.schemaFieldTH, new Runnable() {
                     @Override
                     public void run() {
-                        RubyIO rio = new RubyIO();
+                        IRIOGeneric rio = new IRIOGeneric(IObjectBackend.Factory.encoding);
                         rio.setArray(copyMe.length);
 
                         for (int j = 0; j < copyMe.length; j++)

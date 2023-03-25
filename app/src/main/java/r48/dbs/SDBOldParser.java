@@ -8,6 +8,7 @@ package r48.dbs;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -19,8 +20,8 @@ import gabien.uslx.append.IFunction;
 import gabien.uslx.append.ISupplier;
 import r48.App;
 import r48.DictionaryUpdaterRunnable;
-import r48.RubyIO;
 import r48.dbs.SDB.DynamicSchemaElement;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.minivm.MVMU;
 import r48.minivm.fn.MVMFn;
@@ -349,7 +350,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (text.equals("flushCommandBuffer")) {
                     // time to flush it!
                     PathSyntax disambiguationIVar = getPathSyntax();
-                    setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, new RubyIO().setFX(0), EntryMode.INT, () -> T.s.enum_code));
+                    setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, DMKey.of(0), EntryMode.INT, () -> T.s.enum_code));
                     HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                     commandBufferNames = new HashMap<String, FF0>();
                     commandBufferSchemas = new HashMap<String, SchemaElement>();
@@ -358,7 +359,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (text.equals("flushCommandBufferStr")) {
                     // time to flush it!
                     PathSyntax disambiguationIVar = getPathSyntax();
-                    setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, new RubyIO().setString("", true), EntryMode.STR, () -> T.s.enum_code));
+                    setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, DMKey.ofStr(""), EntryMode.STR, () -> T.s.enum_code));
                     HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                     commandBufferNames = new HashMap<String, FF0>();
                     commandBufferSchemas = new HashMap<String, SchemaElement>();
@@ -373,8 +374,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     return new HashSchemaElement(app, k, get(), true);
                 }
                 if (text.equals("hashObject") || text.equals("hashObjectInner")) {
-                    // This never got used by anything, so it's set as always-v1p1
-                    LinkedList<RubyIO> validKeys = new LinkedList<RubyIO>();
+                    HashSet<DMKey> validKeys = new HashSet<>();
                     while (point < args.length)
                         validKeys.add(ValueSyntax.decode(args[point++]));
                     return new HashObjectSchemaElement(app, validKeys, text.equals("hashObjectInner"));
@@ -517,7 +517,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     final String contextName = args[point++];
                     final String baseText = args[point++];
                     final SchemaElement base = baseText.equals(".") ? null : sdb.getSDBEntry(baseText);
-                    final RubyIO defVal = ValueSyntax.decode(args[point++]);
+                    final DMKey defVal = ValueSyntax.decode(args[point++]);
                     final PathSyntax outer = getPathSyntax();
                     final boolean hash = args[point++].equals("1");
                     final PathSyntax inner = getPathSyntax();
@@ -736,7 +736,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 options.put(ks, nam);
             }
             // INT: is part of the format
-            EnumSchemaElement e = new EnumSchemaElement(app, options, new RubyIO().setFX(defVal), EntryMode.INT, () -> T.s.enum_int);
+            EnumSchemaElement e = new EnumSchemaElement(app, options, DMKey.of(defVal), EntryMode.INT, () -> T.s.enum_int);
             setSDBEntry(args[0], e);
         } else if (c == 's') {
             // Symbols

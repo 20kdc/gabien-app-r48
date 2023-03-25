@@ -48,9 +48,9 @@ public class EnumSchemaElement extends SchemaElement {
 
     public FF0 buttonText;
     public UIEnumChoice.EntryMode entryMode;
-    public IRIO defaultVal;
+    public RORIO defaultVal;
 
-    public EnumSchemaElement(App app, HashMap<String, FF0> o, IRIO def, UIEnumChoice.EntryMode em, FF0 bt) {
+    public EnumSchemaElement(App app, HashMap<String, FF0> o, RORIO def, UIEnumChoice.EntryMode em, FF0 bt) {
         super(app);
         for (Map.Entry<String, FF0> mapping : o.entrySet())
             lookupOptions.put(mapping.getKey(), makeStandardOption(ValueSyntax.decode(mapping.getKey()), mapping.getValue(), null, null));
@@ -61,7 +61,7 @@ public class EnumSchemaElement extends SchemaElement {
         defaultVal = def;
     }
 
-    public EnumSchemaElement(App app, Collection<UIEnumChoice.Option> opts, IRIO def, UIEnumChoice.EntryMode em, FF0 bt) {
+    public EnumSchemaElement(App app, Collection<UIEnumChoice.Option> opts, RORIO def, UIEnumChoice.EntryMode em, FF0 bt) {
         super(app);
         viewOptions.addAll(opts);
         Collections.sort(viewOptions, UIEnumChoice.COMPARATOR_OPTION);

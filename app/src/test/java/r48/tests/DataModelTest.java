@@ -7,10 +7,13 @@
 
 package r48.tests;
 
+import java.nio.charset.StandardCharsets;
+
 import org.junit.Assert;
 import org.junit.Test;
-import r48.RubyIO;
+
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 
 /**
  * Created on November 19, 2018.
@@ -19,9 +22,9 @@ public class DataModelTest {
     @Test
     public void testStringEquality() {
         // This is really just to make sure unit tests work for now.
-        RubyIO rioA = new RubyIO().setString("Hello", true);
-        RubyIO rioB = new RubyIO().setString("Goodbye", true);
-        RubyIO rioC = new RubyIO().setString("Hello", true);
+        IRIO rioA = new IRIOGeneric(StandardCharsets.UTF_8).setString("Hello");
+        IRIO rioB = new IRIOGeneric(StandardCharsets.UTF_8).setString("Goodbye");
+        IRIO rioC = new IRIOGeneric(StandardCharsets.UTF_8).setString("Hello");
         Assert.assertFalse(IRIO.rubyEquals(rioA, rioB));
         Assert.assertTrue(IRIO.rubyEquals(rioA, rioA));
         Assert.assertTrue(IRIO.rubyEquals(rioA, rioC));

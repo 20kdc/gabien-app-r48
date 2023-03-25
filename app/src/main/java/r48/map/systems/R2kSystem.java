@@ -15,7 +15,6 @@ import gabien.ui.Size;
 import gabien.ui.UIElement;
 import r48.App;
 import r48.IMapContext;
-import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.ObjectInfo;
 import r48.imageio.BMP8IImageIOFormat;
@@ -23,6 +22,7 @@ import r48.imageio.PNG8IImageIOFormat;
 import r48.imageio.XYZImageIOFormat;
 import r48.io.IObjectBackend;
 import r48.io.IObjectBackend.ILoadedObject;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.*;
 import r48.map.MapEditingToolbarController.ToolButton;
@@ -108,7 +108,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
 
     private IRIO tsoById(long id) {
-        return app.odb.getObject("RPG_RT.ldb").getObject().getIVar("@tilesets").getHashVal(new RubyIO().setFX(id));
+        return app.odb.getObject("RPG_RT.ldb").getObject().getIVar("@tilesets").getHashVal(DMKey.of(id));
     }
 
     // saveData is optional, and replaces some things.
@@ -175,7 +175,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     public RMMapData[] getAllMaps() {
         LinkedList<RMMapData> rmdList = new LinkedList<RMMapData>();
         IRIO lmti = app.odb.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos");
-        for (final IRIO key : lmti.getHashKeys()) {
+        for (final DMKey key : lmti.getHashKeys()) {
             int id = (int) key.getFX();
             if (id == 0)
                 continue;
@@ -203,12 +203,12 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     public IRIO[] getAllCommonEvents() {
         IRIO cev = getCommonEventRoot().getObject().getIVar("@common_events");
         LinkedList<Integer> ints = new LinkedList<Integer>();
-        for (IRIO i : cev.getHashKeys())
+        for (DMKey i : cev.getHashKeys())
             ints.add((int) i.getFX());
         Collections.sort(ints);
         LinkedList<IRIO> l = new LinkedList<IRIO>();
         for (Integer i : ints)
-            l.add(cev.getHashVal(new RubyIO().setFX(i)));
+            l.add(cev.getHashVal(DMKey.of(i)));
         return l.toArray(new IRIO[0]);
     }
 
@@ -274,7 +274,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         // Map, Area
         final IObjectBackend.ILoadedObject root = app.odb.getObject("RPG_RT.lmt");
         final IRIO mapInfos = root.getObject().getIVar("@map_infos");
-        final IRIO mapInfo = mapInfos.getHashVal(new RubyIO().setFX(v));
+        final IRIO mapInfo = mapInfos.getHashVal(DMKey.of(v));
         try {
             if (mapInfo.getIVar("@type").getFX() == 2) {
                 long parent = mapInfo.getIVar("@parent_id").getFX();

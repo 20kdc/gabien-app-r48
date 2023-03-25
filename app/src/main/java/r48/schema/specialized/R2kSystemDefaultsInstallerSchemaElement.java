@@ -11,10 +11,13 @@ import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.RubyIO;
 import r48.RubyTable;
 import r48.io.IObjectBackend;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixnum;
+import r48.io.data.IRIOGeneric;
+import r48.io.data.RORIO;
 import r48.map.events.R2kSavefileEventAccess;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.schema.HiddenSchemaElement;
@@ -53,13 +56,13 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     saveEvs.setHash();
                     // Ghosts, become real!
                     IRIO hmr = map.getObject().getIVar("@events");
-                    for (IRIO evs : hmr.getHashKeys())
+                    for (DMKey evs : hmr.getHashKeys())
                         R2kSavefileEventAccess.eventAsSaveEvent(app, saveEvs, mapId, evs, hmr.getHashVal(evs));
                     // @system save_count is in-game save count, not actual System @save_count
                     target.getIVar("@party_pos").getIVar("@map_save_count").setDeepClone(getSaveCount(map.getObject()));
 
                     IRIO ldbSys = app.odb.getObject("RPG_RT.ldb").getObject().getIVar("@system");
-                    IRIO saveCount = getSaveCount(ldbSys);
+                    RORIO saveCount = getSaveCount(ldbSys);
 
                     target.getIVar("@party_pos").getIVar("@db_save_count").setDeepClone(saveCount);
                     initTable(target.getIVar("@map_info").getIVar("@lower_tile_remap"));
@@ -88,12 +91,12 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
         }
     }
 
-    public static IRIO getSaveCount(IRIO ldbSys) {
+    public static RORIO getSaveCount(IRIO ldbSys) {
         IRIO saveCount = ldbSys.getIVar("@save_count_2k3en");
         if (saveCount == null)
             saveCount = ldbSys.getIVar("@save_count_other");
         if (saveCount == null)
-            saveCount = new RubyIO().setFX(0);
+            saveCount = new IRIOFixnum(0);
         return saveCount;
     }
 
@@ -108,40 +111,40 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
             switch (mode) {
                 case 0:
                     // 1. Install a basic Actor
-                    sub = target.getIVar("@actors").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Actor"), new RubyIO().setFX(1));
+                    sub = target.getIVar("@actors").addHashVal(DMKey.of(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Actor"), DMKey.of(1));
                     sub.getIVar("@face_name").setString("faceset");
                     target.getIVar("@system").getIVar("@party").setArray().addAElem(0).setFX(1);
                     // 2. Install a tileset
-                    SchemaPath.setDefaultValue(target.getIVar("@tilesets").addHashVal(new RubyIO().setFX(1)), app.sdb.getSDBEntry("RPG::Tileset"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(target.getIVar("@tilesets").addHashVal(DMKey.of(1)), app.sdb.getSDBEntry("RPG::Tileset"), DMKey.of(1));
                     // 3. Setup Terrain
-                    SchemaPath.setDefaultValue(target.getIVar("@terrains").addHashVal(new RubyIO().setFX(1)), app.sdb.getSDBEntry("RPG::Terrain"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(target.getIVar("@terrains").addHashVal(DMKey.of(1)), app.sdb.getSDBEntry("RPG::Terrain"), DMKey.of(1));
                     // 4. Battle System initialization
-                    sub = target.getIVar("@animations").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Animation"), new RubyIO().setFX(1));
+                    sub = target.getIVar("@animations").addHashVal(DMKey.of(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Animation"), DMKey.of(1));
                     sub.getIVar("@name").setString(T.z.l177);
 
-                    sub = target.getIVar("@states").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::State"), new RubyIO().setFX(1));
+                    sub = target.getIVar("@states").addHashVal(DMKey.of(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::State"), DMKey.of(1));
                     // These are the minimum settings for death to work correctly.
                     sub.getIVar("@name").setString(T.z.l178);
                     sub.getIVar("@restriction").setFX(1);
 
-                    sub = target.getIVar("@battle_anim_sets_2k3").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::BattlerAnimationSet"), new RubyIO().setFX(1));
+                    sub = target.getIVar("@battle_anim_sets_2k3").addHashVal(DMKey.of(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::BattlerAnimationSet"), DMKey.of(1));
                     sub.getIVar("@name").setString(T.z.l179);
 
                     // 5. Default enemy data
-                    sub = target.getIVar("@enemies").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Enemy"), new RubyIO().setFX(1));
+                    sub = target.getIVar("@enemies").addHashVal(DMKey.of(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Enemy"), DMKey.of(1));
 
-                    sub = target.getIVar("@troops").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Troop"), new RubyIO().setFX(1));
+                    sub = target.getIVar("@troops").addHashVal(DMKey.of(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Troop"), DMKey.of(1));
                     sub.getIVar("@name").setString(T.z.l180);
 
                     sub = sub.getIVar("@members");
                     sub.addAElem(0).setNull();
-                    SchemaPath.setDefaultValue(sub.addAElem(1), app.sdb.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(sub.addAElem(1), app.sdb.getSDBEntry("RPG::Troop::Member"), DMKey.of(1));
 
                     // Prepare.
                     app.uiPendingRunnables.add(new Runnable() {
@@ -153,16 +156,16 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     break;
                 case 1:
                     // 1. Fix root
-                    sub = target.getIVar("@map_infos").addHashVal(new RubyIO().setFX(0));
-                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(0));
+                    sub = target.getIVar("@map_infos").addHashVal(DMKey.of(0));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::MapInfo"), DMKey.of(0));
                     sub.getIVar("@name").setString("Root");
                     sub.getIVar("@parent_id").setFX(0);
                     sub.getIVar("@indent").setFX(0);
                     sub.getIVar("@type").setFX(0);
 
                     // 2. Create basic map entry
-                    sub = target.getIVar("@map_infos").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(1));
+                    sub = target.getIVar("@map_infos").addHashVal(DMKey.of(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::MapInfo"), DMKey.of(1));
                     sub.getIVar("@name").setString("First Map");
                     sub.getIVar("@parent_id").setFX(0);
                     sub.getIVar("@type").setFX(1);
@@ -227,8 +230,8 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
         target.getIVar("@party").getIVar("@party").setDeepClone(ldbSys.getIVar("@party"));
         savSys.getIVar("@font_id").setDeepClone(ldbSys.getIVar("@font_id"));
 
-        initializeArrayWithClones(savSys.getIVar("@switches"), ldb.getIVar("@switches"), new RubyIO().setBool(false));
-        initializeArrayWithClones(savSys.getIVar("@variables"), ldb.getIVar("@variables"), new RubyIO().setFX(0));
+        initializeArrayWithClones(savSys.getIVar("@switches"), ldb.getIVar("@switches"), new IRIOGeneric(IObjectBackend.Factory.encoding).setBool(false));
+        initializeArrayWithClones(savSys.getIVar("@variables"), ldb.getIVar("@variables"), new IRIOGeneric(IObjectBackend.Factory.encoding).setFX(0));
 
         for (String iv : savSys.getIVars())
             if (iv.endsWith("_se") || iv.endsWith("_music") || iv.endsWith("_fadein") || iv.endsWith("_fadeout"))
@@ -247,7 +250,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
 
     private void initializeArrayWithClones(IRIO instVarBySymbol, IRIO length, IRIO rubyIO) {
         int maxVal = 0;
-        for (IRIO rio : length.getHashKeys())
+        for (DMKey rio : length.getHashKeys())
             maxVal = Math.max((int) rio.getFX(), maxVal);
         for (int i = 0; i < maxVal; i++)
             instVarBySymbol.addAElem(i).setDeepClone(rubyIO);

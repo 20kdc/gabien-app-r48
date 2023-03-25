@@ -13,9 +13,9 @@ import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.ArrayElementSchemaElement;
@@ -108,7 +108,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                     if (!lastWasBlockLeave) {
                         if (rc.blockLeaveReplacement != lastCode) {
                             IRIO c = array.addAElem(i);
-                            SchemaPath.setDefaultValue(c, baseElement, new RubyIO().setFX(i));
+                            SchemaPath.setDefaultValue(c, baseElement, DMKey.of(i));
                             c.getIVar("@code").setFX(database.blockLeaveCmd);
                             if (baseElement.allowControlOfIndent)
                                 c.getIVar("@indent").setFX(indentOld);
@@ -177,7 +177,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 // 0 so that the code won't combust from lacking an array
                 int l = array.getALen();
                 IRIO c = array.addAElem(l);
-                SchemaPath.setDefaultValue(c, baseElement, new RubyIO().setFX(array.getALen()));
+                SchemaPath.setDefaultValue(c, baseElement, DMKey.of(l));
                 c.getIVar("@code").setFX(database.listLeaveCmd);
                 modified = true;
             }
@@ -386,7 +386,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         //  2. the path constructed must have "back" going to inside the command, then to the array
         //     (so the user knows the command was added anyway)
         SubwindowSchemaElement targ = getElementContextualSubwindowSchema(targetElem, idx, "");
-        path = path.arrayHashIndex(new RubyIO().setFX(idx), "[" + idx + "]");
+        path = path.arrayHashIndex(DMKey.of(idx), "[" + idx + "]");
         path = path.newWindow(targ.heldElement, target);
         launcher.pushObject(path);
         // Ok, now navigate to the command selector
