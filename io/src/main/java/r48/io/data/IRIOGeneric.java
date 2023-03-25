@@ -38,7 +38,7 @@ public class IRIOGeneric extends IRIO {
      * [       : arrVal
      * l       : userVal (first byte is the +/- byte, remainder is data)
      */
-    private int type;
+    private int type = '0';
     private String symVal;
     // Reduced for memory usage. *sigh*
     // public HashMap<String, RubyIO> iVars = new HashMap<String, RubyIO>();
