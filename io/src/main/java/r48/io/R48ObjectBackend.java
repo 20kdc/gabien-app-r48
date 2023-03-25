@@ -362,8 +362,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             handlingInstVars = false;
             long len = load32(dis);
             byte[] data = new byte[(int) len];
-            if (dis.read(data) != len)
-                throw new IOException("Didn't read all of data");
+            dis.readFully(data);
             String str = new String(data, Charset.forName("UTF-8"));
             rio.setSymbol(str);
             syms.add(str);
@@ -378,16 +377,14 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             objs.add(rio);
             long len = load32(dis);
             byte[] data = new byte[(int) len];
-            if (dis.read(data) != len)
-                throw new IOException("Didn't read all of data");
+            dis.readFully(data);
             rio.setString("");
             rio.putBuffer(data);
         } else if (b == 'f') {
             objs.add(rio);
             long len = load32(dis);
             byte[] data = new byte[(int) len];
-            if (dis.read(data) != len)
-                throw new IOException("Didn't read all of data");
+            dis.readFully(data);
             rio.setFloat(data);
         } else if (b == 'l') {
             objs.add(rio);
@@ -398,16 +395,14 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             int len = (int) load32(dis) * 2;
             byte[] data = new byte[len + 1];
             data[0] = posneg;
-            if (dis.read(data, 1, len) != len)
-                throw new IOException("Didn't read all of data");
+            dis.readFully(data, 1, len);
             rio.setBignum(data);
         } else if (b == 'u') {
             // 1832, performs ivars before entry.
             shouldWriteObjCacheLate = true;
             String str = loadValue(dis, objs, syms).getSymbol();
             byte[] userData = new byte[(int) load32(dis)];
-            if (dis.read(userData) != userData.length)
-                throw new IOException("Interrupted Userval");
+            dis.readFully(userData);
             rio.setUser(str, userData);
             // The following 3 just don't add themselves to the object table
         } else if (b == 'T') {
