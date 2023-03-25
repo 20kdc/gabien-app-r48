@@ -336,8 +336,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             handlingInstVars = false;
             long len = load32(dis);
             byte[] data = new byte[(int) len];
-            if (dis.read(data) != len)
-                throw new IOException("Didn't read all of data");
+            dis.readFully(data);
             rio.symVal = new String(data, Charset.forName("UTF-8"));
             syms.add(rio.symVal);
         } else if (b == ';') {
@@ -352,15 +351,13 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             objs.add(rio);
             long len = load32(dis);
             byte[] data = new byte[(int) len];
-            if (dis.read(data) != len)
-                throw new IOException("Didn't read all of data");
+            dis.readFully(data);
             rio.userVal = data;
         } else if (b == 'f') {
             objs.add(rio);
             long len = load32(dis);
             byte[] data = new byte[(int) len];
-            if (dis.read(data) != len)
-                throw new IOException("Didn't read all of data");
+            dis.readFully(data);
             rio.userVal = data;
         } else if (b == 'l') {
             objs.add(rio);
@@ -371,16 +368,14 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             int len = (int) load32(dis) * 2;
             byte[] data = new byte[len + 1];
             data[0] = posneg;
-            if (dis.read(data, 1, len) != len)
-                throw new IOException("Didn't read all of data");
+            dis.readFully(data, 1, len);
             rio.userVal = data;
         } else if (b == 'u') {
             // 1832, performs ivars before entry.
             shouldWriteObjCacheLate = true;
             rio.symVal = loadValue(dis, objs, syms).symVal;
             rio.userVal = new byte[(int) load32(dis)];
-            if (dis.read(rio.userVal) != rio.userVal.length)
-                throw new IOException("Interrupted Userval");
+            dis.readFully(rio.userVal);
             // The following 3 just don't add themselves to the object table
         } else if (b == 'T') {
         } else if (b == 'F') {
