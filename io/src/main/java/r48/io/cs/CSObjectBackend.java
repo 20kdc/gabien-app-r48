@@ -19,21 +19,24 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 /**
  * This is now the only thing remaining out of the CSOEdit experiment.
  * Created on May 11th 2018.
  */
 public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
-    public String pfx;
+    public final String pfx;
+    public final Charset encoding;
 
-    public CSObjectBackend(String prefix) {
+    public CSObjectBackend(String prefix, Charset cs) {
         pfx = prefix;
+        encoding = cs;
     }
 
     @Override
     public IRIOGeneric newObjectO(String nt) {
-        return new IRIOGeneric(IObjectBackend.Factory.encoding);
+        return new IRIOGeneric(encoding);
     }
 
     @Override
@@ -107,7 +110,7 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
                 break;
             }
         }
-        return newObjectO("").setString(bt, Factory.encoding);
+        return newObjectO("").setString(bt, encoding);
     }
 
     private IRIO loadPXA(InputStream inp) throws IOException {
@@ -180,7 +183,7 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
 
     private void writeFixedFormatString(ByteArrayOutputStream baos, IRIO strsym, int i) throws IOException {
         byte[] bt = new byte[i];
-        byte[] nbt = strsym.getBufferInEncoding(IObjectBackend.Factory.encoding);
+        byte[] nbt = strsym.getBufferInEncoding(encoding);
         System.arraycopy(nbt, 0, bt, 0, Math.min(nbt.length, bt.length - 1));
         baos.write(bt);
     }

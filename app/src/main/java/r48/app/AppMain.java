@@ -31,7 +31,6 @@ import java.nio.charset.StandardCharsets;
  */
 public class AppMain {
     public static App initializeCore(InterlaunchGlobals ilg, Charset charset, final String rp, final String sip, final EngineDef engine, final IConsumer<String> progress) {
-        IObjectBackend.Factory.encoding = charset;
         final App app = new App(ilg, charset, engine, rp, sip, progress);
 
         // initialize core resources
@@ -41,7 +40,7 @@ public class AppMain {
         app.vmCtx.include(engine.initDir + "init", false);
 
         // initialize everything else that needs initializing, starting with ObjectDB
-        IObjectBackend backend = IObjectBackend.Factory.create(engine.odbBackend, app.rootPath, engine.dataPath, engine.dataExt);
+        IObjectBackend backend = IObjectBackend.Factory.create(charset, engine.odbBackend, app.rootPath, engine.dataPath, engine.dataExt);
         app.odb = new ObjectDB(app, backend, (s) -> {
             if (app.system != null)
                 app.system.saveHook(s);

@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 /**
  * A beginning?
@@ -32,9 +33,11 @@ import java.io.OutputStream;
  */
 public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public final String root;
+    public final Charset charset;
 
-    public R2kObjectBackend(String rootPath) {
+    public R2kObjectBackend(String rootPath, Charset cs) {
         root = rootPath;
+        charset = cs;
     }
 
     @Override
@@ -48,7 +51,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             return new Database();
         if (fn.endsWith(".lsd"))
             return new Save();
-        return new IRIOGeneric(IObjectBackend.Factory.encoding);
+        return new IRIOGeneric(charset);
     }
 
     @Override

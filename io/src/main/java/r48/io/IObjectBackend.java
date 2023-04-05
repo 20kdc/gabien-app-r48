@@ -64,17 +64,18 @@ public interface IObjectBackend {
         // Null so that things will error if it's unset.
         public static Charset encoding;
 
-        public static IObjectBackend create(String odbBackend, String rootPath, String dataPath, String dataExt) {
+        public static IObjectBackend create(Charset encoding, String odbBackend, String rootPath, String dataPath, String dataExt) {
+            IObjectBackend.Factory.encoding = encoding;
             if (odbBackend.equals("r48")) {
-                return new R48ObjectBackend(rootPath + dataPath, dataExt, IObjectBackend.Factory.encoding);
+                return new R48ObjectBackend(rootPath + dataPath, dataExt, encoding);
             } else if (odbBackend.equals("ika")) {
                 return new IkaObjectBackend(rootPath + dataPath);
             } else if (odbBackend.equals("lcf2000")) {
-                return new R2kObjectBackend(rootPath + dataPath);
+                return new R2kObjectBackend(rootPath + dataPath, encoding);
             } else if (odbBackend.equals("json")) {
                 return new JsonObjectBackend(rootPath + dataPath, dataExt);
             } else if (odbBackend.equals("cs")) {
-                return new CSObjectBackend(rootPath + dataPath);
+                return new CSObjectBackend(rootPath + dataPath, encoding);
             } else {
                 throw new RuntimeException("Unknown ODB backend " + odbBackend);
             }

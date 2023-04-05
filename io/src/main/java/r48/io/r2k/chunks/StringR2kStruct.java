@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
  */
 public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public byte[] data = new byte[0];
+    public final Charset encoding = IObjectBackend.Factory.encoding;
 
     public StringR2kStruct() {
         super('"');
@@ -36,13 +37,13 @@ public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
 
     @Override
     public IRIO setString(String s) {
-        data = s.getBytes(IObjectBackend.Factory.encoding);
+        data = s.getBytes(encoding);
         return this;
     }
 
     @Override
     public IRIO setString(byte[] s, Charset jenc) {
-        if (jenc.equals(IObjectBackend.Factory.encoding)) {
+        if (jenc.equals(encoding)) {
             data = s;
             return this;
         }
@@ -76,7 +77,7 @@ public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
 
     @Override
     public Charset getBufferEnc() {
-        return IObjectBackend.Factory.encoding;
+        return encoding;
     }
 
     @Override
