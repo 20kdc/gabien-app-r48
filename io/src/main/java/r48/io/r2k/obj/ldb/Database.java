@@ -7,7 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXObject;
 import r48.io.data.DM2Optional;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.ByteR2kStruct;
@@ -22,55 +24,55 @@ import r48.io.r2k.struct.Terms;
  */
 public class Database extends DM2R2kObject {
 
-    public Database() {
-        super("RPG::Database");
+    public Database(DM2Context ctx) {
+        super(ctx, "RPG::Database");
     }
 
-    @DM2FXOBinding("@actors") @DM2LcfBinding(11) @DM2LcfSparseArray(Actor.class)
+    @DM2FXOBinding("@actors") @DM2LcfBinding(11) @DM2CXSupplier(Actor.class)
     public DM2SparseArrayH<Actor> actors;
-    @DM2FXOBinding("@skills") @DM2LcfBinding(12) @DM2LcfSparseArray(Skill.class)
+    @DM2FXOBinding("@skills") @DM2LcfBinding(12) @DM2CXSupplier(Skill.class)
     public DM2SparseArrayH<Skill> skills;
-    @DM2FXOBinding("@items") @DM2LcfBinding(13) @DM2LcfSparseArray(Item.class)
+    @DM2FXOBinding("@items") @DM2LcfBinding(13) @DM2CXSupplier(Item.class)
     public DM2SparseArrayH<Item> items;
-    @DM2FXOBinding("@enemies") @DM2LcfBinding(14) @DM2LcfSparseArray(Enemy.class)
+    @DM2FXOBinding("@enemies") @DM2LcfBinding(14) @DM2CXSupplier(Enemy.class)
     public DM2SparseArrayH<Enemy> enemies;
-    @DM2FXOBinding("@troops") @DM2LcfBinding(15) @DM2LcfSparseArray(Troop.class)
+    @DM2FXOBinding("@troops") @DM2LcfBinding(15) @DM2CXSupplier(Troop.class)
     public DM2SparseArrayH<Troop> troops;
-    @DM2FXOBinding("@terrains") @DM2LcfBinding(16) @DM2LcfSparseArray(Terrain.class)
+    @DM2FXOBinding("@terrains") @DM2LcfBinding(16) @DM2CXSupplier(Terrain.class)
     public DM2SparseArrayH<Terrain> terrains;
-    @DM2FXOBinding("@attributes") @DM2LcfBinding(17) @DM2LcfSparseArray(Attribute.class)
+    @DM2FXOBinding("@attributes") @DM2LcfBinding(17) @DM2CXSupplier(Attribute.class)
     public DM2SparseArrayH<Attribute> attributes;
-    @DM2FXOBinding("@states") @DM2LcfBinding(18) @DM2LcfSparseArray(State.class)
+    @DM2FXOBinding("@states") @DM2LcfBinding(18) @DM2CXSupplier(State.class)
     public DM2SparseArrayH<State> states;
-    @DM2FXOBinding("@animations") @DM2LcfBinding(19) @DM2LcfSparseArray(Animation.class)
+    @DM2FXOBinding("@animations") @DM2LcfBinding(19) @DM2CXSupplier(Animation.class)
     public DM2SparseArrayH<Animation> animations;
-    @DM2FXOBinding("@tilesets") @DM2LcfBinding(20) @DM2LcfSparseArray(Tileset.class)
+    @DM2FXOBinding("@tilesets") @DM2LcfBinding(20) @DM2CXSupplier(Tileset.class)
     public DM2SparseArrayH<Tileset> tilesets;
 
-    @DM2FXOBinding("@terms") @DM2LcfBinding(21) @DM2LcfObject
+    @DM2FXOBinding("@terms") @DM2LcfBinding(21) @DMCXObject
     public Terms terms;
 
     // ---
-    @DM2FXOBinding("@system") @DM2LcfBinding(22) @DM2LcfObject
+    @DM2FXOBinding("@system") @DM2LcfBinding(22) @DMCXObject
     public LdbSystem system;
     // ---
 
-    @DM2FXOBinding("@switches") @DM2LcfBinding(23) @DM2LcfSparseArray(SVStore.class)
+    @DM2FXOBinding("@switches") @DM2LcfBinding(23) @DM2CXSupplier(SVStore.class)
     public DM2SparseArrayH<SVStore> switches;
-    @DM2FXOBinding("@variables") @DM2LcfBinding(24) @DM2LcfSparseArray(SVStore.class)
+    @DM2FXOBinding("@variables") @DM2LcfBinding(24) @DM2CXSupplier(SVStore.class)
     public DM2SparseArrayH<SVStore> variables;
-    @DM2FXOBinding("@common_events") @DM2LcfBinding(25) @DM2LcfSparseArray(CommonEvent.class)
+    @DM2FXOBinding("@common_events") @DM2LcfBinding(25) @DM2CXSupplier(CommonEvent.class)
     public DM2SparseArrayH<CommonEvent> commonEvents;
 
     @DM2FXOBinding("@db_version") @DM2LcfBinding(26)
     public DM2Array<ByteR2kStruct> dbVersion;
 
-    @DM2FXOBinding("@battle_commands_2k3") @DM2LcfBinding(29) @DM2LcfObject
+    @DM2FXOBinding("@battle_commands_2k3") @DM2LcfBinding(29) @DMCXObject
     public BattleCommands battleCommands2k3;
 
-    @DM2FXOBinding("@classes_2k3") @DM2LcfBinding(30) @DM2LcfSparseArray(ActorClass.class)
+    @DM2FXOBinding("@classes_2k3") @DM2LcfBinding(30) @DM2CXSupplier(ActorClass.class)
     public DM2SparseArrayH<ActorClass> classes2k3;
-    @DM2FXOBinding("@battle_anim_sets_2k3") @DM2LcfBinding(32) @DM2LcfSparseArray(BattlerAnimation.class)
+    @DM2FXOBinding("@battle_anim_sets_2k3") @DM2LcfBinding(32) @DM2CXSupplier(BattlerAnimation.class)
     public DM2SparseArrayH<BattlerAnimation> battlerAnimation2k3;
 
     @DM2Optional @DM2FXOBinding("@unused_27") @DM2LcfBinding(27)

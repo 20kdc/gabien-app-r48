@@ -7,8 +7,12 @@
 
 package r48.io.r2k.obj.lsd;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXObject;
 import r48.io.data.DM2Optional;
+import r48.io.data.DMCXBoolean;
+import r48.io.data.DMCXInteger;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.*;
 import r48.io.r2k.dm2chk.*;
@@ -16,88 +20,88 @@ import r48.io.r2k.obj.Music;
 import r48.io.r2k.obj.Sound;
 
 public class SaveSystem extends DM2R2kObject {
-    @DM2FXOBinding("@screen") @DM2LcfBinding(0x01) @DM2LcfInteger(0)
+    @DM2FXOBinding("@screen") @DM2LcfBinding(0x01) @DMCXInteger(0)
     public IntegerR2kStruct screen;
-    @DM2FXOBinding("@frame_count") @DM2LcfBinding(0x0B) @DM2LcfInteger(0)
+    @DM2FXOBinding("@frame_count") @DM2LcfBinding(0x0B) @DMCXInteger(0)
     public IntegerR2kStruct frameCount;
-    @DM2FXOBinding("@system_name") @DM2LcfBinding(0x15) @DM2LcfObject
+    @DM2FXOBinding("@system_name") @DM2LcfBinding(0x15) @DMCXObject
     public StringR2kStruct systemName;
-    @DM2Optional @DM2FXOBinding("@system_box_tiling") @DM2LcfBinding(0x16) @DM2LcfInteger(0)
+    @DM2Optional @DM2FXOBinding("@system_box_tiling") @DM2LcfBinding(0x16) @DMCXInteger(0)
     public IntegerR2kStruct systemBoxStretch;
-    @DM2FXOBinding("@font_id") @DM2LcfBinding(0x17) @DM2LcfInteger(0)
+    @DM2FXOBinding("@font_id") @DM2LcfBinding(0x17) @DMCXInteger(0)
     public IntegerR2kStruct fontId;
     @DM2FXOBinding("@switches") @DM2LcfSizeBinding(0x1F) @DM2LcfBinding(0x20)
     public DM2Array<BooleanR2kStruct> switches;
     @DM2FXOBinding("@variables") @DM2LcfSizeBinding(0x21) @DM2LcfBinding(0x22)
     public DM2Array<Int32R2kStruct> variables;
-    @DM2FXOBinding("@message_transparent") @DM2LcfBinding(0x29) @DM2LcfInteger(0)
+    @DM2FXOBinding("@message_transparent") @DM2LcfBinding(0x29) @DMCXInteger(0)
     public IntegerR2kStruct messageTransparent;
-    @DM2FXOBinding("@message_position") @DM2LcfBinding(0x2A) @DM2LcfInteger(2)
+    @DM2FXOBinding("@message_position") @DM2LcfBinding(0x2A) @DMCXInteger(2)
     public IntegerR2kStruct messagePosition;
-    @DM2FXOBinding("@message_prevent_overlap") @DM2LcfBinding(0x2B) @DM2LcfInteger(1)
+    @DM2FXOBinding("@message_prevent_overlap") @DM2LcfBinding(0x2B) @DMCXInteger(1)
     public IntegerR2kStruct messagePreventOverlap;
-    @DM2FXOBinding("@message_continue_events") @DM2LcfBinding(0x2C) @DM2LcfInteger(0)
+    @DM2FXOBinding("@message_continue_events") @DM2LcfBinding(0x2C) @DMCXInteger(0)
     public IntegerR2kStruct messageContinueEvents;
 
-    @DM2FXOBinding("@face_name") @DM2LcfBinding(0x33) @DM2LcfObject
+    @DM2FXOBinding("@face_name") @DM2LcfBinding(0x33) @DMCXObject
     public StringR2kStruct faceName;
-    @DM2FXOBinding("@face_index") @DM2LcfBinding(0x34) @DM2LcfInteger(0)
+    @DM2FXOBinding("@face_index") @DM2LcfBinding(0x34) @DMCXInteger(0)
     public IntegerR2kStruct faceIdx;
-    @DM2FXOBinding("@face_right") @DM2LcfBinding(0x35) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@face_right") @DM2LcfBinding(0x35) @DMCXBoolean(false)
     public BooleanR2kStruct faceRight;
-    @DM2FXOBinding("@face_flip") @DM2LcfBinding(0x36) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@face_flip") @DM2LcfBinding(0x36) @DMCXBoolean(false)
     public BooleanR2kStruct faceFlip;
-    @DM2FXOBinding("@transparent") @DM2LcfBinding(0x37) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@transparent") @DM2LcfBinding(0x37) @DMCXBoolean(false)
     public BooleanR2kStruct transparent;
 
-    @DM2FXOBinding("@title_music") @DM2LcfBinding(0x47) @DM2LcfObject
+    @DM2FXOBinding("@title_music") @DM2LcfBinding(0x47) @DMCXObject
     public Music titleMusic;
-    @DM2FXOBinding("@battle_music") @DM2LcfBinding(0x48) @DM2LcfObject
+    @DM2FXOBinding("@battle_music") @DM2LcfBinding(0x48) @DMCXObject
     public Music battleMusic;
-    @DM2FXOBinding("@battle_end_music") @DM2LcfBinding(0x49) @DM2LcfObject
+    @DM2FXOBinding("@battle_end_music") @DM2LcfBinding(0x49) @DMCXObject
     public Music battleEndMusic;
-    @DM2FXOBinding("@inn_music") @DM2LcfBinding(0x4A) @DM2LcfObject
+    @DM2FXOBinding("@inn_music") @DM2LcfBinding(0x4A) @DMCXObject
     public Music innMusic;
-    @DM2FXOBinding("@rtmusic_current") @DM2LcfBinding(0x4B) @DM2LcfObject
+    @DM2FXOBinding("@rtmusic_current") @DM2LcfBinding(0x4B) @DMCXObject
     public Music currentMusic;
-    @DM2FXOBinding("@rtmusic_vehicle_start") @DM2LcfBinding(0x4C) @DM2LcfObject
+    @DM2FXOBinding("@rtmusic_vehicle_start") @DM2LcfBinding(0x4C) @DMCXObject
     public Music beforeVehicleMusic;
-    @DM2FXOBinding("@rtmusic_battle_start") @DM2LcfBinding(0x4D) @DM2LcfObject
+    @DM2FXOBinding("@rtmusic_battle_start") @DM2LcfBinding(0x4D) @DMCXObject
     public Music beforeBattleMusic;
-    @DM2FXOBinding("@rtmusic_memorized") @DM2LcfBinding(0x4E) @DM2LcfObject
+    @DM2FXOBinding("@rtmusic_memorized") @DM2LcfBinding(0x4E) @DMCXObject
     public Music storedMusic;
-    @DM2FXOBinding("@boat_music") @DM2LcfBinding(0x4F) @DM2LcfObject
+    @DM2FXOBinding("@boat_music") @DM2LcfBinding(0x4F) @DMCXObject
     public Music boatMusic;
-    @DM2FXOBinding("@ship_music") @DM2LcfBinding(0x50) @DM2LcfObject
+    @DM2FXOBinding("@ship_music") @DM2LcfBinding(0x50) @DMCXObject
     public Music shipMusic;
-    @DM2FXOBinding("@airship_music") @DM2LcfBinding(0x51) @DM2LcfObject
+    @DM2FXOBinding("@airship_music") @DM2LcfBinding(0x51) @DMCXObject
     public Music airshipMusic;
-    @DM2FXOBinding("@gameover_music") @DM2LcfBinding(0x52) @DM2LcfObject
+    @DM2FXOBinding("@gameover_music") @DM2LcfBinding(0x52) @DMCXObject
     public Music gameOverMusic;
 
-    @DM2FXOBinding("@cursor_se") @DM2LcfBinding(0x5B) @DM2LcfObject
+    @DM2FXOBinding("@cursor_se") @DM2LcfBinding(0x5B) @DMCXObject
     public Sound cursorSound;
-    @DM2FXOBinding("@decision_se") @DM2LcfBinding(0x5C) @DM2LcfObject
+    @DM2FXOBinding("@decision_se") @DM2LcfBinding(0x5C) @DMCXObject
     public Sound decisionSound;
-    @DM2FXOBinding("@cancel_se") @DM2LcfBinding(0x5D) @DM2LcfObject
+    @DM2FXOBinding("@cancel_se") @DM2LcfBinding(0x5D) @DMCXObject
     public Sound cancelSound;
-    @DM2FXOBinding("@buzzer_se") @DM2LcfBinding(0x5E) @DM2LcfObject
+    @DM2FXOBinding("@buzzer_se") @DM2LcfBinding(0x5E) @DMCXObject
     public Sound buzzerSound;
-    @DM2FXOBinding("@battle_se") @DM2LcfBinding(0x5F) @DM2LcfObject
+    @DM2FXOBinding("@battle_se") @DM2LcfBinding(0x5F) @DMCXObject
     public Sound battleSound;
-    @DM2FXOBinding("@escape_se") @DM2LcfBinding(0x60) @DM2LcfObject
+    @DM2FXOBinding("@escape_se") @DM2LcfBinding(0x60) @DMCXObject
     public Sound escapeSound;
-    @DM2FXOBinding("@enemy_attack_se") @DM2LcfBinding(0x61) @DM2LcfObject
+    @DM2FXOBinding("@enemy_attack_se") @DM2LcfBinding(0x61) @DMCXObject
     public Sound enemyAttackSound;
-    @DM2FXOBinding("@enemy_hurt_se") @DM2LcfBinding(0x62) @DM2LcfObject
+    @DM2FXOBinding("@enemy_hurt_se") @DM2LcfBinding(0x62) @DMCXObject
     public Sound enemyDamagedSound;
-    @DM2FXOBinding("@actor_hurt_se") @DM2LcfBinding(0x63) @DM2LcfObject
+    @DM2FXOBinding("@actor_hurt_se") @DM2LcfBinding(0x63) @DMCXObject
     public Sound actorDamagedSound;
-    @DM2FXOBinding("@dodge_se") @DM2LcfBinding(0x64) @DM2LcfObject
+    @DM2FXOBinding("@dodge_se") @DM2LcfBinding(0x64) @DMCXObject
     public Sound dodgeSound;
-    @DM2FXOBinding("@enemy_death_se") @DM2LcfBinding(0x65) @DM2LcfObject
+    @DM2FXOBinding("@enemy_death_se") @DM2LcfBinding(0x65) @DMCXObject
     public Sound enemyDeathSound;
-    @DM2FXOBinding("@item_se") @DM2LcfBinding(0x66) @DM2LcfObject
+    @DM2FXOBinding("@item_se") @DM2LcfBinding(0x66) @DMCXObject
     public Sound itemSound;
 
     // Believe it or not, these are in fact Uint8.
@@ -119,26 +123,26 @@ public class SaveSystem extends DM2R2kObject {
     @DM2FXOBinding("@battle_end_fadein") @DM2LcfBinding(0x74)
     public ByteR2kStruct battleEndFadein;
 
-    @DM2FXOBinding("@can_teleport") @DM2LcfBinding(0x79) @DM2LcfBoolean(true)
+    @DM2FXOBinding("@can_teleport") @DM2LcfBinding(0x79) @DMCXBoolean(true)
     public BooleanR2kStruct canTeleport;
-    @DM2FXOBinding("@can_escape") @DM2LcfBinding(0x7A) @DM2LcfBoolean(true)
+    @DM2FXOBinding("@can_escape") @DM2LcfBinding(0x7A) @DMCXBoolean(true)
     public BooleanR2kStruct canEscape;
-    @DM2FXOBinding("@can_save") @DM2LcfBinding(0x7B) @DM2LcfBoolean(true)
+    @DM2FXOBinding("@can_save") @DM2LcfBinding(0x7B) @DMCXBoolean(true)
     public BooleanR2kStruct canSave;
-    @DM2FXOBinding("@can_menu") @DM2LcfBinding(0x7C) @DM2LcfBoolean(true)
+    @DM2FXOBinding("@can_menu") @DM2LcfBinding(0x7C) @DMCXBoolean(true)
     public BooleanR2kStruct canMenu;
 
-    @DM2FXOBinding("@battle_background") @DM2LcfBinding(0x7D) @DM2LcfObject
+    @DM2FXOBinding("@battle_background") @DM2LcfBinding(0x7D) @DMCXObject
     public StringR2kStruct battleBackground;
-    @DM2FXOBinding("@save_count") @DM2LcfBinding(0x83) @DM2LcfInteger(0)
+    @DM2FXOBinding("@save_count") @DM2LcfBinding(0x83) @DMCXInteger(0)
     public IntegerR2kStruct saveCount;
-    @DM2FXOBinding("@save_slot") @DM2LcfBinding(0x84) @DM2LcfInteger(1)
+    @DM2FXOBinding("@save_slot") @DM2LcfBinding(0x84) @DMCXInteger(1)
     public IntegerR2kStruct saveSlot;
-    @DM2FXOBinding("@atb_wait_mode_2k3") @DM2LcfBinding(0x8C) @DM2LcfInteger(0)
+    @DM2FXOBinding("@atb_wait_mode_2k3") @DM2LcfBinding(0x8C) @DMCXInteger(0)
     public IntegerR2kStruct atbMode2k3;
 
-    public SaveSystem() {
-        super("RPG::SaveSystem");
+    public SaveSystem(DM2Context ctx) {
+        super(ctx, "RPG::SaveSystem");
     }
 
     @Override

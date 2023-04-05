@@ -7,7 +7,6 @@
 
 package r48.io.r2k.struct;
 
-import gabien.uslx.append.*;
 import r48.io.data.*;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
@@ -34,19 +33,14 @@ public class MapTree extends IRIOFixedObject implements IR2kInterpretable {
     @DM2FXOBinding("@start")
     public MapTreeStart start;
 
-    public MapTree() {
-        super("RPG::MapTree");
+    public MapTree(DM2Context ctx) {
+        super(ctx, "RPG::MapTree");
     }
 
     @Override
     public IRIO addIVar(String sym) {
         if (sym.equals("@map_infos"))
-            return mapInfos = new DM2SparseArrayH<MapInfo>(new ISupplier<MapInfo>() {
-                @Override
-                public MapInfo get() {
-                    return new MapInfo();
-                }
-            });
+            return mapInfos = new DM2SparseArrayH<MapInfo>(() -> new MapInfo(context));
         if (sym.equals("@map_order"))
             return mapOrder = new IRIOFixedArray<IRIOFixnum>() {
                 @Override
@@ -57,7 +51,7 @@ public class MapTree extends IRIOFixedObject implements IR2kInterpretable {
         if (sym.equals("@active_node"))
             return activeNode = new IntegerR2kStruct(0);
         if (sym.equals("@start"))
-            return start = new MapTreeStart();
+            return start = new MapTreeStart(context);
         return null;
     }
 
@@ -70,7 +64,7 @@ public class MapTree extends IRIOFixedObject implements IR2kInterpretable {
         for (int i = 0; i < mapOrder.arrVal.length; i++)
             mapOrder.arrVal[i] = new IRIOFixnum(R2kUtil.readLcfVLI(fis));
         activeNode.importData(fis);
-        start = new MapTreeStart();
+        start = new MapTreeStart(context);
         start.importData(fis);
     }
 

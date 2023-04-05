@@ -31,8 +31,8 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
     @DM2FXOBinding("@parameters")
     public ParameterArray parameters;
 
-    public MoveCommand() {
-        super("RPG::MoveCommand");
+    public MoveCommand(DM2Context ctx) {
+        super(ctx, "RPG::MoveCommand");
     }
 
     // 0x100 is the 'string flag'
@@ -48,9 +48,9 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         return para;
     }
 
-    public static MoveCommand[] fromEmbeddedData(int[] remainingStream) {
+    public static MoveCommand[] fromEmbeddedData(DM2Context ctx, int[] remainingStream) {
         try {
-            return fromEmbeddedDataInside(remainingStream);
+            return fromEmbeddedDataInside(ctx, remainingStream);
         } catch (Exception ex) {
             StringBuilder sb = new StringBuilder();
             sb.append("In MoveCommand stream");
@@ -88,12 +88,12 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         si.add(val);
     }
 
-    private static MoveCommand[] fromEmbeddedDataInside(int[] remainingStream) {
+    private static MoveCommand[] fromEmbeddedDataInside(DM2Context ctx, int[] remainingStream) {
         Iterator<Integer> si = new IntArrayIterable.ArrayIterator(remainingStream);
         LinkedList<MoveCommand> mcs = new LinkedList<MoveCommand>();
         while (si.hasNext()) {
             int code = si.next();
-            MoveCommand mc = new MoveCommand();
+            MoveCommand mc = new MoveCommand(ctx);
             mc.code.val = code;
 
             IRIOFixnum a = new IRIOFixnum(0);
@@ -206,7 +206,7 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         if (sym.equals("@code"))
             return code = new IRIOFixnum(0);
         if (sym.equals("@parameters"))
-            return parameters = new ParameterArray();
+            return parameters = new ParameterArray(context);
         return null;
     }
 }

@@ -61,15 +61,11 @@ public interface IObjectBackend {
     }
 
     abstract class Factory {
-        // Null so that things will error if it's unset.
-        public static Charset encoding;
-
         public static IObjectBackend create(Charset encoding, String odbBackend, String rootPath, String dataPath, String dataExt) {
-            IObjectBackend.Factory.encoding = encoding;
             if (odbBackend.equals("r48")) {
                 return new R48ObjectBackend(rootPath + dataPath, dataExt, encoding);
             } else if (odbBackend.equals("ika")) {
-                return new IkaObjectBackend(rootPath + dataPath);
+                return new IkaObjectBackend(rootPath + dataPath, encoding);
             } else if (odbBackend.equals("lcf2000")) {
                 return new R2kObjectBackend(rootPath + dataPath, encoding);
             } else if (odbBackend.equals("json")) {

@@ -25,8 +25,8 @@ public class IkaMap extends IRIOFixedObject {
     public final int defaultWidth;
     public final int defaultHeight;
 
-    public IkaMap(int w, int h) {
-        super("IkachanMap");
+    public IkaMap(DM2Context ctx, int w, int h) {
+        super(ctx, "IkachanMap");
         defaultWidth = w;
         defaultHeight = h;
         initialize();
@@ -52,7 +52,7 @@ public class IkaMap extends IRIOFixedObject {
 
                 @Override
                 public IkaEvent newValue() {
-                    return new IkaEvent();
+                    return new IkaEvent(context);
                 }
             };
         return null;

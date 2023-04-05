@@ -7,6 +7,7 @@
 
 package r48.io.r2k.struct;
 
+import r48.io.data.DM2Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedArray;
 import r48.io.data.IRIOFixnum;
@@ -16,7 +17,11 @@ import r48.io.r2k.chunks.StringR2kStruct;
  * Created on December 06, 2018.
  */
 public class ParameterArray extends IRIOFixedArray<IRIO> {
-    public final StringR2kStruct text = new StringR2kStruct();
+    public final StringR2kStruct text;
+
+    public ParameterArray(DM2Context dm2c) {
+        text = new StringR2kStruct(dm2c);
+    }
 
     @Override
     public IRIO setArray(int length) {

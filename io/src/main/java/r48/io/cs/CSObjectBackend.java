@@ -9,7 +9,6 @@ package r48.io.cs;
 
 import gabien.GaBIEn;
 import r48.RubyTable;
-import r48.io.IObjectBackend;
 import r48.io.OldObjectBackend;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;

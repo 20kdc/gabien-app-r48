@@ -7,23 +7,24 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXInteger;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.dm2chk.DM2LcfBinding;
-import r48.io.r2k.dm2chk.DM2LcfInteger;
 import r48.io.r2k.dm2chk.DM2R2kObject;
 
 /**
  * Created on 05/06/17.
  */
 public class Learning extends DM2R2kObject {
-    @DM2FXOBinding("@level") @DM2LcfBinding(1) @DM2LcfInteger(1)
+    @DM2FXOBinding("@level") @DM2LcfBinding(1) @DMCXInteger(1)
     public IntegerR2kStruct level;
-    @DM2FXOBinding("@skill") @DM2LcfBinding(2) @DM2LcfInteger(1)
+    @DM2FXOBinding("@skill") @DM2LcfBinding(2) @DMCXInteger(1)
     public IntegerR2kStruct skill;
 
-    public Learning() {
-        super("RPG::Learning");
+    public Learning(DM2Context ctx) {
+        super(ctx, "RPG::Learning");
     }
 
     // Skill = Blob;2b 01 04

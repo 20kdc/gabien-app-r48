@@ -7,32 +7,33 @@
 
 package r48.io.r2k.obj;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXInteger;
+import r48.io.data.DMCXObject;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.chunks.StringR2kStruct;
 import r48.io.r2k.dm2chk.DM2LcfBinding;
-import r48.io.r2k.dm2chk.DM2LcfInteger;
-import r48.io.r2k.dm2chk.DM2LcfObject;
 import r48.io.r2k.dm2chk.DM2R2kObject;
 
 /**
  * Re-copied off of Music on December 6th 2018, about 20 minutes to midnight
  */
 public class Sound extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
     public StringR2kStruct name;
-    @DM2FXOBinding("@volume") @DM2LcfBinding(3) @DM2LcfInteger(100)
+    @DM2FXOBinding("@volume") @DM2LcfBinding(3) @DMCXInteger(100)
     public IntegerR2kStruct volume;
-    @DM2FXOBinding("@tempo") @DM2LcfBinding(4) @DM2LcfInteger(100)
+    @DM2FXOBinding("@tempo") @DM2LcfBinding(4) @DMCXInteger(100)
     public IntegerR2kStruct tempo;
-    @DM2FXOBinding("@balance") @DM2LcfBinding(5) @DM2LcfInteger(50)
+    @DM2FXOBinding("@balance") @DM2LcfBinding(5) @DMCXInteger(50)
     public IntegerR2kStruct balance;
 
-    public Sound() {
-        super("RPG::Sound");
+    public Sound(DM2Context ctx) {
+        super(ctx, "RPG::Sound");
     }
 
-    protected Sound(String n) {
-        super(n);
+    protected Sound(DM2Context ctx, String n) {
+        super(ctx, n);
     }
 }

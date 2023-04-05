@@ -7,8 +7,12 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXObject;
 import r48.io.data.DM2Optional;
+import r48.io.data.DMCXBoolean;
+import r48.io.data.DMCXInteger;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
@@ -20,45 +24,45 @@ import r48.io.r2k.dm2chk.*;
  * Created on 05/06/17.
  */
 public class Actor extends ActorClassBase {
-    @DM2FXOBinding("@title") @DM2LcfBinding(2) @DM2LcfObject
+    @DM2FXOBinding("@title") @DM2LcfBinding(2) @DMCXObject
     public StringR2kStruct title;
-    @DM2FXOBinding("@character_name") @DM2LcfBinding(3) @DM2LcfObject
+    @DM2FXOBinding("@character_name") @DM2LcfBinding(3) @DMCXObject
     public StringR2kStruct charName;
-    @DM2FXOBinding("@character_index") @DM2LcfBinding(4) @DM2LcfInteger(0)
+    @DM2FXOBinding("@character_index") @DM2LcfBinding(4) @DMCXInteger(0)
     public IntegerR2kStruct charIdx;
-    @DM2FXOBinding("@character_blend_mode") @DM2LcfBinding(5) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@character_blend_mode") @DM2LcfBinding(5) @DMCXBoolean(false)
     public BooleanR2kStruct transparent;
-    @DM2FXOBinding("@init_level") @DM2LcfBinding(7) @DM2LcfInteger(1)
+    @DM2FXOBinding("@init_level") @DM2LcfBinding(7) @DMCXInteger(1)
     public IntegerR2kStruct initLevel;
     // Marked as "50|99" in liblcf docs - version differences.
     // OptionalR2kStruct can at least translate this into something usable.
-    @DM2Optional @DM2FXOBinding("@final_level") @DM2LcfBinding(8) @DM2LcfInteger(99)
+    @DM2Optional @DM2FXOBinding("@final_level") @DM2LcfBinding(8) @DMCXInteger(99)
     public IntegerR2kStruct finalLevel;
-    @DM2FXOBinding("@can_crit") @DM2LcfBinding(9) @DM2LcfBoolean(true)
+    @DM2FXOBinding("@can_crit") @DM2LcfBinding(9) @DMCXBoolean(true)
     public BooleanR2kStruct canCrit;
-    @DM2FXOBinding("@crit_percent") @DM2LcfBinding(10) @DM2LcfInteger(30)
+    @DM2FXOBinding("@crit_percent") @DM2LcfBinding(10) @DMCXInteger(30)
     public IntegerR2kStruct critPercent;
-    @DM2FXOBinding("@face_name") @DM2LcfBinding(15) @DM2LcfObject
+    @DM2FXOBinding("@face_name") @DM2LcfBinding(15) @DMCXObject
     public StringR2kStruct faceName;
-    @DM2FXOBinding("@face_index") @DM2LcfBinding(16) @DM2LcfInteger(0)
+    @DM2FXOBinding("@face_index") @DM2LcfBinding(16) @DMCXInteger(0)
     public IntegerR2kStruct faceIdx;
     @DM2FXOBinding("@equipment") @DM2LcfBinding(51)
     public DM2Array<ShortR2kStruct> equipment;
-    @DM2FXOBinding("@no_weapon_attack_anim") @DM2LcfBinding(40) @DM2LcfInteger(1)
+    @DM2FXOBinding("@no_weapon_attack_anim") @DM2LcfBinding(40) @DMCXInteger(1)
     public IntegerR2kStruct noWeaponAttackAnim;
-    @DM2FXOBinding("@class_2k3") @DM2LcfBinding(57) @DM2LcfInteger(0)
+    @DM2FXOBinding("@class_2k3") @DM2LcfBinding(57) @DMCXInteger(0)
     public IntegerR2kStruct aClass;
-    @DM2FXOBinding("@battle_posx_2k3") @DM2LcfBinding(59) @DM2LcfInteger(220)
+    @DM2FXOBinding("@battle_posx_2k3") @DM2LcfBinding(59) @DMCXInteger(220)
     public IntegerR2kStruct batPosX;
-    @DM2FXOBinding("@battle_posy_2k3") @DM2LcfBinding(60) @DM2LcfInteger(120)
+    @DM2FXOBinding("@battle_posy_2k3") @DM2LcfBinding(60) @DMCXInteger(120)
     public IntegerR2kStruct batPosY;
-    @DM2FXOBinding("@editor_use_skillspanel_name") @DM2LcfBinding(66) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@editor_use_skillspanel_name") @DM2LcfBinding(66) @DMCXBoolean(false)
     public BooleanR2kStruct canRename;
-    @DM2FXOBinding("@battle_skillspanel_name") @DM2LcfBinding(67) @DM2LcfObject
+    @DM2FXOBinding("@battle_skillspanel_name") @DM2LcfBinding(67) @DMCXObject
     public StringR2kStruct renameResult;
 
-    public Actor() {
-        super("RPG::Actor", 1);
+    public Actor(DM2Context ctx) {
+        super(ctx, "RPG::Actor", 1);
     }
 
     @Override

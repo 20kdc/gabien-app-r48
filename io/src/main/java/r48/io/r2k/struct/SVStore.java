@@ -8,6 +8,7 @@
 package r48.io.r2k.struct;
 
 import r48.io.IntUtils;
+import r48.io.data.DM2Context;
 import r48.io.r2k.chunks.StringR2kStruct;
 import r48.io.r2k.R2kUtil;
 
@@ -19,6 +20,10 @@ import java.io.OutputStream;
  * Created on 05/06/17.
  */
 public class SVStore extends StringR2kStruct {
+    public SVStore(DM2Context dm2c) {
+        super(dm2c);
+    }
+
     @Override
     public void importData(InputStream bais) throws IOException {
         while (true) {

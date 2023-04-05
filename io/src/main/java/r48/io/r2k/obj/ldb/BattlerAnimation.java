@@ -8,7 +8,10 @@
 package r48.io.r2k.obj.ldb;
 
 import gabien.uslx.append.*;
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXInteger;
+import r48.io.data.DMCXObject;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.chunks.StringR2kStruct;
@@ -18,17 +21,17 @@ import r48.io.r2k.dm2chk.*;
  * COPY jun6-2017
  */
 public class BattlerAnimation extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
     public StringR2kStruct name;
-    @DM2FXOBinding("@speed") @DM2LcfBinding(2) @DM2LcfInteger(0)
+    @DM2FXOBinding("@speed") @DM2LcfBinding(2) @DMCXInteger(0)
     public IntegerR2kStruct speed;
-    @DM2FXOBinding("@base_data") @DM2LcfBinding(10) @DM2LcfSparseArray(BAE.class)
+    @DM2FXOBinding("@base_data") @DM2LcfBinding(10) @DM2CXSupplier(BAE.class)
     public DM2SparseArrayA<BAE> baseData;
-    @DM2FXOBinding("@weapon_data") @DM2LcfBinding(11) @DM2LcfSparseArray(BAE.class)
+    @DM2FXOBinding("@weapon_data") @DM2LcfBinding(11) @DM2CXSupplier(BAE.class)
     public DM2SparseArrayA<BAE> weaponData;
 
-    public BattlerAnimation() {
-        super("RPG::BattlerAnimationSet");
+    public BattlerAnimation(DM2Context ctx) {
+        super(ctx, "RPG::BattlerAnimationSet");
     }
 
     @Override
@@ -44,29 +47,29 @@ public class BattlerAnimation extends DM2R2kObject {
         DM2SparseArrayA<BAE> b = new DM2SparseArrayA<BAE>(new ISupplier<BAE>() {
             @Override
             public BAE get() {
-                return new BAE();
+                return new BAE(context);
             }
         });
         b.arrVal = new IRIO[33];
         for (int i = 0; i < b.arrVal.length; i++)
-            b.arrVal[i] = new BAE();
+            b.arrVal[i] = new BAE(context);
         return b;
     }
 
     public static class BAE extends DM2R2kObject {
-        @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
+        @DM2FXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
         public StringR2kStruct name;
-        @DM2FXOBinding("@battler_name") @DM2LcfBinding(2) @DM2LcfObject
+        @DM2FXOBinding("@battler_name") @DM2LcfBinding(2) @DMCXObject
         public StringR2kStruct battlerName;
-        @DM2FXOBinding("@battler_index") @DM2LcfBinding(3) @DM2LcfInteger(0)
+        @DM2FXOBinding("@battler_index") @DM2LcfBinding(3) @DMCXInteger(0)
         public IntegerR2kStruct battlerIndex;
-        @DM2FXOBinding("@type") @DM2LcfBinding(4) @DM2LcfInteger(0)
+        @DM2FXOBinding("@type") @DM2LcfBinding(4) @DMCXInteger(0)
         public IntegerR2kStruct animationType;
-        @DM2FXOBinding("@animation_id") @DM2LcfBinding(5) @DM2LcfInteger(1)
+        @DM2FXOBinding("@animation_id") @DM2LcfBinding(5) @DMCXInteger(1)
         public IntegerR2kStruct animationId;
 
-        public BAE() {
-            super("RPG::BattlerAnimation");
+        public BAE(DM2Context ctx) {
+            super(ctx, "RPG::BattlerAnimation");
         }
     }
 }

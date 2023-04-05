@@ -9,6 +9,7 @@ package r48.io;
 
 import gabien.GaBIEn;
 import r48.RubyTable;
+import r48.io.data.DM2Context;
 import r48.io.data.IRIOFixedHash;
 import r48.io.ika.IkaEvent;
 import r48.io.ika.IkaMap;
@@ -17,6 +18,7 @@ import r48.io.ika.NPChar;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 /**
  * Created on 1/27/17.
@@ -24,14 +26,16 @@ import java.io.OutputStream;
 public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
 
     private String root;
+    private final DM2Context dm2c;
 
-    public IkaObjectBackend(String rootPath) {
+    public IkaObjectBackend(String rootPath, Charset encoding) {
         root = rootPath;
+        dm2c = new DM2Context(encoding);
     }
 
     @Override
     public IkaMap newObjectO(String n) {
-        return new IkaMap(160, 120);
+        return new IkaMap(dm2c, 160, 120);
     }
 
     @Override
@@ -75,7 +79,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
 
             // This sets up the object by itself (DataModel2)
 
-            IkaMap rio = new IkaMap(bm.width, bm.height);
+            IkaMap rio = new IkaMap(dm2c, bm.width, bm.height);
 
             RubyTable pal = new RubyTable(rio.palette.userVal);
             for (int i = 0; i < bm.paletteCol; i++) {
@@ -113,7 +117,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
     }
 
     private IkaEvent convertEventToRuby(NPChar.NPCCharacter io) {
-        IkaEvent res = new IkaEvent();
+        IkaEvent res = new IkaEvent(dm2c);
         int px = rounder(io.posX);
         int py = rounder(io.posY);
         res.x.val = px;

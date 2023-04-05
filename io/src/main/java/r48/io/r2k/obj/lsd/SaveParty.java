@@ -7,7 +7,10 @@
 
 package r48.io.r2k.obj.lsd;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXBoolean;
+import r48.io.data.DMCXInteger;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedArray;
 import r48.io.data.IRIOFixedObject;
@@ -25,7 +28,7 @@ public class SaveParty extends DM2R2kObject {
     @DM2FXOBinding("@party") @DM2LcfSizeBinding(1) @DM2LcfBinding(0x02)
     public DM2Array<ShortR2kStruct> party;
     // NOTE: These *don't* get put in directly.
-    @DM2LcfBinding(0x0B) @DM2LcfInteger(0)
+    @DM2LcfBinding(0x0B) @DMCXInteger(0)
     public IntegerR2kStruct inventorySize;
     @DM2LcfBinding(0x0C)
     public DM2Array<ShortR2kStruct> inventoryIds;
@@ -37,41 +40,41 @@ public class SaveParty extends DM2R2kObject {
     @DM2FXOBinding("@inventory")
     public IRIOFixedArray<SaveItem> inventoryView;
 
-    @DM2FXOBinding("@party_gold") @DM2LcfBinding(0x15) @DM2LcfInteger(0)
+    @DM2FXOBinding("@party_gold") @DM2LcfBinding(0x15) @DMCXInteger(0)
     public IntegerR2kStruct partyGold;
-    @DM2FXOBinding("@timer1_seconds") @DM2LcfBinding(0x17) @DM2LcfInteger(0)
+    @DM2FXOBinding("@timer1_seconds") @DM2LcfBinding(0x17) @DMCXInteger(0)
     public IntegerR2kStruct timer1Seconds;
-    @DM2FXOBinding("@timer1_on") @DM2LcfBinding(0x18) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@timer1_on") @DM2LcfBinding(0x18) @DMCXBoolean(false)
     public BooleanR2kStruct timer1Active;
-    @DM2FXOBinding("@timer1_visible") @DM2LcfBinding(0x19) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@timer1_visible") @DM2LcfBinding(0x19) @DMCXBoolean(false)
     public BooleanR2kStruct timer1Visible;
-    @DM2FXOBinding("@timer1_on_battle") @DM2LcfBinding(0x1A) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@timer1_on_battle") @DM2LcfBinding(0x1A) @DMCXBoolean(false)
     public BooleanR2kStruct timer1ActiveDuringBattle;
-    @DM2FXOBinding("@timer2_seconds") @DM2LcfBinding(0x1B) @DM2LcfInteger(0)
+    @DM2FXOBinding("@timer2_seconds") @DM2LcfBinding(0x1B) @DMCXInteger(0)
     public IntegerR2kStruct timer2Seconds;
-    @DM2FXOBinding("@timer2_on") @DM2LcfBinding(0x1C) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@timer2_on") @DM2LcfBinding(0x1C) @DMCXBoolean(false)
     public BooleanR2kStruct timer2Active;
-    @DM2FXOBinding("@timer2_visible") @DM2LcfBinding(0x1D) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@timer2_visible") @DM2LcfBinding(0x1D) @DMCXBoolean(false)
     public BooleanR2kStruct timer2Visible;
-    @DM2FXOBinding("@timer2_on_battle") @DM2LcfBinding(0x1E) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@timer2_on_battle") @DM2LcfBinding(0x1E) @DMCXBoolean(false)
     public BooleanR2kStruct timer2ActiveDuringBattle;
 
-    @DM2FXOBinding("@stats_battles") @DM2LcfBinding(0x20) @DM2LcfInteger(0)
+    @DM2FXOBinding("@stats_battles") @DM2LcfBinding(0x20) @DMCXInteger(0)
     public IntegerR2kStruct battles;
-    @DM2FXOBinding("@stats_defeats") @DM2LcfBinding(0x21) @DM2LcfInteger(0)
+    @DM2FXOBinding("@stats_defeats") @DM2LcfBinding(0x21) @DMCXInteger(0)
     public IntegerR2kStruct defeats;
-    @DM2FXOBinding("@stats_escapes") @DM2LcfBinding(0x22) @DM2LcfInteger(0)
+    @DM2FXOBinding("@stats_escapes") @DM2LcfBinding(0x22) @DMCXInteger(0)
     public IntegerR2kStruct escapes;
-    @DM2FXOBinding("@stats_victories") @DM2LcfBinding(0x23) @DM2LcfInteger(0)
+    @DM2FXOBinding("@stats_victories") @DM2LcfBinding(0x23) @DMCXInteger(0)
     public IntegerR2kStruct victories;
 
-    @DM2FXOBinding("@stats_turns") @DM2LcfBinding(0x29) @DM2LcfInteger(0)
+    @DM2FXOBinding("@stats_turns") @DM2LcfBinding(0x29) @DMCXInteger(0)
     public IntegerR2kStruct turns;
-    @DM2FXOBinding("@stats_steps") @DM2LcfBinding(0x2A) @DM2LcfInteger(0)
+    @DM2FXOBinding("@stats_steps") @DM2LcfBinding(0x2A) @DMCXInteger(0)
     public IntegerR2kStruct steps;
 
-    public SaveParty() {
-        super("RPG::SaveParty");
+    public SaveParty(DM2Context ctx) {
+        super(ctx, "RPG::SaveParty");
     }
 
     @Override
@@ -88,7 +91,7 @@ public class SaveParty extends DM2R2kObject {
             return inventoryView = new IRIOFixedArray<SaveItem>() {
                 @Override
                 public SaveItem newValue() {
-                    return new SaveItem();
+                    return new SaveItem(context);
                 }
             };
         return super.dm2AddField(f);
@@ -118,7 +121,7 @@ public class SaveParty extends DM2R2kObject {
         inventoryView.arrVal = new IRIO[inventorySize.i];
         // This uses the loaded IRIOs as-is to simplify things.
         for (int i = 0; i < inventoryView.arrVal.length; i++) {
-            SaveItem si = new SaveItem();
+            SaveItem si = new SaveItem(context);
             si.id = (ShortR2kStruct) inventoryIds.arrVal[i];
             si.count = (ByteR2kStruct) inventoryCounts.arrVal[i];
             si.usage = (ByteR2kStruct) inventoryUsage.arrVal[i];
@@ -154,8 +157,8 @@ public class SaveParty extends DM2R2kObject {
         @DM2FXOBinding("@usage")
         public ByteR2kStruct usage;
 
-        public SaveItem() {
-            super("RPG::SaveItem");
+        public SaveItem(DM2Context ctx) {
+            super(ctx, "RPG::SaveItem");
         }
 
         @Override

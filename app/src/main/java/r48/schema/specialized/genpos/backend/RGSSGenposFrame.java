@@ -13,7 +13,6 @@ import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import r48.App;
 import r48.RubyTable;
-import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.map.events.RMEventGraphicRenderer;

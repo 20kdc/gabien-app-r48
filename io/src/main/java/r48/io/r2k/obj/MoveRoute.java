@@ -7,7 +7,9 @@
 
 package r48.io.r2k.obj;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXBoolean;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.dm2chk.*;
@@ -22,13 +24,13 @@ public class MoveRoute extends DM2R2kObject {
     @DM2FXOBinding("@list") @DM2LcfSizeBinding(11) @DM2LcfBinding(12)
     public DM2Array<MoveCommand> list;
 
-    @DM2FXOBinding("@repeat") @DM2LcfBinding(21) @DM2LcfBoolean(true)
+    @DM2FXOBinding("@repeat") @DM2LcfBinding(21) @DMCXBoolean(true)
     public BooleanR2kStruct repeat;
-    @DM2FXOBinding("@skippable") @DM2LcfBinding(22) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@skippable") @DM2LcfBinding(22) @DMCXBoolean(false)
     public BooleanR2kStruct skippable;
 
-    public MoveRoute() {
-        super("RPG::MoveRoute");
+    public MoveRoute(DM2Context ctx) {
+        super(ctx, "RPG::MoveRoute");
     }
 
     @Override
@@ -37,7 +39,7 @@ public class MoveRoute extends DM2R2kObject {
             return list = new DM2Array<MoveCommand>(0, false, false) {
                 @Override
                 public MoveCommand newValue() {
-                    return new MoveCommand();
+                    return new MoveCommand(context);
                 }
             };
         return super.dm2AddIVar(sym);

@@ -8,7 +8,11 @@
 package r48.io.r2k.obj.lsd;
 
 import r48.RubyTable;
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXBoolean;
+import r48.io.data.DMCXInteger;
+import r48.io.data.DMCXObject;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.BlobR2kStruct;
 import r48.io.r2k.chunks.BooleanR2kStruct;
@@ -23,16 +27,16 @@ import java.util.HashMap;
  * Created on December 13th, 2017
  */
 public class SaveMapInfo extends DM2R2kObject {
-    @DM2FXOBinding("@x") @DM2LcfBinding(0x01) @DM2LcfInteger(0)
+    @DM2FXOBinding("@x") @DM2LcfBinding(0x01) @DMCXInteger(0)
     public IntegerR2kStruct x;
-    @DM2FXOBinding("@y") @DM2LcfBinding(0x02) @DM2LcfInteger(0)
+    @DM2FXOBinding("@y") @DM2LcfBinding(0x02) @DMCXInteger(0)
     public IntegerR2kStruct y;
     // I seriously hope this is correct...
-    @DM2FXOBinding("@encounter_rate") @DM2LcfBinding(0x03) @DM2LcfInteger(-1)
+    @DM2FXOBinding("@encounter_rate") @DM2LcfBinding(0x03) @DMCXInteger(-1)
     public IntegerR2kStruct encounterRate;
-    @DM2FXOBinding("@tileset_id") @DM2LcfBinding(0x05) @DM2LcfInteger(-1)
+    @DM2FXOBinding("@tileset_id") @DM2LcfBinding(0x05) @DMCXInteger(-1)
     public IntegerR2kStruct chipsetId;
-    @DM2FXOBinding("@events") @DM2LcfBinding(0x0B) @DM2LcfSparseArray(SaveMapEvent.class)
+    @DM2FXOBinding("@events") @DM2LcfBinding(0x0B) @DM2CXSupplier(SaveMapEvent.class)
     public DM2SparseArrayH<SaveMapEvent> events;
 
     // Transforms are performed on the LCF data before unpack.
@@ -41,23 +45,23 @@ public class SaveMapInfo extends DM2R2kObject {
     @DM2FXOBinding("@upper_tile_remap") @DM2LcfBinding(0x16)
     public BlobR2kStruct upperTileRemap;
 
-    @DM2FXOBinding("@parallax_name") @DM2LcfBinding(0x20) @DM2LcfObject
+    @DM2FXOBinding("@parallax_name") @DM2LcfBinding(0x20) @DMCXObject
     public StringR2kStruct parallaxName;
-    @DM2FXOBinding("@parallax_loop_x") @DM2LcfBinding(0x21) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@parallax_loop_x") @DM2LcfBinding(0x21) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopX;
-    @DM2FXOBinding("@parallax_loop_y") @DM2LcfBinding(0x22) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@parallax_loop_y") @DM2LcfBinding(0x22) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopY;
-    @DM2FXOBinding("@parallax_autoloop_x") @DM2LcfBinding(0x23) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@parallax_autoloop_x") @DM2LcfBinding(0x23) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopXAuto;
-    @DM2FXOBinding("@parallax_sx") @DM2LcfBinding(0x24) @DM2LcfInteger(0)
+    @DM2FXOBinding("@parallax_sx") @DM2LcfBinding(0x24) @DMCXInteger(0)
     public IntegerR2kStruct parallaxLoopXSpeed;
-    @DM2FXOBinding("@parallax_autoloop_y") @DM2LcfBinding(0x25) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@parallax_autoloop_y") @DM2LcfBinding(0x25) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopYAuto;
-    @DM2FXOBinding("@parallax_sy") @DM2LcfBinding(0x26) @DM2LcfInteger(0)
+    @DM2FXOBinding("@parallax_sy") @DM2LcfBinding(0x26) @DMCXInteger(0)
     public IntegerR2kStruct parallaxLoopYSpeed;
 
-    public SaveMapInfo() {
-        super("RPG::SaveMapInfo");
+    public SaveMapInfo(DM2Context ctx) {
+        super(ctx, "RPG::SaveMapInfo");
     }
 
     private BlobR2kStruct newBlankRemap() {

@@ -8,6 +8,7 @@
 package r48.io.r2k.files;
 
 import r48.io.IntUtils;
+import r48.io.data.DM2Context;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.obj.MapUnit;
 
@@ -30,18 +31,18 @@ import java.io.OutputStream;
  * Created on 30/05/17.
  */
 public class MapIO {
-    public static MapUnit readLmu(InputStream fis) throws IOException {
-        String magic = R2kUtil.decodeLcfString(IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
+    public static MapUnit readLmu(DM2Context dm2c, InputStream fis) throws IOException {
+        String magic = R2kUtil.decodeLcfString(dm2c, IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfMapUnit"))
             System.err.println("Loading a file which pretends to be an LCF map but says " + magic);
         // Try to follow the standard...
-        MapUnit mu = new MapUnit();
+        MapUnit mu = new MapUnit(dm2c);
         mu.importData(fis);
         return mu;
     }
 
     public static void writeLmu(OutputStream fos, MapUnit rio) throws IOException {
-        byte[] d = R2kUtil.encodeLcfString("LcfMapUnit");
+        byte[] d = R2kUtil.encodeLcfString(rio.context, "LcfMapUnit");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
         rio.exportData(fos);

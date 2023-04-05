@@ -7,20 +7,21 @@
 
 package r48.io.r2k.obj;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXInteger;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.dm2chk.DM2LcfBinding;
-import r48.io.r2k.dm2chk.DM2LcfInteger;
 
 /**
  * As the street-lights are turning on outside...
  * Created on 31/05/17, based on Sound on December 6th 2018 (see Sound)
  */
 public class Music extends Sound {
-    @DM2FXOBinding("@fadeTime") @DM2LcfBinding(2) @DM2LcfInteger(0)
+    @DM2FXOBinding("@fadeTime") @DM2LcfBinding(2) @DMCXInteger(0)
     public IntegerR2kStruct fadeTime;
 
-    public Music() {
-        super("RPG::Music");
+    public Music(DM2Context ctx) {
+        super(ctx, "RPG::Music");
     }
 }

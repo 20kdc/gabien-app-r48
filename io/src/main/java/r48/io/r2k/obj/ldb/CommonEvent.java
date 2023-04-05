@@ -7,7 +7,11 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXBoolean;
+import r48.io.data.DMCXInteger;
+import r48.io.data.DMCXObject;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
@@ -20,19 +24,19 @@ import r48.io.r2k.struct.EventCommand;
  * fixed up later that day along with part of Item and all of Skill.
  */
 public class CommonEvent extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
     public StringR2kStruct name;
-    @DM2FXOBinding("@trigger") @DM2LcfBinding(11) @DM2LcfInteger(0)
+    @DM2FXOBinding("@trigger") @DM2LcfBinding(11) @DMCXInteger(0)
     public IntegerR2kStruct trigger;
-    @DM2FXOBinding("@condition_switch") @DM2LcfBinding(12) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@condition_switch") @DM2LcfBinding(12) @DMCXBoolean(false)
     public BooleanR2kStruct conditionSwitch;
-    @DM2FXOBinding("@condition_switch_id") @DM2LcfBinding(13) @DM2LcfInteger(1)
+    @DM2FXOBinding("@condition_switch_id") @DM2LcfBinding(13) @DMCXInteger(1)
     public IntegerR2kStruct switchId;
     @DM2FXOBinding("@list") @DM2LcfSizeBinding(21) @DM2LcfBinding(22)
     public DM2Array<EventCommand> list;
 
-    public CommonEvent() {
-        super("RPG::CommonEvent");
+    public CommonEvent(DM2Context ctx) {
+        super(ctx, "RPG::CommonEvent");
     }
 
     @Override
@@ -41,7 +45,7 @@ public class CommonEvent extends DM2R2kObject {
             return list = new DM2Array<EventCommand>() {
                 @Override
                 public EventCommand newValue() {
-                    return new EventCommand();
+                    return new EventCommand(context);
                 }
             };
         return super.dm2AddIVar(sym);

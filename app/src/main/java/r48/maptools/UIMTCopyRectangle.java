@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import gabien.GaBIEn;
 import gabien.ui.UILabel;
 import r48.RubyTable;
-import r48.io.IObjectBackend;
 import r48.io.data.IRIOGeneric;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;

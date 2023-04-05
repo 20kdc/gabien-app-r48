@@ -8,6 +8,7 @@
 package r48.io;
 
 import gabien.GaBIEn;
+import r48.io.data.DM2Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -34,23 +35,25 @@ import java.nio.charset.Charset;
 public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public final String root;
     public final Charset charset;
+    public final DM2Context dm2c;
 
     public R2kObjectBackend(String rootPath, Charset cs) {
         root = rootPath;
         charset = cs;
+        dm2c = new DM2Context(cs);
     }
 
     @Override
     public IRIO newObjectO(String fn) {
         // Non-RubyIO things
         if (fn.endsWith(".lmt"))
-            return new MapTree();
+            return new MapTree(dm2c);
         if (fn.endsWith(".lmu"))
-            return new MapUnit();
+            return new MapUnit(dm2c);
         if (fn.endsWith(".ldb"))
-            return new Database();
+            return new Database(dm2c);
         if (fn.endsWith(".lsd"))
-            return new Save();
+            return new Save(dm2c);
         return new IRIOGeneric(charset);
     }
 
@@ -63,7 +66,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                 InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
-                MapUnit r = MapIO.readLmu(fis);
+                MapUnit r = MapIO.readLmu(dm2c, fis);
                 fis.close();
                 return r;
             } catch (Exception e) {
@@ -76,7 +79,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                 InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
-                IRIO r = MapTreeIO.readLmt(fis);
+                IRIO r = MapTreeIO.readLmt(dm2c, fis);
                 fis.close();
                 return r;
             } catch (Exception e) {
@@ -89,7 +92,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                 InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
-                Database r = DatabaseIO.readLdb(fis);
+                Database r = DatabaseIO.readLdb(dm2c, fis);
                 fis.close();
                 return r;
             } catch (Exception e) {
@@ -102,7 +105,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                 InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
-                Save r = SaveDataIO.readLsd(fis);
+                Save r = SaveDataIO.readLsd(dm2c, fis);
                 fis.close();
                 return r;
             } catch (Exception e) {

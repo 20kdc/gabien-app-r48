@@ -8,6 +8,7 @@
 package r48.io.r2k.obj.ldb;
 
 import gabien.uslx.append.*;
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
 import r48.io.data.IRIO;
 import r48.io.r2k.dm2chk.DM2LcfBinding;
@@ -21,8 +22,8 @@ public class AnimationFrame extends DM2R2kObject {
     @DM2FXOBinding("@cells") @DM2LcfBinding(1)
     public DM2SparseArrayA<AnimationCell> cells;
 
-    public AnimationFrame() {
-        super("RPG::Animation::Frame");
+    public AnimationFrame(DM2Context ctx) {
+        super(ctx, "RPG::Animation::Frame");
     }
 
     @Override
@@ -31,7 +32,7 @@ public class AnimationFrame extends DM2R2kObject {
             return cells = new DM2SparseArrayA<AnimationCell>(new ISupplier<AnimationCell>() {
                 @Override
                 public AnimationCell get() {
-                    return new AnimationCell();
+                    return new AnimationCell(context);
                 }
             });
         return super.dm2AddIVar(sym);

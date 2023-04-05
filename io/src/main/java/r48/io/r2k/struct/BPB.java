@@ -7,6 +7,7 @@
 
 package r48.io.r2k.struct;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
 import r48.io.data.DM2Optional;
 import r48.io.data.IRIO;
@@ -29,8 +30,8 @@ public class BPB extends IRIOFixedObject implements IR2kInterpretable {
     @DM2Optional @DM2FXOBinding("@51to99_2k3")
     public DM2Array<BattleParamBlock> parameters2;
 
-    public BPB() {
-        super("RPG::BPB");
+    public BPB(DM2Context ctx) {
+        super(ctx, "RPG::BPB");
     }
 
     @Override

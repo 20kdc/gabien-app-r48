@@ -7,7 +7,11 @@
 
 package r48.io.r2k.obj.lsd;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXBoolean;
+import r48.io.data.DMCXInteger;
+import r48.io.data.DMCXObject;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.*;
 import r48.io.r2k.dm2chk.*;
@@ -16,35 +20,35 @@ import r48.io.r2k.dm2chk.*;
  * They're pieces on the board that are waiting to be moved...
  */
 public class SaveActor extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(0x01) @DM2LcfObject
+    @DM2FXOBinding("@name") @DM2LcfBinding(0x01) @DMCXObject
     public StringR2kStruct name;
-    @DM2FXOBinding("@title") @DM2LcfBinding(0x02) @DM2LcfObject
+    @DM2FXOBinding("@title") @DM2LcfBinding(0x02) @DMCXObject
     public StringR2kStruct title;
-    @DM2FXOBinding("@character_name") @DM2LcfBinding(0x0B) @DM2LcfObject
+    @DM2FXOBinding("@character_name") @DM2LcfBinding(0x0B) @DMCXObject
     public StringR2kStruct charName;
-    @DM2FXOBinding("@character_index") @DM2LcfBinding(0x0C) @DM2LcfInteger(0)
+    @DM2FXOBinding("@character_index") @DM2LcfBinding(0x0C) @DMCXInteger(0)
     public IntegerR2kStruct charIdx;
-    @DM2FXOBinding("@character_flags") @DM2LcfBinding(0x0D) @DM2LcfInteger(0)
+    @DM2FXOBinding("@character_flags") @DM2LcfBinding(0x0D) @DMCXInteger(0)
     public IntegerR2kStruct charFlags;
-    @DM2FXOBinding("@face_name") @DM2LcfBinding(0x15) @DM2LcfObject
+    @DM2FXOBinding("@face_name") @DM2LcfBinding(0x15) @DMCXObject
     public StringR2kStruct faceName;
-    @DM2FXOBinding("@face_index") @DM2LcfBinding(0x16) @DM2LcfInteger(0)
+    @DM2FXOBinding("@face_index") @DM2LcfBinding(0x16) @DMCXInteger(0)
     public IntegerR2kStruct faceIdx;
-    @DM2FXOBinding("@level") @DM2LcfBinding(0x1F) @DM2LcfInteger(-1)
+    @DM2FXOBinding("@level") @DM2LcfBinding(0x1F) @DMCXInteger(-1)
     public IntegerR2kStruct level;
-    @DM2FXOBinding("@exp") @DM2LcfBinding(0x20) @DM2LcfInteger(-1)
+    @DM2FXOBinding("@exp") @DM2LcfBinding(0x20) @DMCXInteger(-1)
     public IntegerR2kStruct exp;
-    @DM2FXOBinding("@hp_mod") @DM2LcfBinding(0x21) @DM2LcfInteger(-1)
+    @DM2FXOBinding("@hp_mod") @DM2LcfBinding(0x21) @DMCXInteger(-1)
     public IntegerR2kStruct hpMod;
-    @DM2FXOBinding("@sp_mod") @DM2LcfBinding(0x22) @DM2LcfInteger(-1)
+    @DM2FXOBinding("@sp_mod") @DM2LcfBinding(0x22) @DMCXInteger(-1)
     public IntegerR2kStruct spMod;
-    @DM2FXOBinding("@atk_mod") @DM2LcfBinding(0x29) @DM2LcfInteger(0)
+    @DM2FXOBinding("@atk_mod") @DM2LcfBinding(0x29) @DMCXInteger(0)
     public IntegerR2kStruct attackMod;
-    @DM2FXOBinding("@def_mod") @DM2LcfBinding(0x2A) @DM2LcfInteger(0)
+    @DM2FXOBinding("@def_mod") @DM2LcfBinding(0x2A) @DMCXInteger(0)
     public IntegerR2kStruct defenseMod;
-    @DM2FXOBinding("@spi_mod") @DM2LcfBinding(0x2B) @DM2LcfInteger(0)
+    @DM2FXOBinding("@spi_mod") @DM2LcfBinding(0x2B) @DMCXInteger(0)
     public IntegerR2kStruct spiritMod;
-    @DM2FXOBinding("@agi_mod") @DM2LcfBinding(0x2C) @DM2LcfInteger(0)
+    @DM2FXOBinding("@agi_mod") @DM2LcfBinding(0x2C) @DMCXInteger(0)
     public IntegerR2kStruct agilityMod;
 
     @DM2FXOBinding("@skills") @DM2LcfSizeBinding(0x33) @DM2LcfBinding(0x34)
@@ -53,9 +57,9 @@ public class SaveActor extends DM2R2kObject {
     @DM2FXOBinding("@equipment") @DM2LcfBinding(0x3D)
     public DM2Array<ShortR2kStruct> equipment;
 
-    @DM2FXOBinding("@current_hp") @DM2LcfBinding(0x47) @DM2LcfInteger(-1)
+    @DM2FXOBinding("@current_hp") @DM2LcfBinding(0x47) @DMCXInteger(-1)
     public IntegerR2kStruct currentHp;
-    @DM2FXOBinding("@current_sp") @DM2LcfBinding(0x48) @DM2LcfInteger(-1)
+    @DM2FXOBinding("@current_sp") @DM2LcfBinding(0x48) @DMCXInteger(-1)
     public IntegerR2kStruct currentSp;
 
     @DM2FXOBinding("@battle_commands_2k3") @DM2LcfBinding(0x50)
@@ -64,25 +68,25 @@ public class SaveActor extends DM2R2kObject {
     @DM2FXOBinding("@states") @DM2LcfSizeBinding(0x51) @DM2LcfBinding(0x52)
     public DM2Array<ShortR2kStruct> states;
 
-    @DM2FXOBinding("@changed_battle_commands_2k3") @DM2LcfBinding(0x53) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@changed_battle_commands_2k3") @DM2LcfBinding(0x53) @DMCXBoolean(false)
     public BooleanR2kStruct changedBattleCommands;
-    @DM2FXOBinding("@class_id_2k3") @DM2LcfBinding(0x5A) @DM2LcfInteger(-1)
+    @DM2FXOBinding("@class_id_2k3") @DM2LcfBinding(0x5A) @DMCXInteger(-1)
     public IntegerR2kStruct classId;
-    @DM2FXOBinding("@row") @DM2LcfBinding(0x5B) @DM2LcfInteger(0)
+    @DM2FXOBinding("@row") @DM2LcfBinding(0x5B) @DMCXInteger(0)
     public IntegerR2kStruct row;
-    @DM2FXOBinding("@two_weapon") @DM2LcfBinding(0x5C) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@two_weapon") @DM2LcfBinding(0x5C) @DMCXBoolean(false)
     public BooleanR2kStruct twoWeapon;
-    @DM2FXOBinding("@lock_equipment") @DM2LcfBinding(0x5D) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@lock_equipment") @DM2LcfBinding(0x5D) @DMCXBoolean(false)
     public BooleanR2kStruct lockEquipment;
     @DM2FXOBinding("@auto_battle") @DM2LcfBinding(0x5E)
     public BooleanR2kStruct autoBattle;
-    @DM2FXOBinding("@super_guard") @DM2LcfBinding(0x5F) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@super_guard") @DM2LcfBinding(0x5F) @DMCXBoolean(false)
     public BooleanR2kStruct superGuard;
-    @DM2FXOBinding("@battler_animation_2k3") @DM2LcfBinding(0x60) @DM2LcfInteger(0)
+    @DM2FXOBinding("@battler_animation_2k3") @DM2LcfBinding(0x60) @DMCXInteger(0)
     public IntegerR2kStruct battlerAnimation;
 
-    public SaveActor() {
-        super("RPG::SaveActor");
+    public SaveActor(DM2Context ctx) {
+        super(ctx, "RPG::SaveActor");
     }
 
     @Override

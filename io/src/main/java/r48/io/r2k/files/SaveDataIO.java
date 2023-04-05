@@ -8,6 +8,7 @@
 package r48.io.r2k.files;
 
 import r48.io.IntUtils;
+import r48.io.data.DM2Context;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.obj.Save;
 
@@ -20,17 +21,17 @@ import java.io.OutputStream;
  * Created just after midnight, 23rd of November 2017.
  */
 public class SaveDataIO {
-    public static Save readLsd(InputStream fis) throws IOException {
-        String magic = R2kUtil.decodeLcfString(IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
+    public static Save readLsd(DM2Context dm2c, InputStream fis) throws IOException {
+        String magic = R2kUtil.decodeLcfString(dm2c, IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfSaveData"))
             System.err.println("Loading a file which pretends to be an LCF save file but says " + magic);
-        Save mu = new Save();
+        Save mu = new Save(dm2c);
         mu.importData(fis);
         return mu;
     }
 
     public static void writeLsd(OutputStream fos, Save rio) throws IOException {
-        byte[] d = R2kUtil.encodeLcfString("LcfSaveData");
+        byte[] d = R2kUtil.encodeLcfString(rio.context, "LcfSaveData");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
         rio.exportData(fos);

@@ -7,11 +7,9 @@
 
 package r48.io.r2k.dm2chk;
 
-import gabien.uslx.append.*;
 import r48.io.IntUtils;
 import r48.io.data.*;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.IR2kInterpretable;
 import r48.io.r2k.chunks.IR2kSizable;
 
@@ -43,8 +41,8 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
     // A note here:
     private HashMap<Integer, byte[]> packedChunkData = new HashMap<Integer, byte[]>();
 
-    public DM2R2kObject(String sym) {
-        super(sym);
+    public DM2R2kObject(DM2Context ctx, String sym) {
+        super(ctx, sym);
     }
 
     @Override
@@ -273,55 +271,13 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
     // Must not handle translation into dm2AddIVar due to the 2 callers.
     // This instead happens in addIVar and addField.
     protected Object dm2AddField(final Field f) {
-        DM2LcfInteger fxi = f.getAnnotation(DM2LcfInteger.class);
-        if (fxi != null) {
-            try {
-                Object i = f.getType().getConstructor(int.class).newInstance(fxi.value());
-                f.set(this, i);
-                return i;
-            } catch (Exception e) {
-                throw new RuntimeException("At field: " + f, e);
-            }
+        Object obj = context.createObjectFor(f);
+        try {
+            f.set(this, obj);
+        } catch (Exception ex) {
+            throw new RuntimeException("At field: " + f, ex);
         }
-        DM2LcfBoolean fxb = f.getAnnotation(DM2LcfBoolean.class);
-        if (fxb != null) {
-            try {
-                BooleanR2kStruct i = new BooleanR2kStruct(fxb.value());
-                f.set(this, i);
-                return i;
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("At field: " + f, e);
-            }
-        }
-        final DM2LcfSparseArray fxd = f.getAnnotation(DM2LcfSparseArray.class);
-        if (fxd != null) {
-            try {
-                Object i = f.getType().getConstructor(ISupplier.class).newInstance(new ISupplier<IRIO>() {
-                    @Override
-                    public IRIO get() {
-                        try {
-                            return (IRIO) fxd.value().newInstance();
-                        } catch (Exception e) {
-                            throw new RuntimeException("At field: " + f, e);
-                        }
-                    }
-                });
-                f.set(this, i);
-                return i;
-            } catch (Exception e) {
-                throw new RuntimeException("At field: " + f, e);
-            }
-        }
-        if (f.isAnnotationPresent(DM2LcfObject.class)) {
-            try {
-                Object o = f.getType().newInstance();
-                f.set(this, o);
-                return o;
-            } catch (Exception e) {
-                throw new RuntimeException("At field: " + f, e);
-            }
-        }
-        return null;
+        return obj;
     }
 
     protected void dm2RmIVar(String sym) {

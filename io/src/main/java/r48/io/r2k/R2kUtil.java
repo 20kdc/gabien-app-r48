@@ -8,8 +8,8 @@
 package r48.io.r2k;
 
 import gabien.uslx.append.*;
-import r48.io.IObjectBackend;
 import r48.io.IntUtils;
+import r48.io.data.DM2Context;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.IR2kInterpretable;
@@ -90,13 +90,13 @@ public class R2kUtil {
     // Note that this is just for the xIO classes to decode magics.
     // You should NEVER, EVER, *EVER* be decoding these otherwise,
     //  instead passing the binary data directly to RIO
-    public static String decodeLcfString(byte[] data) {
-        return new String(data, IObjectBackend.Factory.encoding);
+    public static String decodeLcfString(DM2Context dm2c, byte[] data) {
+        return new String(data, dm2c.encoding);
     }
 
     // See above for when to use this
-    public static byte[] encodeLcfString(String text) {
-        return text.getBytes(IObjectBackend.Factory.encoding);
+    public static byte[] encodeLcfString(DM2Context dm2c, String text) {
+        return text.getBytes(dm2c.encoding);
     }
 
     // --

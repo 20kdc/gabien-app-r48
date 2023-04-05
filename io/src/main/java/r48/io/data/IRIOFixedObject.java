@@ -19,9 +19,11 @@ public abstract class IRIOFixedObject extends IRIOFixed {
     private final String objType;
     private final static ConcurrentHashMap<Class<?>, Field[]> classFields = new ConcurrentHashMap<>();
     protected final Field[] cachedFields;
+    public final DM2Context context;
 
-    public IRIOFixedObject(String sym) {
+    public IRIOFixedObject(DM2Context ctx, String sym) {
         super('o');
+        context = ctx;
         objType = sym;
         Class<?> c = getClass();
         Field[] data = classFields.get(c);

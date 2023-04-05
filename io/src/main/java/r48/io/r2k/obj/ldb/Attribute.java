@@ -7,7 +7,11 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXBoolean;
+import r48.io.data.DMCXInteger;
+import r48.io.data.DMCXObject;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.chunks.StringR2kStruct;
@@ -17,22 +21,22 @@ import r48.io.r2k.dm2chk.*;
  * Progress: Nothing's really changed.
  */
 public class Attribute extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
     public StringR2kStruct name;
-    @DM2FXOBinding("@magical") @DM2LcfBinding(2) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@magical") @DM2LcfBinding(2) @DMCXBoolean(false)
     public BooleanR2kStruct magical;
-    @DM2FXOBinding("@a_rate") @DM2LcfBinding(11) @DM2LcfInteger(300)
+    @DM2FXOBinding("@a_rate") @DM2LcfBinding(11) @DMCXInteger(300)
     public IntegerR2kStruct aRate;
-    @DM2FXOBinding("@b_rate") @DM2LcfBinding(12) @DM2LcfInteger(200)
+    @DM2FXOBinding("@b_rate") @DM2LcfBinding(12) @DMCXInteger(200)
     public IntegerR2kStruct bRate;
-    @DM2FXOBinding("@c_rate") @DM2LcfBinding(13) @DM2LcfInteger(100)
+    @DM2FXOBinding("@c_rate") @DM2LcfBinding(13) @DMCXInteger(100)
     public IntegerR2kStruct cRate;
-    @DM2FXOBinding("@d_rate") @DM2LcfBinding(14) @DM2LcfInteger(50)
+    @DM2FXOBinding("@d_rate") @DM2LcfBinding(14) @DMCXInteger(50)
     public IntegerR2kStruct dRate;
-    @DM2FXOBinding("@e_rate") @DM2LcfBinding(15) @DM2LcfInteger(0)
+    @DM2FXOBinding("@e_rate") @DM2LcfBinding(15) @DMCXInteger(0)
     public IntegerR2kStruct eRate;
 
-    public Attribute() {
-        super("RPG::Attribute");
+    public Attribute(DM2Context ctx) {
+        super(ctx, "RPG::Attribute");
     }
 }

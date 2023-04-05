@@ -7,7 +7,11 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXBoolean;
+import r48.io.data.DMCXInteger;
+import r48.io.data.DMCXObject;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.ByteR2kStruct;
@@ -19,41 +23,41 @@ import r48.io.r2k.dm2chk.*;
  * COPY jun6-2017
  */
 public class Enemy extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(0x01) @DM2LcfObject
+    @DM2FXOBinding("@name") @DM2LcfBinding(0x01) @DMCXObject
     public StringR2kStruct name;
-    @DM2FXOBinding("@battler_name") @DM2LcfBinding(0x02) @DM2LcfObject
+    @DM2FXOBinding("@battler_name") @DM2LcfBinding(0x02) @DMCXObject
     public StringR2kStruct battlerName;
-    @DM2FXOBinding("@battler_hue") @DM2LcfBinding(0x03) @DM2LcfInteger(0)
+    @DM2FXOBinding("@battler_hue") @DM2LcfBinding(0x03) @DMCXInteger(0)
     public IntegerR2kStruct battlerHue;
-    @DM2FXOBinding("@max_hp") @DM2LcfBinding(0x04) @DM2LcfInteger(10)
+    @DM2FXOBinding("@max_hp") @DM2LcfBinding(0x04) @DMCXInteger(10)
     public IntegerR2kStruct maxHp;
-    @DM2FXOBinding("@max_sp") @DM2LcfBinding(0x05) @DM2LcfInteger(10)
+    @DM2FXOBinding("@max_sp") @DM2LcfBinding(0x05) @DMCXInteger(10)
     public IntegerR2kStruct maxSp;
-    @DM2FXOBinding("@atk") @DM2LcfBinding(0x06) @DM2LcfInteger(10)
+    @DM2FXOBinding("@atk") @DM2LcfBinding(0x06) @DMCXInteger(10)
     public IntegerR2kStruct atk;
-    @DM2FXOBinding("@def") @DM2LcfBinding(0x07) @DM2LcfInteger(10)
+    @DM2FXOBinding("@def") @DM2LcfBinding(0x07) @DMCXInteger(10)
     public IntegerR2kStruct def;
-    @DM2FXOBinding("@spi") @DM2LcfBinding(0x08) @DM2LcfInteger(10)
+    @DM2FXOBinding("@spi") @DM2LcfBinding(0x08) @DMCXInteger(10)
     public IntegerR2kStruct spi;
-    @DM2FXOBinding("@agi") @DM2LcfBinding(0x09) @DM2LcfInteger(10)
+    @DM2FXOBinding("@agi") @DM2LcfBinding(0x09) @DMCXInteger(10)
     public IntegerR2kStruct agi;
-    @DM2FXOBinding("@battler_blend_mode") @DM2LcfBinding(0x0A) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@battler_blend_mode") @DM2LcfBinding(0x0A) @DMCXBoolean(false)
     public BooleanR2kStruct battlerBlendMode;
-    @DM2FXOBinding("@exp") @DM2LcfBinding(0x0B) @DM2LcfInteger(0)
+    @DM2FXOBinding("@exp") @DM2LcfBinding(0x0B) @DMCXInteger(0)
     public IntegerR2kStruct exp;
-    @DM2FXOBinding("@gold") @DM2LcfBinding(0x0C) @DM2LcfInteger(0)
+    @DM2FXOBinding("@gold") @DM2LcfBinding(0x0C) @DMCXInteger(0)
     public IntegerR2kStruct gold;
-    @DM2FXOBinding("@drop_item") @DM2LcfBinding(0x0D) @DM2LcfInteger(0)
+    @DM2FXOBinding("@drop_item") @DM2LcfBinding(0x0D) @DMCXInteger(0)
     public IntegerR2kStruct dropId;
-    @DM2FXOBinding("@drop_percent") @DM2LcfBinding(0x0E) @DM2LcfInteger(100)
+    @DM2FXOBinding("@drop_percent") @DM2LcfBinding(0x0E) @DMCXInteger(100)
     public IntegerR2kStruct dropProb;
-    @DM2FXOBinding("@can_crit") @DM2LcfBinding(0x15) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@can_crit") @DM2LcfBinding(0x15) @DMCXBoolean(false)
     public BooleanR2kStruct criticalHit;
-    @DM2FXOBinding("@crit_chance") @DM2LcfBinding(0x16) @DM2LcfInteger(30)
+    @DM2FXOBinding("@crit_chance") @DM2LcfBinding(0x16) @DMCXInteger(30)
     public IntegerR2kStruct criticalHitChance;
-    @DM2FXOBinding("@miss") @DM2LcfBinding(0x1A) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@miss") @DM2LcfBinding(0x1A) @DMCXBoolean(false)
     public BooleanR2kStruct miss;
-    @DM2FXOBinding("@levitate") @DM2LcfBinding(0x1C) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@levitate") @DM2LcfBinding(0x1C) @DMCXBoolean(false)
     public BooleanR2kStruct levitate;
 
     @DM2FXOBinding("@state_ranks") @DM2LcfSizeBinding(0x1F) @DM2LcfBinding(0x20)
@@ -61,11 +65,11 @@ public class Enemy extends DM2R2kObject {
     @DM2FXOBinding("@attr_ranks") @DM2LcfSizeBinding(0x21) @DM2LcfBinding(0x22)
     public DM2ArraySet<ByteR2kStruct> attrRanks;
 
-    @DM2FXOBinding("@actions") @DM2LcfBinding(0x2A) @DM2LcfSparseArray(EnemyAction.class)
+    @DM2FXOBinding("@actions") @DM2LcfBinding(0x2A) @DM2CXSupplier(EnemyAction.class)
     public DM2SparseArrayH<EnemyAction> enemyActions;
 
-    public Enemy() {
-        super("RPG::Enemy");
+    public Enemy(DM2Context ctx) {
+        super(ctx, "RPG::Enemy");
     }
 
     @Override

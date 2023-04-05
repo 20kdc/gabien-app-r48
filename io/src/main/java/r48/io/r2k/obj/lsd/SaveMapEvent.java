@@ -7,29 +7,30 @@
 
 package r48.io.r2k.obj.lsd;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXBoolean;
+import r48.io.data.DMCXInteger;
+import r48.io.data.DMCXObject;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.dm2chk.DM2LcfBinding;
-import r48.io.r2k.dm2chk.DM2LcfBoolean;
-import r48.io.r2k.dm2chk.DM2LcfInteger;
-import r48.io.r2k.dm2chk.DM2LcfObject;
 
 /**
  * You know exactly why this inheritance is needed
  * Created on December 13th, 2017
  */
 public class SaveMapEvent extends SaveCharacter {
-    @DM2FXOBinding("@running") @DM2LcfBinding(101) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@running") @DM2LcfBinding(101) @DMCXBoolean(false)
     public BooleanR2kStruct running;
-    @DM2FXOBinding("@original_moveroute_index") @DM2LcfBinding(102) @DM2LcfInteger(0)
+    @DM2FXOBinding("@original_moveroute_index") @DM2LcfBinding(102) @DMCXInteger(0)
     public IntegerR2kStruct originalMoveRouteIndex;
-    @DM2FXOBinding("@pending") @DM2LcfBinding(103) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@pending") @DM2LcfBinding(103) @DMCXBoolean(false)
     public BooleanR2kStruct pending;
-    @DM2FXOBinding("@interpreter") @DM2LcfBinding(108) @DM2LcfObject
+    @DM2FXOBinding("@interpreter") @DM2LcfBinding(108) @DMCXObject
     public Interpreter interpreter;
 
-    public SaveMapEvent() {
-        super("RPG::SaveMapEvent");
+    public SaveMapEvent(DM2Context ctx) {
+        super(ctx, "RPG::SaveMapEvent");
     }
 }

@@ -8,6 +8,7 @@
 package r48.io.r2k.struct;
 
 import r48.io.IntUtils;
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedObject;
@@ -32,8 +33,8 @@ public class TRect extends IRIOFixedObject implements IR2kInterpretable {
     @DM2FXOBinding("@down")
     public IRIOFixnum d;
 
-    public TRect() {
-        super("Rect");
+    public TRect(DM2Context dm2c) {
+        super(dm2c, "Rect");
     }
 
     @Override

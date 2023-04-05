@@ -7,6 +7,7 @@
 
 package r48.io.ika;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedObject;
@@ -33,8 +34,8 @@ public class IkaEvent extends IRIOFixedObject {
     @DM2FXOBinding("@collisionType")
     public IRIOFixnum collisionType;
 
-    public IkaEvent() {
-        super("IkachanEvent");
+    public IkaEvent(DM2Context ctx) {
+        super(ctx, "IkachanEvent");
         initialize();
     }
 

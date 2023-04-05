@@ -7,9 +7,12 @@
 
 package r48.io.r2k.obj.ldb;
 
-import gabien.uslx.append.*;
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXObject;
 import r48.io.data.DM2Optional;
+import r48.io.data.DMCXBoolean;
+import r48.io.data.DMCXInteger;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.*;
 import r48.io.r2k.dm2chk.*;
@@ -21,25 +24,25 @@ import r48.io.r2k.struct.BPB;
  */
 public class ActorClassBase extends DM2R2kObject {
 
-    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
-    public StringR2kStruct name = new StringR2kStruct();
-    @DM2FXOBinding("@dual_wield") @DM2LcfBinding(21) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
+    public StringR2kStruct name;
+    @DM2FXOBinding("@dual_wield") @DM2LcfBinding(21) @DMCXBoolean(false)
     public BooleanR2kStruct dualWield;
-    @DM2FXOBinding("@lock_equipment") @DM2LcfBinding(22) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@lock_equipment") @DM2LcfBinding(22) @DMCXBoolean(false)
     public BooleanR2kStruct lockEquipment;
-    @DM2FXOBinding("@battle_auto") @DM2LcfBinding(23) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@battle_auto") @DM2LcfBinding(23) @DMCXBoolean(false)
     public BooleanR2kStruct autoBattle;
-    @DM2FXOBinding("@battle_super_guard") @DM2LcfBinding(24) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@battle_super_guard") @DM2LcfBinding(24) @DMCXBoolean(false)
     public BooleanR2kStruct superGuard;
 
     @DM2FXOBinding("@battle_parameters") @DM2LcfBinding(31)
     public BPB parameters;
 
-    @DM2Optional @DM2FXOBinding("@init_level_exp") @DM2LcfBinding(41) @DM2LcfInteger(0)
+    @DM2Optional @DM2FXOBinding("@init_level_exp") @DM2LcfBinding(41) @DMCXInteger(0)
     public IntegerR2kStruct initLevelExp;
-    @DM2Optional @DM2FXOBinding("@each_level_exp_mul") @DM2LcfBinding(42) @DM2LcfInteger(0)
+    @DM2Optional @DM2FXOBinding("@each_level_exp_mul") @DM2LcfBinding(42) @DMCXInteger(0)
     public IntegerR2kStruct eachLevelExpP;
-    @DM2FXOBinding("@each_level_exp_add") @DM2LcfBinding(43) @DM2LcfInteger(0)
+    @DM2FXOBinding("@each_level_exp_add") @DM2LcfBinding(43) @DMCXInteger(0)
     public IntegerR2kStruct eachLevelExpModC;
 
     // 1 or 0...? Different in each.
@@ -59,22 +62,17 @@ public class ActorClassBase extends DM2R2kObject {
 
     private final int battlerAnimationDefault;
 
-    public ActorClassBase(String sym, int bad1) {
-        super(sym);
+    public ActorClassBase(DM2Context ctx, String sym, int bad1) {
+        super(ctx, sym);
         battlerAnimationDefault = bad1;
     }
 
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@battle_parameters"))
-            return parameters = new BPB();
+            return parameters = new BPB(context);
         if (sym.equals("@learn_skills"))
-            return learnSkills = new DM2SparseArrayA<Learning>(new ISupplier<Learning>() {
-                @Override
-                public Learning get() {
-                    return new Learning();
-                }
-            });
+            return learnSkills = new DM2SparseArrayA<Learning>(() -> new Learning(context));
         if (sym.equals("@state_ranks"))
             return stateRanks = byteSet();
         if (sym.equals("@attr_ranks"))

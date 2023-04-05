@@ -8,7 +8,11 @@
 package r48.io.r2k.obj.ldb;
 
 import r48.RubyTable;
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXBoolean;
+import r48.io.data.DMCXInteger;
+import r48.io.data.DMCXObject;
 import r48.io.data.IRIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.BlobR2kStruct;
@@ -25,9 +29,9 @@ import java.util.HashMap;
  * Created on 01/06/17.
  */
 public class Tileset extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(0x01) @DM2LcfObject
+    @DM2FXOBinding("@name") @DM2LcfBinding(0x01) @DMCXObject
     public StringR2kStruct name;
-    @DM2FXOBinding("@tileset_name") @DM2LcfBinding(0x02) @DM2LcfObject
+    @DM2FXOBinding("@tileset_name") @DM2LcfBinding(0x02) @DMCXObject
     public StringR2kStruct tilesetName;
     // Tables? Tables. Don't need to put these as optional explicitly because not Index-based.
     // ...and anyway, I get the feeling they aren't actually SUPPOSED to be optional.
@@ -40,13 +44,13 @@ public class Tileset extends DM2R2kObject {
     @DM2FXOBinding("@highpass_data") @DM2LcfBinding(5)
     public BlobR2kStruct highPassTbl;
 
-    @DM2FXOBinding("@anim_cyclic") @DM2LcfBinding(0x0B) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@anim_cyclic") @DM2LcfBinding(0x0B) @DMCXBoolean(false)
     public BooleanR2kStruct animCyclic;
-    @DM2FXOBinding("@anim_speed") @DM2LcfBinding(0x0C) @DM2LcfInteger(0)
+    @DM2FXOBinding("@anim_speed") @DM2LcfBinding(0x0C) @DMCXInteger(0)
     public IntegerR2kStruct animSpeed;
 
-    public Tileset() {
-        super("RPG::Tileset");
+    public Tileset(DM2Context ctx) {
+        super(ctx, "RPG::Tileset");
     }
 
     @Override

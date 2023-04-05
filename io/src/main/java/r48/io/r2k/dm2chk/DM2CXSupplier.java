@@ -14,6 +14,6 @@ import java.lang.annotation.RetentionPolicy;
  * Created on December 06, 2018.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DM2LcfSparseArray {
+public @interface DM2CXSupplier {
     Class<?> value();
 }

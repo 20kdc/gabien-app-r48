@@ -7,10 +7,13 @@
 
 package r48.io.r2k.obj;
 
-import gabien.uslx.append.*;
 import r48.RubyTable;
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXObject;
 import r48.io.data.DM2Optional;
+import r48.io.data.DMCXBoolean;
+import r48.io.data.DMCXInteger;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedUser;
 import r48.io.r2k.R2kUtil;
@@ -32,31 +35,31 @@ import java.util.HashMap;
  * Created on 31/05/17.
  */
 public class MapUnit extends DM2R2kObject {
-    @DM2FXOBinding("@tileset_id") @DM2LcfBinding(1) @DM2LcfInteger(1)
+    @DM2FXOBinding("@tileset_id") @DM2LcfBinding(1) @DMCXInteger(1)
     public IntegerR2kStruct tilesetId;
-    @DM2FXOBinding("@width") @DM2LcfBinding(2) @DM2LcfInteger(20)
+    @DM2FXOBinding("@width") @DM2LcfBinding(2) @DMCXInteger(20)
     public IntegerR2kStruct width;
-    @DM2FXOBinding("@height") @DM2LcfBinding(3) @DM2LcfInteger(15)
+    @DM2FXOBinding("@height") @DM2LcfBinding(3) @DMCXInteger(15)
     public IntegerR2kStruct height;
-    @DM2FXOBinding("@scroll_type") @DM2LcfBinding(11) @DM2LcfInteger(0)
+    @DM2FXOBinding("@scroll_type") @DM2LcfBinding(11) @DMCXInteger(0)
     public IntegerR2kStruct scrollType;
-    @DM2FXOBinding("@parallax_flag") @DM2LcfBinding(31) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@parallax_flag") @DM2LcfBinding(31) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxFlag;
-    @DM2FXOBinding("@parallax_name") @DM2LcfBinding(32) @DM2LcfObject
+    @DM2FXOBinding("@parallax_name") @DM2LcfBinding(32) @DMCXObject
     public StringR2kStruct parallaxName;
-    @DM2FXOBinding("@parallax_loop_x") @DM2LcfBinding(33) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@parallax_loop_x") @DM2LcfBinding(33) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopX;
-    @DM2FXOBinding("@parallax_loop_y") @DM2LcfBinding(34) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@parallax_loop_y") @DM2LcfBinding(34) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopY;
-    @DM2FXOBinding("@parallax_autoloop_x") @DM2LcfBinding(35) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@parallax_autoloop_x") @DM2LcfBinding(35) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxAutoloopX;
-    @DM2FXOBinding("@parallax_sx") @DM2LcfBinding(36) @DM2LcfInteger(0)
+    @DM2FXOBinding("@parallax_sx") @DM2LcfBinding(36) @DMCXInteger(0)
     public IntegerR2kStruct parallaxSX;
-    @DM2FXOBinding("@parallax_autoloop_y") @DM2LcfBinding(37) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@parallax_autoloop_y") @DM2LcfBinding(37) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxAutoloopY;
-    @DM2FXOBinding("@parallax_sy") @DM2LcfBinding(38) @DM2LcfInteger(0)
+    @DM2FXOBinding("@parallax_sy") @DM2LcfBinding(38) @DMCXInteger(0)
     public IntegerR2kStruct parallaxSY;
-    @DM2FXOBinding("@top_level") @DM2LcfBinding(42) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@top_level") @DM2LcfBinding(42) @DMCXBoolean(false)
     public BooleanR2kStruct topLevel;
 
     // This is where things get interesting. During unpack & repack, these are initialized and destroyed.
@@ -72,14 +75,14 @@ public class MapUnit extends DM2R2kObject {
     // Remaining things are back to normal.
     @DM2FXOBinding("@events") @DM2LcfBinding(81)
     public DM2SparseArrayH<Event> events;
-    @DM2Optional @DM2FXOBinding("@save_count_2k3en") @DM2LcfBinding(90) @DM2LcfInteger(0)
+    @DM2Optional @DM2FXOBinding("@save_count_2k3en") @DM2LcfBinding(90) @DMCXInteger(0)
     public IntegerR2kStruct magicNumberA;
-    @DM2Optional @DM2FXOBinding("@save_count_other") @DM2LcfBinding(91) @DM2LcfInteger(0)
+    @DM2Optional @DM2FXOBinding("@save_count_other") @DM2LcfBinding(91) @DMCXInteger(0)
     public IntegerR2kStruct magicNumberB;
 
 
-    public MapUnit() {
-        super("RPG::Map");
+    public MapUnit(DM2Context ctx) {
+        super(ctx, "RPG::Map");
     }
 
     @Override
@@ -96,12 +99,7 @@ public class MapUnit extends DM2R2kObject {
         if (sym.equals("@data"))
             return map = new IRIOFixedUser("Table", new RubyTable(3, 20, 15, 2, new int[] {0, 0}).innerBytes);
         if (sym.equals("@events"))
-            return events = new DM2SparseArrayH<Event>(new ISupplier<Event>() {
-                @Override
-                public Event get() {
-                    return new Event();
-                }
-            });
+            return events = new DM2SparseArrayH<Event>(() -> new Event(context));
         return super.dm2AddIVar(sym);
     }
 

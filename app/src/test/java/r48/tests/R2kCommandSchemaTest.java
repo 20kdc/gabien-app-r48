@@ -8,11 +8,15 @@
 package r48.tests;
 
 import gabien.TestKickstart;
+
+import java.nio.charset.StandardCharsets;
+
 import org.junit.Test;
 
 import r48.App;
 import r48.dbs.CMDB;
 import r48.io.IObjectBackend;
+import r48.io.data.DM2Context;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.r2k.obj.Event;
@@ -59,7 +63,7 @@ public class R2kCommandSchemaTest {
 
     private App beginCommandProcedure() {
         App app = new TestKickstart().kickstart("RAM/", "UTF-8", "r2k");
-        rpgEvInst = new Event();
+        rpgEvInst = new Event(new DM2Context(StandardCharsets.UTF_8));
         rpgEv = app.sdb.getSDBEntry("RPG::Event");
         rpgEvP = new SchemaPath(rpgEv, new IObjectBackend.MockLoadedObject(rpgEvInst));
         rpgEv.modifyVal(rpgEvInst, rpgEvP, true);

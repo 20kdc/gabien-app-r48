@@ -8,7 +8,6 @@
 package r48.schema.specialized.genpos.backend;
 
 import r48.App;
-import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;

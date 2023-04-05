@@ -8,6 +8,7 @@
 package r48.io.r2k.files;
 
 import r48.io.IntUtils;
+import r48.io.data.DM2Context;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.struct.MapTree;
 
@@ -20,18 +21,18 @@ import java.io.OutputStream;
  * Created on 31/05/17.
  */
 public class MapTreeIO {
-    public static MapTree readLmt(InputStream fis) throws IOException {
-        String magic = R2kUtil.decodeLcfString(IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
+    public static MapTree readLmt(DM2Context dm2c, InputStream fis) throws IOException {
+        String magic = R2kUtil.decodeLcfString(dm2c, IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfMapTree"))
             System.err.println("Loading a file which pretends to be an LCF map tree but says " + magic);
         // Try to follow the standard...
-        MapTree mu = new MapTree();
+        MapTree mu = new MapTree(dm2c);
         mu.importData(fis);
         return mu;
     }
 
     public static void writeLmt(OutputStream fos, MapTree db) throws IOException {
-        byte[] d = R2kUtil.encodeLcfString("LcfMapTree");
+        byte[] d = R2kUtil.encodeLcfString(db.context, "LcfMapTree");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
         db.exportData(fos);

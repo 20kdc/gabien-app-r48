@@ -33,8 +33,8 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
     @DM2Optional @DM2FXOBinding("@move_commands")
     public IRIOFixedArray<MoveCommand> moveCommands;
 
-    public EventCommand() {
-        super("RPG::EventCommand");
+    public EventCommand(DM2Context ctx) {
+        super(ctx, "RPG::EventCommand");
     }
 
     @Override
@@ -44,12 +44,12 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
         if (sym.equals("@indent"))
             return indent = new IRIOFixnum(0);
         if (sym.equals("@parameters"))
-            return parameters = new ParameterArray();
+            return parameters = new ParameterArray(context);
         if (sym.equals("@move_commands"))
             return moveCommands = new IRIOFixedArray<MoveCommand>() {
                 @Override
                 public MoveCommand newValue() {
-                    return new MoveCommand();
+                    return new MoveCommand(context);
                 }
             };
         return null;
@@ -76,7 +76,7 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
             for (int i = 0; i < remainingStream.length; i++)
                 remainingStream[i] = R2kUtil.readLcfVLI(bais);
             addIVar("@move_commands");
-            moveCommands.arrVal = MoveCommand.fromEmbeddedData(remainingStream);
+            moveCommands.arrVal = MoveCommand.fromEmbeddedData(context, remainingStream);
         }
     }
 

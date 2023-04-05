@@ -7,10 +7,11 @@
 
 package r48.io.r2k.obj;
 
+import r48.io.data.DM2Context;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DMCXInteger;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.dm2chk.DM2LcfBinding;
-import r48.io.r2k.dm2chk.DM2LcfInteger;
 import r48.io.r2k.dm2chk.DM2R2kObject;
 
 /**
@@ -18,10 +19,10 @@ import r48.io.r2k.dm2chk.DM2R2kObject;
  * Created on 01/06/17.
  */
 public class Encounter extends DM2R2kObject {
-    @DM2FXOBinding("@troop") @DM2LcfBinding(1) @DM2LcfInteger(0)
+    @DM2FXOBinding("@troop") @DM2LcfBinding(1) @DMCXInteger(0)
     public IntegerR2kStruct troop;
 
-    public Encounter() {
-        super("RPG::Encounter");
+    public Encounter(DM2Context ctx) {
+        super(ctx, "RPG::Encounter");
     }
 }

@@ -7,8 +7,8 @@
 
 package r48.io.r2k.chunks;
 
-import r48.io.IObjectBackend;
 import r48.io.IntUtils;
+import r48.io.data.DM2Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
 
@@ -24,14 +24,16 @@ import java.nio.charset.Charset;
  */
 public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public byte[] data = new byte[0];
-    public final Charset encoding = IObjectBackend.Factory.encoding;
+    public final Charset encoding;
 
-    public StringR2kStruct() {
+    public StringR2kStruct(DM2Context ctx) {
         super('"');
+        encoding = ctx.encoding;
     }
 
-    public StringR2kStruct(byte[] dat) {
+    public StringR2kStruct(DM2Context ctx, byte[] dat) {
         super('"');
+        encoding = ctx.encoding;
         data = dat;
     }
 

@@ -8,6 +8,7 @@
 package r48.io.r2k.files;
 
 import r48.io.IntUtils;
+import r48.io.data.DM2Context;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.obj.ldb.Database;
 
@@ -19,18 +20,18 @@ import java.io.OutputStream;
  * Created on 01/06/17.
  */
 public class DatabaseIO {
-    public static Database readLdb(InputStream fis) throws IOException {
-        String magic = R2kUtil.decodeLcfString(IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
+    public static Database readLdb(DM2Context context, InputStream fis) throws IOException {
+        String magic = R2kUtil.decodeLcfString(context, IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfDataBase"))
             System.err.println("Loading a file which pretends to be an LCF database but says " + magic);
         // Try to follow the standard...
-        Database mu = new Database();
+        Database mu = new Database(context);
         mu.importData(fis);
         return mu;
     }
 
     public static void writeLdb(OutputStream fos, Database db) throws IOException {
-        byte[] d = R2kUtil.encodeLcfString("LcfDataBase");
+        byte[] d = R2kUtil.encodeLcfString(db.context, "LcfDataBase");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
         db.exportData(fos);
