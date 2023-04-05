@@ -9,6 +9,10 @@ package gabienapp;
 import java.util.LinkedList;
 
 import gabien.GaBIEn;
+import gabien.datum.DatumDecToLambdaVisitor;
+import gabien.datum.DatumSrcLoc;
+import gabien.datum.DatumTreeUtils;
+import gabien.datum.DatumVisitor;
 import gabien.ui.Rect;
 import gabien.ui.UIAdjuster;
 import gabien.ui.UIElement;
@@ -27,8 +31,8 @@ import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
+import r48.dbs.DatumLoader;
 import r48.tr.LanguageList;
-import r48.tr.TrPage.FF0;
 import r48.tr.pages.TrGlobal;
 import r48.ui.UIAppendButton;
 import r48.ui.dialog.UIFontSizeConfigurator;
@@ -124,7 +128,14 @@ public class UILauncher extends UIProxy {
         // ...
 
         tabPane.setForcedBounds(null, new Rect(0, 0, c.f.scaleGuess(640), c.f.scaleGuess(480)));
-        setPanel(new PrimaryGPMenuPanel(ls));
+        // setup initial panel by creating an outer visitor, visiting a list within it, and then continue within that
+        DatumDecToLambdaVisitor visitor = new DatumDecToLambdaVisitor((res, srcLoc) -> {
+            setPanel(LauncherEntry.makeFrom(null, ls, DatumTreeUtils.cList(res)));
+        });
+        DatumVisitor visitor2 = visitor.visitList(DatumSrcLoc.NONE);
+        DatumLoader.read("gamepaks.scm", null, visitor2);
+        visitor2.visitEnd(DatumSrcLoc.NONE);
+        // done!
         proxySetElement(tabPane, false);
     }
 
@@ -137,7 +148,7 @@ public class UILauncher extends UIProxy {
         gamepaksRequestClose = true;
     }
 
-    public void setPanel(IGPMenuPanel igpMenuPanel) {
+    public void setPanel(LinkedList<LauncherEntry> igpMenuPanel) {
         gamepaks.panelsClear();
         for (UIElement uie : basePanels)
             gamepaks.panelsAdd(uie);
@@ -145,12 +156,8 @@ public class UILauncher extends UIProxy {
             gamepaksRequestClose = true;
             return;
         }
-        FF0[] names = igpMenuPanel.getButtonText();
-        Runnable[] runs = igpMenuPanel.getButtonActs();
-        for (int i = 0; i < names.length; i++) {
-            final Runnable r = runs[i];
-            gamepaks.panelsAdd(new UITextButton(names[i].r(), c.f.launcherTH, r));
-        }
+        for (LauncherEntry panel : igpMenuPanel)
+            gamepaks.panelsAdd(new UITextButton(panel.name.r(), c.f.launcherTH, panel.runnable));
     }
 
     private UIElement figureOutTopBar(final Launcher lun) {

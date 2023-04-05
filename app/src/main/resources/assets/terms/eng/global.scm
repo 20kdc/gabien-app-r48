@@ -44,7 +44,6 @@
 	)
 
 	bBack "Back..."
-	noGameMode "'No Game' Mode"
 	accessLauncherREPL "Access Launcher REPL"
 	dumpLLang "Write launcher-tr.scm"
 

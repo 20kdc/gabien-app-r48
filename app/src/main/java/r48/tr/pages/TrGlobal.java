@@ -22,7 +22,6 @@ public class TrGlobal extends TrPage {
     // launcher
     public String bSelectEngine, lFrameMS, lGamePath, lSecondaryPath, lChooseEngine;
     public String bBack;
-    public String noGameMode;
     public String accessLauncherREPL;
     public String dumpLLang;
     // help
