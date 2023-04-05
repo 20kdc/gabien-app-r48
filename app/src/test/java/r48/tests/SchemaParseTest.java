@@ -13,8 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import r48.App;
-import r48.dbs.DBLoader;
-import r48.dbs.IDatabase;
+import r48.app.EnginesList;
 import r48.dbs.TestDBUtils;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
@@ -40,17 +39,8 @@ public class SchemaParseTest {
         LinkedList<Object[]> tests = new LinkedList<Object[]>();
         new TestKickstart().kickstartRFS();
         final HashSet<String> schemas = new HashSet<String>();
-        DBLoader.readFile(null, "Gamepaks.txt", new IDatabase() {
-            @Override
-            public void newObj(int objId, final String objName) {
-                schemas.add(objName);
-            }
-
-            @Override
-            public void execCmd(char c, String[] args) {
-
-            }
-        });
+        for (String ed : EnginesList.getEngines(null).keySet())
+            schemas.add(ed);
         for (String st : schemas)
             tests.add(new Object[] {st});
         return tests;
