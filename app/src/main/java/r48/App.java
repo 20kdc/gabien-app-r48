@@ -6,6 +6,7 @@
  */
 package r48;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -64,8 +65,8 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public App(InterlaunchGlobals ilg, EngineDef gp, String rp, String sip, IConsumer<String> loadProgress) {
-        super(ilg, gp, rp, sip, loadProgress);
+    public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, String rp, String sip, IConsumer<String> loadProgress) {
+        super(ilg, charset, gp, rp, sip, loadProgress);
         vmCtx = new MVMEnvR48((str) -> {
             loadProgress.accept(t.g.loadingProgress.r(str));
         }, ilg.logTrIssues, ilg.c.language);

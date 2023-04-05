@@ -50,7 +50,7 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
     private UIAppendButton toolbarCp = new UIAppendButton(T.g.bCopy, toolbarP, new Runnable() {
         @Override
         public void run() {
-            app.theClipboard = new IRIOGeneric(IObjectBackend.Factory.encoding).setDeepClone(innerElem.targetElement);
+            app.theClipboard = new IRIOGeneric(app.encoding).setDeepClone(innerElem.targetElement);
         }
     }, app.f.schemaPathTH);
     private UIAppendButton toolbarPs = new UIAppendButton(T.g.bPaste, toolbarCp, new Runnable() {

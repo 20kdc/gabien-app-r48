@@ -179,7 +179,7 @@ class SDBHelpers extends App.Svc {
         disambiguations.put("", new ArrayElementSchemaElement(app, 1, () -> S.ppp_idFN, val, null, false));
         AggregateSchemaElement inner = new AggregateSchemaElement(app, new SchemaElement[] {
                 new HalfsplitSchemaElement(
-                        new ArrayElementSchemaElement(app, 0, () -> S.ppp_typeFN, new EnumSchemaElement(app, types, new IRIOGeneric(IObjectBackend.Factory.encoding).setFX(0), EntryMode.LOCK, () -> ""), null, false),
+                        new ArrayElementSchemaElement(app, 0, () -> S.ppp_typeFN, new EnumSchemaElement(app, types, new IRIOGeneric(app.encoding).setFX(0), EntryMode.LOCK, () -> ""), null, false),
                         new DisambiguatorSchemaElement(app, PathSyntax.compile(app, "]0"), disambiguations)
                 ),
                 new SubwindowSchemaElement(new HWNDSchemaElement(app, PathSyntax.compile(app, "]0"), "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {
@@ -203,7 +203,7 @@ class SDBHelpers extends App.Svc {
                         type++;
                     }
                 }
-                IRIOGeneric base = new IRIOGeneric(IObjectBackend.Factory.encoding);
+                IRIOGeneric base = new IRIOGeneric(app.encoding);
                 base.setArray(2);
                 base.getAElem(0).setFX(type);
                 base.getAElem(1).setFX(t);
@@ -258,7 +258,7 @@ class SDBHelpers extends App.Svc {
                     t -= 10000;
                     type++;
                 }
-                IRIOGeneric base = new IRIOGeneric(IObjectBackend.Factory.encoding);
+                IRIOGeneric base = new IRIOGeneric(app.encoding);
                 base.setArray(2);
                 base.getAElem(0).setFX(type);
                 base.getAElem(1).setFX(t);

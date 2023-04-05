@@ -218,7 +218,7 @@ public class StandardArrayInterface implements IArrayInterface {
 
             private void copyRange(int fixedStart, int fixedEnd) {
                 // the clipboard is very lenient...
-                IRIOGeneric rio = new IRIOGeneric(IObjectBackend.Factory.encoding);
+                IRIOGeneric rio = new IRIOGeneric(app.encoding);
                 rio.setArray();
 
                 for (int j = fixedStart; j <= fixedEnd; j++)

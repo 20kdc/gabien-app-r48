@@ -190,7 +190,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
     private IRIO importScripts() throws IOException {
         // A particular difference that's going to show up here is that empty-named or #-prefixed files won't get removed.
         // This way, the conversion is bi-directional.
-        IRIO scripts = new IRIOGeneric(IObjectBackend.Factory.encoding);
+        IRIO scripts = new IRIOGeneric(app.encoding);
         InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
         if (inp == null) {
             app.ui.launchDialog(T.z.l152);

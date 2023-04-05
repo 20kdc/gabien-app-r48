@@ -14,7 +14,6 @@ import gabienapp.state.LSMain;
 import r48.App;
 import r48.app.AppMain;
 import r48.app.EngineDef;
-import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 
 /**
@@ -34,8 +33,9 @@ public class StartupCause implements Runnable {
     @Override
     public void run() {
         if (ls.lun.currentState == ls) {
+            final Charset charset;
             try {
-                IObjectBackend.Factory.encoding = Charset.forName(box);
+                charset = Charset.forName(box);
             } catch (UnsupportedCharsetException uce) {
                 throw new RuntimeException(uce);
             }
@@ -56,7 +56,7 @@ public class StartupCause implements Runnable {
                         throw new RuntimeException("EngineDef " + objName + " missing!");
                     // Regarding thread safety, this should be safe enough because app is kept here.
                     // It's then transferred out.
-                    App app = AppMain.initializeCore(ls.lun.ilg, rootPath, silPath, engine, theKickstart);
+                    App app = AppMain.initializeCore(ls.lun.ilg, charset, rootPath, silPath, engine, theKickstart);
                     AppMain.initializeUI(app, ls.lun.uiTicker, ls.lun.isMobile);
                     theKickstart.doneInjector.set(() -> {
                         lia.app = app;

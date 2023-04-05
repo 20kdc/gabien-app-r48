@@ -204,7 +204,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
             @Override
             public IRIO targetToBoundNCache(IRIO target) {
                 short val = new RubyTable(target.getBuffer()).getTiletype(ct, i, 0);
-                return new IRIOGeneric(IObjectBackend.Factory.encoding).setFX(val);
+                return new IRIOGeneric(app.encoding).setFX(val);
             }
 
             @Override

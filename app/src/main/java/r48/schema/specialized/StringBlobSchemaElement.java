@@ -136,11 +136,11 @@ public class StringBlobSchemaElement extends SchemaElement {
     private String readContentString(IRIO target) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         copyStream(getDecompressionInputStream(target.getBuffer()), baos);
-        return new String(baos.toByteArray(), IObjectBackend.Factory.encoding);
+        return new String(baos.toByteArray(), app.encoding);
     }
     private void writeContentString(IRIO target, String text) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        copyStream(getCompressionInputStream(new ByteArrayInputStream(text.getBytes(IObjectBackend.Factory.encoding))), baos);
+        copyStream(getCompressionInputStream(new ByteArrayInputStream(text.getBytes(app.encoding))), baos);
         target.putBuffer(baos.toByteArray());
     }
 

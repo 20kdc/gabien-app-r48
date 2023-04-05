@@ -131,7 +131,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     confirmAt(x, y, 123, 123, layer, true);
                                     return;
                                 }
-                                IRIO newEvent = new IRIOGeneric(IObjectBackend.Factory.encoding).setDeepClone(evI);
+                                IRIO newEvent = new IRIOGeneric(app.encoding).setDeepClone(evI);
                                 DMKey nevK = mapView.mapTable.eventAccess.addEvent(newEvent, mapView.mapTable.eventAccess.getEventType(evK));
                                 if (nevK == null)
                                     return;

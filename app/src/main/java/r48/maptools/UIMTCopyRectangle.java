@@ -7,6 +7,8 @@
 
 package r48.maptools;
 
+import java.nio.charset.StandardCharsets;
+
 import gabien.GaBIEn;
 import gabien.ui.UILabel;
 import r48.RubyTable;
@@ -79,7 +81,7 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
                         for (int j = minY; j <= maxY; j++)
                             if (!map.mapTable.outOfBounds(i, j))
                                 rt.setTiletype(i - minX, j - minY, l, map.mapTable.getTiletype(i, j, l));
-                IRIOGeneric rb = new IRIOGeneric(IObjectBackend.Factory.encoding);
+                IRIOGeneric rb = new IRIOGeneric(StandardCharsets.UTF_8);
                 rb.setUser("Table", rt.innerBytes);
                 map.app.theClipboard = rb;
                 mapToolContext.accept(null);

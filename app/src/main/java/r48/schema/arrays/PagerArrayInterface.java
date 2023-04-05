@@ -108,7 +108,7 @@ public class PagerArrayInterface implements IArrayInterface {
                 barLayout.panelsAdd(new UITextButton(T.z.l139, app.f.schemaFieldTH, new Runnable() {
                     @Override
                     public void run() {
-                        IRIOGeneric rio = new IRIOGeneric(IObjectBackend.Factory.encoding);
+                        IRIOGeneric rio = new IRIOGeneric(app.encoding);
                         rio.setArray(copyMe.length);
 
                         for (int j = 0; j < copyMe.length; j++)

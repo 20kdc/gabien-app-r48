@@ -67,7 +67,7 @@ public class RMGenposAnim extends App.Svc implements IGenposAnim {
             while (target.getALen() < min)
                 target.addAElem(0);
             // Create a frame from scratch to avoid crashing
-            IRIO copy = new IRIOGeneric(IObjectBackend.Factory.encoding).setNull();
+            IRIO copy = new IRIOGeneric(app.encoding).setNull();
             SchemaPath.setDefaultValue(copy, app.sdb.getSDBEntry("RPG::Animation::Frame"), null);
             frameIdx = min - 1;
             insertFrame(copy);

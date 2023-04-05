@@ -7,6 +7,7 @@
 package r48.app;
 
 import java.lang.ref.WeakReference;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -40,7 +41,8 @@ public class AppCore {
     public final @NonNull FontSizes f;
     public final @NonNull TrRoot t;
     // Launch settings
-    public final EngineDef engine;
+    public final @NonNull EngineDef engine;
+    public final @NonNull Charset encoding;
     // Main
     public ObjectDB odb;
     public SDB sdb;
@@ -60,8 +62,9 @@ public class AppCore {
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public AppCore(@NonNull InterlaunchGlobals ilg, @NonNull EngineDef engine, @NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
+    public AppCore(@NonNull InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef engine, @NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
         this.ilg = ilg;
+        this.encoding = charset;
         c = ilg.c;
         f = c.f;
         t = ilg.t;

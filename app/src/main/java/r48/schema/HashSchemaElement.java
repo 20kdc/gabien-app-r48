@@ -43,10 +43,10 @@ public class HashSchemaElement extends SchemaElement {
         final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
         IRIO preWorkspace = (IRIO) launcher.getEmbedObject(this, target, "keyWorkspace");
         if (preWorkspace == null) {
-            preWorkspace = new IRIOGeneric(IObjectBackend.Factory.encoding);
+            preWorkspace = new IRIOGeneric(app.encoding);
             SchemaPath.setDefaultValue(preWorkspace, keyElem, null);
         } else {
-            preWorkspace = new IRIOGeneric(IObjectBackend.Factory.encoding).setDeepClone(preWorkspace);
+            preWorkspace = new IRIOGeneric(app.encoding).setDeepClone(preWorkspace);
         }
         final IRIO keyWorkspace = preWorkspace;
 
@@ -56,7 +56,7 @@ public class HashSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 // This may occur from a different page (say, an enum selector), so the more complicated form must be used.
-                launcher.setEmbedObject(setLocalePath, HashSchemaElement.this, target, "keyWorkspace", new IRIOGeneric(IObjectBackend.Factory.encoding).setDeepClone(keyWorkspace));
+                launcher.setEmbedObject(setLocalePath, HashSchemaElement.this, target, "keyWorkspace", new IRIOGeneric(app.encoding).setDeepClone(keyWorkspace));
             }
         });
 

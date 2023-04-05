@@ -230,8 +230,8 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
         target.getIVar("@party").getIVar("@party").setDeepClone(ldbSys.getIVar("@party"));
         savSys.getIVar("@font_id").setDeepClone(ldbSys.getIVar("@font_id"));
 
-        initializeArrayWithClones(savSys.getIVar("@switches"), ldb.getIVar("@switches"), new IRIOGeneric(IObjectBackend.Factory.encoding).setBool(false));
-        initializeArrayWithClones(savSys.getIVar("@variables"), ldb.getIVar("@variables"), new IRIOGeneric(IObjectBackend.Factory.encoding).setFX(0));
+        initializeArrayWithClones(savSys.getIVar("@switches"), ldb.getIVar("@switches"), new IRIOGeneric(app.encoding).setBool(false));
+        initializeArrayWithClones(savSys.getIVar("@variables"), ldb.getIVar("@variables"), new IRIOGeneric(app.encoding).setFX(0));
 
         for (String iv : savSys.getIVars())
             if (iv.endsWith("_se") || iv.endsWith("_music") || iv.endsWith("_fadein") || iv.endsWith("_fadeout"))

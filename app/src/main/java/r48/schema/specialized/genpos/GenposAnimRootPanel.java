@@ -91,7 +91,7 @@ public class GenposAnimRootPanel extends App.Prx {
         toolbar = new UIAppendButton(T.z.l139, toolbar, new Runnable() {
             @Override
             public void run() {
-                app.theClipboard = new IRIOGeneric(IObjectBackend.Factory.encoding).setDeepClone(target.getFrame());
+                app.theClipboard = new IRIOGeneric(app.encoding).setDeepClone(target.getFrame());
             }
         }, app.f.rmaTimeframeTH);
         toolbar = new UIAppendButton(T.z.l140, toolbar, new Runnable() {
@@ -108,7 +108,7 @@ public class GenposAnimRootPanel extends App.Prx {
         toolbar = new UIAppendButton("+", toolbar, new Runnable() {
             @Override
             public void run() {
-                target.insertFrame(new IRIOGeneric(IObjectBackend.Factory.encoding).setDeepClone(target.getFrame()));
+                target.insertFrame(new IRIOGeneric(app.encoding).setDeepClone(target.getFrame()));
                 incomingModification();
             }
         }, app.f.rmaTimeframeTH);

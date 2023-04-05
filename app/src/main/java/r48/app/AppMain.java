@@ -21,6 +21,7 @@ import r48.map.systems.MapSystem;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.util.SchemaPath;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -29,8 +30,9 @@ import java.nio.charset.StandardCharsets;
  * Created on 12/27/16. Being phased out as of 26th February 2023, reduced to static methods as of the 28th.
  */
 public class AppMain {
-    public static App initializeCore(InterlaunchGlobals ilg, final String rp, final String sip, final EngineDef engine, final IConsumer<String> progress) {
-        final App app = new App(ilg, engine, rp, sip, progress);
+    public static App initializeCore(InterlaunchGlobals ilg, Charset charset, final String rp, final String sip, final EngineDef engine, final IConsumer<String> progress) {
+        IObjectBackend.Factory.encoding = charset;
+        final App app = new App(ilg, charset, engine, rp, sip, progress);
 
         // initialize core resources
 

@@ -100,7 +100,7 @@ public class UIEnumChoice extends App.Prx {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
-                        result.accept(new IRIOGeneric(IObjectBackend.Factory.encoding).setString(nb.text));
+                        result.accept(new IRIOGeneric(app.encoding).setString(nb.text));
                     wantsSelfClose = true;
                 }
             }), false, 1, 3);
@@ -110,7 +110,7 @@ public class UIEnumChoice extends App.Prx {
                 @Override
                 public void run() {
                     if (!wantsSelfClose) {
-                        IRIOGeneric rio = new IRIOGeneric(IObjectBackend.Factory.encoding);
+                        IRIOGeneric rio = new IRIOGeneric(app.encoding);
                         rio.setSymbol(nb.text);
                         result.accept(rio);
                     }
@@ -123,7 +123,7 @@ public class UIEnumChoice extends App.Prx {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
-                        result.accept(new IRIOGeneric(IObjectBackend.Factory.encoding).setFX(nb.number));
+                        result.accept(new IRIOGeneric(app.encoding).setFX(nb.number));
                     wantsSelfClose = true;
                 }
             }), false, 1, 3);

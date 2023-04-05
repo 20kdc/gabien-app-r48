@@ -266,15 +266,12 @@ public class BasicToolset extends App.Svc implements IToolset {
                     });
                 },
                 () -> {
-                    IRIOGeneric tmp = new IRIOGeneric(IObjectBackend.Factory.encoding);
+                    IRIOGeneric tmp = new IRIOGeneric(app.encoding);
                     final IObjectBackend.ILoadedObject rio = new IObjectBackend.MockLoadedObject(tmp);
-                    app.ui.launchPrompt(T.z.prSchemaID, new IConsumer<String>() {
-                        @Override
-                        public void accept(String s) {
-                            SchemaElement se = app.sdb.getSDBEntry(s);
-                            SchemaPath.setDefaultValue(tmp, se, DMKey.NULL);
-                            app.ui.launchSchema(s, rio, null);
-                        }
+                    app.ui.launchPrompt(T.z.prSchemaID, () -> {
+                        SchemaElement se = app.sdb.getSDBEntry(s);
+                        SchemaPath.setDefaultValue(tmp, se, DMKey.NULL);
+                        app.ui.launchSchema(s, rio, null);
                     });
                 }
         }).centred();
@@ -344,7 +341,7 @@ public class BasicToolset extends App.Svc implements IToolset {
             @Override
             public void run() {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
-                RORIO clipGet = (app.theClipboard == null) ? new IRIOGeneric(IObjectBackend.Factory.encoding) : app.theClipboard;
+                RORIO clipGet = (app.theClipboard == null) ? new IRIOGeneric(app.encoding) : app.theClipboard;
                 String clipText = app.fmt.interpretParameter(clipGet);
                 uiStatusLabel.text = T.z.l82.r(app.odb.modifiedObjects.size(), clipText);
                 app.uiPendingRunnables.add(this);

@@ -57,8 +57,9 @@ public class TestKickstart {
         currentTestPhase = "Initial Phase";
         kickstartRFS();
         // In case unset.
+        Charset charset;
         try {
-            IObjectBackend.Factory.encoding = Charset.forName(encoding);
+            charset = Charset.forName(encoding);
         } catch (UnsupportedCharsetException uce) {
             throw new RuntimeException(uce);
         }
@@ -71,7 +72,7 @@ public class TestKickstart {
         EngineDef engine = EnginesList.getEngines(null).get(engineDefId);
         if (engine == null)
             throw new RuntimeException("missing engine def: " + engineDefId);
-        return AppMain.initializeCore(ilg, s2, "", engine, (s) -> {});
+        return AppMain.initializeCore(ilg, charset, s2, "", engine, (s) -> {});
     }
 
     public void kickstartRFS() {
