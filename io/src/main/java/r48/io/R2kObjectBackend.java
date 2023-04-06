@@ -12,11 +12,8 @@ import r48.io.data.DM2Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
+import r48.io.r2k.R2kIO;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.files.DatabaseIO;
-import r48.io.r2k.files.MapIO;
-import r48.io.r2k.files.MapTreeIO;
-import r48.io.r2k.files.SaveDataIO;
 import r48.io.r2k.obj.MapUnit;
 import r48.io.r2k.obj.Save;
 import r48.io.r2k.obj.ldb.Database;
@@ -66,7 +63,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                 InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
-                MapUnit r = MapIO.readLmu(dm2c, fis);
+                MapUnit r = R2kIO.readLmu(dm2c, fis);
                 fis.close();
                 return r;
             } catch (Exception e) {
@@ -79,7 +76,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                 InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
-                IRIO r = MapTreeIO.readLmt(dm2c, fis);
+                IRIO r = R2kIO.readLmt(dm2c, fis);
                 fis.close();
                 return r;
             } catch (Exception e) {
@@ -92,7 +89,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                 InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
-                Database r = DatabaseIO.readLdb(dm2c, fis);
+                Database r = R2kIO.readLdb(dm2c, fis);
                 fis.close();
                 return r;
             } catch (Exception e) {
@@ -105,7 +102,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                 InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
-                Save r = SaveDataIO.readLsd(dm2c, fis);
+                Save r = R2kIO.readLsd(dm2c, fis);
                 fis.close();
                 return r;
             } catch (Exception e) {
@@ -123,7 +120,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // Note the write occurs before the F.O.S is created for safety
         if (filename.endsWith(".lmu")) {
-            MapIO.writeLmu(baos, (MapUnit) object);
+            R2kIO.writeLmu(baos, (MapUnit) object);
             OutputStream fos = GaBIEn.getOutFile(str);
             if (fos == null)
                 throw new IOException("Unable to open a file.");
@@ -132,7 +129,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             return;
         }
         if (filename.endsWith(".lmt")) {
-            MapTreeIO.writeLmt(baos, (MapTree) object);
+            R2kIO.writeLmt(baos, (MapTree) object);
             OutputStream fos = GaBIEn.getOutFile(str);
             if (fos == null)
                 throw new IOException("Unable to open a file.");
@@ -141,7 +138,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             return;
         }
         if (filename.endsWith(".ldb")) {
-            DatabaseIO.writeLdb(baos, (Database) object);
+            R2kIO.writeLdb(baos, (Database) object);
             OutputStream fos = GaBIEn.getOutFile(str);
             if (fos == null)
                 throw new IOException("Unable to open a file.");
@@ -150,7 +147,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             return;
         }
         if (filename.endsWith(".lsd")) {
-            SaveDataIO.writeLsd(baos, (Save) object);
+            R2kIO.writeLsd(baos, (Save) object);
             OutputStream fos = GaBIEn.getOutFile(str);
             if (fos == null)
                 throw new IOException("Unable to open a file.");
