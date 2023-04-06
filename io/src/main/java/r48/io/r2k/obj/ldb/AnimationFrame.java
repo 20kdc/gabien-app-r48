@@ -8,9 +8,9 @@
 package r48.io.r2k.obj.ldb;
 
 import gabien.uslx.append.*;
-import r48.io.data.DM2Context;
-import r48.io.data.DM2FXOBinding;
 import r48.io.data.IRIO;
+import r48.io.data.obj.DM2Context;
+import r48.io.data.obj.DM2FXOBinding;
 import r48.io.r2k.dm2chk.DM2LcfBinding;
 import r48.io.r2k.dm2chk.DM2R2kObject;
 import r48.io.r2k.dm2chk.DM2SparseArrayA;

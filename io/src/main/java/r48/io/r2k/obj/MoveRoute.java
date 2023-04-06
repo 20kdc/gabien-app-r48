@@ -7,10 +7,10 @@
 
 package r48.io.r2k.obj;
 
-import r48.io.data.DM2Context;
-import r48.io.data.DM2FXOBinding;
-import r48.io.data.DMCXBoolean;
 import r48.io.data.IRIO;
+import r48.io.data.obj.DM2Context;
+import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMCXBoolean;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.struct.MoveCommand;

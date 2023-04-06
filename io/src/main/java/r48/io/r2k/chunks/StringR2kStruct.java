@@ -8,9 +8,9 @@
 package r48.io.r2k.chunks;
 
 import r48.io.IntUtils;
-import r48.io.data.DM2Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
+import r48.io.data.obj.DM2Context;
 
 import java.io.IOException;
 import java.io.InputStream;

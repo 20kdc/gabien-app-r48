@@ -9,6 +9,9 @@ package r48.io.ika;
 
 import r48.RubyTable;
 import r48.io.data.*;
+import r48.io.data.obj.DM2Context;
+import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.IRIOFixedObject;
 
 /**
  * Data Model 2 proof of concept

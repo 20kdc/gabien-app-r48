@@ -5,11 +5,14 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.io.data;
+package r48.io.data.obj;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
+
+import r48.io.data.IRIO;
+import r48.io.data.IRIOFixed;
 
 /**
  * An IRIO describing a fixed-layout object.

@@ -8,6 +8,9 @@
 package r48.io.r2k.struct;
 
 import r48.io.data.*;
+import r48.io.data.obj.DM2Context;
+import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
 import r48.io.r2k.chunks.IntegerR2kStruct;

@@ -8,11 +8,11 @@
 package r48.io.r2k.struct;
 
 import r48.io.IntUtils;
-import r48.io.data.DM2Context;
-import r48.io.data.DM2FXOBinding;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixedObject;
 import r48.io.data.IRIOFixnum;
+import r48.io.data.obj.DM2Context;
+import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.chunks.IR2kInterpretable;
 
 import java.io.IOException;

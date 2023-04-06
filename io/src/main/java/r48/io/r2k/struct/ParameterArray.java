@@ -7,10 +7,10 @@
 
 package r48.io.r2k.struct;
 
-import r48.io.data.DM2Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedArray;
 import r48.io.data.IRIOFixnum;
+import r48.io.data.obj.DM2Context;
 import r48.io.r2k.chunks.StringR2kStruct;
 
 /**

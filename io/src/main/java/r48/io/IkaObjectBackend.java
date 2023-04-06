@@ -9,8 +9,8 @@ package r48.io;
 
 import gabien.GaBIEn;
 import r48.RubyTable;
-import r48.io.data.DM2Context;
 import r48.io.data.IRIOFixedHash;
+import r48.io.data.obj.DM2Context;
 import r48.io.ika.IkaEvent;
 import r48.io.ika.IkaMap;
 import r48.io.ika.NPChar;

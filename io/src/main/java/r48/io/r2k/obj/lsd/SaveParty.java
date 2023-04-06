@@ -7,13 +7,13 @@
 
 package r48.io.r2k.obj.lsd;
 
-import r48.io.data.DM2Context;
-import r48.io.data.DM2FXOBinding;
-import r48.io.data.DMCXBoolean;
-import r48.io.data.DMCXInteger;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedArray;
-import r48.io.data.IRIOFixedObject;
+import r48.io.data.obj.DM2Context;
+import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMCXBoolean;
+import r48.io.data.obj.DMCXInteger;
+import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.ByteR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;

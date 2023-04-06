@@ -8,10 +8,10 @@
 package r48.io;
 
 import gabien.GaBIEn;
-import r48.io.data.DM2Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
+import r48.io.data.obj.DM2Context;
 import r48.io.r2k.R2kIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.obj.MapUnit;

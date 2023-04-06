@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.io.data.DM2Context;
+import r48.io.data.obj.DM2Context;
 
 /**
  * Migrated to ActorClassBase on December 7th 2018

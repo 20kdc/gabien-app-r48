@@ -5,14 +5,14 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.io.data;
+package r48.io.data.obj;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 
 import gabien.uslx.append.ISupplier;
-import r48.io.r2k.dm2chk.DM2CXSupplier;
+import r48.io.data.IRIO;
 
 /**
  * Responsible for setting up initialization of DM2 fields.
