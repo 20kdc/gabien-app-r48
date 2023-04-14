@@ -29,72 +29,37 @@ public class DMKey extends RORIO {
     // (any)
     private final IRIOGeneric refVal;
 
-    public DMKey(RORIO src) {
-        int t = src.getType();
-        if (t == 'i') {
-            st = Subtype.Fixnum;
-            fxVal = src.getFX();
-            flVal = null;
-            strVal = null;
-            refVal = null;
-        } else if (t == 'l') {
-            st = Subtype.Bignum;
-            fxVal = 0;
-            flVal = src.getBuffer().clone();
-            strVal = null;
-            refVal = null;
-        } else if (t == '"') {
-            st = Subtype.String;
-            fxVal = 0;
-            flVal = null;
-            strVal = src.decString();
-            refVal = null;
-        } else if (t == 'f') {
-            st = Subtype.Float;
-            fxVal = 0;
-            flVal = null;
-            strVal = src.decString();
-            refVal = null;
-        } else if (t == ':') {
-            st = Subtype.Symbol;
-            fxVal = 0;
-            flVal = null;
-            strVal = src.getSymbol();
-            refVal = null;
-        } else if (t == 'T') {
-            st = Subtype.True;
-            fxVal = 0;
-            flVal = null;
-            strVal = null;
-            refVal = null;
-        } else if (t == 'F') {
-            st = Subtype.False;
-            fxVal = 0;
-            flVal = null;
-            strVal = null;
-            refVal = null;
-        } else if (t == '0') {
-            st = Subtype.Null;
-            fxVal = 0;
-            flVal = null;
-            strVal = null;
-            refVal = null;
-        } else {
-            st = Subtype.Reference;
-            fxVal = 0;
-            flVal = null;
-            strVal = null;
-            refVal = new IRIOGeneric(StandardCharsets.UTF_8);
-            refVal.setDeepClone(src);
-        }
-    }
-
     private DMKey(Subtype st, long fxVal, byte[] flVal, String strVal, IRIOGeneric refVal) {
         this.st = st;
         this.fxVal = fxVal;
         this.flVal = flVal;
         this.strVal = strVal;
         this.refVal = refVal;
+    }
+
+    public static DMKey of(RORIO src) {
+        int t = src.getType();
+        if (t == 'i') {
+            return of(src.getFX());
+        } else if (t == 'l') {
+            return new DMKey(Subtype.Bignum, 0, src.getBuffer().clone(), null, null);
+        } else if (t == '"') {
+            return ofStr(src.decString());
+        } else if (t == 'f') {
+            return ofFloat(src.decString());
+        } else if (t == ':') {
+            return ofSym(src.decString());
+        } else if (t == 'T') {
+            return TRUE;
+        } else if (t == 'F') {
+            return FALSE;
+        } else if (t == '0') {
+            return NULL;
+        } else {
+            IRIOGeneric refVal = new IRIOGeneric(StandardCharsets.UTF_8);
+            refVal.setDeepClone(src);
+            return new DMKey(Subtype.Reference, 0, null, null, refVal);
+        }
     }
 
     public static DMKey of(long l) {
@@ -106,6 +71,10 @@ public class DMKey extends RORIO {
     }
 
     public static DMKey ofStr(String s) {
+        return new DMKey(Subtype.String, 0, null, s, null);
+    }
+
+    public static DMKey ofFloat(String s) {
         return new DMKey(Subtype.String, 0, null, s, null);
     }
 

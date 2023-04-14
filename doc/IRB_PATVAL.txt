@@ -35,6 +35,7 @@ The path-component forms are:
    '{' ValueSyntax : Hash value by key. (RAD)
    '.' text...     : Arbitrary (can be non-@) instance variable (RAD)
    'length'        : Array length (R..)
+   'defVal'        : Hash default value (R..)
    'fail'          : Always fails. (R..)
    <nothing>       : "self" - NOP.
 

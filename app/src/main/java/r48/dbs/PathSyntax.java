@@ -22,6 +22,7 @@ import r48.minivm.expr.MVMCArrayGetImm;
 import r48.minivm.expr.MVMCArrayLength;
 import r48.minivm.expr.MVMCError;
 import r48.minivm.expr.MVMCExpr;
+import r48.minivm.expr.MVMCGetHashDefVal;
 import r48.minivm.expr.MVMCGetHashValImm;
 import r48.minivm.expr.MVMCGetIVar;
 import r48.minivm.expr.MVMCPathHashAdd;
@@ -168,6 +169,10 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
                         base = new MVMCArrayLength(base);
                         if (lastElement)
                             return new PathSyntax(parentContext, base, base, new MVMCError("Cannot delete array length. Fix your schema."), arg);
+                    } else if (subcom.equals("defVal")) {
+                        base = new MVMCGetHashDefVal(base);
+                        if (lastElement)
+                            return new PathSyntax(parentContext, base, base, new MVMCError("Cannot delete hash default value. Fix your schema."), arg);
                     } else if (subcom.equals("fail")) {
                         base = new MVMCExpr.Const(null);
                         if (lastElement)
