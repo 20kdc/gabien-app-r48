@@ -49,8 +49,8 @@ public class ScriptControlSchemaElement extends SchemaElement {
                         target.setDeepClone(scripts);
                         path.changeOccurred(true);
                     }
-                } catch (IOException ioe) {
-                    app.ui.launchDialog(T.z.l144);
+                } catch (Exception ioe) {
+                    app.ui.launchDialog(ioe);
                 }
             }
         });
@@ -126,8 +126,8 @@ public class ScriptControlSchemaElement extends SchemaElement {
                     }
                     ps.close();
                     app.ui.launchDialog(sb.toString());
-                } catch (IOException ioe) {
-                    app.ui.launchDialog(T.z.l149 + ioe);
+                } catch (Exception ioe) {
+                    app.ui.launchDialog(ioe);
                 }
             }
             private boolean tryWrite(String name, byte[] inflated, HashSet<String> used, PrintStream ps) throws IOException {

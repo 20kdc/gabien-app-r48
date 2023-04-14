@@ -36,29 +36,21 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
 
     @Override
     public IRIO loadObjectFromFile(String filename) {
-        InputStream inp = null;
-        try {
-            inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(root + filename + ext));
-            LinkedList<String> tokens = new LinkedList<String>();
-            Reader r = new InputStreamReader(inp, "UTF-8");
-            tokenize(tokens, r);
-            inp.close();
-            inp = null;
-            return loadFromTokens(tokens);
+        try (InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(root + filename + ext))) {
+            return loadJSONFromStream(inp);
         } catch (Exception e) {
-            if (inp != null) {
-                try {
-                    inp.close();
-                } catch (Exception e2) {
-
-                }
-            }
             e.printStackTrace();
             return null;
         }
     }
+    public static IRIO loadJSONFromStream(InputStream inp) throws IOException {
+        LinkedList<String> tokens = new LinkedList<String>();
+        Reader r = new InputStreamReader(inp, StandardCharsets.UTF_8);
+        tokenize(tokens, r);
+        return loadFromTokens(tokens);
+    }
 
-    private IRIO loadFromTokens(LinkedList<String> tokens) {
+    private static IRIO loadFromTokens(LinkedList<String> tokens) {
         String n = tokens.removeFirst();
         if (n.startsWith("\""))
             return new IRIOGeneric(StandardCharsets.UTF_8).setString(n.substring(1));
@@ -79,7 +71,7 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                 if (!tokens.removeFirst().equals(":"))
                     throw new RuntimeException("Couldn't find KV separator");
                 IRIO val = loadFromTokens(tokens);
-                hash.addHashVal(new DMKey(key)).setDeepClone(val);
+                hash.addHashVal(DMKey.of(key)).setDeepClone(val);
             }
         }
         if (n.equals("[")) {
@@ -114,7 +106,7 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         return str;
     }
 
-    private void tokenize(LinkedList<String> tokens, Reader r) throws IOException {
+    private static void tokenize(LinkedList<String> tokens, Reader r) throws IOException {
         int c = r.read();
         while (c != -1) {
             boolean next = false;
@@ -157,7 +149,7 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         }
     }
 
-    private boolean singleCharBreaker(int c) {
+    private static boolean singleCharBreaker(int c) {
         return (c == '[') || (c == ']') || (c == ':') || (c == '{') || (c == '}') || (c == ',');
     }
 
@@ -166,9 +158,7 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         OutputStream oup = GaBIEn.getOutFile(PathUtils.autoDetectWindows(root + filename + ext));
         if (oup == null)
             throw new IOException("Unable to open file!");
-        DataOutputStream dos = new DataOutputStream(oup);
-        saveValue(dos, object);
-        dos.close();
+        saveJSONToStream(oup, object);
     }
 
     @Override
@@ -176,7 +166,12 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         return null;
     }
 
-    private void saveValue(DataOutputStream dos, RORIO object) throws IOException {
+    public static void saveJSONToStream(OutputStream oup, RORIO object) throws IOException {
+        try (DataOutputStream dos = new DataOutputStream(oup)) {
+            saveValue(dos, object);
+        }
+    }
+    private static void saveValue(DataOutputStream dos, RORIO object) throws IOException {
         boolean first = true; // for collections
         int alen; // for arrays
         switch (object.getType()) {

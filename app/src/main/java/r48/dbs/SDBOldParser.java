@@ -675,6 +675,13 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     PathSyntax balancePath = getNullablePathSyntax();
                     return new SoundPlayerSchemaElement(app, prefix, namePath, volumePath, tempoPath, balancePath);
                 }
+                if (text.equals("jsonExchange")) {
+                    FF0 iT = trAnon(args[point++]);
+                    final MVMFn iF = (MVMFn) app.vmCtx.evalString(args[point++], srcLoc.toString());
+                    FF0 eT = trAnon(args[point++]);
+                    final MVMFn eF = (MVMFn) app.vmCtx.evalString(args[point++], srcLoc.toString());
+                    return new JSONImportExportSchemaElement(app, iT, iF, eT, eF);
+                }
                 // -- If all else fails, it's an ID to be looked up. --
                 return getSDBEntry(text);
             }

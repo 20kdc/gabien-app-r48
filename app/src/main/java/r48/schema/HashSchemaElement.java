@@ -61,7 +61,7 @@ public class HashSchemaElement extends SchemaElement {
         });
 
         if (keyWorkspace.getType() == 'i') {
-            while (target.getHashVal(new DMKey(keyWorkspace)) != null) {
+            while (target.getHashVal(DMKey.of(keyWorkspace)) != null) {
                 // Try adding 1
                 long plannedVal = keyWorkspace.getFX() + 1;
                 keyWorkspace.setFX(plannedVal);
@@ -139,7 +139,7 @@ public class HashSchemaElement extends SchemaElement {
                 UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(T.z.l108, app.f.schemaFieldTH, new Runnable() {
                     @Override
                     public void run() {
-                        DMKey dmk = new DMKey(keyWorkspace);
+                        DMKey dmk = DMKey.of(keyWorkspace);
                         if (target.getHashVal(dmk) == null) {
                             IRIO rio2 = target.addHashVal(dmk);
                             // Don't YET link this value into the schema path stuff.

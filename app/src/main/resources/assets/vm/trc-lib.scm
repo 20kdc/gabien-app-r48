@@ -127,7 +127,7 @@
 			(list
 				let
 				(list (list
-					'tmp$ (list dm-decode (tr-dyni-path ctx path))
+					'tmp$ (list dm-dec (tr-dyni-path ctx path))
 				))
 				; (cond ... (else DEF))
 				(append!

@@ -52,3 +52,24 @@
 
 (define-syntax (fl4 . entries) (list lambda '(a0 a1 a2 a3) (append '(..) entries)))
 (help-set! fl4 "(fl4 V...) : Formatting Lambda 4: equivalent to (lambda (a0 a1 a2 a3) (.. V...))")
+
+; dm-try-copy!
+(define (dm-try-copy! dst src) (if src (if dst (dm-enc! dst src))))
+(help-set! dm-try-copy! "(dm-try-copy! DST SRC) : dm-enc! but both DST and SRC must not be #nil (it's intended that SRC is a RORIO)")
+
+(define-syntax (dm-try-copy-at! dst path-dst src path-src)
+	(list
+		dm-try-copy!
+		(list
+			dm-at
+			dst
+			path-dst
+		)
+		(list
+			dm-at
+			src
+			path-src
+		)
+	)
+)
+(help-set! dm-try-copy-at! "(dm-try-copy-at! DST PATH-DST SRC PATH-SRC) : Try copying if both paths exist")

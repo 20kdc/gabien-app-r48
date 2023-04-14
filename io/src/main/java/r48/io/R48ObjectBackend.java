@@ -346,7 +346,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             long vars = load32(dis);
             for (long i = 0; i < vars; i++) {
                 IRIOGeneric k = loadValue(dis, objs, syms);
-                loadValue(rio.addHashVal(new DMKey(k)), dis, objs, syms);
+                loadValue(rio.addHashVal(DMKey.of(k)), dis, objs, syms);
             }
             if (b == '}')
                 loadValue(rio.getHashDefVal(), dis, objs, syms);

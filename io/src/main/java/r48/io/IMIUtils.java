@@ -611,7 +611,7 @@ public class IMIUtils {
                             throw new IOException("Expected integer index for removal from array");
                         runIMISegment(inp, obj.addAElem((int) tmp2.getFX()));
                     } else {
-                        DMKey key = new DMKey(tmp2);
+                        DMKey key = DMKey.of(tmp2);
                         IRIO newObj = obj.getHashVal(key);
                         if (newObj == null)
                             newObj = obj.addHashVal(key);
@@ -635,7 +635,7 @@ public class IMIUtils {
                                     throw new IOException("Expected integer index for removal from array");
                                 obj.rmAElem((int) tmp2.getFX());
                             } else {
-                                obj.removeHashVal(new DMKey(tmp2));
+                                obj.removeHashVal(DMKey.of(tmp2));
                             }
                             break;
                         default:

@@ -143,12 +143,10 @@ public class TrAutoGen extends TrPage {
     public String l141;
     public String l142;
     public String l143;
-    public String l144;
     public String l145;
     public String l146;
     public String l147;
     public String l148;
-    public String l149;
     public String l150;
     public String l151;
     public String l152;

@@ -11,6 +11,9 @@
 ; _112 means '2k3 1.12'
 ; _EPL means 'EasyRPG Player'
 
+; VM stuff
+(include "R2K/vm/itemtext")
+
 ; General stuff
 (sdb-load-old "R2K/SchemaGeneral.txt")
 
