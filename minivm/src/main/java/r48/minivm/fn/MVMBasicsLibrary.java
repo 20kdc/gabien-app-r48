@@ -15,6 +15,7 @@ import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.expr.MVMCBegin;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCIf;
+import r48.minivm.expr.MVMCWhile;
 
 /**
  * MiniVM standard library.
@@ -73,6 +74,9 @@ public class MVMBasicsLibrary {
         ctx.defLib("apply", (a0, a1) -> {
             return ((MVMFn) a0).callIndirect(MVMU.cList(a1).toArray());
         }).attachHelp("(apply FN ARGS) : Runs FN with the list of args as ARGS.");
+        // Both S9FES and Guile implement this to enough of a degree that I feel comfortable adding it.
+        ctx.defineSlot(sym("while")).v = new While()
+                .attachHelp("(while EXPR CODE...) : Repeats CODE until EXPR returns false.");
     }
 
     public static interface IFnDefineConverter {
@@ -156,6 +160,18 @@ public class MVMBasicsLibrary {
             Object[] reduced = new Object[args.length - 1];
             System.arraycopy(args, 1, reduced, 0, reduced.length);
             throw new MVMUserException((String) args[0], reduced);
+        }
+    }
+
+    public static final class While extends MVMMacro {
+        public While() {
+            super("while");
+        }
+        @Override
+        public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
+            if (call.length < 1)
+                throw new RuntimeException("While needs at least the expression");
+            return new MVMCWhile(cs.compile(call[0]), MVMCBegin.of(cs, call, 1, call.length - 1));
         }
     }
 }

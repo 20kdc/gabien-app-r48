@@ -790,14 +790,11 @@ e rpg_bas_speed 0 slow 8 normal 14 fast
 
  ---
 
-.rpg_database_items
-+jsonExchange "Import item text JSON" "r2k-rpg-database-items-import-text" "Export item text JSON" "r2k-rpg-database-items-export-text"
-+hash int+1 subwindow RPG::Item
-
 : RPG::Database
++jsonExchange "Import entry text JSON" "r2k-rpg-database-import-text" "Export entry text JSON" "r2k-rpg-database-export-text"
 @actors subwindow hash int+1 subwindow RPG::Actor
 @skills subwindow hash int+1 subwindow RPG::Skill
-@items subwindow rpg_database_items
+@items subwindow hash int+1 subwindow RPG::Item
 @enemies subwindow hash int+1 subwindow RPG::Enemy
 @troops subwindow hash int+1 subwindow RPG::Troop
 @terrains subwindow hash int+1 subwindow RPG::Terrain

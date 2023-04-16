@@ -24,6 +24,12 @@ import r48.minivm.expr.MVMCExpr;
  */
 public class MVMDMLibrary {
     public static void add(MVMEnv ctx) {
+        // equality
+        ctx.defLib("dm-eq?", (a, b) -> {
+            if (a == null || b == null)
+                return false;
+            return RORIO.rubyEquals((RORIO) a, (RORIO) b);
+        }).attachHelp("(dm-eq? A B) : Checks equality between two RORIOs (returning false if either are #nil)");
         // path
         ctx.defineSlot(new DatumSymbol("dm-at")).v = new DMAt(0)
             .attachHelp("(dm-at TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), #nil on failure");
@@ -89,12 +95,12 @@ public class MVMDMLibrary {
             if (a == null)
                 return null;
             return ((RORIO) a).getIVar(MVMU.coerceToString(i));
-        }).attachHelp("(dm-i-ref TARGET IV) : Retrieves ivar of TARGET (IV can be string or symbol).");
+        }).attachHelp("(dm-i-ref TARGET IV) : Retrieves ivar of TARGET (IV can be string or symbol). Passes through #nil TARGET.");
         ctx.defLib("dm-i-add!", (a, i) -> {
             if (a == null)
                 return null;
             return ((IRIO) a).addIVar(MVMU.coerceToString(i));
-        }).attachHelp("(dm-i-add! TARGET IV) : Adds ivar of TARGET (IV can be string or symbol).");
+        }).attachHelp("(dm-i-add! TARGET IV) : Adds ivar of TARGET (IV can be string or symbol). Passes through #nil TARGET.");
         ctx.defLib("dm-i-rm!", (a, i) -> {
             ((IRIO) a).rmIVar(MVMU.coerceToString(i));
             return null;
@@ -116,12 +122,12 @@ public class MVMDMLibrary {
             if (a == null)
                 return null;
             return ((RORIO) a).getHashVal(dmKeyify(i));
-        }).attachHelp("(dm-h-ref TARGET IV) : Retrieves hash key of TARGET");
+        }).attachHelp("(dm-h-ref TARGET IV) : Retrieves hash key of TARGET. Passes through #nil TARGET.");
         ctx.defLib("dm-h-add!", (a, i) -> {
             if (a == null)
                 return null;
             return ((IRIO) a).addHashVal(dmKeyify(i));
-        }).attachHelp("(dm-h-add! TARGET IV) : Adds hash key of TARGET");
+        }).attachHelp("(dm-h-add! TARGET IV) : Adds hash key of TARGET. Passes through #nil TARGET.");
         ctx.defLib("dm-h-rm!", (a, i) -> {
             ((IRIO) a).removeHashVal(dmKeyify(i));
             return null;
