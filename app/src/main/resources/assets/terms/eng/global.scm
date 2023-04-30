@@ -22,6 +22,13 @@
 	bSelectEngine "Select Engine"
 	bConfigN "Configuration"
 	bQuit "Quit R48"
+	bOpen "Open"
+	bNew "New"
+	bSaveAs "Save As"
+	bFile "File..."
+	bAccept "Accept"
+	bSize "Size"
+	bOffset "Offset"
 
 	lFrameMS "MS per frame:"
 	lGamePath "Path To Game (if you aren't running R48 in the game folder):"

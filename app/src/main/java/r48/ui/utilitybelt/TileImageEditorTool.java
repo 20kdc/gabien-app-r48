@@ -46,7 +46,7 @@ public class TileImageEditorTool extends RectangleImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (stage2)
-            return T.z.l334;
-        return T.z.l335;
+            return T.u.ie_tileModeE;
+        return T.u.ie_tileModeS;
     }
 }

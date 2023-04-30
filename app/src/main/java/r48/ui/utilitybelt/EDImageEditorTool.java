@@ -61,7 +61,7 @@ public class EDImageEditorTool extends ImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return T.z.l279;
+        return T.u.ie_tdEye;
     }
 
     @Override

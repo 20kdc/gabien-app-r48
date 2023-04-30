@@ -46,7 +46,7 @@ public class LineImageEditorTool extends StagedImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (stage == 0)
-            return T.z.l280;
-        return T.z.l281;
+            return T.u.ie_tdLineS;
+        return T.u.ie_tdLineE;
     }
 }

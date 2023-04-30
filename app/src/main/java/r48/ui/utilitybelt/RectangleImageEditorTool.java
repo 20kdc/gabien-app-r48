@@ -78,8 +78,8 @@ public class RectangleImageEditorTool extends ImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (stage2)
-            return T.z.l283;
-        return T.z.l284;
+            return T.u.ie_tdFillE;
+        return T.u.ie_tdFillS;
     }
 
     @Override

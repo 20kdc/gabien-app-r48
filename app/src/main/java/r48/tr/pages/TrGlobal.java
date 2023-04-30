@@ -18,7 +18,8 @@ public class TrGlobal extends TrPage {
     // Generic
     public String bContinue, bConfigV;
     public String bOk, bCancel, bConfirm, bCopy, bPaste, bUndo;
-    public String bConfigN, bQuit;
+    public String bConfigN, bQuit, bOpen, bNew, bSaveAs, bFile, bAccept;
+    public String bSize, bOffset;
     // launcher
     public String bSelectEngine, lFrameMS, lGamePath, lSecondaryPath, lChooseEngine;
     public String bBack;
