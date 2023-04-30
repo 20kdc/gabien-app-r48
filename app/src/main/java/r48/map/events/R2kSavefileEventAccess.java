@@ -113,21 +113,21 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     public void delEvent(DMKey key) {
         if (key.getType() == '"') {
             if (key.decString().equals("Player")) {
-                app.ui.launchDialog(T.z.l224);
+                app.ui.launchDialog(T.z.r2kSavefile_errPlyDel);
             } else {
                 IRIO rio = getEvent(key);
                 if (rio == null) {
-                    app.ui.launchDialog(T.z.l225);
+                    app.ui.launchDialog(T.z.r2kSavefile_errGone);
                 } else {
                     rio.getIVar("@map").setFX(0);
-                    app.ui.launchDialog(T.z.l226);
+                    app.ui.launchDialog(T.z.r2kSavefile_plyMap0);
                     pokeHive();
                 }
             }
         } else {
             IRIO se = getSaveEvents();
             if (se.getHashVal(key) == null) {
-                app.ui.launchDialog(T.z.l227);
+                app.ui.launchDialog(T.z.r2kSavefile_errAlreadyGhost);
             } else {
                 se.removeHashVal(key);
                 IRIO map = getMap();
@@ -136,9 +136,9 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
                     if (getSaveCount(map).getFX() != saveFileRoot.getObject().getIVar("@party_pos").getIVar("@map_save_count").getFX())
                         ghost = true;
                 if (ghost) {
-                    app.ui.launchDialog(T.z.l228);
+                    app.ui.launchDialog(T.z.r2kSavefile_evGhosted);
                 } else {
-                    app.ui.launchDialog(T.z.l229);
+                    app.ui.launchDialog(T.z.r2kSavefile_evRemovalOk);
                 }
                 pokeHive();
             }
@@ -153,7 +153,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
 
     @Override
     public DMKey addEvent(RORIO eve, int type) {
-        app.ui.launchDialog(T.z.l230);
+        app.ui.launchDialog(T.z.r2kSavefile_cantAddEvents);
         return null;
     }
 
@@ -217,16 +217,16 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
                 // "Naw! Ghostie want biscuits!"
                 if (eventsHash.get(evK) != null) {
                     // "Dere's already a ghostie here, and 'e's nomming on biscuits!"
-                    app.ui.launchDialog(T.z.l231);
+                    app.ui.launchDialog(T.z.r2kSavefile_evAppearedInCB);
                 } else {
                     IRIO map = getMap();
                     if (map == null) {
-                        app.ui.launchDialog(T.z.l232);
+                        app.ui.launchDialog(T.z.r2kSavefile_noEvMap);
                         return;
                     }
                     IRIO ev = map.getIVar("@events").getHashVal(evK);
                     if (ev == null) {
-                        app.ui.launchDialog(T.z.l233);
+                        app.ui.launchDialog(T.z.r2kSavefile_errUserIsAToaster);
                         return;
                     }
                     eventAsSaveEvent(app, getSaveEvents(), getMapId(), evK, ev);
@@ -238,7 +238,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
 
     @Override
     public String customEventsName() {
-        return T.z.l234;
+        return T.z.r2kSavefile_name;
     }
 
     @Override
@@ -264,7 +264,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
         IRIO se = getSaveEvents();
         IRIO ev = se.getHashVal(a);
         if (ev == null) {
-            app.ui.launchDialog(T.z.l235);
+            app.ui.launchDialog(T.z.r2kSavefile_errGhostUnmovable);
             return;
         }
         ev.getIVar("@x").setFX(x);

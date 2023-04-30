@@ -30,4 +30,18 @@
 	mDiffObj "Object-Object Comparison"
 	mAllStr "Retrieve all object strings"
 	mLoadIMI "PRINT.txt Into Object"
+	(r2kSavefile_
+		errPlyDel "You can't do THAT! ...Who would clean up the mess?"
+		errGone "That's already gone."
+		plyMap0 "Can't be deleted, but was moved to @map 0 (as close as you can get to deleted)"
+		errAlreadyGhost "You're trying to delete a ghost. Yes, I know the Event Picker is slightly unreliable. Poor ghost."
+		evGhosted "Transformed to ghost. Re-Syncing it and setting @active to false might get rid of it."
+		evRemovalOk "As the version numbers are in sync, this worked."
+		cantAddEvents "You can't add events to a savefile, only summon and move existing events."
+		evAppearedInCB "The event was already added somehow (but perhaps not synced). The button should now have disappeared."
+		noEvMap "There's no map to get the event from!"
+		errUserIsAToaster "So, you saw the ghost, got the Map's properties window via System Tools (or you left it up) to delete the event, then came back and pressed Sync? Or has the software just completely broken?!?!?"
+		errGhostUnmovable "The ghost refuses to budge."
+		name "Player/Vehicles/Events"
+	)
 )
