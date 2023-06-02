@@ -312,7 +312,7 @@ public class TestKickstart {
         public void flush() {
             try {
                 FileOutputStream debugOut = new FileOutputStream("test-out/debug.png");
-                debugOut.write(createPNG());
+                debugOut.write(getBackBuffer().createPNG());
                 debugOut.close();
             } catch (Exception e) {
                 e.printStackTrace();
