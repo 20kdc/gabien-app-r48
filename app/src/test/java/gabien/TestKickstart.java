@@ -309,7 +309,7 @@ public class TestKickstart {
         }
 
         @Override
-        public boolean flush() {
+        public void flush() {
             try {
                 FileOutputStream debugOut = new FileOutputStream("test-out/debug.png");
                 debugOut.write(createPNG());
@@ -326,7 +326,7 @@ public class TestKickstart {
             }
             didMaintainThisFrame = false;
             maintainTextEnter = false;
-            boolean b = super.flush();
+            super.flush();
             while (true) {
                 // An entry returns false (which waits a frame) until it's done, then it returns true
                 if (waitingTestEntries.size() == 0) {
@@ -338,7 +338,6 @@ public class TestKickstart {
                     break;
                 waitingTestEntries.removeFirst();
             }
-            return b;
         }
     }
 }

@@ -9,6 +9,7 @@ package gabienapp.state;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import gabien.GaBIEn;
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.WindowSpecs;
 import gabien.ui.Rect;
@@ -59,24 +60,25 @@ public class LSSplashScreen extends State {
         if (completed)
             return;
         gi.flush(); // to kickstart w/h
-        gi.clearAll(255, 255, 255);
-        int sz = (Math.min(gi.getWidth(), gi.getHeight()) / 4) * 2;
+        IGrDriver bb = gi.getBackBuffer();
+        bb.clearAll(255, 255, 255);
+        int sz = (Math.min(bb.getWidth(), bb.getHeight()) / 4) * 2;
         Rect ltPos = Art.r48ico;
         Rect ltPos2 = Art.r48ver;
 
         // note the swap on Y from - (sz / 2) because of the version
-        Rect pos = new Rect((gi.getWidth() / 2) - (sz / 2), (gi.getHeight() / 2) - ((sz * 3) / 4), sz, sz);
+        Rect pos = new Rect((bb.getWidth() / 2) - (sz / 2), (bb.getHeight() / 2) - ((sz * 3) / 4), sz, sz);
         int fxRatio = ltPos2.width * ltPos2.height;
         int aspectMul = (ltPos2.height * fxRatio) / ltPos2.width;
         int szVHeight = (sz * aspectMul) / fxRatio;
         // this is where the "big version number" maths get changed to "little version number" maths
         Rect pos2 = new Rect(pos.x + (sz / 4), pos.y + (pos.height + (pos.height / 16)), sz / 2, szVHeight / 2);
-        gi.blitScaledImage(ltPos.x, ltPos.y, ltPos.width, ltPos.height, pos.x, pos.y, pos.width, pos.height, GaBIEn.getImageEx("layertab.png", false, true));
+        bb.blitScaledImage(ltPos.x, ltPos.y, ltPos.width, ltPos.height, pos.x, pos.y, pos.width, pos.height, GaBIEn.getImageEx("layertab.png", false, true));
         int margin = sz / 124;
-        gi.clearRect(192, 192, 192, pos2.x - (margin * 3), pos2.y - (margin * 3), pos2.width + (margin * 6), pos2.height + (margin * 6));
-        gi.clearRect(128, 128, 128, pos2.x - (margin * 2), pos2.y - (margin * 2), pos2.width + (margin * 4), pos2.height + (margin * 4));
-        gi.clearRect(0, 0, 0, pos2.x - margin, pos2.y - margin, pos2.width + (margin * 2), pos2.height + (margin * 2));
-        gi.blitScaledImage(ltPos2.x, ltPos2.y, ltPos2.width, ltPos2.height, pos2.x, pos2.y, pos2.width, pos2.height, GaBIEn.getImageEx("layertab.png", false, true));
+        bb.clearRect(192, 192, 192, pos2.x - (margin * 3), pos2.y - (margin * 3), pos2.width + (margin * 6), pos2.height + (margin * 6));
+        bb.clearRect(128, 128, 128, pos2.x - (margin * 2), pos2.y - (margin * 2), pos2.width + (margin * 4), pos2.height + (margin * 4));
+        bb.clearRect(0, 0, 0, pos2.x - margin, pos2.y - margin, pos2.width + (margin * 2), pos2.height + (margin * 2));
+        bb.blitScaledImage(ltPos2.x, ltPos2.y, ltPos2.width, ltPos2.height, pos2.x, pos2.y, pos2.width, pos2.height, GaBIEn.getImageEx("layertab.png", false, true));
 
 
         // Can't translate for several reasons (but especially no fonts).
@@ -103,15 +105,15 @@ public class LSSplashScreen extends State {
         // has to be internal-font-able, unless on Android
         int goodSize = 16;
         if (lun.isMobile)
-            goodSize = gi.getHeight() / 32;
+            goodSize = bb.getHeight() / 32;
         if (goodSize < 8)
             goodSize = 8;
         int goodSizeActual = UILabel.getRecommendedTextSize("", goodSize).height;
-        UILabel.drawLabel(gi, gi.getWidth(), 0, gi.getHeight() - goodSizeActual, waitingFor + movement + ch, 1, goodSize);
+        UILabel.drawLabel(bb, bb.getWidth(), 0, bb.getHeight() - goodSizeActual, waitingFor + movement + ch, 1, goodSize);
 
         // fade
         int c = Math.max(0, Math.min(255, 25 * frames)) << 24;
-        gi.blitScaledImage(0, 0, 1, 1, 0, 0, gi.getWidth(), gi.getHeight(), GaBIEn.createImage(new int[] {c}, 1, 1));
+        bb.blitScaledImage(0, 0, 1, 1, 0, 0, bb.getWidth(), bb.getHeight(), GaBIEn.createImage(new int[] {c}, 1, 1));
     }
 
 }
