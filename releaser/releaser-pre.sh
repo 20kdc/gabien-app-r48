@@ -26,6 +26,7 @@ unzip -o ../../gabien-common/uslx/target/gabien-uslx-0.666-SNAPSHOT.jar &&
 unzip -o ../../gabien-common/datum/target/gabien-datum-0.666-SNAPSHOT.jar &&
 unzip -o ../../gabien-common/media/target/gabien-media-0.666-SNAPSHOT.jar &&
 unzip -o ../../gabien-common/common/target/gabien-common-0.666-SNAPSHOT.jar &&
+unzip -o ../../gabien-common/natives-sdk/natives.jar &&
 unzip -o ../io/target/r48-io-0.666-SNAPSHOT.jar &&
 unzip -o ../app/target/r48-app-0.666-SNAPSHOT.jar &&
 unzip -o ../minivm/target/r48-minivm-0.666-SNAPSHOT.jar &&

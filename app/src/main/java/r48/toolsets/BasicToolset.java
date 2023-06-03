@@ -8,6 +8,7 @@
 package r48.toolsets;
 
 import gabien.GaBIEn;
+import gabien.natives.BadGPU;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.*;
@@ -281,6 +282,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         return new UIMenuButton(app, T.z.l65, app.f.menuTH, null, new String[] {
                 T.z.mTestFonts,
                 T.z.mTestGraphics,
+                T.u.mGetGPUInfo,
                 T.z.mToggleFull,
                 T.z.mSchemaTranslator,
                 T.z.mTryRecover,
@@ -299,6 +301,24 @@ public class BasicToolset extends App.Svc implements IToolset {
                 },
                 () -> {
                     app.ui.wm.createWindow(new UITestGraphicsStuff(app));
+                },
+                () -> {
+                    StringBuilder sb = new StringBuilder();
+                    try {
+                        sb.append(gabien.natives.Loader.defaultLoader(GaBIEn::getResource, GaBIEn::VeryTemporaryWorkaroundPlsDelme));
+                        sb.append("\n");
+                        BadGPU.Instance i = BadGPU.newInstance(BadGPU.NewInstanceFlags.CanPrintf);
+                        sb.append(i.getMetaInfo(BadGPU.MetaInfoType.Vendor));
+                        sb.append("\n");
+                        sb.append(i.getMetaInfo(BadGPU.MetaInfoType.Renderer));
+                        sb.append("\n");
+                        sb.append(i.getMetaInfo(BadGPU.MetaInfoType.Version));
+                        sb.append("\n");
+                    } catch (Throwable ex) {
+                        ex.printStackTrace();
+                        sb.append(ex.toString());
+                    }
+                    app.ui.launchDialog(sb.toString());
                 },
                 () -> {
                     app.ui.wm.toggleFullscreen();

@@ -42,6 +42,8 @@ public class TrAppUI extends TrPage {
     public String openAud;
     public String bts_ramObj;
 
+    public String mGetGPUInfo;
+
     public String ie_tdPaste;
     public String ie_swapXY;
     public String ie_rawCopy;

@@ -93,6 +93,7 @@
 	(bts_
 		ramObj "Edit RAM Object"
 	)
+	mGetGPUInfo "GPU Information (New API Compatibility Test)"
 	; Image editor import
 	(ie_
 		tdPaste "Tap top-left pixel of destination."
