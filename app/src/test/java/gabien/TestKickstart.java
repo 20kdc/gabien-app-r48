@@ -212,7 +212,7 @@ public class TestKickstart {
         };
         GaBIEn.internalFileBrowser = impl;
         GaBIEn.internalWindowing = impl;
-        GaBIEn.setupAssets();
+        GaBIEn.setupNativesAndAssets();
         // Reset GaBIEn stuff
         new Config(false).applyUIGlobals();
     }

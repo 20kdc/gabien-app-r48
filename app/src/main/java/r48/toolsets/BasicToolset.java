@@ -305,9 +305,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 () -> {
                     StringBuilder sb = new StringBuilder();
                     try {
-                        sb.append(gabien.natives.Loader.defaultLoader(GaBIEn::getResource, GaBIEn::VeryTemporaryWorkaroundPlsDelme));
-                        sb.append("\n");
-                        BadGPU.Instance i = BadGPU.newInstance(BadGPU.NewInstanceFlags.CanPrintf);
+                        BadGPU.Instance i = BadGPU.newInstance(BadGPU.NewInstanceFlags.CanPrintf | BadGPU.NewInstanceFlags.BackendCheck);
                         sb.append(i.getMetaInfo(BadGPU.MetaInfoType.Vendor));
                         sb.append("\n");
                         sb.append(i.getMetaInfo(BadGPU.MetaInfoType.Renderer));
