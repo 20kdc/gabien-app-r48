@@ -82,7 +82,7 @@ public class TestKickstart {
         windowCount = 0;
         mockFS.clear();
         mockDFS.clear();
-        final GaBIEnImpl impl = new GaBIEnImpl(false, true) {
+        final GaBIEnImpl impl = new GaBIEnImpl(true) {
 
             @Override
             public String[] getFontOverrides() {
