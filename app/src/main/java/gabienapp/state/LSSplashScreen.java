@@ -30,6 +30,7 @@ public class LSSplashScreen extends State {
     private final IConsumer<Integer> done;
     private boolean completed = false;
     private final IGrInDriver gi;
+    private IGrDriver backBuffer;
     private final AtomicBoolean donePrimaryTask = new AtomicBoolean(false);
 
     public LSSplashScreen(Launcher lun, Runnable task, IConsumer<Integer> done) {
@@ -59,8 +60,9 @@ public class LSSplashScreen extends State {
     public void tick(double dT) {
         if (completed)
             return;
-        gi.flush(); // to kickstart w/h
-        IGrDriver bb = gi.getBackBuffer();
+        backBuffer = gi.ensureBackBuffer(backBuffer);
+        gi.flush(backBuffer); // to kickstart w/h
+        IGrDriver bb = backBuffer = gi.ensureBackBuffer(backBuffer);
         bb.clearAll(255, 255, 255);
         int sz = (Math.min(bb.getWidth(), bb.getHeight()) / 4) * 2;
         Rect ltPos = Art.r48ico;

@@ -101,7 +101,7 @@ public class TestKickstart {
                 ws.resizable = false;
                 w = 960;
                 h = 540;
-                return new TestGrInDriver(name, ws, makeOffscreenBufferInt(w, h, false));
+                return new TestGrInDriver(name, ws, w, h);
             }
 
             @Override
@@ -226,8 +226,8 @@ public class TestKickstart {
         private String internalMaintainText;
         private boolean didMaintainThisFrame;
 
-        public TestGrInDriver(String name, WindowSpecs ws, IWindowGrBackend t) {
-            super(name, ws, t);
+        public TestGrInDriver(String name, WindowSpecs ws, int w, int h) {
+            super(name, ws, w, h);
             windowCount++;
             peripherals = new IGJSEPeripheralsInternal() {
                 // Suppressed warnings because we might end up needing these
@@ -309,10 +309,10 @@ public class TestKickstart {
         }
 
         @Override
-        public void flush() {
+        public void flush(IImage backBuffer) {
             try {
                 FileOutputStream debugOut = new FileOutputStream("test-out/debug.png");
-                debugOut.write(getBackBuffer().createPNG());
+                debugOut.write(backBuffer.createPNG());
                 debugOut.close();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -326,7 +326,7 @@ public class TestKickstart {
             }
             didMaintainThisFrame = false;
             maintainTextEnter = false;
-            super.flush();
+            super.flush(backBuffer);
             while (true) {
                 // An entry returns false (which waits a frame) until it's done, then it returns true
                 if (waitingTestEntries.size() == 0) {
