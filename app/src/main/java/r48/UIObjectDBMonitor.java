@@ -10,6 +10,7 @@ package r48;
 import gabien.IGrDriver;
 import gabien.IPeripherals;
 import gabien.ui.*;
+import gabien.text.TextTools;
 import r48.io.IObjectBackend;
 
 /**
@@ -17,6 +18,9 @@ import r48.io.IObjectBackend;
  * Created on 12/29/16.
  */
 public class UIObjectDBMonitor extends App.Elm {
+    private final TextTools.PlainCached memCache1 = new TextTools.PlainCached();
+    private final TextTools.PlainCached memCache2 = new TextTools.PlainCached();
+
     public UIObjectDBMonitor(App app) {
         super(app);
         setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(320), app.f.scaleGuess(240)));
@@ -31,7 +35,7 @@ public class UIObjectDBMonitor extends App.Elm {
     public void render(IGrDriver igd) {
         int step = UILabel.getRecommendedTextSize("", app.f.objectDBMonitorTH).height;
         int width = getSize().width;
-        UILabel.drawLabel(igd, width, 0, 0, toString(), 1, app.f.objectDBMonitorTH);
+        UILabel.drawLabel(igd, width, 0, 0, toString(), 1, app.f.objectDBMonitorTH, memCache1);
         int oy = step;
         for (String s : UITest.sortedKeysStr(app.odb.objectMap.keySet())) {
             String status = T.u.odb_disposed;
@@ -50,7 +54,8 @@ public class UIObjectDBMonitor extends App.Elm {
                     app.odb.objectMap.remove(s);
                 }
             }
-            UILabel.drawLabel(igd, width, 0, oy, s + status, 0, app.f.objectDBMonitorTH);
+            // memCache2 should ideally NOT be shared between these, it's literally the worst thing you can do
+            UILabel.drawLabel(igd, width, 0, oy, s + status, 0, app.f.objectDBMonitorTH, memCache2);
             oy += step;
         }
         setWantedSize(new Size(width, oy));

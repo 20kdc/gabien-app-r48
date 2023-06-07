@@ -12,6 +12,7 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.WindowSpecs;
+import gabien.text.TextTools;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import gabien.uslx.append.IConsumer;
@@ -32,6 +33,7 @@ public class LSSplashScreen extends State {
     private final IGrInDriver gi;
     private IGrDriver backBuffer;
     private final AtomicBoolean donePrimaryTask = new AtomicBoolean(false);
+    private final TextTools.PlainCached progressCache = new TextTools.PlainCached();
 
     public LSSplashScreen(Launcher lun, Runnable task, IConsumer<Integer> done) {
         super(lun);
@@ -111,7 +113,7 @@ public class LSSplashScreen extends State {
         if (goodSize < 8)
             goodSize = 8;
         int goodSizeActual = UILabel.getRecommendedTextSize("", goodSize).height;
-        UILabel.drawLabel(bb, bb.getWidth(), 0, bb.getHeight() - goodSizeActual, waitingFor + movement + ch, 1, goodSize);
+        UILabel.drawLabel(bb, bb.getWidth(), 0, bb.getHeight() - goodSizeActual, waitingFor + movement + ch, 1, goodSize, progressCache);
 
         // fade
         int c = Math.max(0, Math.min(255, 25 * frames)) << 24;
