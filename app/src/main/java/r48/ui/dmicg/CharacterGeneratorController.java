@@ -228,7 +228,7 @@ public class CharacterGeneratorController extends App.Svc {
             UICharGenView cgv = views.get(modes.getTabIndex());
             int w = cgv.genWidth;
             int h = cgv.genHeight;
-            IGrDriver ib = GaBIEn.makeOffscreenBuffer(w, h, true);
+            IGrDriver ib = GaBIEn.makeOffscreenBuffer(w, h);
 
             cgv.render(ib, cgv.genWidth, cgv.genHeight);
 

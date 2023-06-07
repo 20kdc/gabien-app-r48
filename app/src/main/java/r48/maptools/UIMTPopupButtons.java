@@ -59,7 +59,7 @@ public class UIMTPopupButtons extends UIMTBase {
                 new ToolButton(T.z.l17) {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
-                        IGrDriver igd = GaBIEn.makeOffscreenBuffer(view.tileSize * view.mapTable.width, view.tileSize * view.mapTable.height, true);
+                        IGrDriver igd = GaBIEn.makeOffscreenBuffer(view.tileSize * view.mapTable.width, view.tileSize * view.mapTable.height);
                         view.mapTable.renderCore(igd, 0, 0, view.layerVis, view.currentLayer, view.debugToggle);
                         AdHocSaveLoad.prepare();
                         OutputStream os = GaBIEn.getOutFile(Application.BRAND + "/shot.png");

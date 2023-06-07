@@ -58,7 +58,7 @@ public class TonePickerSchemaElement extends SchemaElement {
         int imageUnit = (app.f.tonePickerTH * 64) / 6;
         if (imageUnit < 1)
             imageUnit = 1;
-        IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(imageUnit * 2, imageUnit, false);
+        IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(imageUnit * 2, imageUnit);
 
         finalComposite.blitScaledImage(0, 0, 256, 256, 0, 0, imageUnit, imageUnit, totem);
         finalComposite.blitImage(0, 0, imageUnit, imageUnit, imageUnit, 0, app.ui.imageFXCache.process(finalComposite, cfg));

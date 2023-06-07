@@ -274,7 +274,7 @@ public class UIMapView extends UIPlaneView {
             if (remakeBuf) {
                 if (offscreenBuf != null)
                     offscreenBuf.shutdown();
-                offscreenBuf = GaBIEn.makeOffscreenBuffer(camR.width, camR.height, false);
+                offscreenBuf = GaBIEn.makeOffscreenBuffer(camR.width, camR.height);
             }
             render(currentLayer, offscreenBuf);
         }

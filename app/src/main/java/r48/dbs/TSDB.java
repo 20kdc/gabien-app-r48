@@ -125,7 +125,7 @@ public class TSDB extends App.Svc {
     }
 
     public IImage compileSheet(int count, int tileSize) {
-        IGrDriver workingImage = GaBIEn.makeOffscreenBuffer(tileSize * count, tileSize, true);
+        IGrDriver workingImage = GaBIEn.makeOffscreenBuffer(tileSize * count, tileSize);
         for (int i = 0; i < count; i++)
             draw(i * tileSize, 0, 0, (short) i, 1, workingImage);
         IImage img2 = GaBIEn.createImage(workingImage.getPixels(), workingImage.getWidth(), workingImage.getHeight());
