@@ -82,7 +82,7 @@ public class TestKickstart {
         windowCount = 0;
         mockFS.clear();
         mockDFS.clear();
-        final GaBIEnImpl impl = new GaBIEnImpl(true) {
+        final GaBIEnImpl impl = new GaBIEnImpl() {
 
             @Override
             public String[] getFontOverrides() {
@@ -212,7 +212,7 @@ public class TestKickstart {
         };
         GaBIEn.internalFileBrowser = impl;
         GaBIEn.internalWindowing = impl;
-        GaBIEn.setupNativesAndAssets();
+        GaBIEn.setupNativesAndAssets(true);
         // Reset GaBIEn stuff
         new Config(false).applyUIGlobals();
     }
