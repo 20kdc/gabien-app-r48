@@ -355,7 +355,7 @@ public class WindowManager extends AppCore.Csv {
                             dt[0] += base.x;
                             dt[1] += base.y;
                             igd.updateST();
-                            baseElem.render(igd);
+                            baseElem.renderAllLayers(igd);
                             dt[0] -= base.x;
                             dt[1] -= base.y;
                             igd.updateST();

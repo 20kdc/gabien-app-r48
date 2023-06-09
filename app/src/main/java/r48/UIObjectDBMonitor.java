@@ -32,10 +32,13 @@ public class UIObjectDBMonitor extends App.Elm {
     }
 
     @Override
-    public void render(IGrDriver igd) {
+    public void renderLayer(IGrDriver igd, UILayer layer) {
+        if (layer != UILayer.Base && layer != UILayer.Content)
+            return;
+        boolean isBackground = layer == UILayer.Base;
         int step = UILabel.getRecommendedTextSize("", app.f.objectDBMonitorTH).height;
         int width = getSize().width;
-        UILabel.drawLabel(igd, width, 0, 0, toString(), 1, app.f.objectDBMonitorTH, memCache1);
+        UILabel.drawLabel(igd, width, 0, 0, toString(), 1, app.f.objectDBMonitorTH, memCache1, isBackground, !isBackground);
         int oy = step;
         for (String s : UITest.sortedKeysStr(app.odb.objectMap.keySet())) {
             String status = T.u.odb_disposed;
@@ -55,7 +58,7 @@ public class UIObjectDBMonitor extends App.Elm {
                 }
             }
             // memCache2 should ideally NOT be shared between these, it's literally the worst thing you can do
-            UILabel.drawLabel(igd, width, 0, oy, s + status, 0, app.f.objectDBMonitorTH, memCache2);
+            UILabel.drawLabel(igd, width, 0, oy, s + status, 0, app.f.objectDBMonitorTH, memCache2, isBackground, !isBackground);
             oy += step;
         }
         setWantedSize(new Size(width, oy));

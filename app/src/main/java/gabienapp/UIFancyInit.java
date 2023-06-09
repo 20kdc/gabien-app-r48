@@ -12,6 +12,7 @@ import gabien.IPeripherals;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
+import gabien.ui.UILayer;
 import gabien.uslx.append.IConsumer;
 import r48.cfg.Config;
 
@@ -73,10 +74,11 @@ public class UIFancyInit extends UIElement.UIProxy implements IConsumer<String> 
     }
 
     @Override
-    public void render(IGrDriver igd) {
-        super.render(igd);
-        if (ackDoneInjector >= 1)
-            ackDoneInjector++;
+    public void renderLayer(IGrDriver igd, UILayer layer) {
+        super.renderLayer(igd, layer);
+        if (layer == UILayer.Content)
+            if (ackDoneInjector >= 1)
+                ackDoneInjector++;
     }
 
     @Override

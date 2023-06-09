@@ -13,6 +13,7 @@ import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
+import gabien.ui.UILayer;
 import r48.App;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTBase;
@@ -69,7 +70,7 @@ public class UIMapViewContainer extends App.Pan {
     }
 
     @Override
-    public void render(IGrDriver igd) {
+    public void renderLayer(IGrDriver igd, UILayer layer) {
         // remove stale tools.
         // (this code is weird!)
         if (mapTool != null) {
@@ -113,14 +114,16 @@ public class UIMapViewContainer extends App.Pan {
             }
         }
 
-        super.render(igd);
-        if (view != null) {
+        super.renderLayer(igd, layer);
+        if (layer == UILayer.Content) {
+            if (view != null) {
+                deltaTimeAccum = 0;
+                return;
+            }
+            Size r = getSize();
+            timeWaster.draw(igd, deltaTimeAccum, r.width, r.height);
             deltaTimeAccum = 0;
-            return;
         }
-        Size r = getSize();
-        timeWaster.draw(igd, deltaTimeAccum, r.width, r.height);
-        deltaTimeAccum = 0;
     }
 
     public void loadMap(String gum) {

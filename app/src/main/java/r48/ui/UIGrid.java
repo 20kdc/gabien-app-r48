@@ -74,10 +74,13 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
     }
 
     @Override
-    public void render(IGrDriver igd) {
+    public void renderLayer(IGrDriver igd, UILayer layer) {
         Size r = getSize();
-        igd.clearRect(bkgR, bkgG, bkgB, 0, 0, r.width, r.height);
-        super.render(igd);
+        if (layer == UILayer.Clear)
+            igd.clearRect(bkgR, bkgG, bkgB, 0, 0, r.width, r.height);
+        super.renderLayer(igd, layer);
+        if (layer != UILayer.Content)
+            return;
 
         if (tmWidth <= 0)
             return;
