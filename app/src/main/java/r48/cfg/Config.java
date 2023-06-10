@@ -23,7 +23,6 @@ import r48.tr.LanguageList;
 public class Config {
     public final FontSizes f = new FontSizes();
 
-    public boolean allowBlending;
     public boolean windowingExternal;
 
     // This is the secondary image path which is *defaulted to*.
@@ -51,7 +50,6 @@ public class Config {
             throw new RuntimeException(e);
         }
 
-        allowBlending = true;
         windowingExternal = false;
         fontOverride = GaBIEn.getFontOverrides()[0];
         fontOverrideUE8 = false;

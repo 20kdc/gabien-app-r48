@@ -15,7 +15,6 @@ import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.cfg.FontSizes.FontSizeField;
 import r48.tr.pages.TrRoot;
-import r48.ui.UIAppendButton;
 
 import java.util.LinkedList;
 
@@ -138,17 +137,12 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 apply.run();
                 refreshLayout(true);
             }
-        }), new UIAppendButton(TEMP("External Windowing"), new UITextButton(TEMP("Enable Blending"), c.f.fontSizerTH, new Runnable() {
-            @Override
-            public void run() {
-                c.allowBlending = !c.allowBlending;
-            }
-        }).togglable(c.allowBlending), new Runnable() {
+        }), new UITextButton(TEMP("External Windowing"), c.f.fontSizerTH, new Runnable() {
             @Override
             public void run() {
                 c.windowingExternal = !c.windowingExternal;
             }
-        }, c.f.fontSizerTH).togglable(c.windowingExternal), false, 0.5));
+        }).togglable(c.windowingExternal), false, 0.5));
         try {
             for (final FontSizeField field : c.f.getFields()) {
                 doubleAll.add(new Runnable() {

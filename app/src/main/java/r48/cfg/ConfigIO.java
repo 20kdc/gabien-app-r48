@@ -38,7 +38,6 @@ public class ConfigIO {
             prepare.addIVar("@sysfont_ue8").setBool(c.fontOverrideUE8);
         }
         prepare.addIVar("@theme_variant").setFX(c.borderTheme);
-        prepare.addIVar("@actual_blending").setBool(c.allowBlending);
         prepare.addIVar("@windowing_external").setBool(c.windowingExternal);
         AdHocSaveLoad.save("fonts", prepare);
     }
@@ -113,9 +112,6 @@ public class ConfigIO {
             IRIO sys5 = dat.getIVar("@theme_variant");
             if (sys5 != null)
                 c.borderTheme = (int) sys5.getFX();
-            IRIO sys6 = dat.getIVar("@actual_blending");
-            if (sys6 != null)
-                c.allowBlending = sys6.getType() == 'T';
             IRIO sys7 = dat.getIVar("@windowing_external");
             if (sys7 != null)
                 c.windowingExternal = sys7.getType() == 'T';

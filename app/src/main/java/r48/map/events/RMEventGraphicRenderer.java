@@ -11,7 +11,6 @@ import gabien.FontManager;
 import gabien.IGrDriver;
 import gabien.IImage;
 import r48.App;
-import r48.imagefx.AlphaControlImageEffect;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
 import r48.imagefx.ToneImageEffect;
@@ -136,12 +135,6 @@ public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRend
         if (blendType == 2) {
             doBlend = true;
             doBlendType = true;
-        }
-        if (doBlend) {
-            if (!app.c.allowBlending) {
-                doBlend = false;
-                i = app.ui.imageFXCache.process(i, new AlphaControlImageEffect(doBlendType));
-            }
         }
         if (doBlend) {
             igd.blendRotatedScaledImage(srcx, srcy, srcw, srch, x, y, acw, ach, angle, i, doBlendType);
