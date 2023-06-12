@@ -77,7 +77,7 @@ public class LanguageList {
 
     private static LangInfo[] createLanguageList() {
         final LinkedList<LangInfo> languageLL = new LinkedList<LangInfo>();
-        addFn(languageLL, "terms/index.txt");
+        addFn(languageLL, "terms/index.scm");
         addFn(languageLL, "terms/index.aux.scm");
         return languageLL.toArray(new LangInfo[0]);
     }
