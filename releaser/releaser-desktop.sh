@@ -7,12 +7,8 @@
 # Release Build Script, iteration 3.
 # This part of the script is responsible for using the 'staging' output to make the desktop build of R48.
 # Expects the version name for the final JAR.
-cd .. &&
-cp ../gabien-common/javase/target/gabien-javase-0.666-SNAPSHOT.jar staging-javase.jar &&
-cd staging &&
-zip -q -r ../staging-javase.jar * &&
-cd .. &&
-stripzip staging-javase.jar 1> /dev/null 2> /dev/null &&
-mv staging-javase.jar $1.jar &&
-echo "The desktop build is complete with hash " `sha256sum $1.jar`
+cp javase/target/r48-javase-0.666-SNAPSHOT-jar-with-dependencies.jar "../$1.jar" || exit
+cd .. || exit
+stripzip "$1.jar" 1> /dev/null 2> /dev/null || exit
+echo "The desktop build is complete with hash " `sha256sum "$1.jar"`
 

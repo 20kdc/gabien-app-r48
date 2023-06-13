@@ -36,6 +36,14 @@
 !minivm/src
 !minivm/src/**
 
+# Backends
+!releaser/javase
+!releaser/javase/pom.xml
+!releaser/android
+!releaser/android/pom.xml
+!releaser/metadata
+!releaser/metadata/pom.xml
+
 # Test dir
 !app/test-out
 !app/test-out/placeholder

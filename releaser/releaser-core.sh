@@ -33,20 +33,20 @@ echo "Building GaBIEn..."
 (cd ../../gabien-common && ./ready.sh) || exit
 echo "Building GaBIEn [OK]"
 echo
-echo "Building staging directory..."
+echo "Building R48..."
 ./releaser-pre.sh $3 $4 || exit
-echo "Building staging directory [OK]"
+echo "Building R48 [OK]"
 echo
-echo "Building desktop version..."
+echo "Finalizing desktop version..."
 ./releaser-desktop.sh $3 || exit
-echo "Building desktop version [OK]"
+echo "Finalizing desktop version [OK]"
 echo
 # Android
-echo "Building Android version..."
+echo "Finalizing Android version..."
 cd ../../gabien-common/android || exit
-./releaser.sh $1 $2 $3 $4 ../../gabien-app-r48/staging ../../gabien-app-r48/releaser/icon.png android.permission.WRITE_EXTERNAL_STORAGE || exit
+./releaser.sh $1 $2 $3 $4 ../../gabien-app-r48/releaser/android/target/r48-android-0.666-SNAPSHOT-jar-with-dependencies.jar ../../gabien-app-r48/releaser/icon.png android.permission.WRITE_EXTERNAL_STORAGE || exit
 mv result.apk ../../gabien-app-r48/$3.apk || exit
-echo "Building Android version [OK]"
+echo "Finalizing Android version [OK]"
 echo
 echo "All builds completed successfully. Please move to testing phase."
 
