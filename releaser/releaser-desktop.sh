@@ -10,9 +10,9 @@
 cd .. &&
 cp ../gabien-common/javase/target/gabien-javase-0.666-SNAPSHOT.jar staging-javase.jar &&
 cd staging &&
-zip -r ../staging-javase.jar * &&
+zip -q -r ../staging-javase.jar * &&
 cd .. &&
-stripzip staging-javase.jar &&
+stripzip staging-javase.jar 1> /dev/null 2> /dev/null &&
 mv staging-javase.jar $1.jar &&
 echo "The desktop build is complete with hash " `sha256sum $1.jar`
 

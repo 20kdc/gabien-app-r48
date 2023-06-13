@@ -7,25 +7,22 @@
 # Release Build Script, iteration 3
 # This part of the script compiles the critical stuff.
 # Supply with the version name and version code.
-# This builds Common and R48, creates the "staging" folder, and populates it.
+# This builds R48, creates the "staging" folder, and populates it.
 
-# Start with leaving the releaser folder first
-cd ../../gabien-common &&
-./ready.sh &&
-cd ../gabien-app-r48 &&
+cd .. &&
 # Testing requires manual IDE intervention at the moment due to LTE.
-mvn clean &&
-mvn install -DskipTests &&
+mvn clean -q &&
+mvn install -q -DskipTests &&
 mkdir -p staging &&
 rm -r staging &&
 mkdir -p staging &&
 cd staging &&
 # Note that JavaSE never gets put into staging - instead R48 and Common are injected into the JavaSE Jar.
-unzip -o ../../gabien-common/common/target/gabien-common-0.666-SNAPSHOT-jar-with-dependencies.jar &&
-unzip -o ../../gabien-common/media/target/gabien-media-0.666-SNAPSHOT.jar &&
-unzip -o ../io/target/r48-io-0.666-SNAPSHOT.jar &&
-unzip -o ../app/target/r48-app-0.666-SNAPSHOT.jar &&
-unzip -o ../minivm/target/r48-minivm-0.666-SNAPSHOT.jar &&
+unzip -q -o ../../gabien-common/common/target/gabien-common-0.666-SNAPSHOT-jar-with-dependencies.jar &&
+unzip -q -o ../../gabien-common/media/target/gabien-media-0.666-SNAPSHOT.jar &&
+unzip -q -o ../io/target/r48-io-0.666-SNAPSHOT.jar &&
+unzip -q -o ../app/target/r48-app-0.666-SNAPSHOT.jar &&
+unzip -q -o ../minivm/target/r48-minivm-0.666-SNAPSHOT.jar &&
 cd .. &&
 # Prepare licensing information
 cp CREDITS.txt staging/ &&

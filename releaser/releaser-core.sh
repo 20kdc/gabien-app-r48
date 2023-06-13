@@ -9,7 +9,8 @@
 # Expects the 'normal' layout, calls on Gradle to do building and calls stripzip to make sure the two builds will end up the same.
 # Regarding that, it's the only thing I found that does the exact job I need: https://github.com/zeeaero/stripzip
 # So, yeah, thanks to zeeareo for a critical part of the R48 build process!
-# Please note that this tool is uploaded for reproducibility.
+
+# Please note that this script is uploaded for reproducibility.
 # This tool should theoretically create the same builds on different machines.
 # Usage to create unofficial yet officially marked fake R48 builds,
 #  while technically legal, may result in people disliking you.
@@ -24,11 +25,28 @@ if [ "$#" -ne 4 ]; then
  exit
 fi
 
-./releaser-pre.sh $3 $4 &&
-./releaser-desktop.sh $3 &&
+echo
+echo "- R48 Release Process -"
+echo "Name: $1 Package: $2 RID: $3 AVC: $4"
+echo
+echo "Building GaBIEn..."
+(cd ../../gabien-common && ./ready.sh) || exit
+echo "Building GaBIEn [OK]"
+echo
+echo "Building staging directory..."
+./releaser-pre.sh $3 $4 || exit
+echo "Building staging directory [OK]"
+echo
+echo "Building desktop version..."
+./releaser-desktop.sh $3 || exit
+echo "Building desktop version [OK]"
+echo
 # Android
-cd ../../gabien-common/android &&
-./releaser.sh $1 $2 $3 $4 ../../gabien-app-r48/staging ../../gabien-app-r48/releaser/icon.png android.permission.WRITE_EXTERNAL_STORAGE &&
-mv result.apk ../../gabien-app-r48/$3.apk &&
+echo "Building Android version..."
+cd ../../gabien-common/android || exit
+./releaser.sh $1 $2 $3 $4 ../../gabien-app-r48/staging ../../gabien-app-r48/releaser/icon.png android.permission.WRITE_EXTERNAL_STORAGE || exit
+mv result.apk ../../gabien-app-r48/$3.apk || exit
+echo "Building Android version [OK]"
+echo
 echo "All builds completed successfully. Please move to testing phase."
 
