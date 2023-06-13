@@ -22,7 +22,7 @@ LANGUAGE=en_US:en
 
 if [ "$#" -ne 4 ]; then
  echo "releaser-core.sh NAME PACKAGE RELEASEID ANDROIDVERSIONCODE"
- exit
+ exit 1
 fi
 
 echo
