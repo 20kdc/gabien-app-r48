@@ -100,6 +100,7 @@ public class Launcher {
         // exceptions
         if (isMobile)
             c.f.tilesTabTH *= 2;
+        c.applyUIGlobals();
     }
 
     void shutdownAllAppMainWindows() {

@@ -174,8 +174,6 @@ public class FontSizes {
         @Override
         public void accept(Integer integer) {
             try {
-                if (name.equals("gSysCoreTextHeight"))
-                    GaBIEn.sysCoreFontSize = integer;
                 intern.setInt(FontSizes.this, integer);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
