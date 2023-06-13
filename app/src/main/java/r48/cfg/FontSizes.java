@@ -7,7 +7,6 @@
 
 package r48.cfg;
 
-import gabien.GaBIEn;
 import gabien.uslx.append.*;
 import r48.tr.pages.TrFontSizes;
 
