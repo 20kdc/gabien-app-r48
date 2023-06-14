@@ -145,4 +145,6 @@
 		tileModeS "Click points of area to restrict drawing to."
 		tileModeE "Click remaining point of area to restrict drawing to."
 	)
+	disableMapRendering "Disable rendering (even across maps!)"
+	disableMapAnimation "Disable animation"
 )

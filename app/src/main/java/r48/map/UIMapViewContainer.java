@@ -44,6 +44,7 @@ public class UIMapViewContainer extends App.Pan {
     private double deltaTimeAccum = 0;
 
     private boolean masterRenderDisableSwitch = false;
+    private boolean masterAnimDisableSwitch = false;
 
     public UIMapViewContainer(App app) {
         super(app);
@@ -147,6 +148,7 @@ public class UIMapViewContainer extends App.Pan {
         // Also kick the dictionaries because of the event dictionary.
         view = new UIMapView(app, gum, b.width, b.height);
         view.viewRenderDisableSwitch = masterRenderDisableSwitch;
+        view.viewAnimDisableSwitch = masterAnimDisableSwitch;
         final IMapToolContext mtc = new IMapToolContext() {
             @Override
             public UIMapView getMapView() {
@@ -183,6 +185,18 @@ public class UIMapViewContainer extends App.Pan {
                 masterRenderDisableSwitch = value;
                 if (view != null)
                     view.viewRenderDisableSwitch = value;
+            }
+
+            @Override
+            public boolean getMasterAnimDisableSwitch() {
+                return masterAnimDisableSwitch;
+            }
+
+            @Override
+            public void setMasterAnimDisableSwitch(boolean value) {
+                masterAnimDisableSwitch = value;
+                if (view != null)
+                    view.viewAnimDisableSwitch = value;
             }
         };
 

@@ -22,6 +22,8 @@ import r48.ui.utilitybelt.FillAlgorithm;
 
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * A monolithic 'all the main editing tools' class. Even a single instance of this class
  *  has to be adaptable to whatever layer & editing details it ends up with.
@@ -390,5 +392,15 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             }
         }
         System.err.println("Cannot find tile " + aShort);
+    }
+
+    @Override
+    @NonNull
+    public String viewState(int mouseXT, int mouseYT) {
+        int ti = tabPane.getTabIndex();
+        String rest = "";
+        if (ti != -1)
+            rest = "." + tileMaps[ti].getSelected() + "." + tileMaps[ti].selWidth + "." + tileMaps[ti].selHeight;
+        return "AutoTile." + mouseXT + "." + mouseYT + "." + ti + rest;
     }
 }

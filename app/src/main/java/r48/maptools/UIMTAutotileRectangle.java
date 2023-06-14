@@ -7,6 +7,8 @@
 
 package r48.maptools;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.GaBIEn;
 import gabien.ui.UILabel;
 import r48.map.IMapViewCallbacks;
@@ -61,10 +63,14 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
         return minimap ? 0 : 1;
     }
 
+    private int subFrame() {
+        return ((int) (GaBIEn.getTime() * 4)) & 1;
+    }
+
     @Override
     public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
         if (!minimap)
-            if ((((int) (GaBIEn.getTime() * 4)) % 2) == 0)
+            if (subFrame() == 0)
                 mvdc.drawIndicator(startX, startY, MapViewDrawContext.IndicatorStyle.SolidBlue);
     }
 
@@ -82,5 +88,11 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
             parent.hasClosed = false;
             mapToolContext.accept(parent);
         }
+    }
+
+    @Override
+    @NonNull
+    public String viewState(int mouseXT, int mouseYT) {
+        return "ATR." + subFrame() + "." + mouseXT + "." + mouseYT;
     }
 }

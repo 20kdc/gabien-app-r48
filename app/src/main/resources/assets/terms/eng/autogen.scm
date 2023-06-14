@@ -167,7 +167,6 @@
 	l198 "Mode: Regular Array"
 	l199 "Mode: Pager"
 	l200 "Layer Visibility"
-	l201 "Disable rendering (even across maps!)"
 	l202 "Grab Tile"
 	l203 "B.Copy"
 	l204 "B.Paste"

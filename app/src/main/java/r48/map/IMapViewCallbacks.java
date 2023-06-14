@@ -7,6 +7,8 @@
 
 package r48.map;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Used for map-view-tools.
  * Created on 12/28/16.
@@ -19,4 +21,9 @@ public interface IMapViewCallbacks {
     void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap);
 
     void confirmAt(int x, int y, int pixx, int pixy, int layer, boolean first);
+
+    /**
+     * This returns state information to control map re-rendering.
+     */
+    @NonNull String viewState(int mouseXT, int mouseYT);
 }

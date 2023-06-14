@@ -7,6 +7,8 @@
 
 package r48.maptools;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.FontManager;
 import gabien.ui.UILabel;
 import gabien.ui.UINumberBox;
@@ -82,5 +84,11 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
         shadowBasis ^= 1 << flagId;
         map.mapTable.setTiletype(x, y, 3, (short) (shadowBasis | (regionId.number << 8)));
         map.passModificationNotification();
+    }
+
+    @Override
+    @NonNull
+    public String viewState(int mouseXT, int mouseYT) {
+        return "ShadowLayer";
     }
 }

@@ -54,6 +54,10 @@ public class UIMapView extends UIPlaneView {
      * set from UIMapViewContainer 
      */
     public boolean viewRenderDisableSwitch = false;
+    /**
+     * also set from UIMapViewContainer 
+     */
+    public boolean viewAnimDisableSwitch = false;
 
     public final int tileSize;
 
@@ -118,10 +122,6 @@ public class UIMapView extends UIPlaneView {
         mouseXTP = UIElement.sensibleCellMod(xi, tileSize);
         mouseYT = UIElement.sensibleCellDiv(yi, tileSize);
         mouseYTP = UIElement.sensibleCellMod(yi, tileSize);
-    }
-
-    private int internalScaling(int i) {
-        return (i * planeZoomMul) / planeZoomDiv;
     }
 
     private int internalScalingReversePad(int i) {
@@ -258,56 +258,63 @@ public class UIMapView extends UIPlaneView {
 
     @Override
     public void render(IGrDriver igd) {
-        Size camR = getSize();
-        camR = new Size(internalScalingReversePad(camR.width), internalScalingReversePad(camR.height));
+        Size realSize = getSize();
+        Size camR = new Size(internalScalingReversePad(realSize.width), internalScalingReversePad(realSize.height));
 
         // Stuff any possible important information...
         char[] visConfig = new char[layerVis.length];
         for (int i = 0; i < layerVis.length; i++)
             visConfig[i] = layerVis[i] ? 'T' : 'F';
-        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + debugToggle + "_" + mapTable.renderer.tileRenderer.getFrame() + "_" + mapTable.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + callbacks + "_" + planeZoomMul + "_" + planeZoomDiv + "_" + viewRenderDisableSwitch;
+        String config;
+        String mouseInfoCond = callbacks != null ? "Y" + callbacks.viewState(mouseXT, mouseYT) : "N";
+        if (viewAnimDisableSwitch) {
+            // Do some dodgy changes to reduce re-rendering. 
+            config = realSize.width + "_" + realSize.height + "_" + camX + "_" + camY + "_" + mouseInfoCond + "_" + debugToggle + "_-1_" + mapTable.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + callbacks + "_" + planeZoomMul + "_" + planeZoomDiv + "_" + viewRenderDisableSwitch;
+        } else {
+            int effectiveFrame = mapTable.renderer.tileRenderer.getFrame();
+            config = realSize.width + "_" + realSize.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + debugToggle + "_" + effectiveFrame + "_" + mapTable.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + callbacks + "_" + planeZoomMul + "_" + planeZoomDiv + "_" + viewRenderDisableSwitch;
+        }
         if (scheduler.needsUpdate(config)) {
             boolean remakeBuf = true;
             if (offscreenBuf != null)
-                if ((offscreenBuf.getWidth() == camR.width) && (offscreenBuf.getHeight() == camR.height))
+                if ((offscreenBuf.getWidth() == realSize.width) && (offscreenBuf.getHeight() == realSize.height))
                     remakeBuf = false;
             if (remakeBuf) {
                 if (offscreenBuf != null)
                     offscreenBuf.shutdown();
-                offscreenBuf = GaBIEn.makeOffscreenBuffer(camR.width, camR.height);
+                offscreenBuf = GaBIEn.makeOffscreenBuffer(realSize.width, realSize.height);
             }
-            render(currentLayer, offscreenBuf);
+            render(currentLayer, offscreenBuf, camR);
         }
-        if (offscreenBuf != null) {
-            if ((planeZoomMul == 1) && (planeZoomDiv == 1)) {
-                igd.blitImage(0, 0, camR.width, camR.height, 0, 0, offscreenBuf);
-            } else {
-                igd.blitScaledImage(0, 0, camR.width, camR.height, 0, 0, internalScaling(camR.width), internalScaling(camR.height), offscreenBuf);
-            }
-        }
+        if (offscreenBuf != null)
+            igd.blitImage(0, 0, realSize.width, realSize.height, 0, 0, offscreenBuf);
 
         super.render(igd);
     }
 
     // mousePT can be null
-    private void render(int currentLayer, IGrDriver igd) {
+    private void render(int currentLayer, IGrDriver igd, Size camR) {
 
         // Translate new camX/camY (planespace central coord) into old camX/camY (position of the top-left corner of the screen in planespace)
         Size wSize = getSize();
-        int iCamX = (int) Math.floor(camX - planeDivZoom(wSize.width / 2.0d));
-        int iCamY = (int) Math.floor(camY - planeDivZoom(wSize.height / 2.0d));
+        float iCamX = (float) (camX - planeDivZoom(wSize.width / 2.0d));
+        float iCamY = (float) (camY - planeDivZoom(wSize.height / 2.0d));
 
-        MapViewDrawContext mvdc = new MapViewDrawContext(app, new Rect(iCamX, iCamY, igd.getWidth(), igd.getHeight()), tileSize);
+        // Ok, so I should write this down SOMEWHERE:
+        // As of R48 v1.5, map rendering always renders to a surface the size of the map view.
+        // This changes a lot of semantics, but mainly it optimizes in favour of zooming out a map.
+        MapViewDrawContext mvdc = new MapViewDrawContext(app, new Rect((int) iCamX, (int) iCamY, camR.width, camR.height), tileSize);
 
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);
 
-        // Everything is performed in a transformed context to save some headaches.
+        // Rendering is all done at a 1:1 match with tiles.
         float[] stb = igd.getTRS();
-        float oldTX = stb[0];
-        float oldTY = stb[1];
-        stb[0] = -iCamX;
-        stb[1] = -iCamY;
+        float ratio = ((float) planeZoomMul) / planeZoomDiv;
+        stb[2] = ratio;
+        stb[3] = ratio;
+        stb[0] = -(iCamX * ratio);
+        stb[1] = -(iCamY * ratio);
 
         IMapViewDrawLayer[] layers = mapTable.renderer.layers;
 
@@ -331,8 +338,6 @@ public class UIMapView extends UIPlaneView {
             for (int l = 0; l < ovlLayers; l++)
                 callbacks.performGlobalOverlay(mvdc, l, minimap);
         }
-        stb[0] = oldTX;
-        stb[1] = oldTY;
     }
 
     // Used by tools, after they're done doing whatever.

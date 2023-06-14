@@ -7,6 +7,8 @@
 
 package r48.maptools;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
@@ -109,5 +111,11 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
                     if (!map.mapTable.outOfBounds(i + x, j + y))
                         map.mapTable.setTiletype(i + x, j + y, l, table.getTiletype(i, j, l));
         map.passModificationNotification();
+    }
+
+    @Override
+    @NonNull
+    public String viewState(int mouseXT, int mouseYT) {
+        return "PasteRct." + confirming + "." + confirmX + "." + confirmY + "." + mouseXT + "." + mouseYT;
     }
 }

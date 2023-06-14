@@ -7,6 +7,8 @@
 
 package r48.maptools;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.UILabel;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
@@ -48,5 +50,11 @@ public class UIMTPickTile extends UIMTBase implements IMapViewCallbacks {
             return;
         if (!map.mapTable.outOfBounds(x, y))
             map.pickTileHelper.accept(map.mapTable.getTiletype(x, y, layer));
+    }
+
+    @Override
+    @NonNull
+    public String viewState(int mouseXT, int mouseYT) {
+        return "PickTile";
     }
 }

@@ -97,4 +97,11 @@ public class MOutline {
         }
         return true;
     }
+
+    /**
+     * This is so that viewState does more or less the right thing than anything else.
+     */
+    public int getLength() {
+        return set.size();
+    }
 }

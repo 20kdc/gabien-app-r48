@@ -9,6 +9,8 @@ package r48.maptools;
 
 import java.nio.charset.StandardCharsets;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.GaBIEn;
 import gabien.ui.UILabel;
 import r48.RubyTable;
@@ -50,6 +52,10 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
         return minimap ? 0 : 1;
     }
 
+    private int subFrame() {
+        return ((int) (GaBIEn.getTime() * 4)) & 1;
+    }
+
     @Override
     public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
         if (!stage)
@@ -58,7 +64,7 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
         int px = startX * mvdc.tileSize;
         int py = startY * mvdc.tileSize;
         if (!minimap)
-            if ((((int) (GaBIEn.getTime() * 4)) % 2) == 0)
+            if (subFrame() == 0)
                 mvdc.igd.clearRect(0, 0, 255, px, py, map.tileSize, map.tileSize);
         mvdc.drawMouseIndicator();
     }
@@ -91,5 +97,11 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
             innerLabel.text = T.z.l6;
             stage = true;
         }
+    }
+
+    @Override
+    @NonNull
+    public String viewState(int mouseXT, int mouseYT) {
+        return "CopyRect." + subFrame() + "." + mouseXT + "." + mouseYT;
     }
 }

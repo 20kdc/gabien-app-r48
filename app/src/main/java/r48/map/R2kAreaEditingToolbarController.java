@@ -7,6 +7,8 @@
 
 package r48.map;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.GaBIEn;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
@@ -75,12 +77,15 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
             return 1;
         }
 
+        private int subFrame() {
+            return ((int) (GaBIEn.getTime() * 4)) & 1;
+        }
+
         @Override
         public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
             if (definingPoint2)
                 mvdc.drawIndicator(firstPointX, firstPointY, MapViewDrawContext.IndicatorStyle.Target);
-            int x = (int) (GaBIEn.getTime() * 4);
-            if ((x & 1) == 0) {
+            if (subFrame() == 0) {
                 Rect r = getViewedRect();
                 Art.drawSelectionBox((r.x * tileSize) - 1, (r.y * tileSize) - 1, (r.width * mvdc.tileSize) + 2, (r.height * mvdc.tileSize) + 2, 1, mvdc.igd);
             }
@@ -119,6 +124,11 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
                 label.text = textA;
                 definingPoint2 = false;
             }
+        }
+
+        @Override
+        public @NonNull String viewState(int mouseXT, int mouseYT) {
+            return "R2kArea." + definingPoint2 + "." + firstPointX + "." + firstPointY + "." + subFrame() + "." + mouseXT + "." + mouseYT;
         }
     }
 }

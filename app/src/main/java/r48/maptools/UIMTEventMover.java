@@ -7,6 +7,8 @@
 
 package r48.maptools;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.UILabel;
 import r48.io.data.DMKey;
 import r48.map.IMapToolContext;
@@ -56,5 +58,11 @@ public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
             return;
         mapView.mapTable.eventAccess.setEventXY(targetEventKey, x, y);
         mapToolContext.accept(new UIMTEventPicker(mapToolContext));
+    }
+
+    @Override
+    @NonNull
+    public String viewState(int mouseXT, int mouseYT) {
+        return "EventMover." + mouseXT + "." + mouseYT;
     }
 }

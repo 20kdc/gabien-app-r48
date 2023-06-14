@@ -25,4 +25,7 @@ public interface IMapToolContext {
 
     boolean getMasterRenderDisableSwitch();
     void setMasterRenderDisableSwitch(boolean value);
+
+    boolean getMasterAnimDisableSwitch();
+    void setMasterAnimDisableSwitch(boolean value);
 }

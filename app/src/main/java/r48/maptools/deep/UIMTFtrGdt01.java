@@ -7,6 +7,8 @@
 
 package r48.maptools.deep;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.UITextButton;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
@@ -164,5 +166,11 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
             if (rr != null)
                 rr.run();
         }
+    }
+
+    @Override
+    @NonNull
+    public String viewState(int mouseXT, int mouseYT) {
+        return "FtrGdt01." + placingPen + "." + lcrX + "." + lcrY + "." + workspace.getLength();
     }
 }

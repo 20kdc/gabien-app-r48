@@ -7,6 +7,8 @@
 
 package r48.schema.specialized;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import r48.App;
@@ -79,6 +81,11 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
                 abc[1].setFX(x);
                 abc[2].setFX(y);
                 path.changeOccurred(false);
+            }
+
+            @Override
+            public @NonNull String viewState(int mouseXT, int mouseYT) {
+                return "MPH," + x + "," + y + "," + mouseXT + "," + mouseYT;
             }
         };
         umv.showTile((int) x, (int) y);

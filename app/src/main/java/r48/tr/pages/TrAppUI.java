@@ -92,4 +92,7 @@ public class TrAppUI extends TrPage {
     public String ie_tileModeS;
     public String ie_tileModeE;
     public String ie_tdCopy;
+
+    public String disableMapRendering;
+    public String disableMapAnimation;
 }

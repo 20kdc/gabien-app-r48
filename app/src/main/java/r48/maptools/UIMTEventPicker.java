@@ -216,4 +216,10 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public static void showEventDivorced(App app, DMKey key, IObjectBackend.ILoadedObject map, String mapSchema, IRIO event, String eventSchema) {
         app.ui.launchNonRootSchema(map, mapSchema, key, event, eventSchema, "E" + key, null);
     }
+
+    @Override
+    @NonNull
+    public String viewState(int mouseXT, int mouseYT) {
+        return "EventPicker";
+    }
 }
