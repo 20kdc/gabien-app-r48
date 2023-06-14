@@ -13,6 +13,8 @@ import r48.io.data.IRIO;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+import gabien.uslx.vfs.FSBackend;
+
 /**
  * Allows for the creation of non-standard backends which don't use the normal Ruby marshal format.
  * Presumably for "flat binary file" formats, some emulation is involved.
@@ -61,17 +63,17 @@ public interface IObjectBackend {
     }
 
     abstract class Factory {
-        public static IObjectBackend create(Charset encoding, String odbBackend, String rootPath, String dataPath, String dataExt) {
+        public static IObjectBackend create(FSBackend fs, Charset encoding, String odbBackend, String rootPath, String dataPath, String dataExt) {
             if (odbBackend.equals("r48")) {
-                return new R48ObjectBackend(rootPath + dataPath, dataExt, encoding);
+                return new R48ObjectBackend(fs, rootPath + dataPath, dataExt, encoding);
             } else if (odbBackend.equals("ika")) {
-                return new IkaObjectBackend(rootPath + dataPath, encoding);
+                return new IkaObjectBackend(fs, rootPath + dataPath, encoding);
             } else if (odbBackend.equals("lcf2000")) {
-                return new R2kObjectBackend(rootPath + dataPath, encoding);
+                return new R2kObjectBackend(fs, rootPath + dataPath, encoding);
             } else if (odbBackend.equals("json")) {
-                return new JsonObjectBackend(rootPath + dataPath, dataExt);
+                return new JsonObjectBackend(fs, rootPath + dataPath, dataExt);
             } else if (odbBackend.equals("cs")) {
-                return new CSObjectBackend(rootPath + dataPath, encoding);
+                return new CSObjectBackend(fs, rootPath + dataPath, encoding);
             } else {
                 throw new RuntimeException("Unknown ODB backend " + odbBackend);
             }

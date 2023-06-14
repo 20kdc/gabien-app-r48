@@ -7,7 +7,7 @@
 
 package r48.io;
 
-import gabien.GaBIEn;
+import gabien.uslx.vfs.FSBackend;
 import r48.RubyTable;
 import r48.io.data.IRIOFixedHash;
 import r48.io.data.obj.DM2Context;
@@ -27,8 +27,10 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
 
     private String root;
     private final DM2Context dm2c;
+    public final FSBackend fs;
 
-    public IkaObjectBackend(String rootPath, Charset encoding) {
+    public IkaObjectBackend(FSBackend fs, String rootPath, Charset encoding) {
+        this.fs = fs;
         root = rootPath;
         dm2c = new DM2Context(encoding);
     }
@@ -43,19 +45,10 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
         if (filename.equals("Map")) {
             byte[] eDataBytes = BMPConnection.prepareBMP(160, 120, 8, 256, false, false);
             byte[] dataBytes = eDataBytes;
-            try {
-                InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(root + "Pbm/Map1.pbm"));
-                if (inp != null) {
-                    dataBytes = new byte[inp.available()];
-                    if (inp.read(dataBytes) != dataBytes.length) {
-                        inp.close();
-                        throw new IOException("Available lied");
-                    }
-                    inp.close();
-                } else {
-                    // This should be covered by the schema defaults.
-                    return null;
-                }
+            try (InputStream inp = fs.openRead(PathUtils.autoDetectWindows(fs, root + "Pbm/Map1.pbm"))) {
+                dataBytes = new byte[inp.available()];
+                if (inp.read(dataBytes) != dataBytes.length)
+                    throw new IOException("Available lied");
             } catch (IOException ioe) {
                 // Oh well
                 ioe.printStackTrace();
@@ -99,10 +92,8 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
             IRIOFixedHash<Integer, IkaEvent> evTbl = rio.events;
 
             NPChar np = new NPChar();
-            try {
-                InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(root + "NPChar.dat"));
+            try (InputStream inp = fs.openRead(PathUtils.autoDetectWindows(fs, root + "NPChar.dat"))) {
                 np.load(inp);
-                inp.close();
             } catch (IOException ioe) {
                 // Oh well
                 ioe.printStackTrace();
@@ -153,11 +144,9 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
                 int b = rt2.getTiletype(i, 0, 3) & 0xFF;
                 bm8.putPalette(i, (a << 24) | (r << 16) | (g << 8) | b);
             }
-            OutputStream fio = GaBIEn.getOutFile(PathUtils.autoDetectWindows(root + "Pbm/Map1.pbm"));
-            if (fio == null)
-                throw new IOException("Unable to open Map1 for writing.");
-            fio.write(dataBytes);
-            fio.close();
+            try (OutputStream fio = fs.openWrite(PathUtils.autoDetectWindows(fs, root + "Pbm/Map1.pbm"))) {
+                fio.write(dataBytes);
+            }
 
             NPChar npc = new NPChar();
             for (int i = 0; i < npc.npcTable.length; i++) {
@@ -175,9 +164,9 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
                     n.eventID = (int) r2.scriptId.val;
                 }
             }
-            fio = GaBIEn.getOutFile(PathUtils.autoDetectWindows(root + "NPChar.dat"));
-            npc.save(fio);
-            fio.close();
+            try (OutputStream fio2 = fs.openWrite(PathUtils.autoDetectWindows(fs, root + "NPChar.dat"))) {
+                npc.save(fio2);
+            }
             return;
         }
         // do nothing, usually

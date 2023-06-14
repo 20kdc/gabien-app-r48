@@ -7,7 +7,6 @@
 
 package r48.io.cs;
 
-import gabien.GaBIEn;
 import r48.RubyTable;
 import r48.io.OldObjectBackend;
 import r48.io.PathUtils;
@@ -20,6 +19,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import gabien.uslx.vfs.FSBackend;
+
 /**
  * This is now the only thing remaining out of the CSOEdit experiment.
  * Created on May 11th 2018.
@@ -27,8 +28,10 @@ import java.nio.charset.Charset;
 public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
     public final String pfx;
     public final Charset encoding;
+    public final FSBackend fs;
 
-    public CSObjectBackend(String prefix, Charset cs) {
+    public CSObjectBackend(FSBackend fs, String prefix, Charset cs) {
+        this.fs = fs;
         pfx = prefix;
         encoding = cs;
     }
@@ -40,9 +43,13 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
 
     @Override
     public IRIO loadObjectFromFile(String filename) {
-        InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(pfx + filename));
-        if (inp == null) {
+        InputStream inp;
+        try {
+            inp = fs.openRead(PathUtils.autoDetectWindows(fs, pfx + filename));
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
             System.err.println("Couldn't load CS " + pfx + filename);
+            e1.printStackTrace();
             return null;
         }
         try {
@@ -153,13 +160,8 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
         } else {
             throw new IOException("I don't know how to save that");
         }
-        OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(pfx + filename));
-        if (os == null)
-            throw new IOException("Couldn't open file");
-        try {
+        try (OutputStream os = fs.openWrite(PathUtils.autoDetectWindows(fs, pfx + filename))) {
             baos.writeTo(os);
-        } finally {
-            os.close();
         }
     }
 

@@ -7,7 +7,9 @@
 
 package r48.io;
 
-import gabien.GaBIEn;
+import gabien.uslx.vfs.FSBackend;
+import gabien.uslx.vfs.FSBackend.DirectoryState;
+import gabien.uslx.vfs.FSBackend.XState;
 
 /**
  * Somewhere to move the rootPath fixer & capitalization fixer
@@ -26,7 +28,7 @@ public class PathUtils {
     };
 
     // Magically handles case issues & such.
-    public static String autoDetectWindows(String s) {
+    public static String autoDetectWindows(FSBackend fs, String s) {
         final String giveUp = s;
         try {
             // '/' is 'universal'. Not supposed to be, but that doesn't matter.
@@ -42,24 +44,25 @@ public class PathUtils {
             if (!s.contains("/"))
                 if (s.contains(":"))
                     return s; // A: / B: / C:
-            if (GaBIEn.fileOrDirExists(s))
+            XState sState = fs.getState(s);
+            if (sState != null)
                 return s;
             // Deal with earlier path components...
             // 'st' is the actual filename.
-            String st = GaBIEn.nameOf(s);
+            String st = fs.nameOf(s);
             String parent;
             // Sanity check.
             if (s.contains("/")) {
                 if (!s.endsWith("/" + st))
                     throw new RuntimeException("Weird inconsistency in gabien path sanitizer. 'Should never happen' but safety first. " + s);
-                parent = autoDetectWindows(s.substring(0, s.length() - (st.length() + 1)));
+                parent = autoDetectWindows(fs, s.substring(0, s.length() - (st.length() + 1)));
             } else {
                 // Change things to make sense.
                 parent = ".";
             }
-            String[] subfiles = GaBIEn.listEntries(parent);
-            if (subfiles != null)
-                for (String s2 : subfiles)
+            XState xs = fs.getState(parent);
+            if (xs instanceof DirectoryState)
+                for (String s2 : ((DirectoryState) xs).entries)
                     if (s2.equalsIgnoreCase(st))
                         return parent + "/" + s2;
             // Oh well.

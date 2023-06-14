@@ -28,7 +28,6 @@ import r48.App;
 import r48.IMapContext;
 import r48.imagefx.ImageFXCache;
 import r48.io.IObjectBackend;
-import r48.io.PathUtils;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.UIMapView;
@@ -114,7 +113,7 @@ public class AppUI extends App.Svc {
         // start possible recommended directory nagger
         final LinkedList<String> createDirs = new LinkedList<String>();
         for (String s : app.engine.mkdirs)
-            if (!GaBIEn.dirExists(PathUtils.autoDetectWindows(app.rootPath + s)))
+            if (!GaBIEn.dirExists(AppMain.autoDetectWindows(app.rootPath + s)))
                 createDirs.add(s);
 
         // Only trigger create directories prompt if the database is *clearly* missing objects.
@@ -126,7 +125,7 @@ public class AppUI extends App.Svc {
                 }, new Runnable[] {
                         () -> {
                             for (String st : createDirs)
-                                GaBIEn.makeDirectories(PathUtils.autoDetectWindows(app.rootPath + st));
+                                GaBIEn.makeDirectories(AppMain.autoDetectWindows(app.rootPath + st));
                             launchDoneDialog();
                         }
                 }, app.f.menuTH, app.f.menuS, true));

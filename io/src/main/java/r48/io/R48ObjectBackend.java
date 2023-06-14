@@ -7,8 +7,8 @@
 
 package r48.io;
 
-import gabien.GaBIEn;
 import gabien.uslx.append.HexByteEncoding;
+import gabien.uslx.vfs.FSBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
@@ -25,8 +25,10 @@ import java.util.LinkedList;
 public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     private final String prefix, postfix;
     public final Charset charset;
+    public final FSBackend fs;
 
-    public R48ObjectBackend(String s, String dataExt, Charset cs) {
+    public R48ObjectBackend(FSBackend fs, String s, String dataExt, Charset cs) {
+        this.fs = fs;
         prefix = s;
         postfix = dataExt;
         charset = cs;
@@ -143,9 +145,11 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
 
     public IRIOGeneric loadObjectFromFile(IRIOGeneric rio, String filename) {
         try {
-            String fullPath = PathUtils.autoDetectWindows(prefix + filename + postfix);
-            InputStream inp = GaBIEn.getInFile(fullPath);
-            if (inp == null) {
+            String fullPath = PathUtils.autoDetectWindows(fs, prefix + filename + postfix);
+            InputStream inp;
+            try {
+                inp = fs.openRead(fullPath);
+            } catch (Exception e) {
                 System.err.println(fullPath + " wasn't found.");
                 return null;
             }
@@ -169,7 +173,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
 
     @Override
     public void saveObjectToFile(String filename, RORIO object) throws IOException {
-        OutputStream oup = GaBIEn.getOutFile(PathUtils.autoDetectWindows(prefix + filename + postfix));
+        OutputStream oup = fs.openWrite(PathUtils.autoDetectWindows(fs, prefix + filename + postfix));
         if (oup == null)
             throw new IOException("Unable to open file!");
         DataOutputStream dis = new DataOutputStream(oup);

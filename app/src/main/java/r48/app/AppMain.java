@@ -7,6 +7,7 @@
 
 package r48.app;
 
+import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.AdHocSaveLoad;
@@ -14,6 +15,7 @@ import r48.App;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
 import r48.io.IObjectBackend;
+import r48.io.PathUtils;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
@@ -40,7 +42,7 @@ public class AppMain {
         app.vmCtx.include(engine.initDir + "init", false);
 
         // initialize everything else that needs initializing, starting with ObjectDB
-        IObjectBackend backend = IObjectBackend.Factory.create(charset, engine.odbBackend, app.rootPath, engine.dataPath, engine.dataExt);
+        IObjectBackend backend = IObjectBackend.Factory.create(GaBIEn.mutableDataFS, charset, engine.odbBackend, app.rootPath, engine.dataPath, engine.dataExt);
         app.odb = new ObjectDB(app, backend, (s) -> {
             if (app.system != null)
                 app.system.saveHook(s);
@@ -125,5 +127,12 @@ public class AppMain {
         } else {
             app.ui.launchDialog(app.t.g.dlgReloadPFD);
         }
+    }
+
+    /**
+     * Converts a path from Windows format to the local system.
+     */
+    public static String autoDetectWindows(String path) {
+        return PathUtils.autoDetectWindows(GaBIEn.mutableDataFS, path);
     }
 }

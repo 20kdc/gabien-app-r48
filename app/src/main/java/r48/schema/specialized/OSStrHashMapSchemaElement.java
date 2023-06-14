@@ -11,8 +11,8 @@ import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
 import r48.App;
+import r48.app.AppMain;
 import r48.io.IMIUtils;
-import r48.io.PathUtils;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
@@ -57,7 +57,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
     public static void tryInitOSSHESEDB(App app) {
         InputStream inp = null;
         try {
-            inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(app.rootPath + "locmaps.txt"));
+            inp = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + "locmaps.txt"));
             if (inp == null)
                 return;
             HashMap<Integer, String> bigMap = new HashMap<Integer, String>();

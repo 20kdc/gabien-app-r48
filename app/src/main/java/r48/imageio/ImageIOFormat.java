@@ -10,7 +10,7 @@ package r48.imageio;
 import gabien.GaBIEn;
 import gabien.IImage;
 import r48.app.AppCore;
-import r48.io.PathUtils;
+import r48.app.AppMain;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -50,7 +50,7 @@ public abstract class ImageIOFormat extends AppCore.Csv {
     }
 
     public static TryToLoadResult tryToLoad(String filename, ImageIOFormat[] formats) {
-        filename = PathUtils.autoDetectWindows(filename);
+        filename = AppMain.autoDetectWindows(filename);
 
         ByteArrayOutputStream dataHolder = new ByteArrayOutputStream();
         InputStream inp = GaBIEn.getInFile(filename);

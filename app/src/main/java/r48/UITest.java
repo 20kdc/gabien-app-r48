@@ -11,8 +11,8 @@ import gabien.GaBIEn;
 import gabien.datum.DatumSymbol;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.app.AppMain;
 import r48.io.IObjectBackend;
-import r48.io.PathUtils;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -48,7 +48,7 @@ public class UITest extends App.Prx {
     public UIScrollLayout masterPanel = new UIScrollLayout(true, app.f.generalS);
 
     public static String getPrintPath(App app) {
-        return PathUtils.autoDetectWindows(app.rootPath + "PRINT.txt");
+        return AppMain.autoDetectWindows(app.rootPath + "PRINT.txt");
     }
 
     public UITest(App app, RORIO obj, final @Nullable IObjectBackend.ILoadedObject rootObj) {

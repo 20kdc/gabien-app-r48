@@ -11,7 +11,7 @@ import gabien.GaBIEn;
 import gabien.IImage;
 import gabien.ui.*;
 import r48.App;
-import r48.io.PathUtils;
+import r48.app.AppMain;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
@@ -42,7 +42,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         app.ui.performFullImageFlush();
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
-        String[] strs = GaBIEn.listEntries(PathUtils.autoDetectWindows(app.rootPath + pathExtender));
+        String[] strs = GaBIEn.listEntries(AppMain.autoDetectWindows(app.rootPath + pathExtender));
         if (strs == null)
             return new UILabel("The folder does not exist or was not accessible.", app.f.schemaFieldTH);
         HashSet<String> hitStrs = new HashSet<String>();

@@ -33,7 +33,7 @@ public class AdHocSaveLoad {
     public static void save(String fonts, RORIO prepare) {
         prepare();
         // workaround because R48ObjectBackend still hasn't undergone some sort of reform
-        R48ObjectBackend rob = new R48ObjectBackend(PREFIX, ".r48", StandardCharsets.UTF_8);
+        R48ObjectBackend rob = new R48ObjectBackend(GaBIEn.mutableDataFS, PREFIX, ".r48", StandardCharsets.UTF_8);
         try {
             rob.saveObjectToFile(fonts, prepare);
         } catch (IOException e) {
@@ -42,7 +42,7 @@ public class AdHocSaveLoad {
     }
 
     public static @Nullable IRIOGeneric load(String fonts) {
-        R48ObjectBackend rob = new R48ObjectBackend(PREFIX, ".r48", StandardCharsets.UTF_8);
+        R48ObjectBackend rob = new R48ObjectBackend(GaBIEn.mutableDataFS, PREFIX, ".r48", StandardCharsets.UTF_8);
         return rob.loadObjectFromFile(fonts);
     }
 

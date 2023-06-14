@@ -16,7 +16,6 @@ import r48.app.AppMain;
 import r48.dbs.ObjectInfo;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
-import r48.io.PathUtils;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
@@ -185,12 +184,12 @@ public class BasicToolset extends App.Svc implements IToolset {
                                 app.ui.launchDialog(T.z.l57);
                             } else {
                                 try {
-                                    OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "objcompareAB.txt"));
+                                    OutputStream os = GaBIEn.getOutFile(AppMain.autoDetectWindows(app.rootPath + "objcompareAB.txt"));
                                     byte[] cid = IMIUtils.createIMIData(objA.getObject(), objB.getObject(), "");
                                     if (cid != null)
                                         os.write(cid);
                                     os.close();
-                                    os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "objcompareBA.txt"));
+                                    os = GaBIEn.getOutFile(AppMain.autoDetectWindows(app.rootPath + "objcompareBA.txt"));
                                     cid = IMIUtils.createIMIData(objB.getObject(), objA.getObject(), "");
                                     if (cid != null)
                                         os.write(cid);
@@ -206,7 +205,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 },
                 () -> {
                     try {
-                        OutputStream lm = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "locmaps.txt"));
+                        OutputStream lm = GaBIEn.getOutFile(AppMain.autoDetectWindows(app.rootPath + "locmaps.txt"));
                         final DataOutputStream dos = new DataOutputStream(lm);
                         final HashSet<String> text = new HashSet<String>();
                         for (String s : app.getAllObjects()) {

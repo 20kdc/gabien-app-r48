@@ -13,7 +13,7 @@ import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextBox;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.io.PathUtils;
+import r48.app.AppMain;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.AggregateSchemaElement;
@@ -62,8 +62,8 @@ public class ScriptControlSchemaElement extends SchemaElement {
                     StringBuilder sb = new StringBuilder();
                     sb.append(T.z.l146 + "\n");
                     HashSet<String> used = new HashSet<String>();
-                    GaBIEn.makeDirectories(PathUtils.autoDetectWindows(app.rootPath + "scripts"));
-                    OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
+                    GaBIEn.makeDirectories(AppMain.autoDetectWindows(app.rootPath + "scripts"));
+                    OutputStream os = GaBIEn.getOutFile(AppMain.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
                     PrintStream ps = new PrintStream(os, false, "UTF-8");
                     int alen = target.getALen();
                     for (int i = 0; i < alen; i++) {
@@ -137,7 +137,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
                 while (used.contains(name.toLowerCase()))
                     name = oldName + " (" + (counter++) + ")";
                 // continue
-                OutputStream os2 = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/" + name + ".rb"));
+                OutputStream os2 = GaBIEn.getOutFile(AppMain.autoDetectWindows(app.rootPath + "scripts/" + name + ".rb"));
                 if (os2 == null)
                     return false;
                 os2.write(inflated);
@@ -190,7 +190,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
         // A particular difference that's going to show up here is that empty-named or #-prefixed files won't get removed.
         // This way, the conversion is bi-directional.
         IRIO scripts = new IRIOGeneric(app.encoding);
-        InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
+        InputStream inp = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
         if (inp == null) {
             app.ui.launchDialog(T.z.l152);
             return null;
@@ -231,7 +231,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
     }
 
     private byte[] loadScript(String s) throws IOException {
-        InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/" + s + ".rb"));
+        InputStream inp = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + "scripts/" + s + ".rb"));
         if (inp == null)
             return null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

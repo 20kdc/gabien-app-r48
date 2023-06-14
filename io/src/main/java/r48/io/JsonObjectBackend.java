@@ -7,7 +7,7 @@
 
 package r48.io;
 
-import gabien.GaBIEn;
+import gabien.uslx.vfs.FSBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
@@ -23,8 +23,10 @@ import java.util.LinkedList;
  */
 public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public String root, ext;
+    public final FSBackend fs;
 
-    public JsonObjectBackend(String rootPath, String dataExt) {
+    public JsonObjectBackend(FSBackend fs, String rootPath, String dataExt) {
+        this.fs = fs;
         root = rootPath;
         ext = dataExt;
     }
@@ -36,7 +38,7 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
 
     @Override
     public IRIO loadObjectFromFile(String filename) {
-        try (InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(root + filename + ext))) {
+        try (InputStream inp = fs.openRead(PathUtils.autoDetectWindows(fs, root + filename + ext))) {
             return loadJSONFromStream(inp);
         } catch (Exception e) {
             e.printStackTrace();
@@ -155,10 +157,9 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
 
     @Override
     public void saveObjectToFile(String filename, RORIO object) throws IOException {
-        OutputStream oup = GaBIEn.getOutFile(PathUtils.autoDetectWindows(root + filename + ext));
-        if (oup == null)
-            throw new IOException("Unable to open file!");
-        saveJSONToStream(oup, object);
+        try (OutputStream oup = fs.openWrite(PathUtils.autoDetectWindows(fs, root + filename + ext))) {
+            saveJSONToStream(oup, object);
+        }
     }
 
     @Override

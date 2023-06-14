@@ -7,7 +7,7 @@
 
 package r48.io;
 
-import gabien.GaBIEn;
+import gabien.uslx.vfs.FSBackend;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -33,8 +33,10 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public final String root;
     public final Charset charset;
     public final DM2Context dm2c;
+    public final FSBackend fs;
 
-    public R2kObjectBackend(String rootPath, Charset cs) {
+    public R2kObjectBackend(FSBackend fs, String rootPath, Charset cs) {
+        this.fs = fs;
         root = rootPath;
         charset = cs;
         dm2c = new DM2Context(cs);
@@ -57,58 +59,50 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     @Override
     public IRIO loadObjectFromFile(String filename) {
         filename = root + filename;
-        String str = PathUtils.autoDetectWindows(filename);
-        if (filename.endsWith(".lmu")) {
-            try {
-                InputStream fis = GaBIEn.getInFile(str);
-                if (fis == null)
+        String str = PathUtils.autoDetectWindows(fs, filename);
+        try (InputStream fis = fs.openRead(str)) {
+            if (filename.endsWith(".lmu")) {
+                try {
+                    MapUnit r = R2kIO.readLmu(dm2c, fis);
+                    fis.close();
+                    return r;
+                } catch (Exception e) {
+                    e.printStackTrace();
                     return null;
-                MapUnit r = R2kIO.readLmu(dm2c, fis);
-                fis.close();
-                return r;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
+                }
             }
-        }
-        if (filename.endsWith(".lmt")) {
-            try {
-                InputStream fis = GaBIEn.getInFile(str);
-                if (fis == null)
+            if (filename.endsWith(".lmt")) {
+                try {
+                    IRIO r = R2kIO.readLmt(dm2c, fis);
+                    fis.close();
+                    return r;
+                } catch (Exception e) {
+                    e.printStackTrace();
                     return null;
-                IRIO r = R2kIO.readLmt(dm2c, fis);
-                fis.close();
-                return r;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
+                }
             }
-        }
-        if (filename.endsWith(".ldb")) {
-            try {
-                InputStream fis = GaBIEn.getInFile(str);
-                if (fis == null)
+            if (filename.endsWith(".ldb")) {
+                try {
+                    Database r = R2kIO.readLdb(dm2c, fis);
+                    fis.close();
+                    return r;
+                } catch (Exception e) {
+                    e.printStackTrace();
                     return null;
-                Database r = R2kIO.readLdb(dm2c, fis);
-                fis.close();
-                return r;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
+                }
             }
-        }
-        if (filename.endsWith(".lsd")) {
-            try {
-                InputStream fis = GaBIEn.getInFile(str);
-                if (fis == null)
+            if (filename.endsWith(".lsd")) {
+                try {
+                    Save r = R2kIO.readLsd(dm2c, fis);
+                    fis.close();
+                    return r;
+                } catch (Exception e) {
+                    e.printStackTrace();
                     return null;
-                Save r = R2kIO.readLsd(dm2c, fis);
-                fis.close();
-                return r;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
+                }
             }
+        } catch (Exception ex) {
+            // failed to open, so doesn't exist
         }
         return null;
     }
@@ -116,41 +110,33 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     @Override
     public void saveObjectToFile(String filename, RORIO object) throws IOException {
         filename = root + filename;
-        String str = PathUtils.autoDetectWindows(filename);
+        String str = PathUtils.autoDetectWindows(fs, filename);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // Note the write occurs before the F.O.S is created for safety
         if (filename.endsWith(".lmu")) {
             R2kIO.writeLmu(baos, (MapUnit) object);
-            OutputStream fos = GaBIEn.getOutFile(str);
-            if (fos == null)
-                throw new IOException("Unable to open a file.");
+            OutputStream fos = fs.openWrite(str);
             baos.writeTo(fos);
             fos.close();
             return;
         }
         if (filename.endsWith(".lmt")) {
             R2kIO.writeLmt(baos, (MapTree) object);
-            OutputStream fos = GaBIEn.getOutFile(str);
-            if (fos == null)
-                throw new IOException("Unable to open a file.");
+            OutputStream fos = fs.openWrite(str);
             baos.writeTo(fos);
             fos.close();
             return;
         }
         if (filename.endsWith(".ldb")) {
             R2kIO.writeLdb(baos, (Database) object);
-            OutputStream fos = GaBIEn.getOutFile(str);
-            if (fos == null)
-                throw new IOException("Unable to open a file.");
+            OutputStream fos = fs.openWrite(str);
             baos.writeTo(fos);
             fos.close();
             return;
         }
         if (filename.endsWith(".lsd")) {
             R2kIO.writeLsd(baos, (Save) object);
-            OutputStream fos = GaBIEn.getOutFile(str);
-            if (fos == null)
-                throw new IOException("Unable to open a file.");
+            OutputStream fos = fs.openWrite(str);
             baos.writeTo(fos);
             fos.close();
             return;
