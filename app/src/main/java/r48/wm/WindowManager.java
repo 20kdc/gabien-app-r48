@@ -351,14 +351,10 @@ public class WindowManager extends AppCore.Csv {
                             Rect r = menu.getParentRelativeBounds();
                             // The border is shown 'behind' the menu base, but the menu is shown over it
                             UIBorderedElement.drawBorder(igd, 13, bw, r.x - bw, r.y - bw, r.width + (bw * 2), r.height + (bw * 2));
-                            int[] dt = igd.getLocalST();
-                            dt[0] += base.x;
-                            dt[1] += base.y;
-                            igd.updateST();
+                            float otx = igd.trsTXS(base.x);
+                            float oty = igd.trsTYS(base.y);
                             baseElem.renderAllLayers(igd);
-                            dt[0] -= base.x;
-                            dt[1] -= base.y;
-                            igd.updateST();
+                            igd.trsTXYE(otx, oty);
                             super.render(igd);
                         }
                     });

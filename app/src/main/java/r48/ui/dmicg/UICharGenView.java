@@ -49,14 +49,10 @@ public class UICharGenView extends UIPlaneView {
         int ex = ((mySize.width - ew) / 2) - ((int) planeMulZoom(camX));
         int ey = ((mySize.height - eh) / 2) - ((int) planeMulZoom(camY));
 
-        int[] st = igd.getLocalST();
-        st[0] += ex;
-        st[1] += ey;
-        igd.updateST();
+        float otx = igd.trsTXS(ex);
+        float oty = igd.trsTYS(ey);
         render(igd, ew, eh);
-        st[0] -= ex;
-        st[1] -= ey;
-        igd.updateST();
+        igd.trsTXYE(otx, oty);
 
         super.render(igd);
     }

@@ -303,12 +303,11 @@ public class UIMapView extends UIPlaneView {
         igd.clearAll(0, 0, 0);
 
         // Everything is performed in a transformed context to save some headaches.
-        int[] stb = igd.getLocalST();
-        int oldTX = stb[0];
-        int oldTY = stb[1];
+        float[] stb = igd.getTRS();
+        float oldTX = stb[0];
+        float oldTY = stb[1];
         stb[0] = -iCamX;
         stb[1] = -iCamY;
-        igd.updateST();
 
         IMapViewDrawLayer[] layers = mapTable.renderer.layers;
 
@@ -334,7 +333,6 @@ public class UIMapView extends UIPlaneView {
         }
         stb[0] = oldTX;
         stb[1] = oldTY;
-        igd.updateST();
     }
 
     // Used by tools, after they're done doing whatever.
