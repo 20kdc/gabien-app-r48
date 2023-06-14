@@ -195,10 +195,10 @@ public class BMPConnection {
         bb.put(0x00, (byte) 'B');
         bb.put(0x01, (byte) 'M');
         bb.putInt(0x02, data.length);
-        bb.put(0x06, (byte) 'm');
-        bb.put(0x07, (byte) 'R');
-        bb.put(0x08, (byte) 'W');
-        bb.put(0x09, (byte) 'H');
+        bb.put(0x06, (byte) 243); 
+        bb.put(0x07, (byte) 177);
+        bb.put(0x08, (byte) 164);
+        bb.put(0x09, (byte) 142);
         bb.putInt(0x0A, 0x36 + palSize);
         // TD
         bb.putInt(0x0E, 0x28);
