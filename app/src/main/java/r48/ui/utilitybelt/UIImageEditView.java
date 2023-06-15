@@ -211,7 +211,7 @@ public class UIImageEditView extends UIPlaneView {
         //  and it's W/H is the grid size scaled.
         Rect localGrid = getLocalGridRect(viewRct);
         boolean outerFlip = false;
-        Intersector intersect = MTIntersector.singleton.get();
+        Intersector intersect = MTIntersector.INSTANCE.get();
         for (int ofx = (localGrid.x - (int) planeMulZoom(grid.width)); ofx < (viewRct.x + viewRct.width); ofx += localGrid.width) {
             if (!viewRct.intersects(new Rect(ofx, viewRct.y, localGrid.width, viewRct.height)))
                 continue;
