@@ -355,7 +355,7 @@ public class WindowManager extends AppCore.Csv {
                             Rect r = menu.getParentRelativeBounds();
                             Theme theme = app.c.lafRoot.getTheme();
                             // The border is shown 'behind' the menu base, but the menu is shown over it
-                            UIBorderedElement.drawBorder(theme, igd, 13, bw, r.x - bw, r.y - bw, r.width + (bw * 2), r.height + (bw * 2));
+                            UIBorderedElement.drawBorder(theme, igd, Theme.B_R48OVERLAY, bw, r.x - bw, r.y - bw, r.width + (bw * 2), r.height + (bw * 2));
                             float otx = igd.trsTXS(base.x);
                             float oty = igd.trsTYS(base.y);
                             baseElem.renderAllLayers(igd);

@@ -116,7 +116,7 @@ public class LSSplashScreen extends State {
             goodSize = 8;
         int goodSizeActual = UILabel.getRecommendedTextSize("", goodSize).height;
         Theme theme = ThemingCentral.themes[0];
-        UILabel.drawLabel(theme, bb, bb.getWidth(), 0, bb.getHeight() - goodSizeActual, waitingFor + movement + ch, 1, goodSize, progressCache);
+        UILabel.drawLabel(theme, bb, bb.getWidth(), 0, bb.getHeight() - goodSizeActual, waitingFor + movement + ch, Theme.B_TEXTBOX, goodSize, progressCache);
 
         // fade
         int c = Math.max(0, Math.min(255, 25 * frames)) << 24;

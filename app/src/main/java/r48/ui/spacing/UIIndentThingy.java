@@ -13,6 +13,7 @@ import gabien.ui.IPointer;
 import gabien.ui.IPointerReceiver;
 import gabien.ui.UIBorderedElement;
 import gabien.ui.UIElement;
+import gabien.ui.theming.IBorder;
 import gabien.ui.theming.Theme;
 
 /**
@@ -51,7 +52,8 @@ public class UIIndentThingy extends UIElement {
         int bW = Math.max(selectUnit / 6, 1);
         int height = getSize().height;
         Theme theme = getTheme();
-        UIBorderedElement.drawBorder(theme, igd, (selected > 32) ? 1 : 0, bW, 0, 0, selectUnit, height);
+        Theme.Attr<IBorder> ba = (selected > 32) ? Theme.B_BTNP : Theme.B_BTN;
+        UIBorderedElement.drawBorder(theme, igd, ba, bW, 0, 0, selectUnit, height);
         igd.clearRect(selected / 3, (selected * 2) / 3, selected, bW, bW, selectUnit - (bW * 2), height - (bW * 2));
         igd.clearRect(selected / 2, (selected * 5) / 6, selected, bW * 2, bW * 2, selectUnit- (bW * 4), height - (bW * 4));
     }

@@ -40,7 +40,7 @@ public class UIObjectDBMonitor extends App.Elm {
         int step = UILabel.getRecommendedTextSize("", app.f.objectDBMonitorTH).height;
         int width = getSize().width;
         Theme theme = getTheme();
-        UILabel.drawLabel(theme, igd, width, 0, 0, toString(), 1, app.f.objectDBMonitorTH, memCache1, isBackground, !isBackground);
+        UILabel.drawLabel(theme, igd, width, 0, 0, toString(), Theme.B_TEXTBOX, app.f.objectDBMonitorTH, memCache1, isBackground, !isBackground);
         int oy = step;
         for (String s : UITest.sortedKeysStr(app.odb.objectMap.keySet())) {
             String status = T.u.odb_disposed;
@@ -60,7 +60,7 @@ public class UIObjectDBMonitor extends App.Elm {
                 }
             }
             // memCache2 should ideally NOT be shared between these, it's literally the worst thing you can do
-            UILabel.drawLabel(theme, igd, width, 0, oy, s + status, 0, app.f.objectDBMonitorTH, memCache2, isBackground, !isBackground);
+            UILabel.drawLabel(theme, igd, width, 0, oy, s + status, Theme.B_LABEL, app.f.objectDBMonitorTH, memCache2, isBackground, !isBackground);
             oy += step;
         }
         setWantedSize(new Size(width, oy));
