@@ -134,7 +134,6 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
             @Override
             public void run() {
                 c.borderTheme++;
-                c.borderTheme %= ThemingCentral.BORDER_THEMES;
                 apply.run();
                 refreshLayout(true);
             }

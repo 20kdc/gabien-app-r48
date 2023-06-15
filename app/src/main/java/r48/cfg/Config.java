@@ -80,6 +80,7 @@ public class Config {
     public void applyUIGlobals() {
         FontManager.fontOverride = fontOverride;
         FontManager.fontOverrideUE8 = fontOverrideUE8;
+        borderTheme %= ThemingCentral.themes.length;
         lafRoot.setThemeOverride(ThemingCentral.themes[borderTheme]);
         GaBIEn.sysCoreFontSize = f.gSysCoreTH;
     }
