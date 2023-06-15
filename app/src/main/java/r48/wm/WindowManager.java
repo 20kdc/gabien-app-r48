@@ -87,6 +87,7 @@ public class WindowManager extends AppCore.Csv {
         rootView.setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(800), app.f.scaleGuess(600)));
 
         tabPane = new UITabPane(app.f.tabTH, true, true, app.f.maintabsS, thbrL, thbrR);
+        tabPane.setLAFParentOverride(app.c.lafRoot);
 
         UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, tabPane);
         rootView.addShell(backing);
