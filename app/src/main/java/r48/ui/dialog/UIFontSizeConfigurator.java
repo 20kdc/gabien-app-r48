@@ -10,6 +10,7 @@ package r48.ui.dialog;
 import gabien.GaBIEn;
 import gabien.IPeripherals;
 import gabien.ui.*;
+import gabien.ui.theming.ThemingCentral;
 import gabien.uslx.append.*;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
@@ -133,7 +134,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
             @Override
             public void run() {
                 c.borderTheme++;
-                c.borderTheme %= UIBorderedElement.BORDER_THEMES;
+                c.borderTheme %= ThemingCentral.BORDER_THEMES;
                 apply.run();
                 refreshLayout(true);
             }

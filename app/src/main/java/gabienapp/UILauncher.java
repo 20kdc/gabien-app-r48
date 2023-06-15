@@ -174,9 +174,11 @@ public class UILauncher extends UIProxy {
             whatever = new UISplitterLayout(whatever, new UITextButton(tr.bConfigN, c.f.launcherTH, new Runnable() {
                 @Override
                 public void run() {
-                    uiTicker.accept(new UIFontSizeConfigurator(c, lun.ilg.t, () -> {
+                    UIFontSizeConfigurator usc = new UIFontSizeConfigurator(c, lun.ilg.t, () -> {
                         c.applyUIGlobals();
-                    }));
+                    });
+                    usc.setLAFParentOverride(c.lafRoot);
+                    uiTicker.accept(usc);
                     lun.currentState = new LSInApp(lun);
                     gamepaksRequestClose = true;
                 }

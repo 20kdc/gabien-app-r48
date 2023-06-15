@@ -10,6 +10,7 @@ package r48.wm;
 import gabien.*;
 import gabien.ui.*;
 import gabien.ui.UIWindowView.TabShell;
+import gabien.ui.theming.Theme;
 import r48.App;
 import r48.app.AppCore;
 import r48.ui.Art;
@@ -57,7 +58,7 @@ public class WindowManager extends AppCore.Csv {
     public WindowManager(App app, final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR) {
         super(app);
         coco = new Coco(app);
-        uiTicker = new TrackedUITicker(uiTick);
+        uiTicker = new TrackedUITicker(uiTick, app.c.lafRoot);
         modImg = GaBIEn.createImage(new int[] {0x80000000}, 1, 1);
         rootView = new UIWindowView() {
             @Override
@@ -157,6 +158,7 @@ public class WindowManager extends AppCore.Csv {
     }
 
     public void createWindow(final UIElement uie, final boolean tab, final boolean immortal, final @Nullable String disposition) {
+        uie.setLAFParentOverride(app.c.lafRoot);
         // Now decide what to actually do.
         if (tab) {
             UITabBar.TabIcon windowWindowIcon = new UITabBar.TabIcon() {
@@ -330,6 +332,7 @@ public class WindowManager extends AppCore.Csv {
             Rect r2 = results[i].getIntersection(area);
             if (r2 != null) {
                 if (r2.rectEquals(results[i])) {
+                    menu.setLAFParentOverride(app.c.lafRoot);
                     menu.setForcedBounds(null, r2);
                     screen.addShell(new UIWindowView.ElementShell(screen, menu) {
                         @Override
@@ -349,8 +352,9 @@ public class WindowManager extends AppCore.Csv {
                             igd.blitScaledImage(0, 0, 1, 1, 0, 0, sz.width, sz.height, modImg);
                             int bw = 4;
                             Rect r = menu.getParentRelativeBounds();
+                            Theme theme = app.c.lafRoot.getTheme();
                             // The border is shown 'behind' the menu base, but the menu is shown over it
-                            UIBorderedElement.drawBorder(igd, 13, bw, r.x - bw, r.y - bw, r.width + (bw * 2), r.height + (bw * 2));
+                            UIBorderedElement.drawBorder(theme, igd, 13, bw, r.x - bw, r.y - bw, r.width + (bw * 2), r.height + (bw * 2));
                             float otx = igd.trsTXS(base.x);
                             float oty = igd.trsTYS(base.y);
                             baseElem.renderAllLayers(igd);

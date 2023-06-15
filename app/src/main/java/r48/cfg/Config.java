@@ -12,7 +12,8 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.FontManager;
 import gabien.GaBIEn;
-import gabien.ui.UIBorderedElement;
+import gabien.ui.LAFChain;
+import gabien.ui.theming.ThemingCentral;
 import r48.cfg.FontSizes.FontSizeField;
 import r48.tr.LanguageList;
 
@@ -37,6 +38,12 @@ public class Config {
     public @Nullable String fontOverride;
     public boolean fontOverrideUE8;
     public int borderTheme;
+
+    /**
+     * This is THE LAF root.
+     * Therefore Config has to hold it because of applyUIGlobals.
+     */
+    public final LAFChain.Node lafRoot = new LAFChain.Node();
 
     public Config(boolean isMobile) {
         reset(isMobile);
@@ -73,7 +80,7 @@ public class Config {
     public void applyUIGlobals() {
         FontManager.fontOverride = fontOverride;
         FontManager.fontOverrideUE8 = fontOverrideUE8;
-        UIBorderedElement.borderTheme = borderTheme;
+        lafRoot.setThemeOverride(ThemingCentral.themes[borderTheme]);
         GaBIEn.sysCoreFontSize = f.gSysCoreTH;
     }
 }

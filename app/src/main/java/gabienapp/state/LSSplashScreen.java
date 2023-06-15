@@ -15,6 +15,8 @@ import gabien.WindowSpecs;
 import gabien.text.TextTools;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
+import gabien.ui.theming.Theme;
+import gabien.ui.theming.ThemingCentral;
 import gabien.uslx.append.IConsumer;
 import gabienapp.Launcher;
 import gabienapp.Launcher.State;
@@ -113,7 +115,8 @@ public class LSSplashScreen extends State {
         if (goodSize < 8)
             goodSize = 8;
         int goodSizeActual = UILabel.getRecommendedTextSize("", goodSize).height;
-        UILabel.drawLabel(bb, bb.getWidth(), 0, bb.getHeight() - goodSizeActual, waitingFor + movement + ch, 1, goodSize, progressCache);
+        Theme theme = ThemingCentral.themes[0];
+        UILabel.drawLabel(theme, bb, bb.getWidth(), 0, bb.getHeight() - goodSizeActual, waitingFor + movement + ch, 1, goodSize, progressCache);
 
         // fade
         int c = Math.max(0, Math.min(255, 25 * frames)) << 24;

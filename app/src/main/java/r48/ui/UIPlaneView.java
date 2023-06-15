@@ -30,6 +30,7 @@ public abstract class UIPlaneView extends App.Elm {
 
     public UIPlaneView(App app) {
         super(app);
+        planeStatusLine.setLAFParentOverride(app.c.lafRoot);
     }
 
     protected abstract String planeGetStatus();

@@ -91,7 +91,7 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
         super.renderLayer(igd, layer);
         if (layer != UILayer.Content)
             return;
-        boolean blackText = UIBorderedElement.getBlackTextFlagWindowRoot();
+        boolean blackText = UIBorderedElement.getBlackTextFlagWindowRoot(getTheme());
         int y = 0;
         HashSet<Integer> continuingLines = new HashSet<Integer>();
         for (int i = 0; i < elements.length; i++) {

@@ -47,6 +47,7 @@ public class StartupCause implements Runnable {
 
             // Start fancy loading screen.
             final UIFancyInit theKickstart = new UIFancyInit(ls.lun.c);
+            theKickstart.setLAFParentOverride(ls.lun.c.lafRoot);
             ls.lun.uiTicker.accept(theKickstart);
             ls.uiLauncher.requestClose();
             new Thread(() -> {
