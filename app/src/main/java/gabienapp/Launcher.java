@@ -8,7 +8,6 @@ package gabienapp;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
@@ -63,7 +62,7 @@ public class Launcher {
                 if (c.language.equals(LanguageList.hardcodedLang))
                     fontsNecessary = false;
             if (fontsNecessary)
-                while (!FontManager.fontsReady)
+                while (!GaBIEn.fontsReady)
                     Thread.yield();
         }, (uiScaleTenths) -> {
             globalMS = 33;

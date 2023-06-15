@@ -174,8 +174,6 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     @Override
     public void saveObjectToFile(String filename, RORIO object) throws IOException {
         OutputStream oup = fs.openWrite(PathUtils.autoDetectWindows(fs, prefix + filename + postfix));
-        if (oup == null)
-            throw new IOException("Unable to open file!");
         DataOutputStream dis = new DataOutputStream(oup);
         // Marshal v4.8
         dis.write(new byte[] {4, 8});

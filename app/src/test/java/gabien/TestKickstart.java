@@ -75,7 +75,7 @@ public class TestKickstart {
     }
 
     public void kickstartRFS() {
-        FontManager.fontsReady = true;
+        GaBIEn.fontsReady = true;
         GaBIEnImpl.mobileEmulation = true;
         GaBIEnImpl.fontsAlwaysMeasure16 = true;
         windowCount = 0;
@@ -150,7 +150,7 @@ public class TestKickstart {
             }
 
             @Override
-            public InputStream openRead(String fileName) throws IOException {
+            public @NonNull InputStream openRead(String fileName) throws IOException {
                 // System.out.println("openRead: " + fileName);
                 byte[] data = mockFS.get(fileName);
                 if (data == null) {
@@ -160,12 +160,10 @@ public class TestKickstart {
                         relativeIntended = true;
                     }
                     InputStream inp = impl.getResource(fileName);
-                    if (inp == null && !relativeIntended) {
-                        try {
-                            inp = new FileInputStream(fileName);
-                        } catch (Exception ex) {
-                            // oh well
-                        }
+                    if (inp == null) {
+                        if (!relativeIntended)
+                            return new FileInputStream(fileName);
+                        throw new IOException("Unable to find " + fileName);
                     }
                     return inp;
                 }
@@ -173,7 +171,7 @@ public class TestKickstart {
             }
 
             @Override
-            public OutputStream openWrite(final String fileName) throws IOException {
+            public @NonNull OutputStream openWrite(final String fileName) throws IOException {
                 return new ByteArrayOutputStream() {
                     @Override
                     public void close() throws IOException {

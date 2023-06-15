@@ -61,45 +61,19 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         filename = root + filename;
         String str = PathUtils.autoDetectWindows(fs, filename);
         try (InputStream fis = fs.openRead(str)) {
-            if (filename.endsWith(".lmu")) {
-                try {
-                    MapUnit r = R2kIO.readLmu(dm2c, fis);
-                    fis.close();
-                    return r;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
+            try {
+                if (filename.endsWith(".lmu")) {
+                    return R2kIO.readLmu(dm2c, fis);
+                } else if (filename.endsWith(".lmt")) {
+                    return R2kIO.readLmt(dm2c, fis);
+                } else if (filename.endsWith(".ldb")) {
+                    return R2kIO.readLdb(dm2c, fis);
+                } else if (filename.endsWith(".lsd")) {
+                    return R2kIO.readLsd(dm2c, fis);
                 }
-            }
-            if (filename.endsWith(".lmt")) {
-                try {
-                    IRIO r = R2kIO.readLmt(dm2c, fis);
-                    fis.close();
-                    return r;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-            if (filename.endsWith(".ldb")) {
-                try {
-                    Database r = R2kIO.readLdb(dm2c, fis);
-                    fis.close();
-                    return r;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-            if (filename.endsWith(".lsd")) {
-                try {
-                    Save r = R2kIO.readLsd(dm2c, fis);
-                    fis.close();
-                    return r;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
             }
         } catch (Exception ex) {
             // failed to open, so doesn't exist
@@ -115,33 +89,18 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         // Note the write occurs before the F.O.S is created for safety
         if (filename.endsWith(".lmu")) {
             R2kIO.writeLmu(baos, (MapUnit) object);
-            OutputStream fos = fs.openWrite(str);
-            baos.writeTo(fos);
-            fos.close();
-            return;
-        }
-        if (filename.endsWith(".lmt")) {
+        } else if (filename.endsWith(".lmt")) {
             R2kIO.writeLmt(baos, (MapTree) object);
-            OutputStream fos = fs.openWrite(str);
-            baos.writeTo(fos);
-            fos.close();
-            return;
-        }
-        if (filename.endsWith(".ldb")) {
+        } else if (filename.endsWith(".ldb")) {
             R2kIO.writeLdb(baos, (Database) object);
-            OutputStream fos = fs.openWrite(str);
-            baos.writeTo(fos);
-            fos.close();
-            return;
-        }
-        if (filename.endsWith(".lsd")) {
+        } else if (filename.endsWith(".lsd")) {
             R2kIO.writeLsd(baos, (Save) object);
-            OutputStream fos = fs.openWrite(str);
-            baos.writeTo(fos);
-            fos.close();
-            return;
+        } else {
+            throw new IOException("Unknown how to save " + filename + " (lmu/lmt/ldb)");
         }
-        throw new IOException("Unknown how to save " + filename + " (lmu/lmt/ldb)");
+        try (OutputStream fos = fs.openWrite(str)) {
+            baos.writeTo(fos);
+        }
     }
 
     @Override
