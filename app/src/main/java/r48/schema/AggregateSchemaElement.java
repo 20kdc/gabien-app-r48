@@ -7,6 +7,7 @@
 
 package r48.schema;
 
+import gabien.IPointer;
 import gabien.ui.*;
 import r48.App;
 import r48.dbs.IProxySchemaElement;

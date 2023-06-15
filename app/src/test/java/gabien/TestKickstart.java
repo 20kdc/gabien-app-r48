@@ -9,7 +9,6 @@ package gabien;
 
 import gabien.uslx.append.*;
 import gabien.uslx.vfs.FSBackend;
-import gabien.ui.IPointer;
 import r48.App;
 import r48.app.AppMain;
 import r48.app.EngineDef;

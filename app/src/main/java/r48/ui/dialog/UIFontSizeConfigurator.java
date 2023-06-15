@@ -10,7 +10,6 @@ package r48.ui.dialog;
 import gabien.GaBIEn;
 import gabien.IPeripherals;
 import gabien.ui.*;
-import gabien.ui.theming.ThemingCentral;
 import gabien.uslx.append.*;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;

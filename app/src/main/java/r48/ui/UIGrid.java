@@ -11,6 +11,7 @@ import gabien.FontManager;
 import gabien.IDesktopPeripherals;
 import gabien.IGrDriver;
 import gabien.IPeripherals;
+import gabien.IPointer;
 import gabien.ui.*;
 import r48.App;
 

@@ -9,6 +9,7 @@ package r48;
 
 import gabien.IGrDriver;
 import gabien.IPeripherals;
+import gabien.IPointer;
 import gabien.ui.*;
 import gabien.ui.theming.Theme;
 import gabien.text.TextTools;

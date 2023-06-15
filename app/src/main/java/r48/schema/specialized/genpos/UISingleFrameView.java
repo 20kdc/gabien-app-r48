@@ -10,6 +10,7 @@ package r48.schema.specialized.genpos;
 import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.IPeripherals;
+import gabien.IPointer;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.ui.Art;
