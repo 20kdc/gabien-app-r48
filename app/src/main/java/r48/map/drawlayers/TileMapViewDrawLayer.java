@@ -7,8 +7,8 @@
 
 package r48.map.drawlayers;
 
-import gabien.FontManager;
 import gabien.render.IGrDriver;
+import gabien.ui.FontManager;
 import r48.App;
 import r48.RubyTable;
 import r48.map.IMapViewCallbacks;

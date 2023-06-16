@@ -7,7 +7,6 @@
 
 package r48.ui.dialog;
 
-import gabien.FontManager;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.*;

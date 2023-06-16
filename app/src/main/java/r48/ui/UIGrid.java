@@ -7,7 +7,6 @@
 
 package r48.ui;
 
-import gabien.FontManager;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.wsi.IDesktopPeripherals;

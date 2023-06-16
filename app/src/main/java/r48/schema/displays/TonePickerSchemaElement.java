@@ -7,10 +7,10 @@
 
 package r48.schema.displays;
 
-import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
+import gabien.ui.FontManager;
 import gabien.ui.UIElement;
 import gabien.ui.UIPublicPanel;
 import r48.App;

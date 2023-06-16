@@ -42,7 +42,6 @@ public class Launcher {
     private double compensationDT;
 
     public Launcher() {
-        GaBIEn.appPrefixes = new String[] {Application.BRAND + "/", ""};
         isMobile = GaBIEn.singleWindowApp();
         c = new Config(isMobile);
         final boolean fontsLoaded = ConfigIO.load(true, c);

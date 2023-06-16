@@ -9,7 +9,7 @@ package r48.maptools;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import gabien.FontManager;
+import gabien.ui.FontManager;
 import gabien.ui.UILabel;
 import gabien.ui.UINumberBox;
 import gabien.ui.UISplitterLayout;

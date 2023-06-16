@@ -7,9 +7,9 @@
 
 package r48.map.events;
 
-import gabien.FontManager;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
+import gabien.ui.FontManager;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;

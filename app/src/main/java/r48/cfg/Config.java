@@ -10,8 +10,8 @@ import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.FontManager;
 import gabien.GaBIEn;
+import gabien.ui.FontManager;
 import gabien.ui.LAFChain;
 import gabien.ui.theming.ThemingCentral;
 import r48.cfg.FontSizes.FontSizeField;

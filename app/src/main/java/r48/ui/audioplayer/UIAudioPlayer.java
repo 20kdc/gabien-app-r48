@@ -9,6 +9,8 @@ package r48.ui.audioplayer;
 
 import java.io.InputStream;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.GaBIEn;
 import gabien.IRawAudioDriver.IRawAudioSource;
 import gabien.ui.UIElement;
@@ -74,7 +76,7 @@ public class UIAudioPlayer extends App.Prx {
         if (playing) {
             GaBIEn.getRawAudio().setRawAudioSource(new IRawAudioSource() {
                 @Override
-                public short[] pullData(int samples) {
+                public @NonNull short[] pullData(int samples) {
                     short[] data = new short[samples * 2];
                     int ptr = 0;
                     for (int i = 0 ; i < samples; i++) {

@@ -7,10 +7,10 @@
 
 package r48.map.tiles;
 
-import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
+import gabien.ui.FontManager;
 import r48.App;
 import r48.RubyTable;
 import r48.dbs.ATDB;
