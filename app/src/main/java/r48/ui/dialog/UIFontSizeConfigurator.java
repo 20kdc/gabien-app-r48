@@ -39,14 +39,6 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         setForcedBounds(null, new Rect(0, 0, c.f.scaleGuess(320), c.f.scaleGuess(240)));
     }
 
-    /**
-     * REPLACE WITH TrGlobal FIELDS
-     */
-    @Deprecated
-    public String TEMP(String t) {
-        return t;
-    }
-
     public void refreshLayout(boolean force) {
         double iniScroll = 0;
         if (outerLayout != null)
@@ -106,16 +98,17 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         }) {
             @Override
             public void updateContents(double deltaTime, boolean selected, IPeripherals peripherals) {
-                text = TEMP("Font: ");
+                String fName;
                 if (c.fontOverride != null) {
-                    text += c.fontOverride;
+                    fName = c.fontOverride;
                 } else {
-                    text += TEMP("Internal w/fallbacks");
+                    fName = T.g.fsc_fontInternal;
                 }
+                text = T.g.fsc_font.r(fName);
                 super.updateContents(deltaTime, selected, peripherals);
             }
         };
-        final UITextButton fontButtonAppend = new UITextButton(TEMP("Even for height <= 8"), c.f.fontSizerTH, new Runnable() {
+        final UITextButton fontButtonAppend = new UITextButton(T.g.fsc_fontEvenSmall, c.f.fontSizerTH, new Runnable() {
             @Override
             public void run() {
             }
@@ -128,66 +121,58 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
             }
         };
         outerLayout.panelsAdd(new UISplitterLayout(fontButton, fontButtonAppend, false, 0.5));
-        String themeTxt = TEMP("Theme: #A").replaceAll("#A", String.valueOf(c.borderTheme));
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(themeTxt, c.f.fontSizerTH, new Runnable() {
+        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton("", c.f.fontSizerTH, new Runnable() {
             @Override
             public void run() {
                 c.borderTheme++;
                 apply.run();
-                refreshLayout(true);
             }
-        }), new UITextButton(TEMP("External Windowing"), c.f.fontSizerTH, new Runnable() {
+        }) {
+            @Override
+            public void updateContents(double deltaTime, boolean selected, IPeripherals peripherals) {
+                text = T.g.fsc_theme.r(c.borderTheme);
+                super.updateContents(deltaTime, selected, peripherals);
+            }
+        }, new UITextButton(T.g.fsc_externalWindowing, c.f.fontSizerTH, new Runnable() {
             @Override
             public void run() {
                 c.windowingExternal = !c.windowingExternal;
             }
         }).togglable(c.windowingExternal), false, 0.5));
-        try {
-            for (final FontSizeField field : c.f.getFields()) {
-                doubleAll.add(new Runnable() {
-                    @Override
-                    public void run() {
-                        int v = field.get() * 2;
-                        if (v == 12)
-                            v = 8;
-                        field.accept(v);
-                    }
-                });
-                halfAll.add(new Runnable() {
-                    @Override
-                    public void run() {
-                        int v = field.get() / 2;
-                        int min = 6;
-                        if (field.name.equals("windowFrameHeight"))
-                            min = 8;
-                        if (field.name.equals("tabTextHeight"))
-                            min = 8;
-                        if (v < min)
-                            v = min;
-                        if (field.name.equals("statusBarTextHeight"))
-                            if (v == 8)
-                                v = 6;
-                        field.accept(v);
-                    }
-                });
-                UIAdjuster tb = new UIAdjuster(c.f.fontSizerTH, field.get(), new IFunction<Long, Long>() {
-                    @Override
-                    public Long apply(Long aLong) {
-                        int nv = (int) (long) aLong;
-                        if (nv < 1)
-                            nv = 1;
-                        field.accept(nv);
-                        apply.run();
-                        refreshLayout(false);
-                        return (long) nv;
-                    }
-                });
-                tb.accept(Integer.toString(field.get()));
-                // NOTE: This is correct behavior due to an 'agreement' in FontSizes that this should be correct
-                outerLayout.panelsAdd(new UISplitterLayout(new UILabel(field.trName(T.fontSizes), c.f.fontSizerTH), tb, false, 4, 5));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (final FontSizeField field : c.f.fields) {
+            doubleAll.add(new Runnable() {
+                @Override
+                public void run() {
+                    int v = field.get() * 2;
+                    if (v == 12)
+                        v = 8;
+                    field.accept(v);
+                }
+            });
+            halfAll.add(new Runnable() {
+                @Override
+                public void run() {
+                    int v = field.get() / 2;
+                    if (v < field.minValue)
+                        v = field.minValue;
+                    field.accept(v);
+                }
+            });
+            UIAdjuster tb = new UIAdjuster(c.f.fontSizerTH, field.get(), new IFunction<Long, Long>() {
+                @Override
+                public Long apply(Long aLong) {
+                    int nv = (int) (long) aLong;
+                    if (nv < 1)
+                        nv = 1;
+                    field.accept(nv);
+                    apply.run();
+                    refreshLayout(false);
+                    return (long) nv;
+                }
+            });
+            tb.accept(Integer.toString(field.get()));
+            // NOTE: This is correct behavior due to an 'agreement' in FontSizes that this should be correct
+            outerLayout.panelsAdd(new UISplitterLayout(new UILabel(field.trName(T.fontSizes), c.f.fontSizerTH), tb, false, 4, 5));
         }
     }
 }

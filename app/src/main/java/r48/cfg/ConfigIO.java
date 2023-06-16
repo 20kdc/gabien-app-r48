@@ -26,7 +26,7 @@ public class ConfigIO {
     public static void save(Config c) {
         IRIOGeneric prepare = new IRIOGeneric(StandardCharsets.UTF_8);
         prepare.setObject("R48::FontConfig");
-        for (FontSizeField fsf : c.f.getFields())
+        for (FontSizeField fsf : c.f.fields)
             prepare.addIVar("@" + fsf.configID).setFX(fsf.get());
 
         encodeStringList(prepare.addIVar("@secondary_images_list"), c.secondaryImageLoadLocationBackup);
@@ -62,7 +62,7 @@ public class ConfigIO {
             boolean shouldResetIETH = false;
             boolean shouldResetWSZ = false;
 
-            for (FontSizeField fsf : c.f.getFields()) {
+            for (FontSizeField fsf : c.f.fields) {
                 IRIO f = dat.getIVar("@" + fsf.configID);
                 if (f != null) {
                     fsf.accept((int) f.getFX());

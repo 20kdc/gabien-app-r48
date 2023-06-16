@@ -40,4 +40,7 @@ public class TrGlobal extends TrPage {
     public String err_hasOccurred, err_appWasStarted;
     public String err_backupOk, err_backupFail;
     public String err_footer;
+    // fsc
+    public FF1 fsc_font, fsc_theme;
+    public String fsc_fontInternal, fsc_fontEvenSmall, fsc_externalWindowing;
 }

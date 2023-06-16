@@ -86,13 +86,13 @@ public class Launcher {
         // The above triggered a flush, which would cause the initial resize on SWPs.
         // That then allowed it to estimate a correct scale which ended up here.
         c.f.uiGuessScaleTenths = uiGuessScaleTenths;
-        for (FontSizeField fsf : c.f.getFields()) {
+        for (FontSizeField fsf : c.f.fields) {
             // as this is a touch device, map 8 to 16 (6 is for things that really matter)
             if (isMobile)
                 if (fsf.get() == 8)
                     fsf.accept(16);
             // uiGuessScaleTenths was set manually.
-            if (!fsf.name.equals("uiGuessScaleTenths"))
+            if (fsf != c.f.f_uiGuessScaleTenths)
                 fsf.accept(c.f.scaleGuess(fsf.get()));
         }
         // exceptions

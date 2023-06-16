@@ -51,7 +51,7 @@ public class Config {
 
     public void reset(boolean isMobile) {
         try {
-            for (final FontSizeField field : f.getFields())
+            for (final FontSizeField field : f.fields)
                 field.accept(field.defValue);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -11,7 +11,10 @@ import gabien.uslx.append.*;
 import r48.tr.pages.TrFontSizes;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Font size configuration.
@@ -82,11 +85,11 @@ public class FontSizes {
     @FontSizeDefault(8) @FontSizeOName("TH/TextHeight")
     public int inspectorTH;
 
-    @FontSizeDefault(16) @FontSizeOName("H/Height")
+    @FontSizeDefault(16) @FontSizeOName("H/Height") @FontSizeMin(8)
     public int windowFrameH;
     @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
     public int statusBarTH;
-    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
+    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight") @FontSizeMin(8)
     public int tabTH;
     @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
     public int menuTH;
@@ -126,21 +129,36 @@ public class FontSizes {
     @FontSizeDefault(10)
     public int uiGridScaleTenths;
 
-    // This hides the implied reflection for simplicity
-    public LinkedList<FontSizeField> getFields() {
-        LinkedList<FontSizeField> fields = new LinkedList<FontSizeField>();
+    private final FontSizeField[] fieldsArray;
+    public final List<FontSizeField> fields;
+
+    // indirect references for comparison/etc.
+    public final FontSizeField f_uiGuessScaleTenths;
+
+    public FontSizes() {
+        LinkedList<FontSizeField> fieldsGen = new LinkedList<FontSizeField>();
         for (final Field field : FontSizes.class.getFields())
             if (field.getType() == int.class)
-                fields.add(new FontSizeField(field));
-        return fields;
+                fieldsGen.add(new FontSizeField(field));
+        fieldsArray = fieldsGen.toArray(new FontSizeField[0]);
+        fields = Collections.unmodifiableList(Arrays.asList(fieldsArray));
+        f_uiGuessScaleTenths = getField("uiGuessScaleTenths");
+    }
+
+    private FontSizeField getField(String string) {
+        for (FontSizeField f : fields)
+            if (f.name.equals(string))
+                return f;
+        throw new RuntimeException("No such field: " + string);
     }
 
     public class FontSizeField implements IConsumer<Integer>, ISupplier<Integer> {
-        // untranslated
-        public final String name;
+        // This isn't supposed to be used, because it is subject to change
+        private final String name;
         // config
         public final String configID;
         public final int defValue;
+        public final int minValue;
         private final Field intern;
         private final Field trPageField;
 
@@ -154,6 +172,8 @@ public class FontSizes {
             }
             configID = ecid;
             defValue = i.getAnnotation(FontSizeDefault.class).value();
+            FontSizeMin fsm = i.getAnnotation(FontSizeMin.class);
+            minValue = fsm != null ? fsm.value() : 6;
             intern = i;
             try {
                 trPageField = TrFontSizes.class.getField(name);

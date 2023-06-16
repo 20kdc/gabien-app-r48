@@ -82,4 +82,11 @@
 		)
 		footer "Error details follow:"
 	)
+	(fsc_
+		font (fl1 "Font: " a0)
+		fontInternal "Internal w/fallbacks"
+		fontEvenSmall "Even for height <= 8"
+		externalWindowing "External Windowing"
+		theme (fl1 "Theme: " a0)
+	)
 )
