@@ -116,7 +116,8 @@ public class UIAudioPlayer extends App.Prx {
     public static UIElement create(App app, String filename, double speed) {
         try {
             InputStream tryWav = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + filename + ".wav"));
-            return new UIAudioPlayer(app, WavIO.readWAV(tryWav, true), speed);
+            if (tryWav != null)
+                return new UIAudioPlayer(app, WavIO.readWAV(tryWav, true), speed);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -126,7 +127,8 @@ public class UIAudioPlayer extends App.Prx {
     public static UIElement createAbsoluteName(App app, String filename, double speed) {
         try {
             InputStream tryWav = GaBIEn.getInFile(filename);
-            return new UIAudioPlayer(app, WavIO.readWAV(tryWav, true), speed);
+            if (tryWav != null)
+                return new UIAudioPlayer(app, WavIO.readWAV(tryWav, true), speed);
         } catch (Exception e) {
             e.printStackTrace();
         }

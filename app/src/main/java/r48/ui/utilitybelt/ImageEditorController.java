@@ -273,7 +273,9 @@ public class ImageEditorController extends App.Svc {
                             String initialName = "";
                             String sss = imageEditView.eds.getSimpleSaveTarget();
                             if (sss != null) {
-                                GaBIEn.setBrowserDirectory(GaBIEn.absolutePathOf(GaBIEn.parentOf(sss)));
+                                String parent = GaBIEn.parentOf(sss);
+                                if (parent != null)
+                                    GaBIEn.setBrowserDirectory(GaBIEn.absolutePathOf(parent));
                                 if (imageEditView.eds.canSimplySave())
                                     initialName = GaBIEn.nameOf(sss);
                             }
