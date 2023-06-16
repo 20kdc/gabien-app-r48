@@ -7,8 +7,8 @@
 
 package r48.schema.specialized.genpos;
 
-import gabien.IPeripherals;
 import gabien.ui.*;
+import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.schema.HiddenSchemaElement;
 import r48.schema.util.SchemaPath;

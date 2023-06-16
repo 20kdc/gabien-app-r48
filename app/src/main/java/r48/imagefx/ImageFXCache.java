@@ -7,11 +7,11 @@
 
 package r48.imagefx;
 
-import gabien.IImage;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.WeakHashMap;
+
+import gabien.render.IImage;
 
 /**
  * Created on 30/07/17.

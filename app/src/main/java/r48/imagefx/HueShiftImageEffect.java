@@ -8,7 +8,7 @@
 package r48.imagefx;
 
 import gabien.GaBIEn;
-import gabien.IImage;
+import gabien.render.IImage;
 import gabien.ui.UIElement;
 
 /**

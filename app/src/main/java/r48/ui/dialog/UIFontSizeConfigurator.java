@@ -8,9 +8,9 @@
 package r48.ui.dialog;
 
 import gabien.GaBIEn;
-import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import gabien.wsi.IPeripherals;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.cfg.FontSizes.FontSizeField;

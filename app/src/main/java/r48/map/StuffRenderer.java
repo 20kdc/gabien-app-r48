@@ -7,7 +7,7 @@
 
 package r48.map;
 
-import gabien.IImage;
+import gabien.render.IImage;
 import r48.App;
 import r48.RubyTable;
 import r48.io.data.IRIO;

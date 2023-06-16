@@ -6,13 +6,14 @@
  */
 package r48.imageio;
 
-import gabien.IImage;
 import r48.app.AppCore;
 
 import java.io.*;
 import java.util.LinkedList;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterOutputStream;
+
+import gabien.render.IImage;
 
 /**
  * 8-bit indexed PNG loader.

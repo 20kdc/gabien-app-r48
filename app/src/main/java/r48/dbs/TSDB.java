@@ -8,8 +8,8 @@
 package r48.dbs;
 
 import gabien.GaBIEn;
-import gabien.IGrDriver;
-import gabien.IImage;
+import gabien.render.IGrDriver;
+import gabien.render.IImage;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.map.events.RMEventGraphicRenderer;

@@ -7,8 +7,8 @@
 
 package r48.map.events;
 
-import gabien.IGrDriver;
-import gabien.IImage;
+import gabien.render.IGrDriver;
+import gabien.render.IImage;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;

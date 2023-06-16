@@ -6,7 +6,6 @@
  */
 package r48.imageio;
 
-import gabien.IImage;
 import r48.app.AppCore;
 import r48.io.IntUtils;
 
@@ -16,6 +15,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
+
+import gabien.render.IImage;
 
 /**
  * Here goes nothing.

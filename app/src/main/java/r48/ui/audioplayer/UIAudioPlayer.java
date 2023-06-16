@@ -10,13 +10,13 @@ package r48.ui.audioplayer;
 import java.io.InputStream;
 
 import gabien.GaBIEn;
-import gabien.IPeripherals;
 import gabien.IRawAudioDriver.IRawAudioSource;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UIScrollbar;
 import gabien.ui.UISplitterLayout;
+import gabien.wsi.IPeripherals;
 import gabien.media.audio.*;
 import r48.App;
 import r48.app.AppMain;

@@ -7,8 +7,8 @@
 
 package r48.schema;
 
-import gabien.IPointer;
 import gabien.ui.*;
+import gabien.wsi.IPointer;
 import r48.App;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;

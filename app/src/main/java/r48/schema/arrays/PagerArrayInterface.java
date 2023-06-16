@@ -7,9 +7,9 @@
 
 package r48.schema.arrays;
 
-import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;

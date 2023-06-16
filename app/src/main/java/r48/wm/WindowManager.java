@@ -8,9 +8,14 @@
 package r48.wm;
 
 import gabien.*;
+import gabien.render.IGrDriver;
+import gabien.render.IImage;
 import gabien.ui.*;
 import gabien.ui.UIWindowView.TabShell;
 import gabien.ui.theming.Theme;
+import gabien.wsi.IDesktopPeripherals;
+import gabien.wsi.IPeripherals;
+import gabien.wsi.IPointer;
 import r48.App;
 import r48.app.AppCore;
 import r48.ui.Art;

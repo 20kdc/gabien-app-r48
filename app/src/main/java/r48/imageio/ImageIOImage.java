@@ -8,7 +8,7 @@
 package r48.imageio;
 
 import gabien.GaBIEn;
-import gabien.IImage;
+import gabien.render.IImage;
 
 import java.util.LinkedList;
 

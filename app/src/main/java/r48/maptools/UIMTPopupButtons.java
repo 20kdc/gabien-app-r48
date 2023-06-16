@@ -8,7 +8,7 @@
 package r48.maptools;
 
 import gabien.GaBIEn;
-import gabien.IGrDriver;
+import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.UIPopupMenu.Entry;
 import gabienapp.Application;

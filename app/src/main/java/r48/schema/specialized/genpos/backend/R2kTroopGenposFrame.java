@@ -7,7 +7,7 @@
 
 package r48.schema.specialized.genpos.backend;
 
-import gabien.IImage;
+import gabien.render.IImage;
 import r48.App;
 import r48.imagefx.HueShiftImageEffect;
 import r48.io.data.DMKey;

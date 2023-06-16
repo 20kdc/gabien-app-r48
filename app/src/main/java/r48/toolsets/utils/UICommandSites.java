@@ -7,11 +7,11 @@
 
 package r48.toolsets.utils;
 
-import gabien.IPeripherals;
 import gabien.ui.Rect;
 import gabien.ui.UIScrollLayout;
 import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.ISupplier;
+import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.schema.util.SchemaPath;

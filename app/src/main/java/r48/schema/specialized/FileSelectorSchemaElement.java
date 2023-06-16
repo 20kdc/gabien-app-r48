@@ -8,7 +8,7 @@
 package r48.schema.specialized;
 
 import gabien.GaBIEn;
-import gabien.IImage;
+import gabien.render.IImage;
 import gabien.ui.*;
 import r48.App;
 import r48.app.AppMain;

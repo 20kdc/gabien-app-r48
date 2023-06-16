@@ -7,9 +7,9 @@
 
 package r48.ui;
 
-import gabien.IGrDriver;
-import gabien.IPointer;
+import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.wsi.IPointer;
 import r48.App;
 import java.util.HashMap;
 

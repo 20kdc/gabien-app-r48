@@ -6,12 +6,13 @@
  */
 package r48.imageio;
 
-import gabien.IImage;
 import r48.app.AppCore;
 import r48.io.BMPConnection;
 
 import java.io.IOException;
 import java.util.LinkedList;
+
+import gabien.render.IImage;
 
 /**
  * It's that format we all know and love.

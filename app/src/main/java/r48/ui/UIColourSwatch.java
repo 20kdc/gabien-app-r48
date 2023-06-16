@@ -7,10 +7,10 @@
 
 package r48.ui;
 
-import gabien.IGrDriver;
-import gabien.IPeripherals;
+import gabien.render.IGrDriver;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
+import gabien.wsi.IPeripherals;
 
 /**
  * Used as part of a palette.

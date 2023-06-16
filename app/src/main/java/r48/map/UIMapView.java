@@ -11,7 +11,12 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.*;
+import gabien.render.IGrDriver;
 import gabien.uslx.append.*;
+import gabien.wsi.IDesktopPeripherals;
+import gabien.wsi.IGrInDriver;
+import gabien.wsi.IPeripherals;
+import gabien.wsi.IPointer;
 import gabien.ui.*;
 import r48.App;
 import r48.map.drawlayers.IMapViewDrawLayer;

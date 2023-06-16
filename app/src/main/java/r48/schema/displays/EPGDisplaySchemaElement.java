@@ -7,10 +7,10 @@
 
 package r48.schema.displays;
 
-import gabien.IGrDriver;
-import gabien.IPeripherals;
+import gabien.render.IGrDriver;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
+import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;

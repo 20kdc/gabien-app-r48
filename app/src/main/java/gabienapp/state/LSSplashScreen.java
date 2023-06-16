@@ -9,15 +9,15 @@ package gabienapp.state;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import gabien.GaBIEn;
-import gabien.IGrDriver;
-import gabien.IGrInDriver;
-import gabien.WindowSpecs;
+import gabien.render.IGrDriver;
 import gabien.text.TextTools;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import gabien.ui.theming.Theme;
 import gabien.ui.theming.ThemingCentral;
 import gabien.uslx.append.IConsumer;
+import gabien.wsi.IGrInDriver;
+import gabien.wsi.WindowSpecs;
 import gabienapp.Launcher;
 import gabienapp.Launcher.State;
 import r48.ui.Art;

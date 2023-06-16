@@ -8,8 +8,8 @@
 package r48.wm;
 
 import gabien.GaBIEn;
-import gabien.IDesktopPeripherals;
-import gabien.IGrInDriver;
+import gabien.wsi.IDesktopPeripherals;
+import gabien.wsi.IGrInDriver;
 import r48.App;
 
 import java.io.BufferedReader;

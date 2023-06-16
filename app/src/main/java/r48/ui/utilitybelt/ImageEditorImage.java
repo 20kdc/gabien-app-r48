@@ -7,10 +7,11 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.IImage;
 import r48.imageio.ImageIOImage;
 
 import java.util.LinkedList;
+
+import gabien.render.IImage;
 
 /**
  * The back-end-ish to the image editor.

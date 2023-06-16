@@ -6,12 +6,12 @@
  */
 package r48.ui;
 
-import gabien.IGrDriver;
-import gabien.IImage;
-import gabien.IPeripherals;
+import gabien.render.IGrDriver;
+import gabien.render.IImage;
 import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
+import gabien.wsi.IPeripherals;
 
 /**
  * Created on September 03, 2018.

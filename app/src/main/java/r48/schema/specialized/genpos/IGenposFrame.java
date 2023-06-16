@@ -7,8 +7,8 @@
 
 package r48.schema.specialized.genpos;
 
-import gabien.IGrDriver;
-import gabien.IImage;
+import gabien.render.IGrDriver;
+import gabien.render.IImage;
 import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import r48.schema.util.SchemaPath;

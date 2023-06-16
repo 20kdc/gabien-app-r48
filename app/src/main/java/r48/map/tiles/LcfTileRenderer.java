@@ -8,8 +8,8 @@
 package r48.map.tiles;
 
 import gabien.GaBIEn;
-import gabien.IGrDriver;
-import gabien.IImage;
+import gabien.render.IGrDriver;
+import gabien.render.IImage;
 import r48.App;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;

@@ -7,13 +7,13 @@
 
 package gabienapp;
 
-import gabien.IGrDriver;
-import gabien.IPeripherals;
+import gabien.render.IGrDriver;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UILayer;
 import gabien.uslx.append.IConsumer;
+import gabien.wsi.IPeripherals;
 import r48.cfg.Config;
 
 import java.util.concurrent.ConcurrentLinkedQueue;

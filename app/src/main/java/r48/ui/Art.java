@@ -8,8 +8,8 @@
 package r48.ui;
 
 import gabien.GaBIEn;
-import gabien.IGrDriver;
-import gabien.IImage;
+import gabien.render.IGrDriver;
+import gabien.render.IImage;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import r48.App;

@@ -7,7 +7,7 @@
 
 package r48.ui;
 
-import gabien.IGrDriver;
+import gabien.render.IGrDriver;
 import r48.App;
 import r48.map.StuffRenderer;
 

@@ -7,8 +7,13 @@
 
 package gabien;
 
+import gabien.render.IImage;
 import gabien.uslx.append.*;
 import gabien.uslx.vfs.FSBackend;
+import gabien.wsi.IGrInDriver;
+import gabien.wsi.IPointer;
+import gabien.wsi.ITextEditingSession;
+import gabien.wsi.WindowSpecs;
 import r48.App;
 import r48.app.AppMain;
 import r48.app.EngineDef;

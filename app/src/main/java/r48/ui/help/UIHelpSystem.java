@@ -8,7 +8,7 @@
 package r48.ui.help;
 
 import gabien.GaBIEn;
-import gabien.IImage;
+import gabien.render.IImage;
 import gabien.ui.*;
 import gabien.ui.UIElement.UIPanel;
 import gabien.uslx.append.*;

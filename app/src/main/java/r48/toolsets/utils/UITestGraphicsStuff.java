@@ -7,13 +7,13 @@
 
 package r48.toolsets.utils;
 
-import gabien.IPeripherals;
 import r48.App;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.schema.displays.TonePickerSchemaElement;
-import gabien.IGrDriver;
-import gabien.IImage;
+import gabien.render.IGrDriver;
+import gabien.render.IImage;
 import gabien.ui.UIElement;
+import gabien.wsi.IPeripherals;
 
 /**
  * Created 17th February 2023

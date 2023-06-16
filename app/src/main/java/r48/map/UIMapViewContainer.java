@@ -7,9 +7,9 @@
 
 package r48.map;
 
-import gabien.IGrDriver;
-import gabien.IPeripherals;
 import gabien.uslx.append.*;
+import gabien.wsi.IPeripherals;
+import gabien.render.IGrDriver;
 import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;

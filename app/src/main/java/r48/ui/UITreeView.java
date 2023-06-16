@@ -7,12 +7,12 @@
 
 package r48.ui;
 
-import gabien.IDesktopPeripherals;
-import gabien.IGrDriver;
-import gabien.IPeripherals;
-import gabien.IPointer;
+import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import gabien.wsi.IDesktopPeripherals;
+import gabien.wsi.IPeripherals;
+import gabien.wsi.IPointer;
 
 import java.util.HashSet;
 

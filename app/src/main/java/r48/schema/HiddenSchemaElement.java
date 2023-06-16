@@ -9,9 +9,9 @@ package r48.schema;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import gabien.IGrDriver;
-import gabien.IPeripherals;
 import gabien.uslx.append.*;
+import gabien.wsi.IPeripherals;
+import gabien.render.IGrDriver;
 import gabien.ui.UIElement;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;

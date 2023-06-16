@@ -7,7 +7,7 @@
 
 package r48.imagefx;
 
-import gabien.IImage;
+import gabien.render.IImage;
 
 /**
  * REGISTRY:

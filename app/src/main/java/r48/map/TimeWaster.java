@@ -7,11 +7,12 @@
 
 package r48.map;
 
-import gabien.IGrDriver;
 import r48.App;
 import r48.ui.Art;
 
 import java.util.Random;
+
+import gabien.render.IGrDriver;
 
 /**
  * For once, a simple to describe class.

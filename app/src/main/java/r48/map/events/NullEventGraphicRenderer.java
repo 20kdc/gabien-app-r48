@@ -7,7 +7,7 @@
 
 package r48.map.events;
 
-import gabien.IGrDriver;
+import gabien.render.IGrDriver;
 import r48.io.data.IRIO;
 
 /**

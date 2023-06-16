@@ -8,7 +8,7 @@
 package r48.map.drawlayers;
 
 import gabien.GaBIEn;
-import gabien.IImage;
+import gabien.render.IImage;
 import gabien.ui.UIElement;
 import r48.App;
 import r48.map.MapViewDrawContext;

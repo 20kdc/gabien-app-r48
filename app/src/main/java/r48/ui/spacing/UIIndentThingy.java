@@ -7,14 +7,14 @@
 
 package r48.ui.spacing;
 
-import gabien.IGrDriver;
-import gabien.IPeripherals;
-import gabien.IPointer;
+import gabien.render.IGrDriver;
 import gabien.ui.IPointerReceiver;
 import gabien.ui.UIBorderedElement;
 import gabien.ui.UIElement;
 import gabien.ui.theming.IBorder;
 import gabien.ui.theming.Theme;
+import gabien.wsi.IPeripherals;
+import gabien.wsi.IPointer;
 
 /**
  * Provides the correct amount of spacing to indicate an indentation level,

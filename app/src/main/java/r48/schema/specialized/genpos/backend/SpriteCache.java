@@ -8,7 +8,7 @@
 package r48.schema.specialized.genpos.backend;
 
 import gabien.GaBIEn;
-import gabien.IImage;
+import gabien.render.IImage;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.imagefx.HueShiftImageEffect;

@@ -7,9 +7,10 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.*;
+import gabien.render.*;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import gabien.wsi.*;
 import r48.App;
 import r48.ui.Art;
 import r48.ui.UIPlaneView;

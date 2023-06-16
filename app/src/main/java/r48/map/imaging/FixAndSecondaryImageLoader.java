@@ -7,7 +7,7 @@
 
 package r48.map.imaging;
 
-import gabien.IImage;
+import gabien.render.IImage;
 import r48.App;
 
 /**

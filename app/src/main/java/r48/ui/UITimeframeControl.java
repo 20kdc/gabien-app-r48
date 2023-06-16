@@ -7,9 +7,9 @@
 
 package r48.ui;
 
-import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import gabien.wsi.IPeripherals;
 import r48.App;
 
 /**

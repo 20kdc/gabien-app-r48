@@ -8,8 +8,8 @@
 package r48.map.events;
 
 import gabien.FontManager;
-import gabien.IGrDriver;
-import gabien.IImage;
+import gabien.render.IGrDriver;
+import gabien.render.IImage;
 import r48.App;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;

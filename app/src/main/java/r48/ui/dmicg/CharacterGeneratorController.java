@@ -8,8 +8,8 @@
 package r48.ui.dmicg;
 
 import gabien.GaBIEn;
-import gabien.IGrDriver;
-import gabien.IImage;
+import gabien.render.IGrDriver;
+import gabien.render.IImage;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;

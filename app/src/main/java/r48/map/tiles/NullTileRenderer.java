@@ -7,7 +7,7 @@
 
 package r48.map.tiles;
 
-import gabien.IGrDriver;
+import gabien.render.IGrDriver;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
 

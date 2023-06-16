@@ -7,7 +7,7 @@
 
 package r48.ui;
 
-import gabien.IGrDriver;
+import gabien.render.IGrDriver;
 import gabien.ui.Rect;
 import gabien.ui.UIButton;
 

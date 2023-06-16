@@ -7,7 +7,7 @@
 
 package r48.schema.specialized;
 
-import gabien.IGrDriver;
+import gabien.render.IGrDriver;
 import gabien.ui.Size;
 import r48.App;
 import r48.RubyTable;

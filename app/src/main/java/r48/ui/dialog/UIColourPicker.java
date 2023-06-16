@@ -8,12 +8,12 @@
 package r48.ui.dialog;
 
 import gabien.FontManager;
-import gabien.IGrDriver;
-import gabien.IImage;
-import gabien.IPeripherals;
-import gabien.IPointer;
+import gabien.render.IGrDriver;
+import gabien.render.IImage;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import gabien.wsi.IPeripherals;
+import gabien.wsi.IPointer;
 import r48.App;
 import r48.ui.Art;
 import r48.ui.UIColourSwatch;

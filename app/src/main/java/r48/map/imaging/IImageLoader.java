@@ -7,7 +7,7 @@
 
 package r48.map.imaging;
 
-import gabien.IImage;
+import gabien.render.IImage;
 
 /**
  * Replaces *all* instances of using GaBIEn image loading, due to XYZ support that may be required in future.

@@ -8,7 +8,7 @@
 package r48.imagefx;
 
 import gabien.GaBIEn;
-import gabien.IImage;
+import gabien.render.IImage;
 
 /**
  * NOTE: This doesn't emulate what appears to be an automatic gamma-adjust in RPG_RT & EasyRPG Player,

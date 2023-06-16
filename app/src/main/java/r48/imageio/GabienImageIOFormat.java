@@ -6,10 +6,11 @@
  */
 package r48.imageio;
 
-import gabien.IImage;
 import r48.app.AppCore;
 
 import java.io.IOException;
+
+import gabien.render.IImage;
 
 /**
  * ImageIOFormat for the gabien system PNG writer (but not the loader, since this API uses byte[])

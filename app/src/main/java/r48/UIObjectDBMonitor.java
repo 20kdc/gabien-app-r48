@@ -7,11 +7,11 @@
 
 package r48;
 
-import gabien.IGrDriver;
-import gabien.IPeripherals;
-import gabien.IPointer;
+import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.theming.Theme;
+import gabien.wsi.IPeripherals;
+import gabien.wsi.IPointer;
 import gabien.text.TextTools;
 import r48.io.IObjectBackend;
 

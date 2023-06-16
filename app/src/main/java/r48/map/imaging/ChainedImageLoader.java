@@ -7,7 +7,7 @@
 
 package r48.map.imaging;
 
-import gabien.IImage;
+import gabien.render.IImage;
 
 /**
  * Used for multi-format scenarios such as:

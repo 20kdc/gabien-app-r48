@@ -8,7 +8,7 @@
 package r48.schema.displays;
 
 import gabien.uslx.append.*;
-import gabien.IImage;
+import gabien.render.IImage;
 import gabien.ui.UIPublicPanel;
 import gabien.ui.UISplitterLayout;
 import r48.App;

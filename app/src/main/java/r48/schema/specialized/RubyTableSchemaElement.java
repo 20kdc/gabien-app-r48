@@ -8,9 +8,9 @@
 package r48.schema.specialized;
 
 import gabien.FontManager;
-import gabien.IGrDriver;
-import gabien.IPeripherals;
+import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;

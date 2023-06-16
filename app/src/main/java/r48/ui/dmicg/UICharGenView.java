@@ -8,12 +8,12 @@
 package r48.ui.dmicg;
 
 import gabien.GaBIEn;
-import gabien.IGrDriver;
-import gabien.IImage;
-import gabien.IPeripherals;
-import gabien.IPointer;
+import gabien.render.IGrDriver;
+import gabien.render.IImage;
 import gabien.ui.IPointerReceiver;
 import gabien.ui.Size;
+import gabien.wsi.IPeripherals;
+import gabien.wsi.IPointer;
 import r48.imagefx.MultiplyImageEffect;
 import r48.ui.UIPlaneView;
 

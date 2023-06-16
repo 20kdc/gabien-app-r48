@@ -7,9 +7,9 @@
 
 package r48.dbs;
 
-import gabien.IGrDriver;
-import gabien.IImage;
 import gabien.datum.DatumSrcLoc;
+import gabien.render.IGrDriver;
+import gabien.render.IImage;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.io.data.IRIO;

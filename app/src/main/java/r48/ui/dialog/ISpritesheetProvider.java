@@ -7,7 +7,7 @@
 
 package r48.ui.dialog;
 
-import gabien.IGrDriver;
+import gabien.render.IGrDriver;
 
 /**
  * Created on 29/07/17.

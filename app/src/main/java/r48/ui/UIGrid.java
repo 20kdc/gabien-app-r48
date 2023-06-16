@@ -8,11 +8,11 @@
 package r48.ui;
 
 import gabien.FontManager;
-import gabien.IDesktopPeripherals;
-import gabien.IGrDriver;
-import gabien.IPeripherals;
-import gabien.IPointer;
+import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.wsi.IDesktopPeripherals;
+import gabien.wsi.IPeripherals;
+import gabien.wsi.IPointer;
 import r48.App;
 
 /**
