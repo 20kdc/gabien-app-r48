@@ -8,7 +8,6 @@ package r48.wm;
 
 import java.util.HashSet;
 
-import gabien.ui.LAFChain;
 import gabien.ui.UIElement;
 import gabien.ui.WindowCreatingUIElementConsumer;
 
@@ -19,14 +18,9 @@ import gabien.ui.WindowCreatingUIElementConsumer;
 public class TrackedUITicker {
     private final WindowCreatingUIElementConsumer real;
     private final HashSet<UIElement> aliveWindows = new HashSet<>();
-    /**
-     * This gets attached to every passing window.
-     */
-    private final LAFChain.Node lafRoot;
 
-    public TrackedUITicker(WindowCreatingUIElementConsumer r, LAFChain.Node lafRoot) {
+    public TrackedUITicker(WindowCreatingUIElementConsumer r) {
         real = r;
-        this.lafRoot = lafRoot;
     }
 
     public void shakeOffDeadWindows() {
@@ -47,7 +41,6 @@ public class TrackedUITicker {
     }
 
     public void accept(UIElement uie, boolean fullscreen) {
-        uie.setLAFParentOverride(lafRoot);
         aliveWindows.add(uie);
         real.accept(uie, 1, fullscreen);
     }

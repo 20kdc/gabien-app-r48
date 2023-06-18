@@ -7,6 +7,7 @@
 
 package r48.ui;
 
+import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.wsi.IPointer;
@@ -31,7 +32,7 @@ public abstract class UIPlaneView extends App.Elm {
 
     public UIPlaneView(App app) {
         super(app);
-        planeStatusLine.setLAFParentOverride(app.c.lafRoot);
+        planeStatusLine.setLAFParentOverride(GaBIEn.sysThemeRoot);
     }
 
     protected abstract String planeGetStatus();

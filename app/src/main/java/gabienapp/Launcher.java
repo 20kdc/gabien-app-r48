@@ -46,7 +46,14 @@ public class Launcher {
         c = new Config(isMobile);
         final boolean fontsLoaded = ConfigIO.load(true, c);
         c.applyUIGlobals();
-        uiTicker = new WindowCreatingUIElementConsumer();
+        uiTicker = new WindowCreatingUIElementConsumer() {
+            @Override
+            public void accept(UIElement o, int scale, boolean fullscreen, boolean resizable) {
+                // This handles pretty much all of these that are needed except in WM and PlaneView
+                o.setLAFParentOverride(GaBIEn.sysThemeRoot);
+                super.accept(o, scale, fullscreen, resizable);
+            }
+        };
         // Setup initial state
         currentState = new LSSplashScreen(this, () -> {
             ilg = new InterlaunchGlobals(c, (vm) -> vmCtx = vm, (str) -> {

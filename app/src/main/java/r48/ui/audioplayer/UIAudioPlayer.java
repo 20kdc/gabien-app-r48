@@ -76,20 +76,18 @@ public class UIAudioPlayer extends App.Prx {
         if (playing) {
             GaBIEn.getRawAudio().setRawAudioSource(new IRawAudioSource() {
                 @Override
-                public @NonNull short[] pullData(int samples) {
-                    short[] data = new short[samples * 2];
-                    int ptr = 0;
-                    for (int i = 0 ; i < samples; i++) {
+                public void pullData(@NonNull short[] interleaved, int ofs, int frames) {
+                    int lim = ofs + (frames * 2);
+                    for (int i = ofs; i < lim; i += 2) {
                         source.getInterpolatedF32(position, audioThreadBuffer, loopButton.state);
                         int secondChannel = audioThreadBuffer.length > 1 ? 1 : 0;
-                        data[ptr++] = (short) (AudioIOFormat.cF64toS32(audioThreadBuffer[0]) >> 16);
-                        data[ptr++] = (short) (AudioIOFormat.cF64toS32(audioThreadBuffer[secondChannel]) >> 16);
+                        interleaved[i] = (short) (AudioIOFormat.cF64toS32(audioThreadBuffer[0]) >> 16);
+                        interleaved[i + 1] = (short) (AudioIOFormat.cF64toS32(audioThreadBuffer[secondChannel]) >> 16);
                         position += (source.sampleRate / 22050d) * speed;
                     }
                     if (source.length != 0)
                         if (loopButton.state && position >= source.length)
                             position %= source.length;
-                    return data;
                 }
             });
         }

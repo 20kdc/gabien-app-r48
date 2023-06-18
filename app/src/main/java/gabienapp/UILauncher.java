@@ -177,7 +177,6 @@ public class UILauncher extends UIProxy {
                     UIFontSizeConfigurator usc = new UIFontSizeConfigurator(c, lun.ilg.t, () -> {
                         c.applyUIGlobals();
                     });
-                    usc.setLAFParentOverride(c.lafRoot);
                     uiTicker.accept(usc);
                     lun.currentState = new LSInApp(lun);
                     gamepaksRequestClose = true;

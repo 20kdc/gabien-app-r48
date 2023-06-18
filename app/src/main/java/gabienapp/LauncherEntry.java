@@ -51,7 +51,6 @@ public class LauncherEntry {
             return new LauncherEntry(() -> T.g.accessLauncherREPL, () -> {
                 String title = T.t.launcherREPL;
                 UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(lm.c, lm.lun.vmCtx, title);
-                repl.setLAFParentOverride(lm.lun.c.lafRoot);
                 lm.lun.uiTicker.accept(repl);
                 lm.uiLauncher.requestClose();
                 lm.lun.currentState = new LSInApp(lm.lun);

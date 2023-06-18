@@ -63,7 +63,7 @@ public class WindowManager extends AppCore.Csv {
     public WindowManager(App app, final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR) {
         super(app);
         coco = new Coco(app);
-        uiTicker = new TrackedUITicker(uiTick, app.c.lafRoot);
+        uiTicker = new TrackedUITicker(uiTick);
         modImg = GaBIEn.createImage(new int[] {0x80000000}, 1, 1);
         rootView = new UIWindowView() {
             @Override
@@ -92,7 +92,7 @@ public class WindowManager extends AppCore.Csv {
         rootView.setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(800), app.f.scaleGuess(600)));
 
         tabPane = new UITabPane(app.f.tabTH, true, true, app.f.maintabsS, thbrL, thbrR);
-        tabPane.setLAFParentOverride(app.c.lafRoot);
+        tabPane.setLAFParentOverride(GaBIEn.sysThemeRoot);
 
         UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, tabPane);
         rootView.addShell(backing);
@@ -164,7 +164,7 @@ public class WindowManager extends AppCore.Csv {
     }
 
     public void createWindow(final UIElement uie, final boolean tab, final boolean immortal, final @Nullable String disposition) {
-        uie.setLAFParentOverride(app.c.lafRoot);
+        uie.setLAFParentOverride(GaBIEn.sysThemeRoot);
         // Now decide what to actually do.
         if (tab) {
             UITabBar.TabIcon windowWindowIcon = new UITabBar.TabIcon() {
@@ -338,7 +338,7 @@ public class WindowManager extends AppCore.Csv {
             Rect r2 = results[i].getIntersection(area);
             if (r2 != null) {
                 if (r2.rectEquals(results[i])) {
-                    menu.setLAFParentOverride(app.c.lafRoot);
+                    menu.setLAFParentOverride(GaBIEn.sysThemeRoot);
                     menu.setForcedBounds(null, r2);
                     screen.addShell(new UIWindowView.ElementShell(screen, menu) {
                         @Override
@@ -358,7 +358,7 @@ public class WindowManager extends AppCore.Csv {
                             igd.blitScaledImage(0, 0, 1, 1, 0, 0, sz.width, sz.height, modImg);
                             int bw = 4;
                             Rect r = menu.getParentRelativeBounds();
-                            Theme theme = app.c.lafRoot.getTheme();
+                            Theme theme = GaBIEn.sysThemeRoot.getTheme();
                             // The border is shown 'behind' the menu base, but the menu is shown over it
                             UIBorderedElement.drawBorder(theme, igd, Theme.B_R48OVERLAY, bw, r.x - bw, r.y - bw, r.width + (bw * 2), r.height + (bw * 2));
                             float otx = igd.trsTXS(base.x);

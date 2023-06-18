@@ -24,7 +24,6 @@ public class LSMain extends State {
         super(lun);
         errorHandler = new ErrorHandler(lun);
         uiLauncher = new UILauncher(this);
-        uiLauncher.setLAFParentOverride(lun.c.lafRoot);
         lun.uiTicker.accept(uiLauncher);
     }
 
