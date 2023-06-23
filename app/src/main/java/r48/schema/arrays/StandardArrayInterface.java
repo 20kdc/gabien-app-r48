@@ -7,7 +7,9 @@
 
 package r48.schema.arrays;
 
+import gabien.GaBIEn;
 import gabien.ui.*;
+import gabien.ui.theming.Theme;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.io.data.IRIO;
@@ -62,9 +64,10 @@ public class StandardArrayInterface implements IArrayInterface {
                     r.run();
                 releasers.clear();
                 // Work out how big each array index field has to be.
-                final Size maxSizePre = UILabel.getRecommendedTextSize("", app.f.schemaFieldTH);
+                Theme theme = GaBIEn.sysThemeRoot.getTheme();
+                final Size maxSizePre = UILabel.getRecommendedTextSize(theme, "", app.f.schemaFieldTH);
                 final AtomicInteger maxWidth = new AtomicInteger(maxSizePre.width);
-                int selectButtonUnit = UITextButton.getRecommendedTextSize("", app.f.schemaFieldTH).height;
+                int selectButtonUnit = UITextButton.getRecommendedTextSize(theme, "", app.f.schemaFieldTH).height;
                 int indentUnit = app.f.scaleGuess(8);
                 if (positions.length > 0) {
                     if (selectedStart == -1) {

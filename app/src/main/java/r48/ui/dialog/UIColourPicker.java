@@ -7,9 +7,11 @@
 
 package r48.ui.dialog;
 
+import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.*;
+import gabien.ui.theming.Theme;
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
@@ -37,7 +39,7 @@ public class UIColourPicker extends App.Prx {
     private final UITabPane tabPane;
     private final IConsumer<Integer>[] colourListeners;
     private final UINumberBox alphaBox;
-    private final Size numberBoxMinimumSize = UILabel.getRecommendedTextSize("_255_", app.f.imageEditorTH);
+    private final Size numberBoxMinimumSize = UILabel.getRecommendedTextSize(GaBIEn.sysThemeRoot.getTheme(), "_255_", app.f.imageEditorTH);
     private boolean shuttingDown = false;
 
     @SuppressWarnings("unchecked")
@@ -198,10 +200,11 @@ public class UIColourPicker extends App.Prx {
             igd.clearRect(0, 0, 0, tsx - targetScale, intPos.y, targetScale, intPos.height);
             igd.clearRect(0, 0, 0, tsx + targetScale, intPos.y, targetScale, intPos.height);
 
+            FontManager fm = Theme.FM_GLOBAL.get(GaBIEn.sysThemeRoot);
             if (bh == 1) {
-                FontManager.drawString(igd, 0, 0, Integer.toString(targetSize.width), false, false, app.f.tonePickerTH);
+                fm.drawString(igd, 0, 0, Integer.toString(targetSize.width), false, false, app.f.tonePickerTH);
             } else {
-                FontManager.drawString(igd, 0, 0, targetSize.width + "," + targetSize.height, false, false, app.f.tonePickerTH);
+                fm.drawString(igd, 0, 0, targetSize.width + "," + targetSize.height, false, false, app.f.tonePickerTH);
             }
         }
 

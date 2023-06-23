@@ -7,8 +7,10 @@
 
 package r48.ui;
 
+import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.ui.theming.Theme;
 import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
@@ -131,7 +133,9 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
     }
 
     protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
-        FontManager.drawString(igd, x, y + 1, Integer.toHexString(t).toUpperCase(), false, false, app.f.gridTH);
+        // grr... need to change this to force bitmap fonts as this is now SLOW
+        FontManager fm = Theme.FM_GLOBAL.get(GaBIEn.sysThemeRoot);
+        fm.drawString(igd, x, y + 1, Integer.toHexString(t).toUpperCase(), false, false, app.f.gridTH);
     }
 
     @Override

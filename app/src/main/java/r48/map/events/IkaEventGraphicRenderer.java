@@ -7,9 +7,9 @@
 
 package r48.map.events;
 
+import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
-import gabien.ui.FontManager;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;
@@ -84,6 +84,6 @@ public class IkaEventGraphicRenderer extends App.Svc implements IEventGraphicRen
             fail = false;
         }
         if (fail)
-            FontManager.drawString(igd, ox, oy, "EV" + type, true, false, 8);
+            GaBIEn.engineFonts.f8.drawLine(igd, ox, oy, "EV" + type, false);
     }
 }

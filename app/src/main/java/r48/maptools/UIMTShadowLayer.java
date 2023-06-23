@@ -9,10 +9,12 @@ package r48.maptools;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.GaBIEn;
 import gabien.ui.FontManager;
 import gabien.ui.UILabel;
 import gabien.ui.UINumberBox;
 import gabien.ui.UISplitterLayout;
+import gabien.ui.theming.Theme;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
@@ -52,6 +54,7 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public void performGlobalOverlay(MapViewDrawContext mvdc, int layer, boolean minimap) {
+        FontManager fm = Theme.FM_GLOBAL.get(GaBIEn.sysThemeRoot);
         for (int tx = mvdc.camT.x; tx < mvdc.camT.x + mvdc.camT.width; tx++) {
             if (map.mapTable.outOfBounds(tx, 0))
                 continue;
@@ -61,9 +64,9 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
                 int px = tx * mvdc.tileSize;
                 int py = ty * mvdc.tileSize;
                 int regionId = (map.mapTable.getTiletype(tx, ty, 3) & 0xFF00) >> 8;
-                int l = FontManager.getLineLength("R" + regionId, UIMapView.mapDebugTextHeight) + 1;
+                int l = fm.getLineLength("R" + regionId, UIMapView.mapDebugTextHeight) + 1;
                 mvdc.igd.clearRect(0, 0, 0, px, py, l, UIMapView.mapDebugTextHeight);
-                FontManager.drawString(mvdc.igd, px, py, "R" + regionId, true, false, UIMapView.mapDebugTextHeight);
+                fm.drawString(mvdc.igd, px, py, "R" + regionId, true, false, UIMapView.mapDebugTextHeight);
             }
         }
     }

@@ -10,12 +10,10 @@ package r48.map.tiles;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
-import gabien.ui.FontManager;
 import r48.App;
 import r48.RubyTable;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;
-import r48.map.UIMapView;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
 import r48.map.tileedit.AutoTileTypeField;
@@ -83,7 +81,7 @@ public class XPTileRenderer extends App.Svc implements ITileRenderer {
                 didDraw = true; // It's invisible, so it should just be considered drawn no matter what
             }
             if (!didDraw)
-                FontManager.drawString(igd, px, py, ":" + tidx, false, false, UIMapView.mapDebugTextHeight);
+                GaBIEn.engineFonts.f8.drawLAB(igd, px, py, ":" + tidx, false);
             return;
         }
         tidx -= 48 * 8;

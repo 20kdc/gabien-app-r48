@@ -12,6 +12,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
 import gabien.ui.FontManager;
+import gabien.ui.theming.Theme;
 import gabien.ui.theming.ThemingCentral;
 import r48.cfg.FontSizes.FontSizeField;
 import r48.tr.LanguageList;
@@ -71,10 +72,10 @@ public class Config {
      * Applies changes.
      */
     public void applyUIGlobals() {
-        FontManager.fontOverride = fontOverride;
-        FontManager.fontOverrideUE8 = fontOverrideUE8;
         borderTheme %= ThemingCentral.themes.length;
-        GaBIEn.sysThemeRoot.setThemeOverride(ThemingCentral.themes[borderTheme]);
+        Theme base = ThemingCentral.themes[borderTheme];
+        base = Theme.FM_GLOBAL.with(base, new FontManager(fontOverride, fontOverrideUE8));
+        GaBIEn.sysThemeRoot.setThemeOverride(base);
         GaBIEn.sysCoreFontSize = f.gSysCoreTH;
     }
 }

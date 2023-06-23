@@ -35,14 +35,17 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
 
     public void setElements(TreeElement[] e) {
         elements = e;
+        // This has to be done in advance, because if we do it later, the layout changes go weird.
+        for (UIElement uie : layoutGetElements())
+            layoutRemoveElement(uie);
+        for (TreeElement te : e)
+            layoutAddElement(te.innerElement);
         runLayout();
     }
 
     @Override
     public void runLayout() {
         Size r = getSize();
-        for (UIElement uie : layoutGetElements())
-            layoutRemoveElement(uie);
         int y = 0;
         // If not handled carefully, this will almost certainly be a vicious cycle.
         // 'tis the cost of buttons that are allowed to specify new sizes.
@@ -58,16 +61,15 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
                     lastElement.hasChildren = true;
             int x = nodeWidth * (te.indent + 1);
             int h = te.innerElement.getWantedSize().height;
-            te.innerElement.setForcedBounds(null, new Rect(x, y, r.width - x, h));
+            te.innerElement.setForcedBounds(this, new Rect(x, y, r.width - x, h));
             h = te.innerElement.getWantedSize().height;
-            te.innerElement.setForcedBounds(null, new Rect(x, y, r.width - x, h));
+            te.innerElement.setForcedBounds(this, new Rect(x, y, r.width - x, h));
             width = Math.max(width, te.innerElement.getWantedSize().width);
             if (!te.visible)
                 h = 0;
             y += h;
             te.h = h;
-            if (te.visible)
-                layoutAddElement(te.innerElement);
+            layoutSetElementVis(te.innerElement, te.visible);
             lastElement = te;
             // If we're visible, set invisibleAboveIndent.
             // If expanded, then set it to "infinite"

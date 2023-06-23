@@ -10,13 +10,11 @@ package r48.map.tiles;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
-import gabien.ui.FontManager;
 import gabien.ui.Rect;
 import r48.App;
 import r48.RubyTable;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;
-import r48.map.UIMapView;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
 import r48.map.tileedit.AutoTileTypeField;
@@ -124,7 +122,7 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
                 return;
         }
 
-        FontManager.drawString(igd, px, py, Integer.toHexString(tidx), false, false, UIMapView.mapDebugTextHeight);
+        GaBIEn.engineFonts.f8.drawLAB(igd, px, py, Integer.toHexString(tidx), false);
     }
 
     /**

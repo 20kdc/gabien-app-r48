@@ -9,6 +9,7 @@ package r48.schema;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
@@ -88,7 +89,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     public int getDefaultFieldWidth(IRIO target) {
         if (nameCb == null)
             return 0;
-        return UILabel.getRecommendedTextSize(nameCb.r() + " ", app.f.schemaFieldTH).width;
+        return UILabel.getRecommendedTextSize(GaBIEn.sysThemeRoot.getTheme(), nameCb.r() + " ", app.f.schemaFieldTH).width;
     }
 
     @Override

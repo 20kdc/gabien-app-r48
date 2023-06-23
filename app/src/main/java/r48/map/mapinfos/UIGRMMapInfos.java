@@ -7,6 +7,7 @@
 
 package r48.map.mapinfos;
 
+import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
@@ -49,7 +50,7 @@ public class UIGRMMapInfos extends App.Prx {
 
     public UIGRMMapInfos(final IRMLikeMapInfoBackendWPub b, IMapContext context, String mapInfos) {
         super(context.getApp());
-        utv = new UITreeView(UIBorderedElement.getRecommendedTextSize("", app.f.mapInfosTH).height);
+        utv = new UITreeView(UIBorderedElement.getRecommendedTextSize(GaBIEn.sysThemeRoot.getTheme(), "", app.f.mapInfosTH).height);
         operators = b;
         mapContext = context;
         toStringRes = mapInfos;

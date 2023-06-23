@@ -114,8 +114,8 @@ public class LSSplashScreen extends State {
             goodSize = bb.getHeight() / 32;
         if (goodSize < 8)
             goodSize = 8;
-        int goodSizeActual = UILabel.getRecommendedTextSize("", goodSize).height;
         Theme theme = ThemingCentral.themes[0];
+        int goodSizeActual = UILabel.getRecommendedTextSize(theme, "", goodSize).height;
         UILabel.drawLabel(theme, bb, bb.getWidth(), 0, bb.getHeight() - goodSizeActual, waitingFor + movement + ch, Theme.B_TEXTBOX, goodSize, progressCache);
 
         // fade

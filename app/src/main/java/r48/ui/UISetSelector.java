@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import gabien.GaBIEn;
 import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
@@ -44,7 +45,7 @@ public class UISetSelector<T> extends App.Prx {
                 refreshContents();
             }
         }));
-        int labelHeight = UILabel.getRecommendedTextSize("", app.f.dialogWindowTH).height;
+        int labelHeight = UILabel.getRecommendedTextSize(GaBIEn.sysThemeRoot.getTheme(), "", app.f.dialogWindowTH).height;
         for (T o : entries) {
             final T fo = o;
             final UILabel ul = new UILabel(o.toString(), app.f.dialogWindowTH);
