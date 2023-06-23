@@ -9,13 +9,10 @@ package r48.map.drawlayers;
 
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
-import gabien.ui.FontManager;
-import gabien.ui.theming.Theme;
 import r48.App;
 import r48.RubyTable;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
-import r48.map.UIMapView;
 import r48.map.tiles.ITileRenderer;
 
 /**
@@ -81,9 +78,7 @@ public class TileMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
         if (shouldDraw(i, j, tdi, tidx)) {
             if (debug) {
                 String t = Integer.toString(tidx, 16);
-                // GRRRRRRR THIS IS BAAAAD
-                FontManager fm = Theme.FM_GLOBAL.get(GaBIEn.sysThemeRoot);
-                fm.drawString(igd, px, py + (tdi * UIMapView.mapDebugTextHeight), t, false, false, UIMapView.mapDebugTextHeight);
+                GaBIEn.engineFonts.f6.drawLAB(igd, px, py + (tdi * 6), t, false);
             } else {
                 tr.drawTile(tdi, tidx, px, py, igd, 1, false);
             }

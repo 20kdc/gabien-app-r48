@@ -29,9 +29,6 @@ import r48.ui.UIPlaneView;
  * Created on 12/27/16.
  */
 public class UIMapView extends UIPlaneView {
-    // This is drawn within the tile view. I.E. It's in content-pixels, not device-pixels
-    public static final int mapDebugTextHeight = 6;
-
     // useful on mobile to allow dragging camera when using any tool
     private boolean camDragSwitch = false;
 
