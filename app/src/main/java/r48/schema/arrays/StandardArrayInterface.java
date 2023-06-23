@@ -65,9 +65,9 @@ public class StandardArrayInterface implements IArrayInterface {
                 releasers.clear();
                 // Work out how big each array index field has to be.
                 Theme theme = GaBIEn.sysThemeRoot.getTheme();
-                final Size maxSizePre = UILabel.getRecommendedTextSize(theme, "", app.f.schemaFieldTH);
+                final Size maxSizePre = UIBorderedElement.getRecommendedTextSize(theme, "", app.f.schemaFieldTH);
                 final AtomicInteger maxWidth = new AtomicInteger(maxSizePre.width);
-                int selectButtonUnit = UITextButton.getRecommendedTextSize(theme, "", app.f.schemaFieldTH).height;
+                int selectButtonUnit = maxSizePre.height;
                 int indentUnit = app.f.scaleGuess(8);
                 if (positions.length > 0) {
                     if (selectedStart == -1) {

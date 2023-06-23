@@ -38,7 +38,7 @@ public class UIColourPicker extends App.Prx {
     private final UITabPane tabPane;
     private final IConsumer<Integer>[] colourListeners;
     private final UINumberBox alphaBox;
-    private final Size numberBoxMinimumSize = UILabel.getRecommendedTextSize(GaBIEn.sysThemeRoot.getTheme(), "_255_", app.f.imageEditorTH);
+    private final Size numberBoxMinimumSize = UIBorderedElement.getRecommendedTextSize(GaBIEn.sysThemeRoot.getTheme(), "_255_", app.f.imageEditorTH);
     private boolean shuttingDown = false;
 
     @SuppressWarnings("unchecked")

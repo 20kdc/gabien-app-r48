@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.Rect;
+import gabien.ui.UIBorderedElement;
 import gabien.ui.UILabel;
 import r48.App;
 import r48.imagefx.HueShiftImageEffect;
@@ -38,7 +39,7 @@ public class Art {
 
     // This controls the layout of (in particular) zoom
     public static int getZIconSize(App app) {
-        return UILabel.getRecommendedTextSize(GaBIEn.sysThemeRoot.getTheme(), "", app.f.mapPositionTH).height;
+        return UIBorderedElement.getBorderedTextHeight(GaBIEn.sysThemeRoot.getTheme(), app.f.mapPositionTH);
     }
 
     public static int getZIconMargin(App app) {

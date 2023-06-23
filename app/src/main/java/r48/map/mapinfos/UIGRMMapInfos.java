@@ -50,7 +50,7 @@ public class UIGRMMapInfos extends App.Prx {
 
     public UIGRMMapInfos(final IRMLikeMapInfoBackendWPub b, IMapContext context, String mapInfos) {
         super(context.getApp());
-        utv = new UITreeView(UIBorderedElement.getRecommendedTextSize(GaBIEn.sysThemeRoot.getTheme(), "", app.f.mapInfosTH).height);
+        utv = new UITreeView(UIBorderedElement.getBorderedTextHeight(GaBIEn.sysThemeRoot.getTheme(), app.f.mapInfosTH));
         operators = b;
         mapContext = context;
         toStringRes = mapInfos;

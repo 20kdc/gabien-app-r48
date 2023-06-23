@@ -12,6 +12,7 @@ import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.text.TextTools;
 import gabien.ui.Rect;
+import gabien.ui.UIBorderedElement;
 import gabien.ui.UILabel;
 import gabien.ui.theming.Theme;
 import gabien.ui.theming.ThemingCentral;
@@ -115,7 +116,7 @@ public class LSSplashScreen extends State {
         if (goodSize < 8)
             goodSize = 8;
         Theme theme = ThemingCentral.themes[0];
-        int goodSizeActual = UILabel.getRecommendedTextSize(theme, "", goodSize).height;
+        int goodSizeActual = UIBorderedElement.getBorderedTextHeight(theme, goodSize);
         UILabel.drawLabel(theme, bb, bb.getWidth(), 0, bb.getHeight() - goodSizeActual, waitingFor + movement + ch, Theme.B_TEXTBOX, goodSize, progressCache);
 
         // fade

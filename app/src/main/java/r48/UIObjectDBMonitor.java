@@ -38,7 +38,7 @@ public class UIObjectDBMonitor extends App.Elm {
         if (layer != UILayer.Base && layer != UILayer.Content)
             return;
         boolean isBackground = layer == UILayer.Base;
-        int step = UILabel.getRecommendedTextSize(getTheme(), "", app.f.objectDBMonitorTH).height;
+        int step = UIBorderedElement.getBorderedTextHeight(getTheme(), app.f.objectDBMonitorTH);
         int width = getSize().width;
         Theme theme = getTheme();
         UILabel.drawLabel(theme, igd, width, 0, 0, toString(), Theme.B_TEXTBOX, app.f.objectDBMonitorTH, memCache1, isBackground, !isBackground);
