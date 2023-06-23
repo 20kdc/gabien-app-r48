@@ -10,10 +10,8 @@ package r48.schema.displays;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
-import gabien.ui.FontManager;
 import gabien.ui.UIElement;
 import gabien.ui.UIPublicPanel;
-import gabien.ui.theming.Theme;
 import r48.App;
 import r48.dbs.PathSyntax;
 import r48.imagefx.IImageEffect;
@@ -65,9 +63,8 @@ public class TonePickerSchemaElement extends SchemaElement {
         finalComposite.blitImage(0, 0, imageUnit, imageUnit, imageUnit, 0, app.ui.imageFXCache.process(finalComposite, cfg));
 
         final TrRoot T = app.t;
-        FontManager fm = Theme.FM_GLOBAL.get(GaBIEn.sysThemeRoot);
-        fm.drawString(finalComposite, 0, (imageUnit + 1) - app.f.tonePickerTH, T.z.l102, false, false, app.f.tonePickerTH);
-        fm.drawString(finalComposite, imageUnit, (imageUnit + 1) - app.f.tonePickerTH, T.z.l103, false, false, app.f.tonePickerTH);
+        GaBIEn.engineFonts.drawString(finalComposite, 0, (imageUnit + 1) - app.f.tonePickerTH, T.z.l102, false, false, app.f.tonePickerTH);
+        GaBIEn.engineFonts.drawString(finalComposite, imageUnit, (imageUnit + 1) - app.f.tonePickerTH, T.z.l103, false, false, app.f.tonePickerTH);
 
         IImage im = GaBIEn.createImage(finalComposite.getPixels(), imageUnit * 2, imageUnit);
         finalComposite.shutdown();

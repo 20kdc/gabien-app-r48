@@ -10,7 +10,6 @@ package r48.ui;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
-import gabien.ui.theming.Theme;
 import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
@@ -22,7 +21,7 @@ import r48.App;
  * Created on 12/28/16.
  */
 public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMouseReceiver {
-    public int tileCount;
+    public final int tileCount;
     public int tileSizeW, tileSizeH;
 
     public int bkgR = 0;
@@ -133,9 +132,7 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
     }
 
     protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
-        // grr... need to change this to force bitmap fonts as this is now SLOW
-        FontManager fm = Theme.FM_GLOBAL.get(GaBIEn.sysThemeRoot);
-        fm.drawString(igd, x, y + 1, Integer.toHexString(t).toUpperCase(), false, false, app.f.gridTH);
+        GaBIEn.engineFonts.drawString(igd, x, y + 1, Integer.toHexString(t).toUpperCase(), false, false, app.f.gridTH);
     }
 
     @Override
@@ -149,6 +146,8 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
         if (availableRows < 1)
             availableRows = 1;
         tmWidth = tiles;
+        if (tileCount > 0)
+            uivScrollbar.wheelScale = (availableRows * tiles) / (tileCount * 2d);
         uivScrollbar.setForcedBounds(this, new Rect(r.width - scrollBarW, 0, scrollBarW, availableRows * tileSizeH));
         setWantedSize(new Size(r.width, availableRows * tileSizeH));
     }

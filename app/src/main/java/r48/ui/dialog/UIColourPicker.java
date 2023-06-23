@@ -11,7 +11,6 @@ import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.*;
-import gabien.ui.theming.Theme;
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
@@ -200,12 +199,13 @@ public class UIColourPicker extends App.Prx {
             igd.clearRect(0, 0, 0, tsx - targetScale, intPos.y, targetScale, intPos.height);
             igd.clearRect(0, 0, 0, tsx + targetScale, intPos.y, targetScale, intPos.height);
 
-            FontManager fm = Theme.FM_GLOBAL.get(GaBIEn.sysThemeRoot);
+            String text;
             if (bh == 1) {
-                fm.drawString(igd, 0, 0, Integer.toString(targetSize.width), false, false, app.f.tonePickerTH);
+                text = Integer.toString(targetSize.width);
             } else {
-                fm.drawString(igd, 0, 0, targetSize.width + "," + targetSize.height, false, false, app.f.tonePickerTH);
+                text = targetSize.width + "," + targetSize.height;
             }
+            GaBIEn.engineFonts.drawString(igd, 0, 0, text, false, false, app.f.tonePickerTH);
         }
 
         @Override

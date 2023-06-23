@@ -10,7 +10,6 @@ package r48.schema.specialized;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
-import gabien.ui.theming.Theme;
 import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.RubyTable;
@@ -59,7 +58,6 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
 
         final TileHelper initialTileHelper = baseInitializeHelper(target);
         Size gridSize = getGridSize(initialTileHelper);
-        final FontManager fm = Theme.FM_GLOBAL.get(GaBIEn.sysThemeRoot);
         final UIGrid uig = new UIGrid(app, gridSize.width, gridSize.height, targ.width * targ.height) {
             private TileHelper tileHelper = initialTileHelper;
 
@@ -73,7 +71,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
                 if (allowTextdraw) {
                     igd.clearRect(0, 0, 0, x, y, tileSizeW, app.f.gridTH);
                     for (int i = 0; i < targ.planeCount; i++)
-                        fm.drawString(igd, x, y + (i * app.f.gridTH), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, false, app.f.gridTH);
+                        GaBIEn.engineFonts.drawString(igd, x, y + (i * app.f.gridTH), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, false, app.f.gridTH);
                 }
             }
 
