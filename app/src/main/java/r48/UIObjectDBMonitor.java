@@ -7,6 +7,8 @@
 
 package r48;
 
+import java.util.WeakHashMap;
+
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.theming.Theme;
@@ -20,8 +22,9 @@ import r48.io.IObjectBackend;
  * Created on 12/29/16.
  */
 public class UIObjectDBMonitor extends App.Elm {
-    private final TextTools.PlainCached memCache1 = new TextTools.PlainCached();
-    private final TextTools.PlainCached memCache2 = new TextTools.PlainCached();
+    private final WeakHashMap<IObjectBackend.ILoadedObject, TextTools.PlainCached> textCache = new WeakHashMap<>();
+    private final TextTools.PlainCached textCacheStatus = new TextTools.PlainCached();
+    private final TextTools.PlainCached textCacheLost = new TextTools.PlainCached();
 
     public UIObjectDBMonitor(App app) {
         super(app);
@@ -41,12 +44,21 @@ public class UIObjectDBMonitor extends App.Elm {
         int step = UIBorderedElement.getBorderedTextHeight(getTheme(), app.f.objectDBMonitorTH);
         int width = getSize().width;
         Theme theme = getTheme();
-        UILabel.drawLabel(theme, igd, width, 0, 0, toString(), Theme.B_TEXTBOX, app.f.objectDBMonitorTH, memCache1, isBackground, !isBackground);
+        UILabel.drawLabel(theme, igd, width, 0, 0, toString(), Theme.B_TEXTBOX, app.f.objectDBMonitorTH, textCacheStatus, isBackground, !isBackground);
         int oy = step;
         for (String s : UITest.sortedKeysStr(app.odb.objectMap.keySet())) {
             String status = T.u.odb_disposed;
             IObjectBackend.ILoadedObject rio = app.odb.objectMap.get(s).get();
+            // if the object is marked LOST, something way worse than some text caching has gone on
+            TextTools.PlainCached tc = textCacheLost;
             if (rio != null) {
+                // Ensure per-object text caches so things don't spam as often
+                tc = textCache.get(rio);
+                if (tc == null) {
+                    tc = new TextTools.PlainCached();
+                    textCache.put(rio, tc);
+                }
+                // Right, continue
                 status = T.u.odb_listeners.r(app.odb.countModificationListeners(rio));
                 if (app.odb.getObjectNewlyCreated(s)) {
                     status += T.u.odb_created;
@@ -60,8 +72,7 @@ public class UIObjectDBMonitor extends App.Elm {
                     app.odb.objectMap.remove(s);
                 }
             }
-            // memCache2 should ideally NOT be shared between these, it's literally the worst thing you can do
-            UILabel.drawLabel(theme, igd, width, 0, oy, s + status, Theme.B_LABEL, app.f.objectDBMonitorTH, memCache2, isBackground, !isBackground);
+            UILabel.drawLabel(theme, igd, width, 0, oy, s + status, Theme.B_LABEL, app.f.objectDBMonitorTH, tc, isBackground, !isBackground);
             oy += step;
         }
         setWantedSize(new Size(width, oy));
