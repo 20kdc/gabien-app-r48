@@ -7,7 +7,6 @@
 
 package r48.dbs;
 
-import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import r48.App;
 import r48.io.data.RORIO;
@@ -15,11 +14,9 @@ import r48.minivm.MVMSlot;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
-import r48.tr.DynTrBase;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF1;
 
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -44,44 +41,6 @@ public class FormatSyntax extends App.Svc {
 
     public FormatSyntax(App app) {
         super(app);
-        // Note: The current NameDB initial state is a "bare minimum" maintenance mode.
-        // Name routines are going to get farmed out to MiniVM as soon as possible.
-        addNameDBFixed("Interp.lang-Common-r2kTsConverter", (x) -> {
-            RORIO rubyIO = (RORIO) x;
-            double d = Double.parseDouble(rubyIO.decString());
-            // WARNING: THIS IS MADNESS, and could be off by a few seconds.
-            // In practice I tested it and it somehow wasn't off at all.
-            // Command used given here:
-            // [gamemanj@archways ~]$ date --date="12/30/1899 12:00 am" +%s
-            // -2209161600
-            // since we want ms, 3 more 0s have been added
-            long v = -2209161600000L;
-            long dayLen = 24L * 60L * 60L * 1000L;
-            // Ok, so, firstly, fractional part is considered completely separately and absolutely.
-            double fractional = Math.abs(d);
-            fractional -= Math.floor(fractional);
-            // Now get rid of fractional in the "right way" (round towards 0)
-            if (d < 0) {
-                d += fractional;
-            } else {
-                d -= fractional;
-            }
-            v += ((long) d) * dayLen;
-            v += (long) (fractional * dayLen);
-
-            // NOTE: This converts to local time zone.
-            return new Date(v).toString();
-        });
-    }
-
-    private void addNameDBFixed(String name, FF1 routine) {
-        String id = TrNames.nameRoutine(name);
-        app.vmCtx.ensureSlot(new DatumSymbol(id)).v = new DynTrBase(id, DatumSrcLoc.NONE) {
-            @Override
-            public Object getCompiledValue() {
-                return routine;
-            }
-        };
     }
 
     private @Nullable FF1 getNameDB(String name) {

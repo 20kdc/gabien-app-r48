@@ -6,9 +6,11 @@
  */
 package r48.minivm.fn;
 
+import java.util.Date;
 import java.util.LinkedList;
 
 import gabien.datum.DatumSymbol;
+import r48.io.data.RORIO;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.expr.MVMCExpr;
@@ -35,6 +37,33 @@ public class MVMTrLibrary {
                 .attachHelp("(define-name KEY EXPR) : Defines a DynTrSlot.");
         ctx.defineSlot(new DatumSymbol("define-tr-nls")).v = new DefineTr("define-tr-nls", null, true)
                 .attachHelp("(define-name-nls KEY EXPR) : Defines a non-localizable DynTr 'sort of slot'.");
+
+        ctx.defLib("r2kts->string", (x) -> {
+            RORIO rubyIO = (RORIO) x;
+            double d = Double.parseDouble(rubyIO.decString());
+            // WARNING: THIS IS MADNESS, and could be off by a few seconds.
+            // In practice I tested it and it somehow wasn't off at all.
+            // Command used given here:
+            // [gamemanj@archways ~]$ date --date="12/30/1899 12:00 am" +%s
+            // -2209161600
+            // since we want ms, 3 more 0s have been added
+            long v = -2209161600000L;
+            long dayLen = 24L * 60L * 60L * 1000L;
+            // Ok, so, firstly, fractional part is considered completely separately and absolutely.
+            double fractional = Math.abs(d);
+            fractional -= Math.floor(fractional);
+            // Now get rid of fractional in the "right way" (round towards 0)
+            if (d < 0) {
+                d += fractional;
+            } else {
+                d -= fractional;
+            }
+            v += ((long) d) * dayLen;
+            v += (long) (fractional * dayLen);
+
+            // NOTE: This converts to local time zone.
+            return new Date(v).toString();
+        }).attachHelp("(r2kts->string OBJ) : Converts an R2K save timestamp, as a RORIO, to a human-readable local time zone string.");
     }
     public static class DefineName extends MVMMacro {
         public final boolean isNLS;
