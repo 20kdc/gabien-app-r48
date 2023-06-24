@@ -123,7 +123,7 @@ P 1 _ int
 v 1 rangeLast switch_id
 p changeMode control_switches_change_mode
 
-10220: @@Set {A:Vars[@set_variables_parameters]|Variables}
+10220: "Set " (? ]0 (@ : set_variables_parameters) "Variables")
 C category 1
 d Modify a variable or range of variables in various ways dependent on a given value.
 p _ string

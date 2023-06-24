@@ -10,6 +10,10 @@
  --- 1
  the first monolith
 
+C datum `
+(define-name var_id_encased "Var[" (@ : var_id #t) "]")
+(define-name var_id_indirect "Var[Var[" (@ : var_id #t) "]]")
+`
   __
   \  | |
  --   V
@@ -36,64 +40,114 @@ e set_variables_enemyprop 0 hp 1 sp 2 maxHp 3 maxSp 4 atk 5 def 6 spi 7 agi
 ]2 ptrVarTarg var_id
 
 .set_variables_base
-C name set_variables_base ]1 ]2 ]3 ]4 | {A=0=Var#[@[var_id]B#]}{A=1=Vars#[@[var_id]B .. @[var_id]C#]}{A=2=Var#[Var#[@[var_id]B#]#]} [set_variables_op]D
+C datum `
+(define-name set_variables_base (= ]1 ""
+	(0 (@ ]2 var_id_encased))
+	(1 "Vars[" (@ ]2 var_id #t) " .. " (@ ]3 var_id #t) "]")
+	(2 (@ ]2 var_id_indirect))
+) " " (@ ]4 set_variables_op))
+`
 ]1 targetType set_variables_target
 +DA{ ]1 set_variables_base_targ 1 set_variables_base_targ_r 2 set_variables_base_targ_i }
 ]4 operation set_variables_op
 ]5 source set_variables_source
 
 .set_variables_int
-C name set_variables_int ]6 | #A
+C datum `
+(define-name set_variables_int (@ ]6))
+`
 +set_variables_base
 ]6 value int
 
 .set_variables_var
-C name set_variables_var ]6 | Var#[@[var_id]A#]
+C datum `
+(define-name set_variables_var (@ ]6 var_id_encased))
+`
 +set_variables_base
 ]6 var var_id
 
 .set_variables_indirect
-C name set_variables_indirect ]6 | Var#[Var#[@[var_id]A#]#]
+C datum `
+(define-name set_variables_indirect (@ ]6 var_id_indirect))
+`
 +set_variables_base
 ]6 ptrVar var_id
 
 .set_variables_random
-C name set_variables_random ]6 ]7 | Random (#A to #B)
+C datum `
+(define-name set_variables_random
+	"Random (" (@ ]6) " to " (@ ]7) ")"
+)
+`
 +set_variables_base
 ]6 low int
 ]7 high int
 
 .set_variables_item
-C name set_variables_item ]6 ]7 | Item @[item_id]A.[set_variables_itemprop]B
+C datum `
+(define-name set_variables_item
+	"Item " (@ ]6 item_id #t) "." (@ ]7 set_variables_itemprop)
+)
+`
 +set_variables_base
 ]6 item item_id
 ]7 property set_variables_itemprop
 
 .set_variables_actor
-C name set_variables_actor ]6 ]7 | Actor @[actor_id]A.[set_variables_actorprop]B
+C datum `
+(define-name set_variables_actor
+	"Actor " (@ ]6 actor_id #t) "." (@ ]7 set_variables_actorprop)
+)
+`
 +set_variables_base
 ]6 actor actor_id
 ]7 property set_variables_actorprop
 
 .set_variables_event
-C name set_variables_event ]6 ]7 | Event @[character_id]A.[set_variables_charprop]B
+C datum `
+(define-name set_variables_event
+	"Actor " (@ ]6 character_id #t) "." (@ ]7 set_variables_charprop)
+)
+`
 +set_variables_base
 ]6 char character_id
 ]7 property set_variables_charprop
 
 .set_variables_gameinfo
-C name set_variables_gameinfo ]6 | GameInfo: [set_variables_giprop]A
+C datum `
+(define-name set_variables_gameinfo
+	"GameInfo: " (@ ]6 set_variables_giprop)
+) 
+`
 +set_variables_base
 ]6 property set_variables_giprop
 
 .set_variables_battle
-C name set_variables_battle ]6 ]7 | EnemyIdx: #A -> [set_variables_enemyprop]B
+C datum `
+(define-name set_variables_battle
+	"EnemyIdx: " (@ ]6) " -> " (@ ]7 set_variables_enemyprop)
+) 
+`
 +set_variables_base
 ]6 enemy int
 ]7 property set_variables_enemyprop
 
 .set_variables_parameters
-C name set_variables_parameters ]5 | : [@set_variables_base] {A=0=[@set_variables_int]}{A=1=[@set_variables_var]}{A=2=[@set_variables_indirect]}{A=3=[@set_variables_random]}{A=4=[@set_variables_item]}{A=5=[@set_variables_actor]}{A=6=[@set_variables_event]}{A=7=[@set_variables_gameinfo]}{A=8=[@set_variables_battle]}
+C datum `
+(define-name set_variables_parameters
+	(@ : set_variables_base) " " (= ]5 ""
+		(0 (@ : set_variables_int))
+		(1 (@ : set_variables_var))
+		(2 (@ : set_variables_indirect))
+		(3 (@ : set_variables_random))
+		(4 (@ : set_variables_item))
+		(5 (@ : set_variables_actor))
+		(6 (@ : set_variables_event))
+		(7 (@ : set_variables_gameinfo))
+		(8 (@ : set_variables_battle))
+	)
+)
+`
 @indent indent
 @parameters DA{ ]5 set_variables_base 0 set_variables_int 1 set_variables_var 2 set_variables_indirect 3 set_variables_random 4 set_variables_item 5 set_variables_actor 6 set_variables_event 7 set_variables_gameinfo 8 set_variables_battle }
 
@@ -112,18 +166,28 @@ e cbranch_itemcomp_e 0 partyHasItem 1 partyDoesntHaveItem
 e cbranch_actorprop_e 0 inParty 1 name= 2 level>= 3 hp>= 4 knowsSkill 5 hasEquipped 6 hasState
 
 .cbranch_base
-C name cbranch_base ]1 | [cbranch_type]A
+C datum `
+(define-name cbranch_base (@ ]1 cbranch_type))
+`
 ]0 _ string
 ]1 type cbranch_type
 
 .cbranch_switch
+C datum `
+(define-name cbranch_switch "Switch " (@ ]2 switch_id #t) " " (= ]3 "ON" (0 "OFF")))
+`
 +cbranch_base
-C name cbranch_switch ]2 ]3 | Switch @[switch_id]A {B=0=ON|OFF}
 ]2 switch switch_id
 ]3 invert int_boolean
 
 > cbranch_varcomp DA{ ]3 cbranch_varcomp_var 0 cbranch_varcomp_raw }
-C name cbranch_varcomp ]2 ]5 ]3 ]4 | Var#[@[var_id]A#] [cbranch_varcomp_e]B {C=0=#D|Var#[@[var_id]D#]}
+C datum `
+(define-name cbranch_varcomp
+	(@ ]2 var_id_encased) " "
+	(@ ]5 cbranch_varcomp_e #f) " "
+	(= ]3 (@ ]4 var_id_encased) (0 (@ ]4)))
+)
+`
 
 .cbranch_varcomp_var
 +cbranch_base
@@ -140,25 +204,33 @@ C name cbranch_varcomp ]2 ]5 ]3 ]4 | Var#[@[var_id]A#] [cbranch_varcomp_e]B {C=0
 ]4 valB int
 
 .cbranch_timer1
-C name cbranch_timer1 ]3 ]2 | Timer1 [cbranch_gele]A #B Seconds
+C datum `
+(define-name cbranch_timer1 "Timer1 " (@ ]3 cbranch_gele) " " (@ ]2) " Seconds")
+`
 +cbranch_base
 ]3 comparison cbranch_gele
 ]2 valueSeconds int
 
 .cbranch_goldcomp
-C name cbranch_goldcomp ]3 ]2 | Gold [cbranch_gele]A #B
+C datum `
+(define-name cbranch_goldcomp "Gold " (@ ]3 cbranch_gele) " " (@ ]2))
+`
 +cbranch_base
 ]3 comparison cbranch_gele
 ]2 valueGold int
 
 .cbranch_itemcomp
-C name cbranch_itemcomp ]2 ]3 | Item @[item_id]A [cbranch_itemcomp_e]B
+C datum `
+(define-name cbranch_itemcomp (@ ]3 cbranch_itemcomp_e) " " (@ ]2 item_id #t))
+`
 +cbranch_base
 ]3 comparison cbranch_itemcomp_e
 ]2 item item_id
 
 .cbranch_actorprop_base
-C name cbranch_actorprop | Actor (...)
+C datum `
+(define-name cbranch_actorprop "Actor (...)")
+`
 +cbranch_base
 ]2 actor actor_id
 ]3 actorProp cbranch_actorprop_e
@@ -187,29 +259,54 @@ C name cbranch_actorprop | Actor (...)
 > cbranch_actorprop DA{ ]3 cbranch_actorprop_base 1 cbranch_actorprop_name 2 cbranch_actorprop_int 3 cbranch_actorprop_int 4 cbranch_actorprop_skill 5 cbranch_actorprop_item 6 cbranch_actorprop_state }
 
 .cbranch_chardir
-C name cbranch_chardir | Char.Dir. (...)
+C datum `
+(define-name cbranch_chardir "Char.Dir. (...)")
+`
 +cbranch_base
 ]2 char character_id
 ]3 direction sprite_direction
 
 .cbranch_vehicle
-C name cbranch_vehicle | Vehicle (...)
+C datum `
+(define-name cbranch_vehicle "Using: " (@ ]2 scripting_vehicletype))
+`
 +cbranch_base
 ]2 vehicle scripting_vehicletype
 
 .cbranch_timer2
-C name cbranch_timer2 ]3 ]2 | Timer2 [cbranch_gele]A #B Seconds
+C datum `
+(define-name cbranch_timer2 "Timer2 " (@ ]3 cbranch_gele) " " (@ ]2) " Seconds")
+`
 +cbranch_base
 ]3 comparison cbranch_gele
 ]2 valueSeconds int
 
 .cbranch_cherry
-C name cbranch_cherry ]2 | Cherry2K3-E: [cbranch_cherry_e]A
+C datum `
+(define-name cbranch_cherry "Cherry2K3-E: " (@ ]2 cbranch_cherry_e))
+`
 +cbranch_base
 ]2 property cbranch_cherry_e
 
 .cbranch_parameters
-C name cbranch_parameters ]1 | Conditional: {A=0=[@cbranch_switch]}{A=1=[@cbranch_varcomp]}{A=2=[@cbranch_timer1]}{A=3=[@cbranch_goldcomp]}{A=4=[@cbranch_itemcomp]}{A=5=[@cbranch_actorprop]}{A=6=[@cbranch_chardir]}{A=7=[@cbranch_vehicle]}{A=8=[@cbranch_base]}{A=9=[@cbranch_base]}{A=10=[@cbranch_timer2]}{A=11=[@cbranch_cherry]}
+C datum `
+(define-name cbranch_parameters
+	"Conditional: " (= ]1 ""
+		(0 (@ : cbranch_switch))
+		(1 (@ : cbranch_varcomp))
+		(2 (@ : cbranch_timer1))
+		(3 (@ : cbranch_goldcomp))
+		(4 (@ : cbranch_itemcomp))
+		(5 (@ : cbranch_actorprop))
+		(6 (@ : cbranch_chardir))
+		(7 (@ : cbranch_vehicle))
+		(8 (@ : cbranch_base))
+		(9 (@ : cbranch_base))
+		(10 (@ : cbranch_timer2))
+		(11 (@ : cbranch_cherry))
+	)
+)
+`
 @indent indent
 @parameters DA{ ]1 cbranch_base 0 cbranch_switch 1 cbranch_varcomp 2 cbranch_timer1 3 cbranch_goldcomp 4 cbranch_itemcomp 5 cbranch_actorprop 6 cbranch_chardir 7 cbranch_vehicle 8 cbranch_base 9 cbranch_base 10 cbranch_timer2 11 cbranch_cherry }
 

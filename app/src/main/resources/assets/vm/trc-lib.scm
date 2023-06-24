@@ -101,19 +101,19 @@
 	((= (list-length extra) 1) (tr-dyni-exists ctx path true (list-ref extra 0)))
 	(else (error "bad arg count to ?"))
 ))
-; (= PATH DEF (VAL RES)...) : check for equality
-; responsible for "(VAL RES)..." into a usable set of cond clauses
+; (= PATH DEF (VAL RES...)...) : check for equality
+; responsible for "(VAL RES...)..." into a usable set of cond clauses
 (define (tr-dyni-eqci ctx extra)
 	(define clauses (list))
 	(for-each (lambda (v)
 		(assert (list? v) "= clauses must be lists")
-		(assert (= (list-length v) 2) "= clauses must be two-element lists")
+		(assert (> (list-length v) 1) "= clauses must be >= 2-element lists")
 		(append! clauses (list
 			(list
 				; condition
 				(list equal? 'tmp$ (list quote (list-ref v 0)))
 				; clause contents
-				(tr-dyn-compiler-expr (list-ref v 1) ctx)
+				(tr-dyn-compiler-expr (cdr v) ctx)
 			)
 		))
 	) extra)
