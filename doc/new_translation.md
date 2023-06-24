@@ -70,3 +70,49 @@ This leads me to believe the following is required:
   * The in-MVM compiler can implement all the usual "fuzzy" safety expected from FormatSyntax.
 
 Dynamic strings are represented Java-side by FF0 through FF4, which DynTrSlot can be cast to. All dynamic translation slots go through MVMEnvR48.dynTrBase, and the default is given then. Ideally, some way to make the FormatSyntax parameters stuff a *compile-time* problem would be good, because this prepares things for when FormatSyntax goes away.
+
+## TRC DSL Overview
+
+*The TRC DSL is meant to complement use of Scheme in R48 translations, reducing effort for simple cases while still allowing access to more powerful tools when necessary.*
+
+The cost of this is that TRC only really *works* for IRIOs, but the advantage is that this makes it much easier to port the rather large amount of IRIO-centric translated name routines.
+
+TRC looks like: `"Name: " (@ @name)`
+
+Or if written inline in SDB: `"\"Name: \" (@ @name)"`
+
+### When Is Something TRC?
+
+TRC is used when all of these apply:
+
+* Ancient legacy code that should be gone by v1.5's release isn't involved.
+
+* The translation involves parameters.
+
+* The translation is setup during/after schema load.
+  
+  * Dynamic translations that involve parameters can be attempted in the launcher, but will always error as TRC is not loaded.
+    
+    * TRC can't be loaded because of missing primitives.
+
+In terms of when TRC appears in code, `define-tr` isn't TRC, while `define-name` is.
+
+`define-tr` isn't TRC (accepts arbitrary Scheme value), while `define-name` is TRC.
+
+### How To Use It
+
+`vm/trc.scm` implements the basic syntax of TRC.
+
+It helps to keep in mind two Scheme-level utilties in R48:
+
+* The `..` macro, which stringifies and concatenates the results of all statements within.
+
+* The `flX`  (where X is some number) macro series, which defines a lambda where the body is wrapped in `..`, and defines arguments in the pattern `a0`, `a1` etc.
+
+TRC is essentially a DSL within Scheme, where a list of TRC operations is translated to an equivalent Scheme lambda.
+
+Dynamic translations have a *focus.* The focus exists so that multiple arguments can be passed without requiring individual addressing for each operation. The default focus is always `a0`, the first argument. `with` starts a block with a different focus, and any other operation tends to read the focus.
+
+`vm` simply escalates to Scheme. The inverse is possible; dynamic translation entries can be called from Scheme as regular functions.
+
+Finally, there's the rest of the actual operations themselves. See `vm/trc-lib.scm` for these.

@@ -37,6 +37,7 @@ import r48.schema.util.SchemaPath;
 import r48.tr.DynTrSlot;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
+import r48.tr.TrPage.FF1;
 import r48.tr.TrPage.FF2;
 import r48.ui.dialog.UIEnumChoice;
 import r48.ui.dialog.UIEnumChoice.EntryMode;
@@ -381,18 +382,19 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 }
                 if (text.equals("subwindow"))
                     return new SubwindowSchemaElement(get());
-                // subwindow: This\_Is\_A\_Test
+                // subwindow: "This Is A Test"
                 if (text.equals("subwindow:")) {
                     String text2 = args[point++];
-                    if (text2.startsWith("@")) {
-                        final String textFinal = text2.substring(1);
-                        return new SubwindowSchemaElement(get(), (rubyIO) -> {
-                            return app.fmt.getNameDB("Interp." + textFinal).r(rubyIO);
-                        });
-                    } else {
-                        final FF0 translation = trAnon(outerContext, text2);
-                        return new SubwindowSchemaElement(get(), (irio) -> translation.r());
-                    }
+                    final FF0 translation = trAnon(outerContext, text2);
+                    return new SubwindowSchemaElement(get(), (irio) -> translation.r());
+                }
+
+                if (text.equals("subwindowDynamic")) {
+                    String text2 = args[point++];
+                    final FF1 cb = app.dTrFF1(srcLoc, TrNames.sdbAnon(outerContext, text2), text2);
+                    return new SubwindowSchemaElement(get(), (rubyIO) -> {
+                        return cb.r(rubyIO);
+                    });
                 }
 
                 if (text.equals("{")) {

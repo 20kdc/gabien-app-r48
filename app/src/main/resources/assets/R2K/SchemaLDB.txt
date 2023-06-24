@@ -17,8 +17,13 @@ e rpg_statattr_rank 0 A 1 B 2 C 3 D 4 E
 ]3 helmet item_or_none_id
 ]4 accessory item_or_none_id
 
+C datum `
+(define-name Interp.rpg_actor_parameter_block
+	"HP:" (@ ]0) " MP:" (@ ]1) " ATK:" (@ ]2) " DEF:" (@ ]3) " SPI:" (@ ]4) " AGI:" (@ ]5)
+)
+`
+
 .rpg_actor_parameter_block
-C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C DEF:#D SPI:#E AGI:#F
 ]0 maxHp int= 10
 ]1 maxMp int= 10
 ]2 atk int= 10
@@ -27,9 +32,10 @@ C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C D
 ]5 agi int= 10
 
 : RPG::BPB
-@1to50 arrayIdX 1 50 subwindow: @rpg_actor_parameter_block rpg_actor_parameter_block
-+optP @51to99_2k3 arrayIdX 51 49 subwindow: @rpg_actor_parameter_block rpg_actor_parameter_block
+@1to50 arrayIdX 1 50 subwindowDynamic "(@ : rpg_actor_parameter_block)" rpg_actor_parameter_block
++optP @51to99_2k3 arrayIdX 51 49 subwindowDynamic "(@ : rpg_actor_parameter_block)" rpg_actor_parameter_block
 
+ (Past 20kdc wrote a comment here but current 20kdc no longer understands what it meant.)
  HAHAHA-NO. EASYRPG PLAYER DEVS KNEW BETTER ALL ALONG.
 
 .RPG::BCA

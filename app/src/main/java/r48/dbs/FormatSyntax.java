@@ -84,7 +84,7 @@ public class FormatSyntax extends App.Svc {
         };
     }
 
-    public @Nullable FF1 getNameDB(String name) {
+    private @Nullable FF1 getNameDB(String name) {
         MVMSlot slot = app.vmCtx.getSlot(new DatumSymbol(TrNames.nameRoutine(name)));
         if (slot != null)
             return (FF1) slot.v;
@@ -337,13 +337,12 @@ public class FormatSyntax extends App.Svc {
             FF1 handler = getNameDB("Interp." + st);
             if (handler != null) {
                 return handler.r(rubyIO);
-            } else {
+            } else if (app.sdb.hasSDBEntry(st)) {
                 SchemaElement ise = app.sdb.getSDBEntry(st);
                 return interpretParameter(rubyIO, ise, prefixEnums);
             }
-        } else {
-            return interpretParameter(rubyIO, (SchemaElement) null, prefixEnums);
         }
+        return interpretParameter(rubyIO, (SchemaElement) null, prefixEnums);
     }
 
     /**
