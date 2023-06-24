@@ -145,7 +145,7 @@ public class MVMDMLibrary {
             case '"':
                 return ro.decString();
             case ':':
-                return ro.getSymbol();
+                return new DatumSymbol(ro.getSymbol());
             case 'i':
                 return ro.getFX();
             case '0':

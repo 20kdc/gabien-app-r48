@@ -8,8 +8,15 @@
 
 s ltp_type concurrent waitOn
 
- Example of new conditionals
-C name ltp_type : | {@#A|:concurrent|Concurrent|:waitOn|Wait On...|Unknown #A}
+C datum `
+(define-name ltp_type
+	(= :
+		("Unknown " (@ :))
+		(concurrent "Concurrent")
+		(waitOn "Wait On...")
+	)
+)
+`
 
 .ams_setting_host
 @indent indent

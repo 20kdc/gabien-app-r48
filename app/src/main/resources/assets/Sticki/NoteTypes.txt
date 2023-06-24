@@ -8,11 +8,11 @@
 d A comment in the plan.
 p text string
 
-980: @@Anti-Mass Spectrometer Test Fire{A:: #A{B: on #B{C: and #C}}}
+980: "Anti-Mass Spectrometer Test Fire" (? ]0 (": " (@ ]0))) (? ]1 (" on " (@ ]1))) (? ]2 (" and " (@ ]2)))
 d Test samples using Anti-Mass Spectrometer testtextteststext
 X ams_setting_host
 
-985: @@Enable big scary thing {A=F=later|now}.
+985: "Enable big scary thing " (= ]0 "now." (#f "later."))
 d This is a description.
 p bigScaryThing boolean
 
@@ -48,7 +48,7 @@ i-1
 I0
 C groupBehavior expectHead 982 993
 
-995: @@Long-term Plan{B: #A ([ltp_type]B)}
+995: "Long-term Plan" (? ]1 (" " (@ ]0) " " (@ ]1 ltp_type)))
 d This is a sub-plan which can run concurrently with the current plan, or be waited on.
 p name string
 p planType ltp_type

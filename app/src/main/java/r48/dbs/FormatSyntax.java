@@ -54,7 +54,7 @@ public class FormatSyntax extends App.Svc {
      * Compiles a FormatSyntax for easier debugging.
      */
     public ICompiledFormatSyntax compile(String name, ParameterAccessor paramAcc) {
-        // System.out.println("fs compile: " + name);
+        System.out.println("fs compile: " + name);
         LinkedList<CompiledChunk> r = new LinkedList<>();
         compileChunk(r, name, paramAcc);
         optimizeChunks(r);
