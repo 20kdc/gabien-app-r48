@@ -123,4 +123,4 @@ C name operate_value_3 ]3 ]4 ]5 | {A=1=negate(}{B=1=v.@[var_id]C|[int]C}{A=1=)}
 
  choice_array, used for choice formatting.
  Notably this is solely used as an interpretation.
-C name Interp.choice_array ]0 ]1 ]2 | {A:[string]A{B:,[string]B{C:,[string]C}}}
+C name choice_array ]0 ]1 ]2 | {A:[string]A{B:,[string]B{C:,[string]C}}}

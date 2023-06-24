@@ -77,7 +77,6 @@ public class FormatSyntax extends App.Svc {
         // V: A single letter from 'A' through 'Z', representing a parameter.
         // T: An unparsed string limited by context (no escapes, nor [{}]# etc.)
         // R: An instance of T : Name routine.
-        // I: An instance of R where Interp. is prepended.
         for (int i = 0; i < data.length; i++) {
             if (data[i] == '{') {
                 // Parse condition
@@ -153,8 +152,8 @@ public class FormatSyntax extends App.Svc {
             } else if (data[i] == '[') {
                 // Parse precedence order:
                 // [@R]
-                // [I][C]
-                // [I]V
+                // [R][C]
+                // [R]V
                 // commence reinterpretation.
                 StringBuilder typeB = new StringBuilder();
                 int indexOfAt = -1;
@@ -293,7 +292,7 @@ public class FormatSyntax extends App.Svc {
         if (rubyIO == null)
             return "";
         if (st != null) {
-            FF1 handler = getNameDB("Interp." + st);
+            FF1 handler = getNameDB(st);
             if (handler != null) {
                 return handler.r(rubyIO);
             } else if (app.sdb.hasSDBEntry(st)) {

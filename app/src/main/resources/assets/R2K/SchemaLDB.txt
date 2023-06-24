@@ -18,7 +18,7 @@ e rpg_statattr_rank 0 A 1 B 2 C 3 D 4 E
 ]4 accessory item_or_none_id
 
 C datum `
-(define-name Interp.rpg_actor_parameter_block
+(define-name rpg_actor_parameter_block
 	"HP:" (@ ]0) " MP:" (@ ]1) " ATK:" (@ ]2) " DEF:" (@ ]3) " SPI:" (@ ]4) " AGI:" (@ ]5)
 )
 `

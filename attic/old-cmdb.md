@@ -30,15 +30,29 @@ Note the hardcoding of " to ", any other language would have to substitute these
 Some of these only really made sense when the `[][]` syntax was around anyway:
 
 ```
+
+ ----------------------------------
+
+  Name Database Built-in Routines
+  These all follow the scheme "lang-<language>-<methodCamelCase>".
+  Common is used for routines which aren't targetted at a specific language.
+
   lang-Common-add:
    Example:
     [lang-Common-add][5 5]
    Splits to words, converts words to integers, then adds them together to get a result.
    Useful for, say, r2k LSD save interpreter stack depth adjustment.
 
+  lang-Common-r2kTsConverter:
+   Example:
+    [lang-Common-r2kTsConverter]A
+   Converts a TDateTime (float) to a human-readable date format.
+
 ```
 
-`Interp.lang-Common-r2kTsConverter` doesn't still exist because I want it to exist, but because it needs to exist. The alternative is moving it into an MVM function.
+* `lang-Common-add` was replaced with... just MVM.
+
+* `lang-Common-r2kTsConverter` was replaced with a dedicated MVM function.
 
 ## Extended Format-Syntax
 
@@ -49,6 +63,9 @@ Some of these only really made sense when the `[][]` syntax was around anyway:
   * These days it's not completely dealt with, but the worst "this will crash" cases have proper exceptions for them.
 
 * In the `[@Class.RPG::AudioFile]` syntax, name routines are now looked up at compilation time. This used to be at runtime.
+
+* `interpretParameter` used to prefix `Interp.` when looking up interpretations.
+  This was used a handful of times and made the rules even more confusing.
 
 * The conditional syntaxes `=` and `:`  no longer use `interpretParameter` at all.
   In particular the details on `=` used to read:
@@ -82,3 +99,4 @@ Some of these only really made sense when the `[][]` syntax was around anyway:
   @ causes the next outputted value to be prefixed if it's an enumeration.
   This is more-or-less always used as the "command" "@#A" or "@#B" or such, for "output prefixed enumeration".
 ```
+

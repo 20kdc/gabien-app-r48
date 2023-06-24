@@ -64,12 +64,12 @@
   Or if you've broken up your name-routine into pieces, you may want to call the sub-components.
 
   The rules of interpretations are:
-   By default, the type name is looked up in the "Interp." prefixed name set.
+   The type name is looked up as a name routine.
    Failing this, if it's an object, the "Class." prefixed name set is checked.
    Failing this, the schema is looked up, in case it is an enum.
 
-  If the character '@' prefixes the interpretation type, the type name is considered to be the full name routine's ID,
-   and all the parameters are given to the new name routine (no parameter is postfixed)
+  If the character '@' prefixes the interpretation type,
+   all the parameters are given to the new name routine (no parameter is postfixed)
 
   If no interpretation exists for the type given, it fails completely,
    and will result in a no-variables-interpretation (An error in a case where no variables are allowed causes an exception.)
@@ -132,17 +132,6 @@
   an example: 108:@@Comment{A: #A}
   a more advanced example: 103:@@Input Number {A: to @#A}{B: of #B digits}
   another example: 122:@@Set Variables{A: {AB:@#A|@#A..@#B} #C {D=int=int: [int]E|{D=var=var: @[var_id]E|#D}}}
-
- ----------------------------------
-
-  Name Database Built-in Routines
-  These all follow the scheme "lang-<language>-<methodCamelCase>".
-  Common is used for routines which aren't targetted at a specific language.
-
-  lang-Common-r2kTsConverter:
-   Example:
-    [lang-Common-r2kTsConverter]A
-   Converts a TDateTime (float) to a human-readable date format.
 
  ----------------------------------
 
