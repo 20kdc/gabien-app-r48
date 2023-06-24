@@ -6,7 +6,7 @@
 
  [Interpreter Part 5]
 
-201:@@{A:[@transfer_player_paramassist]|Transfer Player}
+201:(? ]0 (@ ]0 transfer_player_paramassist) "Transfer Player")
 C category 2
 p useVars int_boolean
 P 0 mapVar var_id

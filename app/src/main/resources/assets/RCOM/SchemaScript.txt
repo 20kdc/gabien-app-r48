@@ -43,11 +43,20 @@ e direction_disable 0 noChange 2 down 4 left 6 right 8 up
 
  Stuff that doesn't go in CommonConditionals but would if it was just called "CommonCommandStuff"
 
-C name transfer_player_paramassist2 ]4 ]5 | dir.[direction_disable]A, fade [transfer_player_fadetype]B
-C name transfer_player_paramassist ]0 ]1 ]2 ]3 | Transfer player{A=1= by vars @[var_id]B#[@[var_id]C,@[var_id]D| to @[map_id]B#[[int]C,[int]D}] [@transfer_player_paramassist2]
+C datum `
+(define-name transfer_player_paramassist
+	"Transfer player"
+	(= ]0
+		(" to " (@ ]1 map_id #t) "[" (@ ]2) "," (@ ]3) "]")
+		(1 " by vars " (@ ]1 var_id #t) "[" (@ ]2 var_id #t) "," (@ ]3 var_id #t) "]")
+	)
+	" dir." (@ ]4 direction_disable)
+	", fade " (@ ]5 transfer_player_fadetype)
+)
+`
 
  NOTE: The CMDB stuff for this is:
- 999:@@{A:[@transfer_player_paramassist]|Transfer Player}
+ 201:(? ]0 (@ ]0 transfer_player_paramassist) "Transfer Player")
  p useVars int_boolean
  P 0 mapVar var_id
  v 0 map map_id
@@ -90,8 +99,17 @@ e set_event_location_type 0 ints 1 vars 2 swap
 ]1 selType set_event_location_type
 
 .set_event_location_paramassist
-C name set_event_location_paramassist2 ]1 ]2 ]3 | {A=0=loc.[int]B,[int]C}{A=1=loc.vars.@[var_id]B,@[var_id]C}{A=2=swap with @[character_id]B}
-C name set_event_location_paramassist ]0 ]4 | Set ev.@[character_id]A to [@set_event_location_paramassist2], dir [direction_disable]B
+C datum `
+(define-name set_event_location_paramassist
+	"Set ev." (@ ]0 character_id #t) " to "
+	(= ]1 ""
+		(0 "loc." (@ ]2) "," (@ ]3))
+		(1 "loc.vars." (@ ]2 var_id #t) "," (@ ]3 var_id #t))
+		(2 "swap with " (@ ]2 character_id #t))
+	)
+	", dir " (@ ]4 direction_disable)
+)
+`
 @indent indent
 @parameters DA{ ]1 set_event_location_header 0 set_event_location_a 1 set_event_location_b 2 set_event_location_c }
 
@@ -112,15 +130,45 @@ C name set_event_location_paramassist ]0 ]4 | Set ev.@[character_id]A to [@set_e
  --
 
  Now for operate_value stuff.
- Note that the string on the end (after |) should be the same
+ This has to go and use Scheme because of the dynamic indexing.
 
- This helps keep it maintainable-ish
+C datum `
+(define-tr TrNStr.operate_value_negator (fl1 "negate(" a0 ")"))
+(define-name operate_value_var "v." (@ : var_id #t))
+(define-name operate_value_int (@ :))
+(define-tr TrNStr.operate_value_innards (lambda (base i1 i2)
+	(if (equal? (dm-dec (dm-a-ref base i1)) 1)
+		(TrName.operate_value_var (dm-a-ref base i2))
+		(TrName.operate_value_int (dm-a-ref base i2))
+	) 
+))
+(define-tr TrNStr.operate_value (lambda (base i0 i1 i2)
+	(if (equal? (dm-dec (dm-a-ref base i0)) 1)
+		(TrNStr.operate_value_negator (TrNStr.operate_value_innards base i1 i2))
+		(TrNStr.operate_value_innards base i1 i2)
+	) 
+))
 
-C name operate_value_0 ]0 ]1 ]2 | {A=1=negate(}{B=1=v.@[var_id]C|[int]C}{A=1=)}
-C name operate_value_1 ]1 ]2 ]3 | {A=1=negate(}{B=1=v.@[var_id]C|[int]C}{A=1=)}
-C name operate_value_2 ]2 ]3 ]4 | {A=1=negate(}{B=1=v.@[var_id]C|[int]C}{A=1=)}
-C name operate_value_3 ]3 ]4 ]5 | {A=1=negate(}{B=1=v.@[var_id]C|[int]C}{A=1=)}
+(define-name operate_value_0 (? ]2 (vm (TrNStr.operate_value a0 0 1 2))))
+(define-name operate_value_1 (? ]3 (vm (TrNStr.operate_value a0 1 2 3))))
+(define-name operate_value_2 (? ]4 (vm (TrNStr.operate_value a0 2 3 4))))
+(define-name operate_value_3 (? ]5 (vm (TrNStr.operate_value a0 3 4 5))))
+`
 
  choice_array, used for choice formatting.
  Notably this is solely used as an interpretation.
-C name choice_array ]0 ]1 ]2 | {A:[string]A{B:,[string]B{C:,[string]C}}}
+
+C datum `
+(define-name choice_array
+	(? ]0 (
+		(@ ]0)
+	))
+	(? ]1 ( ","
+		(@ ]1)
+	))
+	(? ]2 ( ","
+		(@ ]2)
+	))
+	(? ]3 "...")
+)
+`
