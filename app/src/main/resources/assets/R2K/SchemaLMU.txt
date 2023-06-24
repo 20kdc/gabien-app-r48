@@ -15,14 +15,24 @@
 @timer_2_2k3 boolean
 
 : RPG::EventPage::Condition
-C name Class.RPG::EventPage::Condition : | [RPG::EventPage::Condition.switchA]A[RPG::EventPage::Condition.switchB]A[RPG::EventPage::Condition.var]A[RPG::EventPage::Condition.item]A[RPG::EventPage::Condition.actor]A[RPG::EventPage::Condition.timer1]A[RPG::EventPage::Condition.timer2]A
-C name RPG::EventPage::Condition.switchA @valid@switch_a @switch_a | {A=T=, Switch @[switch_id]B}
-C name RPG::EventPage::Condition.switchB @valid@switch_b @switch_b | {A=T=, Switch @[switch_id]B}
 C name RPG::EventPage::Condition.var @valid@var_>=_or_2k3op @var_id @var_value @var_compare_op_2k3 | {A=T=, Var @[var_id]B {D:[var_compare_op_2k3]D|>=} #C}
 C name RPG::EventPage::Condition.item @valid@item @item_id | {A=T=, Party Has Item @[item_id]B}
 C name RPG::EventPage::Condition.actor @valid@actor @actor_id | {A=T=, Party Has Actor @[actor_id]B}
 C name RPG::EventPage::Condition.timer1 @valid@timer_1 @timer_1_secs | {A=T=, Timer1 <= #Bs}
 C name RPG::EventPage::Condition.timer2 @valid@timer_2_2k3 @timer_2_secs_2k3 | {A=T=, Timer2 <= #Bs}
+C datum `
+(define-name RPG::EventPage::Condition.switchA (= @valid@switch_a "" (#t
+	", Switch " (@ @switch_a switch_id #t)
+)))
+(define-name RPG::EventPage::Condition.switchB (= @valid@switch_b "" (#t
+	", Switch " (@ @switch_b switch_id #t)
+)))
+(define-name Class.RPG::EventPage::Condition
+	(@ : RPG::EventPage::Condition.switchA) (@ : RPG::EventPage::Condition.switchB)
+	(@ : RPG::EventPage::Condition.var) (@ : RPG::EventPage::Condition.item) (@ : RPG::EventPage::Condition.actor)
+	(@ : RPG::EventPage::Condition.timer1) (@ : RPG::EventPage::Condition.timer2)
+)
+`
 +hide path @valid EventPage_Condition_Flags
 +path @valid@switch_a boolean
 +condHide @valid@switch_a path @switch_a switch_id

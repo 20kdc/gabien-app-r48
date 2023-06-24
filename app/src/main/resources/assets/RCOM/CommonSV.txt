@@ -9,7 +9,14 @@
 e set_variables_operation 0 = 1 += 2 -= 3 *= 4 /= 5 %=
 
  Setup a default.
-C name set_variables_parameters ]3 ]4 ]5 | {@#A|0|int: [int]B|1|var: @[var_id]B|2|random: [int]B through [int]C|[@set_variables_parameters_ext]}
+
+C datum `
+(define-name set_variables_parameters (= ]3 (@ : set_variables_parameters_ext)
+	(0 "int: " (@ ]4))
+	(1 "var: " (@ ]4 var_id #t))
+	(2 "random: " (@ ]4) " through " (@ ]5))
+))
+`
 
 .set_variables_base
 ]0 firstVar var_id

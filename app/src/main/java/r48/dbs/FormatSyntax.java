@@ -8,6 +8,7 @@
 package r48.dbs;
 
 import gabien.datum.DatumSymbol;
+import gabien.datum.DatumWriter;
 import r48.App;
 import r48.io.data.RORIO;
 import r48.minivm.MVMSlot;
@@ -58,12 +59,21 @@ public class FormatSyntax extends App.Svc {
         LinkedList<CompiledChunk> r = new LinkedList<>();
         compileChunk(r, name, paramAcc);
         optimizeChunks(r);
+        System.out.print("decompile: (");
+        decompileList(r);
+        System.out.println(")");
         return (a) -> {
             StringBuilder sb = new StringBuilder();
             for (CompiledChunk chk : r)
                 chk.r(sb, a);
             return sb.toString();
         };
+    }
+    private void decompileList(LinkedList<CompiledChunk> ccr) {
+        for (CompiledChunk cc : ccr) {
+            cc.decompile();
+            System.out.print(" ");
+        }
     }
 
     /**
@@ -102,16 +112,21 @@ public class FormatSyntax extends App.Svc {
                     if ((componentsComp.size() & 1) != 0)
                         def = componentsComp.removeLast();
                     final ICompiledFormatSyntax fDef = def;
-                    r.add((sb, root) -> {
-                        ICompiledFormatSyntax res = fDef;
-                        String val = valComp.r(root);
-                        for (int j = 0; j < componentsComp.size(); j += 2) {
-                            if (val.equals(componentsComp.get(j).r(root))) {
-                                res = componentsComp.get(j + 1);
-                                break;
+                    r.add(new CompiledChunk() {
+                        public void r(StringBuilder sb, RORIO root) {
+                            ICompiledFormatSyntax res = fDef;
+                            String val = valComp.r(root);
+                            for (int j = 0; j < componentsComp.size(); j += 2) {
+                                if (val.equals(componentsComp.get(j).r(root))) {
+                                    res = componentsComp.get(j + 1);
+                                    break;
+                                }
                             }
+                            sb.append(res.r(root));
                         }
-                        sb.append(res.r(root));
+                        public void decompile() {
+                            System.out.print("IDk1");
+                        }
                     });
                 } else if (data[i + 1] == ':') {
                     final char v = data[i];
@@ -167,22 +182,41 @@ public class FormatSyntax extends App.Svc {
                 if (indexOfAt != 0) {
                     char ch = data[++i];
                     final EnumSchemaElement.Prefix thisPrefixNext = prefixNext;
-                    r.add((sb, root) -> {
-                        if (root == null)
-                            return;
-                        RORIO p = paramAcc.get(root, ch - 'A');
-                        sb.append(interpretParameter(p, type, thisPrefixNext));
+                    r.add(new CompiledChunk() {
+                        public void r(StringBuilder sb, RORIO root) {
+                            if (root == null)
+                                return;
+                            RORIO p = paramAcc.get(root, ch - 'A');
+                            sb.append(interpretParameter(p, type, thisPrefixNext));
+                        }
+                        public void decompile() {
+                            System.out.print("(@ ]");
+                            int idx = (ch - 'A');
+                            System.out.print(idx);
+                            System.out.print(" ");
+                            System.out.print(type);
+                            if (thisPrefixNext == EnumSchemaElement.Prefix.Prefix) {
+                                System.out.print(" #t)");
+                            } else {
+                                System.out.print(")");
+                            }
+                        }
                     });
                 } else {
                     final String tp = type.substring(1);
                     final FF1 n = getNameDB(tp);
                     if (n == null)
                         throw new RuntimeException("Expected NDB " + tp);
-                    r.add((sb, root) -> {
-                        if (root == null)
-                            return;
-                        // Meta-interpretation syntax
-                        sb.append(n.r(root));
+                    r.add(new CompiledChunk() {
+                        public void r(StringBuilder sb, RORIO root) {
+                            if (root == null)
+                                return;
+                            // Meta-interpretation syntax
+                            sb.append(n.r(root));
+                        }
+                        public void decompile() {
+                            System.out.print("Idk4");
+                        }
                     });
                 }
                 prefixNext = EnumSchemaElement.Prefix.NoPrefix;
@@ -190,12 +224,19 @@ public class FormatSyntax extends App.Svc {
                 final EnumSchemaElement.Prefix thisPrefixNext = prefixNext;
                 final char ltr = data[++i];
                 final int pid = ltr - 'A';
-                r.add((sb, root) -> {
-                    RORIO v = paramAcc.get(root, pid);
-                    if (v != null) {
-                        sb.append(interpretParameter(v, (SchemaElement) null, thisPrefixNext));
-                    } else {
-                        sb.append(ltr);
+                r.add(new CompiledChunk() {
+                    public void r(StringBuilder sb, RORIO root) {
+                        RORIO v = paramAcc.get(root, pid);
+                        if (v != null) {
+                            sb.append(interpretParameter(v, (SchemaElement) null, thisPrefixNext));
+                        } else {
+                            sb.append(ltr);
+                        }
+                    }
+                    public void decompile() {
+                        System.out.print("(@ ]");
+                        System.out.print(pid);
+                        System.out.print(")");
                     }
                 });
                 prefixNext = EnumSchemaElement.Prefix.NoPrefix;
@@ -238,9 +279,20 @@ public class FormatSyntax extends App.Svc {
         }
         optimizeChunks(cT);
         optimizeChunks(cF);
-        r.add((sb, root) -> {
-            for (CompiledChunk c : (p.r(root) ? cT : cF))
-                c.r(sb, root);
+        r.add(new CompiledChunk() {
+            @Override
+            public void r(StringBuilder sb, RORIO root) {
+                for (CompiledChunk c : (p.r(root) ? cT : cF))
+                    c.r(sb, root);
+            }
+            @Override
+            public void decompile() {
+                System.out.print("(DBC (");
+                decompileList(cT);
+                System.out.print(") (");
+                decompileList(cF);
+                System.out.print("))");
+            }
         });
     }
 
@@ -366,6 +418,10 @@ public class FormatSyntax extends App.Svc {
     public interface CompiledChunk {
         void r(StringBuilder sb, RORIO root);
         /**
+         * Decompile
+         */
+        void decompile();
+        /**
          * Tries combining with a given "next" chunk. This is in-place.
          */
         default boolean tryCombine(CompiledChunk next) {
@@ -385,6 +441,10 @@ public class FormatSyntax extends App.Svc {
         @Override
         public void r(StringBuilder sb, RORIO root) {
             sb.append(str);
+        }
+        @Override
+        public void decompile() {
+            System.out.print(DatumWriter.objectToString(str));
         }
         @Override
         public boolean tryCombine(CompiledChunk next) {
