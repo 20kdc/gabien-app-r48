@@ -128,7 +128,9 @@ E force_action_target Actor/TroopEnemyID -2 Last -1 Random
 > Tone CTNative Tone
 
 : RPG::AudioFile
-C name Class.RPG::AudioFile @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|RPG::AudioFile}
+C datum `
+(define-name Class.RPG::AudioFile (@ @name) " p." (@ @pitch) " v." (@ @volume))
+`
  This depends on context, apparently, so cannot be filenamed.
 @name string
 @pitch int= 100

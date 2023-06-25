@@ -11,7 +11,7 @@
   the first element is always null (0 is a special value)
 
 : RPG::Actor
-C name Class.RPG::Actor @id @name | Actor #A: #B
+C datum `(rcom-idname RPG::Actor "Actor")`
 @id index
 @name string
 @class_id class_id
@@ -56,7 +56,7 @@ e animation_flashscope 0 none 1 target 2 screen 3 hideTarget
 e animation_position 0 targetLower 1 targetMiddle 2 targetUpper 3 screenCentre
 
 : RPG::Animation
-C name Class.RPG::Animation @id @name | Animation #A: #B
+C datum `(rcom-idname RPG::Animation "Animation")`
 @id index
 @name string
 @animation_name f_animss_name
@@ -70,7 +70,7 @@ C magicGenpos xpAnimation @animation_name @animation_hue @animation_name @animat
 > File.Animations arrayIx1 subwindow RPG::Animation
 
 : RPG::Armor
-C name Class.RPG::Armor @id @name | Armor #A: #B
+C datum `(rcom-idname RPG::Armor "Armour")`
 @id index
 @name string
 @icon_name string
@@ -95,7 +95,7 @@ C name Class.RPG::Armor @id @name | Armor #A: #B
 @skill_id skill_id
 
 : RPG::Class
-C name Class.RPG::Class @id @name | Class #A: #B
+C datum `(rcom-idname RPG::Class "Class")`
 @id index
 @name string
 @position int
@@ -109,7 +109,13 @@ C name Class.RPG::Class @id @name | Class #A: #B
 
 e commonevent_trigger 0 static 1 autorunOnSwitch 2 autorunOnSwitchParallel
 : RPG::CommonEvent
-C name Class.RPG::CommonEvent @id @name @trigger @switch_id | CommonEvent #A: #B{C=0=| (autorun{C=2=| parallel} on switch @[switch_id]D)}
+C datum `
+(define-name Class.RPG::CommonEvent "CommonEvent " (@ @id) ": " (@ @name)
+	(= @trigger (
+		" " (@ @trigger commonevent_trigger) " " (@ @switch_id switch_id #t)
+	) (0))
+)
+`
 @id index
 @name string
 @trigger commonevent_trigger
@@ -130,7 +136,7 @@ C name Class.RPG::CommonEvent @id @name @trigger @switch_id | CommonEvent #A: #B
 @rating int
 
 : RPG::Enemy
-C name Class.RPG::Enemy @id @name | Enemy #A: #B
+C datum `(rcom-idname RPG::Enemy "Enemy")`
 @id index
 @name string
 @battler_name f_battler_name
@@ -160,7 +166,7 @@ C name Class.RPG::Enemy @id @name | Enemy #A: #B
 > File.Enemies arrayIx1 subwindow RPG::Enemy
 
 : RPG::Item
-C name Class.RPG::Item @id @name | Item #A: #B
+C datum `(rcom-idname RPG::Item "Item")`
 @id index
 @name string
 @icon_name f_icon_name
@@ -190,7 +196,9 @@ C name Class.RPG::Item @id @name | Item #A: #B
 > File.Items arrayIx1 subwindow RPG::Item
 
 : RPG::MapInfo
-C name Class.RPG::MapInfo @order @name | MapInfo: #B (order #A)
+C datum `
+(define-name Class.RPG::MapInfo "MapInfo: " (@ @name) " (order " (@ @order) ")")
+`
 @name string
 @order int= 0
 @parent_id int= 0
@@ -211,7 +219,7 @@ C name Class.RPG::MapInfo @order @name | MapInfo: #B (order #A)
 +array 0 scriptBlob
 
 : RPG::Skill
-C name Class.RPG::Skill @id @name | Skill #A: #B
+C datum `(rcom-idname RPG::Skill "Skill")`
 @id index
 @name string
 @icon_name string
@@ -241,7 +249,7 @@ C name Class.RPG::Skill @id @name | Skill #A: #B
 > File.Skills arrayIx1 subwindow RPG::Skill
 
 : RPG::State
-C name Class.RPG::State @id @name | State #A: #B
+C datum `(rcom-idname RPG::State "State")`
 @id index
 @name string
 @animation_id animation_id
@@ -354,7 +362,7 @@ C name Class.RPG::State @id @name | State #A: #B
 > File.System RPG::System
 
 : RPG::Tileset
-C name Class.RPG::Tileset @id @name | Tileset #A: #B
+C datum `(rcom-idname RPG::Tileset "Tileset")`
 @id index
 @name string
 @tileset_name f_tileset_name
@@ -410,12 +418,12 @@ C magicGenpos xpTroop . . . . 0
 > rpg_troop_s2 contextDictionary iterate_enemy iterate_enemy_base 1 @members 0 @enemy_id enemy_id rpg_troop_core
 
 : RPG::Troop contextDictionary troop_enemy_id . 1 @members 0 @enemy_id enemy_id rpg_troop_s2
-C name Class.RPG::Troop @id @name | Troop #A: #B
+C datum `(rcom-idname RPG::Troop "Troop")`
 
 > File.Troops arrayIx1 subwindow RPG::Troop
 
 : RPG::Weapon
-C name Class.RPG::Weapon @id @name | Weapon #A: #B
+C datum `(rcom-idname RPG::Weapon "Weapon")`
 @id index
 @atk int
 @mdef int
