@@ -164,7 +164,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
                     };
                 }
             } else {
-                text = app.fmt.interpretParameter(rio, interpret, EnumSchemaElement.Prefix.NoPrefix);
+                text = app.format(rio, interpret, EnumSchemaElement.Prefix.NoPrefix);
             }
             finalMap.add(EnumSchemaElement.makeStandardOption(kc, () -> text, editor, dataSchemaPath));
         }

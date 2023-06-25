@@ -6,12 +6,8 @@
  */
 package r48.minivm.fn;
 
-import java.util.List;
-
 import gabien.datum.DatumSymbol;
 import r48.App;
-import r48.dbs.FormatSyntax;
-import r48.dbs.PathSyntax;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMU;
@@ -23,44 +19,30 @@ import r48.schema.EnumSchemaElement;
  */
 public class MVMDMAppLibrary {
     public static void add(MVMEnv ctx, App app) {
-        ctx.defineSlot(new DatumSymbol("dm-fmt")).v = new DMFmt(app.fmt)
+        ctx.defineSlot(new DatumSymbol("dm-fmt")).v = new DMFmt(app)
                 .attachHelp("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. If the passed-in object is null (say, due to a PathSyntax failure) returns the empty string. Important: Because of schemas and stuff this doesn't exist in the static translation context. PREFIXENUMS can be #f, #t or #nil (default).");
-        ctx.defLib("dm-formatsyntax", (text) -> {
-            // ("path1" "path2" "path3" "name")
-            List<Object> lo = MVMU.cList(text);
-            final PathSyntax[] paths = new PathSyntax[lo.size() - 1];
-            for (int i = 0; i < paths.length; i++)
-                paths[i] = PathSyntax.compile(app, (String) lo.get(i));
-            return app.fmt.compile((String) (lo.get(lo.size() - 1)), (root, idx) -> {
-                if (idx < 0)
-                    return null;
-                if (idx >= paths.length)
-                    return null;
-                return paths[idx].get(root);
-            });
-        }).attachHelp("(dm-formatsyntax THING) : Compiles FormatSyntax. This is a workaround to run FormatSyntax through the DynTrSlot stuff, so it counts as a compiled DynTrSlot value, but...");
         ctx.defLib("dm-cmsyntax-new", (text) -> {
             return app.fmt.compileCMNew((String) text);
         }).attachHelp("(dm-cmsyntax-new TEXT) : Compiles new CMSyntax. This is an even worse workaround.");
     }
     public static final class DMFmt extends MVMFn.Fixed {
-        public final FormatSyntax fmt;
-        public DMFmt(FormatSyntax fmt) {
+        public final App app;
+        public DMFmt(App app) {
             super("dm-fmt");
-            this.fmt = fmt;
+            this.app = app;
         }
         @Override
         public Object callDirect(Object a0) {
             if (a0 == null)
                 return "";
-            return fmt.interpretParameter((RORIO) a0, (String) null, EnumSchemaElement.Prefix.Default);
+            return app.format((RORIO) a0, (String) null, EnumSchemaElement.Prefix.Default);
         }
 
         @Override
         public Object callDirect(Object a0, Object a1) {
             if (a0 == null)
                 return "";
-            return fmt.interpretParameter((RORIO) a0, (String) a1, EnumSchemaElement.Prefix.Default);
+            return app.format((RORIO) a0, (String) a1, EnumSchemaElement.Prefix.Default);
         }
 
         @Override
@@ -70,7 +52,7 @@ public class MVMDMAppLibrary {
             EnumSchemaElement.Prefix pfx = EnumSchemaElement.Prefix.Default;
             if (a2 != null)
                 pfx = MVMU.isTruthy(a2) ? EnumSchemaElement.Prefix.Prefix : EnumSchemaElement.Prefix.NoPrefix;
-            return fmt.interpretParameter((RORIO) a0, (String) a1, pfx);
+            return app.format((RORIO) a0, (String) a1, pfx);
         }
     }
 }

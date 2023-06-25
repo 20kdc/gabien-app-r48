@@ -90,7 +90,7 @@ public class R2kGenposFrame extends App.Svc implements IGenposFrame {
         if (i == 0)
             se = new BooleanSchemaElement(app, false);
         if (i == 1)
-            se = new SpritesheetCoreSchemaElement(app, (v) -> app.fmt.interpretParameter(v), 0, new IFunction<IRIO, IRIO>() {
+            se = new SpritesheetCoreSchemaElement(app, (v) -> app.format(v), 0, new IFunction<IRIO, IRIO>() {
                 @Override
                 public IRIO apply(IRIO rubyIO) {
                     return rubyIO;

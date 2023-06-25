@@ -30,9 +30,15 @@ import r48.dbs.FormatSyntax;
 import r48.io.data.RORIO;
 import r48.map.StuffRenderer;
 import r48.minivm.MVMEnvR48;
+import r48.minivm.MVMSlot;
 import r48.minivm.fn.MVMR48AppLibraries;
+import r48.schema.AggregateSchemaElement;
+import r48.schema.EnumSchemaElement;
+import r48.schema.SchemaElement;
 import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
+import r48.tr.TrNames;
+import r48.tr.TrPage.FF1;
 import r48.tr.pages.TrRoot;
 
 /**
@@ -84,6 +90,59 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
 
     public void performTranslatorDump(String fn) {
         vmCtx.dynTrDump(fn);
+    }
+
+    private @Nullable FF1 getNameDB(String name) {
+        MVMSlot slot = vmCtx.getSlot(new DatumSymbol(TrNames.nameRoutine(name)));
+        if (slot != null)
+            return (FF1) slot.v;
+        return null;
+    }
+
+    /**
+     * Formats a RORIO using the given name routine (if it exists) and prefix mode.
+     */
+    public String format(RORIO rubyIO, String st, EnumSchemaElement.Prefix prefixEnums) {
+        if (rubyIO == null)
+            return "";
+        if (st != null) {
+            FF1 handler = getNameDB(st);
+            if (handler != null) {
+                return handler.r(rubyIO);
+            } else if (sdb.hasSDBEntry(st)) {
+                SchemaElement ise = sdb.getSDBEntry(st);
+                return format(rubyIO, ise, prefixEnums);
+            }
+        }
+        return format(rubyIO, (SchemaElement) null, prefixEnums);
+    }
+
+    /**
+     * Formats a RORIO (with no enum prefix).
+     */
+    public String format(RORIO rubyIO) {
+        return format(rubyIO, (SchemaElement) null, EnumSchemaElement.Prefix.NoPrefix);
+    }
+
+    /**
+     * Formats a RORIO assuming the given schema element (if it exists) and prefix mode.
+     */
+    public String format(RORIO rubyIO, SchemaElement ise, EnumSchemaElement.Prefix prefixEnums) {
+        // Basically, Class. overrides go first, then everything else comes after.
+        if (rubyIO.getType() == 'o') {
+            FF1 handler = getNameDB("Class." + rubyIO.getSymbol());
+            if (handler != null)
+                return handler.r(rubyIO);
+        }
+        String r = null;
+        if (ise != null) {
+            ise = AggregateSchemaElement.extractField(ise, rubyIO);
+            if (ise instanceof EnumSchemaElement)
+                r = ((EnumSchemaElement) ise).viewValue(rubyIO, prefixEnums);
+        }
+        if (r == null)
+            r = rubyIO.toString();
+        return r;
     }
 
     /**

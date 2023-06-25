@@ -11,13 +11,9 @@ import gabien.datum.DatumSymbol;
 import gabien.datum.DatumWriter;
 import r48.App;
 import r48.io.data.RORIO;
-import r48.minivm.MVMSlot;
 import r48.minivm.MVMU;
-import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
-import r48.tr.TrNames;
-import r48.tr.TrPage.FF1;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -29,7 +25,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * Created on 11/06/17.
  */
 public class FormatSyntax extends App.Svc {
-    public static final ParameterAccessor ACC_ARRAY = (root, idx) -> {
+    private static final ParameterAccessor ACC_ARRAY = (root, idx) -> {
         if (root == null)
             return null;
         if (idx < 0)
@@ -45,17 +41,10 @@ public class FormatSyntax extends App.Svc {
         super(app);
     }
 
-    private @Nullable FF1 getNameDB(String name) {
-        MVMSlot slot = app.vmCtx.getSlot(new DatumSymbol(TrNames.nameRoutine(name)));
-        if (slot != null)
-            return (FF1) slot.v;
-        return null;
-    }
-
     /**
      * Compiles a FormatSyntax for easier debugging.
      */
-    public ICompiledFormatSyntax compile(String name, ParameterAccessor paramAcc) {
+    private ICompiledFormatSyntax compile(String name, ParameterAccessor paramAcc) {
         System.out.println("fs compile: " + name);
         LinkedList<CompiledChunk> r = new LinkedList<>();
         compileChunk(r, name, paramAcc);
@@ -178,16 +167,16 @@ public class FormatSyntax extends App.Svc {
                     typeB.append(data[i]);
                 }
                 final String type = typeB.toString();
+                final EnumSchemaElement.Prefix thisPrefixNext = prefixNext;
                 if (indexOfAt != 0) {
                     char ch = data[++i];
-                    final EnumSchemaElement.Prefix thisPrefixNext = prefixNext;
                     r.add(new CompiledChunk() {
                         @Override
                         public void r(StringBuilder sb, RORIO root) {
                             if (root == null)
                                 return;
                             RORIO p = paramAcc.get(root, ch - 'A');
-                            sb.append(interpretParameter(p, type, thisPrefixNext));
+                            sb.append(app.format(p, type, thisPrefixNext));
                         }
                         @Override
                         public void decompile(LinkedList<Object> llo) {
@@ -207,20 +196,20 @@ public class FormatSyntax extends App.Svc {
                     });
                 } else {
                     final String tp = type.substring(1);
-                    final FF1 n = getNameDB(tp);
-                    if (n == null)
-                        throw new RuntimeException("Expected NDB " + tp);
                     r.add(new CompiledChunk() {
                         @Override
                         public void r(StringBuilder sb, RORIO root) {
                             if (root == null)
                                 return;
                             // Meta-interpretation syntax
-                            sb.append(n.r(root));
+                            sb.append(app.format(root, tp, thisPrefixNext));
                         }
                         @Override
                         public void decompile(LinkedList<Object> llo) {
-                            llo.add(new DatumSymbol("Idk4"));
+                            llo.add(MVMU.l(
+                                new DatumSymbol("@"), new DatumSymbol(":"),
+                                new DatumSymbol(tp)
+                            ));
                         }
                     });
                 }
@@ -234,7 +223,7 @@ public class FormatSyntax extends App.Svc {
                     public void r(StringBuilder sb, RORIO root) {
                         RORIO v = paramAcc.get(root, pid);
                         if (v != null) {
-                            sb.append(interpretParameter(v, (SchemaElement) null, thisPrefixNext));
+                            sb.append(app.format(v, (SchemaElement) null, thisPrefixNext));
                         } else {
                             sb.append(ltr);
                         }
@@ -362,46 +351,6 @@ public class FormatSyntax extends App.Svc {
         throw new RuntimeException("Hit end-of-data without reaching end character.");
     }
 
-    public String interpretParameter(RORIO rubyIO, String st, EnumSchemaElement.Prefix prefixEnums) {
-        if (rubyIO == null)
-            return "";
-        if (st != null) {
-            FF1 handler = getNameDB(st);
-            if (handler != null) {
-                return handler.r(rubyIO);
-            } else if (app.sdb.hasSDBEntry(st)) {
-                SchemaElement ise = app.sdb.getSDBEntry(st);
-                return interpretParameter(rubyIO, ise, prefixEnums);
-            }
-        }
-        return interpretParameter(rubyIO, (SchemaElement) null, prefixEnums);
-    }
-
-    /**
-     * This is replacing a lot of really silly FormatSyntax use.
-     */
-    public String interpretParameter(RORIO rubyIO) {
-        return interpretParameter(rubyIO, (SchemaElement) null, EnumSchemaElement.Prefix.NoPrefix);
-    }
-
-    public String interpretParameter(RORIO rubyIO, SchemaElement ise, EnumSchemaElement.Prefix prefixEnums) {
-        // Basically, Class. overrides go first, then everything else comes after.
-        if (rubyIO.getType() == 'o') {
-            FF1 handler = getNameDB("Class." + rubyIO.getSymbol());
-            if (handler != null)
-                return handler.r(rubyIO);
-        }
-        String r = null;
-        if (ise != null) {
-            ise = AggregateSchemaElement.extractField(ise, rubyIO);
-            if (ise instanceof EnumSchemaElement)
-                r = ((EnumSchemaElement) ise).viewValue(rubyIO, prefixEnums);
-        }
-        if (r == null)
-            r = rubyIO.toString();
-        return r;
-    }
-
     private static ICompiledFormatSyntax wrapWithCMDisclaimer(String name, ICompiledFormatSyntax v) {
         return (root) -> {
             try {
@@ -423,7 +372,7 @@ public class FormatSyntax extends App.Svc {
      * This is pretty much evil magic made so name routines get to survive,
      * while kicking the stuff they relied on past the compilation barrier.
      */
-    public interface ParameterAccessor {
+    private interface ParameterAccessor {
         /**
          * Gets the given parameter relative to the root.
          */
@@ -437,7 +386,7 @@ public class FormatSyntax extends App.Svc {
         String r(RORIO root);
     }
 
-    public interface CompiledChunk {
+    private interface CompiledChunk {
         void r(StringBuilder sb, RORIO root);
         /**
          * Decompile

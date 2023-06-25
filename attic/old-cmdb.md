@@ -108,3 +108,5 @@ Some of these only really made sense when the `[][]` syntax was around anyway:
    {AB:#A|@#A..@#B}
 ```
 
+* FormatSyntax name routines used to be definable using `C name`. This is now not a thing as part of the eventual complete removal of FormatSyntax.
+

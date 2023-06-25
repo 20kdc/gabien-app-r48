@@ -34,7 +34,6 @@ import r48.schema.specialized.cmgb.*;
 import r48.schema.specialized.tbleditors.*;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.tr.DynTrSlot;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 import r48.tr.TrPage.FF1;
@@ -852,27 +851,6 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             } else if (args[0].equals("magicR2kSystemDefaults")) {
                 // Really special schema
                 workingObj.aggregate.add(new R2kSystemDefaultsInstallerSchemaElement(app, Integer.parseInt(args[1])));
-            } else if (args[0].equals("name")) {
-                final LinkedList<String> arguments = new LinkedList<String>();
-                String text = "";
-                boolean nextState = false;
-                for (int i = 2; i < args.length; i++) {
-                    if (nextState) {
-                        if (text.length() > 0)
-                            text += " ";
-                        text += args[i];
-                    } else {
-                        if (!args[i].equals("|")) {
-                            arguments.add(args[i]);
-                        } else {
-                            nextState = true;
-                        }
-                    }
-                }
-                arguments.add(text);
-                // Important to note: the expected format is (PATH... NAME)
-                // Another important thing to note is that simply translating the name routine now creates the name routine.
-                app.dTrName(srcLoc, args[1], DynTrSlot.FORMATSYNTAX, arguments, false);
             } else if (args[0].equals("spritesheet")) {
                 // Defines a spritesheet for spriteSelector.
                 sdb.helpers.createSpritesheet(srcLoc, args);

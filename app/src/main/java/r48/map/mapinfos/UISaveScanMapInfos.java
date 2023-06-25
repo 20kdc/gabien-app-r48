@@ -52,7 +52,7 @@ public class UISaveScanMapInfos extends App.Prx {
                 IObjectBackend.ILoadedObject rio = app.odb.getObject(objectMapping.apply(i), null);
                 final String gum = gumMapping.apply(i);
                 if (rio != null) {
-                    String obj = app.fmt.interpretParameter(rio.getObject());
+                    String obj = app.format(rio.getObject());
                     mainLayout.panelsAdd(new UITextButton(T.z.l251.r(gum, obj), app.f.mapInfosTH, new Runnable() {
                         @Override
                         public void run() {
