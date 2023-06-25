@@ -32,7 +32,19 @@ i RCOM/CommonConditionals.txt
 e conditional_branch_actor_types 0 inParty 1 name= 2 skill? 3 weapon= 4 armourIdWorn? 5 hasState?
 
 .conditional_branch_actor
-C name conditional_branch_actor ]1 ]2 | Actor @[actor_id]A {@#B|0|in party|1|[@conditional_branch_actor_name]|2|[@conditional_branch_actor_skill]|3|[@conditional_branch_actor_weapon]|4|[@conditional_branch_actor_armourIdWorn]|5|[@conditional_branch_actor_hasState]|[conditional_branch_actor_types]B (...)}
+C datum `
+(define-name conditional_branch_actor
+	"Actor " (@ ]1 actor_id #t) " "
+	(= ]2 ((@ ]2 conditional_branch_actor_types) " (...)")
+		(0 "in party")
+		(1 (@ : conditional_branch_actor_name))
+		(2 (@ : conditional_branch_actor_skill))
+		(3 (@ : conditional_branch_actor_weapon))
+		(4 (@ : conditional_branch_actor_armourIdWorn))
+		(5 (@ : conditional_branch_actor_hasState))
+	)
+)
+`
 ]0 type conditional_branch_types
 ]1 actor actor_id
 ]2 subCondition conditional_branch_actor_types
@@ -41,7 +53,25 @@ C name conditional_branch_actor ]1 ]2 | Actor @[actor_id]A {@#B|0|in party|1|[@c
 e cbr_gold_comparison_type 0 >= 1 <
 
 .conditional_branch_parameters
-C name conditional_branch_parameters ]0 | {@#A|0|[@conditional_branch_switch]|1|[@conditional_branch_variable]|2|[@conditional_branch_selfSwitch]|3|[@conditional_branch_timer]|4|[@conditional_branch_actor]|5|[@conditional_branch_enemy]|6|[@conditional_branch_character]|7|[@conditional_branch_gold]|8|[@conditional_branch_item]|9|[@conditional_branch_weapon]|10|[@conditional_branch_armour]|11|[@conditional_branch_button]|12|[@conditional_branch_script]|[conditional_branch_types]A (...)}
+C datum `
+(define-name conditional_branch_parameters
+	" " (= ]0 ((@ ]0 conditional_branch_types) " (...)")
+		(0 (@ : conditional_branch_switch))
+		(1 (@ : conditional_branch_variable))
+		(2 (@ : conditional_branch_selfSwitch))
+		(3 (@ : conditional_branch_timer))
+		(4 (@ : conditional_branch_actor))
+		(5 (@ : conditional_branch_enemy))
+		(6 (@ : conditional_branch_character))
+		(7 (@ : conditional_branch_gold))
+		(8 (@ : conditional_branch_item))
+		(9 (@ : conditional_branch_weapon))
+		(10 (@ : conditional_branch_armour))
+		(11 (@ : conditional_branch_button))
+		(12 (@ : conditional_branch_script))
+	)
+)
+`
 @indent indent
 @parameters DA{ ]0 conditional_branch_unknown 0 conditional_branch_switch 1 conditional_branch_variable 2 conditional_branch_selfSwitch 3 conditional_branch_timer 4 conditional_branch_actor 5 conditional_branch_enemy 6 conditional_branch_character 7 conditional_branch_gold 8 conditional_branch_item 9 conditional_branch_weapon 10 conditional_branch_armour 11 conditional_branch_button 12 conditional_branch_script }
 

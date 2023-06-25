@@ -98,26 +98,29 @@ C spritesheet "Select face index..." Faces/ 96 96 4 0 0 96 96 0
 > Color CTNative Color
 > Tone CTNative Tone
 
+C datum `
+(define-name Class.RPG::SE (@ @name) " p." (@ @pitch) " v." (@ @volume))
+(define-name Class.RPG::ME (@ : Class.RPG::SE))
+(define-name Class.RPG::BGM (@ : Class.RPG::SE))
+(define-name Class.RPG::BGS (@ : Class.RPG::SE))
+`
+
 : RPG::ME
-C name Class.RPG::ME @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|}
 @name { string fileSelector Audio/ME/ }
 @pitch int= 100
 @volume int= 100
 
 : RPG::SE
-C name Class.RPG::SE @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|}
 @name { string fileSelector Audio/SE/ }
 @pitch int= 100
 @volume int= 100
 
 : RPG::BGM
-C name Class.RPG::BGM @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|}
 @name { string fileSelector Audio/BGM/ }
 @pitch int= 100
 @volume int= 100
 
 : RPG::BGS
-C name Class.RPG::BGS @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|}
 @name { string fileSelector Audio/BGS/ }
 @pitch int= 100
 @volume int= 100

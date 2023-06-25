@@ -13,7 +13,9 @@ e mapinfo_type 1 map 2 area 0 root
 @troop troop_id
 
 : RPG::MapInfo
-C name Class.RPG::MapInfo @name | MapInfo: #A
+C datum `
+(define-name Class.RPG::MapInfo "MapInfo: " (@ @name))
+`
 @name string
 @parent_id map_id
 @indent int= 1

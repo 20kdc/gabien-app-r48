@@ -30,11 +30,26 @@ e conditional_branch_actor_types 0 inParty 1 name= 2 class 3 skill? 4 weapon= 5 
  This is the VXA specific actor field
 
 .conditional_branch_actor_class
-C name conditional_branch_actor_class ]3 | class @[class_id]A
+C datum `
+(define-name conditional_branch_actor_class "class " (@ ]3 class_id #t))
+`
 ]3 class class_id
 
 .conditional_branch_actor
-C name conditional_branch_actor ]1 ]2 | Actor @[actor_id]A {B=0=in party|{B=1=[@conditional_branch_actor_name]|{B=2=[@conditional_branch_actor_class]|{B=3=[@conditional_branch_actor_skill]|{B=4=[@conditional_branch_actor_weapon]|{B=5=[@conditional_branch_actor_armourIdWorn]|{B=6=[@conditional_branch_actor_hasState]|[conditional_branch_actor_types]B (...)}}}}}}}
+C datum `
+(define-name conditional_branch_actor
+	"Actor " (@ ]1 actor_id #t) " "
+	(= ]2 ((@ ]2 conditional_branch_actor_types) " (...)")
+		(0 "in party")
+		(1 (@ : conditional_branch_actor_name))
+		(2 (@ : conditional_branch_actor_class))
+		(3 (@ : conditional_branch_actor_skill))
+		(4 (@ : conditional_branch_actor_weapon))
+		(5 (@ : conditional_branch_actor_armourIdWorn))
+		(6 (@ : conditional_branch_actor_hasState))
+	)
+)
+`
 ]0 type conditional_branch_types
 ]1 actor actor_id
 ]2 subCondition conditional_branch_actor_types
@@ -43,12 +58,33 @@ C name conditional_branch_actor ]1 ]2 | Actor @[actor_id]A {B=0=in party|{B=1=[@
 e cbr_gold_comparison_type 0 >= 1 <= 2 <
 
 .conditional_branch_vehicle
-C name conditional_branch_vehicle ]1 | In Vehicle: [int]A
+C datum `
+(define-name conditional_branch_vehicle "In Vehicle: " (@ ]1 vehicle_id))
+`
 ]0 type conditional_branch_types
 ]1 vehicleId vehicle_id
 
 .conditional_branch_parameters
-C name conditional_branch_parameters ]0 | {A=0=[@conditional_branch_switch]|{A=1=[@conditional_branch_variable]|{A=2=[@conditional_branch_selfSwitch]|{A=3=[@conditional_branch_timer]|{A=4=[@conditional_branch_actor]|{A=5=[@conditional_branch_enemy]|{A=6=[@conditional_branch_character]|{A=7=[@conditional_branch_gold]|{A=8=[@conditional_branch_item]|{A=9=[@conditional_branch_weapon]|{A=10=[@conditional_branch_armour]|{A=11=[@conditional_branch_button]|{A=12=[@conditional_branch_script]|{A=13=[@conditional_branch_vehicle]|Unknown}}}}}}}}}}}}}}
+C datum `
+(define-name conditional_branch_parameters
+	" " (= ]0 ((@ ]0 conditional_branch_types) " (...)")
+		(0 (@ : conditional_branch_switch))
+		(1 (@ : conditional_branch_variable))
+		(2 (@ : conditional_branch_selfSwitch))
+		(3 (@ : conditional_branch_timer))
+		(4 (@ : conditional_branch_actor))
+		(5 (@ : conditional_branch_enemy))
+		(6 (@ : conditional_branch_character))
+		(7 (@ : conditional_branch_gold))
+		(8 (@ : conditional_branch_item))
+		(9 (@ : conditional_branch_weapon))
+		(10 (@ : conditional_branch_armour))
+		(11 (@ : conditional_branch_button))
+		(12 (@ : conditional_branch_script))
+		(13 (@ : conditional_branch_vehicle))
+	)
+)
+`
 @indent indent
 @parameters DA{ ]0 conditional_branch_unknown 0 conditional_branch_switch 1 conditional_branch_variable 2 conditional_branch_selfSwitch 3 conditional_branch_timer 4 conditional_branch_actor 5 conditional_branch_enemy 6 conditional_branch_character 7 conditional_branch_gold 8 conditional_branch_item 9 conditional_branch_weapon 10 conditional_branch_armour 11 conditional_branch_button 12 conditional_branch_script 13 conditional_branch_vehicle }
 
@@ -61,7 +97,9 @@ e set_variables_source 0 int 1 var 2 random 3 gameData 4 script
  Furthermore, CommonSV handles the int/var/random cases, and lets the parent schema control any further cases using set_variables_parameters_ext.
  It used to be that CommonSV defined this by default, but that now counts as a dodgy translation conflict.
 
-C name set_variables_parameters_ext ]3 | [set_variables_source]A
+C datum `
+(define-name set_variables_parameters_ext (@ ]3 set_variables_source))
+`
 
 i RCOM/CommonSV.txt
 
@@ -130,7 +168,11 @@ C name transfer_vehicle_paramassist ]1 ]2 ]3 ]4 ]0 | Transfer vehicle [vehicle_i
 
  -- bits & pieces --
 
-C name iterate_actor_var ]0 ]1 | {A=1=v.@[var_id]B|@[iterate_actor_id]B}
+C datum `
+(define-name iterate_actor_var
+	(= ]0 (@ ]1 iterate_actor_id #t) (1 "v." (@ ]1 var_id #t)))
+)
+`
 
 e transfer_player_fadetype 0 dark 1 light 2 none
 

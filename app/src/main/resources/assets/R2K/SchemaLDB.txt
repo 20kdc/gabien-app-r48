@@ -680,7 +680,9 @@ e rpg_system_testing_battle_condition 0 none 1 initiative 2 back 3 surround 4 pi
  ---
 
 : RPG::CommonEvent
-C name Class.RPG::CommonEvent @name @trigger | #A (@[rpg_cev_trigger]B)
+C datum `
+(define-name Class.RPG::CommonEvent (@ @name) " (" (@ @trigger rpg_cev_trigger) ")")
+`
  deliberately ordered to make startOnCallBlocking default
 e rpg_cev_trigger 5 startOnCall 3 startOnCondition 4 startOnConditionParallel
 @name string
