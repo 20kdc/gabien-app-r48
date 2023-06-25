@@ -107,7 +107,7 @@
 	(define clauses (list))
 	(for-each (lambda (v)
 		(assert (list? v) "= clauses must be lists")
-		(assert (> (list-length v) 1) "= clauses must be >= 2-element lists")
+		(assert (> (list-length v) 0) "= clauses must be lists with at least one element")
 		(append! clauses (list
 			(list
 				; condition

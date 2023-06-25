@@ -3,19 +3,13 @@
 ; To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
 ; A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-; RVXA MVM init
+; Macros/etc.
 
-(include "RCOM/common")
-
-(sdb-load-old "RVXA/Schema.txt")
-(sdb-load-old "RVXA/SchemaCommandHelpers.txt")
-(sdb-load-old "RCOM/SchemaScript.txt")
-
-(cmdb-init "event")
-(cmdb-load-old "event" "RVXA/Commands.txt")
-
-(cmdb-init "move")
-(cmdb-load-old "move" "RVXA/CommandsMove.txt")
-
-(sdb-load-old "RVXA/SchemaEditing.txt")
-(sdb-load-old "RVXA/SchemaFiles.txt")
+; (r2k-namename CSYM): Defines a name for the given Ruby class that shows the @name.
+(define-syntax (r2k-namename csym)
+	(list
+		define-name-nls
+		(string->symbol (.. "Class." (symbol->string csym)))
+		'(@ @name)
+	)
+)

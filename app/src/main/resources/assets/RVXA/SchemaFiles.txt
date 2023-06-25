@@ -15,7 +15,7 @@ i RVXA/SchemaBatDI.txt
  The definitions of files.
 
 : RPG::Actor
-C name Class.RPG::Actor @id @name | Actor #A: #B
+C datum `(rcom-idname RPG::Actor "Actor")`
 @id index
 @name string
 @note stringBlobEditor
@@ -52,7 +52,7 @@ e animation_flashscope 0 none 1 target 2 screen 3 hideTarget
 e animation_position 0 targetLower 1 targetMiddle 2 targetUpper 3 screenCentre
 
 : RPG::Animation
-C name Class.RPG::Animation @id @name | Animation #A: #B
+C datum `(rcom-idname RPG::Animation "Animation")`
 @id index
 @name string
 @animation1_name f_animss_name
@@ -68,7 +68,7 @@ C magicGenpos vxaAnimation @animation1_name @animation1_hue @animation2_name @an
 > File.Animations arrayIx1 subwindow RPG::Animation
 
 : RPG::Armor
-C name Class.RPG::Armor @id @name | Armour #A: #B
+C datum `(rcom-idname RPG::Armor "Armour")`
 @id index
 @name string
 @note stringBlobEditor
@@ -83,7 +83,9 @@ C name Class.RPG::Armor @id @name | Armour #A: #B
 > File.Armors arrayIx1 subwindow RPG::Armor
 
 : RPG::Class::Learning
-C name Class.RPG::Class::Learning @level @skill_id | Learning at level #A: @[skill_id]B
+C datum `
+(define-name Class.RPG::Class::Learning "Learning at level " (@ @level) ": " (@ @skill_id skill_id #t))
+`
 @note stringBlobEditor
 @level int
 @skill_id skill_id
@@ -96,7 +98,7 @@ C name Class.RPG::Class::Learning @level @skill_id | Learning at level #A: @[ski
 ]3 accB typeChanger{ int i float f }
 
 : RPG::Class
-C name Class.RPG::Class @id @name | Class #A: #B
+C datum `(rcom-idname RPG::Class "Class")`
 @id index
 @name string
 @note stringBlobEditor
@@ -112,7 +114,13 @@ C name Class.RPG::Class @id @name | Class #A: #B
 
 e commonevent_trigger 0 static 1 autorunOnSwitch 2 autorunOnSwitchParallel
 : RPG::CommonEvent
-C name Class.RPG::CommonEvent @id @name @trigger @switch_id | CommonEvent #A: #B{C=0=| (autorun{C=2=| parallel} on switch @[switch_id]D)}
+C datum `
+(define-name Class.RPG::CommonEvent "CommonEvent " (@ @id) ": " (@ @name)
+	(= @trigger (
+		" " (@ @trigger commonevent_trigger) " " (@ @switch_id switch_id #t)
+	) (0))
+)
+`
 @id index
 @name string
 @trigger commonevent_trigger
@@ -122,7 +130,7 @@ C name Class.RPG::CommonEvent @id @name @trigger @switch_id | CommonEvent #A: #B
 > File.CommonEvents arrayIx1 subwindow RPG::CommonEvent
 
 : RPG::Enemy
-C name Class.RPG::Enemy @id @name | Enemy #A: #B
+C datum `(rcom-idname RPG::Enemy "Enemy")`
 @id index
 @name string
 @note stringBlobEditor
@@ -144,7 +152,7 @@ C name Class.RPG::Enemy @id @name | Enemy #A: #B
  Notice the similarity to skills?
 
 : RPG::Item
-C name Class.RPG::Item @id @name | Item #A: #B
+C datum `(rcom-idname RPG::Item "Item")`
 @id index
 @name string
 @note stringBlobEditor
@@ -168,7 +176,9 @@ C name Class.RPG::Item @id @name | Item #A: #B
 > File.Items arrayIx1 subwindow RPG::Item
 
 : RPG::MapInfo
-C name Class.RPG::MapInfo @order @name | MapInfo: #B (order #A)
+C datum `
+(define-name Class.RPG::MapInfo "MapInfo: " (@ @name) " (order " (@ @order) ")")
+`
 @name string
 @order int= 0
 @parent_id int= 0
@@ -190,7 +200,7 @@ C name Class.RPG::MapInfo @order @name | MapInfo: #B (order #A)
 +array 0 scriptBlob
 
 : RPG::Skill
-C name Class.RPG::Skill @id @name | Skill #A: #B
+C datum `(rcom-idname RPG::Skill "Skill")`
 @id index
 @name string
 @note stringBlobEditor
@@ -218,7 +228,7 @@ C name Class.RPG::Skill @id @name | Skill #A: #B
 > File.Skills arrayIx1 subwindow RPG::Skill
 
 : RPG::State
-C name Class.RPG::State @id @name | State #A: #B
+C datum `(rcom-idname RPG::State "State")`
 @id index
 @name string
 @note stringBlobEditor
@@ -361,7 +371,9 @@ C name Class.RPG::State @id @name | State #A: #B
 ]8 E f_tileset_name
 
 : RPG::Tileset
-C name Class.RPG::Tileset @id @name @mode | Tileset #A (M#C): #B
+C datum `
+(define-name Class.RPG::Tileset "Tileset " (@ @id) " (M" (@ @mode) "): " (@ @name))
+`
 @id index
 @name string
 @mode int= 1
@@ -403,12 +415,12 @@ C name Class.RPG::Tileset @id @name @mode | Tileset #A (M#C): #B
 @members subwindow array 0 RPG::Troop::Member
 
 : RPG::Troop contextDictionary troop_enemy_id troop_enemy_id_base 1 @members 0 @enemy_id enemy_id rpg_troop_core
-C name Class.RPG::Troop @id @name | Troop #A: #B
+C datum `(rcom-idname RPG::Troop "Troop")`
 
 > File.Troops arrayIx1 subwindow RPG::Troop
 
 : RPG::Weapon
-C name Class.RPG::Weapon @id @name | Weapon #A: #B
+C datum `(rcom-idname RPG::Weapon "Weapon")`
 @id index
 @name string
 @note stringBlobEditor

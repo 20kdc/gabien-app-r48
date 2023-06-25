@@ -5,6 +5,8 @@
 
 ; RXP MVM init
 
+(include "RCOM/common")
+
 (sdb-load-old "RXP/Schema.txt")
 
 ; Everything needed for map editing.

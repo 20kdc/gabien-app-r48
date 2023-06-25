@@ -69,7 +69,7 @@ C datum `
 @each_level_exp_add int
 
 : RPG::Actor
-C name Class.RPG::Actor @name | #A
+C datum `(r2k-namename RPG::Actor)`
  Totally not a C&H reference. I added an 'i'.
 @name stringLen= TediBear 12
 @title stringLen= Survivalist 12
@@ -110,7 +110,7 @@ E rpg_badia_pose Custom.No 0 none 1 idle 2 rightHand 3 leftHand 4 skillUse 5 dea
 @pose rpg_badia_pose
 
 : RPG::Skill
-C name Class.RPG::Skill @name | #A
+C datum `(r2k-namename RPG::Skill)`
 +rpg_skill_sect0
 +subwindow: "User Feedback" rpg_skill_sect2
 +subwindow: "Cost / Chance" rpg_skill_sect3
@@ -182,7 +182,7 @@ e rpg_item_type 0 normal 1 weapon 2 shield 3 armour 4 helmet 5 accessory 6 medic
 e rpg_item_rtarget 0 single 1 centre 2 allAtSameTime 3 allInSequence
 E rpg_item_usecount Uses 0 Unlimited
 : RPG::Item
-C name Class.RPG::Item @name | #A
+C datum `(r2k-namename RPG::Item)`
 @name stringLen 20
 @description stringLen 50
 @animation animation_id
@@ -281,7 +281,7 @@ e rpg_enemyaction_conditiontype 0 always 1 switchActive 2 turnCountInRange 3 liv
 @act_reset_switch_id switch_id
 
 : RPG::Enemy
-C name Class.RPG::Enemy @name | #A
+C datum `(r2k-namename RPG::Enemy)`
 @name stringLen= Slime 20
 @battler_name f_monster_name
 @battler_hue hue
@@ -369,7 +369,7 @@ C name Class.RPG::Enemy @name | #A
 C magicGenpos r2kTroop . . . . 0
 
 : RPG::Troop contextDictionary troop_enemy_id . 1 @members 0 @enemy enemy_id rpg_troop_core
-C name Class.RPG::Troop @name | #A
+C datum `(r2k-namename RPG::Troop)`
 
  ---
 
@@ -381,7 +381,7 @@ C name Class.RPG::Troop @name | #A
 @lat_enemies boolean
 
 : RPG::Terrain
-C name Class.RPG::Terrain @name | #A
+C datum `(r2k-namename RPG::Terrain)`
 @name string
 @damage int
 @encounter%_mod int= 100
@@ -440,7 +440,7 @@ e rpg_state_restriction 0 noRestrict 1 cannotAct 2 onlyAttackEnemy 3 onlyAttackA
 e rpg_state_affecttype 2 leaveParamsAlone 0 halfParams 1 doubleParams
 e rpg_state_changetype 2 nothing 0 lose 1 gain
 : RPG::State
-C name Class.RPG::State @name | #A
+C datum `(r2k-namename RPG::State)`
 @name stringLen 8
 @persists int_boolean
 @colour int
@@ -523,7 +523,7 @@ e rpg_animation_position 0 up 1 middle 2 down
 @animation_name f_battle2_name
 
 : RPG::Animation
-C name Class.RPG::Animation @name | #A
+C datum `(r2k-namename RPG::Animation)`
 @name string
  Animation source changes dependent on the boolean.
 +DA{ @battle2_2k3 rpg_animation_bat1 true rpg_animation_bat2 }
@@ -539,7 +539,7 @@ C magicGenpos r2kAnimation @animation_name . . . 30
  ---
 
 : RPG::Tileset
-C name Class.RPG::Tileset @name | #A
+C datum `(r2k-namename RPG::Tileset)`
 @name string= Template
 @tileset_name { string= templatetileset imgSelector ChipSet/ ChipSet/ }
  This is kind of important:
@@ -722,7 +722,7 @@ e rpg_battlecommand_dir 0 noModify 1 up 2 right 3 down 4 left
  ---
 
 : RPG::Class
-C name Class.RPG::Class @name | #A
+C datum `(r2k-namename RPG::Class)`
 @name string
 @dual_wield boolean
 @lock_equipment boolean
@@ -739,7 +739,7 @@ C name Class.RPG::Class @name | #A
  ---
 
 : RPG::BattlerAnimation
-C name Class.RPG::BattlerAnimation @name | #A
+C datum `(r2k-namename RPG::BattlerAnimation)`
  I really don't understand this stuff
 e rpg_battleranimation_type 0 battlerCharSet 1 animationId
 @name string
@@ -787,7 +787,7 @@ e rpg_battleranimation_type 0 battlerCharSet 1 animationId
 > rpg_bas_animset_weapon arrayIxN 1 33 subwindow RPG::BattlerAnimation
 
 : RPG::BattlerAnimationSet
-C name Class.RPG::BattlerAnimationSet @name | #A
+C datum `(r2k-namename RPG::BattlerAnimationSet)`
 @name string
 e rpg_bas_speed 0 slow 8 normal 14 fast
 @speed rpg_bas_speed
