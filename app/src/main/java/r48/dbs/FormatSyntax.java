@@ -127,16 +127,20 @@ public class FormatSyntax extends App.Svc {
                         }
                         @Override
                         public void decompile(LinkedList<Object> llo) {
-                            llo.add(new DatumSymbol("IDk1"));
+                            llo.add(new DatumSymbol("SCARY_ENUM_THING_MANUALLY_FIX_THIS"));
                         }
                     });
                 } else if (data[i + 1] == ':') {
                     final char v = data[i];
                     // variable exists form.
                     i = explodeComponentsAndAdvance(components, data, i + 2, '}');
+                    final int idx = v - 'A';
                     determineBooleanComponent(r, components, (root) -> {
-                        return paramAcc.get(root, v - 'A') != null;
-                    }, paramAcc);
+                        return paramAcc.get(root, idx) != null;
+                    }, paramAcc, new Object[] {
+                        new DatumSymbol("?"),
+                        new DatumSymbol("]" + idx)
+                    }, null);
                 } else if (data[i + 1] == '=') {
                     char va = data[i];
                     // vt equality form.
@@ -144,12 +148,16 @@ public class FormatSyntax extends App.Svc {
                     i = explodeComponent(eqTargetB, data, i + 2, "=");
                     i = explodeComponentsAndAdvance(components, data, i + 1, '}');
                     final String eqTarget = eqTargetB.toString();
+                    final int idx = va - 'A';
                     determineBooleanComponent(r, components, (root) -> {
                         boolean result = root != null;
                         if (result)
-                            result = paramAcc.get(root, va - 'A').toString().equals(eqTarget);
+                            result = paramAcc.get(root, idx).toString().equals(eqTarget);
                         return result;
-                    }, paramAcc);
+                    }, paramAcc, new Object[] {
+                        new DatumSymbol("="),
+                        new DatumSymbol("]" + idx)
+                    }, eqTarget);
                 } else {
                     throw new RuntimeException("Unknown conditional type!");
                 }
@@ -261,7 +269,7 @@ public class FormatSyntax extends App.Svc {
         }
     }
 
-    private void determineBooleanComponent(LinkedList<CompiledChunk> r, LinkedList<String> components, CompiledPredicate p, ParameterAccessor paramAcc) {
+    private void determineBooleanComponent(LinkedList<CompiledChunk> r, LinkedList<String> components, CompiledPredicate p, ParameterAccessor paramAcc, Object[] decompPrefix, Object decompEqMarker) {
         LinkedList<CompiledChunk> cT = new LinkedList<CompiledChunk>();
         LinkedList<CompiledChunk> cF = new LinkedList<CompiledChunk>();
         for (int i = 0; i < components.size(); i++) {
@@ -284,15 +292,28 @@ public class FormatSyntax extends App.Svc {
             }
             @Override
             public void decompile(LinkedList<Object> llo) {
+                LinkedList<Object> stmt = new LinkedList<>();
                 LinkedList<Object> dclT = new LinkedList<>();
                 LinkedList<Object> dclF = new LinkedList<>();
                 decompileList(cT, dclT);
                 decompileList(cF, dclF);
-                llo.add(MVMU.l(
-                    new DatumSymbol("IDKX"),
-                    dclT,
-                    dclF
-                ));
+                for (Object o : decompPrefix)
+                    stmt.add(o);
+                if (decompEqMarker != null) {
+                    if (dclF.size() == 0) {
+                        stmt.add("");
+                    } else {
+                        stmt.add(dclF);
+                    }
+                    // best-effort :(
+                    dclT.addFirst(decompEqMarker);
+                    stmt.add(dclT);
+                } else {
+                    stmt.add(dclT);
+                    if (dclF.size() > 0)
+                        stmt.add(dclF);
+                }
+                llo.add(stmt);
             }
         });
     }
