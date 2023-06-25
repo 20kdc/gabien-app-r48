@@ -206,7 +206,13 @@ C datum `
 @mod_shake boolean
 
 : RPG::SavePicture
-C name Class.RPG::SavePicture @name @spritesheet_cols_112 @spritesheet_rows_112 @spritesheet_frame_112 @x @y | {A=""=<unused picture>|#A#[#B,#C#]#[#D#] at #E #F}
+C datum `
+(define-name Class.RPG::SavePicture (= @name (
+	(@ @name)
+	"[" (@ @spritesheet_cols_112) "," (@ @spritesheet_rows_112) "][" (@ @spritesheet_frame_112) "]"
+	" at " (@ @x) " " (@ @y)
+) ("" "<unused picture>")))
+`
 @name f_picture_name
 @spritesheet_cols_112 int= 1
 @spritesheet_rows_112 int= 1
@@ -339,7 +345,9 @@ e rpg_character_transparency 0 off 3 on
 @flash_frames_left int
 
 : RPG::SaveMapEvent
-C name Class.RPG::SaveMapEvent @character_name @character_index @x @y | #A:#B#@@#C,#D
+C datum `
+(define-name Class.RPG::SaveMapEvent (@ @character_name) ":" (@ @character_index) "@" (@ @x) "," (@ @y))
+`
 +rpg_character
 @running boolean
 @original_moveroute_index int
@@ -351,7 +359,9 @@ e rpg_save_vehicletype_opt 0 none 1 boat 2 ship 3 airShip
 e rpg_save_vehicletype 1 boat 2 ship 3 airShip
 
 : RPG::SaveVehicleLocation
-C name Class.RPG::SaveVehicleLocation @character_name @character_index @map @x @y | #A:#B#@@#C #D,#E
+C datum `
+(define-name Class.RPG::SaveVehicleLocation (@ @character_name) ":" (@ @character_index) "@" (@ @map map_id #t) " " (@ @x) "," (@ @y))
+`
 +rpg_character
 @vehicle_type rpg_save_vehicletype
 @original_moveroute_index int
@@ -362,7 +372,9 @@ C name Class.RPG::SaveVehicleLocation @character_name @character_index @map @x @
 +halfsplit eventTileHelper @sprite2_index @sprite2_name 1 R2K/TS144.txt spriteSelector @sprite2_index @sprite2_name CharSet/
 
 : RPG::SavePartyLocation
-C name Class.RPG::SavePartyLocation @character_name @character_index @map @x @y | #A:#B#@@#C #D,#E
+C datum `
+(define-name Class.RPG::SavePartyLocation (@ @character_name) ":" (@ @character_index) "@" (@ @map map_id #t) " " (@ @x) "," (@ @y))
+`
 +rpg_character
 @sprite_transparent boolean
  2f is just plain ignored for now
