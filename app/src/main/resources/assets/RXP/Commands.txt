@@ -55,22 +55,10 @@
 
  [Early codes]
 
-C categories "1 - Text" "2 - Flow" "3 - Party" "4 - Map" "5 - Battle" "6 - Misc"
+# RCOM/CommonCommands.txt
 
-0: ">> insert point"
-d An insertion point. This acts as something to replace to add new commands.
-L
-
- Comments
-
-108: "//*" ($ " " ]0)
-d The beginning of a comment.
-p note string
-C groupBehavior messagebox 408
-
-408: "//" ($ " " ]0)
-d A comment continues.
-p note string
+ 0: insert point in CommonCommands
+ 108/408: Comments in CommonCommands
 
 # RXP/CommandsI3.txt
 # RXP/CommandsI4.txt

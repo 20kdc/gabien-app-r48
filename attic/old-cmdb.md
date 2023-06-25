@@ -64,9 +64,6 @@ Some of these only really made sense when the `[][]` syntax was around anyway:
 
 * In the `[@Class.RPG::AudioFile]` syntax, name routines are now looked up at compilation time. This used to be at runtime.
 
-* `interpretParameter` used to prefix `Interp.` when looking up interpretations.
-  This was used a handful of times and made the rules even more confusing.
-
 * The conditional syntaxes `=` and `:`  no longer use `interpretParameter` at all.
   In particular the details on `=` used to read:
 
@@ -98,5 +95,16 @@ Some of these only really made sense when the `[][]` syntax was around anyway:
 ```
   @ causes the next outputted value to be prefixed if it's an enumeration.
   This is more-or-less always used as the "command" "@#A" or "@#B" or such, for "output prefixed enumeration".
+```
+
+* `interpretParameter` used to prefix `Interp.` when looking up interpretations.
+  This was used a handful of times and made the rules even more confusing.
+
+* There used to be a way to check that one parameter is equal to another. This was rarely used, so all uses got migrated to TRC.
+
+```
+  The second checks if a parameter is the same as another. (This check is based on RORIO.rubyEquals)
+  This can be used for range specification (emulating # in the Original Format, but with flexibility):
+   {AB:#A|@#A..@#B}
 ```
 

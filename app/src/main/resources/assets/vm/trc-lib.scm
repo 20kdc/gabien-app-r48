@@ -142,3 +142,21 @@
 		)
 	)
 )
+; (vv= PATH1 PATH2 TRUE [FALSE]) : check PATH1 = PATH2 
+(define (tr-dyni-vveq ctx path1 path2 true false)
+	(append!
+		(tr-dyn-cctx-target ctx)
+		(list
+			(list if
+				(list dm-eq? (tr-dyni-path ctx path1) (tr-dyni-path ctx path2))
+				(tr-dyn-compiler-expr true ctx)
+				(tr-dyn-compiler-expr false ctx)
+			)
+		)
+	)
+)
+(define (tr-dynx-vv= ctx path1 path2 true . extra) (cond
+	((= (list-length extra) 0) (tr-dyni-vveq ctx path1 path2 true ""))
+	((= (list-length extra) 1) (tr-dyni-vveq ctx path1 path2 true (list-ref extra 0)))
+	(else (error "bad arg count to ?"))
+))

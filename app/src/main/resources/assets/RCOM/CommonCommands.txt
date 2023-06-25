@@ -1,0 +1,49 @@
+
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
+
+ Common commands between RXP/RVXA.
+ 
+C categories "1 - Text" "2 - Flow" "3 - Party" "4 - Map" "5 - Battle" "6 - Misc"
+
+0: ">> insert point"
+d This is a placeholder. The idea is that you replace this command with the one you actually want to have. R48 doesn't really need these.
+L
+
+ Comments
+
+108: "//*" ($ " " ]0)
+d The beginning of a comment.
+p note string
+C groupBehavior messagebox 408
+
+408: "//" ($ " " ]0)
+d A comment continues.
+p note string
+
+ SV/SS
+
+121: "Control Switch" (vv= ]0 ]1 "" "es") (? ]0 (" " (@ ]0 switch_id #t) (vv= ]0 ]1 "" (".." (@ ]1 switch_id #t))) "->" (= ]2 "ON" (1 "OFF"))))
+C category 1
+d Sets a switch or a range of switches on or off.
+p firstSwitch switch_id
+p lastSwitch switch_id
+p turnOff int_boolean
+
+122: "Set Variable" (vv= ]0 ]1 "" "s") (? ]0 (" " (@ ]0 var_id #t) (vv= ]0 ]1 "" (".." (@ ]1 var_id #t))) " " (@ ]2 set_variables_operation) (@ : set_variables_parameters)))
+C category 1
+ note: the parameters given here are for formatting reasons, since the X overrides any actual use.
+d Modifies a variable or a range of variables (first/lastVar) in a given way (operation) by a given value (source)
+p firstVar var_id
+p lastVar var_id
+p op set_variables_operation
+p src set_variables_source
+X set_variables_parameters
+
+123: "Control Selfswitch" (? ]0 (" " (@ ]0 selfswitch_id) " = " (= ]1 "ON" (1 "OFF"))))
+C category 1
+d Enables or disables a selfswitch.
+p selfSwitch selfswitch_id
+p turnOff int_boolean

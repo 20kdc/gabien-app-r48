@@ -6,28 +6,7 @@
 
  [Interpreter Part 4]
 
-121:@@Control Switch{A:{AB: @[switch_id]A|es @[switch_id]A..@[switch_id]B} = {C=1=OFF|ON}|es}
-C category 1
-d Sets a switch or a range of switches on or off.
-p firstSwitch switch_id
-p lastSwitch switch_id
-p turnOff int_boolean
-
-122:@@Set Variable{A:{AB: @[var_id]A|s @[var_id]A..@[var_id]B} [set_variables_operation]C [@set_variables_parameters]|s}
-C category 1
- note: the parameters given here are for formatting reasons, since the X overrides any actual use.
-d Modifies a variable or a range of variables (first/lastVar) in a given way (operation) by a given value (source)
-p firstVar var_id
-p lastVar var_id
-p op set_variables_operation
-p src set_variables_source
-X set_variables_parameters
-
-123:@@Control Selfswitch{A: #A{B: = {B=1=OFF|ON}}}
-C category 1
-d Enables or disables a selfswitch.
-p selfSwitch selfswitch_id
-p turnOff int_boolean
+ 121/122/123 (Control Switch/Set Variable/Control Selfswitch) in CommonCommands.
 
  I think the timer counts up?
  In any case if running is false, seconds is irrelevant.

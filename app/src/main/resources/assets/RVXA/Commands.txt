@@ -6,9 +6,7 @@
 
  Event commands for VX Ace.
 
-0: ">> insert point"
-d This is a placeholder. The idea is that you replace this command with the one you actually want to have. R48 doesn't really need these.
-L
+# RCOM/CommonCommands.txt
 
  LINE 251
 
@@ -81,15 +79,7 @@ d Continue some scrolling text.
 C translatable
 p text string
 
-108: "//*" ($ " " ]0)
-d The beginning of a comment.
-p text string
-C groupBehavior messagebox 408
-
-408: "//" ($ " " ]0)
-d The continuation of a comment.
-p text string
-
+ Comments (108/408) in CommonCommands
 
 111:@@Conditional{A::[@conditional_branch_parameters]| Branch (c.411/412)}
 d A conditional branch, allowing you to run different code depending on the state of things.
@@ -145,25 +135,7 @@ p labelName string
 d Jump to a label. May act odd if it enters/leaves conditional blocks or such.
 p labelName string
 
-121:@@Control Switch{AB: @[switch_id]A|es @[switch_id]A..@[switch_id]B}{C:->{C=1=OFF|ON}}
-d Enable or disable a given range of switches.
-p first switch_id
-p last switch_id
-p disable int_boolean
-
-122:@@Set Variable{A:{AB: @[var_id]A|s @[var_id]A..@[var_id]B} [set_variables_operation]C [@set_variables_parameters]}
-d Modify a given range of variables in a given way.
- note: the parameters given here are for formatting reasons, since the X overrides any actual use.
-p firstVar var_id
-p lastVar var_id
-p op set_variables_operation
-p src set_variables_source
-X set_variables_parameters
-
-123:@@Control Selfswitch{A: #A{B: = {B=1=OFF|ON}}}
-d Enables or disables an event's SelfSwitch.
-p ch selfswitch_id
-p turnOff int_boolean
+ 121/122/123 (Control Switch/Set Variable/Control Selfswitch) in CommonCommands.
 
 124:@@{A:{A=1=Stop Timer|Start Timer at #B seconds}|Start/Stop Timer}
 d Stop or start a timer.

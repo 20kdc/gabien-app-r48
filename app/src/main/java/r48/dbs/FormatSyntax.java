@@ -12,6 +12,7 @@ import gabien.datum.DatumWriter;
 import r48.App;
 import r48.io.data.RORIO;
 import r48.minivm.MVMSlot;
+import r48.minivm.MVMU;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
@@ -59,9 +60,10 @@ public class FormatSyntax extends App.Svc {
         LinkedList<CompiledChunk> r = new LinkedList<>();
         compileChunk(r, name, paramAcc);
         optimizeChunks(r);
-        System.out.print("decompile: (");
-        decompileList(r);
-        System.out.println(")");
+        System.out.print("decompile: ");
+        LinkedList<Object> llo = new LinkedList<>();
+        decompileList(r, llo);
+        System.out.println(DatumWriter.objectToString(llo));
         return (a) -> {
             StringBuilder sb = new StringBuilder();
             for (CompiledChunk chk : r)
@@ -69,11 +71,9 @@ public class FormatSyntax extends App.Svc {
             return sb.toString();
         };
     }
-    private void decompileList(LinkedList<CompiledChunk> ccr) {
-        for (CompiledChunk cc : ccr) {
-            cc.decompile();
-            System.out.print(" ");
-        }
+    private void decompileList(LinkedList<CompiledChunk> ccr, LinkedList<Object> llo) {
+        for (CompiledChunk cc : ccr)
+            cc.decompile(llo);
     }
 
     /**
@@ -113,6 +113,7 @@ public class FormatSyntax extends App.Svc {
                         def = componentsComp.removeLast();
                     final ICompiledFormatSyntax fDef = def;
                     r.add(new CompiledChunk() {
+                        @Override
                         public void r(StringBuilder sb, RORIO root) {
                             ICompiledFormatSyntax res = fDef;
                             String val = valComp.r(root);
@@ -124,8 +125,9 @@ public class FormatSyntax extends App.Svc {
                             }
                             sb.append(res.r(root));
                         }
-                        public void decompile() {
-                            System.out.print("IDk1");
+                        @Override
+                        public void decompile(LinkedList<Object> llo) {
+                            llo.add(new DatumSymbol("IDk1"));
                         }
                     });
                 } else if (data[i + 1] == ':') {
@@ -146,17 +148,6 @@ public class FormatSyntax extends App.Svc {
                         boolean result = root != null;
                         if (result)
                             result = paramAcc.get(root, va - 'A').toString().equals(eqTarget);
-                        return result;
-                    }, paramAcc);
-                } else if (data[i + 2] == ':') {
-                    // vv equality form.
-                    final char va = data[i];
-                    final char vb = data[i + 1];
-                    i = explodeComponentsAndAdvance(components, data, i + 3, '}');
-                    determineBooleanComponent(r, components, (root) -> {
-                        boolean result = root != null;
-                        if (result)
-                            return RORIO.rubyEquals(paramAcc.get(root, va - 'A'), paramAcc.get(root, vb - 'A'));
                         return result;
                     }, paramAcc);
                 } else {
@@ -183,22 +174,26 @@ public class FormatSyntax extends App.Svc {
                     char ch = data[++i];
                     final EnumSchemaElement.Prefix thisPrefixNext = prefixNext;
                     r.add(new CompiledChunk() {
+                        @Override
                         public void r(StringBuilder sb, RORIO root) {
                             if (root == null)
                                 return;
                             RORIO p = paramAcc.get(root, ch - 'A');
                             sb.append(interpretParameter(p, type, thisPrefixNext));
                         }
-                        public void decompile() {
-                            System.out.print("(@ ]");
+                        @Override
+                        public void decompile(LinkedList<Object> llo) {
                             int idx = (ch - 'A');
-                            System.out.print(idx);
-                            System.out.print(" ");
-                            System.out.print(type);
                             if (thisPrefixNext == EnumSchemaElement.Prefix.Prefix) {
-                                System.out.print(" #t)");
+                                llo.add(MVMU.l(
+                                    new DatumSymbol("@"), new DatumSymbol("]" + idx),
+                                    new DatumSymbol(type), true
+                                ));
                             } else {
-                                System.out.print(")");
+                                llo.add(MVMU.l(
+                                    new DatumSymbol("@"), new DatumSymbol("]" + idx),
+                                    new DatumSymbol(type)
+                                ));
                             }
                         }
                     });
@@ -208,14 +203,16 @@ public class FormatSyntax extends App.Svc {
                     if (n == null)
                         throw new RuntimeException("Expected NDB " + tp);
                     r.add(new CompiledChunk() {
+                        @Override
                         public void r(StringBuilder sb, RORIO root) {
                             if (root == null)
                                 return;
                             // Meta-interpretation syntax
                             sb.append(n.r(root));
                         }
-                        public void decompile() {
-                            System.out.print("Idk4");
+                        @Override
+                        public void decompile(LinkedList<Object> llo) {
+                            llo.add(new DatumSymbol("Idk4"));
                         }
                     });
                 }
@@ -225,6 +222,7 @@ public class FormatSyntax extends App.Svc {
                 final char ltr = data[++i];
                 final int pid = ltr - 'A';
                 r.add(new CompiledChunk() {
+                    @Override
                     public void r(StringBuilder sb, RORIO root) {
                         RORIO v = paramAcc.get(root, pid);
                         if (v != null) {
@@ -233,10 +231,9 @@ public class FormatSyntax extends App.Svc {
                             sb.append(ltr);
                         }
                     }
-                    public void decompile() {
-                        System.out.print("(@ ]");
-                        System.out.print(pid);
-                        System.out.print(")");
+                    @Override
+                    public void decompile(LinkedList<Object> llo) {
+                        llo.add(MVMU.l(new DatumSymbol("@"), new DatumSymbol("]" + pid)));
                     }
                 });
                 prefixNext = EnumSchemaElement.Prefix.NoPrefix;
@@ -286,12 +283,16 @@ public class FormatSyntax extends App.Svc {
                     c.r(sb, root);
             }
             @Override
-            public void decompile() {
-                System.out.print("(DBC (");
-                decompileList(cT);
-                System.out.print(") (");
-                decompileList(cF);
-                System.out.print("))");
+            public void decompile(LinkedList<Object> llo) {
+                LinkedList<Object> dclT = new LinkedList<>();
+                LinkedList<Object> dclF = new LinkedList<>();
+                decompileList(cT, dclT);
+                decompileList(cF, dclF);
+                llo.add(MVMU.l(
+                    new DatumSymbol("IDKX"),
+                    dclT,
+                    dclF
+                ));
             }
         });
     }
@@ -420,7 +421,7 @@ public class FormatSyntax extends App.Svc {
         /**
          * Decompile
          */
-        void decompile();
+        void decompile(LinkedList<Object> llo);
         /**
          * Tries combining with a given "next" chunk. This is in-place.
          */
@@ -443,8 +444,8 @@ public class FormatSyntax extends App.Svc {
             sb.append(str);
         }
         @Override
-        public void decompile() {
-            System.out.print(DatumWriter.objectToString(str));
+        public void decompile(LinkedList<Object> llo) {
+            llo.add(str);
         }
         @Override
         public boolean tryCombine(CompiledChunk next) {

@@ -91,7 +91,7 @@
   Almost all blocks use '{' to start, '|' will invert the condition mid-way, and '}' terminates.
   (A special type uses '|' as a separator.)
 
-  There are four formats for blocks.
+  There are three formats for blocks.
   If a parameter mentioned is unavailable, the false branch is taken.
   Blocks are never entirely skipped unless they have no false-branch.
 
@@ -99,18 +99,14 @@
    {A:Previous attempts to listen to this tape will have found it blank.}
    {A:(with parameter)|(without parameter)}
 
-  The second checks if a parameter is the same as another. (This check is based on RORIO.rubyEquals)
-  This can be used for range specification (emulating # in the Original Format, but with flexibility):
-   {AB:#A|@#A..@#B}
-
-  The third checks if a parameter, as run through RORIO.toString, is equal to a text string.
+  The second checks if a parameter, as run through RORIO.toString, is equal to a text string.
   This should only be used for numbers/enums and booleans, really.
   This can be used as a nicer way to output int_booleans...
   {A=1=(enable)|(disable)}
   ... or as a way to handle "invert" options. (Note the inverted order of the text.)
   {A=1=OFF|ON}
 
-  The fourth is an enumeration. It is indicated by having '@' instead of the first variable.
+  The third is an enumeration. It is indicated by having '@' instead of the first variable.
   This enumeration is based on text, allowing it to be flexible (using interpretations for transform),
    and also allowing it to be simple.
   {@#A|:concurrent|Concurrent|:waitOn|Wait On...|Unknown #A}
