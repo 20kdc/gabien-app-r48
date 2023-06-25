@@ -35,13 +35,13 @@ e event_pritype 0 floor 1 character 2 flying
 @item_id item_id
 @actor_valid boolean
 @actor_id actor_id
-@variable_valid boolean
-@variable_id var_id
-@variable_value int
 @switch1_valid boolean
 @switch1_id switch_id
 @switch2_valid boolean
 @switch2_id switch_id
+@variable_valid boolean
+@variable_id var_id
+@variable_value int
 @self_switch_ch string= A
 @self_switch_valid boolean
 

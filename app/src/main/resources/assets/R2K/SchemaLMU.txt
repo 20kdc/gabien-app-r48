@@ -15,17 +15,29 @@
 @timer_2_2k3 boolean
 
 : RPG::EventPage::Condition
-C name RPG::EventPage::Condition.var @valid@var_>=_or_2k3op @var_id @var_value @var_compare_op_2k3 | {A=T=, Var @[var_id]B {D:[var_compare_op_2k3]D|>=} #C}
-C name RPG::EventPage::Condition.item @valid@item @item_id | {A=T=, Party Has Item @[item_id]B}
-C name RPG::EventPage::Condition.actor @valid@actor @actor_id | {A=T=, Party Has Actor @[actor_id]B}
-C name RPG::EventPage::Condition.timer1 @valid@timer_1 @timer_1_secs | {A=T=, Timer1 <= #Bs}
-C name RPG::EventPage::Condition.timer2 @valid@timer_2_2k3 @timer_2_secs_2k3 | {A=T=, Timer2 <= #Bs}
 C datum `
 (define-name RPG::EventPage::Condition.switchA (= @valid@switch_a "" (#t
 	", Switch " (@ @switch_a switch_id #t)
 )))
 (define-name RPG::EventPage::Condition.switchB (= @valid@switch_b "" (#t
 	", Switch " (@ @switch_b switch_id #t)
+)))
+(define-name RPG::EventPage::Condition.var (= @valid@var_>=_or_2k3op "" (#t
+	", Var " (@ @var_id var_id #t)
+	(? @var_compare_op_2k3 (" " (@ @var_compare_op_2k3 var_compare_op_2k3)) ">=")
+	" " (@ @var_value)
+)))
+(define-name RPG::EventPage::Condition.item (= @valid@item "" (#t
+	", Party Has Item " (@ @item_id item_id #t)
+)))
+(define-name RPG::EventPage::Condition.actor (= @valid@actor "" (#t
+	", Party Has Actor " (@ @actor_id actor_id #t)
+)))
+(define-name RPG::EventPage::Condition.timer1 (= @valid@timer_1 "" (#t
+	", Timer1 <= " (@ @timer_1_secs) "s"
+)))
+(define-name RPG::EventPage::Condition.timer2 (= @valid@timer_2_2k3 "" (#t
+	", Timer2 <= " (@ @timer_2_secs_2k3) "s"
 )))
 (define-name Class.RPG::EventPage::Condition
 	(@ : RPG::EventPage::Condition.switchA) (@ : RPG::EventPage::Condition.switchB)
@@ -67,7 +79,7 @@ e var_compare_op_2k3 0 == 1 >= 2 <= 3 > 4 < 5 !=
 +internal_EPGD
 
 : RPG::EventPage
-C name Class.RPG::EventPage @condition | [RPG::EventPage::Condition]A
+C datum `(define-name Class.RPG::EventPage (@ @condition))`
 @condition subwindow RPG::EventPage::Condition
 +subwindow: Graphics eventpage_graphics
  Default is set like this both for convenience and so that a SavePartyLocation is correct
@@ -86,7 +98,7 @@ e eventpage_trigger 0 playerInteract 1 playerCollide 2 playerOrEventCollide 3 au
 @list EventListEditor
 
 : RPG::Event
-C name Class.RPG::Event : @name @x @y | #B (#C, #D)
+C datum `(define-name Class.RPG::Event (@ @name) " (" (@ @x) ", " (@ @y) ")")`
 +windowTitleAttachment "(@ @name)"
 @name string
 @x int
