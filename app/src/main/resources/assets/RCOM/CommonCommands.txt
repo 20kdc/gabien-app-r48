@@ -32,7 +32,7 @@ p firstSwitch switch_id
 p lastSwitch switch_id
 p turnOff int_boolean
 
-122: "Set Variable" (vv= ]0 ]1 "" "s") (? ]0 (" " (@ ]0 var_id #t) (vv= ]0 ]1 "" (".." (@ ]1 var_id #t))) " " (@ ]2 set_variables_operation) (@ : set_variables_parameters)))
+122: "Set Variable" (vv= ]0 ]1 "" "s") (? ]0 (" " (@ ]0 var_id #t) (vv= ]0 ]1 "" (".." (@ ]1 var_id #t))) " " (@ ]2 set_variables_operation) " " (@ : set_variables_parameters)))
 C category 1
  note: the parameters given here are for formatting reasons, since the X overrides any actual use.
 d Modifies a variable or a range of variables (first/lastVar) in a given way (operation) by a given value (source)

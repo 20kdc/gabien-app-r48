@@ -164,7 +164,17 @@ e set_variables_otherVar_type 0 mapId 1 partySize 2 gold 3 steps 4 playTimeSecs 
  --- AND THAT'S FINALLY DONE. Let there never be any more. ---
  -- Yay vehicles --
 
-C name transfer_vehicle_paramassist ]1 ]2 ]3 ]4 ]0 | Transfer vehicle [vehicle_id]E{A=1= by vars @[var_id]B#[@[var_id]C,@[var_id]D| to @[map_id]B#[[int]C,[int]D}]
+C datum `
+(define-name transfer_vehicle_paramassist
+	"Transfer vehicle "
+	(@ ]0 vehicle_id)
+	(= ]1 (
+		" to " (@ ]2 map_id #t) "[" (@ ]3) "," (@ ]4) "]"
+	) (1
+		" by vars " (@ ]2 var_id #t) "[" (@ ]3 var_id #t) "," (@ ]4 var_id #t) "]"
+	))
+)
+`
 
  -- bits & pieces --
 
