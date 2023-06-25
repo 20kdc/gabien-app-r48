@@ -47,10 +47,10 @@ public interface IDynTrProxy {
     }
 
     /**
-     * Legacy
+     * For defining name routines.
      */
-    default FF1 dTrName(DatumSrcLoc srcLoc, String id, DatumSymbol mode, Object text, boolean isNLS) {
-        return dynTrBase(srcLoc, TrNames.nameRoutine(id), mode, text, isNLS);
+    default FF1 dTrName(DatumSrcLoc srcLoc, String id, Object text, boolean isNLS) {
+        return dynTrBase(srcLoc, TrNames.nameRoutine(id), DynTrSlot.DYNTR_FF1, text, isNLS);
     }
 
     /**

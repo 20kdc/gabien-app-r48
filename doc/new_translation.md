@@ -95,9 +95,9 @@ TRC is used when all of these apply:
     
     * TRC can't be loaded because of missing primitives.
 
-In terms of when TRC appears in code, `define-tr` isn't TRC, while `define-name` is.
+* The translation is expected to be passed IRIOs, with one "primary" IRIO.
 
-`define-tr` isn't TRC (accepts arbitrary Scheme value), while `define-name` is TRC.
+In terms of when TRC appears in code: `define-tr` isn't TRC (accepts arbitrary Scheme values), while `define-name` is TRC.
 
 ### How To Use It
 

@@ -34,9 +34,9 @@ public class MVMTrLibrary {
                 .attachHelp("(define-name-nls KEY CONTENT...) : Defines a non-localizable name routine.");
 
         ctx.defineSlot(new DatumSymbol("define-tr")).v = new DefineTr("define-tr", null, false)
-                .attachHelp("(define-name KEY EXPR) : Defines a DynTrSlot.");
+                .attachHelp("(define-tr KEY EXPR) : Defines a DynTrSlot.");
         ctx.defineSlot(new DatumSymbol("define-tr-nls")).v = new DefineTr("define-tr-nls", null, true)
-                .attachHelp("(define-name-nls KEY EXPR) : Defines a non-localizable DynTr 'sort of slot'.");
+                .attachHelp("(define-tr-nls KEY EXPR) : Defines a non-localizable DynTr 'sort of slot'.");
 
         ctx.defLib("r2kts->string", (x) -> {
             RORIO rubyIO = (RORIO) x;
@@ -78,7 +78,7 @@ public class MVMTrLibrary {
             LinkedList<Object> l = new LinkedList<>();
             for (int i = 1; i < call.length; i++)
                 l.add(call[i]);
-            ((MVMEnvR48) cs.context).dTrName(cs.topLevelSrcLoc, ((DatumSymbol) call[0]).id, DynTrSlot.DYNTR_FF1, l, isNLS);
+            ((MVMEnvR48) cs.context).dTrName(cs.topLevelSrcLoc, ((DatumSymbol) call[0]).id, l, isNLS);
             return null;
         }
     }
