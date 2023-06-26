@@ -6,7 +6,7 @@
 
  [Interpreter Part 5]
 
-201:(? ]0 (@ ]0 transfer_player_paramassist) "Transfer Player")
+201:(? ]0 (@ : transfer_player_paramassist) "Transfer Player")
 C category 2
 p useVars int_boolean
 P 0 mapVar var_id
@@ -19,7 +19,7 @@ p playerDir direction_disable
 p fadeType transfer_player_fadetype
 x transfer_player_paramassist
 
-202:@@{A:[@set_event_location_paramassist]|Set Event Location}
+202:(? ]0 (@ : set_event_location_paramassist) "Set Event Location")
 C category 3
 X set_event_location_paramassist
 
@@ -29,7 +29,7 @@ p direction direction
 p distance int
 p speed int
 
-204:@@Change Map{A: #A} Settings
+204:"Change Map" (? ]0 (" " (@ ]0 cms_type))) " Settings"
 C category 3
 p type cms_type
 X change_map_settings_parameters

@@ -168,9 +168,9 @@ C datum `
 (define-name transfer_vehicle_paramassist
 	"Transfer vehicle "
 	(@ ]0 vehicle_id)
-	(= ]1 (
+	(if-eq ]1 0 (
 		" to " (@ ]2 map_id #t) "[" (@ ]3) "," (@ ]4) "]"
-	) (1
+	) (
 		" by vars " (@ ]2 var_id #t) "[" (@ ]3 var_id #t) "," (@ ]4 var_id #t) "]"
 	))
 )
@@ -180,7 +180,7 @@ C datum `
 
 C datum `
 (define-name iterate_actor_var
-	(= ]0 (@ ]1 iterate_actor_id #t) (1 "v." (@ ]1 var_id #t)))
+	(if-eq ]0 0 (@ ]1 iterate_actor_id #t) ("v." (@ ]1 var_id #t)))
 )
 `
 

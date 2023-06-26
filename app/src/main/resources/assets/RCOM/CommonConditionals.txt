@@ -8,7 +8,7 @@
 
 .conditional_branch_switch
 C datum `
-(define-name conditional_branch_switch "Switch " (@ ]1 switch_id #t) " " (= ]2 "ON" (1 "OFF")))
+(define-name conditional_branch_switch "Switch " (@ ]1 switch_id #t) " " (@ ]2 int_boolean_switch_not))
 `
 ]0 type conditional_branch_types
 ]1 switch switch_id
@@ -16,10 +16,8 @@ C datum `
 
 .conditional_branch_variable
 C datum `
-(define-name conditional_branch_variable "Var " (@ ]1 var_id #t) " " (@ ]4 comparison_type) " "
-	(= ]2 (@ ]3)
-		(1 "var " (@ ]3 var_id #t))
-	)
+(define-name conditional_branch_variable (@ ]1 var_id_encased) " " (@ ]4 comparison_type) " "
+	(if-eq ]2 0 (@ ]3) (@ ]3 var_id_encased))
 )
 `
 ]0 type conditional_branch_types
@@ -35,7 +33,7 @@ C datum `
 
 .conditional_branch_selfSwitch
 C datum `
-(define-name conditional_branch_selfSwitch "Self Switch " (@ ]1 selfswitch_id) " is " (= ]2 "ON" (1 "OFF")))
+(define-name conditional_branch_selfSwitch "Self Switch " (@ ]1 selfswitch_id) " is " (@ ]2 int_boolean_switch_not))
 `
 ]0 type conditional_branch_types
 ]1 switch selfswitch_id
@@ -90,7 +88,7 @@ C datum `
 .conditional_branch_enemy
 C datum `
 (define-name conditional_branch_enemy "Enemy " (@ ]1 troop_enemy_id) " "
-	(= ]2 "is alive" (1 "has state " (@ ]3 state_id #t)))
+	(if-eq ]2 0 "is alive" ("has state " (@ ]3 state_id #t)))
 )
 `
 ]0 type conditional_branch_types

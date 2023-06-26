@@ -207,11 +207,11 @@ C datum `
 
 : RPG::SavePicture
 C datum `
-(define-name Class.RPG::SavePicture (= @name (
+(define-name Class.RPG::SavePicture (if-ne @name "" (
 	(@ @name)
 	"[" (@ @spritesheet_cols_112) "," (@ @spritesheet_rows_112) "][" (@ @spritesheet_frame_112) "]"
 	" at " (@ @x) " " (@ @y)
-) ("" "<unused picture>")))
+) "<unused picture>"))
 `
 @name f_picture_name
 @spritesheet_cols_112 int= 1

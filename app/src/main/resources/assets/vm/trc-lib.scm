@@ -160,3 +160,27 @@
 	((= (list-length extra) 1) (tr-dyni-vveq ctx path1 path2 true (list-ref extra 0)))
 	(else (error "bad arg count to ?"))
 ))
+; (if-eq/if-ne PATH VAL TRUE [FALSE]) : check value equality
+(define (tr-dyni-if-eq ctx path val true false)
+	(append!
+		(tr-dyn-cctx-target ctx)
+		(list
+			(list if
+				; note the embedding of the encoded value
+				(list dm-eq? (tr-dyni-path ctx path) (dm-key val))
+				(tr-dyn-compiler-expr true ctx)
+				(tr-dyn-compiler-expr false ctx)
+			)
+		)
+	)
+)
+(define (tr-dynx-if-eq ctx path val true . extra) (cond
+	((= (list-length extra) 0) (tr-dyni-if-eq ctx path val true ""))
+	((= (list-length extra) 1) (tr-dyni-if-eq ctx path val true (list-ref extra 0)))
+	(else (error "bad arg count to if-eq"))
+))
+(define (tr-dynx-if-ne ctx path val true . extra) (cond
+	((= (list-length extra) 0) (tr-dyni-if-eq ctx path val "" true))
+	((= (list-length extra) 1) (tr-dyni-if-eq ctx path val (list-ref extra 0) true))
+	(else (error "bad arg count to if-ne"))
+))

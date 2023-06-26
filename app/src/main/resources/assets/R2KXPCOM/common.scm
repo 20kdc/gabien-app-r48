@@ -5,17 +5,7 @@
 
 ; Common macros/etc.
 
-(include "R2KXPCOM/common")
-
-; (rcom-idname CSYM ENG): Defines a name for the given Ruby class that shows the @id and @name
-(define-syntax (rcom-idname csym eng)
-	(list
-		define-name
-		(string->symbol (.. "Class." (symbol->string csym)))
-		eng
-		" "
-		'(@ @id)
-		": "
-		'(@ @name)
-	)
-)
+(define-name var_id_encased "Var[" (@ : var_id #t) "]")
+(define-name var_id_indirect "Var[Var[" (@ : var_id #t) "]]")
+(define-name int_boolean_switch     (if-ne : 0 "ON" "OFF"))
+(define-name int_boolean_switch_not (if-eq : 0 "ON" "OFF"))

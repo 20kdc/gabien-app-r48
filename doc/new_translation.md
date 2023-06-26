@@ -116,3 +116,6 @@ Dynamic translations have a *focus.* The focus exists so that multiple arguments
 `vm` simply escalates to Scheme. The inverse is possible; dynamic translation entries can be called from Scheme as regular functions.
 
 Finally, there's the rest of the actual operations themselves. See `vm/trc-lib.scm` for these.
+
+You can test TRC expressions in the REPL using `(tr-dyn-fmt OBJ CODE)`.
+

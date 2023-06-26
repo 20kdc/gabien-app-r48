@@ -46,9 +46,9 @@ e direction_disable 0 noChange 2 down 4 left 6 right 8 up
 C datum `
 (define-name transfer_player_paramassist
 	"Transfer player"
-	(= ]0
+	(if-eq ]0 0
 		(" to " (@ ]1 map_id #t) "[" (@ ]2) "," (@ ]3) "]")
-		(1 " by vars " (@ ]1 var_id #t) "[" (@ ]2 var_id #t) "," (@ ]3 var_id #t) "]")
+		(" by vars " (@ ]1 var_id #t) "[" (@ ]2 var_id #t) "," (@ ]3 var_id #t) "]")
 	)
 	" dir." (@ ]4 direction_disable)
 	", fade " (@ ]5 transfer_player_fadetype)

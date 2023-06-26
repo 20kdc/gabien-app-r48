@@ -84,3 +84,15 @@
 
 (define (tr-dyn-compiler-ff2 code) (tr-dyn-compiler-root code fl2))
 (help-set! tr-dyn-compiler-ff2 "(tr-dyn-compiler-ff2 CODE) : Dynamic translation compiler, invoked Javaside.")
+
+(define-syntax (tr-dyn-fmt obj . code)
+	(list
+		(list
+			tr-dyn-compiler-root
+			(list quote code)
+			fl1
+		)
+		obj
+	)
+)
+(help-set! tr-dyn-fmt "(tr-dyn-fmt OBJ . CODE...) : Compile a dynamic translation and execute it on the given object. Good for testing.")

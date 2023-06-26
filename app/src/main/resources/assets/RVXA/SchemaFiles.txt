@@ -116,9 +116,9 @@ e commonevent_trigger 0 static 1 autorunOnSwitch 2 autorunOnSwitchParallel
 : RPG::CommonEvent
 C datum `
 (define-name Class.RPG::CommonEvent "CommonEvent " (@ @id) ": " (@ @name)
-	(= @trigger (
+	(if-ne @trigger 0 (
 		" " (@ @trigger commonevent_trigger) " " (@ @switch_id switch_id #t)
-	) (0))
+	))
 )
 `
 @id index

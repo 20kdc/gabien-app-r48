@@ -12,6 +12,7 @@
 ; _EPL means 'EasyRPG Player'
 
 ; VM stuff
+(include "R2KXPCOM/common")
 (include "R2K/vm/general")
 (include "R2K/vm/itemtext")
 

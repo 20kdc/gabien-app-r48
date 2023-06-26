@@ -25,7 +25,7 @@ p note string
 
  SV/SS
 
-121: "Control Switch" (vv= ]0 ]1 "" "es") (? ]0 (" " (@ ]0 switch_id #t) (vv= ]0 ]1 "" (".." (@ ]1 switch_id #t))) "->" (= ]2 "ON" (1 "OFF"))))
+121: "Control Switch" (vv= ]0 ]1 "" "es") (? ]0 (" " (@ ]0 switch_id #t) (vv= ]0 ]1 "" (".." (@ ]1 switch_id #t))) " = " (@ ]2 int_boolean_switch_not)))
 C category 1
 d Sets a switch or a range of switches on or off.
 p firstSwitch switch_id
@@ -42,7 +42,7 @@ p op set_variables_operation
 p src set_variables_source
 X set_variables_parameters
 
-123: "Control Selfswitch" (? ]0 (" " (@ ]0 selfswitch_id) " = " (= ]1 "ON" (1 "OFF"))))
+123: "Control Selfswitch" (? ]0 (" " (@ ]0 selfswitch_id) " = " (@ ]1 int_boolean_switch_not)))
 C category 1
 d Enables or disables a selfswitch.
 p selfSwitch selfswitch_id

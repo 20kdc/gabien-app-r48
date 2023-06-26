@@ -22,16 +22,16 @@
 
 : RPG::Event::Page::Condition
 C datum `
-(define-name RPG::Event::Page::Condition.switchA (= @switch1_valid "" (#t
+(define-name RPG::Event::Page::Condition.switchA (if-eq @switch1_valid #t (
 	", Switch " (@ @switch1_id switch_id #t)
 )))
-(define-name RPG::Event::Page::Condition.switchB (= @switch2_valid "" (#t
+(define-name RPG::Event::Page::Condition.switchB (if-eq @switch2_valid #t (
 	", Switch " (@ @switch2_id switch_id #t)
 )))
-(define-name RPG::Event::Page::Condition.var (= @variable_valid "" (#t
+(define-name RPG::Event::Page::Condition.var (if-eq @variable_valid #t (
 	", Var " (@ @variable_id var_id #t) " " (@ @variable_value)
 )))
-(define-name RPG::Event::Page::Condition.selfSwitch (= @self_switch_valid "" (#t
+(define-name RPG::Event::Page::Condition.selfSwitch (if-eq @self_switch_valid #t (
 	", Self-Switch " (@ @self_switch_ch selfswitch_id #t)
 )))
 (define-name Class.RPG::Event::Page::Condition

@@ -16,27 +16,27 @@
 
 : RPG::EventPage::Condition
 C datum `
-(define-name RPG::EventPage::Condition.switchA (= @valid@switch_a "" (#t
+(define-name RPG::EventPage::Condition.switchA (if-eq @valid@switch_a #t (
 	", Switch " (@ @switch_a switch_id #t)
 )))
-(define-name RPG::EventPage::Condition.switchB (= @valid@switch_b "" (#t
+(define-name RPG::EventPage::Condition.switchB (if-eq @valid@switch_b #t (
 	", Switch " (@ @switch_b switch_id #t)
 )))
-(define-name RPG::EventPage::Condition.var (= @valid@var_>=_or_2k3op "" (#t
+(define-name RPG::EventPage::Condition.var (if-eq @valid@var_>=_or_2k3op #t (
 	", Var " (@ @var_id var_id #t)
 	(? @var_compare_op_2k3 (" " (@ @var_compare_op_2k3 var_compare_op_2k3)) ">=")
 	" " (@ @var_value)
 )))
-(define-name RPG::EventPage::Condition.item (= @valid@item "" (#t
+(define-name RPG::EventPage::Condition.item (if-eq @valid@item #t (
 	", Party Has Item " (@ @item_id item_id #t)
 )))
-(define-name RPG::EventPage::Condition.actor (= @valid@actor "" (#t
+(define-name RPG::EventPage::Condition.actor (if-eq @valid@actor #t (
 	", Party Has Actor " (@ @actor_id actor_id #t)
 )))
-(define-name RPG::EventPage::Condition.timer1 (= @valid@timer_1 "" (#t
+(define-name RPG::EventPage::Condition.timer1 (if-eq @valid@timer_1 #t (
 	", Timer1 <= " (@ @timer_1_secs) "s"
 )))
-(define-name RPG::EventPage::Condition.timer2 (= @valid@timer_2_2k3 "" (#t
+(define-name RPG::EventPage::Condition.timer2 (if-eq @valid@timer_2_2k3 #t (
 	", Timer2 <= " (@ @timer_2_secs_2k3) "s"
 )))
 (define-name Class.RPG::EventPage::Condition

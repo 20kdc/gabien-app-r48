@@ -12,7 +12,7 @@ p text string
 d Test samples using Anti-Mass Spectrometer testtextteststext
 X ams_setting_host
 
-985: "Enable big scary thing " (= ]0 "now." (#f "later."))
+985: "Enable big scary thing " (if-eq ]0 #t "now." "later.")
 d This is a description.
 p bigScaryThing boolean
 

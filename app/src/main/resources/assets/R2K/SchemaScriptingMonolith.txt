@@ -9,11 +9,6 @@
  | |
  --- 1
  the first monolith
-
-C datum `
-(define-name var_id_encased "Var[" (@ : var_id #t) "]")
-(define-name var_id_indirect "Var[Var[" (@ : var_id #t) "]]")
-`
   __
   \  | |
  --   V
@@ -174,7 +169,7 @@ C datum `
 
 .cbranch_switch
 C datum `
-(define-name cbranch_switch "Switch " (@ ]2 switch_id #t) " " (= ]3 "ON" (0 "OFF")))
+(define-name cbranch_switch "Switch " (@ ]2 switch_id #t) " " (@ ]3 int_boolean_switch_not))
 `
 +cbranch_base
 ]2 switch switch_id
@@ -185,7 +180,7 @@ C datum `
 (define-name cbranch_varcomp
 	(@ ]2 var_id_encased) " "
 	(@ ]5 cbranch_varcomp_e #f) " "
-	(= ]3 (@ ]4 var_id_encased) (0 (@ ]4)))
+	(if-ne ]3 0 (@ ]4 var_id_encased) (@ ]4))
 )
 `
 
