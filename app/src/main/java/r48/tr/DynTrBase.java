@@ -24,6 +24,7 @@ public abstract class DynTrBase extends MVMFn.Fixed implements TrPage.FF0, TrPag
 
     public DynTrBase(String i, DatumSrcLoc srcLoc) {
         super(i);
+        excludeFromHelp = true;
         id = i;
         sourceLoc = srcLoc;
     }
