@@ -25,23 +25,13 @@ p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int_default_10
 
-333: (? ]1 (if-eq ]1 0 "Add" "Remove") "Change") " Enemy" ($ " " ]0 iterate_enemy #t) " State" ($ " " ]2 state_id #t)
-C category 4
-p enemyType iterate_enemy
-p remove int_boolean
-p enemyState state_id
+ 333 Add/Remove Enemy State 334 recovery, -> RCOM/CommonCommands
 
-334: "Enemy" ($ " " ]0 iterate_enemy #t) " recovers all"
-C category 4
-     ("recover_all", for the enemy, is typically a boss cheating
-      and going into a 'second stage'. Hmph.)
-p enemyType iterate_enemy
-
-335: "Show Enemy" ($ " " ]0 troop_enemy_id)
+335: "Show Enemy" ($ " " ]0 troop_enemy_id #t)
 C category 4
 p enemy troop_enemy_id
 
-336: "Transform Enemy" ($ " " ]0 troop_enemy_id) ($ " " ]1 enemy_id)
+336: "Transform Enemy" ($ " " ]0 troop_enemy_id #t) ($ " into " ]1 enemy_id #t)
 C category 4
 p changeling troop_enemy_id
 p transform enemy_id
@@ -73,28 +63,4 @@ v 2 actItem item_id
 p target force_action_target
 p runNow int_boolean
 
-340: "Abort Battle"
-C category 4
-d Simply refuse to let the battle continue.
-
-351: "'Call Menu Screen' (aborts battle?)"
-C category 5
-352: "'Call Save Screen' (aborts battle?)"
-C category 5
-
-353: "Game Over"
-C category 5
-
-354: "Return to Title"
-C category 5
-
-355: "Ruby>" ($ " " ]0)
-C category 5
-d Run some Ruby.
-p code string
-C groupBehavior messagebox 655
-
-655: "Ruby." ($ " " ]0)
-C category 5
-d Continuation of embedded Ruby.
-p code string
+ Screen changes (340,351,352,353,354) and Ruby (355,655) -> RCOM/CommonCommands

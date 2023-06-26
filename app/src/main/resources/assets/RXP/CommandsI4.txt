@@ -7,13 +7,7 @@
  [Interpreter Part 4]
 
  121/122/123 (Control Switch/Set Variable/Control Selfswitch) in CommonCommands.
-
- I think the timer counts up?
- In any case if running is false, seconds is irrelevant.
-124: "Set timer1"
-C category 5
-d Enables or disables the timer. If enabling, sets the time to a given value in seconds.
-X set_timer1_parameters
+ 124 (Timer) in CommonCommands.
 
 125: "Modify Gold" (? ]0 (" by " (@ : operate_value_0)))
 C category 2
@@ -50,12 +44,7 @@ p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int_default_1
 
-129: (? ]0 (@ : add_remove_actor_parameters) "Add/remove actor to party")
-C category 2
-d Removes or adds an actor to/from the party.
-p actor actor_id
-p add int_boolean
-p addInitialize int_boolean
+ 129 Add/Remove Actor -> RCOM/CommonCommands
 
  Command 130 was skipped?
 
@@ -76,17 +65,4 @@ C category 5
 d Changes the battle end musical-effect.
 p audio RPG::AudioFile
 
-134: "Enable/Disable Saving:" ($ " " ]0)
-C category 5
-d Enables or disables saving the game.
-p enabled int_boolean
-
-135: "Enable/Disable Menu:" ($ " " ]0)
-C category 5
-d Enables or disables accessing the menu.
-p enabled int_boolean
-
-136: "Enable/Disable Encounters:" ($ " " ]0)
-C category 5
-d Enables or disables random encounters.
-p enabled int_boolean
+ Enable/Disable 134/135/136 -> RCOM/CommonCommands

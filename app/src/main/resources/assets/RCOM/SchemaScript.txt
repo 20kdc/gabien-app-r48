@@ -172,3 +172,16 @@ C datum `
 	(? ]3 "...")
 )
 `
+
+ This timer thing.
+
+.onoff_timer_parameters
+@indent indent
+@parameters DA{ ]0 onoff_timer_stop 0 onoff_timer_start }
+
+.onoff_timer_start
+]0 stop int_boolean
+]1 startSecs int
+
+.onoff_timer_stop
+]0 stop int_boolean

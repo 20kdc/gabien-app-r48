@@ -21,15 +21,6 @@
 
 e cap_type 0 MaxHP 1 MaxSP 2 Str. 3 Dex. 4 Agi. 5 Int.
 
-C datum `
-(define-name add_remove_actor_parameters
-	(if-eq ]1 0
-		("Remove actor " (@ ]0 actor_id #t) " from party")
-		("Add actor " (@ ]0 actor_id #t) " to party" (if-eq ]2 0 " without") " resetting")
-	)
-)
-`
-
  Conditional Branch
 
 e conditional_branch_types 0 switch 1 variable 2 selfSwitch 3 timer 4 actor 5 enemy 6 event 7 gold 8 item 9 weapon 10 armour 11 button 12 script
@@ -188,17 +179,6 @@ e shop_item_type 0 item 1 weapon 2 armour
 .shop_items_parameters
 @indent indent
 @parameters DA{ ]0 shop_items_parameters_unknown 0 shop_items_parameters_item 1 shop_items_parameters_weapon 2 shop_items_parameters_armour }
-
-.set_timer1_running
-]0 running int_boolean
-+]?1 seconds noChange OPAQUE
-
-.set_timer1_disable
-]0 running int_boolean
-
-.set_timer1_parameters
-@indent indent
-@parameters DA{ ]0 set_timer1_running 0 set_timer1_disable }
 
  Actor equip.
 

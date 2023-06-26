@@ -79,7 +79,7 @@ M internal_eventDictionary character_id_base character_id
 
 E iterate_actor_id ActorID 0 All
 E iterate_actor_index ActorIdx -1 All
-E iterate_enemy_index EnemyIdx -1 All
+E iterate_enemy EnemyIdx -1 All
 
  -1 may be supported by MKXP, meaning KeepDestAlpha, but nobody else supports it.
 e blend_type 0 Normal 1 Add 2 Sub

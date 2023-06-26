@@ -10,7 +10,8 @@
 
  LINE 251
 
-101:@@Start Text {A:w/face #A:#B ({C=1=no }bkg, [change_text_options_position]D)|(c.401/102/103/104)}
+101: "Start Text" (? ]0 "" " (c.401/102/103/104)") ($ " w/face " ]0) ($ ":" ]1) (? ]2 (" (" (if-eq ]2 1 "no bkg, " "bkg, ") (@ ]3 change_text_options_position) ")"))
+C category 0
 d Begins a segment of text.
 C translatable
 p faceName f_face_name
@@ -21,136 +22,54 @@ p position change_text_options_position
 C groupBehavior messagebox 401
 
 401: "Tx." ($ " " ]0)
+C category 0
 d Continues the text.
 C textArg 0
 p text string
 
-102:@@Show Choices {A:: [choice_array]A {B=1=(can cancel)}|(c.402/403/404)}
-d Show a set of choices to the user, potentially allowing the cancel button.
-C translatable
-p choices string_array
-p cancellable int_boolean
-C groupBehavior form 402 "Choice" 403 "Cancelled" 404
-I1
-
- See IRB_CMDB.txt for indentation logic docs, and the 'K command'.
-
-402: "When Choice =" ($ " " ]0)
-d When a given choice index is chosen...
-p choice int
-p textRef string
-C groupBehavior expectHead 102 402 403
-i-1
-I1
-K102
-
-403: "When cancelled (idx 4)"
-d When choice index 4 (cancel) is chosen...
-C groupBehavior expectHead 102 402 403
-i-1
-I1
-K102
-
-404: "End Choice"
-d The end of a choice block.
-C groupBehavior expectHead 102 402 403
-i-1
-K102
+ Choices and input moved to RCOM/CommonCommands
 
  LINE 305
 
-103: "Input Number" ($ " to " ]0 var_id)
-d Gets a number from the player, and puts it into a variable.
-p var var_id
-p digits int
-
-104: "Input Item" ($ " to " ]0 var_id)
+104: "Input Item" ($ " to " ]0 var_id #t)
+C category 0
 d Lets the player choose an item... for some reason.
 p var var_id
 
 105: "Show Scrolling Text (c.405)"
+C category 0
 d Begins some scrolling text.
 p speed int
 p notFast boolean
 C groupBehavior messagebox 405
 
 405: "Scrtx." ($ " " ]0)
+C category 0
 d Continue some scrolling text.
 C translatable
 p text string
 
- Comments (108/408) in CommonCommands
-
-111:@@Conditional{A::[@conditional_branch_parameters]| Branch (c.411/412)}
-d A conditional branch, allowing you to run different code depending on the state of things.
- The parameter exists so the A: detect works
-p type conditional_branch_types
-C groupBehavior form 411 "Else" 412
-X conditional_branch_parameters
-I1
-
-411: "Else"
-d A conditional branch will go here if the answer is 'false'. Otherwise, this is skipped entirely.
-C groupBehavior expectHead 111
-i-1
-I1
-l
-
-412: "End Conditional"
-d Ends a conditional branch.
-C groupBehavior expectHead 111 411
-i-1
-l
-
-112: "Start Loop (c.113/413)"
-d Begins a loop.
-C groupBehavior form 413
- this is a blank 'placeholder' command
-I1
-
-113: "Break Loop"
-d Leave a loop formed between a Start Loop and End Loop.
-
-413: "End Loop/Repeat Above"
-d The end of a loop (goes back to the start)
-C groupBehavior expectHead 112
-i-1
-l
-
-115: "Exit Event Processing"
-d Stop running the code in this page.
-
-117: "Call Common Event" ($ " " ]0 commonevent_id)
-d Call a Common Event.
-p eventId commonevent_id
+ Comments (108/408) and conditional branch (111/411/412) and loops (112/113/413) and EEP 115 in CommonCommands
+ CCE 117, LBL 118, JMP 119 in CommonCommands
 
  They still rely on indent for stuff,
  so this is just as unreliable as before.
 
-118: "Label" ($ " " ]0)
-d A label, to be jumped to.
-p labelName string
-
-119: "Jump to label" ($ " " ]0)
-d Jump to a label. May act odd if it enters/leaves conditional blocks or such.
-p labelName string
-
  121/122/123 (Control Switch/Set Variable/Control Selfswitch) in CommonCommands.
-
-124:@@{A:{A=1=Stop Timer|Start Timer at #B seconds}|Start/Stop Timer}
-d Stop or start a timer.
-X onoff_timer_parameters
+ 124 (Timer) in CommonCommands.
 
  operate_value has 3 parameters: Negate, const/var (int_boolean), operand (int_or_var)
 
-125:@@Gold{A: += [@operate_value_0]| Add/Remove}
+125: "Gold" ($ " += " : operate_value_0) " Add/Remove"
+C category 2
 d Give or take gold from the player.
 p negate int_boolean
 p amountIsVar int_boolean
 P 1 amountVar var_id
 v 0 amount int_default_100
 
-126:@@Item{A: @[item_id]A += [@operate_value_1]| Add/Remove}
+126: "Item" ($ " " ]0 item_id #t) ($ " += " : operate_value_1) " Add/Remove"
+C category 2
 d Give or take items from the player.
 p item item_id
 p negate int_boolean
@@ -158,19 +77,17 @@ p amountIsVar int_boolean
 P 2 amountVar var_id
 v 0 amount int_default_1
 
-127:@@Weapon{A: @[weapon_id]A += [@operate_value_1]| Add/Remove}
+127: "Weapon" ($ " " ]0 weapon_id #t) ($ " += " : operate_value_1) " Add/Remove"
+C category 2
 d Give or take weapons from the player.
 X weapon_add_remove_parameters
 
-128:@@Armour{A: @[armour_id]A += [@operate_value_1]| Add/Remove}
+128: "Armour" ($ " " ]0 armour_id #t) ($ " += " : operate_value_1) " Add/Remove"
+C category 2
 d Give or take armour from the player.
 X armour_add_remove_parameters
 
-129:@@{A:{B=0=Remove actor @[actor_id]A from party|Add actor @[actor_id]A to party{C=0= without} resetting}|Add/remove actor to party}
-d Adds or removes a party member from/to the player's party.
-p actor actor_id
-p add int_boolean
-p addInitialize int_boolean
+ 129 Add/Remove Actor -> RCOM/CommonCommands
 
 132: "Set Battle BGM" ($ " to " ]0)
 d Changes the battle music.
@@ -180,17 +97,7 @@ p bgm RPG::BGM
 d Changes the musical snippet for the end of the battle.
 p me RPG::ME
 
-134: "Set Save Accessible" ($ " to " ]0)
-d Controls if the player can save or not.
-p canSave int_boolean
-
-135: "Set Menu Accessible" ($ " to " ]0)
-d Controls if the player can access the menu.
-p canMenu int_boolean
-
-136: "Set Encounters" ($ " to " ]0)
-d Controls if the player can be encountered by enemies.
-p canEncounter int_boolean
+ Enable/Disable 134/135/136 -> RCOM/CommonCommands
 
 137: "Set Formation Accessible" ($ " to " ]0)
 d Controls if the player can control their formation.
@@ -203,7 +110,8 @@ p tone Tone
  Why are there *THREE* of these in a row?!??
  (EDIT LATER: At least I've removed the custom schema requirement for two of them.)
 
-201:@@{A:[@transfer_player_paramassist]|Transfer Player}
+201: (? ]0 (@ : transfer_player_paramassist) "Transfer Player")
+C category 2
 d Teleports the player to someplace.
 p useVariables int_boolean
 P 0 mapVar var_id
@@ -216,7 +124,8 @@ p playerDir direction_disable
 p fadeType transfer_player_fadetype
 x transfer_player_paramassist
 
-202:@@{A:[@transfer_vehicle_paramassist]|Transfer Vehicle}
+202: (? ]0 (@ : transfer_vehicle_paramassist) "Transfer Vehicle")
+C category 3
 d Teleports a vehicle to someplace.
 p vehicle vehicle_id
 p useVariables int_boolean
@@ -227,52 +136,63 @@ v 0 x int
 P 1 yVar var_id
 v 0 y int
 
-203:@@{A:[@set_event_location_paramassist]|Set Event Location}
+203: (? ]0 (@ : set_event_location_paramassist) "Set Event Location")
+C category 3
 d Teleports an event to someplace.
 X set_event_location_paramassist
 
 204: "Scroll Map"
+C category 3
 d Scrolls the player's view of the map in a specific way.
 p dir direction
 p length int
 p speed int
 
 205: "MoveRoute Set On" ($ " " ]0 character_id)
+C category 3
 d Takes control of a character (event or player)'s MoveRoute.
 p target character_id
 p route RPG::MoveRoute
 
 505: "NOP (MoveRoute Editing Helper)"
+C category 3
 d Totally useless outside of the VX Ace editor itself - displays the command.
 p command RPG::MoveCommand
 
 206: "Player Gets On/Off Vehicle"
+C category 2
 d If the player's character is in the right situation to get on or off a vehicle (standing on airship/facing ship or boat...), the character will do so.
 
 211: "Player Opacity" ($ " to " ]0)
+C category 2
 d Controls if the player is completely invisible or not.
 p opaque int_boolean
 
-212: "Show" ($ " " ]0 character_id) " Anim." ($ " " ]1 animation_id) " (wait?" ($ " " ]2) ")"
+212: "Show" ($ " " ]0 character_id) " Anim." ($ " " ]1 animation_id) (? ]2 (" (wait? " (@ ]2) ")"))
+C category 3
 d Shows a battle animation, usually useful for reactions.
 p char character_id
 p anim animation_id
 p wait boolean
 
-213: "Show" ($ " " ]0 character_id) " Balloon." ($ " " ]1 balloon_id) " (wait?" ($ " " ]2) ")"
+213: "Show" ($ " " ]0 character_id) " Balloon." ($ " " ]1 balloon_id) (? ]2 (" (wait? " (@ ]2) ")"))
+C category 3
 d Shows a reaction balloon, a feature previously implemented with battle animations.
 p char character_id
 p b balloon_id
 p wait boolean
 
 214: "Temp. Erase This Event"
+C category 3
 d Temporarily (until next map load?) erases this event from reality.
 
 216: "Player Followers Inv.?" ($ " " ]0)
+C category 2
 d Make characters following the player visible or invisible.
 p invisible int_boolean
 
 217: "Gather Followers"
+C category 2
 d Presumably, this makes characters following the player 'merge into the player'.
 
 221: "Fadeout Screen"
@@ -300,7 +220,7 @@ p speed int
 p duration int
 p wait boolean
 
-230: @@Wait{A: #A frames}
+230: "Wait" (? ]0 (" " (@ ]0) " frames"))
 d Wait some amount of frames.
 p timeFrames int
 
@@ -399,10 +319,12 @@ d Play a movie! (May break for any reason at any time.)
 p movie string
 
 281: "Map Name Inv.?" ($ " " ]0)
+C category 3
 d Control if the map name is visible or invisible.
 p invisible int_boolean
 
 282: "Switch Tileset" ($ " to " ]0)
+C category 3
 d Change the current tileset used for the map. I would suggest making sure they are at least reasonably 'compatible' first.
 p tileset tileset_id
 
@@ -412,6 +334,7 @@ p back1 string
 p back2 string
 
 284: "Switch Parallax" ($ " to " ]0)
+C category 3
 d Change the parallax settings.
 p parallax f_parallax_name
 p loop_x boolean
@@ -420,6 +343,7 @@ p sx int
 p sy int
 
 285: "Get Info On Location"
+C category 3
 d Note down a specific attribute about a given tile in a variable.
 p resultVar var_id
 p infoType get_location_info_type
@@ -429,9 +353,9 @@ v 0 x int
 P 2 yVar var_id
 v 0 y int
 
-
 301: "Start Battle (c.601/602/603/604)"
 d Begin a battle.
+C category 4
 p type battle_processing_type
 P 0 _ int
 v 0 troop troop_id
@@ -439,31 +363,7 @@ v 1 troopVar var_id
 p canEscape boolean
 p losingDoesNotGameover boolean
 
-601: "Battle Result Branches Start: If Win"
-d This is the beginning of the optional result branches section for a Start Battle (301), should be immediately below it, and contains the win code.
-C groupBehavior expectHead 301
-C groupBehavior expectTail 602 603 604
-C template 602 603 604
-I1
-
-602: "Battle Result Branch: If Escape"
-d This contains the escape code. See 'canEscape' in the relevant Start Battle.
-C groupBehavior expectHead 301 601
-C groupBehavior expectTail 603 604
-i-1
-I1
-
-603: "Battle Result Branch: If Lose"
-d This contains the lose code. See 'losingDoesNotGameover' in the relevant Start Battle.
-C groupBehavior expectHead 301 601 602
-C groupBehavior expectTail 604
-i-1
-I1
-
-604: "Battle Result Branches End"
-d Ends the Battle Result Branches.
-C groupBehavior expectHead 301 601 602 603
-i-1
+ Battle branches (601/602/603/604) in CommonCommands
 
 302: "Shop Processing (c.605)"
 d The start of a shop. This describes a single item - 605 describes an additional item, repeat as desired.
@@ -489,12 +389,9 @@ p itemPriceEx int_boolean
 P 2 priceEx int
 v 0 _ int
 
-303: "Input Name For Actor" ($ " " ]0 actor_id)
-d Let the user give a party member a name. (Warning: There are no filters.)
-p actor actor_id
-p maxLetters int
+ 303 Name Actor in RCOM/CommonCommands
 
-311:@@Actor{A: [@iterate_actor_var] HP += [@operate_value_2]| HP +=...}
+311: "Actor" ($ " " : iterate_actor_var) " HP +=" ($ " " : operate_value_2)
 d Heal or harm a party member.
 p actorIsVar int_boolean
 P 0 actorVar var_id
@@ -505,7 +402,7 @@ P 3 modVar var_id
 v 0 mod int_default_100
 p canKill boolean
 
-312:@@Actor{A: [@iterate_actor_var] MP += [@operate_value_2]| MP +=...}
+312: "Actor" ($ " " : iterate_actor_var) " MP +=" ($ " " : operate_value_2)
 d Heal or harm a party member's magical talents.
 p actorIsVar int_boolean
 P 0 actorVar var_id
@@ -515,7 +412,7 @@ p modIsVar int_boolean
 P 3 modVar var_id
 v 0 mod int_default_10
 
-313:@@{A:{C=0=Add|Remove}|Change} State{A: @[state_id]D} on actor{A: [@iterate_actor_var]}
+313: (? ]2 (if-eq ]2 0 "Add" "Remove") "Change") " Actor" ($ " " : iterate_actor_var #t) " State" ($ " " ]3 state_id #t)
 d Heal or harm a party member by giving them a state.
 p actorIsVar int_boolean
 P 0 actorVar var_id
@@ -523,14 +420,16 @@ v 0 actor iterate_actor_id
 p remove int_boolean
 p state state_id
 
-314:@@Full recover on actor{A: [@iterate_actor_var]}
+314: "Full recover on actor" ($ " " : iterate_actor_var #t)
 d Heal a party member to full health.
+C category 2
 p actorIsVar int_boolean
 P 0 actorVar var_id
 v 0 actor iterate_actor_id
 
-315:@@EXP of actor{A: [@iterate_actor_var] += [@operate_value_2]}
+315: "Actor" ($ " " : iterate_actor_var) " EXP +=" ($ " " : operate_value_2)
 d Give a party member free EXP!
+C category 2
 p actorIsVar int_boolean
 P 0 actorVar var_id
 v 0 actor iterate_actor_id
@@ -540,8 +439,9 @@ P 3 modVar var_id
 v 0 mod int_default_100
 p showLevelUp boolean
 
-316:@@LVL of actor{A: [@iterate_actor_var] += [@operate_value_2]}
+316: "Actor" ($ " " : iterate_actor_var) " LVL +=" ($ " " : operate_value_2)
 d Give a party member free levels!
+C category 2
 p actorIsVar int_boolean
 P 0 actorVar var_id
 v 0 actor iterate_actor_id
@@ -551,8 +451,9 @@ P 3 modVar var_id
 v 0 mod int_default_1
 p showLevelUp boolean
 
-317:@@Modify parameter{C: @[parameter_id]C} in actor{A: [@iterate_actor_var] by [@operate_value_3]}
+317: "Change Actor" ($ " " : iterate_actor_var) " Parameter" ($ " " ]2 cap_type) ($ " by " : operate_value_3)
 d Modify a party member in confusing battle-related ways.
+C category 2
 p actorIsVar int_boolean
 P 0 actorVar var_id
 v 0 actor iterate_actor_id
@@ -562,8 +463,9 @@ p modIsVar int_boolean
 P 4 modVar var_id
 v 0 mod int_default_10
 
-318:@@{A:{C=0=Add|Remove}|Change} Skill{A: @[skill_id]D} on actor{A: [@iterate_actor_var]}
+318: (? ]2 (if-eq ]2 0 "Add" "Remove") "Change") " Actor" ($ " " : iterate_actor_var) " Skill" ($ " " ]3 skill_id #t)
 d Add or remove a skill from/to a party member.
+C category 2
 p actorIsVar int_boolean
 P 0 actorVar var_id
 v 0 actor iterate_actor_id
@@ -572,23 +474,27 @@ p skill skill_id
 
 319:"Change Equipment on actor" ($ " " ]0 actor_id)
 d Change what a party member has equipped. Note that one of the slots can vary between weapon and armour, so you will have to enter the ID manually.
+C category 2
 p actor actor_id
 p slot equipment_slot
 p weaponId|armourId equipment_id
 
 320:"Rename Actor" ($ " " ]0 actor_id) ($ " to " ]1)
 d Rename a party member in a way the player can't abuse.
+C category 2
 C translatable
 p actor actor_id
 p name string
 
 321:"Change Actor" ($ " " ]0 actor_id) " Class" ($ " to " ]1 class_id)
 d Change a party member's class.
+C category 2
 p actor actor_id
 p class class_id
 
 322: "Change Actor" ($ " " ]0 actor_id) " Sprites"
 d Change the sprites used by a party member.
+C category 2
 p actor actor_id
 p charName f_char_name
 C spritesheet 1 Characters/
@@ -610,77 +516,53 @@ C translatable
 p actor actor_id
 p nickname string
 
-331:@@HP of enemy{A: @[iterate_enemy_index]A += [@operate_value_1]}
+331: "Enemy" ($ " " ]0 iterate_enemy #t) " HP +=" ($ " " : operate_value_1)
 d Heal or harm an enemy.
-p enemy iterate_enemy_index
+C category 4
+p enemy iterate_enemy
 p negateMod int_boolean
 p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int_default_100
 p canKill boolean
 
-332:@@MP of enemy{A: @[iterate_enemy_index]A += [@operate_value_1]}
+332: "Enemy" ($ " " ]0 iterate_enemy #t) " MP +=" ($ " " : operate_value_1)
 d Heal or harm an enemy's magical abilities.
-p enemy iterate_enemy_index
+C category 4
+p enemy iterate_enemy
 p negateMod int_boolean
 p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int_default_10
 
-333:@@{A:{B=0=Add|Remove}|Change} enemy{A: @[iterate_enemy_index]A state @[state_id]C| state}
-d Heal or harm an enemy by giving them a state.
-p enemy iterate_enemy_index
-p remove int_boolean
-p state state_id
+ 333 Add/Remove Enemy State 334 recovery, -> RCOM/CommonCommands
 
-334: "Enemy" ($ " " ]0 iterate_enemy_index) " recovers all"
-d Enemy recovers all health, MP, etc. (Note: Players may hate you if you use this.)
-p enemy iterate_enemy_index
-
-335: "Enemy" ($ " " ]0 iterate_enemy_index) " appears"
+335: "Enemy" ($ " " ]0 iterate_enemy #t) " appears"
 d Make a previously hidden enemy become unhidden.
-p enemy iterate_enemy_index
+C category 4
+p enemy iterate_enemy
 
-336: @@{B:Enemy @[iterate_enemy_index]A transforms into @[enemy_id]B|Enemy transforms into...}
+336: "Transform Enemy" ($ " " ]0 iterate_enemy #t) ($ " into " ]1 enemy_id #t)
 d Transforms an enemy into another enemy. TODO: Side effects?
-p enemy iterate_enemy_index
+C category 4
+p enemy iterate_enemy
 p transform enemy_id
 
-337: "Enemy" ($ " " ]0 iterate_enemy_index) " uses animation" ($ " " ]1 animation_id)
+337: "Enemy" ($ " " ]0 iterate_enemy #t) " uses animation" ($ " " ]1 animation_id #t)
 d Play an animation on the enemy, presumably before something bad happens to it or the player.
-p enemy iterate_enemy_index
+C category 4
+p enemy iterate_enemy
 p animation animation_id
 
 339: "Force Battle Action"
 d Force something in the battle to do something. Not very specific.
+C category 4
 p userIsEnemy int_boolean
-P 0 userEnemy iterate_enemy_index
+P 0 userEnemy iterate_enemy
 v 0 userActor iterate_actor_id
 p skill skill_id
 p target force_action_target
 
-340: "Abort Battle"
-d Simply refuse to let the battle continue.
-
-351: "Open Menuscreen"
-d Opens the menu screen.
-
-352: "Open Savescreen"
-d Opens the save screen.
-
-353: "Game Over"
-d Instantly causes a game over.
-
-354: "Return to Title"
-d Return to the title screen.
-
-355: "Ruby>" ($ " " ]0)
-d Run some Ruby.
-p code string
-C groupBehavior messagebox 655
-
-655: "Ruby." ($ " " ]0)
-d Continuation of embedded Ruby.
-p code string
+ Screen changes (340,351,352,353,354) and Ruby (355,655) -> RCOM/CommonCommands
 
  Completion Notes: COMPLETE (I think)

@@ -20,57 +20,7 @@ d Continues a message.
 C textArg 0
 p text string
 
-102: "Show Choices: " (? ]0 ((@ ]0 choice_array) " " (if-eq ]1 1 "(can cancel)")) "(c.402/403/404)")
-C category 0
-d Shows a set of choices to the player. A block, made up of this, 402, 403, and 404.
-C translatable
-p choices string_array
-p cancellable int_boolean
-I1
-
- NOTE: I'm leaving this documentation here,
-        for lack of a better place.
-       The structure of a Show Choices, from indent 0, is:
-       i0 Show Choices
-       i0 When Choice = 0
-       i1 <code...>
-       i1 Leave Block
-       i0 When Choice = 1
-       i1 <code...>
-       i1 Leave Block
-       i0 End Choice
- (Later)
- Er, right, to myself who might have thought up a solution to the conundrum,
-  it got resolved with the introduction of the 'K' command, which acts as 'l' but adds an exception.
-
-402: "When Choice =" ($ " " ]0)
-C category 0
-d Within a choice block, contains the code for a specific choice.
-p choice int
- We don't actually care about this
-p _ string
-i-1
-I1
-K102
-
-403: "When cancelled (idx 4)"
-C category 0
-d Within a choice block, contains the code for if the cancel button is pressed.
-i-1
-I1
-K102
-
-404: "End Choice"
-C category 0
-d Ends a choice block.
-i-1
-K102
-
-103: "Input Number" ($ " to " ]0)
-C category 0
-d Asks the player to input a number, and store the result in a variable.
-p varId var_id
-p digitCount int
+ Choices and input moved to RCOM/CommonCommands
 
 104: "Change Text Options" ($ ": " ]0 change_text_options_position) (? ]1 ", " (if-eq ]1 0 "visible bkg." "invisible bkg."))
 C category 0
@@ -78,74 +28,22 @@ d Changes the settings used to display text.
 p position change_text_options_position
 p frameTransparent int_boolean
 
-105: "Button Input" ($ " to " ]0)
+105: "Button Input" ($ " to " ]0 var_id #t)
 C category 5
 d Stores a pressed button in a variable.
 p varId var_id
 
-106: "Wait" ($ " " ]0)
+106: "Wait" (? ]0 (" " (@ ]0) " frames"))
 C category 5
 d Waits some amount of time.
 p time int
 
-111: "Conditional" (? ]0 (@ : conditional_branch_parameters) " Branch (c.411/412)")
-C category 1
-d A conditional branch. Made up of this, optionally a 411 'Else', and a 412 'End Conditional'. Skips some code if a given condition is false.
- The parameter exists so the A: detect works
-p type conditional_branch_types
-X conditional_branch_parameters
-I1
-
-411: "Else"
-C category 1
-d Splits a conditional - begins the code run if and only if the condition is false.
-i-1
-I1
-l
-
-412: "End Conditional"
-C category 1
-d Ends a conditional branch block.
-i-1
-l
-
-112: "Start Loop (c.113/413)"
-C category 1
-d Begins a loop, see 113 and 413.
- this is a blank 'placeholder' command
-I1
-
-113: "Break Loop"
-C category 1
-d Leaves a loop.
-
-413: "End Loop/Repeat Above"
-C category 1
-d Goes back to the start of a loop.
-i-1
-l
+ conditional branch (111/411/412) and loops (112/113/413) and EEP 115 in CommonCommands
 
  [A perfectly ordinary gap.]
-
-115: "Exit Event Processing"
-C category 1
-d Stops running the code in this page.
 
 116: "Temp. Erase Calling Event"
 C category 3
 d Erases the running event until next map load.
 
-117: "Call Common Event" ($ " " ]0 commonevent_id)
-C category 1
-d A common event is a code list loaded from the CommonEvents file. Start one. (Execution will return here when done.)
-p eventId commonevent_id
-
-118: "Label" ($ " " ]0)
-C category 1
-d A label. Can be jumped to.
-p labelName string
-
-119: "Jump to label" ($ " " ]0)
-C category 1
-d Jump to a label. May act odd if it enters/leaves conditional blocks or such.
-p labelName string
+ CCE 117, LBL 118, JMP 119 in CommonCommands

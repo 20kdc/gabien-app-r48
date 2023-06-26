@@ -19,3 +19,10 @@
 		'(@ @name)
 	)
 )
+
+(define-name add_remove_actor_parameters
+	(if-eq ]1 0
+		("Remove actor " (@ ]0 actor_id #t) " from party")
+		("Add actor " (@ ]0 actor_id #t) " to party" (if-eq ]2 0 " without") " resetting")
+	)
+)
