@@ -55,7 +55,7 @@ p text textbox_string
 
  Need to automate this later.
 
-10140: @@Show Choices{B: {B=0=no cancel|cancel choice: [choice_begin_magic]B}| (20140/20141 follows)}
+10140: ("Show Choices"(? ]1(" "(if-eq ]1 0("no cancel")("cancel choice: "(@ ]1 choice_begin_magic))))(" (20140/20141 follows)")))
 C category 0
 d Shows a set of choices to the player. (editorChoices is for editor display purposes only.)
 p editorChoices string
@@ -63,7 +63,7 @@ p 0|cancelIndex+1 choice_begin_magic
 C groupBehavior form 20140 "Choice" 20141
 I1
 
-20140: @@... On Choice:{B: {B=4=Cancel|#A} (index @[choice_index_magic_2]B)}
+20140: ("... On Choice:"(? ]1(" "(if-eq ]1 4("Cancel")((@ ]0)))" (index "(@ ]1 choice_index_magic_2 #t)")")))
 C category 0
 C translatable
 d A choice. If the player selects this choice, the code between this and the next choice runs. If the text is blank, this is a 'cancel' choice (and should be last)
@@ -83,7 +83,7 @@ C groupBehavior expectHead 10140 20140
 i-1
 l
 
-10150: @@Input Number{C: to var. @[var_id]C (#B digits)}
+10150: "Input Number" ($ " to " ]2 var_id_encased) (? ]1 (" (" (@ ]1) " digits)"))
 C category 0
 d Shows a numeric input to the player, with a set amount of digits, and stores the result in a variable.
 p _ string
@@ -110,7 +110,7 @@ p faceFlipped int_boolean
 
  Control Switches follows. Uhoh.
 
-10210: @@Control Switch{E:{B=1=es @[switch_id]C .. @[switch_id]D|{B=2= Var(@[var_id]C)| @[switch_id]C}} = [control_switches_change_mode]E|es}
+10210: ("Control Switch"(? ]4((if-eq ]1 1("es "(@ ]2 switch_id #t)" .. "(@ ]3 switch_id #t))((if-eq ]1 2(" Var("(@ ]2 var_id #t)")")(" "(@ ]2 switch_id #t)))))" = "(@ ]4 control_switches_change_mode))("es")))
 C category 1
 d Control switches in various ways. Single alters one switch. Range alters a group of switches. Indirect alters one switch, numbered by a variable.
 p _ string
@@ -135,7 +135,7 @@ d Alters the settings on either timer ID 0 (if unspecified) or a given timer. Ca
 p _ string
 X timer_operation_parameters
 
-10310: @@{B:{B=0=Give|Take From}|Give/Take From} Player:{D: {C=0=[int]D|Var(@[var_id]D)}} Gold
+10310: ((? ]1((if-eq ]1 0("Give")("Take From")))("Give/Take From"))" Player:"(? ]3(" "(if-eq ]2 0((@ ]3 int))("Var("(@ ]3 var_id #t)")"))))" Gold")
 C category 2
 d Adds or removes gold by a constant amount or the value in a variable.
 p _ string
@@ -144,7 +144,7 @@ p goldIsVar int_boolean
 P 2 goldVar var_id
 v 0 gold int_default_100
 
-10320: @@{F:{B=0=Give|Take From}|Give/Take From} Player:{F: {E=0=@[int]F|Var(@[var_id]F)} Of} Item{F: {C=0=@[item_id]D|Var(@[var_id]D)}}
+10320: ((? ]5((if-eq ]1 0("Give")("Take From")))("Give/Take From"))" Player:"(? ]5(" "(if-eq ]4 0((@ ]5 int #t))("Var("(@ ]5 var_id #t)")"))" Of"))" Item"(? ]5(" "(if-eq ]2 0((@ ]3 item_id #t))("Var("(@ ]3 var_id #t)")")))))
 C category 2
 d Adds or removes the amount of an item (selected by ID or the value in a variable) by a constant amount or the value in a variable.
 p _ string
@@ -300,7 +300,7 @@ p variance int
 p storeResultDamage int_boolean
 p resultDamageVar var_id
 
-11410: @@Wait {B:{C:{B=0=For Action|For #B/10 Seconds}|For #B/10 Seconds}|For...}
+11410: ("Wait "(? ]1((? ]2((if-eq ]1 0("For Action")("For "(@ ]1)"/10 Seconds")))("For "(@ ]1)"/10 Seconds")))("For...")))
 d Wait for some amount of time. If 0, waits a single frame, which may be useful for more precise timing. On 2k3, this can be set to wait until the ACT key is pressed.
 p _ string
 X wait_illogical_parameters
@@ -499,13 +499,13 @@ p _ string
 p weather weather_control_type
 p strength weather_control_strength
 
-11310: @@{B:{B=1=Show Player|Hide Player}|Change Player Visibility}
+11310: ((? ]1((if-eq ]1 1("Show Player")("Hide Player")))("Change Player Visibility")))
 C category 3
 d Show or hide the player on the map.
 p _ string
 p visible int_boolean
 
-11330: @@Move Event{B: @[character_id]B}
+11330: ("Move Event"(? ]1(" "(@ ]1 character_id #t))))
 C category 3
 d Sends a list of MoveCommands to an event.
 p _ string
@@ -579,22 +579,22 @@ p useSwitch int_boolean
 P 4 switch switch_id
 v 0 _ int
 
-11840: @@{B:{B=0=Disable|Enable}|Enable/Disable} Escape
+11840: ((? ]1((if-eq ]1 0("Disable")("Enable")))("Enable/Disable"))" Escape")
 d Enables or disables escaping.
 p _ string
 p enable int_boolean
 
-11930: @@{B:{B=0=Disable|Enable}|Enable/Disable} Save
+11930: ((? ]1((if-eq ]1 0("Disable")("Enable")))("Enable/Disable"))" Save")
 d Enables or disables saving.
 p _ string
 p enable int_boolean
 
-11960: @@{B:{B=0=Disable|Enable}|Enable/Disable} Main Menu
+11960: ((? ]1((if-eq ]1 0("Disable")("Enable")))("Enable/Disable"))" Main Menu")
 d Enables or disables the ability to return to the main menu.
 p _ string
 p enable int_boolean
 
-12010: @@{B:[@cbranch_parameters]|Conditional Branch}
+12010: ((? ]1((@ : cbranch_parameters))("Conditional Branch")))
 C category 1
 d Runs the following code if a condition is true. Otherwise, runs the code at the Else Branch inside, or if one does not exist, goes to the end of the branch.
 p _ string
@@ -619,13 +619,13 @@ C groupBehavior expectHead 22010 12010
 i-1
 l
 
-12110: @@Label #B
+12110: "Label" ($ " " ]1)
 C category 1
-d A label. See JumpToLabel.
+d A label. See Jump To Label.
 p _ string
 p labelId int
 
-12120: @@Jump To Label #B
+12120: "Jump To Label" ($ " " ]1)
 C category 1
 d Jump to a label.
 p _ string

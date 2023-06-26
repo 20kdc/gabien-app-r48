@@ -6,7 +6,7 @@
 
  GI-M Command List
 
-10830: @@Teleport Player By Vars{D: @[var_id]B, @[var_id]C, @[var_id]D}
+10830: ("Teleport Player By Vars"(? ]3(" "(@ ]1 var_id #t)", "(@ ]2 var_id #t)", "(@ ]3 var_id #t))))
 C category 3
 d Like Teleport Player, except more complicated.
 p _ string
@@ -56,7 +56,7 @@ C groupBehavior expectHead 10710 20710 20711 20712
 i-1
 l
 
-10720: @@Show Shop{D:: [show_shop_bstype]B, message set [show_shop_type]C}
+10720: ("Show Shop"(? ]3(": "(@ ]1 show_shop_bstype)", message set "(@ ]2 show_shop_type))))
 C category 0
 d Shows a shop. Note that this only acts as a block if hasInnerCode is enabled.
 p _ string
@@ -90,7 +90,7 @@ C groupBehavior expectHead 10720 20720 20721
 i-1
 l
 
-10730: @@Show Inn{D: typeB: #B, price: #C {D=0=| (result branch follows)}}
+10730: ("Show Inn"(? ]3(" typeB: "(@ ]1)", price: "(@ ]2)" "(if-eq ]3 0()(" (result branch follows)")))))
 C category 0
 d Shows an Inn's screen. Note that this only acts as a block if hasInnerCode is enabled.
 p _ string
@@ -126,7 +126,7 @@ C groupBehavior expectHead 10730 20730 20731
 i-1
 l
 
-10740: @@Enter Party Member{B: @[actor_id]B's} Name
+10740: ("Enter Party Member"(? ]1(" "(@ ]1 actor_id #t)"'s"))" Name")
 C category 2
 d For changing the name of a party member. Because players really don't care about Crono's parents or their naming decisions.
 p _ string
@@ -134,7 +134,7 @@ p target actor_id
 p useCharset2 int_boolean
 p showOldName int_boolean
 
-10810: @@Teleport Player{D: to @[internal_mapDictionary]B : #C, #D{E: dir @#E}}
+10810: ("Teleport Player"(? ]3(" to "(@ ]1 internal_mapDictionary #t)" : "(@ ]2)", "(@ ]3)(? ]4(" dir "(@ ]4))))))
 C category 2
 d Teleports the player to a given map and position. If in a parallel event, continue running (orphaned from character), otherwise, terminate.
 p _ string
@@ -148,7 +148,7 @@ C category 2
 d Enters or leaves an airship occupying the same space as the player, or a ship/boat directly in front of the player. It is extremely picky about this.
 p _ string
 
-11060: @@Camera Pan{F: {B=2=[direction]C #D tiles speed #E|[camera_pan_control_mode]B}{B=3= speed #E} ({F=0=no }wait)| Control}
+11060: ("Camera Pan"(? ]5(" "(if-eq ]1 2((@ ]2 direction)" "(@ ]3)" tiles speed "(@ ]4))((@ ]1 camera_pan_control_mode)))(if-eq ]1 3(" speed "(@ ]4)))" ("(if-eq ]5 0("no "))"wait)")(" Control")))
 C category 3
 d Controls where the 'camera' is looking.
 p _ string
@@ -185,7 +185,7 @@ X erase_picture_parameters
 
  ---
 
-11210: @@Show Animation{E: @[animation_id]B at @[character_id]C{D=0=| (wait)}{E=0=| (global)}}
+11210: ("Show Animation"(? ]4(" "(@ ]1 animation_id #t)" at "(@ ]2 character_id #t)(if-eq ]3 0()(" (wait)"))(if-eq ]4 0()(" (global)")))))
 C category 3
 d Show an animation on an event/the player.
 p _ string
@@ -194,7 +194,7 @@ p char character_id
 p wait int_boolean
 p global int_boolean
 
-11320: @@Flash Character{H: @[character_id]B #[#C,#D,#E,#F#] for #G/10 seconds{H=0=| (wait)}}
+11320: ("Flash Character"(? ]7(" "(@ ]1 character_id #t)" ["(@ ]2)","(@ ]3)","(@ ]4)","(@ ]5)"] for "(@ ]6)"/10 seconds"(if-eq ]7 0()(" (wait)")))))
 C category 3
 d Make an event/the player flash in a given way for a given length of time (given in tenths of a second.)
 p _ string
