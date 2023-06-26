@@ -84,11 +84,7 @@ public class RPGCommand extends App.Svc {
 
     public void finish() {
         // Names use NDB syntax, thus, separate context
-        if (nameRawUnlocalized.startsWith("@@")) {
-            name = app.dTrFmtSynCM(srcLoc, TrNames.cmdbName(dbId, commandId), nameRawUnlocalized.substring(2));
-        } else {
-            name = app.dTrFF1(srcLoc, TrNames.cmdbName(dbId, commandId), nameRawUnlocalized);
-        }
+        name = app.dTrFF1(srcLoc, TrNames.cmdbName(dbId, commandId), nameRawUnlocalized);
     }
 
     // Pass null for parameters if this is for combobox display.

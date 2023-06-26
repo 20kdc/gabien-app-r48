@@ -119,3 +119,31 @@ Finally, there's the rest of the actual operations themselves. See `vm/trc-lib.s
 
 You can test TRC expressions in the REPL using `(tr-dyn-fmt OBJ CODE)`.
 
+Some stuff pulled from `IRB_CMDB.txt`:
+
+```
+
+ Datum Name Format
+
+  This has yet to be fully finalized, but the basic idea is a clean nameroutine but not carrying the magical schema detection.
+  vm/trc-lib.scm is where new commands for this are defined.
+
+  Essentially, the command name is represented in S-expression format as a list of elements to be formatted together.
+  Of the functions that exist (defined in vm/trc-lib.scm):
+
+   + (vm CODE...)
+     Injects D/MVM code into the result directly. Almost certainly unnecessary as TRC can be extended.
+   + (with FOCUS CODE...)
+     Changes the "focus", i.e. what PATHs are relative to, for the given CODE...
+   + (@ PATH [INTERP [PREFIX-ENUMS]])
+     If the PATH exists, formats (possibly modified by INTERP and PREFIX-ENUMS).
+     Otherwise will always do nothing.
+   + ($ PFX PATH [INTERP [PREFIX-ENUMS]]) :
+     If the PATH exists, formats (possibly modified by INTERP and PREFIX-ENUMS), prepending PFX.
+     Otherwise will always do nothing.
+   + (? PATH TRUE [FALSE])
+     If the PATH exists, see TRUE, otherwise FALSE.
+   + (= PATH DEF (VAL RES)...)
+     Compares various values against PATH, picking the first that matches or DEF on failure. (A missing value is considered null.)
+```
+

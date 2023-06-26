@@ -21,9 +21,6 @@ public class MVMDMAppLibrary {
     public static void add(MVMEnv ctx, App app) {
         ctx.defineSlot(new DatumSymbol("dm-fmt")).v = new DMFmt(app)
                 .attachHelp("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. If the passed-in object is null (say, due to a PathSyntax failure) returns the empty string. Important: Because of schemas and stuff this doesn't exist in the static translation context. PREFIXENUMS can be #f, #t or #nil (default).");
-        ctx.defLib("dm-cmsyntax-new", (text) -> {
-            return app.fmt.compileCMNew((String) text);
-        }).attachHelp("(dm-cmsyntax-new TEXT) : Compiles new CMSyntax. This is an even worse workaround.");
     }
     public static final class DMFmt extends MVMFn.Fixed {
         public final App app;

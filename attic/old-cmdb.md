@@ -1,8 +1,12 @@
 # Old CMDB Stuff (or, how not to design a formatting language for internationalization)
 
-This is *old stuff!* It was put here for fun reading as per the notice of deprecation in `doc/IRB_CMDB.txt` and is not current.
+This is *old stuff!*
 
 This describes some old formats in R48.
+
+Something worth mentioning is that in the final days, features were removed one by one from FormatSyntax.
+
+As such this file describes a lot of the removals, with the final revision before removal being `attic/IRB_CMDB_FORMATSYNTAX.txt`.
 
 ## Original Format
 

@@ -52,11 +52,4 @@ public interface IDynTrProxy {
     default FF1 dTrName(DatumSrcLoc srcLoc, String id, Object text, boolean isNLS) {
         return dynTrBase(srcLoc, TrNames.nameRoutine(id), DynTrSlot.DYNTR_FF1, text, isNLS);
     }
-
-    /**
-     * Legacy 2
-     */
-    default FF1 dTrFmtSynCM(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.CMSYNTAX_NEW, text, false);
-    }
 }

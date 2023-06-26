@@ -11,8 +11,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
-import r48.dbs.FormatSyntax;
-import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
 import r48.minivm.fn.MVMFn;
 
@@ -75,10 +73,6 @@ public abstract class DynTrBase extends MVMFn.Fixed implements TrPage.FF0, TrPag
                 if (res == null)
                     return "!!!(null DynTrSlot return @ " + id + ")!!!";
                 return res.toString();
-            } else if (valueCompiled instanceof FormatSyntax.ICompiledFormatSyntax) {
-                if (ac != 1)
-                    return "!!!(FormatSyntax args bad @ " + id + ")!!!";
-                return ((FormatSyntax.ICompiledFormatSyntax) valueCompiled).r((RORIO) a0);
             } else if (ac == 0 && valueCompiled instanceof TrPage.FF0) {
                 return ((TrPage.FF0) valueCompiled).r();
             } else if (ac == 1 && valueCompiled instanceof TrPage.FF1) {
