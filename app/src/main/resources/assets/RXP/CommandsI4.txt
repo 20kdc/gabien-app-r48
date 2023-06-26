@@ -15,7 +15,7 @@ C category 5
 d Enables or disables the timer. If enabling, sets the time to a given value in seconds.
 X set_timer1_parameters
 
-125:@@Modify Gold{A: by [@operate_value_0]}
+125: "Modify Gold" (? ]0 (" by " (@ : operate_value_0)))
 C category 2
 d Modifies the amount of gold the party has.
 p modNegate int_boolean
@@ -23,7 +23,7 @@ p modIsVar int_boolean
 P 1 modVar var_id
 v 0 mod int_default_100
 
-126:@@Modify Item{A: @[item_id]A by [@operate_value_1]}
+126: "Modify Item" (? ]0 (" " (@ ]0 item_id #t) " by " (@ : operate_value_1)))
 C category 2
 d Gives or takes away some amount of a given item from/to the party.
 p item item_id
@@ -32,7 +32,7 @@ p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int_default_1
 
-127:@@Modify Weapon{A: @[weapon_id]A by [@operate_value_1]}
+127: "Modify Weapon" (? ]0 (" " (@ ]0 weapon_id #t) " by " (@ : operate_value_1)))
 C category 2
 d Gives or takes away some amount of a given weapon from/to the party.
 p weapon weapon_id
@@ -41,7 +41,7 @@ p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int_default_1
 
-128:@@Modify Armour{A: @[armour_id]A by [@operate_value_1]}
+128: "Modify Armour" (? ]0 (" " (@ ]0 armour_id #t) " by " (@ : operate_value_1)))
 C category 2
 d Gives or takes away some amount of a given armour from/to the party.
 p armour armour_id
@@ -50,7 +50,7 @@ p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int_default_1
 
-129:@@{A:{B=0=Remove actor @[actor_id]A from party|Add actor @[actor_id]A to party{C=0= without} resetting}|Add/remove actor to party}
+129: (? ]0 (@ : add_remove_actor_parameters) "Add/remove actor to party")
 C category 2
 d Removes or adds an actor to/from the party.
 p actor actor_id

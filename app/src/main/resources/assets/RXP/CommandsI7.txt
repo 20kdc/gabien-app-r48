@@ -6,7 +6,7 @@
 
  [Interpreter Part 7]
 
-331:@@Change Enemy{A: #A} HP{A: by [@operate_value_1]{E=T= (can kill)| (never kills)}}
+331: "Change Enemy" ($ " " ]0 iterate_enemy #t) " HP" ($ " by " : operate_value_1) (? ]4 (if-eq ]4 #t " (can kill)" " (never kills)"))
 C category 4
 p enemyType iterate_enemy
  operate_value
@@ -16,7 +16,7 @@ P 2 modVar var_id
 v 0 mod int_default_100
 p canKill boolean
 
-332:@@Change Enemy{A: #A} SP{A: by [@operate_value_1]}
+332: "Change Enemy" ($ " " ]0 iterate_enemy #t) " SP" ($ " by " : operate_value_1)
 C category 4
 p enemyType iterate_enemy
  operate_value
@@ -25,13 +25,13 @@ p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int_default_10
 
-333: "Change Enemy" ($ " " ]0 iterate_enemy) " State (remove" ($ " " ]1) ",state" ($ " " ]2) ")"
+333: (? ]1 (if-eq ]1 0 "Add" "Remove") "Change") " Enemy" ($ " " ]0 iterate_enemy #t) " State" ($ " " ]2 state_id #t)
 C category 4
 p enemyType iterate_enemy
 p remove int_boolean
 p enemyState state_id
 
-334: "Enemy" ($ " " ]0 iterate_enemy) " recovers all"
+334: "Enemy" ($ " " ]0 iterate_enemy #t) " recovers all"
 C category 4
      ("recover_all", for the enemy, is typically a boss cheating
       and going into a 'second stage'. Hmph.)

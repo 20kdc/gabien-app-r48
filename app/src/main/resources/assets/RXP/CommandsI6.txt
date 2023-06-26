@@ -41,7 +41,7 @@ C category 0
 d An additional item for 302. Otherwise pointless.
 X shop_items_parameters
 
-303: @@User gives name{B: to @[actor_id]A, length #B}
+303: "User gives name" ($ " to " ]0 actor_id #t) ($ ", length " ]1)
 C category 2
 d Asks the user what to name an actor.
 p actor actor_id
@@ -49,7 +49,7 @@ p maxChars int
 
  [ Gap here between 303 to 311 ]
 
-311:@@Change Actor{A: [iterate_actor]A} HP{A: by [@operate_value_1]{E=T= (can kill)| (never kills)}}
+311: "Change Actor" ($ " " ]0 iterate_actor #t) " HP" ($ " by " : operate_value_1) (? ]0 (if-eq ]4 #t " (can kill)" " (never kills)"))
 C category 2
 d Adds/removes HP to/from actor/party.
 p actor iterate_actor
@@ -60,7 +60,7 @@ P 2 modVar var_id
 v 0 mod int_default_100
 p canKill boolean
 
-312:@@Change Actor{A: [iterate_actor]A} SP{A: by [@operate_value_1]}
+312: "Change Actor" ($ " " ]0 iterate_actor #t) " SP" ($ " by " : operate_value_1)
 d Adds/removes SP to/from actor/party.
 C category 2
 p actor iterate_actor
@@ -70,7 +70,7 @@ p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int_default_10
 
-313: "Change Actor" ($ " " ]0 iterate_actor) " State (remove" ($ " " ]1) ",state" ($ " " ]2) ")"
+313: (? ]1 (if-eq ]1 0 "Add" "Remove") "Change") " Actor" ($ " " ]0 iterate_actor #t) " State" ($ " " ]2 state_id #t)
 d Adds/removes a state to/from actor/party.
 C category 2
 p actor iterate_actor
@@ -82,7 +82,7 @@ d Fully recovers actor/party to full health and SP.
 C category 2
 p actor iterate_actor
 
-315:@@Change Actor{A: [iterate_actor]A} EXP{A: by [@operate_value_1]}
+315: "Change Actor" ($ " " ]0 iterate_actor #t) " EXP" ($ " by " : operate_value_1)
 d Adds/removes EXP to/from actor/party.
 C category 2
 p actor iterate_actor
@@ -92,7 +92,7 @@ p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int_default_100
 
-316:@@Change Actor{A: [iterate_actor]A} Level{A: by [@operate_value_1]}
+316: "Change Actor" ($ " " ]0 iterate_actor #t) " Level" ($ " by " : operate_value_1)
 d Adds/removes levels to/from actor/party.
 C category 2
 p actor iterate_actor
@@ -102,7 +102,7 @@ p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int_default_1
 
-317:@@Change Actor{A: [iterate_actor]A} Parameter{A: [cap_type]B by [@operate_value_2]}
+317: "Change Actor" ($ " " ]0 iterate_actor #t) " Parameter" ($ " " ]1 cap_type) ($ " by " : operate_value_2)
 d Adds/removes parameter points to/from actor/party.
 C category 2
 p actor actor_id
@@ -113,14 +113,14 @@ p modIsVar int_boolean
 P 3 modVar var_id
 v 0 mod int_default_10
 
-318: "Actor" ($ " " ]0 actor_id) " (Un =" ($ " " ]1) ")learn Skill" ($ " " ]2 skill_id)
+318: "Actor" ($ " " ]0 actor_id #t) " (Un =" ($ " " ]1) ")learn Skill" ($ " " ]2 skill_id)
 d Adds/removes a skill to/from an actor.
 C category 2
 p actor actor_id
 p unlearn boolean
 p skill skill_id
 
-319: @@Actor{A: [actor_id]A} equips{B: [actor_equip_type]B}{C: {B=0=[weapon_id]C|[armour_id]C}}
+319: "Actor" ($ " " ]0 actor_id #t) " equips" ($ " " ]1 actor_equip_type) (if-eq ]1 0 ($ " " ]2 weapon_id #t) ($ " " ]2 armour_id #t))
 d Adds/removes equipment to/from an actor. (If the equipment is not available, it is automatically given, but only if it is not already available.)
 C category 2
 p actor actor_id

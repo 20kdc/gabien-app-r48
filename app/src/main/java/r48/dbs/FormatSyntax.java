@@ -95,7 +95,7 @@ public class FormatSyntax extends App.Svc {
                     }, paramAcc, new Object[] {
                         new DatumSymbol("?"),
                         new DatumSymbol("]" + idx)
-                    }, null);
+                    });
                 } else if (data[i + 1] == '=') {
                     char va = data[i];
                     // vt equality form.
@@ -110,9 +110,10 @@ public class FormatSyntax extends App.Svc {
                             result = paramAcc.get(root, idx).toString().equals(eqTarget);
                         return result;
                     }, paramAcc, new Object[] {
-                        new DatumSymbol("="),
-                        new DatumSymbol("]" + idx)
-                    }, eqTarget);
+                        new DatumSymbol("if-eq"),
+                        new DatumSymbol("]" + idx),
+                        new DatumSymbol(eqTarget),
+                    });
                 } else {
                     throw new RuntimeException("Unknown conditional type!");
                 }
@@ -224,7 +225,7 @@ public class FormatSyntax extends App.Svc {
         }
     }
 
-    private void determineBooleanComponent(LinkedList<CompiledChunk> r, LinkedList<String> components, CompiledPredicate p, ParameterAccessor paramAcc, Object[] decompPrefix, Object decompEqMarker) {
+    private void determineBooleanComponent(LinkedList<CompiledChunk> r, LinkedList<String> components, CompiledPredicate p, ParameterAccessor paramAcc, Object[] decompPrefix) {
         LinkedList<CompiledChunk> cT = new LinkedList<CompiledChunk>();
         LinkedList<CompiledChunk> cF = new LinkedList<CompiledChunk>();
         for (int i = 0; i < components.size(); i++) {
@@ -254,20 +255,9 @@ public class FormatSyntax extends App.Svc {
                 decompileList(cF, dclF);
                 for (Object o : decompPrefix)
                     stmt.add(o);
-                if (decompEqMarker != null) {
-                    if (dclF.size() == 0) {
-                        stmt.add("");
-                    } else {
-                        stmt.add(dclF);
-                    }
-                    // best-effort :(
-                    dclT.addFirst(decompEqMarker);
-                    stmt.add(dclT);
-                } else {
-                    stmt.add(dclT);
-                    if (dclF.size() > 0)
-                        stmt.add(dclF);
-                }
+                stmt.add(dclT);
+                if (dclF.size() > 0)
+                    stmt.add(dclF);
                 llo.add(stmt);
             }
         });
