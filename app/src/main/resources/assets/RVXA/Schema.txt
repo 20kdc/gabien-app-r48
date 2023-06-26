@@ -77,8 +77,9 @@ E troop_enemy_id_base TroopEnemyIndex -1 All
 E character_id_base EventID -1 player 0 thisEvent
 M internal_eventDictionary character_id_base character_id
 
-E iterate_actor_id ActorID 0 All
-E iterate_actor_index ActorIdx -1 All
+E iterate_actor_id_base ActorID 0 All
+M internal_actorDictionary iterate_actor_id_base iterate_actor_id
+
 E iterate_enemy EnemyIdx -1 All
 
  -1 may be supported by MKXP, meaning KeepDestAlpha, but nobody else supports it.

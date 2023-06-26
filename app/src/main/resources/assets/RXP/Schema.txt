@@ -103,7 +103,10 @@ M internal_classDictionary id_or_none_base class_id_or_none
 
 e comparison_type 0 == 1 >= 2 <= 3 > 4 < 5 !=
 e change_text_options_position 0 top 1 middle 2 bottom
-E iterate_actor ActorID 0 All
+
+E iterate_actor_base ActorID 0 All
+M internal_actorDictionary iterate_actor_base iterate_actor
+
 e iterate_battler0 0 EnemyIx 1 ActorIx
 E iterate_battler1 ID -1 All
 e weather_type 0 none 1 rain 2 storm 3 snow
