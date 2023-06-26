@@ -7,7 +7,7 @@
  GI-B Command List
  Monoliths here go into Monolith3.
 
-1005: @@<Battle> Call Common Event {B:@[commonevent_id]B }(2k3)
+1005: ("<Battle> Call Common Event "(? ]1((@ ]1 commonevent_id #t)" "))"(2k3)")
 C category 4
 d Calls a common event. Not sure what else to say here.
 p _ string

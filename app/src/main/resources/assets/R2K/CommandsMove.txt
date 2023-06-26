@@ -139,14 +139,14 @@ d @move_freq decreases.
 p _ string
 X movecommand_default_nothing
 
-32: @@Switch{B: @[switch_id]B} On
+32: ("Switch"(? ]1(" "(@ ]1 switch_id #t)))" On")
 d Turns a switch on.
 p _ string
 p switch switch_id
 p _ int
 p _ int
 
-33: @@Switch{B: @[switch_id]B} Off
+33: ("Switch"(? ]1(" "(@ ]1 switch_id #t)))" Off")
 d Turns a switch off.
 p _ string
 p switch switch_id

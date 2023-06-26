@@ -90,7 +90,7 @@ p _ string
 p digits int
 p var var_id
 
-10120: @@Message Options{E: {B=0=opaque|transparent},[message_options_position]C,{D=0=fixed|unfixed},events{E=0= don't} continue}
+10120: ("Message Options"(? ]4(" "(if-eq ]1 0("opaque")("transparent"))","(@ ]2 message_options_position)","(if-eq ]3 0("fixed")("unfixed"))",events"(if-eq ]4 0(" don't"))" continue")))
 C category 0
 d Sets if the text box is transparent, where it is, if it will move to avoid hiding the player, and if events can move about (I think).
 p _ string
@@ -99,7 +99,7 @@ p position message_options_position
 p positionLocked int_boolean
 p continueEvents int_boolean
 
-10130: @@Change Face{D: to #A:#B, {C=0=left|right} {D=0=|, flipped}}
+10130: ("Change Face"(? ]3(" to "(@ ]0)":"(@ ]1)", "(if-eq ]2 0("left")("right"))" "(if-eq ]3 0()(", flipped")))))
 C category 0
 d Change the face in the text box to a given face, including some details.
 p faceImage f_faceset_name
@@ -339,14 +339,14 @@ p _ string
 d Show the game over screen, and such.
 p _ string
 
-10610: @@{B:Change @[actor_id]B's Name: #A|Change Actor Name}
+10610: ((? ]1("Change "(@ ]1 actor_id #t)"'s Name: "(@ ]0))("Change Actor Name")))
 C category 2
 C translatable
 d Change the name of a party member.
 p name string
 p actor actor_id
 
-10620: @@{B:Change @[actor_id]B's Title: #A|Change Actor Title}
+10620: ((? ]1("Change "(@ ]1 actor_id #t)"'s Title: "(@ ]0))("Change Actor Title")))
 C category 2
 C translatable
 d Change the title of a party member.
@@ -362,7 +362,7 @@ C spritesheet 0 CharSet/
 p index int
 p transparent int_boolean
 
-10640: @@{B:Change @[actor_id]B's Face: #A:#C|Change Actor Face}
+10640: ((? ]1("Change "(@ ]1 actor_id #t)"'s Face: "(@ ]0)":"(@ ]2))("Change Actor Face")))
 C category 2
 d Change the face of a party member.
 p faceset f_faceset_name
@@ -390,7 +390,7 @@ x change_system_bgm_parameters
 
  NT. OS uses below for hax, so it gets priority on the "should we name this right today" roulette wheel
 
-10670: @@Change Sys.SFX{E: @[change_sys_sfx_id]B to #A}
+10670: ("Change Sys.SFX"(? ]4(" "(@ ]1 change_sys_sfx_id #t)" to "(@ ]0))))
 d Change a sound effect used by the system.
 p sfx f_sound_name
 p sfxId change_sys_sfx_id
