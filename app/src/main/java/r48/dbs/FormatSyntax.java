@@ -80,46 +80,12 @@ public class FormatSyntax extends App.Svc {
             if (data[i] == '{') {
                 // Parse condition
                 // Precedence:
-                // {@A} ('arbitrary enumeration form')
                 // {V:A} ('variable exists form')
                 // {V=T=A} ('vt equality form')
                 // {VV:A} ('vv equality form ')
                 i++;
                 LinkedList<String> components = new LinkedList<String>();
-                if (data[i] == '@') {
-                    // arbitrary enumeration form.
-                    i = explodeComponentsAndAdvance(components, data, i + 1, '}');
-                    // If components is even, then that's because there's one start and one default to balance it out,
-                    //  at the start and end respectively.
-                    // Of course, since the first component is removed instantly,
-                    //  the check is for odd.
-                    final ICompiledFormatSyntax valComp = compile(components.removeFirst(), paramAcc);
-                    LinkedList<ICompiledFormatSyntax> componentsComp = new LinkedList<>();
-                    for (String s : components)
-                        componentsComp.add(compile(s, paramAcc));
-                    ICompiledFormatSyntax def = (root) -> "";
-                    if ((componentsComp.size() & 1) != 0)
-                        def = componentsComp.removeLast();
-                    final ICompiledFormatSyntax fDef = def;
-                    r.add(new CompiledChunk() {
-                        @Override
-                        public void r(StringBuilder sb, RORIO root) {
-                            ICompiledFormatSyntax res = fDef;
-                            String val = valComp.r(root);
-                            for (int j = 0; j < componentsComp.size(); j += 2) {
-                                if (val.equals(componentsComp.get(j).r(root))) {
-                                    res = componentsComp.get(j + 1);
-                                    break;
-                                }
-                            }
-                            sb.append(res.r(root));
-                        }
-                        @Override
-                        public void decompile(LinkedList<Object> llo) {
-                            llo.add(new DatumSymbol("SCARY_ENUM_THING_MANUALLY_FIX_THIS"));
-                        }
-                    });
-                } else if (data[i + 1] == ':') {
+                if (data[i + 1] == ':') {
                     final char v = data[i];
                     // variable exists form.
                     i = explodeComponentsAndAdvance(components, data, i + 2, '}');

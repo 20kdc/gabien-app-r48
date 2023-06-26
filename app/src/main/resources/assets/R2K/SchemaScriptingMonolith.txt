@@ -9,6 +9,16 @@
  | |
  --- 1
  the first monolith
+
+C datum `
+(define-name call_event_parameters (= ]1
+	(@ ]1 callevent_type)
+	(0 "Call Common Event " (@ ]2 commonevent_id #t))
+	(1 "Call Map Event " (@ ]2 character_id #t) ", Page " (@ ]3))
+	(2 "Call Map Event " (@ ]2 var_id_encased) ", Page " (@ ]3 var_id_encased))
+))
+`
+
   __
   \  | |
  --   V

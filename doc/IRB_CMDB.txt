@@ -88,9 +88,8 @@
    --- CONDITIONAL BLOCKS ---
 
   Almost all blocks use '{' to start, '|' will invert the condition mid-way, and '}' terminates.
-  (A special type uses '|' as a separator.)
 
-  There are three formats for blocks.
+  There are two formats for blocks.
   If a parameter mentioned is unavailable, the false branch is taken.
   Blocks are never entirely skipped unless they have no false-branch.
 
@@ -104,22 +103,6 @@
   {A=1=(enable)|(disable)}
   ... or as a way to handle "invert" options. (Note the inverted order of the text.)
   {A=1=OFF|ON}
-
-  The third is an enumeration. It is indicated by having '@' instead of the first variable.
-  This enumeration is based on text, allowing it to be flexible (using interpretations for transform),
-   and also allowing it to be simple.
-  {@#A|:concurrent|Concurrent|:waitOn|Wait On...|Unknown #A}
-  The format here is:
-  {@<key>|<key1>|<value1>|<key2>|<value2>|<default>},
-   but can be expanded to any amount of key/value pairs:
-  {@<key>|<key1>|<value1>|<key2>|<value2>|<key3>|<value3>|<default>}
-   and the default omitted:
-  {@<key>|<key1>|<value1>|<key2>|<value2>|<key3>|<value3>}
-  In this case, if parameter A interprets to ":concurrent", it will show "Concurrent", if it interprets to ":waitOn", it will show "Wait On...",
-   and if neither is the case, it will show "Unknown #A" (this is further interpreted).
-
-  Note that in this case, *all divisions are run through the interpreter*.
-  This allows keys to be based on context, should it be necessary.
 
  Here are some examples of the Extended Format in use.
  These examples show all block types in use for their purposes.

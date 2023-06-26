@@ -110,3 +110,28 @@ Some of these only really made sense when the `[][]` syntax was around anyway:
 
 * FormatSyntax name routines used to be definable using `C name`. This is now not a thing as part of the eventual complete removal of FormatSyntax.
 
+* There used to be an arbitrary enumeration form, essentially like `=` in modern TRC (but text-based). Since FormatSyntax deprecation is now at a heavily advanced stage, it was removed.
+
+```
+  (A special type uses '|' as a separator.)
+```
+
+```
+  The third is an enumeration. It is indicated by having '@' instead of the first variable.
+  This enumeration is based on text, allowing it to be flexible (using interpretations for transform),
+   and also allowing it to be simple.
+  {@#A|:concurrent|Concurrent|:waitOn|Wait On...|Unknown #A}
+  The format here is:
+  {@<key>|<key1>|<value1>|<key2>|<value2>|<default>},
+   but can be expanded to any amount of key/value pairs:
+  {@<key>|<key1>|<value1>|<key2>|<value2>|<key3>|<value3>|<default>}
+   and the default omitted:
+  {@<key>|<key1>|<value1>|<key2>|<value2>|<key3>|<value3>}
+  In this case, if parameter A interprets to ":concurrent", it will show "Concurrent", if it interprets to ":waitOn", it will show "Wait On...",
+   and if neither is the case, it will show "Unknown #A" (this is further interpreted).
+
+  Note that in this case, *all divisions are run through the interpreter*.
+  This allows keys to be based on context, should it be necessary.
+```
+
+
