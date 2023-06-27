@@ -85,7 +85,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                     }
                 };
                 update.run();
-                UIElement ui = new UISplitterLayout(utb, new UITextButton(T.z.l11, app.f.schemaFieldTH, new Runnable() {
+                UIElement ui = new UISplitterLayout(utb, new UITextButton(T.g.bConfirm, app.f.schemaFieldTH, new Runnable() {
                     @Override
                     public void run() {
                         try {

@@ -29,6 +29,8 @@
 	bAccept "Accept"
 	bSize "Size"
 	bOffset "Offset"
+	bResize "Resize"
+	bProperties "Properties"
 
 	lFrameMS "MS per frame:"
 	lGamePath "Path To Game (if you aren't running R48 in the game folder):"

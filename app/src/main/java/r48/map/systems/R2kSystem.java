@@ -319,7 +319,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             @Override
             public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
                 return new MapEditingToolbarController(iMapToolContext, false, new ToolButton[] {
-                        new ToolButton(T.z.l278) {
+                        new ToolButton(T.z.tDeepWaterButton) {
                             @Override
                             public UIMTBase apply(IMapToolContext a) {
                                 return new UIMTFtrGdt01(a);

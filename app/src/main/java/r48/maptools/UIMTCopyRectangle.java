@@ -29,8 +29,8 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
     public int startX, startY;
     public boolean stage;
 
-    public UILabel innerLabel = new UILabel(T.z.l5, app.f.dialogWindowTH);
-    public UIAppendButton inner = new UIAppendButton(T.z.l3, innerLabel, new Runnable() {
+    public UILabel innerLabel = new UILabel(T.z.tsStartRect, app.f.dialogWindowTH);
+    public UIAppendButton inner = new UIAppendButton(T.z.tCancel, innerLabel, new Runnable() {
         @Override
         public void run() {
             mapToolContext.accept(null);
@@ -94,7 +94,7 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
         } else {
             startX = x;
             startY = y;
-            innerLabel.text = T.z.l6;
+            innerLabel.text = T.z.tsFinishCopy;
             stage = true;
         }
     }

@@ -87,13 +87,13 @@ public class GenposAnimRootPanel extends App.Prx {
 
         UIElement toolbar = timeframe;
 
-        toolbar = new UIAppendButton(T.z.l139, toolbar, new Runnable() {
+        toolbar = new UIAppendButton(T.g.bCopy, toolbar, new Runnable() {
             @Override
             public void run() {
                 app.theClipboard = new IRIOGeneric(app.encoding).setDeepClone(target.getFrame());
             }
         }, app.f.rmaTimeframeTH);
-        toolbar = new UIAppendButton(T.z.l140, toolbar, new Runnable() {
+        toolbar = new UIAppendButton(T.g.bPaste, toolbar, new Runnable() {
             @Override
             public void run() {
                 RORIO ro = app.theClipboard;

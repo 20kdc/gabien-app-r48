@@ -160,16 +160,16 @@ public class R2kGenposFrame extends App.Svc implements IGenposFrame {
     @Override
     public String[] getCellProps() {
         return new String[] {
-                T.z.l124,
-                T.z.l125,
-                T.z.l121,
-                T.z.l122,
-                T.z.l126,
-                T.z.l127,
-                T.z.l128,
-                T.z.l129,
-                T.z.l130,
-                T.z.l131
+                T.gp.cVis,
+                T.gp.cCID,
+                T.gp.cX,
+                T.gp.cY,
+                T.gp.cScale,
+                T.gp.cTR,
+                T.gp.cTG,
+                T.gp.cTB,
+                T.gp.cTGr,
+                T.gp.cTT
         };
     }
 

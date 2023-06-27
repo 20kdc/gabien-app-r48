@@ -14,4 +14,20 @@ import r48.tr.TrPage;
  */
 public class TrGenpos extends TrPage {
     public String troop_immortal;
+    public String cEID;
+    public String cX;
+    public String cY;
+    public String cInv;
+    public String cVis;
+    public String cCID;
+    public String cScale;
+    public String cTR;
+    public String cTG;
+    public String cTB;
+    public String cTGr;
+    public String cTT;
+    public String cAngle;
+    public String cMirror;
+    public String cOpacity;
+    public String cBlendType;
 }

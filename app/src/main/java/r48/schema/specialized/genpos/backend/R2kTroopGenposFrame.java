@@ -91,10 +91,10 @@ public class R2kTroopGenposFrame extends TroopGenposFrame {
     @Override
     public String[] getCellProps() {
         return new String[] {
-                T.z.l120,
-                T.z.l121,
-                T.z.l122,
-                T.z.l123
+                T.gp.cEID,
+                T.gp.cX,
+                T.gp.cY,
+                T.gp.cInv
         };
     }
 

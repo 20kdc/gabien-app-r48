@@ -101,7 +101,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                 final int fixedStart = selectedStart;
                                 final int fixedEnd = selectedEnd;
                                 if (positions[fixedStart].execDelete != null) {
-                                    uie = new UIAppendButton(app, "Delete", uie, valid, new String[] {T.z.l11}, new Runnable[] {
+                                    uie = new UIAppendButton(app, "Delete", uie, valid, new String[] {T.g.bConfirm}, new Runnable[] {
                                         new Runnable() {
                                             @Override
                                             public void run() {
@@ -123,7 +123,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                         containerRCL();
                                     }
                                 };
-                                uie = new UIAppendButton(T.z.l139, uie, new Runnable() {
+                                uie = new UIAppendButton(T.g.bCopy, uie, new Runnable() {
                                     @Override
                                     public void run() {
                                         copyRange(fixedStart, fixedEnd);

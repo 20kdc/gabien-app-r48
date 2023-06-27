@@ -7,4 +7,20 @@
 	(troop_
 		immortal "immortal"
 	)
+	cEID "enemyId"
+	cX "x"
+	cY "y"
+	cInv "invisible"
+	cVis "visible"
+	cCID "cellId"
+	cScale "scale"
+	cTR "toneR"
+	cTG "toneG"
+	cTB "toneB"
+	cTGr "toneGrey"
+	cTT "transparency"
+	cAngle "angle"
+	cMirror "mirror"
+	cOpacity "opacity"
+	cBlendType "blendType"
 )

@@ -51,7 +51,7 @@ public class PasteImageEditorTool extends ImageEditorTool {
         }
 
         if (result == null) {
-            app.ui.launchDialog(T.u.ie_badClipboard);
+            app.ui.launchDialog(T.ie.badClipboard);
             return;
         }
 
@@ -160,25 +160,25 @@ public class PasteImageEditorTool extends ImageEditorTool {
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
         UIScrollLayout uie = RootImageEditorTool.createToolPalette(uiev, PasteImageEditorTool.class);
-        UITextButton a = new UITextButton(T.u.ie_flipX, app.f.schemaFieldTH, new Runnable() {
+        UITextButton a = new UITextButton(T.ie.flipX, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 flipX = !flipX;
             }
         }).togglable(flipX);
-        UITextButton b = new UITextButton(T.u.ie_flipY, app.f.schemaFieldTH, new Runnable() {
+        UITextButton b = new UITextButton(T.ie.flipY, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 flipY = !flipY;
             }
         }).togglable(flipY);
-        UITextButton c = new UITextButton(T.u.ie_swapXY, app.f.schemaFieldTH, new Runnable() {
+        UITextButton c = new UITextButton(T.ie.swapXY, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 swapXY = !swapXY;
             }
         }).togglable(swapXY);
-        UITextButton d = new UITextButton(T.u.ie_rawCopy, app.f.schemaFieldTH, new Runnable() {
+        UITextButton d = new UITextButton(T.ie.rawCopy, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 rawCopy = !rawCopy;
@@ -197,7 +197,7 @@ public class PasteImageEditorTool extends ImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return T.u.ie_tdPaste;
+        return T.ie.tdPaste;
     }
 
     @Override

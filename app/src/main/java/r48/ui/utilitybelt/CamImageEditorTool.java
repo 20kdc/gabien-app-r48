@@ -51,7 +51,7 @@ public class CamImageEditorTool extends ImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return T.u.ie_hintGuarded;
+        return T.ie.hintGuarded;
     }
 
     @Override

@@ -56,7 +56,7 @@ public class BasicToolset extends App.Svc implements IToolset {
 
     @Override
     public UIElement[] generateTabs() {
-        UIElement menu4 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l38, app.f.menuTH, () -> {
+        UIElement menu4 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.mR48Version, app.f.menuTH, () -> {
             app.ui.wm.coco.launch();
         }).centred(), app.f.menuTH), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.z.l39, app.f.menuTH, () -> {
             app.ui.startHelp(null, "0");
@@ -352,7 +352,7 @@ public class BasicToolset extends App.Svc implements IToolset {
 
     private static UIElement createStatusBar(App app) {
         final TrRoot T = app.t;
-        final UILabel uiStatusLabel = new UILabel(T.z.l81, app.f.statusBarTH);
+        final UILabel uiStatusLabel = new UILabel("", app.f.statusBarTH);
         // second time I've tried to lambda this - you can't because of the repetition
         app.uiPendingRunnables.add(new Runnable() {
             @Override

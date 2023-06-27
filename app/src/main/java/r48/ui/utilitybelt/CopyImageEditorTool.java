@@ -64,8 +64,8 @@ public class CopyImageEditorTool extends RectangleImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (stage2)
-            return T.u.ie_tdFillE;
-        return T.u.ie_tdCopy;
+            return T.ie.tdFillE;
+        return T.ie.tdCopy;
     }
 
 }

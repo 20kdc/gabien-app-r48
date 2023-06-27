@@ -54,10 +54,10 @@ public class RMTools extends App.Svc {
     }
 
     public UIElement genButton() {
-        return new UIMenuButton(app, T.z.l29, app.f.menuTH, null, new String[] {
-                T.z.l30,
-                T.z.l31,
-                T.z.l32,
+        return new UIMenuButton(app, T.z.mRMTools, app.f.menuTH, null, new String[] {
+                T.z.mLocateEventCommand,
+                T.z.mFindTranslatables,
+                T.z.mRunAutoCorrect,
                 T.z.l33,
                 // 3:24 PM, third day of 2017.
                 // This is now a viable option.

@@ -88,7 +88,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         subtool = 0;
         final LinkedList<UIButton<?>> options = new LinkedList<UIButton<?>>();
 
-        UITextButton baseTool = new UITextButton(T.z.l0, app.f.atSubtoolTH, new Runnable() {
+        UITextButton baseTool = new UITextButton(T.z.tPen, app.f.atSubtoolTH, new Runnable() {
             @Override
             public void run() {
                 for (UIButton<?> utb : options)
@@ -99,7 +99,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         }).togglable(true);
         options.add(baseTool);
 
-        UIAppendButton uab = new UIAppendButton(T.z.l1, baseTool, new Runnable() {
+        UIAppendButton uab = new UIAppendButton(T.z.tRectangle, baseTool, new Runnable() {
             @Override
             public void run() {
                 for (UIButton<?> utb : options)
@@ -111,7 +111,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         uab.button.toggle = true;
         options.add(uab.button);
 
-        uab = new UIAppendButton(T.z.l2, uab, new Runnable() {
+        uab = new UIAppendButton(T.z.tFill, uab, new Runnable() {
             @Override
             public void run() {
                 for (UIButton<?> utb : options)

@@ -19,6 +19,7 @@ import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.UIMapView;
 
 import java.io.OutputStream;
+import java.util.LinkedList;
 
 /**
  * Created on 18/06/17.
@@ -30,66 +31,62 @@ public class UIMTPopupButtons extends UIMTBase {
         final UIMapView view = mtc.getMapView();
         final App app = view.app;
 
-        ToolButton[] mainToolButtons = {
-                new ToolButton(T.z.l13) {
-                    @Override
-                    public UIMTBase apply(IMapToolContext a) {
-                        UIMapView.performFullCacheFlush(view.app, view);
-                        return null;
-                    }
-                },
-                new ToolButton(T.z.l14) {
-                    @Override
-                    public UIMTBase apply(IMapToolContext a) {
-                        app.ui.launchSchema(view.map.objectSchema, view.map.object, view);
-                        return null;
-                    }
-                },
-                new ToolButton(T.z.l15) {
-                    @Override
-                    public UIMTBase apply(IMapToolContext a) {
-                        if (disableResize) {
-                            app.ui.launchDialog(T.z.l16);
-                        } else {
-                            return new UIMTMapResizer(mtc);
-                        }
-                        return null;
-                    }
-                },
-                new ToolButton(T.z.l17) {
-                    @Override
-                    public UIMTBase apply(IMapToolContext a) {
-                        IGrDriver igd = GaBIEn.makeOffscreenBuffer(view.tileSize * view.mapTable.width, view.tileSize * view.mapTable.height);
-                        view.mapTable.renderCore(igd, 0, 0, view.layerVis, view.currentLayer, view.debugToggle);
-                        AdHocSaveLoad.prepare();
-                        OutputStream os = GaBIEn.getOutFile(Application.BRAND + "/shot.png");
-                        if (os != null) {
-                            try {
-                                os.write(igd.createPNG());
-                                os.close();
-                                app.ui.launchDialog(T.z.l18);
-                            } catch (Exception e) {
-                                app.ui.launchDialog(T.z.l19 + e);
-                            }
-                        } else {
-                            app.ui.launchDialog(T.z.l20);
-                        }
-                        igd.shutdown();
-                        return null;
-                    }
-                },
-                new ToolButton(T.z.l21) {
-                    @Override
-                    public UIMTBase apply(IMapToolContext a) {
-                        view.debugToggle = !view.debugToggle;
-                        return null;
-                    }
+        final LinkedList<ToolButton> mainToolButtons = new LinkedList<>();
+        mainToolButtons.add(new ToolButton(T.z.bReloadPanoramaTS) {
+            @Override
+            public UIMTBase apply(IMapToolContext a) {
+                UIMapView.performFullCacheFlush(view.app, view);
+                return null;
+            }
+        });
+        mainToolButtons.add(new ToolButton(T.g.bProperties) {
+            @Override
+            public UIMTBase apply(IMapToolContext a) {
+                app.ui.launchSchema(view.map.objectSchema, view.map.object, view);
+                return null;
+            }
+        });
+        if (!disableResize)
+            mainToolButtons.add(new ToolButton(T.g.bResize) {
+                @Override
+                public UIMTBase apply(IMapToolContext a) {
+                    return new UIMTMapResizer(mtc);
                 }
-        };
+            });
+        mainToolButtons.add(new ToolButton(T.z.bExportShot) {
+            @Override
+            public UIMTBase apply(IMapToolContext a) {
+                IGrDriver igd = GaBIEn.makeOffscreenBuffer(view.tileSize * view.mapTable.width, view.tileSize * view.mapTable.height);
+                view.mapTable.renderCore(igd, 0, 0, view.layerVis, view.currentLayer, view.debugToggle);
+                AdHocSaveLoad.prepare();
+                OutputStream os = GaBIEn.getOutFile(Application.BRAND + "/shot.png");
+                if (os != null) {
+                    try {
+                        os.write(igd.createPNG());
+                        os.close();
+                        app.ui.launchDialog(T.z.dlgWroteShot);
+                    } catch (Exception e) {
+                        app.ui.launchDialog(e);
+                    }
+                } else {
+                    app.ui.launchDialog(T.z.dlgFailedToOpenFile);
+                }
+                igd.shutdown();
+                return null;
+            }
+        });
+        mainToolButtons.add(new ToolButton(T.z.tShowIDs) {
+            @Override
+            public UIMTBase apply(IMapToolContext a) {
+                view.debugToggle = !view.debugToggle;
+                return null;
+            }
+        });
 
-        ToolButton[] allToolButtons = new ToolButton[mainToolButtons.length + addendum.length];
-        System.arraycopy(mainToolButtons, 0, allToolButtons, 0, mainToolButtons.length);
-        System.arraycopy(addendum, 0, allToolButtons, mainToolButtons.length, addendum.length);
+        for (ToolButton t : addendum)
+            mainToolButtons.add(t);
+
+        ToolButton[] allToolButtons = mainToolButtons.toArray(new ToolButton[0]);
 
         UIPopupMenu.Entry[] allEntries = new UIPopupMenu.Entry[allToolButtons.length];
         for (int i = 0; i < allEntries.length; i++) {

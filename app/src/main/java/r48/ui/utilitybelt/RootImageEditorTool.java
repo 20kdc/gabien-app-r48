@@ -85,8 +85,8 @@ public class RootImageEditorTool extends ImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (dedicatedDragControl)
-            return T.u.ie_hint;
-        return T.u.ie_hintDesktop;
+            return T.ie.hint;
+        return T.ie.hintDesktop;
     }
 
     @Override

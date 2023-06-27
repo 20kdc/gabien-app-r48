@@ -13,3 +13,4 @@
 (include "terms/eng/title")
 (include "terms/eng/schema")
 (include "terms/eng/genpos")
+(include "terms/eng/imageeditor")

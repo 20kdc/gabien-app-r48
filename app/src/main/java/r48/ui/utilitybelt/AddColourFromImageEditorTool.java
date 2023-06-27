@@ -55,7 +55,7 @@ public class AddColourFromImageEditorTool extends ImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return T.u.ie_tdEyePal;
+        return T.ie.tdEyePal;
     }
 
     @Override

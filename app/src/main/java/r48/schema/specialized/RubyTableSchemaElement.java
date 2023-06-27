@@ -161,7 +161,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
             };
             UIElement uie = new UISplitterLayout(wNB, hNB, false, 1, 2);
             uiSVL.panelsAdd(uie);
-            uiSVL.panelsAdd(new UITextButton(T.z.l15, app.f.tableResizeTH, new Runnable() {
+            uiSVL.panelsAdd(new UITextButton(T.g.bResize, app.f.tableResizeTH, new Runnable() {
                 @Override
                 public void run() {
                     int w = (int) wNB.number;

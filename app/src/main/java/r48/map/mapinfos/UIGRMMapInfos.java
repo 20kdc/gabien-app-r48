@@ -151,7 +151,7 @@ public class UIGRMMapInfos extends App.Prx {
                 };
                 unusedID.run();
                 final AtomicBoolean close = new AtomicBoolean(false);
-                UIAppendButton prompt = new UIAppendButton(T.z.l11, num, new Runnable() {
+                UIAppendButton prompt = new UIAppendButton(T.g.bConfirm, num, new Runnable() {
                     @Override
                     public void run() {
                         long i = num.number;
@@ -245,7 +245,7 @@ public class UIGRMMapInfos extends App.Prx {
                     operators.triggerEditInfoOf(k);
                 }
             }, app.f.mapInfosTH);
-            elm = new UIAppendButton(app, T.z.l246, elm, null, new String[] {T.z.l11}, new Runnable[] {new Runnable() {
+            elm = new UIAppendButton(app, T.z.l246, elm, null, new String[] {T.g.bConfirm}, new Runnable[] {new Runnable() {
                 @Override
                 public void run() {
                     // Orphan/move up child nodes first

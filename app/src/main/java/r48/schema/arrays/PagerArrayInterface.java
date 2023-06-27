@@ -104,7 +104,7 @@ public class PagerArrayInterface implements IArrayInterface {
             }
             final IRIO[] copyMe = positions[i].elements;
             if (copyMe != null) {
-                barLayout.panelsAdd(new UITextButton(T.z.l139, app.f.schemaFieldTH, new Runnable() {
+                barLayout.panelsAdd(new UITextButton(T.g.bCopy, app.f.schemaFieldTH, new Runnable() {
                     @Override
                     public void run() {
                         IRIOGeneric rio = new IRIOGeneric(app.encoding);
@@ -120,7 +120,7 @@ public class PagerArrayInterface implements IArrayInterface {
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsertCopiedArray != null) {
                     final Runnable r = positions[i + 1].execInsertCopiedArray;
-                    barLayout.panelsAdd(new UITextButton(T.z.l140, app.f.schemaFieldTH, new Runnable() {
+                    barLayout.panelsAdd(new UITextButton(T.g.bPaste, app.f.schemaFieldTH, new Runnable() {
                         @Override
                         public void run() {
                             r.run();
