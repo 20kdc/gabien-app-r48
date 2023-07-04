@@ -12,6 +12,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
 import r48.dbs.ValueSyntax;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.specialized.TempDialogSchemaChoice;
@@ -97,14 +98,11 @@ public class EnumSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 liveUpdate();
-                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, new UIEnumChoice(app, new IConsumer<RORIO>() {
-                    @Override
-                    public void accept(RORIO integer) {
-                        target.setDeepClone(integer);
-                        path.changeOccurred(false);
-                        // Enums can affect parent format, so deal with that now.
-                        launcher.popObject();
-                    }
+                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, new UIEnumChoice(app, (integer) -> {
+                    target.setDeepClone(integer);
+                    path.changeOccurred(false);
+                    // Enums can affect parent format, so deal with that now.
+                    launcher.popObject();
                 }, viewOptions, buttonText.r(), entryMode), null, path), target));
             }
         });
@@ -120,7 +118,7 @@ public class EnumSchemaElement extends SchemaElement {
         return button;
     }
 
-    public static UIEnumChoice.Option makeStandardOption(RORIO val, FF0 text, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
+    public static UIEnumChoice.Option makeStandardOption(DMKey val, FF0 text, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
         return new UIEnumChoice.Option(val.toString() + " : ", text, val, edit, fdb);
     }
 

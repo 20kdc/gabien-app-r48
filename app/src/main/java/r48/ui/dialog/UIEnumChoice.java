@@ -11,8 +11,7 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.UITest;
-import r48.io.data.IRIOGeneric;
-import r48.io.data.RORIO;
+import r48.io.data.DMKey;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;
 import r48.ui.UIAppendButton;
@@ -33,11 +32,11 @@ public class UIEnumChoice extends App.Prx {
     private boolean wantsSelfClose = false;
 
     // entryText defaults to "Manual."
-    public UIEnumChoice(App app, final IConsumer<RORIO> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
+    public UIEnumChoice(App app, final IConsumer<DMKey> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
         this(app, result, new Category[] {new Category(app.t.u.enumOptions, options)}, entryText, entryType);
     }
 
-    public UIEnumChoice(App app, final IConsumer<RORIO> result, final Category[] order, String entryText, EntryMode entryType) {
+    public UIEnumChoice(App app, final IConsumer<DMKey> result, final Category[] order, String entryText, EntryMode entryType) {
         super(app);
         categoryPanels = new UIScrollLayout[order.length];
         for (int i = 0; i < categoryPanels.length; i++) {
@@ -99,7 +98,7 @@ public class UIEnumChoice extends App.Prx {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
-                        result.accept(new IRIOGeneric(app.encoding).setString(nb.text));
+                        result.accept(DMKey.ofStr(nb.text));
                     wantsSelfClose = true;
                 }
             }), false, 1, 3);
@@ -109,9 +108,7 @@ public class UIEnumChoice extends App.Prx {
                 @Override
                 public void run() {
                     if (!wantsSelfClose) {
-                        IRIOGeneric rio = new IRIOGeneric(app.encoding);
-                        rio.setSymbol(nb.text);
-                        result.accept(rio);
+                        result.accept(DMKey.ofSym(nb.text));
                     }
                     wantsSelfClose = true;
                 }
@@ -122,7 +119,7 @@ public class UIEnumChoice extends App.Prx {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
-                        result.accept(new IRIOGeneric(app.encoding).setFX(nb.number));
+                        result.accept(DMKey.of(nb.number));
                     wantsSelfClose = true;
                 }
             }), false, 1, 3);
@@ -173,11 +170,11 @@ public class UIEnumChoice extends App.Prx {
         public final String textPrefix;
         public final FF0 textSuffix;
         private String textMerged;
-        public final RORIO value;
+        public final DMKey value;
         public final @Nullable IConsumer<String> editSuffix;
         public final @Nullable SchemaPath furtherDataButton;
 
-        public Option(String s, RORIO integer) {
+        public Option(String s, DMKey integer) {
             textPrefix = s;
             textSuffix = () -> "";
             value = integer;
@@ -185,7 +182,7 @@ public class UIEnumChoice extends App.Prx {
             furtherDataButton = null;
         }
 
-        public Option(String pfx, FF0 sfx, RORIO integer, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
+        public Option(String pfx, FF0 sfx, DMKey integer, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
             textPrefix = pfx;
             textSuffix = sfx;
             value = integer;

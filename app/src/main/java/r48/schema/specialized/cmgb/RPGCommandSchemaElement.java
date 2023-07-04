@@ -16,8 +16,6 @@ import r48.dbs.RPGCommand;
 import r48.io.IntUtils;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixnum;
-import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.PathSchemaElement;
@@ -167,45 +165,42 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 RPGCommand rc = database.knownCommands.get(key);
                 String text = key + ";" + rc.formatName(null);
                 if (rc.category == i)
-                    llo.add(new UIEnumChoice.Option(text, new IRIOFixnum(key)));
+                    llo.add(new UIEnumChoice.Option(text, DMKey.of((long) (int) key)));
             }
             categories[i] = new UIEnumChoice.Category(database.categories[i].r(), llo);
         }
 
         final App app = launcher.getApp();
         final TrRoot T = app.t;
-        return new TempDialogSchemaChoice(app, new UIEnumChoice(app, new IConsumer<RORIO>() {
-            @Override
-            public void accept(RORIO integer) {
-                long fnv = integer.getFX();
-                // NOTE: This just uses ints for everything.
-                RPGCommand rc = database.knownCommands.get((int) fnv);
-                target.getIVar("@code").setFX(fnv);
-                IRIO param = target.getIVar("@parameters");
-                if (rc != null) {
-                    // Notice: Both are used!
-                    // Firstly nuke it to whatever the command says for array-len-reduce, then use the X-code to fill in details
-                    param.setArray();
-                    int size = rc.params.size();
-                    IntUtils.resizeArrayTo(param, size);
-                    for (int i = 0; i < size; i++) {
-                        IRIO rio = param.getAElem(i);
-                        SchemaElement ise = rc.getParameterSchema(param, i);
-                        ise.modifyVal(rio, path.arrayHashIndex(DMKey.of(i), "[" + i + "]"), true);
-                    }
-                    if (rc.specialSchema != null) {
-                        SchemaElement schemaElement = rc.specialSchema;
-                        schemaElement.modifyVal(target, path, true);
-                    }
-                    templateAndConfirm.accept(rc.template);
-                } else {
-                    templateAndConfirm.accept(new int[0]);
+        return new TempDialogSchemaChoice(app, new UIEnumChoice(app, (integer) -> {
+            long fnv = integer.getFX();
+            // NOTE: This just uses ints for everything.
+            RPGCommand rc = database.knownCommands.get((int) fnv);
+            target.getIVar("@code").setFX(fnv);
+            IRIO param = target.getIVar("@parameters");
+            if (rc != null) {
+                // Notice: Both are used!
+                // Firstly nuke it to whatever the command says for array-len-reduce, then use the X-code to fill in details
+                param.setArray();
+                int size = rc.params.size();
+                IntUtils.resizeArrayTo(param, size);
+                for (int i = 0; i < size; i++) {
+                    IRIO rio = param.getAElem(i);
+                    SchemaElement ise = rc.getParameterSchema(param, i);
+                    ise.modifyVal(rio, path.arrayHashIndex(DMKey.of(i), "[" + i + "]"), true);
                 }
-                // On the one hand, the elements are stale.
-                // On the other hand, the elements will be obliterated anyway before reaching the user.
-                // This isn't done automatically by UIEnumChoice.
-                launcher.popObject();
+                if (rc.specialSchema != null) {
+                    SchemaElement schemaElement = rc.specialSchema;
+                    schemaElement.modifyVal(target, path, true);
+                }
+                templateAndConfirm.accept(rc.template);
+            } else {
+                templateAndConfirm.accept(new int[0]);
             }
+            // On the one hand, the elements are stale.
+            // On the other hand, the elements will be obliterated anyway before reaching the user.
+            // This isn't done automatically by UIEnumChoice.
+            launcher.popObject();
         }, categories, T.z.l170, UIEnumChoice.EntryMode.INT), null, path);
     }
 
