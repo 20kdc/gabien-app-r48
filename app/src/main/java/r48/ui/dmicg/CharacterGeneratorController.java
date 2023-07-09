@@ -9,7 +9,6 @@ package r48.ui.dmicg;
 
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
-import gabien.render.IImage;
 import gabien.render.WSIImage;
 import gabien.ui.*;
 import gabien.uslx.append.*;
