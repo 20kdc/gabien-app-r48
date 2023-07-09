@@ -9,6 +9,7 @@ package r48.imageio;
 
 import gabien.GaBIEn;
 import gabien.render.IImage;
+import gabien.render.WSIImage;
 
 import java.util.LinkedList;
 
@@ -46,6 +47,17 @@ public class ImageIOImage {
             for (int i = 0; i < data.length; i++)
                 data[i] = translatePalette(colourData[i]);
             return GaBIEn.createImage(data, width, height);
+        }
+    }
+
+    public WSIImage rasterizeToWSI() {
+        if (palette == null) {
+            return GaBIEn.createWSIImage(colourData, width, height);
+        } else {
+            int[] data = new int[colourData.length];
+            for (int i = 0; i < data.length; i++)
+                data[i] = translatePalette(colourData[i]);
+            return GaBIEn.createWSIImage(data, width, height);
         }
     }
 

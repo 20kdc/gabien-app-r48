@@ -31,7 +31,7 @@ public class GabienImageIOFormat extends ImageIOFormat {
 
     @Override
     public byte[] saveFile(ImageIOImage img) throws IOException {
-        return img.rasterize().createPNG();
+        return img.rasterizeToWSI().createPNG();
     }
 
     @Override

@@ -10,6 +10,7 @@ package r48.ui.dmicg;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
+import gabien.render.WSIImage;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
@@ -145,10 +146,10 @@ public class CharacterGeneratorController extends App.Svc {
         UIElement modeBar = new UIAppendButton(T.u.cg_savePNG, new UITextButton(T.u.cg_copyR48, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
-                IImage img = getCurrentModeImage();
+                WSIImage img = getCurrentModeImage();
                 int[] tx = img.getPixels();
-                int w = img.getWidth();
-                int h = img.getHeight();
+                int w = img.width;
+                int h = img.height;
                 int idx = 0;
                 byte[] buffer = BMPConnection.prepareBMP(w, h, 32, 0, true, false);
                 BMPConnection bc;
@@ -204,8 +205,8 @@ public class CharacterGeneratorController extends App.Svc {
 
     private byte[] createPNG() {
         // This is not going to go well...
-        IImage img = getCurrentModeImage();
-        ImageEditorImage iei = new ImageEditorImage(img.getWidth(), img.getHeight(), img.getPixels(), null, false);
+        WSIImage img = getCurrentModeImage();
+        ImageEditorImage iei = new ImageEditorImage(img.width, img.height, img.getPixels(), null, false);
         ImageEditorImage iei2 = new ImageEditorImage(iei, true, true);
 
         if (iei2.paletteSize() > 256) {
@@ -222,7 +223,7 @@ public class CharacterGeneratorController extends App.Svc {
         }
     }
 
-    private IImage getCurrentModeImage() {
+    private WSIImage getCurrentModeImage() {
         int modesIdx = modes.getTabIndex();
         if (modesIdx != -1) {
             UICharGenView cgv = views.get(modes.getTabIndex());
@@ -232,11 +233,11 @@ public class CharacterGeneratorController extends App.Svc {
 
             cgv.render(ib, cgv.genWidth, cgv.genHeight);
 
-            IImage img = GaBIEn.createImage(ib.getPixels(), w, h);
+            WSIImage img = GaBIEn.createWSIImage(ib.getPixels(), w, h);
             ib.shutdown();
             return img;
         }
-        return GaBIEn.createImage(new int[1], 1, 1);
+        return GaBIEn.createWSIImage(new int[1], 1, 1);
     }
 
     // An image in the system.
