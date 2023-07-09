@@ -50,13 +50,14 @@ public class RootImageEditorTool extends ImageEditorTool {
         for (int i = 0; i < toolClasses.length; i++) {
             final int ic = i;
             UIElement nx = new UISymbolButton(toolSymbol[i], app.f.schemaFieldTH, new Runnable() {
+                @SuppressWarnings("unchecked")
                 @Override
                 public void run() {
                     try {
-                        uiev.currentTool = (ImageEditorTool) toolClasses[ic].newInstance();
+                        uiev.currentTool = (ImageEditorTool) (toolClasses[ic].getConstructor(App.class).newInstance(app));
                         uiev.newToolCallback.run();
-                    } catch (InstantiationException e) {
-                    } catch (IllegalAccessException e) {
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }).togglable(toolClasses[i] == oneTool);
