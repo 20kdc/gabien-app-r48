@@ -13,7 +13,6 @@ import gabien.render.IImage;
 import r48.App;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;
-import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
@@ -89,7 +88,7 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
             s = Math.floor(s);
             int f = (int) s;
             f %= 4;
-            RMEventGraphicRenderer.flexibleSpriteDraw(app, (tileSize * 3) + (field * tileSize), (tileSize * 4) + (f * tileSize), tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, chipset, 0, igd);
+            igd.blitScaledImage((tileSize * 3) + (field * tileSize), (tileSize * 4) + (f * tileSize), tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, chipset);
         }
 
         // Water tiles are yet another 50-entry AT field, seemingly of a different type.
@@ -199,7 +198,7 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
                 toy = tileSize * 3;
                 break;
         }
-        RMEventGraphicRenderer.flexibleSpriteDraw(app, tox + cx, toy + cy, etc, etc, px + (cx * spriteScale), py + (cy * spriteScale), etc * spriteScale, etc * spriteScale, 0, chipset, 0, igd);
+        igd.blitScaledImage(tox + cx, toy + cy, etc, etc, px + (cx * spriteScale), py + (cy * spriteScale), etc * spriteScale, etc * spriteScale, chipset);
     }
 
     private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrDriver igd, IImage chipset, int spriteScale) {
@@ -208,7 +207,7 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
         ti += ofsPage * 144;
         int tx = (ti % 6) + ((ti / 96) * 6);
         int ty = ((ti / 6) % 16);
-        RMEventGraphicRenderer.flexibleSpriteDraw(app, ((tx + 12) * tileSize), ty * tileSize, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, chipset, 0, igd);
+        igd.blitScaledImage(((tx + 12) * tileSize), ty * tileSize, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, chipset);
     }
 
     @Override

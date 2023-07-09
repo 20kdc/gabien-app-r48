@@ -14,7 +14,6 @@ import r48.App;
 import r48.RubyTable;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;
-import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
@@ -88,8 +87,9 @@ public class XPTileRenderer extends App.Svc implements ITileRenderer {
         int tsh = 8;
         int tx = tidx % tsh;
         int ty = tidx / tsh;
-        if (tilesetMaps[0] != null)
-            RMEventGraphicRenderer.flexibleSpriteDraw(app, tx * tileSize, ty * tileSize, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, tilesetMaps[0], 0, igd);
+        if (tilesetMaps[0] != null) {
+            igd.blitScaledImage(tx * tileSize, ty * tileSize, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, tilesetMaps[0]);
+        }
     }
 
     // Used by 2k3 support too, since it follows the same AT design
@@ -107,7 +107,7 @@ public class XPTileRenderer extends App.Svc implements ITileRenderer {
                         int ty = ti / 3;
                         int sX = (sA * cSize);
                         int sY = (sB * cSize);
-                        RMEventGraphicRenderer.flexibleSpriteDraw(app, (tx * fTileSize) + sX + tox, (ty * fTileSize) + sY + toy, cSize, cSize, px + (sX * spriteScale), py + (sY * spriteScale), cSize * spriteScale, cSize * spriteScale, 0, img, 0, igd);
+                        igd.blitScaledImage((tx * fTileSize) + sX + tox, (ty * fTileSize) + sY + toy, cSize, cSize, px + (sX * spriteScale), py + (sY * spriteScale), cSize * spriteScale, cSize * spriteScale, img);
                     }
                 return true;
             }

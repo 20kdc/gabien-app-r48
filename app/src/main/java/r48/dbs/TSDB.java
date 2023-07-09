@@ -12,7 +12,6 @@ import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.map.events.RMEventGraphicRenderer;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -120,7 +119,7 @@ public class TSDB extends App.Svc {
             boolean flagValid = tsp.testFlag(tiletype);
             int rtX = flagValid ? tsp.layertabAX : tsp.layertabIX;
             int rtY = flagValid ? tsp.layertabAY : tsp.layertabIY;
-            RMEventGraphicRenderer.flexibleSpriteDraw(app, rtX, rtY, tsp.w, tsp.h, x + (tsp.x * sprScale), y + (tsp.y * sprScale), tsp.w * sprScale, tsp.h * sprScale, 0, GaBIEn.getImageCKEx(tsp.img, false, true, 255, 0, 255), 0, igd);
+            igd.blitScaledImage(rtX, rtY, tsp.w, tsp.h, x + (tsp.x * sprScale), y + (tsp.y * sprScale), tsp.w * sprScale, tsp.h * sprScale, GaBIEn.getImageCKEx(tsp.img, false, true, 255, 0, 255));
         }
     }
 

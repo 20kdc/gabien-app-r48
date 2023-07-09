@@ -66,9 +66,7 @@ public class TonePickerSchemaElement extends SchemaElement {
         GaBIEn.engineFonts.drawString(finalComposite, 0, (imageUnit + 1) - app.f.tonePickerTH, T.z.l102, false, false, app.f.tonePickerTH);
         GaBIEn.engineFonts.drawString(finalComposite, imageUnit, (imageUnit + 1) - app.f.tonePickerTH, T.z.l103, false, false, app.f.tonePickerTH);
 
-        IImage im = GaBIEn.createImage(finalComposite.getPixels(), imageUnit * 2, imageUnit);
-        finalComposite.shutdown();
-        return im;
+        return finalComposite.convertToImmutable(null);
     }
 
     public static IImage getOneTrueTotem() {

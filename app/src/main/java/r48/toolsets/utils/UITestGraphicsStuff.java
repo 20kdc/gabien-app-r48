@@ -8,8 +8,9 @@
 package r48.toolsets.utils;
 
 import r48.App;
-import r48.map.events.RMEventGraphicRenderer;
 import r48.schema.displays.TonePickerSchemaElement;
+import gabien.GaBIEn;
+import gabien.natives.BadGPU;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.UIElement;
@@ -20,6 +21,11 @@ import gabien.wsi.IPeripherals;
  */
 public class UITestGraphicsStuff extends UIElement {
     public final App app;
+    private static final int[] blendModes = {
+        IGrDriver.BLEND_NORMAL,
+        IGrDriver.BLEND_ADD,
+        IGrDriver.BLEND_SUB
+    };
     public UITestGraphicsStuff(App app) {
         this.app = app;
     }
@@ -30,11 +36,18 @@ public class UITestGraphicsStuff extends UIElement {
 
     @Override
     public void render(IGrDriver igd) {
+        IImage tst = TonePickerSchemaElement.getOneTrueTotem();
         for (int j = 0; j < 3; j++) {
             int angle = j * 22;
-            IImage tst = TonePickerSchemaElement.getOneTrueTotem();
-            for (int i = 0; i < 3; i++)
-                RMEventGraphicRenderer.flexibleSpriteDraw(app, 0, 0, tst.getWidth(), tst.getHeight(), j * 128, i * 64, tst.getWidth(), tst.getHeight(), angle, tst, i, igd);
+            for (int i = 0; i < blendModes.length; i++)
+                igd.drawRotatedScaled(j * 128, i * 64, tst.getWidth(), tst.getHeight(), angle, tst, blendModes[i], 0);
         }
+        float ofx = (float) (96 + (GaBIEn.getTime() % 16));
+        igd.blitScaledImage(ofx, ofx, 16, 16, 512, 0, 128, 128, tst, IGrDriver.BLEND_NORMAL, BadGPU.DrawFlags.MagLinear);
+        igd.drawXYSTRGBA(IGrDriver.BLEND_NORMAL, 0, null,
+                  0, 512, 0, 0, 1, 0, 0, 1,
+                256, 512, 0, 0, 0, 1, 0, 1,
+                  0, 768, 0, 0, 0, 0, 1, 1
+        );
     }
 }

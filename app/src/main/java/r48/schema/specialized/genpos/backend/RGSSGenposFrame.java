@@ -15,7 +15,6 @@ import r48.App;
 import r48.RubyTable;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
-import r48.map.events.RMEventGraphicRenderer;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
@@ -297,7 +296,12 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
         int blendType = rt.getTiletype(i, 7, 0);
         int cellX = (cell % 5) * 192;
         int cellY = (cell / 5) * 192;
-        RMEventGraphicRenderer.flexibleSpriteDraw(app, cellX, cellY, 192, 192, opx + ofx, opy + ofy, ts, ts, angle, scaleImage, blendType, igd);
+        int blendMode = IGrDriver.BLEND_NORMAL;
+        if (blendType == 1)
+            blendMode = IGrDriver.BLEND_ADD;
+        if (blendType == 2)
+            blendMode = IGrDriver.BLEND_SUB;
+        igd.drawRotatedScaled(cellX, cellY, 192, 192, opx + ofx, opy + ofy, ts, ts, angle, scaleImage, blendMode, 0);
     }
 
     @Override

@@ -289,7 +289,7 @@ public class UIMapView extends UIPlaneView {
             render(currentLayer, offscreenBuf, camR);
         }
         if (offscreenBuf != null)
-            igd.blitImage(0, 0, realSize.width, realSize.height, 0, 0, offscreenBuf);
+            igd.blitImage(0, 0, offscreenBuf);
 
         super.render(igd);
     }

@@ -69,7 +69,7 @@ public class TimeWaster {
         type *= 127;
         if (type > 240)
             type = 255;
-        igd.clearRectAlpha(0, 0, 0, type, iconPlanX, iconPlanY, iconSize, iconSize);
+        igd.fillRect(0, 0, 0, type, iconPlanX, iconPlanY, iconSize, iconSize);
     }
 
     // x/y is a position to stay away from.

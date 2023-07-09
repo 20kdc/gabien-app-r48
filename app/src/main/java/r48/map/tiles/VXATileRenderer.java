@@ -15,7 +15,6 @@ import r48.App;
 import r48.RubyTable;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;
-import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
@@ -213,7 +212,7 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
                 tgtY -= 16;
                 tgtX += 8;
             }
-            RMEventGraphicRenderer.flexibleSpriteDraw(app, tgtX * tileSize, tgtY * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, planeImage, 0, igd);
+            igd.blitScaledImage(tgtX * tileSize, tgtY * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, planeImage);
             return true;
         }
         return false;
@@ -249,12 +248,12 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
                             int sY = (sB * cSizeI);
                             int s2X = sA * cSize;
                             int s2Y = sB * cSize;
-                            RMEventGraphicRenderer.flexibleSpriteDraw(app, tx + pox + sX, ty + poy + sY, cSizeI, cSizeI, px + s2X, py + s2Y, cSize, cSize, 0, planeImg, 0, igd);
+                            igd.blitScaledImage(tx + pox + sX, ty + poy + sY, cSizeI, cSizeI, px + s2X, py + s2Y, cSize, cSize, planeImg);
                         }
                     return true;
                 }
             } else {
-                RMEventGraphicRenderer.flexibleSpriteDraw(app, tileSize, 2 * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, planeImg, 0, igd);
+                igd.blitScaledImage(tileSize, 2 * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, planeImg);
                 return true;
             }
         }

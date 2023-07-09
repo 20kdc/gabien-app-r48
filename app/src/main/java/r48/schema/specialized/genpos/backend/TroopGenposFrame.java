@@ -108,6 +108,6 @@ public abstract class TroopGenposFrame extends App.Svc implements IGenposFrame {
             return;
         IImage enemyImg = enemies[enemy];
         if (enemyImg != null)
-            igd.blitImage(0, 0, enemyImg.getWidth(), enemyImg.getHeight(), opx - (enemyImg.getWidth() / 2), opy - (enemyImg.getHeight() / 2), enemyImg);
+            igd.blitImage(opx - (enemyImg.getWidth() / 2), opy - (enemyImg.getHeight() / 2), enemyImg);
     }
 }

@@ -101,8 +101,7 @@ public class R2kEventGraphicRenderer extends App.Svc implements IEventGraphicRen
             int py = ((idx / 4) * 4) + dir;
             // The vertical offset is either 12 or 16?
             // 16 causes papers to be weirdly offset, 12 causes lift doors to be out of place
-            int blendType = 0;
-            RMEventGraphicRenderer.flexibleSpriteDraw(app, sx * px, sy * py, sx, sy, ox + (((remoteTileSize * sprScale) - (sx * sprScale)) / 2), (oy - (rsy * sprScale)) + (remoteTileSize * sprScale), rsx * sprScale, rsy * sprScale, 0, i, blendType, igd);
+            igd.blitScaledImage(sx * px, sy * py, sx, sy, ox + (((remoteTileSize * sprScale) - (sx * sprScale)) / 2), (oy - (rsy * sprScale)) + (remoteTileSize * sprScale), rsx * sprScale, rsy * sprScale, i);
         } else {
             // ok, so in this case it's a tile. In the index field.
             tileRenderer.drawTile(0, (short) (target.getIVar("@character_index").getFX() + 10000), ox, oy, igd, sprScale, false);

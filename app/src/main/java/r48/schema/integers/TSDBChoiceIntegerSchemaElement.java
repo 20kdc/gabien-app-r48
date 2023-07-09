@@ -14,7 +14,6 @@ import gabien.ui.Size;
 import gabien.ui.UIScrollLayout;
 import r48.App;
 import r48.dbs.TSDB;
-import r48.map.events.RMEventGraphicRenderer;
 import r48.ui.UIGrid;
 
 /**
@@ -43,7 +42,7 @@ public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
             protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
                 super.drawTile(t, hover, x, y, igd);
                 y += app.f.gridTH + 1;
-                RMEventGraphicRenderer.flexibleSpriteDraw(app, t * tileSize, 0, tileSize, tileSize, x, y, tileSize * sprScale, tileSize * sprScale, 0, tsdb, 0, igd);
+                igd.blitScaledImage(t * tileSize, 0, tileSize, tileSize, x, y, tileSize * sprScale, tileSize * sprScale, tsdb);
             }
 
             @Override

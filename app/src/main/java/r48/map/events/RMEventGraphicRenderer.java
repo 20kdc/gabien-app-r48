@@ -122,33 +122,12 @@ public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRend
             if (blendType != 0)
                 hsie.add(new ToneImageEffect(1, 1, 1, 2, 2));
             i = app.ui.imageFXCache.process(i, hsie);
-            flexibleSpriteDraw(app, tx * sprW, ty * sprH, sprW, sprH, ox - ((sprW * sprScale) / 2), oy - (sprH * sprScale), sprW * sprScale, sprH * sprScale, 0, i, blendType, igd);
-        }
-    }
-
-    public static void flexibleSpriteDraw(App app, int srcx, int srcy, int srcw, int srch, int x, int y, int acw, int ach, int angle, IImage i, int blendType, IGrDriver igd) {
-        boolean doBlend = false;
-        boolean doBlendType = false;
-        if (blendType == 1)
-            doBlend = true;
-        if (blendType == 2) {
-            doBlend = true;
-            doBlendType = true;
-        }
-        if (doBlend) {
-            igd.blendRotatedScaledImage(srcx, srcy, srcw, srch, x, y, acw, ach, angle, i, doBlendType);
-        } else {
-            if ((angle % 360) == 0) {
-                if (acw == srcw) {
-                    if (ach == srch) {
-                        igd.blitImage(srcx, srcy, srcw, srch, x, y, i);
-                        return;
-                    }
-                }
-                igd.blitScaledImage(srcx, srcy, srcw, srch, x, y, acw, ach, i);
-            } else {
-                igd.blitRotatedScaledImage(srcx, srcy, srcw, srch, x, y, acw, ach, angle, i);
-            }
+            int blendMode = IGrDriver.BLEND_NORMAL;
+            if (blendType == 1)
+                blendMode = IGrDriver.BLEND_ADD;
+            if (blendType == 2)
+                blendMode = IGrDriver.BLEND_SUB;
+            igd.blitScaledImage(tx * sprW, ty * sprH, sprW, sprH, ox - ((sprW * sprScale) / 2), oy - (sprH * sprScale), sprW * sprScale, sprH * sprScale, i, blendMode, 0);
         }
     }
 }

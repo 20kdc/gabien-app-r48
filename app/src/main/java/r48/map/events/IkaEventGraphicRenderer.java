@@ -80,7 +80,7 @@ public class IkaEventGraphicRenderer extends App.Svc implements IEventGraphicRen
         if (!fail) {
             String r = graphics[type];
             IImage im = imageLoader.getImage(r, false);
-            RMEventGraphicRenderer.flexibleSpriteDraw(app, dfX * dsX, dfY * dsY, dsX, dsY, ox + (doX * sprScale), oy + (doY * sprScale), dsX * sprScale, dsY * sprScale, 0, im, 0, igd);
+            igd.blitScaledImage(dfX * dsX, dfY * dsY, dsX, dsY, ox + (doX * sprScale), oy + (doY * sprScale), dsX * sprScale, dsY * sprScale, im);
             fail = false;
         }
         if (fail)

@@ -48,7 +48,7 @@ public class UISingleFrameView extends UIElement implements OldMouseEmulator.IOl
 
         IImage bkg = basePanelAccess.frame.getBackground();
         if (bkg != null)
-            igd.blitImage(0, 0, bkg.getWidth(), bkg.getHeight(), opx, opy, bkg);
+            igd.blitImage(opx, opy, bkg);
         int[] d = basePanelAccess.frame.getIndicators();
         for (int i = 0; i < d.length; i += 2) {
             int x = d[i];
