@@ -87,6 +87,12 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
             ise.modifyVal(target, i, setDefault);
     }
 
+    @Override
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+        for (SchemaElement ise : aggregate)
+            ise.visit(target, path, v);
+    }
+
     // NOTE: In *general* elem should be the SchemaElement.
     // HOWEVER, if the object is regen-on-change w/ subwindows,
     //  this causes awful scroll loss, so instead nab the regenerator (it's not like the regenerator uses it for anything)

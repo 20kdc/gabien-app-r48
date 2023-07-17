@@ -18,7 +18,7 @@ import r48.tr.TrPage.FF0;
 /**
  * Created on 12/29/16.
  */
-public class StringSchemaElement extends SchemaElement {
+public class StringSchemaElement extends SchemaElement.Leaf {
     public final FF0 defaultStr;
     public final char type;
 

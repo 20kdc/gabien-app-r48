@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
  * Import/export of JSON files for game translators.
  * Created on 14th April 2023.
  */
-public class JSONImportExportSchemaElement extends SchemaElement {
+public class JSONImportExportSchemaElement extends SchemaElement.Leaf {
     public final FF0 importText, exportText;
     public final MVMFn importFn, exportFn;
     public JSONImportExportSchemaElement(App app, FF0 iT, MVMFn iF, FF0 eT, MVMFn eF) {

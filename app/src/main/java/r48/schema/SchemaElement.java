@@ -81,4 +81,42 @@ public abstract class SchemaElement extends App.Svc {
     // This means any "annotations" (IVars) will be destroyed, so ensure those are *after* the primary in an aggregate.
     // Hopefully this situation should never affect anything.
     public abstract void modifyVal(IRIO target, SchemaPath path, boolean setDefault);
+
+    /**
+     * Visits everything.
+     * This is to be used in global operations.
+     */
+    public final void visit(IRIO target, SchemaPath path, Visitor v) {
+        v.visit(this, target, path);
+        visitChildren(target, path, v);
+    }
+
+    /**
+     * Visits all sub-paths of this path.
+     * This must only have one reference (visit above).
+     */
+    public abstract void visitChildren(IRIO target, SchemaPath path, Visitor v);
+
+    /**
+     * Visits each SchemaPath.
+     */
+    public interface Visitor {
+        /**
+         * Called from SchemaElement.visit.
+         */
+        void visit(SchemaElement element, IRIO target, SchemaPath path);
+    }
+
+    /**
+     * Has no sub-paths.
+     */
+    public static abstract class Leaf extends SchemaElement {
+        public Leaf(App app) {
+            super(app);
+        }
+
+        @Override
+        public final void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+        }
+    }
 }

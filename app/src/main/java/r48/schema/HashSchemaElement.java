@@ -179,4 +179,12 @@ public class HashSchemaElement extends SchemaElement {
             }
         }
     }
+
+    @Override
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+        for (DMKey e : target.getHashKeys()) {
+            IRIO ek = target.getHashVal(e);
+            valElem.visit(ek, path.arrayHashIndex(e, "{" + getKeyText(e) + "}"), v);
+        }
+    }
 }

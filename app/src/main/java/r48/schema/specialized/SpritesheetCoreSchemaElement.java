@@ -22,7 +22,7 @@ import r48.ui.dialog.UISpritesheetChoice;
 /**
  * Created on 29/07/17.
  */
-public class SpritesheetCoreSchemaElement extends SchemaElement {
+public class SpritesheetCoreSchemaElement extends SchemaElement.Leaf {
     public IFunction<RORIO, String> text;
     public int defaultVal;
 

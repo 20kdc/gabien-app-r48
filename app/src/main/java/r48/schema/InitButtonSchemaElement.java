@@ -29,7 +29,7 @@ import r48.tr.TrPage.FF0;
  * so runDef is true.
  * Created on April 20, 2019.
  */
-public class InitButtonSchemaElement extends SchemaElement {
+public class InitButtonSchemaElement extends SchemaElement.Leaf {
     private final FF0 text;
     private final Condition condition;
     private final SchemaElement reinitializer;

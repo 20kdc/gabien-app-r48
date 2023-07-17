@@ -268,6 +268,11 @@ public class SDB extends App.Svc {
         public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
             getEntry().modifyVal(target, path, setDefault);
         }
+
+        @Override
+        public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+            getEntry().visit(target, path, v);
+        }
     }
 
     private class NameProxySchemaElement extends BaseProxySchemaElement implements IProxySchemaElement {

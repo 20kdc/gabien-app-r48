@@ -21,7 +21,7 @@ import r48.tr.TrPage.FF2;
 /**
  * Created on 1st August 2022.
  */
-public class WindowTitleAttachmentSchemaElement extends SchemaElement {
+public class WindowTitleAttachmentSchemaElement extends SchemaElement.Leaf {
     public final FF2 suffixRoutine;
 
     public WindowTitleAttachmentSchemaElement(App app, FF2 sr) {

@@ -23,7 +23,7 @@ import r48.schema.util.SchemaPath;
  * Thus, buildHoldingEditor has been finaled.
  * Created on 12/29/16.
  */
-public class IntegerSchemaElement extends SchemaElement {
+public class IntegerSchemaElement extends SchemaElement.Leaf {
     public long defaultInt;
 
     public IntegerSchemaElement(App app, long i) {

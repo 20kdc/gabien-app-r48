@@ -19,7 +19,7 @@ import r48.schema.util.SchemaPath;
  * Basically a copy of StringSchemaElement with some modifications
  * ~~Created on 12/29/16.~~ cloned on 15 feb.2017
  */
-public class FloatSchemaElement extends SchemaElement {
+public class FloatSchemaElement extends SchemaElement.Leaf {
     public boolean jsonCoerce;
     public String def;
 

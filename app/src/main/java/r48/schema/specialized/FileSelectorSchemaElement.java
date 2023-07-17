@@ -28,7 +28,7 @@ import java.util.HashSet;
  * baka { string subwindow[ Browse... ] fileSelector CharSet/ }
  * Created on 15/06/17.
  */
-public class FileSelectorSchemaElement extends SchemaElement {
+public class FileSelectorSchemaElement extends SchemaElement.Leaf {
     public final String pathExtender;
     public final String mustBeImage;
 

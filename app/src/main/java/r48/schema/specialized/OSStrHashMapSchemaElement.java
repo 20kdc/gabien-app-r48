@@ -29,7 +29,7 @@ import java.util.HashMap;
  * Because we're coming full circle.
  * Written on December 1st, 2017.
  */
-public class OSStrHashMapSchemaElement extends SchemaElement {
+public class OSStrHashMapSchemaElement extends SchemaElement.Leaf {
     public OSStrHashMapSchemaElement(App app) {
         super(app);
     }

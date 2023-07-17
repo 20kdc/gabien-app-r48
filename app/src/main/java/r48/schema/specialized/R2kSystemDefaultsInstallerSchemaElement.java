@@ -30,7 +30,7 @@ import r48.schema.util.SchemaPath;
  * NOTE: As of IRIOs this does have a slight bit of weirdness ; it assumes setArray for a few elements leaves the array empty, which may not always be the case.
  * Created on 08/06/17.
  */
-public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
+public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf {
     public int mode = 0;
 
     public R2kSystemDefaultsInstallerSchemaElement(App app, int i) {

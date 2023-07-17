@@ -107,6 +107,13 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
         }
     }
 
+    @Override
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+        IRIO r = pStr.get(target);
+        if (r != null)
+            subElem.visit(r, path.otherIndex(alias.r()), v);
+    }
+
     private void createIVar(IRIO r, SchemaPath targetPath, boolean mv) {
         // being created, so create from scratch no matter what.
         subElem.modifyVal(r, targetPath.otherIndex(alias.r()), mv);

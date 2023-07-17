@@ -22,7 +22,7 @@ import r48.ui.audioplayer.UIAudioPlayer;
  * Sound player element
  * Created on 2nd August 2022
  */
-public class SoundPlayerSchemaElement extends SchemaElement {
+public class SoundPlayerSchemaElement extends SchemaElement.Leaf {
     public final String prefix;
     public final PathSyntax namePath;
     public final @Nullable PathSyntax volumePath;

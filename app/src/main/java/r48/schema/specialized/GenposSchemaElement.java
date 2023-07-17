@@ -26,7 +26,7 @@ import r48.schema.util.SchemaPath;
  * which calls back to this for edit notifications.
  * Created on 2/17/17. "General Positioning" refactor started on July 28th, 2017.
  */
-public class GenposSchemaElement extends SchemaElement {
+public class GenposSchemaElement extends SchemaElement.Leaf {
     private String genposType, a1, a2, b1, b2;
     private int framerate;
 

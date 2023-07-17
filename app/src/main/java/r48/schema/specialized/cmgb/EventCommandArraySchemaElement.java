@@ -238,7 +238,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         final String copyText = T.z.l163;
         final boolean addRemoveF = addRemove;
         final boolean cctF = canCopyText;
-        group[group.length - 1] = new SchemaElement(app) {
+        group[group.length - 1] = new SchemaElement.Leaf(app) {
             @Override
             public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
                 UIScrollLayout usl = new UIScrollLayout(true, app.f.generalS);
@@ -371,6 +371,14 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 if (actualStart == -1)
                     return;
                 getGroupElement(target, actualStart, this).modifyVal(target, path, setDefault);
+            }
+
+            @Override
+            public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+                int actualStart = findActualStart(target, tracker);
+                if (actualStart == -1)
+                    return;
+                getGroupElement(target, actualStart, this).visit(target, path, v);
             }
         };
     }

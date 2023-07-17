@@ -24,7 +24,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 11/06/17.
  */
-public class MapPositionHelperSchemaElement extends SchemaElement {
+public class MapPositionHelperSchemaElement extends SchemaElement.Leaf {
     public final PathSyntax pathA, pathB, pathC;
 
     public MapPositionHelperSchemaElement(App app, PathSyntax a, PathSyntax b, PathSyntax c) {

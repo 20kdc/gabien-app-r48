@@ -98,6 +98,11 @@ public class ObjectClassSchemaElement extends SchemaElement {
     }
 
     @Override
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+        backing.visit(target, path, v);
+    }
+
+    @Override
     public String windowTitleSuffix(SchemaPath path) {
         return backing.windowTitleSuffix(path);
     }

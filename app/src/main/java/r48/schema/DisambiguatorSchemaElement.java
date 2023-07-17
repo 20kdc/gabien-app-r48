@@ -89,4 +89,11 @@ public class DisambiguatorSchemaElement extends SchemaElement {
             throw e;
         }
     }
+
+    @Override
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+        String iv = getDisambigIndex(target);
+        SchemaElement ise = getSchemaElement(iv);
+        ise.visit(target, path, v);
+    }
 }

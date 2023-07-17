@@ -17,7 +17,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 12/29/16.
  */
-public class BooleanSchemaElement extends SchemaElement {
+public class BooleanSchemaElement extends SchemaElement.Leaf {
     public boolean defaultVal = false;
 
     public BooleanSchemaElement(App app, boolean defVal) {

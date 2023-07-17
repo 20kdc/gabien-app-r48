@@ -23,7 +23,7 @@ import r48.ui.UINSVertLayout;
 /**
  * Created on 12/29/16.
  */
-public class SubwindowSchemaElement extends SchemaElement implements IProxySchemaElement {
+public class SubwindowSchemaElement extends SchemaElement.Leaf implements IProxySchemaElement {
     public SchemaElement heldElement;
     public IFunction<IRIO, String> nameGetter = new IFunction<IRIO, String>() {
         @Override

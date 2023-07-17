@@ -36,7 +36,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * The system is a lot cleaner now it's having the entire UI rebuilt all the time.
  * Created on 12/30/16.
  */
-public class EnumSchemaElement extends SchemaElement {
+public class EnumSchemaElement extends SchemaElement.Leaf {
     // Maps ValueSyntax strings to option text
     public final HashMap<String, UIEnumChoice.Option> lookupOptions = new HashMap<String, UIEnumChoice.Option>();
     // Options for use in enum choice dialogs

@@ -21,7 +21,7 @@ import r48.ui.UITileGrid;
 /**
  * Created on 12/06/17.
  */
-public class EventTileReplacerSchemaElement extends SchemaElement {
+public class EventTileReplacerSchemaElement extends SchemaElement.Leaf {
     public final TSDB displayMap;
     public final int layer;
     public final PathSyntax charName, charIdx;

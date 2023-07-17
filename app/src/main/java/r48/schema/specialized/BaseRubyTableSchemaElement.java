@@ -20,7 +20,7 @@ import r48.schema.util.SchemaPath;
  * Contains just the boilerplate bits of RubyTableSchemaElement.
  * Pulled out on 3/3/2020.
  */
-public abstract class BaseRubyTableSchemaElement extends SchemaElement {
+public abstract class BaseRubyTableSchemaElement extends SchemaElement.Leaf {
 
     public final int defW;
     public final int defH;

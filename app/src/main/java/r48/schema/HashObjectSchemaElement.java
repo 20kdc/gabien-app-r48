@@ -20,7 +20,7 @@ import java.util.LinkedList;
 /**
  * This was probably meant for JSON. Time of introduction unknown.
  */
-public class HashObjectSchemaElement extends SchemaElement {
+public class HashObjectSchemaElement extends SchemaElement.Leaf {
 
     public final HashSet<DMKey> allowedKeys;
     // disables setDefault

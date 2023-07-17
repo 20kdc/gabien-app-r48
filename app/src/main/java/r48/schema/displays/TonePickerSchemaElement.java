@@ -28,7 +28,7 @@ import r48.ui.UIThumbnail;
  * Note this must *follow* elements to ensure the properties exist.
  * Created on 31/07/17.
  */
-public class TonePickerSchemaElement extends SchemaElement {
+public class TonePickerSchemaElement extends SchemaElement.Leaf {
     public final PathSyntax rP, gP, bP, sP;
     public final int base;
 

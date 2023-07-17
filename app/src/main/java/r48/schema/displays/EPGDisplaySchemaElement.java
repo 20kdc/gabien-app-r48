@@ -22,7 +22,7 @@ import r48.schema.util.SchemaPath;
  * Solely for the express purpose of Event::Page::Graphic schemas
  * Created on 12/29/16.
  */
-public class EPGDisplaySchemaElement extends SchemaElement {
+public class EPGDisplaySchemaElement extends SchemaElement.Leaf {
     public EPGDisplaySchemaElement(App app) {
         super(app);
     }

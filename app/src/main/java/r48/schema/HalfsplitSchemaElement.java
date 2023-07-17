@@ -45,4 +45,10 @@ public class HalfsplitSchemaElement extends SchemaElement {
         a.modifyVal(target, path, setDefault);
         b.modifyVal(target, path, setDefault);
     }
+
+    @Override
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+        a.visit(target, path, v);
+        b.visit(target, path, v);
+    }
 }

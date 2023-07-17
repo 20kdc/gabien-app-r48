@@ -20,7 +20,7 @@ import r48.schema.util.SchemaPath;
  * Colours, tones, same thing
  * Created on 1/3/17.
  */
-public class CTNativeSchemaElement extends SchemaElement {
+public class CTNativeSchemaElement extends SchemaElement.Leaf {
     public final String cls;
 
     public CTNativeSchemaElement(App app, String c) {
@@ -32,10 +32,10 @@ public class CTNativeSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
         RubyCT rct = new RubyCT(target.getBuffer());
-        addField(uiSVL, T.z.l184, 0, rct, path);
-        addField(uiSVL, T.z.l185, 8, rct, path);
-        addField(uiSVL, T.z.l186, 16, rct, path);
-        addField(uiSVL, T.z.l187, 24, rct, path);
+        addField(uiSVL, T.z.toneR, 0, rct, path);
+        addField(uiSVL, T.z.toneG, 8, rct, path);
+        addField(uiSVL, T.z.toneB, 16, rct, path);
+        addField(uiSVL, T.z.toneAL, 24, rct, path);
         return uiSVL;
     }
 

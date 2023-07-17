@@ -24,7 +24,7 @@ import r48.ui.help.UIHelpSystem;
  * This is view-only, and doesn't do much - just embeds a help system control with the page number set from an instance variable.
  * Created on 2/15/17.
  */
-public class HWNDSchemaElement extends SchemaElement {
+public class HWNDSchemaElement extends SchemaElement.Leaf {
     public final PathSyntax ivar;
     public final String file;
 

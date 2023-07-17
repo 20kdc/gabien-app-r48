@@ -18,7 +18,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 12/28/16.
  */
-public class OpaqueSchemaElement extends SchemaElement {
+public class OpaqueSchemaElement extends SchemaElement.Leaf {
     public OpaqueSchemaElement(App app) {
         super(app);
     }

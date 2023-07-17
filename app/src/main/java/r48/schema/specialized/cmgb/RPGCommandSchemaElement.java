@@ -228,6 +228,30 @@ public class RPGCommandSchemaElement extends SchemaElement {
         }
     }
 
+    @Override
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+        path = path.tagSEMonitor(target, this, false);
+        actualSchema.visit(target, path, v);
+        RPGCommand rc = database.knownCommands.get((int) target.getIVar("@code").getFX());
+        if (rc != null) {
+            if (rc.specialSchema != null) {
+                // The amount of parameters isn't always fully described.
+                // Cutting down on length is done when the command code is set - That's as good as it gets.
+                rc.specialSchema.visit(target, path, v);
+            } else {
+                IRIO param = target.getIVar("@parameters");
+                // All parameters are described, and the SASE will ensure length is precisely equal
+                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(app, new OpaqueSchemaElement(app), rc.params.size(), false, 0, new StandardArrayInterface());
+                parametersSanitySchema.visit(param, path, v);
+                int alen = param.getALen();
+                for (int i = 0; i < alen; i++) {
+                    SchemaElement ise = rc.getParameterSchema(param, i);
+                    ise.visit(param.getAElem(i), path.arrayHashIndex(DMKey.of(i), "[" + i + "]"), v);
+                }
+            }
+        }
+    }
+
     public RPGCommandSchemaElement hideHeaderVer() {
         if (hiddenHeadVer != null)
             return hiddenHeadVer;

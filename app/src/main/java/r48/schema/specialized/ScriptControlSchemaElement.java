@@ -32,7 +32,7 @@ import java.util.zip.InflaterInputStream;
  * Using the mkxp-oneshot 'standard', imports and exports RGSS scripts.
  * Created on January 28th, 2018.
  */
-public class ScriptControlSchemaElement extends SchemaElement {
+public class ScriptControlSchemaElement extends SchemaElement.Leaf {
     public ScriptControlSchemaElement(App app) {
         super(app);
     }

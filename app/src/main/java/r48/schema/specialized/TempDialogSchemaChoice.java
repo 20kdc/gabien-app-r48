@@ -23,7 +23,7 @@ import r48.schema.util.SchemaPath;
  * and this forwards modifyVal requests back to the panel... I think.)
  * Created on 12/30/16.
  */
-public class TempDialogSchemaChoice extends SchemaElement {
+public class TempDialogSchemaChoice extends SchemaElement.Leaf {
     public UIElement heldDialog;
     public Runnable update;
     public SchemaPath hPar;

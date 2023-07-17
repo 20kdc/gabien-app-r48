@@ -510,6 +510,11 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                         public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
                             getSchema(path).modifyVal(target, path, setDefault);
                         }
+
+                        @Override
+                        public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+                            getSchema(path).visit(target, path, v);
+                        }
                     };
                 }
                 if (text.equals("contextDictionary")) {
@@ -556,6 +561,11 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                         @Override
                         public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
                             insideThat.modifyVal(target, applySchema(target, path, false), setDefault);
+                        }
+
+                        @Override
+                        public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+                            insideThat.visit(target, applySchema(target, path, false), v);
                         }
                     };
                 }

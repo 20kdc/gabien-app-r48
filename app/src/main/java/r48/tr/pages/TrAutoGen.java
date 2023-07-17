@@ -155,10 +155,10 @@ public class TrAutoGen extends TrPage {
     public String l181;
     public String l182;
     public String l183;
-    public String l184;
-    public String l185;
-    public String l186;
-    public String l187;
+    public String toneR;
+    public String toneG;
+    public String toneB;
+    public String toneAL;
     public String l188;
     public String l189;
     public String l190;

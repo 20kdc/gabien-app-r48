@@ -83,4 +83,13 @@ public class TypeChangerSchemaElement extends SchemaElement {
         // If the target performs a correction, it will cause a changeOccurred.
         targetS.modifyVal(target, path, setDefault);
     }
+
+    @Override
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+        int rei = getRelevantElementId(target);
+        if (rei == -1)
+            return;
+
+        targets[rei].visit(target, path, v);
+    }
 }

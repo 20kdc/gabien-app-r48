@@ -305,6 +305,25 @@ public abstract class ArraySchemaElement extends SchemaElement {
             path.changeOccurred(true);
     }
 
+    @Override
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+        HashMap<Integer, Integer> indentAnchors = new HashMap<Integer, Integer>();
+        int alen = target.getALen();
+        for (int j = 0; j < alen; j++) {
+            IRIO rio = target.getAElem(j);
+            getElementSchema(j).visit(rio, path.arrayHashIndex(DMKey.of(j), "[" + j + "]"), v);
+        }
+        int groupStep;
+        for (int j = 0; j < alen; j += groupStep) {
+            groupStep = getGroupLength(target, j);
+            if (groupStep == 0) {
+                groupStep = 1;
+                continue;
+            }
+            getElementContextualSchema(target, j, groupStep, indentAnchors).element.visit(target, path, v);
+        }
+    }
+
     // Used to do the correct tagging so that updates to children will affect the parent
     public boolean monitorsSubelements() {
         return false;

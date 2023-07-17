@@ -120,6 +120,14 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
             path.changeOccurred(true);
     }
 
+    @Override
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+        if (target.getALen() > index) {
+            String indexStr = nameCb != null ? "." + nameCb.r() : ("]" + index);
+            subSchema.visit(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), indexStr), v);
+        }
+    }
+
     private boolean resizeToInclude(IRIO target) {
         boolean changed = false;
         int alen;

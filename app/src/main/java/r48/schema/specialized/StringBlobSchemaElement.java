@@ -27,7 +27,7 @@ import java.io.*;
  * Generic string blob (no compression on this one)
  * Created on 2/16/17.
  */
-public class StringBlobSchemaElement extends SchemaElement {
+public class StringBlobSchemaElement extends SchemaElement.Leaf {
     public StringBlobSchemaElement(App app) {
         super(app);
     }
