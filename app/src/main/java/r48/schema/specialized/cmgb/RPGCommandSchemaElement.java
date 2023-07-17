@@ -78,7 +78,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         final SchemaPath path = path2.tagSEMonitor(target, this, false);
 
         if (showHeader) {
-            UIElement chooseCode = new UIAppendButton(T.z.l165, new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTH, new Runnable() {
+            UIElement chooseCode = new UIAppendButton(T.s.cmdHelp, new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     launcher.pushObject(path2.newWindow(navigateToCode(launcher, target, new IConsumer<int[]>() {
@@ -95,16 +95,16 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     int code = (int) target.getIVar("@code").getFX();
                     RPGCommand rc = database.knownCommands.get(code);
                     String title = code + " : ";
-                    String result = T.z.l166;
+                    String result = T.s.cmdUnk;
                     if (rc != null) {
                         title += rc.formatName(null);
                         if (rc.description == null) {
-                            result = T.z.l167;
+                            result = T.s.cmdNoDescription;
                         } else {
                             result = rc.description.r();
                         }
                     } else {
-                        title += T.z.l168;
+                        title += T.s.cmdUnkName;
                     }
                     app.ui.launchDialog(title + "\n" + result);
                 }
@@ -126,9 +126,9 @@ public class RPGCommandSchemaElement extends SchemaElement {
             if (target.getIVar("@indent") != null) {
                 if (showHeader) {
                     PathSyntax indent = PathSyntax.compile(app, "@indent");
-                    SchemaElement ise = new PathSchemaElement(indent, () -> T.z.l169, new ROIntegerSchemaElement(app, 0), false);
+                    SchemaElement ise = new PathSchemaElement(indent, () -> T.s.theTrueNameOfAtIndent, new ROIntegerSchemaElement(app, 0), false);
                     if (!allowControlOfIndent)
-                        ise = new PathSchemaElement(indent, () -> T.z.l169, new IntegerSchemaElement(app, 0), false);
+                        ise = new PathSchemaElement(indent, () -> T.s.theTrueNameOfAtIndent, new IntegerSchemaElement(app, 0), false);
                     uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
                 }
             }
@@ -201,7 +201,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             // On the other hand, the elements will be obliterated anyway before reaching the user.
             // This isn't done automatically by UIEnumChoice.
             launcher.popObject();
-        }, categories, T.z.l170, UIEnumChoice.EntryMode.INT), null, path);
+        }, categories, T.s.codeAsInOpcode, UIEnumChoice.EntryMode.INT), null, path);
     }
 
     @Override

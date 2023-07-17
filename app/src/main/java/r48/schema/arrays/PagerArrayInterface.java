@@ -44,7 +44,7 @@ public class PagerArrayInterface implements IArrayInterface {
         };
         if (regularArrayModeCurrent) {
             // regular array mode
-            final UITextButton swapModeButton = new UITextButton(T.z.l198, app.f.schemaFieldTH, swapModeAndReset);
+            final UITextButton swapModeButton = new UITextButton(T.s.l198, app.f.schemaFieldTH, swapModeAndReset);
             svl.panelsAdd(swapModeButton);
             regularArrayInterface.provideInterfaceFrom(new Host() {
                 
@@ -128,7 +128,7 @@ public class PagerArrayInterface implements IArrayInterface {
                     }));
                 }
             }
-            barLayout.panelsAdd(new UITextButton(T.z.l199, app.f.schemaFieldTH, swapModeAndReset));
+            barLayout.panelsAdd(new UITextButton(T.s.l199, app.f.schemaFieldTH, swapModeAndReset));
             if (positions[i].core != null) {
                 uie.add(new UISplitterLayout(barLayout, positions[i].core, true, 0d) {
                     @Override

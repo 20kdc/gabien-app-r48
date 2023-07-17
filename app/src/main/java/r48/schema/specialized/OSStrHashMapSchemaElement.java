@@ -38,7 +38,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement.Leaf {
         App app = launcher.getApp();
         tryInitOSSHESEDB(app);
         if (app.osSHESEDB == null)
-            app.ui.launchDialog(T.z.l181);
+            app.ui.launchDialog(T.s.l181);
         final UITextBox utb = new UITextBox("", app.f.schemaFieldTH);
         utb.onEdit = new Runnable() {
             @Override
@@ -137,10 +137,10 @@ public class OSStrHashMapSchemaElement extends SchemaElement.Leaf {
     private static String mainDecode(App app, int fixnumVal) {
         final TrRoot T = app.t;
         if (app.osSHESEDB == null)
-            return T.z.l182;
+            return T.s.l182;
         String r = app.osSHESEDB.get(fixnumVal);
         if (r == null)
-            return T.z.l183;
+            return T.s.l183;
         return r;
     }
 }

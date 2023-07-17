@@ -40,7 +40,7 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
 
-        final UITextButton importer = new UITextButton(T.z.l143, app.f.schemaFieldTH, new Runnable() {
+        final UITextButton importer = new UITextButton(T.s.l143, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -55,12 +55,12 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
             }
         });
 
-        final UITextButton exporter = new UITextButton(T.z.l145, app.f.schemaFieldTH, new Runnable() {
+        final UITextButton exporter = new UITextButton(T.s.l145, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 try {
                     StringBuilder sb = new StringBuilder();
-                    sb.append(T.z.l146 + "\n");
+                    sb.append(T.s.l146 + "\n");
                     HashSet<String> used = new HashSet<String>();
                     GaBIEn.makeDirectories(AppMain.autoDetectWindows(app.rootPath + "scripts"));
                     OutputStream os = GaBIEn.getOutFile(AppMain.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
@@ -113,14 +113,14 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
 
                         String name2 = new String(adjusted);
                         if (tryWrite(name2, inflated, used, ps)) {
-                            sb.append(T.z.l147);
+                            sb.append(T.s.l147);
                             sb.append(name);
                             sb.append(" -> ");
                             sb.append(name2);
                             sb.append("\n");
                             continue;
                         }
-                        sb.append(T.z.l148);
+                        sb.append(T.s.l148);
                         sb.append(name);
                         sb.append("\n");
                     }
@@ -153,11 +153,11 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
         UISplitterLayout impExp = new UISplitterLayout(exporter, importer, false, 0.5d);
 
         final UITextBox searchText = new UITextBox("", app.f.schemaFieldTH);
-        UISplitterLayout search = new UISplitterLayout(searchText, new UITextButton(T.z.l150, app.f.schemaFieldTH, new Runnable() {
+        UISplitterLayout search = new UISplitterLayout(searchText, new UITextButton(T.s.l150, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 StringBuilder results = new StringBuilder();
-                results.append(T.z.l151);
+                results.append(T.s.l151);
                 results.append("\n");
                 String searchFor = searchText.text;
                 int alen = target.getALen();
@@ -192,7 +192,7 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
         IRIO scripts = new IRIOGeneric(app.encoding);
         InputStream inp = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
         if (inp == null) {
-            app.ui.launchDialog(T.z.l152);
+            app.ui.launchDialog(T.s.l152);
             return null;
         }
         BufferedReader br = new BufferedReader(new InputStreamReader(inp, "UTF-8"));
@@ -220,7 +220,7 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
             if (ok) {
                 byte[] data = loadScript(s);
                 if (data == null) {
-                    app.ui.launchDialog(T.z.l153 + s);
+                    app.ui.launchDialog(T.s.l153 + s);
                     return null;
                 }
                 scr.getAElem(2).putBuffer(data);

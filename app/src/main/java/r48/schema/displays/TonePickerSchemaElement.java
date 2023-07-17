@@ -63,8 +63,8 @@ public class TonePickerSchemaElement extends SchemaElement.Leaf {
         finalComposite.blitImage(0, 0, imageUnit, imageUnit, imageUnit, 0, app.ui.imageFXCache.process(finalComposite, cfg));
 
         final TrRoot T = app.t;
-        GaBIEn.engineFonts.drawString(finalComposite, 0, (imageUnit + 1) - app.f.tonePickerTH, T.z.l102, false, false, app.f.tonePickerTH);
-        GaBIEn.engineFonts.drawString(finalComposite, imageUnit, (imageUnit + 1) - app.f.tonePickerTH, T.z.l103, false, false, app.f.tonePickerTH);
+        GaBIEn.engineFonts.drawString(finalComposite, 0, (imageUnit + 1) - app.f.tonePickerTH, T.s.l102, false, false, app.f.tonePickerTH);
+        GaBIEn.engineFonts.drawString(finalComposite, imageUnit, (imageUnit + 1) - app.f.tonePickerTH, T.s.l103, false, false, app.f.tonePickerTH);
 
         return finalComposite.convertToImmutable(null);
     }

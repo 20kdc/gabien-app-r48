@@ -41,7 +41,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         if (mode == 3) {
-            UITextButton utb1 = new UITextButton(T.z.l172, app.f.schemaFieldTH, new Runnable() {
+            UITextButton utb1 = new UITextButton(T.s.svDoReset, app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     // Before doing anything stupid...
@@ -49,7 +49,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
                     String mapName = R2kRMLikeMapInfoBackend.sNameFromInt((int) mapId);
                     IObjectBackend.ILoadedObject map = app.odb.getObject(mapName, null);
                     if (map == null) {
-                        app.ui.launchDialog(T.z.l173);
+                        app.ui.launchDialog(T.s.errInvalidMap);
                         return;
                     }
                     IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");
@@ -69,10 +69,10 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
                     initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
 
                     path.changeOccurred(false);
-                    app.ui.launchDialog(T.z.l174);
+                    app.ui.launchDialog(T.s.svDidTheReset);
                 }
             });
-            UITextButton utb2 = new UITextButton(T.z.l175, app.f.schemaFieldTH, new Runnable() {
+            UITextButton utb2 = new UITextButton(T.s.svCauseReset, app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
                     IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");
@@ -82,7 +82,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
                     initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
 
                     path.changeOccurred(false);
-                    app.ui.launchDialog(T.z.l176);
+                    app.ui.launchDialog(T.s.svCausedTheReset);
                 }
             });
             return new UISplitterLayout(utb1, utb2, true, 0.5d);
@@ -122,17 +122,17 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
                     // 4. Battle System initialization
                     sub = target.getIVar("@animations").addHashVal(DMKey.of(1));
                     SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Animation"), DMKey.of(1));
-                    sub.getIVar("@name").setString(T.z.l177);
+                    sub.getIVar("@name").setString(T.s.l177);
 
                     sub = target.getIVar("@states").addHashVal(DMKey.of(1));
                     SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::State"), DMKey.of(1));
                     // These are the minimum settings for death to work correctly.
-                    sub.getIVar("@name").setString(T.z.l178);
+                    sub.getIVar("@name").setString(T.s.l178);
                     sub.getIVar("@restriction").setFX(1);
 
                     sub = target.getIVar("@battle_anim_sets_2k3").addHashVal(DMKey.of(1));
                     SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::BattlerAnimationSet"), DMKey.of(1));
-                    sub.getIVar("@name").setString(T.z.l179);
+                    sub.getIVar("@name").setString(T.s.l179);
 
                     // 5. Default enemy data
                     sub = target.getIVar("@enemies").addHashVal(DMKey.of(1));
@@ -140,7 +140,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
 
                     sub = target.getIVar("@troops").addHashVal(DMKey.of(1));
                     SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Troop"), DMKey.of(1));
-                    sub.getIVar("@name").setString(T.z.l180);
+                    sub.getIVar("@name").setString(T.s.l180);
 
                     sub = sub.getIVar("@members");
                     sub.addAElem(0).setNull();

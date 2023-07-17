@@ -131,7 +131,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                         containerRCL();
                                     }
                                 }, app.f.schemaFieldTH);
-                                uie = new UIAppendButton(T.z.l192, uie, new Runnable() {
+                                uie = new UIAppendButton(T.s.l192, uie, new Runnable() {
                                     @Override
                                     public void run() {
                                         copyRange(fixedStart, fixedEnd);
@@ -288,14 +288,14 @@ public class StandardArrayInterface implements IArrayInterface {
                 LinkedList<String> optText = new LinkedList<String>();
                 LinkedList<Runnable> optRuns = new LinkedList<Runnable>();
                 // This keeps this string in the translation DB in case it's needed again; stuff should be tested first.
-                // app.fmt.formatExtended(T.z.l193, new RubyIO().setString(text, true))
-                optText.add(clarifyEmpty ? T.z.l194 : T.z.l195);
+                // app.fmt.formatExtended(T.s.l193, new RubyIO().setString(text, true))
+                optText.add(clarifyEmpty ? T.s.l194 : T.s.l195);
                 optRuns.add(runnable);
                 if (runnable2 != null) {
-                    optText.add(T.z.l196);
+                    optText.add(T.s.l196);
                     optRuns.add(runnable2);
                 }
-                return new UIMenuButton(uiSVL.getApp(), T.z.l197, app.f.schemaArrayAddTH, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
+                return new UIMenuButton(uiSVL.getApp(), T.s.l197, app.f.schemaArrayAddTH, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
             }
 
             // This assumes it's being placed on a button 'before' the position

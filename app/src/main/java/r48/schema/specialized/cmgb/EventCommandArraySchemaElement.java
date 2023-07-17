@@ -234,8 +234,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                     canCopyText = true;
             }
         }
-        final String addText = T.z.l162;
-        final String copyText = T.z.l163;
+        final String addText = T.s.l162;
+        final String copyText = T.s.l163;
         final boolean addRemoveF = addRemove;
         final boolean cctF = canCopyText;
         group[group.length - 1] = new SchemaElement.Leaf(app) {
@@ -361,7 +361,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
                 int actualStart = findActualStart(target, tracker);
                 if (actualStart == -1)
-                    return new UILabel(T.z.l164, app.f.schemaFieldTH);
+                    return new UILabel(T.s.cmdOutOfList, app.f.schemaFieldTH);
                 return getGroupElement(target, actualStart, this).buildHoldingEditor(target, launcher, path);
             }
 

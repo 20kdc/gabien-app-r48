@@ -43,7 +43,7 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost lBase, final SchemaPath pBase) {
         final App app = lBase.getApp();
-        return new UITextButton(T.z.l171, app.f.schemaFieldTH, new Runnable() {
+        return new UITextButton(T.s.gpBeginButton, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 final ISchemaHost launcher = lBase.newBlank();

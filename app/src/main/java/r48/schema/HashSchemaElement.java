@@ -93,7 +93,7 @@ public class HashSchemaElement extends SchemaElement {
                         trigger();
                     }
                 };
-                uiSV.panelsAdd(new UISplitterLayout(new UILabel(T.z.l107, app.f.schemaFieldTH), searchBox, false, 0d));
+                uiSV.panelsAdd(new UISplitterLayout(new UILabel(T.s.l107, app.f.schemaFieldTH), searchBox, false, 0d));
 
                 AtomicInteger fw = new AtomicInteger(0);
 
@@ -136,7 +136,7 @@ public class HashSchemaElement extends SchemaElement {
                 }
                 // Set up a key workspace.
                 UIElement workspace = keyElem.buildHoldingEditor(keyWorkspace, launcher, rioPath);
-                UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(T.z.l108, app.f.schemaFieldTH, new Runnable() {
+                UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(T.s.l108, app.f.schemaFieldTH, new Runnable() {
                     @Override
                     public void run() {
                         DMKey dmk = DMKey.of(keyWorkspace);
@@ -164,7 +164,7 @@ public class HashSchemaElement extends SchemaElement {
             return ((EnumSchemaElement) ke).viewValue(v, EnumSchemaElement.Prefix.Prefix);
         if (ke instanceof OSStrHashMapSchemaElement)
             return OSStrHashMapSchemaElement.decode(app, v);
-        return T.z.l109 + v;
+        return T.s.l109 + v;
     }
 
     @Override
