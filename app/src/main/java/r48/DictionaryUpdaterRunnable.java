@@ -14,7 +14,6 @@ import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOGeneric;
 import r48.schema.EnumSchemaElement;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
@@ -22,7 +21,6 @@ import r48.schema.util.SchemaPath;
 import r48.ui.dialog.UIEnumChoice;
 import r48.ui.dialog.UIEnumChoice.EntryMode;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -135,7 +133,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
 
     private void finalizeVals(LinkedList<UIEnumChoice.Option> finalMap) {
         Collections.sort(finalMap, UIEnumChoice.COMPARATOR_OPTION);
-        SchemaElement ise = new EnumSchemaElement(app, finalMap, new IRIOGeneric(StandardCharsets.UTF_8).setFX(defaultVal), EntryMode.INT, () -> T.s.enum_id);
+        SchemaElement ise = new EnumSchemaElement(app, finalMap, DMKey.of(defaultVal), EntryMode.INT, () -> T.s.enum_id);
         dict.setEntry(ise);
     }
 

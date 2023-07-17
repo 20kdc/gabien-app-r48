@@ -85,6 +85,7 @@
 		(list cond-branch (car branches) (append! (list cond) (cdr branches)))
 	)
 )
+(help-set! cond "(cond BRANCHES...) : Conditional with individual branches. First successful branch wins. Each branch looks like (BOOL CONTENTS...) - the BOOL can be the symbol 'else', which is equivalent to #t. CONTENTS are run as per 'begin'.")
 
 ; conditional short-circuiting logic ops
 

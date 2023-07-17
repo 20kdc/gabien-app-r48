@@ -63,7 +63,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
         return uiSVL;
     }
 
-    public static SchemaElement extractField(SchemaElement ise, RORIO rio) {
+    public static SchemaElement extractField(SchemaElement ise, @Nullable RORIO rio) {
         boolean continuing = true;
         while (continuing) {
             continuing = false;

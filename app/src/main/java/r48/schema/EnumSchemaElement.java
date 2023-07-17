@@ -49,9 +49,9 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
 
     public FF0 buttonText;
     public UIEnumChoice.EntryMode entryMode;
-    public RORIO defaultVal;
+    public DMKey defaultVal;
 
-    public EnumSchemaElement(App app, HashMap<String, FF0> o, RORIO def, UIEnumChoice.EntryMode em, FF0 bt) {
+    public EnumSchemaElement(App app, HashMap<String, FF0> o, DMKey def, UIEnumChoice.EntryMode em, FF0 bt) {
         super(app);
         for (Map.Entry<String, FF0> mapping : o.entrySet())
             lookupOptions.put(mapping.getKey(), makeStandardOption(ValueSyntax.decode(mapping.getKey()), mapping.getValue(), null, null));
@@ -62,7 +62,7 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
         defaultVal = def;
     }
 
-    public EnumSchemaElement(App app, Collection<UIEnumChoice.Option> opts, RORIO def, UIEnumChoice.EntryMode em, FF0 bt) {
+    public EnumSchemaElement(App app, Collection<UIEnumChoice.Option> opts, DMKey def, UIEnumChoice.EntryMode em, FF0 bt) {
         super(app);
         viewOptions.addAll(opts);
         Collections.sort(viewOptions, UIEnumChoice.COMPARATOR_OPTION);
@@ -98,12 +98,12 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
             @Override
             public void run() {
                 liveUpdate();
-                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, new UIEnumChoice(app, (integer) -> {
+                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, makeEnumChoiceDialog((integer) -> {
                     target.setDeepClone(integer);
                     path.changeOccurred(false);
                     // Enums can affect parent format, so deal with that now.
                     launcher.popObject();
-                }, viewOptions, buttonText.r(), entryMode), null, path), target));
+                }), null, path), target));
             }
         });
         if (opt != null) {
@@ -116,6 +116,10 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
                 }, app.f.schemaFieldTH);
         }
         return button;
+    }
+
+    public UIEnumChoice makeEnumChoiceDialog(IConsumer<DMKey> result) {
+        return new UIEnumChoice(app, result, viewOptions, buttonText.r(), entryMode);
     }
 
     public static UIEnumChoice.Option makeStandardOption(DMKey val, FF0 text, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {

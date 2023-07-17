@@ -14,4 +14,6 @@
 	restoreSafetyConfirm "Safety Confirmation Prompt"
 	appREPL "R48 Application REPL"
 	launcherREPL "R48 Launcher REPL"
+	idChanger "Global ID Changer"
+	idChangerLocal "Local ID Changer"
 )

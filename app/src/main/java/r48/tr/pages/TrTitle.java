@@ -17,4 +17,5 @@ public class TrTitle extends TrPage {
     public String charGen, sysTools;
     public String restoreSafetyConfirm;
     public String appREPL, launcherREPL;
+    public String idChanger, idChangerLocal;
 }

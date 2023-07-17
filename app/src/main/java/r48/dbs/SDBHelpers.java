@@ -12,6 +12,7 @@ import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.*;
 import r48.App;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.*;
@@ -178,7 +179,7 @@ class SDBHelpers extends App.Svc {
         disambiguations.put("", new ArrayElementSchemaElement(app, 1, () -> S.ppp_idFN, val, null, false));
         AggregateSchemaElement inner = new AggregateSchemaElement(app, new SchemaElement[] {
                 new HalfsplitSchemaElement(
-                        new ArrayElementSchemaElement(app, 0, () -> S.ppp_typeFN, new EnumSchemaElement(app, types, new IRIOGeneric(app.encoding).setFX(0), EntryMode.LOCK, () -> ""), null, false),
+                        new ArrayElementSchemaElement(app, 0, () -> S.ppp_typeFN, new EnumSchemaElement(app, types, DMKey.of(0), EntryMode.LOCK, () -> ""), null, false),
                         new DisambiguatorSchemaElement(app, PathSyntax.compile(app, "]0"), disambiguations)
                 ),
                 new SubwindowSchemaElement(new HWNDSchemaElement(app, PathSyntax.compile(app, "]0"), "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {

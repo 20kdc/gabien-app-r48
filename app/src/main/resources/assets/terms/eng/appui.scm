@@ -96,4 +96,18 @@
 	mGetGPUInfo "GPU Information (New API Compatibility Test)"
 	disableMapRendering "Disable rendering (even across maps!)"
 	disableMapAnimation "Disable animation"
+	mIDChanger "ID Changer..."
+	idcUnavailable "No ID Changer options available."
+	idcTypeButton (fl1 "Type: " a0)
+	idcFromButton (fl1 "From: " a0)
+	idcToButton (fl1 "To: " a0)
+	idcBeware "This tool replaces all references of 'from' with 'to'.\nIf done wrong, this might as well be a button labelled 'Destroy My Project'.\nIt is wise to back up your project before using this."
+	idcFridge (fl1
+		(cond
+			((= a0 0) "No occurances found.")
+			((= a0 1) "1 occurance changed.")
+			(else (.. a0 " occurances changed."))
+		)
+	)
+	idcSwapMode "Swap Mode (swap From and To rather than simply replace From to To)"
 )

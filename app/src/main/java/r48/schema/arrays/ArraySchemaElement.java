@@ -306,7 +306,8 @@ public abstract class ArraySchemaElement extends SchemaElement {
     }
 
     @Override
-    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+    public void visitChildren(IRIO target, SchemaPath path2, Visitor v) {
+        final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
         HashMap<Integer, Integer> indentAnchors = new HashMap<Integer, Integer>();
         int alen = target.getALen();
         for (int j = 0; j < alen; j++) {

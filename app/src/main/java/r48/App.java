@@ -9,6 +9,7 @@ package r48;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -34,6 +35,7 @@ import r48.minivm.fn.MVMR48AppLibraries;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
+import r48.toolsets.utils.IDChangerEntry;
 import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
 import r48.tr.TrNames;
@@ -60,6 +62,9 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     public final Runnable applyConfigChange = () -> {
         c.applyUIGlobals();
     };
+
+    // ID changer entries
+    public final LinkedList<IDChangerEntry> idc = new LinkedList<>();
 
     // VM context
     public final MVMEnvR48 vmCtx;

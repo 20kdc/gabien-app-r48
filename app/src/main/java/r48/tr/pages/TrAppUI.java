@@ -46,4 +46,12 @@ public class TrAppUI extends TrPage {
 
     public String disableMapRendering;
     public String disableMapAnimation;
+    public String mIDChanger;
+    public String idcUnavailable;
+    public FF1 idcTypeButton;
+    public FF1 idcFromButton;
+    public FF1 idcToButton;
+    public String idcBeware;
+    public FF1 idcFridge;
+    public String idcSwapMode;
 }

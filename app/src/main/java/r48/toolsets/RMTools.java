@@ -23,6 +23,7 @@ import r48.schema.util.SchemaPath;
 import r48.toolsets.utils.CommandSite;
 import r48.toolsets.utils.RMFindTranslatables;
 import r48.toolsets.utils.UICommandSites;
+import r48.toolsets.utils.UIIDChanger;
 import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIRMUniversalStringLocator;
 import r48.ui.dialog.UITranscriptControl;
@@ -67,112 +68,102 @@ public class RMTools extends App.Svc {
                 // next day, um, these tools aren't really doable post-further-modularization (stickynote)
                 // 5th January 2017. Here we go.
                 T.z.l34,
+                T.u.mIDChanger
         }, new Runnable[] {
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.launchPrompt(T.z.l35, new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                int i;
-                                try {
-                                    i = Integer.parseInt(s);
-                                } catch (Exception e) {
-                                    app.ui.launchDialog(T.z.dlgBadNum);
-                                    return;
-                                }
-                                for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
-                                    // Find event!
-                                    IObjectBackend.ILoadedObject ilo = rmd.getILO(false);
-                                    if (ilo == null)
+                () -> {
+                    app.ui.launchPrompt(T.z.l35, (s) -> {
+                        int i;
+                        try {
+                            i = Integer.parseInt(s);
+                        } catch (Exception e) {
+                            app.ui.launchDialog(T.z.dlgBadNum);
+                            return;
+                        }
+                        for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
+                            // Find event!
+                            IObjectBackend.ILoadedObject ilo = rmd.getILO(false);
+                            if (ilo == null)
+                                continue;
+                            IRIO mapEvObj = ilo.getObject().getIVar("@events");
+                            for (DMKey key : mapEvObj.getHashKeys()) {
+                                IRIO event = mapEvObj.getHashVal(key);
+                                IRIO pages = event.getIVar("@pages");
+                                int alen = pages.getALen();
+                                for (int j = 0; j < alen; j++) {
+                                    IRIO page = pages.getAElem(j);
+                                    if (page.getType() == '0')
                                         continue;
-                                    IRIO mapEvObj = ilo.getObject().getIVar("@events");
-                                    for (DMKey key : mapEvObj.getHashKeys()) {
-                                        IRIO event = mapEvObj.getHashVal(key);
-                                        IRIO pages = event.getIVar("@pages");
-                                        int alen = pages.getALen();
-                                        for (int j = 0; j < alen; j++) {
-                                            IRIO page = pages.getAElem(j);
-                                            if (page.getType() == '0')
-                                                continue;
-                                            IRIO cmds = page.getIVar("@list");
-                                            int alen2 = cmds.getALen();
-                                            for (int k = 0; k < alen2; k++) {
-                                                long cod = cmds.getAElem(k).getIVar("@code").getFX();
-                                                boolean found;
-                                                if (i == -1337) {
-                                                    found = !commandsEvent.knownCommands.containsKey((int) cod);
-                                                } else {
-                                                    found = cod == i;
-                                                }
-                                                if (found) {
-                                                    UIMTEventPicker.showEventDivorced(app, key, ilo, rmd.schemaName, event, "RPG::Event");
-                                                    return;
-                                                }
-                                            }
+                                    IRIO cmds = page.getIVar("@list");
+                                    int alen2 = cmds.getALen();
+                                    for (int k = 0; k < alen2; k++) {
+                                        long cod = cmds.getAElem(k).getIVar("@code").getFX();
+                                        boolean found;
+                                        if (i == -1337) {
+                                            found = !commandsEvent.knownCommands.containsKey((int) cod);
+                                        } else {
+                                            found = cod == i;
+                                        }
+                                        if (found) {
+                                            UIMTEventPicker.showEventDivorced(app, key, ilo, rmd.schemaName, event, "RPG::Event");
+                                            return;
                                         }
                                     }
                                 }
-                                app.ui.launchDialog(T.z.l37);
                             }
-                        });
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        final IObjectBackend.ILoadedObject ilo = mapSystem.getCommonEventRoot();
-                        UICommandSites ucs = new UICommandSites(app, app.odb.getIdByObject(ilo), new ISupplier<CommandSite[]>() {
-                            @Override
-                            public CommandSite[] get() {
-                                RMFindTranslatables rft = new RMFindTranslatables(app, ilo);
-                                rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents());
-                                return rft.toArray();
-                            }
-                        }, new IObjectBackend.ILoadedObject[] {
-                            ilo
-                        });
-                        ucs.show();
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        LinkedList<ObjectInfo> objects = app.getObjectInfos();
-                        for (final ObjectInfo obj : objects) {
-                            System.out.println(obj + "...");
-                            IObjectBackend.ILoadedObject map = obj.getILO(false);
-                            if (map == null)
-                                continue;
-                            IConsumer<SchemaPath> modListen = new IConsumer<SchemaPath>() {
-                                @Override
-                                public void accept(SchemaPath path) {
-                                    // yup, and throw an exception to give the user an idea of the tree
-                                    // Note that R48 during an error does NOT write over the main object DB for safety reasons
-                                    //  (doing so could result in making the situation worse)
-                                    // the important thing here is that this means autocorrect testing won't lead to the testing env. being poisoneds
-                                    throw new RuntimeException("MODIFY " + obj + " " + path);
-                                }
-                            };
-                            app.odb.registerModificationHandler(map, modListen);
-                            SchemaPath sp = new SchemaPath(app.sdb.getSDBEntry(obj.schemaName), map);
-                            sp.editor.modifyVal(map.getObject(), sp, false);
-                            app.odb.deregisterModificationHandler(map, modListen);
-                            System.out.println(obj + " done.");
                         }
+                        app.ui.launchDialog(T.z.l37);
+                    });
+                },
+                () -> {
+                    final IObjectBackend.ILoadedObject ilo = mapSystem.getCommonEventRoot();
+                    UICommandSites ucs = new UICommandSites(app, app.odb.getIdByObject(ilo), new ISupplier<CommandSite[]>() {
+                        @Override
+                        public CommandSite[] get() {
+                            RMFindTranslatables rft = new RMFindTranslatables(app, ilo);
+                            rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents());
+                            return rft.toArray();
+                        }
+                    }, new IObjectBackend.ILoadedObject[] {
+                        ilo
+                    });
+                    ucs.show();
+                },
+                () -> {
+                    LinkedList<ObjectInfo> objects = app.getObjectInfos();
+                    for (final ObjectInfo obj : objects) {
+                        System.out.println(obj + "...");
+                        IObjectBackend.ILoadedObject map = obj.getILO(false);
+                        if (map == null)
+                            continue;
+                        IConsumer<SchemaPath> modListen = new IConsumer<SchemaPath>() {
+                            @Override
+                            public void accept(SchemaPath path) {
+                                // yup, and throw an exception to give the user an idea of the tree
+                                // Note that R48 during an error does NOT write over the main object DB for safety reasons
+                                //  (doing so could result in making the situation worse)
+                                // the important thing here is that this means autocorrect testing won't lead to the testing env. being poisoneds
+                                throw new RuntimeException("MODIFY " + obj + " " + path);
+                            }
+                        };
+                        app.odb.registerModificationHandler(map, modListen);
+                        SchemaPath sp = new SchemaPath(app.sdb.getSDBEntry(obj.schemaName), map);
+                        sp.editor.modifyVal(map.getObject(), sp, false);
+                        app.odb.deregisterModificationHandler(map, modListen);
+                        System.out.println(obj + " done.");
                     }
                 },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.wm.createWindow(new UIRMUniversalStringLocator(app));
-                    }
+                () -> {
+                    app.ui.wm.createWindow(new UIRMUniversalStringLocator(app));
                 },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.wm.createWindow(new UITranscriptControl(app, mapSystem, commandsEvent));
+                () -> {
+                    app.ui.wm.createWindow(new UITranscriptControl(app, mapSystem, commandsEvent));
+                },
+                () -> {
+                    if (app.idc.size() == 0) {
+                        app.ui.launchDialog(T.u.idcUnavailable);
+                        return;
                     }
+                    app.ui.wm.createWindow(new UIIDChanger(app));
                 }
         }).centred();
     }

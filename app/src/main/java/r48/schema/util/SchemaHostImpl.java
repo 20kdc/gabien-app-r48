@@ -14,9 +14,7 @@ import r48.App;
 import r48.UITest;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
-import r48.map.StuffRenderer;
 import r48.map.UIMapView;
-import r48.schema.SchemaElement;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
@@ -27,17 +25,10 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * Created on 12/29/16.
  */
-public class SchemaHostImpl extends App.Pan implements ISchemaHost {
-    private SchemaPath innerElem;
+public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost {
     private UIElement innerElemEditor;
 
-    // Can be null - if not, the renderer is accessible.
-    // Note that even if the map view "dies", it's renderer will stay around.
-    private final @Nullable UIMapView contextView;
-
     private final Stack<SchemaPath> backStack = new Stack<SchemaPath>();
-
-    private EmbedDataTracker embedData = new EmbedDataTracker();
 
     private UILabel pathLabel = new UILabel("", app.f.schemaPathTH);
     private UIAppendButton toolbarP = new UIAppendButton(Art.Symbol.Back, pathLabel, new Runnable() {
@@ -96,7 +87,7 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
             }
             // This serves to ensure that cloning a window causes it to retain scroll and such,
             // while still keeping it independent.
-            SchemaHostImpl next = new SchemaHostImpl(app, contextView);
+            SchemaHostImpl next = (SchemaHostImpl) newBlank();
             next.backStack.addAll(backStack);
             next.backStack.push(innerElem);
             next.embedData = new EmbedDataTracker(next.backStack, embedData);
@@ -114,15 +105,12 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
         }
     };
 
-    private ISupplier<Boolean> validitySupplier;
-
     public boolean windowOpen = false;
     public boolean stayClosed = false;
     private boolean nudged = false;
 
     public SchemaHostImpl(App app, @Nullable UIMapView rendererSource) {
-        super(app);
-        contextView = rendererSource;
+        super(app, rendererSource);
         layoutAddElement(toolbarRoot);
         // Why is this scaled by main window size? Answer: Because the alternative is occasional Android version glitches.
         Size rootSize = app.ui.wm.getRootSize();
@@ -153,12 +141,7 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
         if (!(windowOpen || stayClosed))
             doLaunch = true;
 
-        validitySupplier = new ISupplier<Boolean>() {
-            @Override
-            public Boolean get() {
-                return validitySupplier == this;
-            }
-        };
+        replaceValidity();
 
         innerElem = nextObject;
         innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
@@ -205,86 +188,8 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
     }
 
     @Override
-    public StuffRenderer getContextRenderer() {
-        if (contextView != null)
-            return contextView.mapTable.renderer;
-        return app.stuffRendererIndependent;
-    }
-
-    @Override
-    public String getContextGUM() {
-        if (contextView != null)
-            return contextView.mapGUM;
-        return null;
-    }
-
-    @Override
-    public double getEmbedDouble(SchemaElement source, IRIO target, String prop) {
-        return (Double) embedData.getEmbed(innerElem, source, target, prop, 0.0d);
-    }
-
-    @Override
-    public void setEmbedDouble(SchemaElement source, IRIO target, String prop, double dbl) {
-        embedData.setEmbed(innerElem, source, target, prop, dbl);
-    }
-
-    @Override
-    public Object getEmbedObject(SchemaElement source, IRIO target, String prop) {
-        return embedData.getEmbed(innerElem, source, target, prop, null);
-    }
-
-    @Override
-    public void setEmbedObject(SchemaElement source, IRIO target, String prop, Object dbl) {
-        embedData.setEmbed(innerElem, source, target, prop, dbl);
-    }
-
-    @Override
-    public Object getEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop) {
-        return embedData.getEmbed(locale, source, target, prop, null);
-    }
-
-    @Override
-    public void setEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop, Object dbl) {
-        embedData.setEmbed(locale, source, target, prop, dbl);
-    }
-
-    @Override
-    public ISupplier<Boolean> getValidity() {
-        return validitySupplier;
-    }
-
-    @Override
-    public ISchemaHost newBlank() {
-        return new SchemaHostImpl(app, contextView);
-    }
-
-    @Override
     public boolean isActive() {
         return windowOpen;
-    }
-
-    @Override
-    public SchemaPath getCurrentObject() {
-        return innerElem;
-    }
-
-    @Override
-    public void launchOther(UIElement uiTest) {
-        app.ui.wm.createWindow(uiTest);
-    }
-
-    @Override
-    public String toString() {
-        if (innerElem == null)
-            return "(how'd you manage this then?)";
-        String rootName = app.odb.getIdByObject(innerElem.root);
-        if (rootName == null)
-            rootName = "AnonObject";
-        String name = rootName;
-        name += innerElem.windowTitleSuffix();
-        if (app.odb.getObjectModified(rootName))
-            name += "*";
-        return name;
     }
 
     @Override
@@ -293,7 +198,7 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
         stayClosed = true;
         if (innerElem != null) {
             app.odb.deregisterModificationHandler(innerElem.findRoot().root, nudgeRunnable);
-            validitySupplier = null; // We're not seeing modifications, so don't check validity.
+            replaceValidity(); // We're not seeing modifications, so don't check validity.
             innerElem = null;
             innerElemEditor = null;
         }

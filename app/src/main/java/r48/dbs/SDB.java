@@ -275,7 +275,7 @@ public class SDB extends App.Svc {
         }
     }
 
-    private class NameProxySchemaElement extends BaseProxySchemaElement implements IProxySchemaElement {
+    private class NameProxySchemaElement extends BaseProxySchemaElement {
         private final String tx;
 
         public NameProxySchemaElement(App app, String text) {
@@ -289,7 +289,7 @@ public class SDB extends App.Svc {
         }
     }
 
-    public class DynamicSchemaElement extends BaseProxySchemaElement implements IProxySchemaElement {
+    public class DynamicSchemaElement extends BaseProxySchemaElement {
         private final String tx;
 
         private DynamicSchemaElement(App app, String text) {

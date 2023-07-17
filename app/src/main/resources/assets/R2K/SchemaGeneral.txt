@@ -55,12 +55,22 @@ D internal_battlecommandDictionary 1 RPG_RT.ldb@battle_commands_2k3@commands 0 @
 C spritesheet "Select character index..." CharSet/ r2kCharacter
 C spritesheet "Select face index..." FaceSet/ 48 48 4 0 0 48 48 0
 
+ Var/Switch
 > var_id internal_variableDictionary
 E var_or_none_id__ Var.ID 0 None
 M internal_variableDictionary var_or_none_id__ var_or_none_id
 
 > switch_id internal_switchDictionary
 
+C datum `
+(define-tr R2KIDC.Var "Var. ID")
+(define-tr R2KIDC.Switch "Switch. ID")
+
+(idchanger-add R2KIDC.Var '(var_id var_or_none_id))
+(idchanger-add R2KIDC.Switch '(switch_id))
+`
+
+ Continue...
 > item_id internal_itemDictionary
 E item_or_none_id__ Item.ID 0 None
 M internal_itemDictionary item_or_none_id__ item_or_none_id

@@ -35,14 +35,25 @@ public interface ISchemaHost {
 
     String getContextGUM();
 
-    // Prepare for trouble, and make it a double.
-    double getEmbedDouble(SchemaElement source, IRIO target, String prop);
+    default double getEmbedDouble(SchemaElement source, IRIO target, String prop) {
+        return (Double) getEmbedObject(source, target, prop, 0.0d); 
+    }
 
-    void setEmbedDouble(SchemaElement source, IRIO target, String prop, double dbl);
+    default void setEmbedDouble(SchemaElement source, IRIO target, String prop, double dbl) {
+        setEmbedObject(source, target, prop, dbl);
+    }
 
-    Object getEmbedObject(SchemaElement source, IRIO target, String prop);
+    default Object getEmbedObject(SchemaElement source, IRIO target, String prop) {
+        return getEmbedObject(source, target, prop, null);
+    }
+    
+    Object getEmbedObject(SchemaElement source, IRIO target, String prop, Object def);
 
-    Object getEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop);
+    default Object getEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop) {
+        return getEmbedObject(locale, source, target, prop, null);
+    }
+
+    Object getEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop, Object def);
 
     void setEmbedObject(SchemaElement source, IRIO target, String prop, Object dbl);
 

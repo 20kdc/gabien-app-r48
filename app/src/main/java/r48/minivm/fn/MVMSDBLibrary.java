@@ -6,11 +6,16 @@
  */
 package r48.minivm.fn;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import r48.App;
 import r48.dbs.SDBOldParser;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMU;
 import r48.schema.SchemaElement;
+import r48.toolsets.utils.IDChangerEntry;
+import r48.tr.TrPage.FF0;
 
 /**
  * MiniVM standard library.
@@ -40,5 +45,14 @@ public class MVMSDBLibrary {
             app.sdb.setSDBEntry(MVMU.coerceToString(a0), (SchemaElement) a1);
             return null;
         }).attachHelp("(sdb-set ID SE) : Puts a SchemaElement into SDB.");
+
+        ctx.defLib("idchanger-add", (a0, a1) -> {
+            List<Object> lo = MVMU.cList(a1);
+            LinkedList<SchemaElement> potential = new LinkedList<>();
+            for (Object o : lo)
+                potential.add(app.sdb.getSDBEntry(MVMU.coerceToString(o)));
+            app.idc.add(new IDChangerEntry((FF0) a0, potential.toArray(new SchemaElement[0])));
+            return null;
+        }).attachHelp("(idchanger-add TITLE SCHEMAIDS) : Adds an ID changer to the RMTools ID changer menu.");
     }
 }
