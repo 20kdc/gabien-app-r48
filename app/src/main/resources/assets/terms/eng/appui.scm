@@ -88,6 +88,8 @@
 	)
 	shcEmpty "There is nothing in the clipboard."
 	shcIncompatible "Incompatible clipboard and target."
+	shInspect "Inspect..."
+	shLIDC "Local ID Changer..."
 	shNoCloneTmp "Cannot clone, this contains a temporary dialog."
 	openAud "Open sound file..."
 	(bts_
@@ -97,17 +99,20 @@
 	disableMapRendering "Disable rendering (even across maps!)"
 	disableMapAnimation "Disable animation"
 	mIDChanger "ID Changer..."
-	idcUnavailable "No ID Changer options available."
-	idcTypeButton (fl1 "Type: " a0)
-	idcFromButton (fl1 "From: " a0)
-	idcToButton (fl1 "To: " a0)
-	idcBeware "This tool replaces all references of 'from' with 'to'.\nIf done wrong, this might as well be a button labelled 'Destroy My Project'.\nIt is wise to back up your project before using this."
-	idcFridge (fl1
-		(cond
-			((= a0 0) "No occurances found.")
-			((= a0 1) "1 occurance changed.")
-			(else (.. a0 " occurances changed."))
+	(idc_
+		unavailable "No ID Changer options available."
+		typeButton (fl1 "Type: " a0)
+		fromButton (fl1 "From: " a0)
+		toButton (fl1 "To: " a0)
+		beware "This tool replaces all references of 'from' with 'to'.\nIf done wrong, this might as well be a button labelled 'Destroy My Project'.\nIt is wise to back up your project before using this."
+		fridge (fl1
+			(cond
+				((= a0 0) "No occurances found.")
+				((= a0 1) "1 occurance changed.")
+				(else (.. a0 " occurances changed."))
+			)
 		)
+		swapMode "Swap Mode (swap From and To rather than simply replace From to To)"
+		localTo (fl1 "Local to: " a0 "\nReferences outside this will not be changed.")
 	)
-	idcSwapMode "Swap Mode (swap From and To rather than simply replace From to To)"
 )

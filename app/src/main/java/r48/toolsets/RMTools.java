@@ -160,10 +160,10 @@ public class RMTools extends App.Svc {
                 },
                 () -> {
                     if (app.idc.size() == 0) {
-                        app.ui.launchDialog(T.u.idcUnavailable);
+                        app.ui.launchDialog(T.u.idc_unavailable);
                         return;
                     }
-                    app.ui.wm.createWindow(new UIIDChanger(app));
+                    app.ui.wm.createWindow(new UIIDChanger(app, null));
                 }
         }).centred();
     }

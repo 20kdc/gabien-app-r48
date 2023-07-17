@@ -15,8 +15,10 @@ import r48.UITest;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.map.UIMapView;
+import r48.toolsets.utils.UIIDChanger;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
+import r48.wm.IDuplicatableWindow;
 
 import java.util.Stack;
 
@@ -25,7 +27,7 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * Created on 12/29/16.
  */
-public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost {
+public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDuplicatableWindow {
     private UIElement innerElemEditor;
 
     private final Stack<SchemaPath> backStack = new Stack<SchemaPath>();
@@ -63,40 +65,26 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost {
             }
         }
     }, app.f.schemaPathTH);
-    private UIAppendButton toolbarS = new UIAppendButton(T.g.wordSave, toolbarPs, new Runnable() {
-        @Override
-        public void run() {
-            SchemaPath root = innerElem.findRoot();
-            // perform a final verification of the file, just in case? (NOPE: Causes long save times on, say, LDBs)
-            // root.editor.modifyVal(root.targetElement, root, false);
-            app.odb.ensureSaved(root.hrIndex, root.root);
-        }
-    }, app.f.schemaPathTH);
-    private UIAppendButton toolbarI = new UIAppendButton(Art.Symbol.Inspect, toolbarS, new Runnable() {
-        @Override
-        public void run() {
-            app.ui.wm.createWindow(new UITest(app, innerElem.targetElement, innerElem.root));
-        }
-    }, app.f.schemaPathTH);
-    private UIAppendButton toolbarC = new UIAppendButton(Art.Symbol.CloneFrame, toolbarI, new Runnable() {
-        @Override
-        public void run() {
-            if (innerElem.hasTempDialog()) {
-                app.ui.launchDialog(T.u.shNoCloneTmp);
-                return;
-            }
-            // This serves to ensure that cloning a window causes it to retain scroll and such,
-            // while still keeping it independent.
-            SchemaHostImpl next = (SchemaHostImpl) newBlank();
-            next.backStack.addAll(backStack);
-            next.backStack.push(innerElem);
-            next.embedData = new EmbedDataTracker(next.backStack, embedData);
-            next.popObject();
-        }
+    private UIAppendButton toolbarSandwich = new UIAppendButton("...", toolbarPs, () -> {
+        app.ui.wm.createMenu(this.toolbarSandwich, new UIAutoclosingPopupMenu(new UIPopupMenu.Entry[] {
+            new UIPopupMenu.Entry(T.g.wordSave, () -> {
+                SchemaPath root = innerElem.findRoot();
+                // perform a final verification of the file, just in case? (NOPE: Causes long save times on, say, LDBs)
+                // root.editor.modifyVal(root.targetElement, root, false);
+                app.odb.ensureSaved(root.hrIndex, root.root);
+            }),
+            new UIPopupMenu.Entry(T.u.shInspect, () -> {
+                app.ui.wm.createWindow(new UITest(app, innerElem.targetElement, innerElem.root));
+            }),
+            new UIPopupMenu.Entry(T.u.shLIDC, () -> {
+                // innerElem.editor and innerElem.targetElement must exist because SchemaHostImpl uses them.
+                app.ui.wm.createWindow(new UIIDChanger(app, innerElem));
+            })
+        }, app.f.menuTH, app.f.menuS, true));
     }, app.f.schemaPathTH);
 
     // Used so this doesn't require too much changes when moved about
-    private UIElement toolbarRoot = toolbarC;
+    private UIElement toolbarRoot = toolbarSandwich;
 
     private IConsumer<SchemaPath> nudgeRunnable = new IConsumer<SchemaPath>() {
         @Override
@@ -190,6 +178,21 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost {
     @Override
     public boolean isActive() {
         return windowOpen;
+    }
+
+    @Override
+    public void duplicateThisWindow() {
+        if (innerElem.hasTempDialog()) {
+            app.ui.launchDialog(T.u.shNoCloneTmp);
+            return;
+        }
+        // This serves to ensure that cloning a window causes it to retain scroll and such,
+        // while still keeping it independent.
+        SchemaHostImpl next = (SchemaHostImpl) newBlank();
+        next.backStack.addAll(backStack);
+        next.backStack.push(innerElem);
+        next.embedData = new EmbedDataTracker(next.backStack, embedData);
+        next.popObject();
     }
 
     @Override

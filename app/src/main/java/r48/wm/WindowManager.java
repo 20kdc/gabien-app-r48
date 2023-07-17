@@ -166,8 +166,23 @@ public class WindowManager extends AppCore.Csv {
     public void createWindow(final UIElement uie, final boolean tab, final boolean immortal, final @Nullable String disposition) {
         uie.setLAFParentOverride(GaBIEn.sysThemeRoot);
         // Now decide what to actually do.
+        LinkedList<UITabBar.TabIcon> icons = new LinkedList<>();
+        if (uie instanceof IDuplicatableWindow) {
+            // clone frame!
+            icons.add(new UITabBar.TabIcon() {
+                @Override
+                public void draw(IGrDriver igd, int x, int y, int size) {
+                    Art.drawSymbol(igd, Art.Symbol.CloneFrame, x, y, size, false, false);
+                }
+
+                @Override
+                public void click(UITabBar.Tab self) {
+                    ((IDuplicatableWindow) uie).duplicateThisWindow();
+                }
+            });
+        }
         if (tab) {
-            UITabBar.TabIcon windowWindowIcon = new UITabBar.TabIcon() {
+            icons.addFirst(new UITabBar.TabIcon() {
                 @Override
                 public void draw(IGrDriver igd, int x, int y, int size) {
                     Art.windowWindowIcon(igd, x, y, size);
@@ -180,31 +195,24 @@ public class WindowManager extends AppCore.Csv {
                     uie.setForcedBounds(null, new Rect(0, 0, mainSize.width / 2, mainSize.height / 2));
                     createWindow(uie, false, immortal);
                 }
-            };
-            if (immortal) {
-                tabPane.addTab(new UITabBar.Tab(uie, new UITabBar.TabIcon[] {
-                        windowWindowIcon
-                }));
-                tabPane.selectTab(uie);
-            } else {
-                tabPane.addTab(new UITabBar.Tab(uie, new UITabBar.TabIcon[] {
-                        new UITabBar.TabIcon() {
-                            @Override
-                            public void draw(IGrDriver igd, int x, int y, int size) {
-                                Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
-                            }
+            });
+            if (!immortal) {
+                icons.addFirst(new UITabBar.TabIcon() {
+                    @Override
+                    public void draw(IGrDriver igd, int x, int y, int size) {
+                        Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
+                    }
 
-                            @Override
-                            public void click(UITabBar.Tab self) {
-                                tabPane.removeTab(self);
-                                // Since this was manually removed, this must be called manually.
-                                uie.onWindowClose();
-                            }
-                        },
-                        windowWindowIcon
-                }));
-                tabPane.selectTab(uie);
+                    @Override
+                    public void click(UITabBar.Tab self) {
+                        tabPane.removeTab(self);
+                        // Since this was manually removed, this must be called manually.
+                        uie.onWindowClose();
+                    }
+                });
             }
+            tabPane.addTab(new UITabBar.Tab(uie, icons.toArray(new UITabBar.TabIcon[0])));
+            tabPane.selectTab(uie);
         } else {
             if (app.c.windowingExternal && !GaBIEn.singleWindowApp()) {
                 UIWindowView uwv = new UIWindowView() {
@@ -224,7 +232,7 @@ public class WindowManager extends AppCore.Csv {
                 uwv.addShell(new UIWindowView.ScreenShell(uwv, uie));
                 uiTicker.accept(uwv, false);
             } else {
-                UITabBar.TabIcon tabWindowIcon = new UITabBar.TabIcon() {
+                icons.addFirst(new UITabBar.TabIcon() {
                     @Override
                     public void draw(IGrDriver igd, int x, int y, int size) {
                         Art.tabWindowIcon(igd, x, y, size);
@@ -235,29 +243,21 @@ public class WindowManager extends AppCore.Csv {
                         rootView.removeTab(tab);
                         createWindow(uie, true, immortal);
                     }
-                };
-                UITabBar.TabIcon[] tabIcons;
-                if (immortal) {
-                    tabIcons = new UITabBar.TabIcon[] {
-                            tabWindowIcon
-                    };
-                } else {
-                    tabIcons = new UITabBar.TabIcon[] {
-                            new UITabBar.TabIcon() {
-                                @Override
-                                public void draw(IGrDriver igd, int x, int y, int size) {
-                                    Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
-                                }
+                });
+                if (!immortal) {
+                    icons.addFirst(new UITabBar.TabIcon() {
+                        @Override
+                        public void draw(IGrDriver igd, int x, int y, int size) {
+                            Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
+                        }
 
-                                @Override
-                                public void click(UITabBar.Tab tab) {
-                                    rootView.removeTab(tab);
-                                    // We are actually closing (this isn't called by default for a remotely triggered remove)
-                                    uie.onWindowClose();
-                                }
-                            },
-                            tabWindowIcon
-                    };
+                        @Override
+                        public void click(UITabBar.Tab tab) {
+                            rootView.removeTab(tab);
+                            // We are actually closing (this isn't called by default for a remotely triggered remove)
+                            uie.onWindowClose();
+                        }
+                    });
                 }
 
                 // Disposition logic
@@ -267,7 +267,7 @@ public class WindowManager extends AppCore.Csv {
 
                 // Make the shell, then apply disposition override
                 // This is because TabShell sanitizes the size on init
-                TabShell tabShell = new UIWindowView.TabShell(rootView, uie, tabIcons) {
+                TabShell tabShell = new UIWindowView.TabShell(rootView, uie, icons.toArray(new UITabBar.TabIcon[0])) {
                     @Override
                     public void windowBoundsCheck() {
                         super.windowBoundsCheck();

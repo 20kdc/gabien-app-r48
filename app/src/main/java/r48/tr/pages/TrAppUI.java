@@ -38,6 +38,7 @@ public class TrAppUI extends TrPage {
     public FF1 tsc_map;
     public FF3 tsc_ev;
     public String shcEmpty, shcIncompatible;
+    public String shInspect, shLIDC;
     public String shNoCloneTmp;
     public String openAud;
     public String bts_ramObj;
@@ -47,11 +48,13 @@ public class TrAppUI extends TrPage {
     public String disableMapRendering;
     public String disableMapAnimation;
     public String mIDChanger;
-    public String idcUnavailable;
-    public FF1 idcTypeButton;
-    public FF1 idcFromButton;
-    public FF1 idcToButton;
-    public String idcBeware;
-    public FF1 idcFridge;
-    public String idcSwapMode;
+
+    public String idc_unavailable;
+    public FF1 idc_typeButton;
+    public FF1 idc_fromButton;
+    public FF1 idc_toButton;
+    public String idc_beware;
+    public FF1 idc_fridge;
+    public String idc_swapMode;
+    public FF1 idc_localTo;
 }

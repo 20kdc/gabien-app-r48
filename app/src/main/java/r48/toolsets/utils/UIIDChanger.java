@@ -8,6 +8,8 @@ package r48.toolsets.utils;
 
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.ui.Rect;
 import gabien.ui.UIAutoclosingPopupMenu;
 import gabien.ui.UILabel;
@@ -27,6 +29,8 @@ import r48.schema.util.SchemaPath;
  * Created 17th July, 2023.
  */
 public class UIIDChanger extends App.Prx {
+    public @Nullable SchemaPath fixedPath;
+
     public IDChangerEntry entry;
     public final UITextButton chooseButton;
     public final UITextButton fromButton;
@@ -35,21 +39,25 @@ public class UIIDChanger extends App.Prx {
     public final UITextButton swapModeButton;
     public DMKey fromValue, toValue;
 
-    public UIIDChanger(App app) {
+    public UIIDChanger(App app, @Nullable SchemaPath sp) {
         super(app);
+        fixedPath = sp;
         entry = app.idc.getFirst();
         fromValue = toValue = entry.extractEnum().defaultVal;
         chooseButton = new UITextButton("", app.f.dialogWindowTH, this::createCBM);
         fromButton = new UITextButton("", app.f.dialogWindowTH, this::fromButton);
         toButton = new UITextButton("", app.f.dialogWindowTH, this::toButton);
         confirmButton = new UITextButton(T.u.usl_confirmReplace, app.f.dialogWindowTH, this::fridge);
-        swapModeButton = new UITextButton(T.u.idcSwapMode, app.f.dialogWindowTH, null).togglable(true);
+        swapModeButton = new UITextButton(T.u.idc_swapMode, app.f.dialogWindowTH, null).togglable(true);
         UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
+        if (fixedPath != null)
+            layout.panelsAdd(new UILabel(T.u.idc_localTo.r(fixedPath.toString()), app.f.dialogWindowTH));
         layout.panelsAdd(chooseButton);
         layout.panelsAdd(new UILabel("", app.f.dialogWindowTH));
         layout.panelsAdd(fromButton);
         layout.panelsAdd(toButton);
-        layout.panelsAdd(new UILabel(T.u.idcBeware, app.f.dialogWindowTH));
+        layout.panelsAdd(swapModeButton);
+        layout.panelsAdd(new UILabel(T.u.idc_beware, app.f.dialogWindowTH));
         layout.panelsAdd(confirmButton);
         updateText();
         proxySetElement(layout, true);
@@ -70,9 +78,9 @@ public class UIIDChanger extends App.Prx {
     }
 
     private void updateText() {
-        chooseButton.text = T.u.idcTypeButton.r(entry.text.r());
-        fromButton.text = T.u.idcFromButton.r(app.format(fromValue, entry.userFacing, EnumSchemaElement.Prefix.Prefix));
-        toButton.text = T.u.idcToButton.r(app.format(toValue, entry.userFacing, EnumSchemaElement.Prefix.Prefix));
+        chooseButton.text = T.u.idc_typeButton.r(entry.text.r());
+        fromButton.text = T.u.idc_fromButton.r(app.format(fromValue, entry.userFacing, EnumSchemaElement.Prefix.Prefix));
+        toButton.text = T.u.idc_toButton.r(app.format(toValue, entry.userFacing, EnumSchemaElement.Prefix.Prefix));
     }
 
     private void fromButton() {
@@ -99,26 +107,31 @@ public class UIIDChanger extends App.Prx {
     private void fridge() {
         SchemaElement[] resolved = entry.resolve();
         LinkedList<SchemaPath> updates = new LinkedList<>();
-        for (ObjectInfo oi : app.getObjectInfos()) {
-            SchemaPath root = new SchemaPath(app.sdb.getSDBEntry(oi.schemaName), app.odb.getObject(oi.idName));
-            root.editor.visit(root.targetElement, root, (element, target, path) -> {
-                if (IDChangerEntry.match(element, target, resolved)) {
-                    if (RORIO.rubyEquals(target, fromValue)) {
-                        target.setDeepClone(toValue);
-                        updates.add(path);
-                    }
+        SchemaElement.Visitor v = (element, target, path) -> {
+            if (IDChangerEntry.match(element, target, resolved)) {
+                if (RORIO.rubyEquals(target, fromValue)) {
+                    target.setDeepClone(toValue);
+                    updates.add(path);
                 }
-            });
+            }
+        };
+        if (fixedPath != null) {
+            fixedPath.editor.visit(fixedPath.targetElement, fixedPath, v);
+        } else {
+            for (ObjectInfo oi : app.getObjectInfos()) {
+                SchemaPath root = new SchemaPath(app.sdb.getSDBEntry(oi.schemaName), app.odb.getObject(oi.idName));
+                root.editor.visit(root.targetElement, root, v);
+            }
         }
         // Expect the earthquakes to start, around about now...
         for (SchemaPath sp : updates)
             sp.changeOccurred(false);
         // Report what horrors have been committed back to the user.
-        app.ui.launchDialog(T.u.idcFridge.r(updates.size()));
+        app.ui.launchDialog(T.u.idc_fridge.r(updates.size()));
     }
 
     @Override
     public String toString() {
-        return T.t.idChanger;
+        return fixedPath != null ? T.t.idChangerLocal : T.t.idChanger;
     }
 }
