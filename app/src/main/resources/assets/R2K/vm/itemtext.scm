@@ -115,7 +115,7 @@
 	(r2k-rpg-database-terms-export-text (dm-i-ref target '@terms) (dm-h-add! json "terms"))
 	(r2k-rpg-database-strings-export-text (dm-i-ref target '@switches) (dm-h-add! json "switches"))
 	(r2k-rpg-database-strings-export-text (dm-i-ref target '@variables) (dm-h-add! json "variables"))
-	(r2k-rpg-database-nameonly-export-text (dm-i-ref target '@common_events) (dm-h-add! json "common_events"))
+	(r2k-rpg-database-nameonly-export-text (dm-i-ref target '@common_events) (dm-h-add! json "commonEvents"))
 	(r2k-rpg-database-battlecommands-export-text
 		(dm-i-ref (dm-i-ref target '@battle_commands_2k3) '@commands)
 		(dm-h-add! json "battleCommands"))
