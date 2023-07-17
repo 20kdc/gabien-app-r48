@@ -24,7 +24,7 @@ import r48.toolsets.utils.UICommandSites;
 public final class FindTranslatablesToolButton extends ToolButton {
     public final String ep;
     public FindTranslatablesToolButton(App app, String e) {
-        super(app.t.z.l270);
+        super(app.t.m.l270);
         ep = e;
     }
 

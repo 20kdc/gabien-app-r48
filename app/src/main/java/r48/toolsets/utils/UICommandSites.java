@@ -52,7 +52,7 @@ public class UICommandSites extends App.Prx {
 
     @Override
     public String toString() {
-        return T.z.l96.r(objIdName);
+        return T.u.l96.r(objIdName);
     }
 
     public void doRefresh() {

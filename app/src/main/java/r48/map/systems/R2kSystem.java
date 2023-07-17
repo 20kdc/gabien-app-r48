@@ -214,7 +214,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public void dumpCustomData(RMTranscriptDumper dumper) {
-        dumper.startFile("RPG_RT.ldb", T.z.l265);
+        dumper.startFile("RPG_RT.ldb", T.h.systemDsc);
         IRIO sys = app.odb.getObject("RPG_RT.ldb").getObject();
         dumper.dumpSVListHash("@switches", sys.getIVar("@switches"));
         dumper.dumpSVListHash("@variables", sys.getIVar("@variables"));

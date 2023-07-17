@@ -81,7 +81,6 @@
 	)
 	(tsc_
 		dumpOk "transcript.html was written to the target's folder."
-		cev "Common Events"
 		ctx "Context (variables, etc.)"
 		map (fl1 "Map:" a0)
 		ev (fl3 "Ev." a0 " " a2 ", page " a1)
@@ -115,4 +114,68 @@
 		swapMode "Swap Mode (swap From and To rather than simply replace From to To)"
 		localTo (fl1 "Local to: " a0 "\nReferences outside this will not be changed.")
 	)
+	prObjectName "Object Name?"
+	prSchemaID "Schema ID?"
+	prObjectSrc "Source Object Name?"
+	prObjectDst "Target Object Name?"
+	mTestFonts "Test Fonts"
+	mTestGraphics "Test Graphics Stuff"
+	mToggleFull "Toggle Fullscreen"
+	mSchemaTranslator "Dump Schemaside Translations"
+	mTryRecover "Recover data from R48 error <INCREDIBLY DAMAGING>..."
+	mAudPlay "Audio Player..."
+	mREPL "REPL..."
+	mLocateEventCommand "Locate EventCommand in all Pages"
+	mFindTranslatables "Find Translatables in Common Events"
+	mRMTools "RM-Tools"
+	mRunAutoCorrect "See If Autocorrect Modifies Anything"
+	mR48Version "R48 Version"
+	warnRestoreSafety (..
+		"If the backup file is invalid, wasn't created, or is otherwise harmed, this can destroy more data than it saves."
+		"Check *everything* before a final save."
+		; "I understand." is NOT translated
+		"Type 'I understand.' at the prompt behind this window if you HAVE done this."
+	)
+	dlgBadNum "Not a valid number."
+	dlgFontSize "Font Size?"
+	dlgClipEmpty "There is nothing in the clipboard."
+	mEditObj "Edit Object"
+	mCorrectObj "Autocorrect Object By Name And Schema"
+	mInspectObj "Inspect Object (no Schema needed)"
+	mDiffObj "Object-Object Comparison"
+	mAllStr "Retrieve all object strings"
+	mLoadIMI "PRINT.txt Into Object"
+	mUniversalStringReplace "Universal String Replace"
+	mTranscriptDump "MEV/CEV Transcript Dump (no Troop/Item/etc.)"
+
+	l88 "The clipboard was saved."
+	l89 "The clipboard file is invalid or does not exist."
+	l90 "The clipboard file was loaded."
+
+	l39 "Help"
+	l40 "Configuration"
+	l41 "Image Editor"
+	l43 "Object Access"
+	l57 "A file couldn't be read, and R48 cannot create it."
+	l58 "objcompareAB.txt and objcompareBA.txt have been made."
+	l60 "Wrote locmaps.txt (NOTE: You probably don't actually want to do this! Press this in RXP mode to get the CRCs, then go back to this mode to actually start editing stuff.)"
+	l61 "Wrote locmaps.txt"
+	l62 "The target file couldn't be read, and there's no schema to create it."
+	l63 "The PRINT.txt file couldn't be read."
+	l65 "Other..."
+	l82 (fl2 a0 " modified. Clipboard: " a1)
+	l83 "Clipboard"
+	l84 "Save Clipboard To 'clip.r48'"
+	l85 "Load Clipboard From 'clip.r48'"
+	l86 "Inspect Clipboard"
+	l92 "Are you sure you want to return to menu? This will lose unsaved data."
+	l93 "Database Objects"
+	l94 "MapInfos"
+	l95 "Saves"
+	l96 (fl1 "Translatables in: " a0)
+	l97 "Somehow, the common events file does not have a schema."
+	l98 "Unable to determine common event schema, looks like that refactor will have to happen now"
+
+	l35 "Code (or -1337 for any unknown) ?"
+	notFound "Not found."
 )

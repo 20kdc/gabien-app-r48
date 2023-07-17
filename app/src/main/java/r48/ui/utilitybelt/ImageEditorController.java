@@ -66,7 +66,7 @@ public class ImageEditorController extends App.Svc {
             public String toString() {
                 if (imageEditView.eds.imageModified())
                     return T.ie.modified; // + " " + imageEditView.eds.getSaveDepth();
-                return T.z.l41; // + " " + imageEditView.eds.getSaveDepth();
+                return T.u.l41; // + " " + imageEditView.eds.getSaveDepth();
             }
 
             @Override

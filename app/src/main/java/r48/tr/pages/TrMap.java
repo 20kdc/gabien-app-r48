@@ -110,4 +110,8 @@ public class TrMap extends TrPage {
     public String r2kSavefile_errUserIsAToaster;
     public String r2kSavefile_name;
     public String r2kSavefile_errGhostUnmovable;
+
+    public String l28;
+    public String l269;
+    public String l270;
 }

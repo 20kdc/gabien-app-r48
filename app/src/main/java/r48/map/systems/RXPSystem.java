@@ -207,7 +207,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public void dumpCustomData(RMTranscriptDumper dumper) {
-        dumper.startFile("Items", T.z.l264);
+        dumper.startFile("Items", T.h.itemsDsc);
         LinkedList<String> lls = new LinkedList<String>();
         IRIO items = app.odb.getObject("Items").getObject();
         int itemCount = items.getALen();
@@ -219,16 +219,15 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 lls.add("<NULL>");
             }
         }
-        dumper.dumpBasicList("Names", lls.toArray(new String[0]), 0);
+        dumper.dumpBasicList(T.h.names, lls.toArray(new String[0]), 0);
         dumper.endFile();
 
-        dumper.startFile("System", T.z.l265);
+        dumper.startFile("System", T.h.systemDsc);
         IObjectBackend.ILoadedObject sys = app.odb.getObject("System");
 
-        dumper.dumpHTML(T.z.l266 + "<br/>");
+        dumper.dumpHTML(T.h.systemElab);
         IRIO sys2 = sys.getObject();
-        dumper.dumpHTML(T.z.l267 + sys2.getIVar("@magic_number").toString() + "<br/>");
-        dumper.dumpHTML(T.z.l268 + sys2.getIVar("@_").toString() + "<br/>");
+        dumper.dumpHTML(T.h.xpMagicNumbers.r(sys2.getIVar("@magic_number").toString(), sys2.getIVar("@_").toString()));
 
         dumper.dumpSVList("@switches", sys2.getIVar("@switches"), 0);
         dumper.dumpSVList("@variables", sys2.getIVar("@variables"), 0);

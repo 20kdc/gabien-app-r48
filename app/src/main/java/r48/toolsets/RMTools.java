@@ -55,11 +55,11 @@ public class RMTools extends App.Svc {
     }
 
     public UIElement genButton() {
-        return new UIMenuButton(app, T.z.mRMTools, app.f.menuTH, null, new String[] {
-                T.z.mLocateEventCommand,
-                T.z.mFindTranslatables,
-                T.z.mRunAutoCorrect,
-                T.z.l33,
+        return new UIMenuButton(app, T.u.mRMTools, app.f.menuTH, null, new String[] {
+                T.u.mLocateEventCommand,
+                T.u.mFindTranslatables,
+                T.u.mRunAutoCorrect,
+                T.u.mUniversalStringReplace,
                 // 3:24 PM, third day of 2017.
                 // This is now a viable option.
                 // 3:37 PM, same day.
@@ -67,16 +67,16 @@ public class RMTools extends App.Svc {
                 // Still need to see to the CommonEvents.
                 // next day, um, these tools aren't really doable post-further-modularization (stickynote)
                 // 5th January 2017. Here we go.
-                T.z.l34,
+                T.u.mTranscriptDump,
                 T.u.mIDChanger
         }, new Runnable[] {
                 () -> {
-                    app.ui.launchPrompt(T.z.l35, (s) -> {
+                    app.ui.launchPrompt(T.u.l35, (s) -> {
                         int i;
                         try {
                             i = Integer.parseInt(s);
                         } catch (Exception e) {
-                            app.ui.launchDialog(T.z.dlgBadNum);
+                            app.ui.launchDialog(T.u.dlgBadNum);
                             return;
                         }
                         for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
@@ -111,7 +111,7 @@ public class RMTools extends App.Svc {
                                 }
                             }
                         }
-                        app.ui.launchDialog(T.z.l37);
+                        app.ui.launchDialog(T.u.notFound);
                     });
                 },
                 () -> {

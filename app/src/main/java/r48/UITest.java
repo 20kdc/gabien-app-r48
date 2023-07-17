@@ -78,7 +78,7 @@ public class UITest extends App.Prx {
         }, app.f.inspectorBackTH);
         if (rootObj != null) {
             topBar = new UIAppendButton(T.u.test_withSchema, topBar, () -> {
-                app.ui.launchPrompt(T.z.prSchemaID, (res) -> {
+                app.ui.launchPrompt(T.u.prSchemaID, (res) -> {
                     if (currentObj == rootObj.getObject()) {
                         app.ui.launchSchema(res, rootObj, null);
                     } else {

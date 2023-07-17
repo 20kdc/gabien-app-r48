@@ -112,14 +112,14 @@ public class UITranscriptControl extends App.Prx {
         @Override
         public void dump(RMTranscriptDumper dumper) {
             dumper.start();
-            dumper.startFile("CommonEvents", T.u.tsc_cev);
+            dumper.startFile("CommonEvents", T.h.tsc_cev);
             for (IRIO rio : mapSystem.getAllCommonEvents())
                 dumper.dump(rio.getIVar("@name").decString(), rio.getIVar("@list"), commandsEvent);
             dumper.endFile();
         }
         @Override
         public String toString() {
-            return T.u.tsc_cev;
+            return T.h.tsc_cev;
         }
     }
 
@@ -137,7 +137,7 @@ public class UITranscriptControl extends App.Prx {
             IObjectBackend.ILoadedObject map = rmd.getILO(false);
             if (map == null)
                 return;
-            dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), whatDoWeCallThis);
+            dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), RMTranscriptDumper.escapeHtml(whatDoWeCallThis));
             // We need to temporarily override map context.
             // This'll fix itself by next frame...
             app.sdb.updateDictionaries(map);

@@ -105,4 +105,8 @@
 		errGhostUnmovable "The ghost refuses to budge."
 		name "Player/Vehicles/Events"
 	)
+
+	l28 "Region:"
+	l269 "Load Map"
+	l270 "Find Translatables"
 )

@@ -34,11 +34,11 @@ public class RMTranscriptDumper extends App.Svc {
         tableOfContents.clear();
         tableOfContentsIID.clear();
         output.println("<!DOCTYPE html>");
-        output.println("<html><head><title>" + T.z.l99 + "</title></head><body><a href=\"#toc\">" + T.z.l100 + "</a>");
+        output.println("<html><head><title>" + T.h.title + "</title></head><body><a href=\"#toc\">" + T.h.tocLink + "</a>");
     }
 
     public void end() {
-        output.println("<a name=\"toc\"/><h1>" + T.z.l101 + "</h1><ol>");
+        output.println("<a name=\"toc\"/><h1>" + T.h.toc + "</h1><ol>");
         int hIndex = 0;
         for (String s : tableOfContents) {
             if (s != null) {
@@ -60,9 +60,9 @@ public class RMTranscriptDumper extends App.Svc {
 
     // NOTE: File names must be unique, and are used as IDs, so keep them sane - I recommend using, well, file names.
     public void startFile(String name, String desc) {
-        anchor(name + " (" + escapeHtml(desc) + ")", name);
+        anchor(name + " (" + desc + ")", name);
         output.println("<h1>" + name + "</h1>");
-        output.println("<h2>" + escapeHtml(desc) + "</h2>");
+        output.println("<h2>" + desc + "</h2>");
     }
 
     public void endFile() {
@@ -102,7 +102,7 @@ public class RMTranscriptDumper extends App.Svc {
         //anchor(null);
     }
 
-    private String escapeHtml(String s) {
+    public static String escapeHtml(String s) {
         StringBuilder r = new StringBuilder();
         // Uses Java codePointAt to save some UTF-16 decoding code
         for (int i = 0; i < s.length(); i++) {
