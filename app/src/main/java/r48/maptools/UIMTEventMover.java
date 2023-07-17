@@ -28,7 +28,7 @@ public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
         super(mv);
         mapView = mv.getMapView();
         targetEventKey = evK;
-        changeInner(new UILabel(T.z.tsPlaceEv, app.f.dialogWindowTH), true);
+        changeInner(new UILabel(T.m.tsPlaceEv, app.f.dialogWindowTH), true);
     }
 
     // tool stuff

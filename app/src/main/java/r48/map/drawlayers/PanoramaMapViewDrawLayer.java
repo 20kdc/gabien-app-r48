@@ -57,7 +57,7 @@ public class PanoramaMapViewDrawLayer extends App.Svc implements IMapViewDrawLay
 
     @Override
     public String getName() {
-        return T.z.l214;
+        return T.m.l214;
     }
 
     public void draw(MapViewDrawContext mvdc) {

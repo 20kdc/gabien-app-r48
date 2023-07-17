@@ -154,15 +154,15 @@ public class UIMapView extends UIPlaneView {
     protected String planeGetStatus() {
         String shortcuts;
         if (camDragSwitch) {
-            shortcuts = T.z.l258;
+            shortcuts = T.m.l258;
         } else if (callbacks == null) {
             if ((pickTileHelper != null) && (!app.ui.isMobile)) {
-                shortcuts = T.z.l259;
+                shortcuts = T.m.l259;
             } else {
-                shortcuts = T.z.l260;
+                shortcuts = T.m.l260;
             }
         } else {
-            shortcuts = T.z.l261;
+            shortcuts = T.m.l261;
         }
         return mapGUM + ";" + mouseXT + ", " + mouseYT + " Z" + planeZoomDiv + ":" + planeZoomMul + "; " + shortcuts;
     }

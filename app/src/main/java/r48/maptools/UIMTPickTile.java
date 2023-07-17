@@ -20,7 +20,7 @@ import r48.map.UIMapView;
  * Created on 09/06/17.
  */
 public class UIMTPickTile extends UIMTBase implements IMapViewCallbacks {
-    public UILabel innerLabel = new UILabel(T.z.tsPickTile, app.f.dialogWindowTH);
+    public UILabel innerLabel = new UILabel(T.m.tsPickTile, app.f.dialogWindowTH);
     public final UIMapView map;
 
     public UIMTPickTile(IMapToolContext m) {

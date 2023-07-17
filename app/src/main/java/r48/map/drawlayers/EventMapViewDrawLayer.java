@@ -39,7 +39,7 @@ public class EventMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer 
     @Override
     public String getName() {
         if (layer == 0x7FFFFFFF)
-            return T.z.l213;
+            return T.m.l213;
         return eventList.customEventsName() + postfix;
     }
 

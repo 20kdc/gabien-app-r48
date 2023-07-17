@@ -53,14 +53,14 @@ public class UISaveScanMapInfos extends App.Prx {
                 final String gum = gumMapping.apply(i);
                 if (rio != null) {
                     String obj = app.format(rio.getObject());
-                    mainLayout.panelsAdd(new UITextButton(T.z.l251.r(gum, obj), app.f.mapInfosTH, new Runnable() {
+                    mainLayout.panelsAdd(new UITextButton(T.m.l251.r(gum, obj), app.f.mapInfosTH, new Runnable() {
                         @Override
                         public void run() {
                             context.loadMap(gum);
                         }
                     }));
                 } else {
-                    mainLayout.panelsAdd(new UIAppendButton(T.z.l252, new UILabel(T.z.l253.r(gum), app.f.mapInfosTH), new Runnable() {
+                    mainLayout.panelsAdd(new UIAppendButton(T.m.l252, new UILabel(T.m.l253.r(gum), app.f.mapInfosTH), new Runnable() {
                         @Override
                         public void run() {
                             context.loadMap(gum);
@@ -70,8 +70,8 @@ public class UISaveScanMapInfos extends App.Prx {
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                UILabel warning = new UILabel(T.z.l254, app.f.mapInfosTH);
-                mainLayout.panelsAdd(new UIAppendButton(T.z.l255, warning, new Runnable() {
+                UILabel warning = new UILabel(T.m.l254, app.f.mapInfosTH);
+                mainLayout.panelsAdd(new UIAppendButton(T.m.l255, warning, new Runnable() {
                     @Override
                     public void run() {
                         context.loadMap(gumMapping.apply(fi));

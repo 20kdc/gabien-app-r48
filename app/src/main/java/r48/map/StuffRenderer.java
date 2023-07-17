@@ -69,7 +69,7 @@ public class StuffRenderer {
         if (!vxaPano.equals(""))
             panoImg = iil.getImage(vxaPano, true);
         layers[0] = new PanoramaMapViewDrawLayer(app, panoImg, lx, ly, alx, aly, rt.width, rt.height, panoSW, panoSH, panoSC);
-        layers[1] = new EventMapViewDrawLayer(app, -1, events, igr, T.z.l256);
+        layers[1] = new EventMapViewDrawLayer(app, -1, events, igr, T.m.l256);
         for (int i = 0; i < rt.planeCount; i++) {
             layers[(i * 2) + 2] = new TileMapViewDrawLayer(app, rt, tlOrder[i], itr);
             layers[(i * 2) + 3] = new EventMapViewDrawLayer(app, i, events, igr, "");

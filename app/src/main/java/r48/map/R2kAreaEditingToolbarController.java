@@ -44,7 +44,7 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
 
     @Override
     public UIElement getBar() {
-        return new UILabel(T.z.l219, app.f.mapLayertabTH);
+        return new UILabel(T.m.l219, app.f.mapLayertabTH);
     }
 
     @Override
@@ -55,8 +55,8 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
     private class UIMTAreaTool extends UIMTBase implements IMapViewCallbacks {
 
         public UILabel label;
-        public String textA = T.z.l220;
-        public String textB = T.z.l221;
+        public String textA = T.m.l220;
+        public String textB = T.m.l221;
 
         public UIMTAreaTool() {
             super(R2kAreaEditingToolbarController.this.mapToolContext);

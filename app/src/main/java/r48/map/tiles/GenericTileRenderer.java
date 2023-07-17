@@ -44,7 +44,7 @@ public class GenericTileRenderer extends App.Svc implements ITileRenderer {
     @Override
     public TileEditingTab[] getEditConfig(int layerIdx) {
         return new TileEditingTab[] {
-                new TileEditingTab(T.z.l257, false, TileEditingTab.range(0, tileCount))
+                new TileEditingTab(T.m.l257, false, TileEditingTab.range(0, tileCount))
         };
     }
 

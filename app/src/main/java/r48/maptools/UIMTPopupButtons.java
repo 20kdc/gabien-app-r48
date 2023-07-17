@@ -32,7 +32,7 @@ public class UIMTPopupButtons extends UIMTBase {
         final App app = view.app;
 
         final LinkedList<ToolButton> mainToolButtons = new LinkedList<>();
-        mainToolButtons.add(new ToolButton(T.z.bReloadPanoramaTS) {
+        mainToolButtons.add(new ToolButton(T.m.bReloadPanoramaTS) {
             @Override
             public UIMTBase apply(IMapToolContext a) {
                 UIMapView.performFullCacheFlush(view.app, view);
@@ -53,7 +53,7 @@ public class UIMTPopupButtons extends UIMTBase {
                     return new UIMTMapResizer(mtc);
                 }
             });
-        mainToolButtons.add(new ToolButton(T.z.bExportShot) {
+        mainToolButtons.add(new ToolButton(T.m.bExportShot) {
             @Override
             public UIMTBase apply(IMapToolContext a) {
                 IGrDriver igd = GaBIEn.makeOffscreenBuffer(view.tileSize * view.mapTable.width, view.tileSize * view.mapTable.height);
@@ -64,18 +64,18 @@ public class UIMTPopupButtons extends UIMTBase {
                     try {
                         os.write(igd.createPNG());
                         os.close();
-                        app.ui.launchDialog(T.z.dlgWroteShot);
+                        app.ui.launchDialog(T.m.dlgWroteShot);
                     } catch (Exception e) {
                         app.ui.launchDialog(e);
                     }
                 } else {
-                    app.ui.launchDialog(T.z.dlgFailedToOpenFile);
+                    app.ui.launchDialog(T.m.dlgFailedToOpenFile);
                 }
                 igd.shutdown();
                 return null;
             }
         });
-        mainToolButtons.add(new ToolButton(T.z.tShowIDs) {
+        mainToolButtons.add(new ToolButton(T.m.tShowIDs) {
             @Override
             public UIMTBase apply(IMapToolContext a) {
                 view.debugToggle = !view.debugToggle;

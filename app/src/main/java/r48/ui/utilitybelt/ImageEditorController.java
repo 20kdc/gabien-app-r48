@@ -559,7 +559,7 @@ public class ImageEditorController extends App.Svc {
         xyChanger.panelsAdd(new UISplitterLayout(wVal, hVal, false, 1, 2));
         xyChanger.panelsAdd(new UILabel(T.g.bOffset, app.f.imageEditorTH));
         xyChanger.panelsAdd(new UISplitterLayout(xVal, yVal, false, 1, 2));
-        xyChanger.panelsAdd(new UIAppendButton(T.z.tCancel, acceptButton, new Runnable() {
+        xyChanger.panelsAdd(new UIAppendButton(T.m.tCancel, acceptButton, new Runnable() {
             @Override
             public void run() {
                 res.selfClose = true;

@@ -31,8 +31,8 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
     public final XPTileRenderer tiles;
     public final RMEventGraphicRenderer events;
 
-    public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvA = new ZSortingDrawLayer.SignalMapViewLayer(T.z.l209);
-    public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvB = new ZSortingDrawLayer.SignalMapViewLayer(T.z.l210);
+    public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvA = new ZSortingDrawLayer.SignalMapViewLayer(T.m.l209);
+    public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvB = new ZSortingDrawLayer.SignalMapViewLayer(T.m.l210);
 
     private static final int[] layerPreference = new int[] {0, 1, 2};
 
@@ -97,7 +97,7 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
 
     @Override
     public String getName() {
-        return T.z.l211;
+        return T.m.l211;
     }
 
     private class RXPPriorityPlane extends TileMapViewDrawLayer implements IZSortedObject {

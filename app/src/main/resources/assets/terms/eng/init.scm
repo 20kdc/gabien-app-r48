@@ -14,3 +14,4 @@
 (include "terms/eng/schema")
 (include "terms/eng/genpos")
 (include "terms/eng/imageeditor")
+(include "terms/eng/map")

@@ -22,4 +22,5 @@ public class TrRoot extends TrPage {
     public final TrAutoGen z = new TrAutoGen();
     public final TrGenpos gp = new TrGenpos();
     public final TrImageEditor ie = new TrImageEditor();
+    public final TrMap m = new TrMap();
 }

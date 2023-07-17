@@ -53,7 +53,7 @@ public class UIMapViewContainer extends App.Pan {
 
     @Override
     public String toString() {
-        return T.z.l218;
+        return T.m.l218;
     }
 
     @Override

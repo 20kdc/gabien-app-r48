@@ -36,7 +36,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public UIMTEventPicker(IMapToolContext mv) {
         super(mv);
         mapView = mv.getMapView();
-        svl.panelsAdd(new UILabel(T.z.tsClickToShowEv, app.f.eventPickerEntryTH) {
+        svl.panelsAdd(new UILabel(T.m.tsClickToShowEv, app.f.eventPickerEntryTH) {
             @Override
             public void setWantedSize(Size size) {
                 super.setWantedSize(new Size(size.width, size.height * 8));
@@ -104,7 +104,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 showEvent(evK, mapView, evI);
                             }
                         });
-                        button = new UIAppendButton(T.z.bMove, button, new Runnable() {
+                        button = new UIAppendButton(T.m.bMove, button, new Runnable() {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
@@ -119,7 +119,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 mapToolContext.accept(new UIMTEventMover(mapToolContext, evK));
                             }
                         }, app.f.eventPickerEntryTH);
-                        button = new UIAppendButton(T.z.bClone, button, new Runnable() {
+                        button = new UIAppendButton(T.m.bClone, button, new Runnable() {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
@@ -138,7 +138,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 mapToolContext.accept(new UIMTEventMover(mapToolContext, nevK));
                             }
                         }, app.f.eventPickerEntryTH);
-                        button = new UIAppendButton(T.z.bDel, button, new Runnable() {
+                        button = new UIAppendButton(T.m.bDel, button, new Runnable() {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
@@ -157,7 +157,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                         svl.panelsAdd(button);
                     } else {
                         UIElement button = new UILabel(nam, app.f.eventPickerEntryTH);
-                        button = new UIAppendButton(T.z.bSync, button, new Runnable() {
+                        button = new UIAppendButton(T.m.bSync, button, new Runnable() {
                             @Override
                             public void run() {
                                 // It's possible (if unlikely) that this action actually became invalid.
@@ -202,7 +202,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public String toString() {
-        return T.z.tsEvPick.r(eventCache.size());
+        return T.m.tsEvPick.r(eventCache.size());
     }
 
     public static void showEvent(DMKey key, @NonNull UIMapView map, IRIO event) {

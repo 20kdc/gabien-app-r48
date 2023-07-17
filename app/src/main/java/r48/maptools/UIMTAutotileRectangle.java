@@ -24,7 +24,7 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
     public final int startX, startY;
     public final boolean autotile;
 
-    public UIAppendButton innerLabel = new UIAppendButton(T.z.tCancel, new UILabel(T.z.tsFinishRect, app.f.dialogWindowTH), new Runnable() {
+    public UIAppendButton innerLabel = new UIAppendButton(T.m.tCancel, new UILabel(T.m.tsFinishRect, app.f.dialogWindowTH), new Runnable() {
         @Override
         public void run() {
             parent.selfClose = false;

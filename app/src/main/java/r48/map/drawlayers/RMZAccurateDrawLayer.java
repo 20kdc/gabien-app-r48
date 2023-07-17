@@ -22,7 +22,7 @@ public class RMZAccurateDrawLayer extends ZSortingDrawLayer {
         mapTable = tbl;
         tileSignalLayers = new SignalMapViewLayer[layers];
         for (int i = 0; i < tileSignalLayers.length; i++) {
-            tileSignalLayers[i] = new SignalMapViewLayer(T.z.l206.r(i));
+            tileSignalLayers[i] = new SignalMapViewLayer(T.m.l206.r(i));
             signals.add(tileSignalLayers[i]);
         }
         Collections.addAll(signals, tileSignalLayers);
