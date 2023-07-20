@@ -8,6 +8,8 @@
 package r48.maptools;
 
 import gabien.GaBIEn;
+import gabien.atlas.AtlasSet;
+import gabien.render.AtlasPage;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.UIPopupMenu.Entry;
@@ -17,6 +19,7 @@ import r48.App;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.UIMapView;
+import r48.ui.UIThumbnail;
 
 import java.io.OutputStream;
 import java.util.LinkedList;
@@ -79,6 +82,17 @@ public class UIMTPopupButtons extends UIMTBase {
             @Override
             public UIMTBase apply(IMapToolContext a) {
                 view.debugToggle = !view.debugToggle;
+                return null;
+            }
+        });
+        mainToolButtons.add(new ToolButton(T.m.bShowAtlases) {
+            @Override
+            public UIMTBase apply(IMapToolContext a) {
+                AtlasSet<?> potential = a.getMapView().mapTable.renderer.tileRenderer.getAtlasSet();
+                if (potential == null)
+                    return null;
+                for (AtlasPage ap : potential.pages)
+                    app.ui.wm.createWindow(new UIThumbnail(ap));
                 return null;
             }
         });

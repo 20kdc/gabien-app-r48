@@ -9,7 +9,6 @@ package r48.map.systems;
 
 import gabien.GaBIEn;
 import gabien.render.IImage;
-import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
@@ -65,17 +64,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public UIElement createSaveExplorer(IMapContext mapBox, String saves) {
-        return new UISaveScanMapInfos(new IFunction<Integer, String>() {
-            @Override
-            public String apply(Integer integer) {
-                return getSaveName(integer);
-            }
-        }, new IFunction<Integer, String>() {
-            @Override
-            public String apply(Integer integer) {
-                return "Save." + integer;
-            }
-        }, 1, 99, mapBox, saves);
+        return new UISaveScanMapInfos(this::getSaveName, (integer) -> "Save." + integer, 1, 99, mapBox, saves);
     }
 
     @Override
@@ -179,15 +168,12 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             int id = (int) key.getFX();
             if (id == 0)
                 continue;
-            RMMapData rmd = new RMMapData(app, new ISupplier<String>() {
-                @Override
-                public String get() {
-                    IRIO lmtiLocal = app.odb.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos");
-                    IRIO mapInfo = lmtiLocal.getHashVal(key);
-                    if (mapInfo == null)
-                        return T.m.l263;
-                    return mapInfo.getIVar("@name").decString();
-                }
+            RMMapData rmd = new RMMapData(app, () -> {
+                IRIO lmtiLocal = app.odb.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos");
+                IRIO mapInfo = lmtiLocal.getHashVal(key);
+                if (mapInfo == null)
+                    return T.m.l263;
+                return mapInfo.getIVar("@name").decString();
             }, id, R2kRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
             rmdList.add(rmd);
         }

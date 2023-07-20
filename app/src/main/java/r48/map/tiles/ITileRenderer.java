@@ -7,6 +7,9 @@
 
 package r48.map.tiles;
 
+import org.eclipse.jdt.annotation.Nullable;
+
+import gabien.atlas.AtlasSet;
 import gabien.render.IGrDriver;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
@@ -53,4 +56,11 @@ public interface ITileRenderer {
 
     // The standardized tilemap width (8 for RXP, 6 for R2k)
     int getRecommendedWidth();
+
+    /**
+     * Debugging mechanism to get the atlas set of this renderer.
+     */
+    default @Nullable AtlasSet<?> getAtlasSet() {
+        return null;
+    }
 }

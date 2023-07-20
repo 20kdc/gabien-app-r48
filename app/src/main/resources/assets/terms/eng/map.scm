@@ -30,12 +30,13 @@
 	bDel "Del."
 	bSync "Sync"
 	tsEvPick (fl1 "Ev.Pick [" a0 " total]")
+	bShowAtlases "Show Atlases"
 
-	l200 "Layer Visibility"
-	l202 "Grab Tile"
-	l203 "B.Copy"
-	l204 "B.Paste"
-	l205 "..."
+	toolsLayerVis "Layer Visibility"
+	toolsPickr "Grab Tile"
+	toolsCopy "B.Copy"
+	toolsPaste "B.Paste"
+	toolsAddendum "..."
 	l206 (fl1 "Tile Layer " a0)
 	l207 (fl2 "Tile L" a0 "(" (if a1 "'upper'/'wall' tileset flags" "general") ")")
 	l208 "Passability Overlay"

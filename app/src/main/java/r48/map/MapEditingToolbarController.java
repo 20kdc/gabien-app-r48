@@ -81,7 +81,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
                 }
             }).togglable(false));
         }
-        tools.add(new UITextButton(T.m.l200, app.f.mapLayertabTH, new Runnable() {
+        tools.add(new UITextButton(T.m.toolsLayerVis, app.f.mapLayertabTH, new Runnable() {
             final int thisButton = tools.size();
 
             @Override
@@ -117,7 +117,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
         // Utility buttons
 
         if (!readonlyTiles) {
-            tools.add(new UITextButton(T.m.l202, app.f.mapLayertabTH, new Runnable() {
+            tools.add(new UITextButton(T.m.toolsPickr, app.f.mapLayertabTH, new Runnable() {
                 @Override
                 public void run() {
                     // Select the current tile layer
@@ -126,7 +126,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
                 }
             }));
 
-            tools.add(new UITextButton(T.m.l203, app.f.mapLayertabTH, new Runnable() {
+            tools.add(new UITextButton(T.m.toolsCopy, app.f.mapLayertabTH, new Runnable() {
                 final int thisButton = tools.size();
 
                 @Override
@@ -136,7 +136,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
                 }
             }));
 
-            tools.add(new UITextButton(T.m.l204, app.f.mapLayertabTH, new Runnable() {
+            tools.add(new UITextButton(T.m.toolsPaste, app.f.mapLayertabTH, new Runnable() {
                 final int thisButton = tools.size();
 
                 @Override
@@ -165,7 +165,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
             }));
         }
 
-        tools.add(new UITextButton(T.m.l205, app.f.mapLayertabTH, new Runnable() {
+        tools.add(new UITextButton(T.m.toolsAddendum, app.f.mapLayertabTH, new Runnable() {
             final int thisButton = tools.size();
 
             @Override

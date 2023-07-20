@@ -37,12 +37,13 @@ public class TrMap extends TrPage {
     public String bDel;
     public String bSync;
     public FF1 tsEvPick;
+    public String bShowAtlases;
 
-    public String l200;
-    public String l202;
-    public String l203;
-    public String l204;
-    public String l205;
+    public String toolsLayerVis;
+    public String toolsPickr;
+    public String toolsCopy;
+    public String toolsPaste;
+    public String toolsAddendum;
     public FF1 l206;
     public FF2 l207;
     public String l208;

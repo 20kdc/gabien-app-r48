@@ -21,19 +21,20 @@ import r48.map.events.TraditionalEventAccess;
 import r48.map.imaging.CacheImageLoader;
 import r48.map.imaging.FixAndSecondaryImageLoader;
 import r48.map.imaging.GabienImageLoader;
-import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.IkaTileRenderer;
 
 /**
  * Created on 03/06/17.
  */
 public class IkaSystem extends MapSystem {
+    public final IkaTileRenderer tileRenderer;
     public IkaSystem(App app) {
         super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "Pbm/", "", new GabienImageLoader(".pbm", 0, 0, 0))), true);
+        tileRenderer = new IkaTileRenderer(app, imageLoader);
     }
 
     public StuffRenderer rendererGeneral(IRIO map, IEventAccess iea) {
-        ITileRenderer tileRenderer = new IkaTileRenderer(app, imageLoader);
+        tileRenderer.checkReload();
         IEventGraphicRenderer eventRenderer = new IkaEventGraphicRenderer(app, imageLoader);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(app, tileRenderer, new int[] {0}, eventRenderer, imageLoader, map, iea, "Back", true, true, 0, 0, -1, -1, 1));
     }

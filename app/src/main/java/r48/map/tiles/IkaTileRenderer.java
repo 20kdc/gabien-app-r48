@@ -7,9 +7,16 @@
 
 package r48.map.tiles;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.GaBIEn;
+import gabien.atlas.AtlasSet;
+import gabien.atlas.BinaryTreeAtlasStrategy;
+import gabien.atlas.ImageAtlasDrawable;
+import gabien.atlas.SimpleAtlasBuilder;
 import gabien.render.IGrDriver;
-import gabien.render.IImage;
+import gabien.render.ITexRegion;
+import gabien.uslx.append.ValueCachedByDeps;
 import r48.App;
 import r48.map.imaging.IImageLoader;
 import r48.map.tileedit.AutoTileTypeField;
@@ -19,12 +26,39 @@ import r48.map.tileedit.TileEditingTab;
  * Created on 1/27/17.
  */
 public class IkaTileRenderer extends App.Svc implements ITileRenderer {
-
     private final IImageLoader imageLoader;
+    private static final String[] blockTypes = {
+        null, null, "filt", null,
+        "Item", null, "Dir", null,
+        "Block", null, "Dmg", null,
+        null, null, "Snack", null
+    };
+    private ValueCachedByDeps<AtlasSet<Object>> tiles = new ValueCachedByDeps<AtlasSet<Object>>() {
+        @Override
+        protected AtlasSet<Object> create(Object[] deps) {
+            SimpleAtlasBuilder<Object> sab = new SimpleAtlasBuilder<>(256, 256, BinaryTreeAtlasStrategy.INSTANCE);
+            for (int i = 0; i < blockTypes.length; i++)
+                if (deps[i] != null)
+                    sab.add(i, new ImageAtlasDrawable((ITexRegion) deps[i]));
+            return sab.compile();
+        }
+    };
+    private final ITexRegion[] tileSheets = new ITexRegion[16];
 
     public IkaTileRenderer(App app, IImageLoader il) {
         super(app);
         imageLoader = il;
+        checkReload();
+    }
+
+    public void checkReload() {
+        Object[] deps = new Object[16];
+        for (int i = 0; i < blockTypes.length; i++)
+            if (blockTypes[i] != null)
+                deps[i] = imageLoader.getImage("Prt" + blockTypes[i], false);
+        AtlasSet<Object> as = tiles.get(deps);
+        for (int i = 0; i < blockTypes.length; i++)
+            tileSheets[i] = as.contents.get(i);
     }
 
     @Override
@@ -34,40 +68,30 @@ public class IkaTileRenderer extends App.Svc implements ITileRenderer {
 
     @Override
     public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, boolean editor) {
-        String[] blockTypes = new String[16];
-        blockTypes[2] = "filt";
-        blockTypes[4] = "Item";
-        blockTypes[6] = "Dir";
-        blockTypes[8] = "Block";
-        blockTypes[10] = "Dmg";
-        blockTypes[14] = "Snack";
         int plane = (tidx & 0xFFF0) >> 4;
         int block = tidx & 0xF;
         if (plane < 0)
             return;
         if (plane > 15)
             return;
-        if (blockTypes[plane] == null)
+        ITexRegion i = tileSheets[plane];
+        if (i == null)
             return;
-        IImage i = imageLoader.getImage("Prt" + blockTypes[plane], false);
         int ets = getTileSize();
         if (plane != 6) {
-            igd.blitScaledImage(ets * block, 0, ets, ets, px, py, ets, ets, i);
+            igd.blitImage(ets * block, 0, ets, ets, px, py, i);
         } else {
             // fun fact, this was probably the most loved feature of IkachanMapEdit.
-            drawPrtDir(getFrame(), block, ets, px, py, i, igd);
+            int frame = getFrame();
+            if (block == 0)
+                igd.blitImage(frame, 0, ets, ets, px, py, i);
+            if (block == 1)
+                igd.blitImage(ets - frame, 0, ets, ets, px, py, i);
+            if (block == 2)
+                igd.blitImage(0, frame, ets, ets, px, py, i);
+            if (block == 3)
+                igd.blitImage(0, ets - frame, ets, ets, px, py, i);
         }
-    }
-
-    public static void drawPrtDir(int frame, int block, int ets, int px, int py, IImage i, IGrDriver igd) {
-        if (block == 0)
-            igd.blitScaledImage(frame, 0, ets, ets, px, py, ets, ets, i);
-        if (block == 1)
-            igd.blitScaledImage(ets - frame, 0, ets, ets, px, py, ets, ets, i);
-        if (block == 2)
-            igd.blitScaledImage(0, frame, ets, ets, px, py, ets, ets, i);
-        if (block == 3)
-            igd.blitScaledImage(0, ets - frame, ets, ets, px, py, ets, ets, i);
     }
 
     @Override
@@ -92,5 +116,11 @@ public class IkaTileRenderer extends App.Svc implements ITileRenderer {
     @Override
     public int getRecommendedWidth() {
         return 16;
+    }
+
+    @Override
+    @Nullable
+    public AtlasSet<?> getAtlasSet() {
+        return tiles.peek();
     }
 }
