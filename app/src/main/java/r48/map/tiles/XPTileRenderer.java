@@ -58,7 +58,7 @@ public class XPTileRenderer extends App.Svc implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, boolean editor) {
         // The logic here is only documented in the mkxp repository, in tilemap.cpp.
         // I really hope it doesn't count as stealing here,
         //  if I would've had to have typed this code ANYWAY
@@ -75,7 +75,7 @@ public class XPTileRenderer extends App.Svc implements ITileRenderer {
                 int animSets = tilesetMaps[atMap].getWidth() / 96;
                 if (animSets > 0)
                     animControl = (96 * (getFrame() % animSets));
-                didDraw = didDraw || generalOldRMATField(app, animControl, 0, tidx, app.autoTiles[0], tileSize, px, py, igd, tilesetMaps[atMap], spriteScale);
+                didDraw = didDraw || generalOldRMATField(app, animControl, 0, tidx, app.autoTiles[0], tileSize, px, py, igd, tilesetMaps[atMap]);
             } else {
                 didDraw = true; // It's invisible, so it should just be considered drawn no matter what
             }
@@ -88,12 +88,12 @@ public class XPTileRenderer extends App.Svc implements ITileRenderer {
         int tx = tidx % tsh;
         int ty = tidx / tsh;
         if (tilesetMaps[0] != null) {
-            igd.blitScaledImage(tx * tileSize, ty * tileSize, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, tilesetMaps[0]);
+            igd.blitScaledImage(tx * tileSize, ty * tileSize, tileSize, tileSize, px, py, tileSize, tileSize, tilesetMaps[0]);
         }
     }
 
     // Used by 2k3 support too, since it follows the same AT design
-    public static boolean generalOldRMATField(App app, int tox, int toy, int subfield, ATDB atFieldType, int fTileSize, int px, int py, IGrDriver igd, IImage img, int spriteScale) {
+    public static boolean generalOldRMATField(App app, int tox, int toy, int subfield, ATDB atFieldType, int fTileSize, int px, int py, IGrDriver igd, IImage img) {
         if (atFieldType != null) {
             if (subfield >= atFieldType.entries.length)
                 return false;
@@ -107,7 +107,7 @@ public class XPTileRenderer extends App.Svc implements ITileRenderer {
                         int ty = ti / 3;
                         int sX = (sA * cSize);
                         int sY = (sB * cSize);
-                        igd.blitScaledImage((tx * fTileSize) + sX + tox, (ty * fTileSize) + sY + toy, cSize, cSize, px + (sX * spriteScale), py + (sY * spriteScale), cSize * spriteScale, cSize * spriteScale, img);
+                        igd.blitScaledImage((tx * fTileSize) + sX + tox, (ty * fTileSize) + sY + toy, cSize, cSize, px + sX, py + sY, cSize, cSize, img);
                     }
                 return true;
             }

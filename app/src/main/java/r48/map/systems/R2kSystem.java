@@ -236,10 +236,11 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 if (app.odb.getObject(obj, null) == null)
                     return null;
             final IObjectBackend.ILoadedObject root = app.odb.getObject(obj, "RPG::Save");
-            return new MapViewDetails(app, obj, "RPG::Save", new IFunction<String, MapViewState>() {
+            return new MapViewDetails(app, obj, "RPG::Save") {
                 private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("RPG_RT.ldb");
+
                 @Override
-                public MapViewState apply(String changed) {
+                public MapViewState rebuild(String changed) {
                     int mapId = (int) root.getObject().getIVar("@party_pos").getIVar("@map").getFX();
                     tilesetCache.updateMapId(mapId);
 
@@ -264,12 +265,11 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                             "RPG_RT.ldb"
                     }, map.getObject(), "@data", true, events);
                 }
-            }, new IFunction<IMapToolContext, IEditingToolbarController>() {
                 @Override
-                public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
-                    return new MapEditingToolbarController(iMapToolContext, true);
+                public IEditingToolbarController makeToolbar(IMapToolContext context) {
+                    return new MapEditingToolbarController(context, true);
                 }
-            });
+            };
         }
         // Map, Area
         final IObjectBackend.ILoadedObject root = app.odb.getObject("RPG_RT.lmt");
@@ -283,12 +283,16 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 MapViewDetails mvd = mapViewRequest("Map." + parent, false);
                 if (mvd == null)
                     return null;
-                return new MapViewDetails(app, mvd.objectId, mvd.objectSchema, mvd.rendererRetriever, new IFunction<IMapToolContext, IEditingToolbarController>() {
+                return new MapViewDetails(app, mvd.objectId, mvd.objectSchema) {
                     @Override
-                    public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
-                        return new R2kAreaEditingToolbarController(iMapToolContext, root, mapInfo);
+                    public MapViewState rebuild(String changed) {
+                        return mvd.rebuild(changed);
                     }
-                });
+                    @Override
+                    public IEditingToolbarController makeToolbar(IMapToolContext context) {
+                        return new R2kAreaEditingToolbarController(context, root, mapInfo);
+                    }
+                };
             }
         } catch (StackOverflowError soe) {
             // Note the implied change to an Exception, which gets caught
@@ -301,10 +305,11 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 return null;
         final IObjectBackend.ILoadedObject map = app.odb.getObject(objn, "RPG::Map");
         final IEventAccess iea = new TraditionalEventAccess(app, objn, "RPG::Map", "@events", 1, "RPG::Event");
-        return new MapViewDetails(app, objn, "RPG::Map", new IFunction<String, MapViewState>() {
+        return new MapViewDetails(app, objn, "RPG::Map") {
             private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("RPG_RT.ldb");
+
             @Override
-            public MapViewState apply(String changed) {
+            public MapViewState rebuild(String changed) {
                 long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
                 IRIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
                 if (lastTileset == null) {
@@ -315,21 +320,20 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                         "RPG_RT.ldb"
                 }, map.getObject(), "@data", false, iea);
             }
-        }, new IFunction<IMapToolContext, IEditingToolbarController>() {
-            @Override
-            public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
-                return new MapEditingToolbarController(iMapToolContext, false, new ToolButton[] {
-                        new ToolButton(T.m.tDeepWaterButton) {
-                            @Override
-                            public UIMTBase apply(IMapToolContext a) {
-                                return new UIMTFtrGdt01(a);
-                            }
+
+            public IEditingToolbarController makeToolbar(IMapToolContext context) {
+                return new MapEditingToolbarController(context, false, new ToolButton[] {
+                    new ToolButton(T.m.tDeepWaterButton) {
+                        @Override
+                        public UIMTBase apply(IMapToolContext a) {
+                            return new UIMTFtrGdt01(a);
                         }
+                    }
                 }, new ToolButton[] {
-                        new FindTranslatablesToolButton(app, "RPG::EventPage")
+                    new FindTranslatablesToolButton(app, "RPG::EventPage")
                 });
             }
-        });
+        };
     }
 
     @Override

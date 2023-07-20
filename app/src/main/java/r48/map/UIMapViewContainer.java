@@ -200,7 +200,7 @@ public class UIMapViewContainer extends App.Pan {
             }
         };
 
-        final IEditingToolbarController metc = view.map.toolbar.apply(mtc);
+        final IEditingToolbarController metc = view.map.makeToolbar(mtc);
 
         if (metc.allowPickTile()) {
             view.pickTileHelper = new IConsumer<Short>() {

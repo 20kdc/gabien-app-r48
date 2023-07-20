@@ -139,10 +139,10 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 return null;
         final IObjectBackend.ILoadedObject map = app.odb.getObject(gum, "RPG::Map");
         final IEventAccess events = new TraditionalEventAccess(app, gum, "RPG::Map", "@events", 1, "RPG::Event");
-        return new MapViewDetails(app, gum, "RPG::Map", new IFunction<String, MapViewState>() {
+        return new MapViewDetails(app, gum, "RPG::Map") {
             private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("Tilesets");
             @Override
-            public MapViewState apply(String changed) {
+            public MapViewState rebuild(String changed) {
                 long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
                 IRIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
                 if (lastTileset == null) {
@@ -150,15 +150,14 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     tilesetCache.insertTileset(currentTsId, lastTileset);
                 }
                 return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, events), gum, new String[] {
-                        "Tilesets"
+                    "Tilesets"
                 }, map.getObject(), "@data", false, events);
             }
-        }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override
-            public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
-                return mapEditingToolbar(iMapToolContext);
+            public IEditingToolbarController makeToolbar(IMapToolContext context) {
+                return mapEditingToolbar(context);
             }
-        });
+        };
     }
 
     protected IEditingToolbarController mapEditingToolbar(IMapToolContext iMapToolContext) {

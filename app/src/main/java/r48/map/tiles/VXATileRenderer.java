@@ -64,7 +64,7 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, boolean editor) {
         if (tileset == null)
             return; // just don't bother.
         // [EPC] (use this to find other bits of documentation)
@@ -85,7 +85,7 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
 
         // Shadow layer.
         if (layer == 3) {
-            int st = ((tileSize * spriteScale) / 2);
+            int st = (tileSize / 2);
             drawShadowTileFlag(tidx, 1, px, py, igd, st);
             drawShadowTileFlag(tidx, 2, px + st, py, igd, st);
             drawShadowTileFlag(tidx, 4, px, py + st, igd, st);
@@ -107,7 +107,7 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
         if (plane >= 0x00 && plane < 0x08) {
             int ok = tsi[plane];
             if (ok != -1)
-                if (handleMTLayer(tidx, tileSize, px, py, ok, igd, spriteScale))
+                if (handleMTLayer(tidx, tileSize, px, py, ok, igd))
                     return;
         } else if (plane >= 0x08 && plane < 0x20) {
             int frame = getFrame();
@@ -117,7 +117,7 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
             frame *= 2;
             fX += attf.anim[frame];
             fY += attf.anim[frame + 1];
-            if (handleATLayer(tidx, attf.start, tileSize, px, py, attf.tilesetIdx, igd, attf.databaseId, fX, fY, spriteScale))
+            if (handleATLayer(tidx, attf.start, tileSize, px, py, attf.tilesetIdx, igd, attf.databaseId, fX, fY))
                 return;
         }
 
@@ -199,7 +199,7 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
     /**
      * Handles 2-column 256-tile sheets
      */
-    private boolean handleMTLayer(short tidx, int ets, int px, int py, int tm, IGrDriver igd, int spriteScale) {
+    private boolean handleMTLayer(short tidx, int ets, int px, int py, int tm, IGrDriver igd) {
         int t = tidx & 0xFF;
         IImage planeImage = tilesetMaps[tm];
         if (planeImage != null) {
@@ -212,13 +212,13 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
                 tgtY -= 16;
                 tgtX += 8;
             }
-            igd.blitScaledImage(tgtX * tileSize, tgtY * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, planeImage);
+            igd.blitScaledImage(tgtX * tileSize, tgtY * tileSize, ets, ets, px, py, ets, ets, planeImage);
             return true;
         }
         return false;
     }
 
-    private boolean handleATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrDriver igd, int atF, int atOX, int atOY, int spriteScale) {
+    private boolean handleATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrDriver igd, int atF, int atOX, int atOY) {
         int tin = tidx - base;
         if (tin < 0)
             return false;
@@ -229,7 +229,7 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
             if ((ets == tileSize) && (app.autoTiles[atF] != null)) {
                 ATDB.Autotile at = app.autoTiles[atF].entries[tin];
                 if (at != null) {
-                    int cSize = (ets / 2) * spriteScale;
+                    int cSize = ets / 2;
                     int cSizeI = tileSize / 2;
                     for (int sA = 0; sA < 2; sA++)
                         for (int sB = 0; sB < 2; sB++) {
@@ -253,7 +253,7 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
                     return true;
                 }
             } else {
-                igd.blitScaledImage(tileSize, 2 * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, planeImg);
+                igd.blitScaledImage(tileSize, 2 * tileSize, ets, ets, px, py, ets, ets, planeImg);
                 return true;
             }
         }

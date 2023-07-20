@@ -260,7 +260,10 @@ public abstract class MapSystem extends App.Svc {
         }
     }
 
-    public static class MapViewDetails {
+    /**
+     * Represents a map editing session.
+     */
+    public static abstract class MapViewDetails {
         // Used for bringing up relevant dialogs & adding listeners.
         // MapViewState really runs the show
         // dictionaryObjectId is used for __MAP__
@@ -270,17 +273,21 @@ public abstract class MapSystem extends App.Svc {
         //        and changes to the map cause this root to be modified.
         // Additional modification listeners are inserted on a per-State basis.
         public final IObjectBackend.ILoadedObject object;
-        // for UIMapView internals
-        public final IFunction<String, MapViewState> rendererRetriever;
-        // For editing. This was going to happen ever since recommendedflags started sneaking in, since otherwise the system has to have more copied code for GUM translation
-        public final IFunction<IMapToolContext, IEditingToolbarController> toolbar;
 
-        public MapViewDetails(App app, String o, String os, IFunction<String, MapViewState> mvs, IFunction<IMapToolContext, IEditingToolbarController> tb) {
+        public MapViewDetails(App app, String o, String os) {
             objectId = o;
             objectSchema = os;
             object = app.odb.getObject(o, os);
-            rendererRetriever = mvs;
-            toolbar = tb;
         }
+
+        /**
+         * Rebuilds the MapViewState on a change.
+         */
+        public abstract MapViewState rebuild(String changed);
+
+        /**
+         * Creates a toolbar.
+         */
+        public abstract IEditingToolbarController makeToolbar(IMapToolContext context);
     }
 }

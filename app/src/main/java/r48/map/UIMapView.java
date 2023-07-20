@@ -90,7 +90,7 @@ public class UIMapView extends UIPlaneView {
         for (String s : listenAdditionals)
             if (!map.objectId.equals(s))
                 app.odb.deregisterModificationHandler(s, listener);
-        mapTable = map.rendererRetriever.apply(cause);
+        mapTable = map.rebuild(cause);
         listenAdditionals = mapTable.refreshOnObjectChange;
         for (String s : listenAdditionals)
             if (!map.objectId.equals(s))

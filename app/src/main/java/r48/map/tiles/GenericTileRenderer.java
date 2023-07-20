@@ -35,10 +35,10 @@ public class GenericTileRenderer extends App.Svc implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, boolean editor) {
         int tx = (tidx & 0xFFFF) % tileStride;
         int ty = (tidx & 0xFFFF) / tileStride;
-        igd.blitScaledImage(tileSize * tx, tileSize * ty, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, img);
+        igd.blitScaledImage(tileSize * tx, tileSize * ty, tileSize, tileSize, px, py, tileSize, tileSize, img);
     }
 
     @Override

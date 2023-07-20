@@ -33,7 +33,7 @@ public class IkaTileRenderer extends App.Svc implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, boolean editor) {
         String[] blockTypes = new String[16];
         blockTypes[2] = "filt";
         blockTypes[4] = "Item";
@@ -52,23 +52,22 @@ public class IkaTileRenderer extends App.Svc implements ITileRenderer {
         IImage i = imageLoader.getImage("Prt" + blockTypes[plane], false);
         int ets = getTileSize();
         if (plane != 6) {
-            igd.blitScaledImage(ets * block, 0, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
+            igd.blitScaledImage(ets * block, 0, ets, ets, px, py, ets, ets, i);
         } else {
             // fun fact, this was probably the most loved feature of IkachanMapEdit.
-            // I would be in for a *lynching* if I got rid of it.
-            drawPrtDir(getFrame(), block, ets, px, py, spriteScale, i, igd);
+            drawPrtDir(getFrame(), block, ets, px, py, i, igd);
         }
     }
 
-    public static void drawPrtDir(int frame, int block, int ets, int px, int py, int spriteScale, IImage i, IGrDriver igd) {
+    public static void drawPrtDir(int frame, int block, int ets, int px, int py, IImage i, IGrDriver igd) {
         if (block == 0)
-            igd.blitScaledImage(frame, 0, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
+            igd.blitScaledImage(frame, 0, ets, ets, px, py, ets, ets, i);
         if (block == 1)
-            igd.blitScaledImage(ets - frame, 0, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
+            igd.blitScaledImage(ets - frame, 0, ets, ets, px, py, ets, ets, i);
         if (block == 2)
-            igd.blitScaledImage(0, frame, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
+            igd.blitScaledImage(0, frame, ets, ets, px, py, ets, ets, i);
         if (block == 3)
-            igd.blitScaledImage(0, ets - frame, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
+            igd.blitScaledImage(0, ets - frame, ets, ets, px, py, ets, ets, i);
     }
 
     @Override

@@ -27,7 +27,21 @@ public interface ITileRenderer {
     // There, it is instead done "in bulk" on an offscreen buffer,
     //  since the offscreen buffer had to be used anyway for *other* efficiency reasons.
     // NOTE: The flag "editor" means "anything not a UIMapView"
-    void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor);
+    void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, boolean editor);
+    default void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
+        if (spriteScale != 1) {
+            float rx = igd.trsTXS(px), ry = igd.trsTYS(py);
+            float rsx = igd.trs[2], rsy = igd.trs[3];
+            igd.trs[2] = rsx * spriteScale;
+            igd.trs[3] = rsy * spriteScale;
+            drawTile(layer, tidx, 0, 0, igd, editor);
+            igd.trs[2] = rsx;
+            igd.trs[3] = rsy;
+            igd.trsTXYE(rx, ry);
+        } else {
+            drawTile(layer, tidx, px, py, igd, editor);
+        }
+    }
 
     // Returning a length of 0 makes the layer uneditable from UIMTAutotile.
     TileEditingTab[] getEditConfig(int layerIdx);

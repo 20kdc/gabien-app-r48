@@ -42,7 +42,7 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, boolean editor) {
         if (chipset == null)
             return;
         // There are 288 "Common Tiles" (non-AT) divided into upper and lower layer tiles.
@@ -50,9 +50,9 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
         // Two pages of 144 each.
         // Everything here makes more sense in decimal.
         if ((tidx >= 5000) && (tidx < 6000))
-            handleCommonPage(5000, 0, tidx, px, py, igd, chipset, spriteScale);
+            handleCommonPage(5000, 0, tidx, px, py, igd, chipset);
         if ((tidx >= 10000) && (tidx < 11000))
-            handleCommonPage(10000, 1, tidx, px, py, igd, chipset, spriteScale);
+            handleCommonPage(10000, 1, tidx, px, py, igd, chipset);
         // This is a possible *50-wide AT Field!!!!!* Well, 12 of them.
         // Terrain ATs are laid out as follows on the image:
         // ??45
@@ -68,7 +68,7 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
 
             int fx = ((field % 2) * 3) + ((field / 8) * 6);
             int fy = ((field / 2) % 4) * 4;
-            XPTileRenderer.generalOldRMATField(app, fx * tileSize, fy * tileSize, subfield, app.autoTiles[0], tileSize, px, py, igd, chipset, spriteScale);
+            XPTileRenderer.generalOldRMATField(app, fx * tileSize, fy * tileSize, subfield, app.autoTiles[0], tileSize, px, py, igd, chipset);
             //igd.drawText(px, py, 255, 255, 255, 8, Integer.toString(field));
         }
 
@@ -88,7 +88,7 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
             s = Math.floor(s);
             int f = (int) s;
             f %= 4;
-            igd.blitScaledImage((tileSize * 3) + (field * tileSize), (tileSize * 4) + (f * tileSize), tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, chipset);
+            igd.blitScaledImage((tileSize * 3) + (field * tileSize), (tileSize * 4) + (f * tileSize), tileSize, tileSize, px, py, tileSize, tileSize, chipset);
         }
 
         // Water tiles are yet another 50-entry AT field, seemingly of a different type.
@@ -143,11 +143,11 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
                 baseY += tileSize * 3;
             }
 
-            handleWATField(tSubfield, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, spriteScale);
+            handleWATField(tSubfield, px, py, igd, chipset, aniX, baseY, diamondY, ovlX);
         }
     }
 
-    private void handleWATField(int tSubfield, int px, int py, IGrDriver igd, IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int spriteScale) {
+    private void handleWATField(int tSubfield, int px, int py, IGrDriver igd, IImage chipset, int aniX, int baseY, int diamondY, int ovlX) {
 
         int innerSubfield = tSubfield % 50;
         int outerSubfield = tSubfield / 50;
@@ -161,15 +161,15 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
         char lr = charTbl[adb.entries[innerSubfield].corners[3]];
 
         int etc = tileSize / 2;
-        handleWATCorner(0, 0, ((outerSubfield & 1) != 0) ? 'D' : ul, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc, spriteScale);
+        handleWATCorner(0, 0, ((outerSubfield & 1) != 0) ? 'D' : ul, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc);
         if ((etc * 2) == tileSize) {
-            handleWATCorner(etc, 0, ((outerSubfield & 2) != 0) ? 'D' : ur, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc, spriteScale);
-            handleWATCorner(0, etc, ((outerSubfield & 4) != 0) ? 'D' : ll, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc, spriteScale);
-            handleWATCorner(etc, etc, ((outerSubfield & 8) != 0) ? 'D' : lr, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc, spriteScale);
+            handleWATCorner(etc, 0, ((outerSubfield & 2) != 0) ? 'D' : ur, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc);
+            handleWATCorner(0, etc, ((outerSubfield & 4) != 0) ? 'D' : ll, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc);
+            handleWATCorner(etc, etc, ((outerSubfield & 8) != 0) ? 'D' : lr, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc);
         }
     }
 
-    private void handleWATCorner(int cx, int cy, char c, int px, int py, IGrDriver igd, IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int etc, int spriteScale) {
+    private void handleWATCorner(int cx, int cy, char c, int px, int py, IGrDriver igd, IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int etc) {
         int tox = 0;
         int toy = 0;
         switch (c) {
@@ -198,16 +198,16 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
                 toy = tileSize * 3;
                 break;
         }
-        igd.blitScaledImage(tox + cx, toy + cy, etc, etc, px + (cx * spriteScale), py + (cy * spriteScale), etc * spriteScale, etc * spriteScale, chipset);
+        igd.blitScaledImage(tox + cx, toy + cy, etc, etc, px + cx, py + cy, etc, etc, chipset);
     }
 
-    private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrDriver igd, IImage chipset, int spriteScale) {
+    private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrDriver igd, IImage chipset) {
         // Divided into 6-wide columns, 96 tiles per column.
         int ti = tidx - base;
         ti += ofsPage * 144;
         int tx = (ti % 6) + ((ti / 96) * 6);
         int ty = ((ti / 6) % 16);
-        igd.blitScaledImage(((tx + 12) * tileSize), ty * tileSize, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, chipset);
+        igd.blitScaledImage(((tx + 12) * tileSize), ty * tileSize, tileSize, tileSize, px, py, tileSize, tileSize, chipset);
     }
 
     @Override
