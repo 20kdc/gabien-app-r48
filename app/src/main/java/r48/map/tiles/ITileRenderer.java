@@ -73,7 +73,7 @@ public abstract class ITileRenderer extends App.Svc {
     /**
      * Debugging mechanism to get the atlas set of this renderer.
      */
-    public @Nullable AtlasSet<?> getAtlasSet() {
+    public @Nullable AtlasSet getAtlasSet() {
         return null;
     }
 }

@@ -88,7 +88,7 @@ public class UIMTPopupButtons extends UIMTBase {
         mainToolButtons.add(new ToolButton(T.m.bShowAtlases) {
             @Override
             public UIMTBase apply(IMapToolContext a) {
-                AtlasSet<?> potential = a.getMapView().mapTable.renderer.tileRenderer.getAtlasSet();
+                AtlasSet potential = a.getMapView().mapTable.renderer.tileRenderer.getAtlasSet();
                 if (potential == null)
                     return null;
                 for (AtlasPage ap : potential.pages)

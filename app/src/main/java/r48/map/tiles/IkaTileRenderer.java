@@ -35,7 +35,7 @@ public class IkaTileRenderer extends ITileRenderer {
     };
     private DepsLocker tilesDeps = new DepsLocker();
     private final ITexRegion[] tileSheets = new ITexRegion[16];
-    private AtlasSet<Object> lastAtlasSet;
+    private AtlasSet lastAtlasSet;
 
     public IkaTileRenderer(App app, IImageLoader il) {
         super(app, 16, 16);
@@ -50,12 +50,12 @@ public class IkaTileRenderer extends ITileRenderer {
                 deps[i] = imageLoader.getImage("Prt" + blockTypes[i], false);
         if (tilesDeps.shouldUpdate(deps)) {
             SimpleAtlasBuilder<Object> sab = new SimpleAtlasBuilder<>(256, 256, BinaryTreeAtlasStrategy.INSTANCE);
-            for (int i = 0; i < blockTypes.length; i++)
-                if (deps[i] != null)
-                    sab.add(i, new ImageAtlasDrawable((ITexRegion) deps[i]));
+            for (int i = 0; i < blockTypes.length; i++) {
+                final int fi = i;
+                if (deps[fi] != null)
+                    sab.add((res) -> tileSheets[fi] = res, new ImageAtlasDrawable((ITexRegion) deps[fi]));
+            }
             lastAtlasSet = sab.compile();
-            for (int i = 0; i < blockTypes.length; i++)
-                tileSheets[i] = lastAtlasSet.contents.get(i);
         }
     }
 
@@ -107,7 +107,7 @@ public class IkaTileRenderer extends ITileRenderer {
 
     @Override
     @Nullable
-    public AtlasSet<?> getAtlasSet() {
+    public AtlasSet getAtlasSet() {
         return lastAtlasSet;
     }
 }
