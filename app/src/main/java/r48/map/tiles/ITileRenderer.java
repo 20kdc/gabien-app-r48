@@ -46,19 +46,19 @@ public abstract class ITileRenderer extends App.Svc {
     // There, it is instead done "in bulk" on an offscreen buffer,
     //  since the offscreen buffer had to be used anyway for *other* efficiency reasons.
     // NOTE: The flag "editor" means "anything not a UIMapView"
-    public abstract void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, boolean editor);
-    public final void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
+    public abstract void drawTile(int layer, short tidx, int px, int py, IGrDriver igd);
+    public final void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale) {
         if (spriteScale != 1) {
             float rx = igd.trsTXS(px), ry = igd.trsTYS(py);
             float rsx = igd.trs[2], rsy = igd.trs[3];
             igd.trs[2] = rsx * spriteScale;
             igd.trs[3] = rsy * spriteScale;
-            drawTile(layer, tidx, 0, 0, igd, editor);
+            drawTile(layer, tidx, 0, 0, igd);
             igd.trs[2] = rsx;
             igd.trs[3] = rsy;
             igd.trsTXYE(rx, ry);
         } else {
-            drawTile(layer, tidx, px, py, igd, editor);
+            drawTile(layer, tidx, px, py, igd);
         }
     }
 

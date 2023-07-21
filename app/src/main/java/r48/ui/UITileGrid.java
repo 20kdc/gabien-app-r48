@@ -59,6 +59,6 @@ public class UITileGrid extends UIGrid {
     @Override
     protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
         t = hover ? viewMapHover[t] : viewMap[t];
-        renderer.tileRenderer.drawTile(layer, (short) t, x + borderWidth, y + borderWidth, igd, spriteScale, true);
+        renderer.tileRenderer.drawTile(layer, (short) t, x + borderWidth, y + borderWidth, igd, spriteScale);
     }
 }

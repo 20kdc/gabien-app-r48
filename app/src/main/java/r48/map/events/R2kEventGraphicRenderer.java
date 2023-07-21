@@ -104,7 +104,7 @@ public class R2kEventGraphicRenderer extends App.Svc implements IEventGraphicRen
             igd.blitScaledImage(sx * px, sy * py, sx, sy, ox + (((remoteTileSize * sprScale) - (sx * sprScale)) / 2), (oy - (rsy * sprScale)) + (remoteTileSize * sprScale), rsx * sprScale, rsy * sprScale, i);
         } else {
             // ok, so in this case it's a tile. In the index field.
-            tileRenderer.drawTile(0, (short) (target.getIVar("@character_index").getFX() + 10000), ox, oy, igd, sprScale, false);
+            tileRenderer.drawTile(0, (short) (target.getIVar("@character_index").getFX() + 10000), ox, oy, igd, sprScale);
         }
     }
 

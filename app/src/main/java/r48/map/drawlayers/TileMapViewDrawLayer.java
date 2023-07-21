@@ -80,7 +80,7 @@ public class TileMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
                 String t = Integer.toString(tidx, 16);
                 GaBIEn.engineFonts.f6.drawLAB(igd, px, py + (tdi * 6), t, false);
             } else {
-                tr.drawTile(tdi, tidx, px, py, igd, false);
+                tr.drawTile(tdi, tidx, px, py, igd);
             }
         }
     }

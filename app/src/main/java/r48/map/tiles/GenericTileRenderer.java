@@ -29,7 +29,7 @@ public class GenericTileRenderer extends ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, boolean editor) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd) {
         int tx = (tidx & 0xFFFF) % tileStride;
         int ty = (tidx & 0xFFFF) / tileStride;
         igd.blitScaledImage(tileSize * tx, tileSize * ty, tileSize, tileSize, px, py, tileSize, tileSize, img);

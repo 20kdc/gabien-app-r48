@@ -59,11 +59,8 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
         Size sz = getGridSize(osr);
         int xx = (sz.width - ts) / 2;
         int xy = (sz.height - ts) / 2;
-        if (allocSource.mapping != null) {
-            osr.tileRenderer.drawTile(0, (short) allocSource.mapping[t], x + xx, y + xy, igd, sprScale, true);
-        } else {
-            osr.tileRenderer.drawTile(0, (short) t, x + xx, y + xy, igd, sprScale, true);
-        }
+        int mapped = allocSource.mapping != null ? allocSource.mapping[t] : t;
+        osr.tileRenderer.drawTile(0, (short) mapped, x + xx, y + xy, igd, sprScale);
         allocSource.draw(x, y, t, targ.getTiletype(t % targ.width, t / targ.width, 0), sprScale, igd);
         return osr;
     }

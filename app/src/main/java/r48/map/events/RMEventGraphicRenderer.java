@@ -78,7 +78,7 @@ public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRend
         String cNameS = cName.decString();
         short tId = (short) target.getIVar("@tile_id").getFX();
         if (tId != 0) {
-            tileRenderer.drawTile(0, tId, ox, oy, igd, sprScale, false);
+            tileRenderer.drawTile(0, tId, ox, oy, igd, sprScale);
         } else if (cNameS.length() > 0) {
             // lower centre of tile, the reference point for characters
             ox += 16;

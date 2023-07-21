@@ -21,7 +21,7 @@ public class NullTileRenderer extends ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, boolean editor) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd) {
 
     }
 

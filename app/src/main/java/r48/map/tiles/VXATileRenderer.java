@@ -57,7 +57,7 @@ public class VXATileRenderer extends ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, boolean editor) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd) {
         if (tileset == null)
             return; // just don't bother.
         // [EPC] (use this to find other bits of documentation)
