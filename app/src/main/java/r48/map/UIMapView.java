@@ -112,7 +112,7 @@ public class UIMapView extends UIPlaneView {
         app.odb.registerModificationHandler(map.objectId, listener);
         performRefresh(null);
 
-        tileSize = mapTable.renderer.tileRenderer.getTileSize();
+        tileSize = mapTable.renderer.tileRenderer.tileSize;
         showTile(mapTable.width / 2, mapTable.height / 2);
     }
 

@@ -23,22 +23,16 @@ import java.util.LinkedList;
  * I slept, finished MapUnit, and began writing this class.
  * Created on 31/05/17.
  */
-public class LcfTileRenderer extends App.Svc implements ITileRenderer {
+public class LcfTileRenderer extends ITileRenderer {
     public final IImage chipset;
-    public static final int tileSize = 16;
 
     public LcfTileRenderer(App app, IImageLoader imageLoader, IRIO tso) {
-        super(app);
+        super(app, 16, 6);
         if (tso != null) {
             chipset = imageLoader.getImage("ChipSet/" + tso.getIVar("@tileset_name").decString(), false);
         } else {
             chipset = null;
         }
-    }
-
-    @Override
-    public int getTileSize() {
-        return tileSize;
     }
 
     @Override
@@ -280,10 +274,5 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
         // 1/3rd * 1/8th = 1/24th
         double t = GaBIEn.getTime();
         return ((int) Math.floor(t * 24)) % 24;
-    }
-
-    @Override
-    public int getRecommendedWidth() {
-        return 6;
     }
 }

@@ -38,7 +38,7 @@ public class UITileGrid extends UIGrid {
         super(app, 1337, 1337, mapN.length);
         if (mapN.length != mapH.length)
             throw new IndexOutOfBoundsException("n!=Ir2");
-        tileSizeW = tileSizeH = (sr.tileRenderer.getTileSize() * sprScale) + (bs * 2);
+        tileSizeW = tileSizeH = (sr.tileRenderer.tileSize * sprScale) + (bs * 2);
         borderWidth = bs;
         toStringRes = tiles;
         canMultiSelect = cms;

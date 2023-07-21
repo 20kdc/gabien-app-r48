@@ -31,7 +31,7 @@ public class R2kEventGraphicRenderer extends App.Svc implements IEventGraphicRen
         super(app);
         tileRenderer = tr;
         imageLoader = imageLoad;
-        remoteTileSize = tileRenderer.getTileSize();
+        remoteTileSize = tileRenderer.tileSize;
     }
 
     @Override

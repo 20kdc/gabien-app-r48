@@ -33,7 +33,7 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
 
     @Override
     public Size getGridSize(StuffRenderer sr) {
-        int tw = sr.tileRenderer.getTileSize();
+        int tw = sr.tileRenderer.tileSize;
         int th = tw;
         tw *= allocSource.mulW;
         th *= allocSource.mulH;
@@ -55,7 +55,7 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
         final IRIO targV = iVar == null ? target : iVar.get(target);
         final RubyTable targ = new RubyTable(targV.getBuffer());
         int sprScale = app.f.getSpriteScale();
-        int ts = osr.tileRenderer.getTileSize() * sprScale;
+        int ts = osr.tileRenderer.tileSize * sprScale;
         Size sz = getGridSize(osr);
         int xx = (sz.width - ts) / 2;
         int xy = (sz.height - ts) / 2;

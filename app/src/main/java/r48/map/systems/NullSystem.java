@@ -31,7 +31,7 @@ public class NullSystem extends MapSystem {
 
     @Override
     public StuffRenderer rendererFromTso(IRIO target) {
-        ITileRenderer tileRenderer = new NullTileRenderer();
+        ITileRenderer tileRenderer = new NullTileRenderer(app);
         IEventGraphicRenderer eventRenderer = new NullEventGraphicRenderer();
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }

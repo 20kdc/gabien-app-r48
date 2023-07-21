@@ -17,21 +17,15 @@ import r48.map.tileedit.TileEditingTab;
  * Useful for, say, your average Tiled output.
  * Created on May 11th 2018.
  */
-public class GenericTileRenderer extends App.Svc implements ITileRenderer {
-    public final int tileSize, tileStride, tileCount;
+public class GenericTileRenderer extends ITileRenderer {
+    public final int tileStride, tileCount;
     public final IImage img;
 
     public GenericTileRenderer(App app, IImage image, int ts, int tw, int count) {
-        super(app);
+        super(app, ts, tw);
         img = image;
-        tileSize = ts;
         tileStride = tw;
         tileCount = count;
-    }
-
-    @Override
-    public int getTileSize() {
-        return tileSize;
     }
 
     @Override
@@ -56,10 +50,5 @@ public class GenericTileRenderer extends App.Svc implements ITileRenderer {
     @Override
     public int getFrame() {
         return 0;
-    }
-
-    @Override
-    public int getRecommendedWidth() {
-        return tileStride;
     }
 }

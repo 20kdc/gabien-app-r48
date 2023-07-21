@@ -49,9 +49,9 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         // Properly set the tab pane into gear, then see if it's still having issues displaying tabs.
         // If so, give it as much extra space as possible without messing with the tile-count-width.
         tabPane.handleIncoming();
-        setForcedBounds(null, new Rect(0, 0, (map.tileSize * scale * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) + app.f.gridS, app.f.scaleGuess(200)));
+        setForcedBounds(null, new Rect(0, 0, (map.tileSize * scale * map.mapTable.renderer.tileRenderer.recommendedWidth) + app.f.gridS, app.f.scaleGuess(200)));
         if (tabPane.getShortened())
-            setForcedBounds(null, new Rect(0, 0, ((map.tileSize * scale * (map.mapTable.renderer.tileRenderer.getRecommendedWidth() + 1)) - 1) + app.f.gridS, app.f.scaleGuess(200)));
+            setForcedBounds(null, new Rect(0, 0, ((map.tileSize * scale * (map.mapTable.renderer.tileRenderer.recommendedWidth + 1)) - 1) + app.f.gridS, app.f.scaleGuess(200)));
     }
     
     private int setupView(boolean inConstructor) {
@@ -61,7 +61,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         // The solution is to go for the core problem, which is the contents being too small for the UI.
         // The maths are chosen such that 8x32 is sufficient, but anything below that gets a boost.
         int resultScale = app.f.getSpriteScale();
-        if ((map.tileSize * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) < 256)
+        if ((map.tileSize * map.mapTable.renderer.tileRenderer.recommendedWidth) < 256)
             resultScale *= 2;
 
         // The bridge between the TileEditingTab strcuture and the older code.

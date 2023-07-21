@@ -16,7 +16,7 @@ import gabien.atlas.ImageAtlasDrawable;
 import gabien.atlas.SimpleAtlasBuilder;
 import gabien.render.IGrDriver;
 import gabien.render.ITexRegion;
-import gabien.uslx.append.ValueCachedByDeps;
+import gabien.uslx.append.DepsLocker;
 import r48.App;
 import r48.map.imaging.IImageLoader;
 import r48.map.tileedit.AutoTileTypeField;
@@ -25,7 +25,7 @@ import r48.map.tileedit.TileEditingTab;
 /**
  * Created on 1/27/17.
  */
-public class IkaTileRenderer extends App.Svc implements ITileRenderer {
+public class IkaTileRenderer extends ITileRenderer {
     private final IImageLoader imageLoader;
     private static final String[] blockTypes = {
         null, null, "filt", null,
@@ -33,20 +33,12 @@ public class IkaTileRenderer extends App.Svc implements ITileRenderer {
         "Block", null, "Dmg", null,
         null, null, "Snack", null
     };
-    private ValueCachedByDeps<AtlasSet<Object>> tiles = new ValueCachedByDeps<AtlasSet<Object>>() {
-        @Override
-        protected AtlasSet<Object> create(Object[] deps) {
-            SimpleAtlasBuilder<Object> sab = new SimpleAtlasBuilder<>(256, 256, BinaryTreeAtlasStrategy.INSTANCE);
-            for (int i = 0; i < blockTypes.length; i++)
-                if (deps[i] != null)
-                    sab.add(i, new ImageAtlasDrawable((ITexRegion) deps[i]));
-            return sab.compile();
-        }
-    };
+    private DepsLocker tilesDeps = new DepsLocker();
     private final ITexRegion[] tileSheets = new ITexRegion[16];
+    private AtlasSet<Object> lastAtlasSet;
 
     public IkaTileRenderer(App app, IImageLoader il) {
-        super(app);
+        super(app, 16, 16);
         imageLoader = il;
         checkReload();
     }
@@ -56,14 +48,15 @@ public class IkaTileRenderer extends App.Svc implements ITileRenderer {
         for (int i = 0; i < blockTypes.length; i++)
             if (blockTypes[i] != null)
                 deps[i] = imageLoader.getImage("Prt" + blockTypes[i], false);
-        AtlasSet<Object> as = tiles.get(deps);
-        for (int i = 0; i < blockTypes.length; i++)
-            tileSheets[i] = as.contents.get(i);
-    }
-
-    @Override
-    public int getTileSize() {
-        return 16;
+        if (tilesDeps.shouldUpdate(deps)) {
+            SimpleAtlasBuilder<Object> sab = new SimpleAtlasBuilder<>(256, 256, BinaryTreeAtlasStrategy.INSTANCE);
+            for (int i = 0; i < blockTypes.length; i++)
+                if (deps[i] != null)
+                    sab.add(i, new ImageAtlasDrawable((ITexRegion) deps[i]));
+            lastAtlasSet = sab.compile();
+            for (int i = 0; i < blockTypes.length; i++)
+                tileSheets[i] = lastAtlasSet.contents.get(i);
+        }
     }
 
     @Override
@@ -77,20 +70,19 @@ public class IkaTileRenderer extends App.Svc implements ITileRenderer {
         ITexRegion i = tileSheets[plane];
         if (i == null)
             return;
-        int ets = getTileSize();
         if (plane != 6) {
-            igd.blitImage(ets * block, 0, ets, ets, px, py, i);
+            igd.blitImage(tileSize * block, 0, tileSize, tileSize, px, py, i);
         } else {
             // fun fact, this was probably the most loved feature of IkachanMapEdit.
             int frame = getFrame();
             if (block == 0)
-                igd.blitImage(frame, 0, ets, ets, px, py, i);
+                igd.blitImage(frame, 0, tileSize, tileSize, px, py, i);
             if (block == 1)
-                igd.blitImage(ets - frame, 0, ets, ets, px, py, i);
+                igd.blitImage(tileSize - frame, 0, tileSize, tileSize, px, py, i);
             if (block == 2)
-                igd.blitImage(0, frame, ets, ets, px, py, i);
+                igd.blitImage(0, frame, tileSize, tileSize, px, py, i);
             if (block == 3)
-                igd.blitImage(0, ets - frame, ets, ets, px, py, i);
+                igd.blitImage(0, tileSize - frame, tileSize, tileSize, px, py, i);
         }
     }
 
@@ -110,17 +102,12 @@ public class IkaTileRenderer extends App.Svc implements ITileRenderer {
     @Override
     public int getFrame() {
         double time = GaBIEn.getTime();
-        return (int) ((time - Math.floor(time)) * 64) % 16;
-    }
-
-    @Override
-    public int getRecommendedWidth() {
-        return 16;
+        return (int) ((time - Math.floor(time)) * 64) % tileSize;
     }
 
     @Override
     @Nullable
     public AtlasSet<?> getAtlasSet() {
-        return tiles.peek();
+        return lastAtlasSet;
     }
 }

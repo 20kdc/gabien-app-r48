@@ -11,6 +11,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.atlas.AtlasSet;
 import gabien.render.IGrDriver;
+import r48.App;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
 
@@ -18,8 +19,23 @@ import r48.map.tileedit.TileEditingTab;
  * Used because this changes a LOT
  * Created on 1/27/17.
  */
-public interface ITileRenderer {
-    int getTileSize();
+public abstract class ITileRenderer extends App.Svc {
+    /**
+     * Tile size in pixels.
+     */
+    public final int tileSize;
+
+    /**
+     * Recommended width (in tiles) in tile selection pane.
+     * Tilesets are built to this standard.
+     */
+    public final int recommendedWidth;
+
+    public ITileRenderer(App app, int ts, int rw) {
+        super(app);
+        tileSize = ts;
+        recommendedWidth = rw;
+    }
 
     // NOTE: ETS should be how much of the tile to use at spriteScale 1.
     // When in minimap, it's at an appropriate value (< tileSize).
@@ -30,8 +46,8 @@ public interface ITileRenderer {
     // There, it is instead done "in bulk" on an offscreen buffer,
     //  since the offscreen buffer had to be used anyway for *other* efficiency reasons.
     // NOTE: The flag "editor" means "anything not a UIMapView"
-    void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, boolean editor);
-    default void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
+    public abstract void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, boolean editor);
+    public final void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
         if (spriteScale != 1) {
             float rx = igd.trsTXS(px), ry = igd.trsTYS(py);
             float rsx = igd.trs[2], rsy = igd.trs[3];
@@ -47,20 +63,17 @@ public interface ITileRenderer {
     }
 
     // Returning a length of 0 makes the layer uneditable from UIMTAutotile.
-    TileEditingTab[] getEditConfig(int layerIdx);
+    public abstract TileEditingTab[] getEditConfig(int layerIdx);
 
-    AutoTileTypeField[] indicateATs();
+    public abstract AutoTileTypeField[] indicateATs();
 
     // Used to sync the map view and playing animations.
-    int getFrame();
-
-    // The standardized tilemap width (8 for RXP, 6 for R2k)
-    int getRecommendedWidth();
+    public abstract int getFrame();
 
     /**
      * Debugging mechanism to get the atlas set of this renderer.
      */
-    default @Nullable AtlasSet<?> getAtlasSet() {
+    public @Nullable AtlasSet<?> getAtlasSet() {
         return null;
     }
 }

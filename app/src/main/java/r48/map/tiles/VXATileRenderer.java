@@ -23,9 +23,7 @@ import r48.map.tileedit.TileEditingTab;
  * This uses a totally different system from XP, based around 5 AT sheets and 4 primary sheets.
  * Created on 1/27/17.
  */
-public class VXATileRenderer extends App.Svc implements ITileRenderer {
-
-    public static final int tileSize = 32;
+public class VXATileRenderer extends ITileRenderer {
     public final IImage[] tilesetMaps = new IImage[9];
     private final IRIO tileset;
     // Generated one-pixel image to be blended for shadow
@@ -37,7 +35,7 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
     private final ExpandedATTF[] preparedATTF;
 
     public VXATileRenderer(App app, IImageLoader il, IRIO tileset) {
-        super(app);
+        super(app, 32, 8);
         this.tileset = tileset;
         int[] tinyTile = new int[] {0x80000000};
         shadowImage = GaBIEn.createImage(tinyTile, 1, 1);
@@ -56,11 +54,6 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
             flags = new RubyTable(2, 0, 0, 0, new int[0]);
         }
         preparedATTF = prepareATTF();
-    }
-
-    @Override
-    public int getTileSize() {
-        return tileSize;
     }
 
     @Override
@@ -301,11 +294,6 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
         // so multiply them and so they'll sync up
         gt %= 12;
         return (int) gt;
-    }
-
-    @Override
-    public int getRecommendedWidth() {
-        return 8;
     }
 
     public static class ExpandedATTF extends AutoTileTypeField {

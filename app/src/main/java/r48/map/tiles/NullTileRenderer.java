@@ -8,16 +8,16 @@
 package r48.map.tiles;
 
 import gabien.render.IGrDriver;
+import r48.App;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
 
 /**
  * Created on 1/27/17.
  */
-public class NullTileRenderer implements ITileRenderer {
-    @Override
-    public int getTileSize() {
-        return 32;
+public class NullTileRenderer extends ITileRenderer {
+    public NullTileRenderer(App app) {
+        super(app, 32, 8);
     }
 
     @Override
@@ -39,10 +39,5 @@ public class NullTileRenderer implements ITileRenderer {
     @Override
     public int getFrame() {
         return 0;
-    }
-
-    @Override
-    public int getRecommendedWidth() {
-        return 8;
     }
 }

@@ -21,19 +21,13 @@ import r48.map.tileedit.TileEditingTab;
 /**
  * Created on 1/27/17.
  */
-public class XPTileRenderer extends App.Svc implements ITileRenderer {
+public class XPTileRenderer extends ITileRenderer {
     public final IImage[] tilesetMaps = new IImage[8];
 
-    public static final int tileSize = 32;
     public final RubyTable priorities;
 
-    @Override
-    public int getTileSize() {
-        return tileSize;
-    }
-
     public XPTileRenderer(App app, IImageLoader imageLoader, IRIO tileset) {
-        super(app);
+        super(app, 32, 8);
         // If the tileset's null, then just give up.
         // The tileset being/not being null is an implementation detail anyway.
         if (tileset != null) {
@@ -156,10 +150,5 @@ public class XPTileRenderer extends App.Svc implements ITileRenderer {
         // 16 / 40
         double m = 16.0d / 40.0d;
         return (int) (GaBIEn.getTime() / m);
-    }
-
-    @Override
-    public int getRecommendedWidth() {
-        return 8;
     }
 }
