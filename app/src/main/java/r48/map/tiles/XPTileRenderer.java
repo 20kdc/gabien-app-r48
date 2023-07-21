@@ -10,6 +10,7 @@ package r48.map.tiles;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
+import gabien.render.ITexRegion;
 import r48.App;
 import r48.RubyTable;
 import r48.dbs.ATDB;
@@ -23,6 +24,7 @@ import r48.map.tileedit.TileEditingTab;
  */
 public class XPTileRenderer extends ITileRenderer {
     public final IImage[] tilesetMaps = new IImage[8];
+    public final ITexRegion[][] atFields = new ITexRegion[7][];
 
     public final RubyTable priorities;
 
@@ -46,6 +48,18 @@ public class XPTileRenderer extends ITileRenderer {
                         tilesetMaps[i + 1] = imageLoader.getImage("Autotiles/" + expectedAT, false);
                 }
             }
+            for (int i = 0; i < 7; i++) {
+                IImage atf = tilesetMaps[i + 1];
+                if (atf == null)
+                    continue;
+                int count = atf.getWidth() / 96;
+                if (count < 1)
+                    count = 1;
+                ITexRegion[] ts = new ITexRegion[count];
+                for (int j = 0; j < ts.length; j++)
+                    ts[j] = tilesetMaps[i + 1].subRegion(j * 96, 0, 96, 128);
+                atFields[i] = ts;
+            }
         } else {
             priorities = null;
         }
@@ -62,14 +76,16 @@ public class XPTileRenderer extends ITileRenderer {
             int atMap = tidx / 48;
             if (atMap == 0)
                 return;
+            atMap--;
             tidx %= 48;
             boolean didDraw = false;
-            if (tilesetMaps[atMap] != null) {
+            ITexRegion[] animatedATF = atFields[atMap];
+            if (animatedATF != null) {
                 int animControl = 0;
-                int animSets = tilesetMaps[atMap].getWidth() / 96;
+                int animSets = animatedATF.length;
                 if (animSets > 0)
-                    animControl = (96 * (getFrame() % animSets));
-                didDraw = didDraw || generalOldRMATField(app, animControl, 0, tidx, app.autoTiles[0], tileSize, px, py, igd, tilesetMaps[atMap]);
+                    animControl = getFrame() % animSets;
+                didDraw = didDraw || generalOldRMATField(app, tidx, app.autoTiles[0], tileSize, px, py, igd, animatedATF[animControl]);
             } else {
                 didDraw = true; // It's invisible, so it should just be considered drawn no matter what
             }
@@ -87,7 +103,7 @@ public class XPTileRenderer extends ITileRenderer {
     }
 
     // Used by 2k3 support too, since it follows the same AT design
-    public static boolean generalOldRMATField(App app, int tox, int toy, int subfield, ATDB atFieldType, int fTileSize, int px, int py, IGrDriver igd, IImage img) {
+    public static boolean generalOldRMATField(App app, int subfield, ATDB atFieldType, int fTileSize, int px, int py, IGrDriver igd, ITexRegion img) {
         if (atFieldType != null) {
             if (subfield >= atFieldType.entries.length)
                 return false;
@@ -101,7 +117,7 @@ public class XPTileRenderer extends ITileRenderer {
                         int ty = ti / 3;
                         int sX = (sA * cSize);
                         int sY = (sB * cSize);
-                        igd.blitScaledImage((tx * fTileSize) + sX + tox, (ty * fTileSize) + sY + toy, cSize, cSize, px + sX, py + sY, cSize, cSize, img);
+                        igd.blitScaledImage((tx * fTileSize) + sX, (ty * fTileSize) + sY, cSize, cSize, px + sX, py + sY, cSize, cSize, img);
                     }
                 return true;
             }

@@ -10,6 +10,7 @@ package r48.map.tiles;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
+import gabien.render.ITexRegion;
 import r48.App;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;
@@ -25,11 +26,26 @@ import java.util.LinkedList;
  */
 public class LcfTileRenderer extends ITileRenderer {
     public final IImage chipset;
+    public final ITexRegion[] terrainATFields = new ITexRegion[12];
 
     public LcfTileRenderer(App app, IImageLoader imageLoader, IRIO tso) {
         super(app, 16, 6);
         if (tso != null) {
             chipset = imageLoader.getImage("ChipSet/" + tso.getIVar("@tileset_name").decString(), false);
+            // This is a possible *50-wide AT Field!!!!!* Well, 12 of them.
+            // Terrain ATs are laid out as follows on the image:
+            // ??45
+            // ??67
+            // 0189
+            // 23AB
+            // '?' is animated and water
+            for (int i = 0; i < terrainATFields.length; i++) {
+                int field = i + 4;
+                int fx = ((field % 2) * 3) + ((field / 8) * 6);
+                int fy = ((field / 2) % 4) * 4;
+
+                terrainATFields[i] = chipset.subRegion(fx * tileSize, fy * tileSize, 3 * tileSize, 4 * tileSize);
+            }
         } else {
             chipset = null;
         }
@@ -47,22 +63,12 @@ public class LcfTileRenderer extends ITileRenderer {
             handleCommonPage(5000, 0, tidx, px, py, igd, chipset);
         if ((tidx >= 10000) && (tidx < 11000))
             handleCommonPage(10000, 1, tidx, px, py, igd, chipset);
-        // This is a possible *50-wide AT Field!!!!!* Well, 12 of them.
-        // Terrain ATs are laid out as follows on the image:
-        // ??45
-        // ??67
-        // 0189
-        // 23AB
-        // '?' is animated and water
         if ((tidx >= 4000) && (tidx < 4600)) {
             // 4150 : 3, OS-Legacy
             // 50 * 12 = 600
-            int field = ((tidx - 4000) / 50) + 4;
+            int field = (tidx - 4000) / 50;
             int subfield = (tidx - 4000) % 50;
-
-            int fx = ((field % 2) * 3) + ((field / 8) * 6);
-            int fy = ((field / 2) % 4) * 4;
-            XPTileRenderer.generalOldRMATField(app, fx * tileSize, fy * tileSize, subfield, app.autoTiles[0], tileSize, px, py, igd, chipset);
+            XPTileRenderer.generalOldRMATField(app, subfield, app.autoTiles[0], tileSize, px, py, igd, terrainATFields[field]);
             //igd.drawText(px, py, 255, 255, 255, 8, Integer.toString(field));
         }
 
