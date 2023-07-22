@@ -43,7 +43,7 @@ public class LcfTileRenderer extends ITileRenderer {
         super(app, 16, 6);
         if (tso != null) {
             IImage chipsetSrc = imageLoader.getImage("ChipSet/" + tso.getIVar("@tileset_name").decString(), false);
-            SimpleAtlasBuilder sab = new SimpleAtlasBuilder(1024, 512, BinaryTreeAtlasStrategy.INSTANCE);
+            SimpleAtlasBuilder sab = new SimpleAtlasBuilder(1024, 1024, BinaryTreeAtlasStrategy.INSTANCE);
             // chop it up but use relatively as-is in the atlas
             // it's not worth generating tons of texregions for individual tiles
             ITexRegion chipsetLeftSrc = chipsetSrc.subRegion(0, 0, tileSize * 6, tileSize * 8);
