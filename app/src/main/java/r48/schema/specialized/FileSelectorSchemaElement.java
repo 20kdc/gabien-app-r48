@@ -20,6 +20,7 @@ import r48.schema.util.SchemaPath;
 import r48.ui.UIThumbnail;
 import r48.ui.spacing.UIBorderedSubpanel;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 /**
@@ -45,6 +46,7 @@ public class FileSelectorSchemaElement extends SchemaElement.Leaf {
         String[] strs = GaBIEn.listEntries(AppMain.autoDetectWindows(app.rootPath + pathExtender));
         if (strs == null)
             return new UILabel("The folder does not exist or was not accessible.", app.f.schemaFieldTH);
+        Arrays.sort(strs, (a, b) -> a.compareToIgnoreCase(b));
         HashSet<String> hitStrs = new HashSet<String>();
         UIElement waitingLeft = null;
         for (String s : strs) {
