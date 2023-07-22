@@ -49,7 +49,7 @@ public class IkaTileRenderer extends ITileRenderer {
             if (blockTypes[i] != null)
                 deps[i] = imageLoader.getImage("Prt" + blockTypes[i], false);
         if (tilesDeps.shouldUpdate(deps)) {
-            SimpleAtlasBuilder<Object> sab = new SimpleAtlasBuilder<>(256, 256, BinaryTreeAtlasStrategy.INSTANCE);
+            SimpleAtlasBuilder sab = new SimpleAtlasBuilder(256, 256, BinaryTreeAtlasStrategy.INSTANCE);
             for (int i = 0; i < blockTypes.length; i++) {
                 final int fi = i;
                 if (deps[fi] != null)

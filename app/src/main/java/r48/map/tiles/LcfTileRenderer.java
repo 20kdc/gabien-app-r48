@@ -8,6 +8,10 @@
 package r48.map.tiles;
 
 import gabien.GaBIEn;
+import gabien.atlas.AtlasSet;
+import gabien.atlas.BinaryTreeAtlasStrategy;
+import gabien.atlas.ImageAtlasDrawable;
+import gabien.atlas.SimpleAtlasBuilder;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.render.ITexRegion;
@@ -20,18 +24,34 @@ import r48.map.tileedit.TileEditingTab;
 
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * I slept, finished MapUnit, and began writing this class.
  * Created on 31/05/17.
  */
 public class LcfTileRenderer extends ITileRenderer {
-    public final IImage chipset;
-    public final ITexRegion[] terrainATFields = new ITexRegion[12];
+    // "Left": 6x8 section of special tiles that don't fit into terrainATFields
+    public ITexRegion chipsetLeft;
+    // "Right": "Common" section
+    public ITexRegion chipsetRight;
+    public final @Nullable AtlasSet atlasSet;
+    public final ITexRegion[][] terrainATFields = new ITexRegion[12][];
+    public final boolean optimizeAway10000;
 
     public LcfTileRenderer(App app, IImageLoader imageLoader, IRIO tso) {
         super(app, 16, 6);
         if (tso != null) {
-            chipset = imageLoader.getImage("ChipSet/" + tso.getIVar("@tileset_name").decString(), false);
+            IImage chipsetSrc = imageLoader.getImage("ChipSet/" + tso.getIVar("@tileset_name").decString(), false);
+            SimpleAtlasBuilder sab = new SimpleAtlasBuilder(1024, 512, BinaryTreeAtlasStrategy.INSTANCE);
+            // chop it up but use relatively as-is in the atlas
+            // it's not worth generating tons of texregions for individual tiles
+            ITexRegion chipsetLeftSrc = chipsetSrc.subRegion(0, 0, tileSize * 6, tileSize * 8);
+            int rightBaseline = tileSize * 12;
+            ITexRegion chipsetRightSrc = chipsetSrc.subRegion(rightBaseline, 0, chipsetSrc.width - rightBaseline, tileSize * 16);
+            sab.add((res) -> chipsetLeft = res, new ImageAtlasDrawable(chipsetLeftSrc));
+            sab.add((res) -> chipsetRight = res, new ImageAtlasDrawable(chipsetRightSrc));
+
             // This is a possible *50-wide AT Field!!!!!* Well, 12 of them.
             // Terrain ATs are laid out as follows on the image:
             // ??45
@@ -44,31 +64,43 @@ public class LcfTileRenderer extends ITileRenderer {
                 int fx = ((field % 2) * 3) + ((field / 8) * 6);
                 int fy = ((field / 2) % 4) * 4;
 
-                terrainATFields[i] = chipset.subRegion(fx * tileSize, fy * tileSize, 3 * tileSize, 4 * tileSize);
+                final int fi = i;
+                ITexRegion region = chipsetSrc.subRegion(fx * tileSize, fy * tileSize, 3 * tileSize, 4 * tileSize);
+                terrainATFields[fi] = ATFieldAtlasDrawable.addToSimpleAtlasBuilder(tileSize, app.autoTiles[0], sab, region);
             }
+            atlasSet = sab.compile();
+            // yes, this is awkward for performance, but if this particular tile is empty... that information can be used
+            optimizeAway10000 = chipsetRightSrc.copy(96, 128, tileSize, tileSize).areContentsZeroAlpha();
         } else {
-            chipset = null;
+            chipsetLeft = null;
+            chipsetRight = null;
+            atlasSet = null;
+            optimizeAway10000 = true;
         }
     }
 
     @Override
     public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd) {
-        if (chipset == null)
+        if (chipsetLeft == null)
             return;
         // There are 288 "Common Tiles" (non-AT) divided into upper and lower layer tiles.
         // On the CS, they start at X 192.
         // Two pages of 144 each.
         // Everything here makes more sense in decimal.
         if ((tidx >= 5000) && (tidx < 6000))
-            handleCommonPage(5000, 0, tidx, px, py, igd, chipset);
-        if ((tidx >= 10000) && (tidx < 11000))
-            handleCommonPage(10000, 1, tidx, px, py, igd, chipset);
+            handleCommonPage(5000, 0, tidx, px, py, igd);
+        if ((tidx >= 10000) && (tidx < 11000)) {
+            if (optimizeAway10000)
+                if (tidx == 10000)
+                    return;
+            handleCommonPage(10000, 1, tidx, px, py, igd);
+        }
         if ((tidx >= 4000) && (tidx < 4600)) {
             // 4150 : 3, OS-Legacy
             // 50 * 12 = 600
             int field = (tidx - 4000) / 50;
             int subfield = (tidx - 4000) % 50;
-            XPTileRenderer.generalOldRMATField(app, subfield, app.autoTiles[0], tileSize, px, py, igd, terrainATFields[field]);
+            igd.blitImage(px, py, terrainATFields[field][subfield]);
             //igd.drawText(px, py, 255, 255, 255, 8, Integer.toString(field));
         }
 
@@ -88,7 +120,7 @@ public class LcfTileRenderer extends ITileRenderer {
             s = Math.floor(s);
             int f = (int) s;
             f %= 4;
-            igd.blitScaledImage((tileSize * 3) + (field * tileSize), (tileSize * 4) + (f * tileSize), tileSize, tileSize, px, py, tileSize, tileSize, chipset);
+            igd.blitScaledImage((tileSize * 3) + (field * tileSize), (tileSize * 4) + (f * tileSize), tileSize, tileSize, px, py, tileSize, tileSize, chipsetLeft);
         }
 
         // Water tiles are yet another 50-entry AT field, seemingly of a different type.
@@ -143,11 +175,11 @@ public class LcfTileRenderer extends ITileRenderer {
                 baseY += tileSize * 3;
             }
 
-            handleWATField(tSubfield, px, py, igd, chipset, aniX, baseY, diamondY, ovlX);
+            handleWATField(tSubfield, px, py, igd, aniX, baseY, diamondY, ovlX);
         }
     }
 
-    private void handleWATField(int tSubfield, int px, int py, IGrDriver igd, IImage chipset, int aniX, int baseY, int diamondY, int ovlX) {
+    private void handleWATField(int tSubfield, int px, int py, IGrDriver igd, int aniX, int baseY, int diamondY, int ovlX) {
 
         int innerSubfield = tSubfield % 50;
         int outerSubfield = tSubfield / 50;
@@ -161,15 +193,15 @@ public class LcfTileRenderer extends ITileRenderer {
         char lr = charTbl[adb.entries[innerSubfield].corners[3]];
 
         int etc = tileSize / 2;
-        handleWATCorner(0, 0, ((outerSubfield & 1) != 0) ? 'D' : ul, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc);
+        handleWATCorner(0, 0, ((outerSubfield & 1) != 0) ? 'D' : ul, px, py, igd, aniX, baseY, diamondY, ovlX, etc);
         if ((etc * 2) == tileSize) {
-            handleWATCorner(etc, 0, ((outerSubfield & 2) != 0) ? 'D' : ur, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc);
-            handleWATCorner(0, etc, ((outerSubfield & 4) != 0) ? 'D' : ll, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc);
-            handleWATCorner(etc, etc, ((outerSubfield & 8) != 0) ? 'D' : lr, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc);
+            handleWATCorner(etc, 0, ((outerSubfield & 2) != 0) ? 'D' : ur, px, py, igd, aniX, baseY, diamondY, ovlX, etc);
+            handleWATCorner(0, etc, ((outerSubfield & 4) != 0) ? 'D' : ll, px, py, igd, aniX, baseY, diamondY, ovlX, etc);
+            handleWATCorner(etc, etc, ((outerSubfield & 8) != 0) ? 'D' : lr, px, py, igd, aniX, baseY, diamondY, ovlX, etc);
         }
     }
 
-    private void handleWATCorner(int cx, int cy, char c, int px, int py, IGrDriver igd, IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int etc) {
+    private void handleWATCorner(int cx, int cy, char c, int px, int py, IGrDriver igd, int aniX, int baseY, int diamondY, int ovlX, int etc) {
         int tox = 0;
         int toy = 0;
         switch (c) {
@@ -198,16 +230,16 @@ public class LcfTileRenderer extends ITileRenderer {
                 toy = tileSize * 3;
                 break;
         }
-        igd.blitScaledImage(tox + cx, toy + cy, etc, etc, px + cx, py + cy, etc, etc, chipset);
+        igd.blitScaledImage(tox + cx, toy + cy, etc, etc, px + cx, py + cy, etc, etc, chipsetLeft);
     }
 
-    private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrDriver igd, IImage chipset) {
+    private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrDriver igd) {
         // Divided into 6-wide columns, 96 tiles per column.
         int ti = tidx - base;
         ti += ofsPage * 144;
         int tx = (ti % 6) + ((ti / 96) * 6);
         int ty = ((ti / 6) % 16);
-        igd.blitScaledImage(((tx + 12) * tileSize), ty * tileSize, tileSize, tileSize, px, py, tileSize, tileSize, chipset);
+        igd.blitScaledImage(tx * tileSize, ty * tileSize, tileSize, tileSize, px, py, tileSize, tileSize, chipsetRight);
     }
 
     @Override
@@ -280,5 +312,10 @@ public class LcfTileRenderer extends ITileRenderer {
         // 1/3rd * 1/8th = 1/24th
         double t = GaBIEn.getTime();
         return ((int) Math.floor(t * 24)) % 24;
+    }
+
+    @Override
+    public @Nullable AtlasSet getAtlasSet() {
+        return atlasSet;
     }
 }
