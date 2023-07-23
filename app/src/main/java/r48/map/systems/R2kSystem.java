@@ -32,7 +32,6 @@ import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
 import r48.map.mapinfos.UISaveScanMapInfos;
 import r48.map.pass.R2kPassabilitySource;
-import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.LcfTileRenderer;
 import r48.maptools.UIMTBase;
 import r48.maptools.deep.UIMTFtrGdt01;
@@ -40,6 +39,8 @@ import r48.toolsets.utils.RMTranscriptDumper;
 
 import java.util.Collections;
 import java.util.LinkedList;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * ...
@@ -96,13 +97,12 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     }
 
 
-    private IRIO tsoById(long id) {
+    private @Nullable IRIO tsoById(long id) {
         return app.odb.getObject("RPG_RT.ldb").getObject().getIVar("@tilesets").getHashVal(DMKey.of(id));
     }
 
     // saveData is optional, and replaces some things.
-    private StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events) {
-        ITileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader, tileset);
+    private StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events, LcfTileRenderer tileRenderer) {
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(app, imageLoader, tileRenderer);
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
         // Cannot get enough information without map & tileset
@@ -155,7 +155,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public StuffRenderer rendererFromTso(IRIO tso) {
-        ITileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader, tso);
+        LcfTileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader);
+        tileRenderer.checkReloadTSO(tso);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(app, imageLoader, tileRenderer);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
@@ -222,13 +223,11 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 if (app.odb.getObject(obj, null) == null)
                     return null;
             final IObjectBackend.ILoadedObject root = app.odb.getObject(obj, "RPG::Save");
+            final LcfTileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader); 
             return new MapViewDetails(app, obj, "RPG::Save") {
-                private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("RPG_RT.ldb");
-
                 @Override
                 public MapViewState rebuild(String changed) {
                     int mapId = (int) root.getObject().getIVar("@party_pos").getIVar("@map").getFX();
-                    tilesetCache.updateMapId(mapId);
 
                     final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(mapId);
                     IObjectBackend.ILoadedObject map = app.odb.getObject(objn);
@@ -240,13 +239,10 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
                     // Map okay - update tileset cache & render
                     long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
-                    IRIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
-                    if (lastTileset == null) {
-                        lastTileset = tsoById(currentTsId);
-                        tilesetCache.insertTileset(currentTsId, lastTileset);
-                    }
+                    IRIO lastTileset = tsoById(currentTsId);
+                    tileRenderer.checkReloadTSO(lastTileset);
 
-                    return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, events), objn, new String[] {
+                    return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, events, tileRenderer), objn, new String[] {
                             objn,
                             "RPG_RT.ldb"
                     }, map.getObject(), "@data", true, events);
@@ -291,18 +287,14 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 return null;
         final IObjectBackend.ILoadedObject map = app.odb.getObject(objn, "RPG::Map");
         final IEventAccess iea = new TraditionalEventAccess(app, objn, "RPG::Map", "@events", 1, "RPG::Event");
+        final LcfTileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader);
         return new MapViewDetails(app, objn, "RPG::Map") {
-            private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("RPG_RT.ldb");
-
             @Override
             public MapViewState rebuild(String changed) {
                 long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
-                IRIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
-                if (lastTileset == null) {
-                    lastTileset = tsoById(currentTsId);
-                    tilesetCache.insertTileset(currentTsId, lastTileset);
-                }
-                return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, iea), objn, new String[] {
+                IRIO lastTileset = tsoById(currentTsId);
+                tileRenderer.checkReloadTSO(lastTileset);
+                return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, iea, tileRenderer), objn, new String[] {
                         "RPG_RT.ldb"
                 }, map.getObject(), "@data", false, iea);
             }

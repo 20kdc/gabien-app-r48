@@ -15,6 +15,7 @@ import gabien.atlas.SimpleAtlasBuilder;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.render.ITexRegion;
+import gabien.uslx.append.DepsLocker;
 import r48.App;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;
@@ -31,52 +32,72 @@ import org.eclipse.jdt.annotation.Nullable;
  * Created on 31/05/17.
  */
 public class LcfTileRenderer extends ITileRenderer {
+    public final IImageLoader imageLoader;
+    public DepsLocker depsLocker = new DepsLocker();
     // "Left": 6x8 section of special tiles that don't fit into terrainATFields
     public ITexRegion chipsetLeft;
     // "Right": "Common" section
     public ITexRegion chipsetRight;
-    public final @Nullable AtlasSet atlasSet;
-    public final ITexRegion[][] terrainATFields = new ITexRegion[12][];
-    public final boolean optimizeAway10000;
+    public @Nullable AtlasSet atlasSet;
+    public ITexRegion[][] terrainATFields;
+    public boolean optimizeAway10000;
 
-    public LcfTileRenderer(App app, IImageLoader imageLoader, IRIO tso) {
+    public LcfTileRenderer(App app, IImageLoader imageLoader) {
         super(app, 16, 6);
+        this.imageLoader = imageLoader;
+    }
+
+    public void checkReloadTSO(@Nullable IRIO tso) {
         if (tso != null) {
             IImage chipsetSrc = imageLoader.getImage("ChipSet/" + tso.getIVar("@tileset_name").decString(), false);
-            SimpleAtlasBuilder sab = new SimpleAtlasBuilder(1024, 1024, BinaryTreeAtlasStrategy.INSTANCE);
-            // chop it up but use relatively as-is in the atlas
-            // it's not worth generating tons of texregions for individual tiles
-            ITexRegion chipsetLeftSrc = chipsetSrc.subRegion(0, 0, tileSize * 6, tileSize * 8);
-            int rightBaseline = tileSize * 12;
-            ITexRegion chipsetRightSrc = chipsetSrc.subRegion(rightBaseline, 0, chipsetSrc.width - rightBaseline, tileSize * 16);
-            sab.add((res) -> chipsetLeft = res, new ImageAtlasDrawable(chipsetLeftSrc));
-            sab.add((res) -> chipsetRight = res, new ImageAtlasDrawable(chipsetRightSrc));
-
-            // This is a possible *50-wide AT Field!!!!!* Well, 12 of them.
-            // Terrain ATs are laid out as follows on the image:
-            // ??45
-            // ??67
-            // 0189
-            // 23AB
-            // '?' is animated and water
-            for (int i = 0; i < terrainATFields.length; i++) {
-                int field = i + 4;
-                int fx = ((field % 2) * 3) + ((field / 8) * 6);
-                int fy = ((field / 2) % 4) * 4;
-
-                final int fi = i;
-                ITexRegion region = chipsetSrc.subRegion(fx * tileSize, fy * tileSize, 3 * tileSize, 4 * tileSize);
-                terrainATFields[fi] = ATFieldAtlasDrawable.addToSimpleAtlasBuilder(tileSize, app.autoTiles[0], sab, region);
-            }
-            atlasSet = sab.compile();
-            // yes, this is awkward for performance, but if this particular tile is empty... that information can be used
-            optimizeAway10000 = chipsetRightSrc.copy(96, 128, tileSize, tileSize).areContentsZeroAlpha();
+            checkReloadImg(chipsetSrc);
         } else {
-            chipsetLeft = null;
-            chipsetRight = null;
-            atlasSet = null;
-            optimizeAway10000 = true;
+            checkReloadImg(null);
         }
+    }
+
+    public void checkReloadImg(@Nullable IImage chipsetSrc) {
+        if (!depsLocker.shouldUpdate(chipsetSrc))
+            return;
+
+        chipsetLeft = null;
+        chipsetRight = null;
+        atlasSet = null;
+        terrainATFields = null;
+        optimizeAway10000 = false;
+
+        if (chipsetSrc == null)
+            return;
+
+        SimpleAtlasBuilder sab = new SimpleAtlasBuilder(1024, 1024, BinaryTreeAtlasStrategy.INSTANCE);
+        // chop it up but use relatively as-is in the atlas
+        // it's not worth generating tons of texregions for individual tiles
+        ITexRegion chipsetLeftSrc = chipsetSrc.subRegion(0, 0, tileSize * 6, tileSize * 8);
+        int rightBaseline = tileSize * 12;
+        ITexRegion chipsetRightSrc = chipsetSrc.subRegion(rightBaseline, 0, chipsetSrc.width - rightBaseline, tileSize * 16);
+        sab.add((res) -> chipsetLeft = res, new ImageAtlasDrawable(chipsetLeftSrc));
+        sab.add((res) -> chipsetRight = res, new ImageAtlasDrawable(chipsetRightSrc));
+
+        // This is a possible *50-wide AT Field!!!!!* Well, 12 of them.
+        // Terrain ATs are laid out as follows on the image:
+        // ??45
+        // ??67
+        // 0189
+        // 23AB
+        // '?' is animated and water
+        terrainATFields = new ITexRegion[12][];
+        for (int i = 0; i < terrainATFields.length; i++) {
+            int field = i + 4;
+            int fx = ((field % 2) * 3) + ((field / 8) * 6);
+            int fy = ((field / 2) % 4) * 4;
+
+            final int fi = i;
+            ITexRegion region = chipsetSrc.subRegion(fx * tileSize, fy * tileSize, 3 * tileSize, 4 * tileSize);
+            terrainATFields[fi] = ATFieldAtlasDrawable.addToSimpleAtlasBuilder(tileSize, app.autoTiles[0], sab, region);
+        }
+        atlasSet = sab.compile();
+        // yes, this is awkward for performance, but if this particular tile is empty... that information can be used
+        optimizeAway10000 = chipsetRightSrc.copy(96, 128, tileSize, tileSize).areContentsZeroAlpha();
     }
 
     @Override
