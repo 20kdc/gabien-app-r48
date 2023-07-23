@@ -136,7 +136,7 @@ public class WindowManager extends AppCore.Csv {
             tabPane.selectTab(uie.getFirst().contents);
     }
 
-    public void createWindowSH(final UIElement mtb) {
+    public void adjustWindowSH(final UIElement mtb) {
         // This logic makes sense since we're trying to force a certain width but not a certain height.
         // It is NOT a bug in gabien-common so long as this code works (that is, the first call immediately prepares a correct wanted size).
         Size rootSize = getRootSize();
@@ -148,6 +148,10 @@ public class WindowManager extends AppCore.Csv {
         int h = Math.min(recSize.height, validSize.height);
 
         mtb.setForcedBounds(null, new Rect(0, 0, w, h));
+    }
+
+    public void createWindowSH(final UIElement mtb) {
+        adjustWindowSH(mtb);
         createWindow(mtb);
     }
 

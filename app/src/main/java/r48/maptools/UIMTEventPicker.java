@@ -138,9 +138,9 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 mapToolContext.accept(new UIMTEventMover(mapToolContext, nevK));
                             }
                         }, app.f.eventPickerEntryTH);
-                        button = new UIAppendButton(T.m.bDel, button, new Runnable() {
-                            @Override
-                            public void run() {
+                        UIAppendButton delAppend = new UIAppendButton(T.m.bDel, button, null, app.f.eventPickerEntryTH);
+                        delAppend.button.onClick = () -> {
+                            app.ui.confirmDeletion(false, eventName, delAppend, () -> {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
                                     confirmAt(x, y, 123, 123, layer, true);
                                     return;
@@ -152,8 +152,9 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 }
                                 mapView.mapTable.eventAccess.delEvent(evK);
                                 confirmAt(x, y, 123, 123, layer, true);
-                            }
-                        }, app.f.eventPickerEntryTH);
+                            });
+                        };
+                        button = delAppend;
                         svl.panelsAdd(button);
                     } else {
                         UIElement button = new UILabel(nam, app.f.eventPickerEntryTH);

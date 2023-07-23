@@ -124,15 +124,15 @@ public class HashSchemaElement extends SchemaElement {
                         fw.set(Math.max(fw.get(), hsA.getSize().width));
                         hs = new UIFieldLayout(hsA, hsB, fw, true);
                     }
-                    uiSV.panelsAdd(new UIAppendButton("-", hs, new Runnable() {
-                        @Override
-                        public void run() {
+                    UIAppendButton append = new UIAppendButton("-", hs, null, app.f.schemaFieldTH);
+                    append.button.onClick = () -> {
+                        app.ui.confirmDeletion(false, value, valElem, append, () -> {
                             // remove
                             target.removeHashVal(kss);
                             path.changeOccurred(false);
-                            // auto-updates
-                        }
-                    }, app.f.schemaFieldTH));
+                        });
+                    };
+                    uiSV.panelsAdd(append);
                 }
                 // Set up a key workspace.
                 UIElement workspace = keyElem.buildHoldingEditor(keyWorkspace, launcher, rioPath);

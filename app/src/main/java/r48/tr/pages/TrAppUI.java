@@ -117,4 +117,5 @@ public class TrAppUI extends TrPage {
 
     public String l35;
     public String notFound;
+    public FF1 confirmDeletion;
 }

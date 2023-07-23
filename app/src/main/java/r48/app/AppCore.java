@@ -16,6 +16,7 @@ import java.util.WeakHashMap;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+import gabien.GaBIEn;
 import gabien.uslx.append.IConsumer;
 import r48.cfg.Config;
 import r48.cfg.FontSizes;
@@ -58,6 +59,8 @@ public class AppCore {
 
     public final @NonNull IConsumer<String> loadProgress;
 
+    public final boolean deletionButtonsNeedConfirmation;
+
     /**
      * Initialize App.
      * Warning: Occurs off main thread.
@@ -73,6 +76,7 @@ public class AppCore {
         secondaryImagePath = sip;
         loadProgress = lp;
         imageIOFormats = ImageIOFormat.initializeFormats(this);
+        deletionButtonsNeedConfirmation = GaBIEn.singleWindowApp();
     }
 
     // Attempts to ascertain all known objects

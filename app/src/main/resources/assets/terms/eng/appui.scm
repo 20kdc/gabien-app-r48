@@ -178,4 +178,5 @@
 
 	l35 "Code (or -1337 for any unknown) ?"
 	notFound "Not found."
+	confirmDeletion (fl1 "Are you sure you want to delete " a0 "?")
 )

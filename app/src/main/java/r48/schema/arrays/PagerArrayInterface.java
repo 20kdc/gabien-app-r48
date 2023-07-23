@@ -95,12 +95,12 @@ public class PagerArrayInterface implements IArrayInterface {
             }
             if (positions[i].execDelete != null) {
                 final ISupplier<Runnable> r = positions[i].execDelete;
-                barLayout.panelsAdd(new UITextButton("-", app.f.schemaFieldTH, new Runnable() {
-                    @Override
-                    public void run() {
-                        r.get().run();
-                    }
-                }));
+                final String posText = positions[i].text;
+                UITextButton button = new UITextButton("-", app.f.schemaFieldTH, null);
+                button.onClick = () -> {
+                    app.ui.confirmDeletion(false, posText, button, () -> r.get().run());
+                };
+                barLayout.panelsAdd(button);
             }
             final IRIO[] copyMe = positions[i].elements;
             if (copyMe != null) {

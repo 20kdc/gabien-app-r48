@@ -31,6 +31,7 @@ import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.UIMapView;
+import r48.schema.EnumSchemaElement.Prefix;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
@@ -208,6 +209,41 @@ public class AppUI extends App.Svc {
     public void startImgedit() {
         // Registers & unregisters self
         app.ui.wm.createWindowSH(new ImageEditorController(app).rootView);
+    }
+
+    public void confirmDeletion(boolean mobileOnly, IRIO irio, SchemaElement se, final @Nullable UIElement menuBasis, final Runnable runnable) {
+        confirmDeletion(mobileOnly, app.format(irio, se, Prefix.NoPrefix), menuBasis, runnable);
+    }
+
+    public void confirmDeletion(boolean mobileOnly, String stuff, final @Nullable UIElement menuBasis, final Runnable runnable) {
+        if (mobileOnly && !app.deletionButtonsNeedConfirmation) {
+            runnable.run();
+            return;
+        }
+        String text = T.u.confirmDeletion.r(stuff);
+        confirm(text, menuBasis, runnable);
+    }
+
+    public void confirm(final String s, final @Nullable UIElement menuBasis, final Runnable runnable) {
+        UITextButton accept = new UITextButton(T.u.confirm_accept, app.f.dialogWindowTH, null).centred();
+        UITextButton cancel = new UITextButton(T.u.confirm_cancel, app.f.dialogWindowTH, null).centred();
+        UIElement uie = new UISplitterLayout(new UILabel(s, app.f.dialogWindowTH),
+                new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
+        final UIDynAppPrx mtb = UIDynAppPrx.wrap(app, uie);
+        mtb.titleOverride = T.t.confirm;
+        accept.onClick = () -> {
+            runnable.run();
+            mtb.selfClose = true;
+        };
+        cancel.onClick = () -> {
+            mtb.selfClose = true;
+        };
+        app.ui.wm.adjustWindowSH(mtb);
+        if (menuBasis != null) {
+            app.ui.wm.createMenu(menuBasis, mtb);
+        } else {
+            app.ui.wm.createWindow(mtb);
+        }
     }
 
     public Runnable createLaunchConfirmation(final String s, final Runnable runnable) {
