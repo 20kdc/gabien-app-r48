@@ -97,7 +97,7 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
             ITexRegion[][] ts = new ITexRegion[count][];
             for (int j = 0; j < ts.length; j++) {
                 ITexRegion atfSrc = atf.subRegion(j * 96, 0, 96, 128);
-                ITexRegion[] compiledATF = ATFieldAtlasDrawable.addToSimpleAtlasBuilder(tileSize, app.autoTiles[0], sab, atfSrc);
+                ITexRegion[] compiledATF = ATFieldAtlasDrawable.addToSimpleAtlasBuilder(tileSize, app.autoTiles[0], sab, atfSrc, false);
                 ts[j] = compiledATF;
             }
             atFields[i] = ts;

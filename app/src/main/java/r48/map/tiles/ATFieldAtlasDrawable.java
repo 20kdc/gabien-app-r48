@@ -20,21 +20,24 @@ public class ATFieldAtlasDrawable extends AtlasDrawable {
     public final ITexRegion source;
     public final ATDB.Autotile details;
     public final int tileSize;
+    // This is awful, really...
+    public final boolean vxaAdjust;
 
-    public ATFieldAtlasDrawable(int tileSize, ITexRegion src, ATDB.Autotile at) {
+    public ATFieldAtlasDrawable(int tileSize, ITexRegion src, ATDB.Autotile at, boolean vxa) {
         super(tileSize, tileSize);
         this.tileSize = tileSize;
         details = at;
         source = src;
+        this.vxaAdjust = vxa;
     }
 
-    public static ITexRegion[] addToSimpleAtlasBuilder(int tileSize, ATDB db, SimpleAtlasBuilder sab, ITexRegion src) {
+    public static ITexRegion[] addToSimpleAtlasBuilder(int tileSize, ATDB db, SimpleAtlasBuilder sab, ITexRegion src, boolean vxa) {
         ITexRegion[] out = new ITexRegion[db.entries.length];
         for (int i = 0; i < db.entries.length; i++) {
             final int fi = i;
             ATDB.Autotile entry = db.entries[i];
             if (entry != null)
-                sab.add((res) -> out[fi] = res, new ATFieldAtlasDrawable(tileSize, src, entry));
+                sab.add((res) -> out[fi] = res, new ATFieldAtlasDrawable(tileSize, src, entry, vxa));
         }
         return out;
     }
@@ -47,6 +50,20 @@ public class ATFieldAtlasDrawable extends AtlasDrawable {
                 int ti = details.corners[sA + (sB * 2)];
                 int tx = ti % 3;
                 int ty = ti / 3;
+                if (vxaAdjust) {
+                    // So this is a legacy decision that survives to this day.
+                    // VXA tables were based off of RXP tables despite not really being the same format.
+                    // To make that actually work, these maths had to be implemented.
+                    // They subtly adjust the tile positions to "compress" them into the 2x3 space.
+                    if (ti == 2) {
+                        tx = tileSize;
+                    } else if (ti > 2) {
+                        ty -= tileSize;
+                        tx /= 2;
+                        ty /= 2;
+                        ty += tileSize;
+                    }
+                }
                 int sX = (sA * cSize);
                 int sY = (sB * cSize);
                 ap.copyFrom((tx * tileSize) + sX, (ty * tileSize) + sY, cSize, cSize, px + sX, py + sY, source);

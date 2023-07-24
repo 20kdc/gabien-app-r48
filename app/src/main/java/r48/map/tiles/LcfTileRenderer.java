@@ -94,7 +94,7 @@ public class LcfTileRenderer extends TSOAwareTileRenderer {
 
             final int fi = i;
             ITexRegion region = chipsetSrc.subRegion(fx * tileSize, fy * tileSize, 3 * tileSize, 4 * tileSize);
-            terrainATFields[fi] = ATFieldAtlasDrawable.addToSimpleAtlasBuilder(tileSize, app.autoTiles[0], sab, region);
+            terrainATFields[fi] = ATFieldAtlasDrawable.addToSimpleAtlasBuilder(tileSize, app.autoTiles[0], sab, region, false);
         }
         atlasSet = sab.compile();
         // yes, this is awkward for performance, but if this particular tile is empty... that information can be used
