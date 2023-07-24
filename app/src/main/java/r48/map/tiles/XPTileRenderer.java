@@ -7,13 +7,19 @@
 
 package r48.map.tiles;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.GaBIEn;
+import gabien.atlas.AtlasSet;
+import gabien.atlas.BinaryTreeAtlasStrategy;
+import gabien.atlas.ImageAtlasDrawable;
+import gabien.atlas.SimpleAtlasBuilder;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.render.ITexRegion;
+import gabien.uslx.append.DepsLocker;
 import r48.App;
 import r48.RubyTable;
-import r48.dbs.ATDB;
 import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;
 import r48.map.tileedit.AutoTileTypeField;
@@ -22,25 +28,37 @@ import r48.map.tileedit.TileEditingTab;
 /**
  * Created on 1/27/17.
  */
-public class XPTileRenderer extends ITileRenderer {
-    public final IImage[] tilesetMaps = new IImage[8];
-    public final ITexRegion[][] atFields = new ITexRegion[7][];
+public class XPTileRenderer extends TSOAwareTileRenderer {
+    public final IImageLoader imageLoader;
 
-    public final RubyTable priorities;
+    public RubyTable priorities;
 
-    public XPTileRenderer(App app, IImageLoader imageLoader, IRIO tileset) {
+    // Note that this only covers rendering resources, not priorities
+    private final DepsLocker depsLocker = new DepsLocker();
+    private ITexRegion commonTiles;
+    private ITexRegion[][][] atFields;
+    private AtlasSet atlasSet;
+
+    public XPTileRenderer(App app, IImageLoader imageLoader) {
         super(app, 32, 8);
-        // If the tileset's null, then just give up.
-        // The tileset being/not being null is an implementation detail anyway.
+        this.imageLoader = imageLoader;
+    }
+
+    @Override
+    public void checkReloadTSO(@Nullable IRIO tileset) {
         if (tileset != null) {
+            // Always reload priorities immediately.
             priorities = new RubyTable(tileset.getIVar("@priorities").getBuffer());
             IRIO tn = tileset.getIVar("@tileset_name");
+            IImage[] tilesetMaps = new IImage[8];
             if (tn != null) {
                 // XP
                 String expectedTS = tn.decString();
                 if (expectedTS.length() != 0)
                     tilesetMaps[0] = imageLoader.getImage("Tilesets/" + expectedTS, false);
-                IRIO amNames = tileset.getIVar("@autotile_names");
+            }
+            IRIO amNames = tileset.getIVar("@autotile_names");
+            if (amNames != null) {
                 for (int i = 0; i < 7; i++) {
                     IRIO rio = amNames.getAElem(i);
                     String expectedAT = rio.decString();
@@ -48,21 +66,43 @@ public class XPTileRenderer extends ITileRenderer {
                         tilesetMaps[i + 1] = imageLoader.getImage("Autotiles/" + expectedAT, false);
                 }
             }
-            for (int i = 0; i < 7; i++) {
-                IImage atf = tilesetMaps[i + 1];
-                if (atf == null)
-                    continue;
-                int count = atf.getWidth() / 96;
-                if (count < 1)
-                    count = 1;
-                ITexRegion[] ts = new ITexRegion[count];
-                for (int j = 0; j < ts.length; j++)
-                    ts[j] = tilesetMaps[i + 1].subRegion(j * 96, 0, 96, 128);
-                atFields[i] = ts;
-            }
+            doReloadImg(tilesetMaps); 
         } else {
+            // Clear everything.
             priorities = null;
+            depsLocker.shouldUpdate();
+            commonTiles = null;
+            atFields = null;
+            atlasSet = null;
         }
+        // If the tileset's null, then just give up.
+        // The tileset being/not being null is an implementation detail anyway.
+    }
+
+    private void doReloadImg(IImage[] tilesetMaps) {
+        // and that's why it's a deep compare
+        if (!depsLocker.shouldUpdate((Object) tilesetMaps))
+            return;
+        SimpleAtlasBuilder sab = new SimpleAtlasBuilder(1024, 1024, BinaryTreeAtlasStrategy.INSTANCE);
+        if (tilesetMaps[0] != null)
+            sab.add((res) -> commonTiles = res, new ImageAtlasDrawable(tilesetMaps[0]));
+        atFields = new ITexRegion[7][][];
+        for (int i = 0; i < 7; i++) {
+            IImage atf = tilesetMaps[i + 1];
+            if (atf == null)
+                continue;
+            int count = atf.getWidth() / 96;
+            if (count < 1)
+                count = 1;
+            ITexRegion[][] ts = new ITexRegion[count][];
+            for (int j = 0; j < ts.length; j++) {
+                ITexRegion atfSrc = atf.subRegion(j * 96, 0, 96, 128);
+                ITexRegion[] compiledATF = ATFieldAtlasDrawable.addToSimpleAtlasBuilder(tileSize, app.autoTiles[0], sab, atfSrc);
+                ts[j] = compiledATF;
+            }
+            atFields[i] = ts;
+        }
+        atlasSet = sab.compile();
     }
 
     @Override
@@ -78,59 +118,35 @@ public class XPTileRenderer extends ITileRenderer {
                 return;
             atMap--;
             tidx %= 48;
-            boolean didDraw = false;
-            ITexRegion[] animatedATF = atFields[atMap];
+            ITexRegion[][] animatedATF = atFields[atMap];
             if (animatedATF != null) {
                 int animControl = 0;
                 int animSets = animatedATF.length;
                 if (animSets > 0)
                     animControl = getFrame() % animSets;
-                didDraw = didDraw || generalOldRMATField(app, tidx, app.autoTiles[0], tileSize, px, py, igd, animatedATF[animControl]);
-            } else {
-                didDraw = true; // It's invisible, so it should just be considered drawn no matter what
+                ITexRegion[] atfFrame = animatedATF[animControl];
+                ITexRegion atfTile = atfFrame[tidx];
+                if (atfTile != null)
+                    igd.blitImage(px, py, atfTile);
             }
-            if (!didDraw)
-                GaBIEn.engineFonts.f8.drawLAB(igd, px, py, ":" + tidx, false);
             return;
         }
         tidx -= 48 * 8;
         int tsh = 8;
         int tx = tidx % tsh;
         int ty = tidx / tsh;
-        if (tilesetMaps[0] != null) {
-            igd.blitScaledImage(tx * tileSize, ty * tileSize, tileSize, tileSize, px, py, tileSize, tileSize, tilesetMaps[0]);
-        }
-    }
-
-    // Used by 2k3 support too, since it follows the same AT design
-    public static boolean generalOldRMATField(App app, int subfield, ATDB atFieldType, int fTileSize, int px, int py, IGrDriver igd, ITexRegion img) {
-        if (atFieldType != null) {
-            if (subfield >= atFieldType.entries.length)
-                return false;
-            ATDB.Autotile at = atFieldType.entries[subfield];
-            if (at != null) {
-                int cSize = fTileSize / 2;
-                for (int sA = 0; sA < 2; sA++)
-                    for (int sB = 0; sB < 2; sB++) {
-                        int ti = at.corners[sA + (sB * 2)];
-                        int tx = ti % 3;
-                        int ty = ti / 3;
-                        int sX = (sA * cSize);
-                        int sY = (sB * cSize);
-                        igd.blitScaledImage((tx * fTileSize) + sX, (ty * fTileSize) + sY, cSize, cSize, px + sX, py + sY, cSize, cSize, img);
-                    }
-                return true;
-            }
-        }
-        return false;
+        if (commonTiles != null)
+            igd.blitImage(tx * tileSize, ty * tileSize, tileSize, tileSize, px, py, commonTiles);
     }
 
     @Override
     public TileEditingTab[] getEditConfig(int layerIdx) {
-        IImage tm0 = tilesetMaps[0];
         int tileCount = 48;
-        if (tm0 != null)
-            tileCount = ((tm0.getHeight() / 32) * 8);
+        ITexRegion tm0 = commonTiles;
+        if (tm0 != null) {
+            int rh = (int) tm0.getRegionHeight();
+            tileCount = ((rh / 32) * 8);
+        }
         return new TileEditingTab[] {
                 new TileEditingTab(app, "AUTO", false, new int[] {
                         0,
@@ -166,5 +182,10 @@ public class XPTileRenderer extends ITileRenderer {
         // 16 / 40
         double m = 16.0d / 40.0d;
         return (int) (GaBIEn.getTime() / m);
+    }
+
+    @Override
+    public @Nullable AtlasSet getAtlasSet() {
+        return atlasSet;
     }
 }

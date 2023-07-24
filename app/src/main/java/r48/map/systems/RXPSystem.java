@@ -31,6 +31,7 @@ import r48.map.imaging.*;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
 import r48.map.tiles.ITileRenderer;
+import r48.map.tiles.TSOAwareTileRenderer;
 import r48.map.tiles.XPTileRenderer;
 import r48.toolsets.utils.RMTranscriptDumper;
 
@@ -86,8 +87,11 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         return new Rect(0, 0, img.width / 4, img.height / 4);
     }
 
-    public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events) {
-        XPTileRenderer tileRenderer = new XPTileRenderer(app, imageLoader, tileset);
+    public TSOAwareTileRenderer createTileRenderer() {
+        return new XPTileRenderer(app, imageLoader);
+    }
+
+    public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events, ITileRenderer tileRenderer) {
         RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, false);
         String pano = "";
         if (tileset != null) {
@@ -104,7 +108,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             IImage panoImg = null;
             if (!pano.equals(""))
                 panoImg = imageLoader.getImage(pano, true);
-            RXPAccurateDrawLayer accurate = new RXPAccurateDrawLayer(rt, events, tileRenderer, eventRenderer);
+            RXPAccurateDrawLayer accurate = new RXPAccurateDrawLayer(rt, events, (XPTileRenderer) tileRenderer, eventRenderer);
             layers = new IMapViewDrawLayer[] {
                     // works for green docks
                     new PanoramaMapViewDrawLayer(app, panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
@@ -127,7 +131,8 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public StuffRenderer rendererFromTso(IRIO tso) {
-        ITileRenderer tileRenderer = new XPTileRenderer(app, imageLoader, tso);
+        TSOAwareTileRenderer tileRenderer = createTileRenderer();
+        tileRenderer.checkReloadTSO(tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, false);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
@@ -139,17 +144,14 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 return null;
         final IObjectBackend.ILoadedObject map = app.odb.getObject(gum, "RPG::Map");
         final IEventAccess events = new TraditionalEventAccess(app, gum, "RPG::Map", "@events", 1, "RPG::Event");
+        final TSOAwareTileRenderer tileRenderer = createTileRenderer();
         return new MapViewDetails(app, gum, "RPG::Map") {
-            private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("Tilesets");
             @Override
             public MapViewState rebuild(String changed) {
                 long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
-                IRIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
-                if (lastTileset == null) {
-                    lastTileset = tsoById(app, currentTsId);
-                    tilesetCache.insertTileset(currentTsId, lastTileset);
-                }
-                return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, events), gum, new String[] {
+                IRIO lastTileset = tsoById(app, currentTsId);
+                tileRenderer.checkReloadTSO(lastTileset);
+                return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, events, tileRenderer), gum, new String[] {
                     "Tilesets"
                 }, map.getObject(), "@data", false, events);
             }

@@ -7,6 +7,8 @@
 
 package r48.map.tiles;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
@@ -23,9 +25,11 @@ import r48.map.tileedit.TileEditingTab;
  * This uses a totally different system from XP, based around 5 AT sheets and 4 primary sheets.
  * Created on 1/27/17.
  */
-public class VXATileRenderer extends ITileRenderer {
-    public final IImage[] tilesetMaps = new IImage[9];
-    private final IRIO tileset;
+public class VXATileRenderer extends TSOAwareTileRenderer {
+    private final IImageLoader imageLoader;
+
+    public IImage[] tilesetMaps;
+    private IRIO tileset;
     // Generated one-pixel image to be blended for shadow
     public IImage shadowImage;
     public RubyTable flags;
@@ -34,11 +38,18 @@ public class VXATileRenderer extends ITileRenderer {
      */
     private final ExpandedATTF[] preparedATTF;
 
-    public VXATileRenderer(App app, IImageLoader il, IRIO tileset) {
+    public VXATileRenderer(App app, IImageLoader il) {
         super(app, 32, 8);
-        this.tileset = tileset;
+        imageLoader = il;
         int[] tinyTile = new int[] {0x80000000};
         shadowImage = GaBIEn.createImage(tinyTile, 1, 1);
+        preparedATTF = prepareATTF();
+    }
+
+    @Override
+    public void checkReloadTSO(@Nullable IRIO tso) {
+        this.tileset = tso;
+        tilesetMaps = new IImage[9];
         // If the tileset's null, then just give up.
         // The tileset being/not being null is an implementation detail anyway.
         if (tileset != null) {
@@ -48,12 +59,11 @@ public class VXATileRenderer extends ITileRenderer {
                 IRIO rio = amNames.getAElem(i);
                 String expectedAT = rio.decString();
                 if (expectedAT.length() != 0)
-                    tilesetMaps[i] = il.getImage("Tilesets/" + expectedAT, false);
+                    tilesetMaps[i] = imageLoader.getImage("Tilesets/" + expectedAT, false);
             }
         } else {
             flags = new RubyTable(2, 0, 0, 0, new int[0]);
         }
-        preparedATTF = prepareATTF();
     }
 
     @Override

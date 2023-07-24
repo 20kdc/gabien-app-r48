@@ -23,6 +23,7 @@ import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.tiles.ITileRenderer;
+import r48.map.tiles.TSOAwareTileRenderer;
 import r48.map.tiles.VXATileRenderer;
 import r48.maptools.UIMTBase;
 import r48.maptools.UIMTShadowLayer;
@@ -43,9 +44,13 @@ public class RVXASystem extends RXPSystem {
     }
 
     @Override
-    public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tso, IEventAccess events) {
+    public TSOAwareTileRenderer createTileRenderer() {
+        return new VXATileRenderer(app, imageLoader);
+    }
+
+    @Override
+    public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tso, IEventAccess events, ITileRenderer tileRenderer) {
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
-        VXATileRenderer tileRenderer = new VXATileRenderer(app, imageLoader, tso);
         RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, true);
         if (map != null) {
             String vxaPano = map.getIVar("@parallax_name").decString();
@@ -55,7 +60,7 @@ public class RVXASystem extends RXPSystem {
             if (!vxaPano.equals(""))
                 panoImg = imageLoader.getImage("Parallaxes/" + vxaPano, true);
             RubyTable rt = new RubyTable(map.getIVar("@data").getBuffer());
-            RVXAAccurateDrawLayer accurate = new RVXAAccurateDrawLayer(rt, events, tileRenderer, eventRenderer);
+            RVXAAccurateDrawLayer accurate = new RVXAAccurateDrawLayer(rt, events, (VXATileRenderer) tileRenderer, eventRenderer);
             layers = new IMapViewDrawLayer[] {
                     // works for green docks
                     new PanoramaMapViewDrawLayer(app, panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
@@ -78,7 +83,8 @@ public class RVXASystem extends RXPSystem {
 
     @Override
     public StuffRenderer rendererFromTso(IRIO tso) {
-        ITileRenderer tileRenderer = new VXATileRenderer(app, imageLoader, tso);
+        TSOAwareTileRenderer tileRenderer = createTileRenderer();
+        tileRenderer.checkReloadTSO(tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, true);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }

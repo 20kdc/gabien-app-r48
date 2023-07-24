@@ -31,7 +31,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * I slept, finished MapUnit, and began writing this class.
  * Created on 31/05/17.
  */
-public class LcfTileRenderer extends ITileRenderer {
+public class LcfTileRenderer extends TSOAwareTileRenderer {
     public final IImageLoader imageLoader;
     public DepsLocker depsLocker = new DepsLocker();
     // "Left": 6x8 section of special tiles that don't fit into terrainATFields
@@ -47,6 +47,7 @@ public class LcfTileRenderer extends ITileRenderer {
         this.imageLoader = imageLoader;
     }
 
+    @Override
     public void checkReloadTSO(@Nullable IRIO tso) {
         if (tso != null) {
             IImage chipsetSrc = imageLoader.getImage("ChipSet/" + tso.getIVar("@tileset_name").decString(), false);
@@ -121,7 +122,9 @@ public class LcfTileRenderer extends ITileRenderer {
             // 50 * 12 = 600
             int field = (tidx - 4000) / 50;
             int subfield = (tidx - 4000) % 50;
-            igd.blitImage(px, py, terrainATFields[field][subfield]);
+            ITexRegion atTile = terrainATFields[field][subfield];
+            if (atTile != null)
+                igd.blitImage(px, py, atTile);
             //igd.drawText(px, py, 255, 255, 255, 8, Integer.toString(field));
         }
 

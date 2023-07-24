@@ -32,7 +32,9 @@ public class ATFieldAtlasDrawable extends AtlasDrawable {
         ITexRegion[] out = new ITexRegion[db.entries.length];
         for (int i = 0; i < db.entries.length; i++) {
             final int fi = i;
-            sab.add((res) -> out[fi] = res, new ATFieldAtlasDrawable(tileSize, src, db.entries[i]));
+            ATDB.Autotile entry = db.entries[i];
+            if (entry != null)
+                sab.add((res) -> out[fi] = res, new ATFieldAtlasDrawable(tileSize, src, entry));
         }
         return out;
     }
