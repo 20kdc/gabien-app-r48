@@ -10,9 +10,15 @@ package r48.map.tiles;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
+import gabien.atlas.AtlasSet;
+import gabien.atlas.BinaryTreeAtlasStrategy;
+import gabien.atlas.ImageAtlasDrawable;
+import gabien.atlas.SimpleAtlasBuilder;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
+import gabien.render.ITexRegion;
 import gabien.ui.Rect;
+import gabien.uslx.append.DepsLocker;
 import r48.App;
 import r48.RubyTable;
 import r48.dbs.ATDB;
@@ -28,11 +34,14 @@ import r48.map.tileedit.TileEditingTab;
 public class VXATileRenderer extends TSOAwareTileRenderer {
     private final IImageLoader imageLoader;
 
-    public IImage[] tilesetMaps;
     private IRIO tileset;
-    // Generated one-pixel image to be blended for shadow
-    public IImage shadowImage;
+
     public RubyTable flags;
+
+    private final DepsLocker depsLocker = new DepsLocker();
+    private ITexRegion[] tilesetReg;
+    private @Nullable AtlasSet atlasSet;
+
     /**
      * See prepareATTF function for details
      */
@@ -41,29 +50,44 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
     public VXATileRenderer(App app, IImageLoader il) {
         super(app, 32, 8);
         imageLoader = il;
-        int[] tinyTile = new int[] {0x80000000};
-        shadowImage = GaBIEn.createImage(tinyTile, 1, 1);
         preparedATTF = prepareATTF();
     }
 
     @Override
     public void checkReloadTSO(@Nullable IRIO tso) {
         this.tileset = tso;
-        tilesetMaps = new IImage[9];
         // If the tileset's null, then just give up.
         // The tileset being/not being null is an implementation detail anyway.
         if (tileset != null) {
             flags = new RubyTable(tileset.getIVar("@flags").getBuffer());
             IRIO amNames = tileset.getIVar("@tileset_names");
+            IImage[] tilesetMaps = new IImage[9];
             for (int i = 0; i < tilesetMaps.length; i++) {
                 IRIO rio = amNames.getAElem(i);
                 String expectedAT = rio.decString();
                 if (expectedAT.length() != 0)
                     tilesetMaps[i] = imageLoader.getImage("Tilesets/" + expectedAT, false);
             }
+            checkReloadImg(tilesetMaps);
         } else {
             flags = new RubyTable(2, 0, 0, 0, new int[0]);
+            tilesetReg = null;
+            atlasSet = null;
         }
+    }
+
+    private void checkReloadImg(IImage[] tilesetMaps) {
+        // and that's why it's a deep compare
+        if (!depsLocker.shouldUpdate((Object) tilesetMaps))
+            return;
+        tilesetReg = new ITexRegion[tilesetMaps.length];
+        SimpleAtlasBuilder sab = new SimpleAtlasBuilder(1024, 1024, BinaryTreeAtlasStrategy.INSTANCE);
+        for (int i = 0; i < tilesetMaps.length; i++) {
+            final int fi = i;
+            if (tilesetMaps[i] != null)
+                sab.add((res) -> tilesetReg[fi] = res, new ImageAtlasDrawable(tilesetMaps[i]));
+        }
+        atlasSet = sab.compile();
     }
 
     @Override
@@ -196,7 +220,7 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
 
     private void drawShadowTileFlag(short tidx, int i, int i1, int i2, IGrDriver igd, int st) {
         if ((tidx & i) != 0)
-            igd.blitScaledImage(0, 0, 1, 1, i1, i2, st, st, shadowImage);
+            igd.fillRect(0, 0, 0, 128, i1, i2, st, st);
     }
 
     /**
@@ -204,7 +228,7 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
      */
     private boolean handleMTLayer(short tidx, int ets, int px, int py, int tm, IGrDriver igd) {
         int t = tidx & 0xFF;
-        IImage planeImage = tilesetMaps[tm];
+        ITexRegion planeImage = tilesetReg[tm];
         if (planeImage != null) {
             // Only makes sense with a baseline of 8 but that leads to 'corrupted'-looking data in parts hm.
             // 9b - 80 = 1B.
@@ -227,7 +251,7 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
             return false;
         int pox = tileSize * atOX;
         int poy = tileSize * atOY;
-        IImage planeImg = tilesetMaps[tm];
+        ITexRegion planeImg = tilesetReg[tm];
         if (planeImg != null) {
             if ((ets == tileSize) && (app.autoTiles[atF] != null)) {
                 ATDB.Autotile at = app.autoTiles[atF].entries[tin];
@@ -304,6 +328,11 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
         // so multiply them and so they'll sync up
         gt %= 12;
         return (int) gt;
+    }
+
+    @Override
+    public @Nullable AtlasSet getAtlasSet() {
+        return atlasSet;
     }
 
     public static class ExpandedATTF extends AutoTileTypeField {
