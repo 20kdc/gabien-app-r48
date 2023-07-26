@@ -53,7 +53,7 @@ public class GenposFramePanelController {
         cellSelection = new UICellSelectionPanel(launcher.getApp(), rootForNow);
 
         editingPanel = new UICellEditingPanel(cellSelection, this);
-        gridToggleButton = new UITextButton(T.s.l142, app.f.rmaCellTH, new Runnable() {
+        gridToggleButton = new UITextButton(T.s.bGrid8px, app.f.rmaCellTH, new Runnable() {
             @Override
             public void run() {
                 // Do nothing.

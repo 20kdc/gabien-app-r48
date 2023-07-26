@@ -178,7 +178,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     IRIO miLocal = app.odb.getObject("MapInfos").getObject();
                     IRIO mapInfo = miLocal.getHashVal(rio);
                     if (mapInfo == null)
-                        return T.m.l263;
+                        return T.m.mapMissing2k3;
                     return mapInfo.getIVar("@name").decString();
                 }
             }, id, RXPRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");

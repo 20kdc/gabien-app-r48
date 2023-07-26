@@ -46,15 +46,15 @@ public class MapPositionHelperSchemaElement extends SchemaElement.Leaf {
         };
         for (int i = (pathA == null ? 1 : 0); i < 3; i++)
             if (abc[i] == null)
-                return new UILabel(T.s.l115, app.f.schemaFieldTH);
+                return new UILabel(T.s.mph_disabled, app.f.schemaFieldTH);
         String mapGUM = launcher.getContextGUM();
         if (abc[0] != null)
             mapGUM = launcher.getApp().system.mapReferentToGUM(abc[0]);
         if (mapGUM == null)
-            return new UILabel(T.s.l116, app.f.schemaFieldTH);
+            return new UILabel(T.s.mph_trFail, app.f.schemaFieldTH);
         // The UIMapView constructor will automatically create missing maps. We don't want this.
         if (launcher.getApp().system.mapViewRequest(mapGUM, false) == null)
-            return new UILabel(T.s.l117, app.f.schemaFieldTH);
+            return new UILabel(T.s.mph_mapFail, app.f.schemaFieldTH);
         final long x = abc[1].getFX();
         final long y = abc[2].getFX();
         final UIMapView umv = new UIMapView(launcher.getApp(), mapGUM, 320, app.f.scaleGuess(192));

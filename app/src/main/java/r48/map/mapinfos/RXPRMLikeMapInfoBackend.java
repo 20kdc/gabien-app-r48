@@ -183,7 +183,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
                     parentStack.removeLast();
                 if (parentStack.size() == 0) {
                     // Not valid!
-                    errors.append(T.m.l236).append(" (@").append(map).append(")\n");
+                    errors.append(T.m.parentOrderInconsistency).append(" (@").append(map).append(")\n");
                 }
             }
 
@@ -193,13 +193,13 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
             // For R2k
             if (indent != null)
                 if (indent.getFX() != (parentStack.size() + standardIndentOffset))
-                    errors.append(T.m.l237).append(map).append('=').append(indent.getFX()).append(" !").append(parentStack.size() + standardIndentOffset).append('\n');
+                    errors.append(T.m.inconsistentMapIndent).append(map).append('=').append(indent.getFX()).append(" !").append(parentStack.size() + standardIndentOffset).append('\n');
 
             parentStack.add(map);
 
             int order = backend.getOrderOfMap(map);
             if (order != (lastOrder + 1))
-                errors.append(T.m.l238).append(map).append('\n');
+                errors.append(T.m.inconsistentOrder).append(map).append('\n');
             lastOrder = order;
         }
     }
@@ -207,7 +207,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     public static String errorsToStringOrNull(App app, StringBuilder errors) {
         if (errors.length() == 0)
             return null;
-        errors.append(app.t.m.l239);
+        errors.append(app.t.m.resolveManually);
         return errors.toString();
     }
 }

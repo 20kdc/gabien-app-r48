@@ -58,12 +58,12 @@ public class BasicToolset extends App.Svc implements IToolset {
     public UIElement[] generateTabs() {
         UIElement menu4 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.mR48Version, app.f.menuTH, () -> {
             app.ui.wm.coco.launch();
-        }).centred(), app.f.menuTH), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.l39, app.f.menuTH, () -> {
+        }).centred(), app.f.menuTH), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.mHelp, app.f.menuTH, () -> {
             app.ui.startHelp(null, "0");
-        }).centred(), app.f.menuTH), new UIBorderedSubpanel(new UITextButton(T.u.l40, app.f.menuTH, () -> {
+        }).centred(), app.f.menuTH), new UIBorderedSubpanel(new UITextButton(T.u.mConfiguration, app.f.menuTH, () -> {
             app.ui.wm.createWindow(new UIFontSizeConfigurator(app.c, app.t, app.applyConfigChange));
         }).centred(), app.f.menuTH), false, 0.5), false, 0.333333);
-        UIElement menu5 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.l41, app.f.menuTH, () -> {
+        UIElement menu5 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.mImgEdit, app.f.menuTH, () -> {
             app.ui.startImgedit();
         }).centred(), app.f.menuTH), new UISplitterLayout(new UIBorderedSubpanel(createODBRMGestalt(), app.f.menuTH), new UIBorderedSubpanel(createOtherButton(), app.f.menuTH), false, 0.5), false, 1d / 3d);
 
@@ -117,7 +117,7 @@ public class BasicToolset extends App.Svc implements IToolset {
     }
 
     private UIElement createODBButton() {
-        return new UIMenuButton(app, T.u.l43, app.f.menuTH, null, new String[] {
+        return new UIMenuButton(app, T.u.mObjA, app.f.menuTH, null, new String[] {
                 T.u.mEditObj,
                 T.u.mCorrectObj,
                 T.u.mInspectObj,
@@ -148,7 +148,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                 }
                             });
                         } else {
-                            app.ui.launchDialog(T.u.l62);
+                            app.ui.launchDialog(T.u.dFileUnreadableNoSchema);
                         }
                     });
                 },
@@ -169,7 +169,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     app.ui.launchPrompt(T.u.prObjectName, (s) -> {
                         IObjectBackend.ILoadedObject obj = app.odb.getObject(s);
                         if (obj == null) {
-                            app.ui.launchDialog(T.u.l57);
+                            app.ui.launchDialog(T.u.dFileUnreadable);
                         } else {
                             app.ui.wm.createWindow(new UITest(app, obj.getObject(), obj));
                         }
@@ -181,7 +181,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         app.ui.launchPrompt(T.u.prObjectDst, (sB) -> {
                             final IObjectBackend.ILoadedObject objB = app.odb.getObject(sB);
                             if ((objA == null) || (objB == null)) {
-                                app.ui.launchDialog(T.u.l57);
+                                app.ui.launchDialog(T.u.dFileUnreadable);
                             } else {
                                 try {
                                     OutputStream os = GaBIEn.getOutFile(AppMain.autoDetectWindows(app.rootPath + "objcompareAB.txt"));
@@ -194,7 +194,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                     if (cid != null)
                                         os.write(cid);
                                     os.close();
-                                    app.ui.launchDialog(T.u.l58);
+                                    app.ui.launchDialog(T.u.dObjCompare);
                                     return;
                                 } catch (Exception e) {
                                     app.ui.launchDialog(e);
@@ -229,9 +229,9 @@ public class BasicToolset extends App.Svc implements IToolset {
                         dos.write('\n');
                         dos.close();
                         if (app.engine.dataPath.equals("Languages/")) {
-                            app.ui.launchDialog(T.u.l60);
+                            app.ui.launchDialog(T.u.osLocmapsWarn);
                         } else {
-                            app.ui.launchDialog(T.u.l61);
+                            app.ui.launchDialog(T.u.osLocmapsGen);
                         }
                     } catch (IOException ioe) {
                         throw new RuntimeException(ioe);
@@ -244,9 +244,9 @@ public class BasicToolset extends App.Svc implements IToolset {
                             final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
                             final InputStream is = GaBIEn.getInFile(UITest.getPrintPath(app));
                             if (rio == null) {
-                                app.ui.launchDialog(T.u.l62);
+                                app.ui.launchDialog(T.u.dFileUnreadableNoSchema);
                             } else if (is == null) {
-                                app.ui.launchDialog(T.u.l63);
+                                app.ui.launchDialog(T.u.dCannotReadPRINT);
                             } else {
                                 try {
                                     IRIO irio = rio.getObject();
@@ -278,7 +278,7 @@ public class BasicToolset extends App.Svc implements IToolset {
     }
 
     private UIElement createOtherButton() {
-        return new UIMenuButton(app, T.u.l65, app.f.menuTH, null, new String[] {
+        return new UIMenuButton(app, T.u.mOther, app.f.menuTH, null, new String[] {
                 T.u.mTestFonts,
                 T.u.mTestGraphics,
                 T.u.mGetGPUInfo,
@@ -360,30 +360,30 @@ public class BasicToolset extends App.Svc implements IToolset {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
                 RORIO clipGet = (app.theClipboard == null) ? new IRIOGeneric(app.encoding) : app.theClipboard;
                 String clipText = app.format(clipGet);
-                uiStatusLabel.text = T.u.l82.r(app.odb.modifiedObjects.size(), clipText);
+                uiStatusLabel.text = T.u.statusLine.r(app.odb.modifiedObjects.size(), clipText);
                 app.uiPendingRunnables.add(this);
             }
         });
-        UIAppendButton workspace = new UIAppendButton(app, T.u.l83, uiStatusLabel, null, new String[] {
-                T.u.l84,
-                T.u.l85,
-                T.u.l86
+        UIAppendButton workspace = new UIAppendButton(app, T.u.mClipboard, uiStatusLabel, null, new String[] {
+                T.u.mClipSave,
+                T.u.mClipLoad,
+                T.u.mClipInspect
         }, new Runnable[] {
                 () -> {
                     if (app.theClipboard == null) {
                         app.ui.launchDialog(T.u.dlgClipEmpty);
                     } else {
                         AdHocSaveLoad.save("clip", app.theClipboard);
-                        app.ui.launchDialog(T.u.l88);
+                        app.ui.launchDialog(T.u.dClipSaved);
                     }
                 },
                 () -> {
                     IRIOGeneric newClip = AdHocSaveLoad.load("clip");
                     if (newClip == null) {
-                        app.ui.launchDialog(T.u.l89);
+                        app.ui.launchDialog(T.u.dClipBad);
                     } else {
                         app.theClipboard = newClip;
-                        app.ui.launchDialog(T.u.l90);
+                        app.ui.launchDialog(T.u.dClipLoaded);
                     }
                 },
                 () -> {
@@ -394,7 +394,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     }
                 }
         }, app.f.statusBarTH);
-        workspace = new UIAppendButton(T.g.bQuit, workspace, app.ui.createLaunchConfirmation(T.u.l92, () -> {
+        workspace = new UIAppendButton(T.g.bQuit, workspace, app.ui.createLaunchConfirmation(T.u.dReturnMenuWarn, () -> {
             app.ui.wm.pleaseShutdown();
         }), app.f.statusBarTH);
         return workspace;
@@ -416,7 +416,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         return new UIPopupMenu(str.toArray(new String[0]), r.toArray(new Runnable[0]), app.f.menuTH, app.f.menuS, false) {
             @Override
             public String toString() {
-                return T.u.l93;
+                return T.t.mDBO;
             }
         };
     }

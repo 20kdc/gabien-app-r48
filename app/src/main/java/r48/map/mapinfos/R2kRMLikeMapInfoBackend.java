@@ -216,12 +216,12 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     public String calculateIndentsAndGetErrors(HashMap<Long, Integer> id) {
         StringBuilder errors = new StringBuilder();
         if (getHashBID(0) == null)
-            errors.append(T.m.l247).append('\n');
+            errors.append(T.m.dRootMapRequired).append('\n');
         RXPRMLikeMapInfoBackend.standardCalculateIndentsAndGetErrors(app, this, id, errors, 1);
         // Perform further order consistency checks
         for (Long l : getHashKeys()) {
             if (getOrderOfMap(l) == -1) {
-                errors.append(T.m.l248);
+                errors.append(T.m.dNoOrder);
                 errors.append(l);
                 errors.append('\n');
             }
@@ -232,13 +232,13 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
         for (int i = 0; i < alen; i++) {
             long rt = mapTreeOrders.getAElem(i).getFX();
             if (orderMaps.contains(rt)) {
-                errors.append(T.m.l249);
+                errors.append(T.m.dOrderDuplicate);
                 errors.append(rt);
                 errors.append('\n');
             }
             orderMaps.add(rt);
             if (getHashBID(rt) == null) {
-                errors.append(T.m.l250);
+                errors.append(T.m.dMissingMap);
                 errors.append(rt);
                 errors.append('\n');
             }

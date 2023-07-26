@@ -71,7 +71,7 @@ public class RMTools extends App.Svc {
                 T.u.mIDChanger
         }, new Runnable[] {
                 () -> {
-                    app.ui.launchPrompt(T.u.l35, (s) -> {
+                    app.ui.launchPrompt(T.u.rmCmdCodeRequest, (s) -> {
                         int i;
                         try {
                             i = Integer.parseInt(s);

@@ -92,7 +92,7 @@ public class RVXASystem extends RXPSystem {
     @Override
     protected IEditingToolbarController mapEditingToolbar(IMapToolContext iMapToolContext) {
         return new MapEditingToolbarController(iMapToolContext, false, new ToolButton[] {
-                new ToolButton(T.m.l262) {
+                new ToolButton(T.m.bShadowRegion) {
                     @Override
                     public UIMTBase apply(IMapToolContext o) {
                         return new UIMTShadowLayer(o);

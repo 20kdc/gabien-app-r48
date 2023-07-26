@@ -234,8 +234,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                     canCopyText = true;
             }
         }
-        final String addText = T.s.l162;
-        final String copyText = T.s.l163;
+        final String addText = T.s.bAddToGroup;
+        final String copyText = T.s.bCopyTextToClipboard;
         final boolean addRemoveF = addRemove;
         final boolean cctF = canCopyText;
         group[group.length - 1] = new SchemaElement.Leaf(app) {

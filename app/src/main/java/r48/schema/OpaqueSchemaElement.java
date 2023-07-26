@@ -24,7 +24,7 @@ public class OpaqueSchemaElement extends SchemaElement.Leaf {
     }
 
     public String getMessage(IRIO v) {
-        return T.s.l106 + v;
+        return T.s.cantEdit + v;
     }
 
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {

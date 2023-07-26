@@ -232,15 +232,15 @@ public abstract class ArraySchemaElement extends SchemaElement {
                             for (int j = roLen - 1; j >= 0; j--)
                                 target.addAElem(i).setDeepClone(ro.getAElem(j));
                         } catch (Exception e) {
-                            app.ui.launchDialog(T.s.l188, e);
+                            app.ui.launchDialog(T.s.array_dCFCompat, e);
                         }
                         // whack the UI
                         path.changeOccurred(false);
                     } else {
-                        app.ui.launchDialog(T.s.l189 + "\n" + T.s.l190);
+                        app.ui.launchDialog(T.s.array_dCFNotArray);
                     }
                 } else {
-                    app.ui.launchDialog(T.s.l191);
+                    app.ui.launchDialog(T.s.array_dCFEmpty);
                 }
             }
         };

@@ -122,17 +122,17 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
                     // 4. Battle System initialization
                     sub = target.getIVar("@animations").addHashVal(DMKey.of(1));
                     SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Animation"), DMKey.of(1));
-                    sub.getIVar("@name").setString(T.s.l177);
+                    sub.getIVar("@name").setString(T.s.r2kinit_anim);
 
                     sub = target.getIVar("@states").addHashVal(DMKey.of(1));
                     SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::State"), DMKey.of(1));
                     // These are the minimum settings for death to work correctly.
-                    sub.getIVar("@name").setString(T.s.l178);
+                    sub.getIVar("@name").setString(T.s.r2kinit_death);
                     sub.getIVar("@restriction").setFX(1);
 
                     sub = target.getIVar("@battle_anim_sets_2k3").addHashVal(DMKey.of(1));
                     SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::BattlerAnimationSet"), DMKey.of(1));
-                    sub.getIVar("@name").setString(T.s.l179);
+                    sub.getIVar("@name").setString(T.s.r2kinit_animSet);
 
                     // 5. Default enemy data
                     sub = target.getIVar("@enemies").addHashVal(DMKey.of(1));
@@ -140,7 +140,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
 
                     sub = target.getIVar("@troops").addHashVal(DMKey.of(1));
                     SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Troop"), DMKey.of(1));
-                    sub.getIVar("@name").setString(T.s.l180);
+                    sub.getIVar("@name").setString(T.s.r2kinit_slime);
 
                     sub = sub.getIVar("@members");
                     sub.addAElem(0).setNull();

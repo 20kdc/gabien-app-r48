@@ -18,4 +18,9 @@ public class TrTitle extends TrPage {
     public String restoreSafetyConfirm;
     public String appREPL, launcherREPL;
     public String idChanger, idChangerLocal;
+
+    public String mDBO;
+    public String mMapInfos;
+    public String mSaves;
+    public String map;
 }

@@ -61,8 +61,8 @@ public class MapToolset extends App.Svc implements IToolset {
             }
         };
 
-        String mapInfos = T.u.l94;
-        String saves = T.u.l95;
+        String mapInfos = T.t.mMapInfos;
+        String saves = T.t.mSaves;
         final UIElement saveEl = app.system.createSaveExplorer(context, saves);
         if (saveEl != null) {
             final UIElement mapInfoEl = app.system.createMapExplorer(context, mapInfos);

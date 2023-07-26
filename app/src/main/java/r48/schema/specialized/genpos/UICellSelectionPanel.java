@@ -36,7 +36,7 @@ public class UICellSelectionPanel extends App.Prx {
             final int i2 = i;
             addAdditionButton(i2);
             String prefix = cellNumber == i2 ? ">" : " ";
-            UIElement button = new UITextButton(prefix + T.s.l118.r(i), app.f.rmaCellTH, new Runnable() {
+            UIElement button = new UITextButton(prefix + T.s.cellTitle.r(i), app.f.rmaCellTH, new Runnable() {
                 @Override
                 public void run() {
                     cellNumber = i2;
@@ -66,7 +66,7 @@ public class UICellSelectionPanel extends App.Prx {
     private void addAdditionButton(final int i2) {
         if (!root.canAddRemoveCells())
             return;
-        selectionPanel.panelsAdd(new UITextButton(T.s.l119, app.f.rmaCellTH, new Runnable() {
+        selectionPanel.panelsAdd(new UITextButton(T.s.cellAdd, app.f.rmaCellTH, new Runnable() {
             @Override
             public void run() {
                 if (i2 <= root.getCellCount()) {

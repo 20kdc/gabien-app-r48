@@ -16,4 +16,9 @@
 	launcherREPL "R48 Launcher REPL"
 	idChanger "Global ID Changer"
 	idChangerLocal "Local ID Changer"
+
+	mDBO "Database Objects"
+	mMapInfos "MapInfos"
+	mSaves "Saves"
+	map "Map"
 )

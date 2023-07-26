@@ -22,7 +22,7 @@ public class GridMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return T.m.l215;
+        return T.m.l_grid;
     }
 
     @Override
