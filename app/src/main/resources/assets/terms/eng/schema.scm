@@ -111,4 +111,10 @@
 		bModeRegular "Mode: Regular Array"
 		bModePager "Mode: Pager"
 	)
+	(align_
+		left "Align Left"
+		centre "Centre"
+		right "Right"
+		button "Group Text..."
+	)
 )

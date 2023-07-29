@@ -32,6 +32,7 @@ import r48.schema.integers.*;
 import r48.schema.specialized.*;
 import r48.schema.specialized.cmgb.*;
 import r48.schema.specialized.tbleditors.*;
+import r48.schema.specialized.textboxes.StringLenSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrNames;

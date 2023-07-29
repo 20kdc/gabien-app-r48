@@ -97,4 +97,8 @@ public class TrSchema extends TrPage {
     public String array_bAdd;
     public String array_bModeRegular;
     public String array_bModePager;
+    public String align_left;
+    public String align_centre;
+    public String align_right;
+    public String align_button;
 }

@@ -4,27 +4,12 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-
-package r48.schema;
-
-import gabien.ui.*;
-import gabien.uslx.append.*;
-import r48.App;
-import r48.io.data.IRIO;
-import r48.schema.util.ISchemaHost;
-import r48.schema.util.SchemaPath;
-import r48.tr.TrPage.FF0;
+package r48.schema.specialized.textboxes;
 
 /**
- * Created on August 31st 2017.
+ * Created 29th July, 2023.
  */
-public class StringLenSchemaElement extends StringSchemaElement {
-    public int len;
-
-    public StringLenSchemaElement(App app, FF0 arg, int l) {
-        super(app, arg, '"');
-        len = l;
-    }
+public class R2kTextRules extends TextRules {
 
     // The logic goes as thus.
     // It's generally ALWAYS wide. (outside the BMP is generally always emoji)
@@ -80,7 +65,11 @@ public class StringLenSchemaElement extends StringSchemaElement {
         return true;
     }
 
-    private int measureText(String s) {
+    private boolean isRange(int i, int i1, int c) {
+        return (c >= i) && (c <= i1);
+    }
+
+    public int countCellsRaw(String s) {
         // Java sucks, java sucks again...
         int i = 0;
         int p = 0;
@@ -92,28 +81,55 @@ public class StringLenSchemaElement extends StringSchemaElement {
         return p;
     }
 
-    private boolean isRange(int i, int i1, int c) {
-        return (c >= i) && (c <= i1);
-    }
-
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UITextBox utb = (UITextBox) super.buildHoldingEditor(target, launcher, path);
-        utb.feedback = new IFunction<String, String>() {
-            @Override
-            public String apply(String s) {
-                int l1 = measureText(s);
-                return Integer.toString(len - l1);
+    public int countCells(String s) {
+        StringBuilder total = new StringBuilder();
+        int state = 0;
+        int bDepth = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            switch (state) {
+            case 0: // normal
+                if (c == '\\' || c == '¥') {
+                    state = 1;
+                } else {
+                    total.append(c);
+                }
+                break;
+            case 1: // escape
+                if (c == 'S' || c == 's' || c == 'C' || c == 'c' || c == 'N' || c == 'n' || c == 'V' || c == 'v') {
+                    // parameterized
+                    state = 2;
+                } else if (c == '$' || c == '>' || c == '<') {
+                    // special
+                    state = 0;
+                } else {
+                    // regular
+                    total.append(c);
+                    state = 0;
+                }
+                break;
+            case 2: // opening [ check
+                if (c == '[') {
+                    bDepth = 1;
+                    state = 3;
+                } else {
+                    total.append(c);
+                    state = 0;
+                }
+                break;
+            case 3: // inside []
+                if (c == '[') {
+                    bDepth++;
+                } else if (c == ']') {
+                    bDepth--;
+                    if (bDepth == 0)
+                        state = 0;
+                }
+                break;
             }
-        };
-        UILabel l = new UILabel("-00000", app.f.schemaFieldTH) {
-            @Override
-            public void runLayout() {
-                int l1 = measureText(utb.text);
-                text = Integer.toString(len - l1);
-                super.runLayout();
-            }
-        };
-        return new UISplitterLayout(utb, l, false, 1);
+        }
+        return countCellsRaw(total.toString());
     }
+    
 }

@@ -8,8 +8,8 @@
 package r48.schema.specialized.cmgb;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
-import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
@@ -23,6 +23,8 @@ import r48.schema.SchemaElement;
 import r48.schema.SubwindowSchemaElement;
 import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.arrays.StandardArrayInterface;
+import r48.schema.specialized.textboxes.R2kTextRules;
+import r48.schema.specialized.textboxes.UITextStuffMenu;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -235,7 +237,6 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             }
         }
         final String addText = T.s.bAddToGroup;
-        final String copyText = T.s.bCopyTextToClipboard;
         final boolean addRemoveF = addRemove;
         final boolean cctF = canCopyText;
         group[group.length - 1] = new SchemaElement.Leaf(app) {
@@ -263,24 +264,35 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                     }));
                 }
                 if (cctF) {
-                    usl.panelsAdd(new UITextButton(copyText, app.f.schemaFieldTH, new Runnable() {
-                        @Override
-                        public void run() {
-                            StringBuilder total = new StringBuilder();
+                    UITextButton alignMenuButton = new UITextButton(T.s.align_button, app.f.schemaFieldTH, null);
+                    alignMenuButton.onClick = () -> {
+                        UITextStuffMenu tsm = new UITextStuffMenu(app, () -> {
+                            LinkedList<String> total = new LinkedList<>();
                             for (int i = 0; i < length; i++) {
                                 IRIO commandTarg = target.getAElem(start + i);
                                 int code = (int) commandTarg.getIVar("@code").getFX();
                                 RPGCommand rc = database.knownCommands.get(code);
-                                if (rc != null) {
-                                    if (rc.textArg != -1) {
-                                        total.append(commandTarg.getIVar("@parameters").getAElem(rc.textArg).decString());
-                                        total.append('\n');
-                                    }
-                                }
+                                if (rc != null)
+                                    if (rc.textArg != -1)
+                                        total.add(commandTarg.getIVar("@parameters").getAElem(rc.textArg).decString());
                             }
-                            GaBIEn.clipboard.copyText(total.toString());
-                        }
-                    }));
+                            return total.toArray(new String[0]);
+                        }, (res) -> {
+                            int resIdx = 0;
+                            for (int i = 0; i < length; i++) {
+                                IRIO commandTarg = target.getAElem(start + i);
+                                int code = (int) commandTarg.getIVar("@code").getFX();
+                                RPGCommand rc = database.knownCommands.get(code);
+                                if (rc != null)
+                                    if (rc.textArg != -1)
+                                        if (resIdx < res.length)
+                                            commandTarg.getIVar("@parameters").getAElem(rc.textArg).setString(res[resIdx++]);
+                            }
+                            path.changeOccurred(false);
+                        }, new R2kTextRules(), 50);
+                        app.ui.wm.createMenu(alignMenuButton, tsm);
+                    };
+                    usl.panelsAdd(alignMenuButton);
                 }
                 return usl;
             }
