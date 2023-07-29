@@ -82,6 +82,7 @@ public class XYZImageIOFormat extends ImageIOFormat {
         // The rest of the file is ZLIB-encoded data, with a trivial format.
         InflaterInputStream iis = new InflaterInputStream(fis);
         LinkedList<Integer> pal = new LinkedList<Integer>();
+        // because of Panoramas, load with first entry being opaque for now
         for (int i = 0; i < 256; i++) {
             int r = IntUtils.readU8(iis);
             int g = IntUtils.readU8(iis);
