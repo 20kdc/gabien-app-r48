@@ -94,6 +94,8 @@ public class LocalTestExecutiveTest {
 
             // 'objectUnderTest' is the reference copy. DO NOT ALTER IT UNTIL THE END.
             IObjectBackend.ILoadedObject objectUnderTest = app.odb.getObject(s, null);
+            if (objectUnderTest == null)
+                throw new RuntimeException("Object get failure: " + s);
 
             // Create an internal copy, autocorrect it, save it, and then get rid of it.
             {

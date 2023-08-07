@@ -169,6 +169,9 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             int id = (int) key.getFX();
             if (id == 0)
                 continue;
+            IRIO mapInfoExt = lmti.getHashVal(key);
+            if (mapInfoExt.getIVar("@type").getFX() == 2)
+                continue;
             RMMapData rmd = new RMMapData(app, () -> {
                 IRIO lmtiLocal = app.odb.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos");
                 IRIO mapInfo = lmtiLocal.getHashVal(key);
