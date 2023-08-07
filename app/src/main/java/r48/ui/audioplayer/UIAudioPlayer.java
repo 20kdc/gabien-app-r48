@@ -12,7 +12,7 @@ import java.io.InputStream;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.GaBIEn;
-import gabien.IRawAudioDriver.IRawAudioSource;
+import gabien.audio.IRawAudioDriver.IRawAudioSource;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
