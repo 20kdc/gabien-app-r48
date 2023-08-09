@@ -126,7 +126,7 @@ public class UIHelpSystem extends UIPanel implements IConsumer<String> {
                 });
             } else if (ch == 'p') {
                 position = false;
-                element = new UIPublicPanel(0, c.f.scaleGuess(Integer.parseInt(args[0])));
+                element = new UIEmpty(0, c.f.scaleGuess(Integer.parseInt(args[0])));
             } else if ((ch == 'i') || (ch == 'I')) {
                 final IImage r = GaBIEn.getImageEx(args[0], false, true);
                 boolean extended = args.length > 1;

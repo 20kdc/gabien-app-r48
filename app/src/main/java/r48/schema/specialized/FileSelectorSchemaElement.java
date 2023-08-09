@@ -81,7 +81,7 @@ public class FileSelectorSchemaElement extends SchemaElement.Leaf {
             }
         }
         if (waitingLeft != null)
-            uiSVL.panelsAdd(new UISplitterLayout(waitingLeft, new UIPublicPanel(1, 1), false, 0.5d));
+            uiSVL.panelsAdd(new UISplitterLayout(waitingLeft, new UIEmpty(), false, 0.5d));
         app.ui.performFullImageFlush();
         return uiSVL;
     }

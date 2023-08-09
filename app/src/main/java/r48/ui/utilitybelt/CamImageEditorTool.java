@@ -11,7 +11,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import gabien.ui.UIPublicPanel;
+import gabien.ui.UIEmpty;
 
 /**
  * Created on 14th July 2018
@@ -41,7 +41,7 @@ public class CamImageEditorTool extends ImageEditorTool {
 
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
-        return new UIPublicPanel(0, 0);
+        return new UIEmpty();
     }
 
     @Override

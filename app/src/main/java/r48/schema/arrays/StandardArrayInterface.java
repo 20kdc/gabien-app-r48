@@ -208,7 +208,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         uie = outerSplit;
                     } else {
                         // This is a blank position.
-                        uie = new UIPublicPanel(0, 0);
+                        uie = new UIEmpty();
                         clarifyEmpty = true;
                     }
                     if (selectedStart == -1)

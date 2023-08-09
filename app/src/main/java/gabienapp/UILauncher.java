@@ -17,13 +17,13 @@ import gabien.ui.Rect;
 import gabien.ui.UIAdjuster;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
-import gabien.ui.UIPublicPanel;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITabPane;
 import gabien.ui.UITextButton;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.ui.UIElement.UIProxy;
+import gabien.ui.UIEmpty;
 import gabien.ui.UITabBar.Tab;
 import gabien.ui.UITabBar.TabIcon;
 import gabien.uslx.append.IFunction;
@@ -119,7 +119,7 @@ public class UILauncher extends UIProxy {
 
         basePanels.add(new UILabel(tr.lChooseEngine, c.f.launcherTH));
 
-        configure.panelsAdd(new UISplitterLayout(new UIPublicPanel(0, 0), new UITextButton(tr.bContinue, c.f.launcherTH, new Runnable() {
+        configure.panelsAdd(new UISplitterLayout(new UIEmpty(), new UITextButton(tr.bContinue, c.f.launcherTH, new Runnable() {
             @Override
             public void run() {
                 tabPane.selectTab(gamepaks);
