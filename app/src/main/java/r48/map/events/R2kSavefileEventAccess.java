@@ -204,9 +204,14 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public int getEventType(DMKey evK) {
+    public int getEventTypeFromKey(DMKey evK) {
         // for cloning
         return 1;
+    }
+
+    @Override
+    public int getEventTypeFromValue(RORIO ev) {
+        return -1;
     }
 
     @Override

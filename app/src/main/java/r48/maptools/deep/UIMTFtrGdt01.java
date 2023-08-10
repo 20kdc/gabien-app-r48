@@ -75,12 +75,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public int wantOverlay(boolean minimap) {
-        return 1;
-    }
-
-    @Override
-    public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
+    public void performGlobalOverlay(MapViewDrawContext mvdc, boolean minimap) {
         for (int tx = mvdc.camT.x; tx < mvdc.camT.x + mvdc.camT.width; tx++) {
             for (int ty = mvdc.camT.y; ty < mvdc.camT.y + mvdc.camT.height; ty++) {
                 int px = tx * mvdc.tileSize;

@@ -335,11 +335,8 @@ public class UIMapView extends UIPlaneView {
                     layers[i].draw(mvdc);
 
         boolean minimap = planeZoomDiv > 1;
-        if (callbacks != null) {
-            int ovlLayers = callbacks.wantOverlay(minimap);
-            for (int l = 0; l < ovlLayers; l++)
-                callbacks.performGlobalOverlay(mvdc, l, minimap);
-        }
+        if (callbacks != null)
+            callbacks.performGlobalOverlay(mvdc, minimap);
     }
 
     // Used by tools, after they're done doing whatever.

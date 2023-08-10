@@ -44,14 +44,9 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public int wantOverlay(boolean minimap) {
+    public void performGlobalOverlay(MapViewDrawContext mvdc, boolean minimap) {
         if (minimap)
-            return 0;
-        return 1;
-    }
-
-    @Override
-    public void performGlobalOverlay(MapViewDrawContext mvdc, int layer, boolean minimap) {
+            return;
         for (int tx = mvdc.camT.x; tx < mvdc.camT.x + mvdc.camT.width; tx++) {
             if (map.mapTable.outOfBounds(tx, 0))
                 continue;

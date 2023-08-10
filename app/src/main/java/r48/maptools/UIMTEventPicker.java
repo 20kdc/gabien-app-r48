@@ -52,7 +52,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public int wantOverlay(boolean minimap) {
+    public void performGlobalOverlay(MapViewDrawContext mvdc, boolean minimap) {
         // use this time to cache the essentials, this should vastly speed up drawing
         eventCache.clear();
         for (DMKey evK : mapView.mapTable.eventAccess.getEventKeys()) {
@@ -60,11 +60,6 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
             long y = mapView.mapTable.eventAccess.getEventY(evK);
             eventCache.put(x + ";" + y, evK);
         }
-        return 1;
-    }
-
-    @Override
-    public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
         for (int tx = mvdc.camT.x; tx < mvdc.camT.x + mvdc.camT.width; tx++) {
             for (int ty = mvdc.camT.y; ty < mvdc.camT.y + mvdc.camT.height; ty++) {
                 if (eventCache.containsKey(tx + ";" + ty))
@@ -132,7 +127,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     return;
                                 }
                                 IRIO newEvent = new IRIOGeneric(app.encoding).setDeepClone(evI);
-                                DMKey nevK = mapView.mapTable.eventAccess.addEvent(newEvent, mapView.mapTable.eventAccess.getEventType(evK));
+                                DMKey nevK = mapView.mapTable.eventAccess.addEvent(newEvent, mapView.mapTable.eventAccess.getEventTypeFromKey(evK));
                                 if (nevK == null)
                                     return;
                                 mapToolContext.accept(new UIMTEventMover(mapToolContext, nevK));

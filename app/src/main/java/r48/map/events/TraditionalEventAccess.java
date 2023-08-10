@@ -108,7 +108,12 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public int getEventType(DMKey evK) {
+    public int getEventTypeFromKey(DMKey evK) {
+        return 0;
+    }
+
+    @Override
+    public int getEventTypeFromValue(RORIO ev) {
         return 0;
     }
 

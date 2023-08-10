@@ -45,7 +45,16 @@ public interface IEventAccess {
     // Should return null on event not available
     String[] getEventSchema(DMKey key);
 
-    int getEventType(DMKey evK);
+    /**
+     * Gets an event type from the event key.
+     */
+    int getEventTypeFromKey(DMKey evK);
+
+    /**
+     * Gets an event type from the event contents value.
+     * Returns -1 if undeterminable.
+     */
+    int getEventTypeFromValue(RORIO ev);
 
     // If this returns something, then the event is read-only, but has a button marked "Sync" which is expected to cause modifications
     // Yes, this is a cop-out because I can't think of a better design r/n

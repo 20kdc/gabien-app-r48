@@ -47,25 +47,21 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
         return there;
     }
 
-    @Override
-    public int wantOverlay(boolean minimap) {
-        return minimap ? 0 : 1;
-    }
-
     private int subFrame() {
         return ((int) (GaBIEn.getTime() * 4)) & 1;
     }
 
     @Override
-    public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
+    public void performGlobalOverlay(MapViewDrawContext mvdc, boolean minimap) {
         if (!stage)
+            return;
+        if (minimap)
             return;
         UIMapView map = mapToolContext.getMapView();
         int px = startX * mvdc.tileSize;
         int py = startY * mvdc.tileSize;
-        if (!minimap)
-            if (subFrame() == 0)
-                mvdc.igd.clearRect(0, 0, 255, px, py, map.tileSize, map.tileSize);
+        if (subFrame() == 0)
+            mvdc.igd.clearRect(0, 0, 255, px, py, map.tileSize, map.tileSize);
         mvdc.drawMouseIndicator();
     }
 

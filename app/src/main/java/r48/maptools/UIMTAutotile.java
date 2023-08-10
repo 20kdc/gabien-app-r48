@@ -215,12 +215,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public int wantOverlay(boolean minimap) {
-        return 0;
-    }
-
-    @Override
-    public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
+    public void performGlobalOverlay(MapViewDrawContext mvdc, boolean minimap) {
 
     }
 

@@ -72,17 +72,12 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
             return there;
         }
 
-        @Override
-        public int wantOverlay(boolean minimap) {
-            return 1;
-        }
-
         private int subFrame() {
             return ((int) (GaBIEn.getTime() * 4)) & 1;
         }
 
         @Override
-        public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
+        public void performGlobalOverlay(MapViewDrawContext mvdc, boolean minimap) {
             if (definingPoint2)
                 mvdc.drawIndicator(firstPointX, firstPointY, MapViewDrawContext.IndicatorStyle.Target);
             if (subFrame() == 0) {

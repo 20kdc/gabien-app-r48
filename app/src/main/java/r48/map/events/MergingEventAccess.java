@@ -101,10 +101,15 @@ public class MergingEventAccess implements IEventAccess {
     }
 
     @Override
-    public int getEventType(DMKey key) {
+    public int getEventTypeFromKey(DMKey key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
-        return accesses[in].getEventType(ValueSyntax.decode(ks.substring(1))) + accessEVTBases[in];
+        return accesses[in].getEventTypeFromKey(ValueSyntax.decode(ks.substring(1))) + accessEVTBases[in];
+    }
+
+    @Override
+    public int getEventTypeFromValue(RORIO ev) {
+        return -1;
     }
 
     @Override

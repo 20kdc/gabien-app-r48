@@ -58,17 +58,12 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
         return there;
     }
 
-    @Override
-    public int wantOverlay(boolean minimap) {
-        return minimap ? 0 : 1;
-    }
-
     private int subFrame() {
         return ((int) (GaBIEn.getTime() * 4)) & 1;
     }
 
     @Override
-    public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
+    public void performGlobalOverlay(MapViewDrawContext mvdc, boolean minimap) {
         if (!minimap)
             if (subFrame() == 0)
                 mvdc.drawIndicator(startX, startY, MapViewDrawContext.IndicatorStyle.SolidBlue);

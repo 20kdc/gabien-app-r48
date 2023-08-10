@@ -65,12 +65,9 @@ public class MapPositionHelperSchemaElement extends SchemaElement.Leaf {
             }
 
             @Override
-            public int wantOverlay(boolean minimap) {
-                return minimap ? 0 : 1;
-            }
-
-            @Override
-            public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
+            public void performGlobalOverlay(MapViewDrawContext mvdc, boolean minimap) {
+                if (minimap)
+                    return;
                 mvdc.drawIndicator((int) x, (int) y, MapViewDrawContext.IndicatorStyle.Target);
             }
 
