@@ -14,6 +14,8 @@ import r48.io.data.RORIO;
 
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Merges together multiple event accessors.
  * Relies on keys being opaque.
@@ -83,7 +85,7 @@ public class MergingEventAccess implements IEventAccess {
     }
 
     @Override
-    public DMKey addEvent(RORIO eve, int type) {
+    public @Nullable DMKey addEvent(@Nullable RORIO eve, int type) {
         int accessId = eventTypesToAccess[type];
         IEventAccess iea = accesses[accessId];
         type -= accessEVTBases[accessId];
@@ -94,7 +96,7 @@ public class MergingEventAccess implements IEventAccess {
     }
 
     @Override
-    public String[] getEventSchema(DMKey key) {
+    public @Nullable EventSchema getEventSchema(DMKey key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
         return accesses[in].getEventSchema(ValueSyntax.decode(ks.substring(1)));
@@ -105,11 +107,6 @@ public class MergingEventAccess implements IEventAccess {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
         return accesses[in].getEventTypeFromKey(ValueSyntax.decode(ks.substring(1))) + accessEVTBases[in];
-    }
-
-    @Override
-    public int getEventTypeFromValue(RORIO ev) {
-        return -1;
     }
 
     @Override

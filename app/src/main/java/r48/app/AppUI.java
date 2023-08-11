@@ -379,11 +379,15 @@ public class AppUI extends App.Svc {
     }
 
     public ISchemaHost launchNonRootSchema(@NonNull IObjectBackend.ILoadedObject root, String rootSchema, DMKey arrayIndex, IRIO element, String elementSchema, String indexText, UIMapView context) {
+        return launchNonRootSchema(root, app.sdb.getSDBEntry(rootSchema), arrayIndex, element, app.sdb.getSDBEntry(elementSchema), indexText, context);
+    }
+
+    public ISchemaHost launchNonRootSchema(@NonNull IObjectBackend.ILoadedObject root, SchemaElement rootSchema, DMKey arrayIndex, IRIO element, SchemaElement elementSchema, String indexText, UIMapView context) {
         // produce a valid (and false) parent chain, that handles all required guarantees.
         ISchemaHost shi = launchSchema(rootSchema, root, context);
-        SchemaPath sp = new SchemaPath(app.sdb.getSDBEntry(rootSchema), root);
+        SchemaPath sp = new SchemaPath(rootSchema, root);
         sp = sp.arrayHashIndex(arrayIndex, indexText);
-        shi.pushObject(sp.newWindow(app.sdb.getSDBEntry(elementSchema), element));
+        shi.pushObject(sp.newWindow(elementSchema, element));
         return shi;
     }
 }

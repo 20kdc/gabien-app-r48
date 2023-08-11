@@ -9,15 +9,14 @@ package r48.maptools;
 
 import gabien.ui.*;
 import r48.App;
-import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOGeneric;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
+import r48.map.events.IEventAccess;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
@@ -126,8 +125,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     confirmAt(x, y, 123, 123, layer, true);
                                     return;
                                 }
-                                IRIO newEvent = new IRIOGeneric(app.encoding).setDeepClone(evI);
-                                DMKey nevK = mapView.mapTable.eventAccess.addEvent(newEvent, mapView.mapTable.eventAccess.getEventTypeFromKey(evK));
+                                DMKey nevK = mapView.mapTable.eventAccess.addEvent(evI, mapView.mapTable.eventAccess.getEventTypeFromKey(evK));
                                 if (nevK == null)
                                     return;
                                 mapToolContext.accept(new UIMTEventMover(mapToolContext, nevK));
@@ -202,11 +200,11 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     }
 
     public static void showEvent(DMKey key, @NonNull UIMapView map, IRIO event) {
-        String[] root = map.mapTable.eventAccess.getEventSchema(key);
+        IEventAccess.EventSchema root = map.mapTable.eventAccess.getEventSchema(key);
         if (root == null)
             return;
-        key = ValueSyntax.decode(root[3]);
-        map.app.ui.launchNonRootSchema(map.app.odb.getObject(root[1]), root[2], key, event, root[0], "E" + key, map);
+        key = root.key;
+        map.app.ui.launchNonRootSchema(root.root, root.rootSchema, key, event, root.eventSchema, "E" + key, map);
     }
 
     public static void showEventDivorced(App app, DMKey key, IObjectBackend.ILoadedObject map, String mapSchema, IRIO event, String eventSchema) {

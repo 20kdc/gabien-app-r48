@@ -8,16 +8,18 @@
 package r48.map.events;
 
 import r48.App;
-import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
+import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import static r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement.getSaveCount;
 
@@ -33,8 +35,7 @@ import static r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement.get
  */
 public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     public final IObjectBackend.ILoadedObject saveFileRoot;
-    public final String saveFileRootId;
-    public final String saveFileRootSchema;
+    public final SchemaElement saveFileRootSchema;
 
     // This only contains the living.
     // The ghosts are added dynamically by getEventKeys & getEvent
@@ -43,8 +44,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     public R2kSavefileEventAccess(App app, String rootId, IObjectBackend.ILoadedObject root, String rootSchema) {
         super(app);
         saveFileRoot = root;
-        saveFileRootId = rootId;
-        saveFileRootSchema = rootSchema;
+        saveFileRootSchema = app.sdb.getSDBEntry(rootSchema);
         int mapId = (int) getMapId();
         // Inject 'events'
         IRIO sfr = saveFileRoot.getObject();
@@ -152,7 +152,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public DMKey addEvent(RORIO eve, int type) {
+    public @Nullable DMKey addEvent(@Nullable RORIO eve, int type) {
         app.ui.launchDialog(T.m.r2kSavefile_cantAddEvents);
         return null;
     }
@@ -186,32 +186,34 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public String[] getEventSchema(DMKey key) {
+    public @Nullable EventSchema getEventSchema(DMKey key) {
+        SchemaElement chosenSchema = null;
         if (key.getType() == '"') {
-            if (key.decString().equals("Party"))
-                return new String[] {"RPG::SavePartyLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
-            if (key.decString().equals("Boat"))
-                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
-            if (key.decString().equals("Ship"))
-                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
-            if (key.decString().equals("Airship"))
-                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
+            String ds = key.decString();
+            if (ds.equals("Party"))
+                chosenSchema = app.sdb.getSDBEntry("RPG::SavePartyLocation");
+            else if (ds.equals("Boat"))
+                chosenSchema = app.sdb.getSDBEntry("RPG::SaveVehicleLocation");
+            else if (ds.equals("Ship"))
+                chosenSchema = app.sdb.getSDBEntry("RPG::SaveVehicleLocation");
+            else if (ds.equals("Airship"))
+                chosenSchema = app.sdb.getSDBEntry("RPG::SaveVehicleLocation");
         }
-        // Used for ghosts
-        if (eventsHash.get(key) == null)
-            return new String[] {"OPAQUE", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
-        return new String[] {"RPG::SaveMapEvent", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
+        if (chosenSchema == null) {
+            // Used for ghosts
+            if (eventsHash.get(key) == null) {
+                chosenSchema = app.sdb.getSDBEntry("OPAQUE");
+            } else {
+                chosenSchema = app.sdb.getSDBEntry("RPG::SaveMapEvent");
+            }
+        }
+        return new EventSchema(saveFileRootSchema, chosenSchema, saveFileRoot, key);
     }
 
     @Override
     public int getEventTypeFromKey(DMKey evK) {
         // for cloning
         return 1;
-    }
-
-    @Override
-    public int getEventTypeFromValue(RORIO ev) {
-        return -1;
     }
 
     @Override
@@ -278,6 +280,6 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     public void pokeHive() {
-        app.odb.objectRootModified(saveFileRoot, new SchemaPath(app.sdb.getSDBEntry(saveFileRootSchema), saveFileRoot));
+        app.odb.objectRootModified(saveFileRoot, new SchemaPath(saveFileRootSchema, saveFileRoot));
     }
 }

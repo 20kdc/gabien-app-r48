@@ -7,11 +7,15 @@
 
 package r48.map.events;
 
+import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
+import r48.schema.SchemaElement;
 
 import java.util.LinkedList;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Used to abstract @events
@@ -35,26 +39,38 @@ public interface IEventAccess {
     // Returns the "add event" strings (strings may or may not be null, but the array must not be null)
     String[] eventTypes();
 
-    // returns one of:
-    // null for fail & do nothing
-    // the key
-    // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
-    DMKey addEvent(RORIO eve, int type);
+    /**
+     * Creates an event of the given type, with a possible template.
+     * Returns the new key, or null on failure.
+     * The implementation of this function is expected to run the modification alerter by itself.
+     * The implementation is also expected to deep clone the event itself.
+     * The implementation is also expected to check value compatibility itself.
+     * Note that implementations are expected to launch dialogs to report errors.
+     */
+    @Nullable DMKey addEvent(@Nullable RORIO eve, int type);
 
-    // {eventSchema, root, rootSchema, keyValueSyntax}
-    // Should return null on event not available
-    String[] getEventSchema(DMKey key);
+    /**
+     * Event schema details.
+     * Returns null if the event isn't available.
+     */
+    @Nullable EventSchema getEventSchema(DMKey key);
+
+    public static class EventSchema {
+        public final SchemaElement rootSchema, eventSchema;
+        public final IObjectBackend.ILoadedObject root;
+        public final DMKey key;
+        public EventSchema(SchemaElement rs, SchemaElement es, IObjectBackend.ILoadedObject r, DMKey key) {
+            rootSchema = rs;
+            eventSchema = es;
+            root = r;
+            this.key = key;
+        }
+    }
 
     /**
      * Gets an event type from the event key.
      */
     int getEventTypeFromKey(DMKey evK);
-
-    /**
-     * Gets an event type from the event contents value.
-     * Returns -1 if undeterminable.
-     */
-    int getEventTypeFromValue(RORIO ev);
 
     // If this returns something, then the event is read-only, but has a button marked "Sync" which is expected to cause modifications
     // Yes, this is a cop-out because I can't think of a better design r/n

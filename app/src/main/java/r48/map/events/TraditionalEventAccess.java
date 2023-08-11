@@ -9,15 +9,19 @@ package r48.map.events;
 
 import r48.App;
 import r48.dbs.PathSyntax;
-import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
+import r48.io.IObjectBackend.MockLoadedObject;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
+import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
 import java.util.Collections;
 import java.util.LinkedList;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * EventAccess implementation for the general case.
@@ -25,29 +29,27 @@ import java.util.LinkedList;
  * Created on December 15th 2017
  */
 public class TraditionalEventAccess extends App.Svc implements IEventAccess {
-    private final String mapRootId, mapRootSchema;
     private final IObjectBackend.ILoadedObject mapRoot;
     private final int eventIdBase;
-    private final String eventSchema;
+    private final SchemaElement mapRootSchema, eventSchema;
     private final String eventsName, eventName;
     private final PathSyntax propPathX, propPathY, propPathName, eventsPath;
 
-    public TraditionalEventAccess(App app, String baseOId, String baseSchema, String path, int b, String schema) {
-        this(app, baseOId, baseSchema, path, b, schema, "@x", "@y", "@name");
+    public TraditionalEventAccess(App app, String mapRootId, String baseSchema, String path, int b, String schema) {
+        this(app, mapRootId, baseSchema, path, b, schema, "@x", "@y", "@name");
     }
 
-    public TraditionalEventAccess(App app, String baseOId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName) {
-        this(app, baseOId, baseSchema, path, b, schema, pathX, pathY, pathName, app.t.m.events, app.t.m.addEvent);
+    public TraditionalEventAccess(App app, String mapRootId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName) {
+        this(app, mapRootId, baseSchema, path, b, schema, pathX, pathY, pathName, app.t.m.events, app.t.m.addEvent);
     }
 
-    public TraditionalEventAccess(App app, String baseOId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName, String en, String en2) {
+    public TraditionalEventAccess(App app, String mapRootId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName, String en, String en2) {
         super(app);
-        mapRootId = baseOId;
-        mapRootSchema = baseSchema;
+        mapRootSchema = app.sdb.getSDBEntry(baseSchema);
         mapRoot = app.odb.getObject(mapRootId, baseSchema);
         eventsPath = PathSyntax.compile(app, path);
         eventIdBase = b;
-        eventSchema = schema;
+        eventSchema = app.sdb.getSDBEntry(schema);
         eventsName = en;
         eventName = en2;
         propPathX = PathSyntax.compile(app, pathX);
@@ -84,36 +86,33 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public DMKey addEvent(RORIO eve, int type) {
+    public @Nullable DMKey addEvent(@Nullable RORIO eve, int type) {
         DMKey key = getFreeIndex();
         IRIO mapEvents = getMapEvents();
         IRIO eveTarget = mapEvents.addHashVal(key);
         if (eve == null) {
-            SchemaPath.setDefaultValue(eveTarget, app.sdb.getSDBEntry(eventSchema), key);
+            SchemaPath.setDefaultValue(eveTarget, eventSchema, key);
+            pokeHive();
         } else {
-            eveTarget.setDeepClone(eve);
+            // we don't trust this value at all, hold in an intermediary and bash it around a bit
+            IRIOGeneric ig = new IRIOGeneric(app.encoding);
+            ig.setDeepClone(eve);
+            new SchemaPath(eventSchema, new MockLoadedObject(ig)).changeOccurred(false);
+            // now we're sure it's safe...
+            eveTarget.setDeepClone(ig);
+            // and just to be sure
+            makeEventSchemaPath(key).changeOccurred(false);
         }
-        pokeHive();
         return key;
     }
 
     @Override
-    public String[] getEventSchema(DMKey key) {
-        return new String[] {
-                eventSchema,
-                mapRootId,
-                mapRootSchema,
-                ValueSyntax.encode(key)
-        };
+    public @Nullable EventSchema getEventSchema(DMKey key) {
+        return new EventSchema(mapRootSchema, eventSchema, mapRoot, key);
     }
 
     @Override
     public int getEventTypeFromKey(DMKey evK) {
-        return 0;
-    }
-
-    @Override
-    public int getEventTypeFromValue(RORIO ev) {
         return 0;
     }
 
@@ -171,7 +170,17 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
         return eventsPath.get(mapRoot.getObject());
     }
 
+    private SchemaPath makeMapRootSchemaPath() {
+        return new SchemaPath(mapRootSchema, mapRoot);
+    }
+    private SchemaPath makeEventSchemaPath(DMKey key) {
+        SchemaPath base = makeMapRootSchemaPath();
+        base = base.arrayHashIndex(key, "E" + key);
+        IRIO res = getEvent(key);
+        return base.newWindow(eventSchema, res);
+    }
+
     private void pokeHive() {
-        app.odb.objectRootModified(mapRoot, new SchemaPath(app.sdb.getSDBEntry(mapRootSchema), mapRoot));
+        app.odb.objectRootModified(mapRoot, makeMapRootSchemaPath());
     }
 }
