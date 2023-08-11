@@ -26,7 +26,6 @@
 	tShowIDs "Show/Hide Tile IDs"
 	tsClickToShowEv "Click on a target to show the events."
 	bMove "Move"
-	bClone "Clone"
 	bDel "Del."
 	bSync "Sync"
 	tsEvPick (fl1 "Ev.Pick [" a0 " total]")
@@ -113,4 +112,10 @@
 	shadowLayerRegion "Region:"
 	bLoadMap "Load Map"
 	bFindTranslatables "Find Translatables"
+
+	(mp_
+		noClip "Unable - there is no clipboard."
+		notTable "Unable - the clipboard must contain a section of map data - This is not a Table."
+		layersMismatch "Unable - the map data must contain the same amount of layers for transfer."
+	)
 )

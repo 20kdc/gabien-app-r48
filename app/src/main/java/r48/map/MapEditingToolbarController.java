@@ -143,20 +143,16 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
                 public void run() {
                     RORIO ro = app.theClipboard;
                     if (ro == null) {
-                        app.ui.launchDialog("Unable - there is no clipboard.");
+                        app.ui.launchDialog(T.m.mp_noClip);
                         return;
                     }
-                    if (ro.getType() != 'u') {
-                        app.ui.launchDialog("Unable - the clipboard must contain a section of map data - This is not a usertype.");
-                        return;
-                    }
-                    if (!ro.getSymbol().equals("Table")) {
-                        app.ui.launchDialog("Unable - the clipboard must contain a section of map data - This is not a Table.");
+                    if (ro.getType() != 'u' || !ro.getSymbol().equals("Table")) {
+                        app.ui.launchDialog(T.m.mp_notTable);
                         return;
                     }
                     RubyTable rt = new RubyTable(ro.getBuffer());
                     if (rt.planeCount != viewGiver.getMapView().mapTable.planeCount) {
-                        app.ui.launchDialog("Unable - the map data must contain the same amount of layers for transfer.");
+                        app.ui.launchDialog(T.m.mp_layersMismatch);
                         return;
                     }
                     clearTools(thisButton);

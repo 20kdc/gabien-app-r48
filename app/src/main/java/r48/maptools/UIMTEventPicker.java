@@ -12,6 +12,7 @@ import r48.App;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
@@ -113,7 +114,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 mapToolContext.accept(new UIMTEventMover(mapToolContext, evK));
                             }
                         }, app.f.eventPickerEntryTH);
-                        button = new UIAppendButton(T.m.bClone, button, new Runnable() {
+                        button = new UIAppendButton(T.g.bCopy, button, new Runnable() {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
@@ -125,10 +126,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     confirmAt(x, y, 123, 123, layer, true);
                                     return;
                                 }
-                                DMKey nevK = mapView.mapTable.eventAccess.addEvent(evI, mapView.mapTable.eventAccess.getEventTypeFromKey(evK));
-                                if (nevK == null)
-                                    return;
-                                mapToolContext.accept(new UIMTEventMover(mapToolContext, nevK));
+                                app.theClipboard = new IRIOGeneric(app.encoding).setDeepClone(evI);
                             }
                         }, app.f.eventPickerEntryTH);
                         UIAppendButton delAppend = new UIAppendButton(T.m.bDel, button, null, app.f.eventPickerEntryTH);
@@ -171,26 +169,31 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
             final int i2 = i;
             if (types[i] == null)
                 continue;
-            svl.panelsAdd(new UITextButton(types[i], app.f.eventPickerEntryTH, new Runnable() {
-                @Override
-                public void run() {
-                    DMKey k = mapView.mapTable.eventAccess.addEvent(null, i2);
-                    if (k == null)
-                        return;
-                    IRIO v = mapView.mapTable.eventAccess.getEvent(k);
-                    if (v == null)
-                        throw new RuntimeException("IEventAccess implementation not sane.");
-                    IRIO evName = v.getIVar("@name");
-                    if (evName != null) {
-                        String n = Integer.toString((int) k.getFX());
-                        while (n.length() < 4)
-                            n = "0" + n;
-                        evName.setString("EV" + n);
-                    }
-                    mapView.mapTable.eventAccess.setEventXY(k, x, y);
-                    showEvent(k, mapView, v);
+            UIElement pan = new UITextButton(types[i], app.f.eventPickerEntryTH, () -> {
+                DMKey k = mapView.mapTable.eventAccess.addEvent(null, i2);
+                if (k == null)
+                    return;
+                IRIO v = mapView.mapTable.eventAccess.getEvent(k);
+                if (v == null)
+                    throw new RuntimeException("IEventAccess implementation not sane.");
+                IRIO evName = v.getIVar("@name");
+                if (evName != null) {
+                    String n = Integer.toString((int) k.getFX());
+                    while (n.length() < 4)
+                        n = "0" + n;
+                    evName.setString("EV" + n);
                 }
-            }));
+                mapView.mapTable.eventAccess.setEventXY(k, x, y);
+                showEvent(k, mapView, v);
+            });
+            pan = new UIAppendButton(T.g.bPaste, pan, () -> {
+                DMKey k = mapView.mapTable.eventAccess.addEvent(app.theClipboard, i2);
+                if (k == null)
+                    return;
+                mapView.mapTable.eventAccess.setEventXY(k, x, y);
+                mapToolContext.accept(new UIMTEventMover(mapToolContext, k));
+            }, app.f.eventPickerEntryTH);
+            svl.panelsAdd(pan);
         }
     }
 

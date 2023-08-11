@@ -33,7 +33,6 @@ public class TrMap extends TrPage {
     public String tShowIDs;
     public String tsClickToShowEv;
     public String bMove;
-    public String bClone;
     public String bDel;
     public String bSync;
     public FF1 tsEvPick;
@@ -118,4 +117,8 @@ public class TrMap extends TrPage {
     public String shadowLayerRegion;
     public String bLoadMap;
     public String bFindTranslatables;
+
+    public String mp_noClip;
+    public String mp_notTable;
+    public String mp_layersMismatch;
 }
