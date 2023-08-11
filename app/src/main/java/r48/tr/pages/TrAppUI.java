@@ -33,7 +33,8 @@ public class TrAppUI extends TrPage {
     public String lAlphaChannel, lHSVRecommend;
     public String bEnumRename, enumOptions, bEnumManual;
     public String usl_full, usl_partial, usl_from, usl_to, usl_addR, usl_confirmReplace;
-    public FF2 usl_completeReport;
+    public String usl_find, usl_text, usl_addS, usl_caseInsensitive;
+    public FF2 usl_completeReport, usl_completeReportFind;
     public String tsc_dumpOk, tsc_ctx;
     public FF1 tsc_map;
     public FF3 tsc_ev;
@@ -84,7 +85,8 @@ public class TrAppUI extends TrPage {
     public String mFindTranslatables;
     public String mRunAutoCorrect;
     public String mR48Version;
-    public String mUniversalStringReplace;
+    public String mUniversalStringFinder;
+    public String mUniversalStringReplacer;
     public String mTranscriptDump;
 
     public String dClipSaved;

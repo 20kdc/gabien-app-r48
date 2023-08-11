@@ -29,6 +29,11 @@ public class ObjectInfo extends App.Svc {
         schemaName = sN;
     }
 
+    /**
+     * Localized name. Beware: This gets overridden with dynamically (data-dependent!) changing variants.
+     * So if refreshing seems absurd: It isn't.
+     */
+    @Override
     public String toString() {
         return idName;
     }

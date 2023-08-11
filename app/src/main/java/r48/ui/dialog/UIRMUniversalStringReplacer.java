@@ -23,9 +23,7 @@ import gabien.ui.UITextBox;
 import gabien.ui.UITextButton;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
-import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.IFunction;
-import gabien.wsi.IPeripherals;
 import r48.AdHocSaveLoad;
 import r48.App;
 import r48.dbs.ObjectInfo;
@@ -37,32 +35,22 @@ import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.BasicToolset;
 import r48.ui.UIAppendButton;
-import r48.ui.UISetSelector;
 
 /**
  * Universal string locator fun
  * Created on 13th August 2022.
  */
-public class UIRMUniversalStringLocator extends App.Prx {
+public class UIRMUniversalStringReplacer extends App.Prx {
     private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
     private RListPanel settingsFull = new RListPanel(app, T.u.usl_full);
     private RListPanel settingsPartial = new RListPanel(app, T.u.usl_partial);
 
-    private UISetSelector<ObjectInfo> setSelector;
-    private boolean scheduleSetSelectorUpdate = false;
-    private IConsumer<SchemaPath> refreshOnObjectChange = new IConsumer<SchemaPath>() {
-        @Override
-        public void accept(SchemaPath t) {
-            scheduleSetSelectorUpdate = true;
-        }
-    };
+    private UIObjectInfoSetSelector setSelector;
 
-    public UIRMUniversalStringLocator(App app) {
+    public UIRMUniversalStringReplacer(App app) {
         super(app);
-        Iterable<ObjectInfo> oi = app.getObjectInfos();
-        setSelector = new UISetSelector<ObjectInfo>(app, oi);
-        for (ObjectInfo ii : oi)
-            app.odb.registerModificationHandler(ii.idName, refreshOnObjectChange);
+        setSelector = new UIObjectInfoSetSelector(app);
+        Set<ObjectInfo> setCopy = setSelector.getSet();
 
         // load config if possible
         IRIO replacer = AdHocSaveLoad.load("replacer");
@@ -72,11 +60,9 @@ public class UIRMUniversalStringLocator extends App.Prx {
             Set<ObjectInfo> sset = new HashSet<ObjectInfo>();
             for (IRIO fk : files.getANewArray()) {
                 String fileId = fk.decString();
-                for (ObjectInfo oi2 : oi) {
-                    if (oi2.idName.equals(fileId)) {
+                for (ObjectInfo oi2 : setCopy)
+                    if (oi2.idName.equals(fileId))
                         sset.add(oi2);
-                    }
-                }
             }
             setSelector.updateSet(sset);
 
@@ -106,15 +92,6 @@ public class UIRMUniversalStringLocator extends App.Prx {
         refreshContents();
         
         proxySetElement(new UISplitterLayout(layout, setSelector, false, 0.5), false);
-    }
-
-    @Override
-    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
-        if (scheduleSetSelectorUpdate) {
-            scheduleSetSelectorUpdate = false;
-            setSelector.refreshButtonText();
-        }
-        super.update(deltaTime, selected, peripherals);
     }
 
     private void refreshContents() {

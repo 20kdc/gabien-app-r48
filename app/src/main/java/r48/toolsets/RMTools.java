@@ -25,7 +25,8 @@ import r48.toolsets.utils.RMFindTranslatables;
 import r48.toolsets.utils.UICommandSites;
 import r48.toolsets.utils.UIIDChanger;
 import r48.ui.UIMenuButton;
-import r48.ui.dialog.UIRMUniversalStringLocator;
+import r48.ui.dialog.UIRMUniversalStringFinder;
+import r48.ui.dialog.UIRMUniversalStringReplacer;
 import r48.ui.dialog.UITranscriptControl;
 
 import java.util.LinkedList;
@@ -59,7 +60,8 @@ public class RMTools extends App.Svc {
                 T.u.mLocateEventCommand,
                 T.u.mFindTranslatables,
                 T.u.mRunAutoCorrect,
-                T.u.mUniversalStringReplace,
+                T.u.mUniversalStringFinder,
+                T.u.mUniversalStringReplacer,
                 // 3:24 PM, third day of 2017.
                 // This is now a viable option.
                 // 3:37 PM, same day.
@@ -153,7 +155,10 @@ public class RMTools extends App.Svc {
                     }
                 },
                 () -> {
-                    app.ui.wm.createWindow(new UIRMUniversalStringLocator(app));
+                    app.ui.wm.createWindow(new UIRMUniversalStringFinder(app));
+                },
+                () -> {
+                    app.ui.wm.createWindow(new UIRMUniversalStringReplacer(app));
                 },
                 () -> {
                     app.ui.wm.createWindow(new UITranscriptControl(app, mapSystem, commandsEvent));

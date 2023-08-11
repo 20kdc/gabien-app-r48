@@ -74,10 +74,15 @@
 		full "Full"
 		partial "Partial"
 		completeReport (fl2 "Made " a0 " total string adjustments across " a1 " files.")
+		completeReportFind (fl2 "Found " a0 " instances across " a1 " files.")
 		from "From: "
 		to "To: "
 		addR "Add replacement"
 		confirmReplace "Confirm & Replace"
+		find "Find"
+		text "Text: "
+		addS "Add search"
+		caseInsensitive "Case Insensitive"
 	)
 	(tsc_
 		dumpOk "transcript.html was written to the target's folder."
@@ -145,7 +150,8 @@
 	mDiffObj "Object-Object Comparison"
 	mAllStr "Retrieve all object strings"
 	mLoadIMI "PRINT.txt Into Object"
-	mUniversalStringReplace "Universal String Replace"
+	mUniversalStringFinder "Universal String Finder"
+	mUniversalStringReplacer "Universal String Replacer"
 	mTranscriptDump "MEV/CEV Transcript Dump (no Troop/Item/etc.)"
 
 	dClipSaved "The clipboard was saved."
