@@ -16,6 +16,7 @@ import r48.dbs.RPGCommand;
 import r48.io.IntUtils;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.PathSchemaElement;
@@ -116,7 +117,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
     }
 
     private UIElement buildSubElem(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        RPGCommand rc = database.knownCommands.get((int) target.getIVar("@code").getFX());
+        RPGCommand rc = getRPGCommand(target);
         if (rc != null) {
             if (rc.specialSchema != null)
                 return rc.specialSchema.buildHoldingEditor(target, launcher, path);
@@ -204,11 +205,15 @@ public class RPGCommandSchemaElement extends SchemaElement {
         }, categories, T.s.codeAsInOpcode, UIEnumChoice.EntryMode.INT), null, path);
     }
 
+    public @Nullable RPGCommand getRPGCommand(RORIO target) {
+        return database.knownCommands.get((int) target.getIVar("@code").getFX());
+    }
+
     @Override
     public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         path = path.tagSEMonitor(target, this, false);
         actualSchema.modifyVal(target, path, setDefault);
-        RPGCommand rc = database.knownCommands.get((int) target.getIVar("@code").getFX());
+        RPGCommand rc = getRPGCommand(target);
         if (rc != null) {
             if (rc.specialSchema != null) {
                 // The amount of parameters isn't always fully described.
@@ -232,7 +237,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
     public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
         path = path.tagSEMonitor(target, this, false);
         actualSchema.visit(target, path, v);
-        RPGCommand rc = database.knownCommands.get((int) target.getIVar("@code").getFX());
+        RPGCommand rc = getRPGCommand(target);
         if (rc != null) {
             if (rc.specialSchema != null) {
                 // The amount of parameters isn't always fully described.

@@ -83,6 +83,8 @@
 		text "Text: "
 		addS "Add search"
 		caseInsensitive "Case Insensitive"
+		modeAll "All"
+		modeCTag (fl1 "Command Tag: " a0)
 	)
 	(tsc_
 		dumpOk "transcript.html was written to the target's folder."

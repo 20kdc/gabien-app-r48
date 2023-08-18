@@ -136,8 +136,8 @@ public class RMTools extends App.Svc {
                     LinkedList<ObjectInfo> objects = app.getObjectInfos();
                     for (final ObjectInfo obj : objects) {
                         System.out.println(obj + "...");
-                        IObjectBackend.ILoadedObject map = obj.getILO(false);
-                        if (map == null)
+                        SchemaPath sp = obj.makePath(false);
+                        if (sp == null)
                             continue;
                         IConsumer<SchemaPath> modListen = new IConsumer<SchemaPath>() {
                             @Override
@@ -149,10 +149,9 @@ public class RMTools extends App.Svc {
                                 throw new RuntimeException("MODIFY " + obj + " " + path);
                             }
                         };
-                        app.odb.registerModificationHandler(map, modListen);
-                        SchemaPath sp = new SchemaPath(app.sdb.getSDBEntry(obj.schemaName), map);
-                        sp.editor.modifyVal(map.getObject(), sp, false);
-                        app.odb.deregisterModificationHandler(map, modListen);
+                        app.odb.registerModificationHandler(sp.root, modListen);
+                        sp.editor.modifyVal(sp.targetElement, sp, false);
+                        app.odb.deregisterModificationHandler(sp.root, modListen);
                         System.out.println(obj + " done.");
                     }
                 },

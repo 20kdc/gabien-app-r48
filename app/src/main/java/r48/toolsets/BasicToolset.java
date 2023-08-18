@@ -23,9 +23,8 @@ import r48.io.data.RORIO;
 import r48.map.systems.IRMMapSystem;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
-import r48.schema.specialized.IMagicalBinder;
-import r48.schema.specialized.MagicalBinders;
 import r48.schema.util.SchemaPath;
+import r48.search.USFROperationMode;
 import r48.toolsets.utils.UITestGraphicsStuff;
 import r48.tr.pages.TrRoot;
 import r48.ui.UIAppendButton;
@@ -211,7 +210,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         for (String s : app.getAllObjects()) {
                             IObjectBackend.ILoadedObject obj = app.odb.getObject(s, null);
                             if (obj != null) {
-                                universalStringLocator(app, obj.getObject(), new IFunction<IRIO, Integer>() {
+                                USFROperationMode.All.INSTANCE.locate(app, obj.getObject(), new IFunction<IRIO, Integer>() {
                                     @Override
                                     public Integer apply(IRIO rubyIO) {
                                         text.add(rubyIO.decString());
@@ -410,7 +409,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         for (final ObjectInfo s2 : s) {
             str.add(s2.toString());
             r.add(() -> {
-                app.ui.launchSchema(s2.schemaName, app.odb.getObject(s2.idName), null);
+                app.ui.launchSchema(s2.schema, app.odb.getObject(s2.idName), null);
             });
         }
         return new UIPopupMenu(str.toArray(new String[0]), r.toArray(new Runnable[0]), app.f.menuTH, app.f.menuS, false) {
@@ -419,33 +418,5 @@ public class BasicToolset extends App.Svc implements IToolset {
                 return T.t.mDBO;
             }
         };
-    }
-
-    public static int universalStringLocator(App app, IRIO rio, IFunction<IRIO, Integer> string, boolean writing) {
-        // NOTE: Hash keys, ivar keys are not up for modification.
-        int total = 0;
-        int type = rio.getType();
-        if (type == '"')
-            total += string.apply(rio);
-        if ((type == '{') || (type == '}'))
-            for (DMKey me : rio.getHashKeys())
-                total += universalStringLocator(app, rio.getHashVal(me), string, writing);
-        if (type == '[') {
-            int arrLen = rio.getALen();
-            for (int i = 0; i < arrLen; i++)
-                total += universalStringLocator(app, rio.getAElem(i), string, writing);
-        }
-        for (String k : rio.getIVars())
-            total += universalStringLocator(app, rio.getIVar(k), string, writing);
-        IMagicalBinder b = MagicalBinders.getBinderFor(app, rio);
-        if (b != null) {
-            IRIO bound = MagicalBinders.toBoundWithCache(app, b, rio);
-            int c = universalStringLocator(app, bound, string, writing);
-            total += c;
-            if (writing)
-                if (c != 0)
-                    b.applyBoundToTarget(bound, rio);
-        }
-        return total;
     }
 }

@@ -33,8 +33,9 @@ import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
-import r48.toolsets.BasicToolset;
+import r48.search.USFROperationMode;
 import r48.ui.UIAppendButton;
+import r48.ui.search.UIUSFROperationModeButton;
 
 /**
  * Universal string locator fun
@@ -46,10 +47,12 @@ public class UIRMUniversalStringReplacer extends App.Prx {
     private RListPanel settingsPartial = new RListPanel(app, T.u.usl_partial);
 
     private UIObjectInfoSetSelector setSelector;
+    private UIUSFROperationModeButton modeSelector;
 
     public UIRMUniversalStringReplacer(App app) {
         super(app);
         setSelector = new UIObjectInfoSetSelector(app);
+        modeSelector = new UIUSFROperationModeButton(app, app.f.dialogWindowTH);
         Set<ObjectInfo> setCopy = setSelector.getSet();
 
         // load config if possible
@@ -100,6 +103,8 @@ public class UIRMUniversalStringReplacer extends App.Prx {
         settingsFull.refreshContents();
         settingsPartial.refreshContents();
 
+        layout.panelsAdd(modeSelector);
+
         UITabPane utp = new UITabPane(app.f.schemaPagerTabS, false, false);
         utp.addTab(new Tab(settingsFull, new TabIcon[0]));
         utp.addTab(new Tab(settingsPartial, new TabIcon[0]));
@@ -123,34 +128,36 @@ public class UIRMUniversalStringReplacer extends App.Prx {
         layout.panelsAdd(new UITextButton(T.u.usl_confirmReplace, app.f.dialogWindowTH, new Runnable() {
             @Override
             public void run() {
+                // full replacements
+                final HashMap<String, String> mapFull = new HashMap<String, String>();
+                for (Replacement r : settingsFull.settings)
+                    mapFull.put(r.key, r.value);
+                // partial replacements - longer first!
+                final LinkedList<Replacement> ent = new LinkedList<Replacement>(settingsPartial.settings);
+                Collections.sort(ent, new Comparator<Replacement>() {
+                    public int compare(Replacement o1, Replacement o2) {
+                        int l1 = o1.key.length();
+                        int l2 = o2.key.length();
+                        // note inverse
+                        if (l1 < l2)
+                            return 1;
+                        if (l1 > l2)
+                            return -1;
+                        return 0;
+                    }
+                });
+                // continue...
                 int total = 0;
                 int files = 0;
                 String log = "";
                 for (ObjectInfo objInfo : setSelector.getSet()) {
-                    IObjectBackend.ILoadedObject rio = app.odb.getObject(objInfo.idName);
-                    SchemaElement se = app.sdb.getSDBEntry(objInfo.schemaName);
-                    if (rio != null) {
+                    IObjectBackend.ILoadedObject rio = objInfo.getILO(true);
+                    SchemaElement se = objInfo.schema;
+                    if (rio != null && se != null) {
                         files++;
-                        // full replacements
-                        final HashMap<String, String> mapFull = new HashMap<String, String>();
-                        for (Replacement r : settingsFull.settings)
-                            mapFull.put(r.key, r.value);
-                        // partial replacements - longer first!
-                        final LinkedList<Replacement> ent = new LinkedList<Replacement>(settingsPartial.settings);
-                        Collections.sort(ent, new Comparator<Replacement>() {
-                            public int compare(Replacement o1, Replacement o2) {
-                                int l1 = o1.key.length();
-                                int l2 = o2.key.length();
-                                // note inverse
-                                if (l1 < l2)
-                                    return 1;
-                                if (l1 > l2)
-                                    return -1;
-                                return 0;
-                            }
-                        });
                         // now do it!
-                        int count = BasicToolset.universalStringLocator(app, rio.getObject(), new IFunction<IRIO, Integer>() {
+                        USFROperationMode mode = modeSelector.getSelected();
+                        int count = mode.locate(app, objInfo.schema, rio, new IFunction<IRIO, Integer>() {
                             @Override
                             public Integer apply(IRIO rubyIO) {
                                 StringBuilder res = new StringBuilder();

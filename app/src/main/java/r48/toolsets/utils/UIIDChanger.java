@@ -119,7 +119,9 @@ public class UIIDChanger extends App.Prx {
             fixedPath.editor.visit(fixedPath.targetElement, fixedPath, v);
         } else {
             for (ObjectInfo oi : app.getObjectInfos()) {
-                SchemaPath root = new SchemaPath(app.sdb.getSDBEntry(oi.schemaName), app.odb.getObject(oi.idName));
+                SchemaPath root = oi.makePath(true);
+                if (root == null)
+                    continue;
                 root.editor.visit(root.targetElement, root, v);
             }
         }

@@ -22,19 +22,16 @@ public class UIMenuButton extends UITextButton {
     public UIMenuButton(App app, String s, int h2, final ISupplier<UIElement> runnable) {
         super(s, h2, null);
         toggle = true;
-        onClick = new Runnable() {
-            @Override
-            public void run() {
-                state = true;
-                UIElement basis = runnable.get();
-                app.ui.wm.createMenu(UIMenuButton.this, new UIProxy(basis, false) {
-                    @Override
-                    public void onWindowClose() {
-                        super.onWindowClose();
-                        state = false;
-                    }
-                });
-            }
+        onClick = () -> {
+            state = true;
+            UIElement basis = runnable.get();
+            app.ui.wm.createMenu(UIMenuButton.this, new UIProxy(basis, false) {
+                @Override
+                public void onWindowClose() {
+                    super.onWindowClose();
+                    state = false;
+                }
+            });
         };
     }
 

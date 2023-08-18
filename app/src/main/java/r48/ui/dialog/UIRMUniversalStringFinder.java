@@ -21,8 +21,9 @@ import gabien.ui.UILabel;
 import r48.App;
 import r48.dbs.ObjectInfo;
 import r48.io.IObjectBackend;
-import r48.toolsets.BasicToolset;
+import r48.search.USFROperationMode;
 import r48.ui.UIAppendButton;
+import r48.ui.search.UIUSFROperationModeButton;
 
 /**
  * Universal string locator fun, part 2 (almost a year after the first!)
@@ -34,14 +35,16 @@ public class UIRMUniversalStringFinder extends App.Prx {
     private RListPanel settingsPartial = new RListPanel(app, T.u.usl_partial);
 
     private UIObjectInfoSetSelector setSelector;
+    private UIUSFROperationModeButton modeSelector;
     private boolean caseInsensitive = true;
 
     public UIRMUniversalStringFinder(App app) {
         super(app);
         setSelector = new UIObjectInfoSetSelector(app);
+        modeSelector = new UIUSFROperationModeButton(app, app.f.dialogWindowTH);
 
         refreshContents();
-        
+
         proxySetElement(new UISplitterLayout(layout, setSelector, false, 0.5), false);
     }
 
@@ -50,6 +53,8 @@ public class UIRMUniversalStringFinder extends App.Prx {
 
         settingsFull.refreshContents();
         settingsPartial.refreshContents();
+
+        layout.panelsAdd(modeSelector);
 
         UITabPane utp = new UITabPane(app.f.schemaPagerTabS, false, false);
         utp.addTab(new Tab(settingsFull, new TabIcon[0]));
@@ -61,22 +66,24 @@ public class UIRMUniversalStringFinder extends App.Prx {
         }).togglable(caseInsensitive));
 
         layout.panelsAdd(new UITextButton(T.u.usl_find, app.f.dialogWindowTH, () -> {
+            // full
+            final HashSet<String> mapFull = new HashSet<>();
+            for (String r : settingsFull.settings)
+                mapFull.add(caseInsensitive ? r.toLowerCase() : r);
+            final LinkedList<String> listPartial = new LinkedList<>(settingsPartial.settings);
+            for (String r : settingsPartial.settings)
+                listPartial.add(caseInsensitive ? r.toLowerCase() : r);
+            // continue...
             int total = 0;
             int files = 0;
             String log = "";
             for (ObjectInfo objInfo : setSelector.getSet()) {
-                IObjectBackend.ILoadedObject rio = app.odb.getObject(objInfo.idName);
+                IObjectBackend.ILoadedObject rio = objInfo.getILO(true);
                 if (rio != null) {
                     files++;
-                    // full
-                    final HashSet<String> mapFull = new HashSet<>();
-                    for (String r : settingsFull.settings)
-                        mapFull.add(caseInsensitive ? r.toLowerCase() : r);
-                    final LinkedList<String> listPartial = new LinkedList<>(settingsPartial.settings);
-                    for (String r : settingsPartial.settings)
-                        listPartial.add(caseInsensitive ? r.toLowerCase() : r);
                     // now do it!
-                    int count = BasicToolset.universalStringLocator(app, rio.getObject(), (rubyIO) -> {
+                    USFROperationMode mode = modeSelector.getSelected();
+                    int count = mode.locate(app, objInfo.schema, rio, (rubyIO) -> {
                         String dec = rubyIO.decString();
                         if (caseInsensitive)
                             dec = dec.toLowerCase();

@@ -34,6 +34,8 @@ public class TrAppUI extends TrPage {
     public String bEnumRename, enumOptions, bEnumManual;
     public String usl_full, usl_partial, usl_from, usl_to, usl_addR, usl_confirmReplace;
     public String usl_find, usl_text, usl_addS, usl_caseInsensitive;
+    public String usl_modeAll;
+    public FF1 usl_modeCTag;
     public FF2 usl_completeReport, usl_completeReportFind;
     public String tsc_dumpOk, tsc_ctx;
     public FF1 tsc_map;
