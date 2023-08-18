@@ -104,7 +104,7 @@ public class RMFindTranslatables extends App.Svc {
             IRIO cmd = eventList.getAElem(i);
             long cmdCode = cmd.getIVar("@code").getFX();
             RPGCommand cmdDetail = cmdbEditor.database.knownCommands.get((Integer) (int) cmdCode);
-            if (cf.matches(cmdDetail)) {
+            if (cmdDetail.commandSiteAllowed && cf.matches(cmdDetail)) {
                 CommandSite tu = siteFromContext(app, cmdbEditor, ctx, eventList, i, cmd, basePaths);
                 sites.add(tu);
             }
@@ -118,21 +118,18 @@ public class RMFindTranslatables extends App.Svc {
     public static CommandSite siteFromContext(App app, final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath[] basePaths) {
         final CMDB cmdb = cmdbEditor.database;
         String text = cmdb.buildGroupCodename(listObj, codeIndex, true);
-        final UITextButton button = new UITextButton(text, app.f.schemaFieldTH, new Runnable() {
-            @Override
-            public void run() {
-                ISchemaHost shi = new SchemaHostImpl(app, mapView);
-                for (SchemaPath sp : basePaths)
-                    shi.pushObject(sp);
-                SchemaPath sp = shi.getCurrentObject();
-                // enter list
-                sp = sp.newWindow(cmdbEditor, listObj);
+        final UITextButton button = new UITextButton(text, app.f.schemaFieldTH, () -> {
+            ISchemaHost shi = new SchemaHostImpl(app, mapView);
+            for (SchemaPath sp : basePaths)
                 shi.pushObject(sp);
-                // enter command
-                sp = sp.arrayHashIndex(DMKey.of(codeIndex), "C" + codeIndex);
-                sp = sp.newWindow(cmdbEditor.getElementContextualWindowSchema(command), listObj);
-                shi.pushObject(sp);
-            }
+            SchemaPath sp = shi.getCurrentObject();
+            // enter list
+            sp = sp.newWindow(cmdbEditor, listObj);
+            shi.pushObject(sp);
+            // enter command
+            sp = sp.arrayHashIndex(DMKey.of(codeIndex), "C" + codeIndex);
+            sp = sp.newWindow(cmdbEditor.getElementContextualWindowSchema(command), listObj);
+            shi.pushObject(sp);
         });
         return new CommandSite(button) {
             @Override

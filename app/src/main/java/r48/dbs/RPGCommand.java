@@ -72,6 +72,7 @@ public class RPGCommand extends App.Svc {
 
     // Find Translatables, etc.
     public final HashSet<CommandTag> tags = new HashSet<>();
+    public boolean commandSiteAllowed = true;
 
     // For copy all text
     public int textArg = -1;

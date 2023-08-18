@@ -13,7 +13,7 @@
 101: "Start Text" (? ]0 "" " (c.401/102/103/104)") ($ " w/face " ]0) ($ ":" ]1) (? ]2 (" (" (if-eq ]2 1 "no bkg, " "bkg, ") (@ ]3 change_text_options_position) ")"))
 C category 0
 d Begins a segment of text.
-C tag translatable
+C tag translatable sayCmd
 p faceName f_face_name
 C spritesheet 0 Faces/
 p faceIndex int
@@ -24,6 +24,8 @@ C groupBehavior messagebox 401
 401: "Tx." ($ " " ]0)
 C category 0
 d Continues the text.
+C tag translatable sayCmd
+C commandSiteAllowed false
 C textArg 0
 p text string
 

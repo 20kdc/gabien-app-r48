@@ -21,7 +21,7 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.search.CommandSite;
-import r48.search.CommandTag;
+import r48.search.ICommandClassifier;
 import r48.search.RMFindTranslatables;
 import r48.toolsets.utils.UIIDChanger;
 import r48.ui.UIMenuButton;
@@ -123,9 +123,8 @@ public class RMTools extends App.Svc {
                         @Override
                         public CommandSite[] get() {
                             RMFindTranslatables rft = new RMFindTranslatables(app, ilo);
-                            CommandTag trTag = app.commandTags.get("translatable");
-                            if (trTag != null)
-                                rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents(), trTag);
+                            ICommandClassifier trTag = app.commandTags.get("translatable");
+                            rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents(), trTag);
                             return rft.toArray();
                         }
                     }, new IObjectBackend.ILoadedObject[] {

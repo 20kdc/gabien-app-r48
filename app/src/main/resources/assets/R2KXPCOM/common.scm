@@ -11,3 +11,4 @@
 (define-name int_boolean_switch_not (if-eq : 0 "ON" "OFF"))
 
 (cmdb-add-tag "translatable" "Translatable")
+(cmdb-add-tag "sayCmd" "Say command/extension.")

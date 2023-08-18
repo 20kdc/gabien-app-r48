@@ -524,6 +524,8 @@ public class CMDB extends App.Svc {
                                 throw new RuntimeException("unknown command tag: " + args[i]);
                             rc.tags.add(tag);
                         }
+                    } else if (args[0].equals("commandSiteAllowed")) {
+                        rc.commandSiteAllowed = Boolean.parseBoolean(args[1]);
                     } else if (args[0].equals("textArg")) {
                         rc.textArg = Integer.parseInt(args[1]);
                     } else {

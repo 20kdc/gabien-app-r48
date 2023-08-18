@@ -9,7 +9,7 @@
 101: "Say" ($ " " ]0)
 C category 0
 d Begins showing a message.
-C tag translatable
+C tag translatable sayCmd
 C textArg 0
 p text string
 C groupBehavior messagebox 401
@@ -17,6 +17,8 @@ C groupBehavior messagebox 401
 401: "Say (cont.)" ($ " " ]0)
 C category 0
 d Continues a message.
+C tag translatable sayCmd
+C commandSiteAllowed false
 C textArg 0
 p text string
 
