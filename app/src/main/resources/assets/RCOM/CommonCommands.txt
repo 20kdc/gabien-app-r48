@@ -28,7 +28,7 @@ p note string
 102: "Show Choices: " (? ]0 ((@ ]0 choice_array) " " (if-ne ]1 0 "(can cancel)")) "(c.402/403/404)")
 C category 0
 d Show a set of choices to the user, potentially allowing the cancel button.
-C translatable
+C tag translatable
 p choices string_array
 p cancellable int_boolean
 C groupBehavior form 402 "Choice" 403 "Cancelled" 404

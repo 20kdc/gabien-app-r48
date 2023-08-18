@@ -9,12 +9,15 @@ package r48.minivm.fn;
 import java.util.LinkedList;
 import java.util.List;
 
+import gabien.datum.DatumSrcLoc;
 import r48.App;
 import r48.dbs.SDBOldParser;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMU;
 import r48.schema.SchemaElement;
+import r48.search.CommandTag;
 import r48.toolsets.utils.IDChangerEntry;
+import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 
 /**
@@ -27,6 +30,15 @@ public class MVMSDBLibrary {
             SDBOldParser.readFile(app, (String) a0);
             return null;
         }).attachHelp("(sdb-load-old FILE) : Read old-format SDB file.");
+
+        ctx.defLib("cmdb-add-tag", (a0, a1) -> {
+            String id = MVMU.coerceToString(a0);
+            FF0 ax = app.dTr(DatumSrcLoc.NONE, TrNames.cmdbCommandTag(id), MVMU.coerceToString(a1));
+            CommandTag tag = new CommandTag(id, ax);
+            app.commandTags.put(id, tag);
+            app.classifiers.add(tag);
+            return null;
+        }).attachHelp("(cmdb-add-tag ID NAME) : Adds a command tag.");
 
         ctx.defLib("cmdb-init", (a0) -> {
             app.sdb.newCMDB(MVMU.coerceToString(a0));

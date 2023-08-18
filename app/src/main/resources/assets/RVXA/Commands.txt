@@ -13,7 +13,7 @@
 101: "Start Text" (? ]0 "" " (c.401/102/103/104)") ($ " w/face " ]0) ($ ":" ]1) (? ]2 (" (" (if-eq ]2 1 "no bkg, " "bkg, ") (@ ]3 change_text_options_position) ")"))
 C category 0
 d Begins a segment of text.
-C translatable
+C tag translatable
 p faceName f_face_name
 C spritesheet 0 Faces/
 p faceIndex int
@@ -46,7 +46,7 @@ C groupBehavior messagebox 405
 405: "Scrtx." ($ " " ]0)
 C category 0
 d Continue some scrolling text.
-C translatable
+C tag translatable
 p text string
 
  Comments (108/408) and conditional branch (111/411/412) and loops (112/113/413) and EEP 115 in CommonCommands
@@ -482,7 +482,7 @@ p weaponId|armourId equipment_id
 320:"Rename Actor" ($ " " ]0 actor_id) ($ " to " ]1)
 d Rename a party member in a way the player can't abuse.
 C category 2
-C translatable
+C tag translatable
 p actor actor_id
 p name string
 
@@ -512,7 +512,7 @@ p charIdx int
 
 324: "Change" ($ " " ]0 actor_id) " Nickname" ($ " to " ]1)
 d Change the nickname of a party member. Why they have nicknames, I do not know...
-C translatable
+C tag translatable
 p actor actor_id
 p nickname string
 

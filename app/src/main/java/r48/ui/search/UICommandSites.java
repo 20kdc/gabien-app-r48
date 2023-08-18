@@ -5,7 +5,7 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.toolsets.utils;
+package r48.ui.search;
 
 import gabien.ui.Rect;
 import gabien.ui.UIScrollLayout;
@@ -15,6 +15,7 @@ import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.schema.util.SchemaPath;
+import r48.search.CommandSite;
 
 /**
  * Created on 17th September 2022

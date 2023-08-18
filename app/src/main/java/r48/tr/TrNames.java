@@ -37,6 +37,10 @@ public class TrNames {
         return "TrCMDB_" + dbId + "_c" + commandId + ".p" + paramIdx;
     }
 
+    public static String cmdbCommandTag(String id) {
+        return "TrCMDBTag." + id;
+    }
+
     // pretty much just whatever could be made up
     public static String sdbAnon(String ovc, String text) {
         return "TrSDB_" + ovc + ".$" + text;

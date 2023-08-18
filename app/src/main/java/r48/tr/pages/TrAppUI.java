@@ -82,7 +82,7 @@ public class TrAppUI extends TrPage {
     public String mLoadIMI;
     public String mRMTools;
     public String mLocateEventCommand;
-    public String mFindTranslatables;
+    public String mSearch;
     public String mRunAutoCorrect;
     public String mR48Version;
     public String mUniversalStringFinder;
@@ -117,4 +117,6 @@ public class TrAppUI extends TrPage {
     public String rmCmdCodeRequest;
     public String notFound;
     public FF1 confirmDeletion;
+
+    public String ccAll;
 }

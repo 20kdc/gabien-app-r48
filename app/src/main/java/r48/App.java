@@ -27,6 +27,7 @@ import r48.app.AppUI;
 import r48.app.EngineDef;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
+import r48.dbs.RPGCommand;
 import r48.io.data.RORIO;
 import r48.map.StuffRenderer;
 import r48.minivm.MVMEnvR48;
@@ -35,6 +36,8 @@ import r48.minivm.fn.MVMR48AppLibraries;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
+import r48.search.CommandTag;
+import r48.search.ICommandClassifier;
 import r48.toolsets.utils.IDChangerEntry;
 import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
@@ -70,11 +73,31 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     public final MVMEnvR48 vmCtx;
 
     /**
+     * Command tags.
+     */
+    public final HashMap<String, CommandTag> commandTags = new HashMap<>();
+
+    /**
+     * Main list of command classifiers. For use by UICommandClassifierSet.
+     */
+    public final LinkedList<ICommandClassifier> classifiers = new LinkedList<>();
+
+    /**
      * Initialize App.
      * Warning: Occurs off main thread.
      */
     public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, String rp, String sip, IConsumer<String> loadProgress) {
         super(ilg, charset, gp, rp, sip, loadProgress);
+        classifiers.add(new ICommandClassifier() {
+            @Override
+            public String getName() {
+                return ilg.t.u.ccAll;
+            }
+            @Override
+            public boolean matches(RPGCommand target) {
+                return true;
+            }
+        });
         vmCtx = new MVMEnvR48((str) -> {
             loadProgress.accept(t.g.loadingProgress.r(str));
         }, ilg.logTrIssues, ilg.c.language);

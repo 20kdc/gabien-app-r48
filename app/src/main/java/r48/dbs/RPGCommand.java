@@ -18,11 +18,13 @@ import r48.schema.displays.TonePickerSchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.search.CommandTag;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 import r48.tr.TrPage.FF1;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -68,8 +70,8 @@ public class RPGCommand extends App.Svc {
     public int[] template = new int[0];
     public int category;
 
-    // For Find Translatables functionality
-    public boolean isTranslatable;
+    // Find Translatables, etc.
+    public final HashSet<CommandTag> tags = new HashSet<>();
 
     // For copy all text
     public int textArg = -1;

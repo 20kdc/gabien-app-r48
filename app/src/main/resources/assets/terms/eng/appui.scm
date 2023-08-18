@@ -131,7 +131,7 @@
 	mAudPlay "Audio Player..."
 	mREPL "REPL..."
 	mLocateEventCommand "Locate EventCommand in all Pages"
-	mFindTranslatables "Find Translatables in Common Events"
+	mSearch "Search..."
 	mRMTools "RM-Tools"
 	mRunAutoCorrect "See If Autocorrect Modifies Anything"
 	mR48Version "R48 Version"
@@ -182,4 +182,6 @@
 	rmCmdCodeRequest "Code (or -1337 for any unknown) ?"
 	notFound "Not found."
 	confirmDeletion (fl1 "Are you sure you want to delete " a0 "?")
+
+	ccAll "All Commands"
 )

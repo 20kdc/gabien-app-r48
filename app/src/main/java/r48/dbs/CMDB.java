@@ -15,6 +15,7 @@ import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.SchemaPath;
+import r48.search.CommandTag;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 
@@ -516,8 +517,13 @@ public class CMDB extends App.Svc {
                         rc.template = new int[args.length - 1];
                         for (int i = 1; i < args.length; i++)
                             rc.template[i - 1] = Integer.parseInt(args[i]);
-                    } else if (args[0].equals("translatable")) {
-                        rc.isTranslatable = true;
+                    } else if (args[0].equals("tag")) {
+                        for (int i = 1; i < args.length; i++) {
+                            CommandTag tag = app.commandTags.get(args[i]);
+                            if (tag == null)
+                                throw new RuntimeException("unknown command tag: " + args[i]);
+                            rc.tags.add(tag);
+                        }
                     } else if (args[0].equals("textArg")) {
                         rc.textArg = Integer.parseInt(args[1]);
                     } else {

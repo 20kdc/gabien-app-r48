@@ -9,7 +9,7 @@
 101: "Say" ($ " " ]0)
 C category 0
 d Begins showing a message.
-C translatable
+C tag translatable
 C textArg 0
 p text string
 C groupBehavior messagebox 401

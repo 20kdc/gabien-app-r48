@@ -9,3 +9,5 @@
 (define-name var_id_indirect "Var[Var[" (@ : var_id #t) "]]")
 (define-name int_boolean_switch     (if-ne : 0 "ON" "OFF"))
 (define-name int_boolean_switch_not (if-eq : 0 "ON" "OFF"))
+
+(cmdb-add-tag "translatable" "Translatable")

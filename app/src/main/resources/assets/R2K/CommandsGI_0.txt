@@ -42,7 +42,7 @@ p text string
 10110: "Say" ($ " " ]0)
 C category 0
 d Begins a message to show to the player.
-C translatable
+C tag translatable
 C textArg 0
 p text textbox_string
 C groupBehavior messagebox 20110
@@ -65,7 +65,7 @@ I1
 
 20140: ("... On Choice:"(? ]1(" "(if-eq ]1 4("Cancel")((@ ]0)))" (index "(@ ]1 choice_index_magic_2 #t)")")))
 C category 0
-C translatable
+C tag translatable
 d A choice. If the player selects this choice, the code between this and the next choice runs. If the text is blank, this is a 'cancel' choice (and should be last)
 p text string
 p choiceIndex choice_index_magic
@@ -341,14 +341,14 @@ p _ string
 
 10610: ((? ]1("Change "(@ ]1 actor_id #t)"'s Name: "(@ ]0))("Change Actor Name")))
 C category 2
-C translatable
+C tag translatable
 d Change the name of a party member.
 p name string
 p actor actor_id
 
 10620: ((? ]1("Change "(@ ]1 actor_id #t)"'s Title: "(@ ]0))("Change Actor Title")))
 C category 2
-C translatable
+C tag translatable
 d Change the title of a party member.
 p title string
 p actor actor_id

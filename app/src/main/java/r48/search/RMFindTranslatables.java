@@ -5,7 +5,7 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.toolsets.utils;
+package r48.search;
 
 import java.util.LinkedList;
 
@@ -45,7 +45,7 @@ public class RMFindTranslatables extends App.Svc {
         return sites.toArray(new CommandSite[0]);
     }
 
-    public void addSitesFromMap(final @Nullable UIMapView ctx, String eventPage) {
+    public void addSitesFromMap(final @Nullable UIMapView ctx, String eventPage, final ICommandClassifier cf) {
         final SchemaPath rootSchemaPath = new SchemaPath(app.sdb.getSDBEntry("RPG::Map"), objRoot);
 
         IRIO events = objRoot.getObject().getIVar("@events");
@@ -72,12 +72,12 @@ public class RMFindTranslatables extends App.Svc {
                         rootSchemaPath,
                         eventSchemaPath,
                         pageSchemaPath
-                });
+                }, cf);
             }
         }
     }
 
-    public void addSitesFromCommonEvents(IRIO[] commonEvents) {
+    public void addSitesFromCommonEvents(IRIO[] commonEvents, final ICommandClassifier cf) {
         SchemaElement sch = app.sdb.findSchemaFor(objIdName, objRoot.getObject());
         if (sch == null) {
             app.ui.launchDialog(T.u.cCommonEventsNoSchema);
@@ -94,17 +94,17 @@ public class RMFindTranslatables extends App.Svc {
                 addSitesFromList(ecase, null, rio.getIVar("@list"), new SchemaPath[] {
                         rootSP,
                         commonEventSP
-                });
+                }, cf);
             }
         }
     }
 
-    public void addSitesFromList(final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView ctx, final IRIO eventList, final SchemaPath[] basePaths) {
+    public void addSitesFromList(final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView ctx, final IRIO eventList, final SchemaPath[] basePaths, final ICommandClassifier cf) {
         for (int i = 0; i < eventList.getALen(); i++) {
             IRIO cmd = eventList.getAElem(i);
             long cmdCode = cmd.getIVar("@code").getFX();
             RPGCommand cmdDetail = cmdbEditor.database.knownCommands.get((Integer) (int) cmdCode);
-            if (cmdDetail.isTranslatable) {
+            if (cf.matches(cmdDetail)) {
                 CommandSite tu = siteFromContext(app, cmdbEditor, ctx, eventList, i, cmd, basePaths);
                 sites.add(tu);
             }

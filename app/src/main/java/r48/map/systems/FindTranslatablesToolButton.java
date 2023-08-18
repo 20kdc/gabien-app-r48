@@ -13,9 +13,10 @@ import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.UIMapView;
 import r48.maptools.UIMTBase;
-import r48.toolsets.utils.CommandSite;
-import r48.toolsets.utils.RMFindTranslatables;
-import r48.toolsets.utils.UICommandSites;
+import r48.search.CommandSite;
+import r48.search.CommandTag;
+import r48.search.RMFindTranslatables;
+import r48.ui.search.UICommandSites;
 
 /**
  * Find translatables map logic
@@ -36,7 +37,9 @@ public final class FindTranslatablesToolButton extends ToolButton {
             @Override
             public CommandSite[] get() {
                 RMFindTranslatables rft = new RMFindTranslatables(umv.app, map);
-                rft.addSitesFromMap(a.getMapView(), ep);
+                CommandTag trTag = umv.app.commandTags.get("translatable");
+                if (trTag != null)
+                    rft.addSitesFromMap(a.getMapView(), ep, trTag);
                 return rft.toArray();
             }
         }, new IObjectBackend.ILoadedObject[] {

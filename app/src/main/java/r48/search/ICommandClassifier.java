@@ -5,18 +5,22 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.toolsets.utils;
+package r48.search;
 
-import gabien.ui.UIElement;
+import r48.dbs.RPGCommand;
 
 /**
- * Clickable site button.
- * Runnable represents a text updater (unused functionality as of right now, it kept malfunctioning)
- * Moved from inner class on 17th September 2022
+ * Generic classifier of which CommandTag is a kind.
+ * Created 18th August, 2023.
  */
-public abstract class CommandSite implements Runnable {
-    public final UIElement element;
-    public CommandSite(UIElement b) {
-        element = b;
-    }
+public interface ICommandClassifier {
+    /**
+     * Returns a localized name for this classifier.
+     */
+    public String getName();
+
+    /**
+     * Checks if the given RPGCommand matches this classifier.
+     */
+    public abstract boolean matches(RPGCommand target);
 }

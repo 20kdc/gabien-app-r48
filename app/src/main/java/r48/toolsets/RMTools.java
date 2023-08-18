@@ -20,14 +20,15 @@ import r48.maptools.UIMTEventPicker;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.SchemaPath;
-import r48.toolsets.utils.CommandSite;
-import r48.toolsets.utils.RMFindTranslatables;
-import r48.toolsets.utils.UICommandSites;
+import r48.search.CommandSite;
+import r48.search.CommandTag;
+import r48.search.RMFindTranslatables;
 import r48.toolsets.utils.UIIDChanger;
 import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIRMUniversalStringFinder;
 import r48.ui.dialog.UIRMUniversalStringReplacer;
 import r48.ui.dialog.UITranscriptControl;
+import r48.ui.search.UICommandSites;
 
 import java.util.LinkedList;
 
@@ -58,7 +59,7 @@ public class RMTools extends App.Svc {
     public UIElement genButton() {
         return new UIMenuButton(app, T.u.mRMTools, app.f.menuTH, null, new String[] {
                 T.u.mLocateEventCommand,
-                T.u.mFindTranslatables,
+                T.u.mSearch,
                 T.u.mRunAutoCorrect,
                 T.u.mUniversalStringFinder,
                 T.u.mUniversalStringReplacer,
@@ -122,7 +123,9 @@ public class RMTools extends App.Svc {
                         @Override
                         public CommandSite[] get() {
                             RMFindTranslatables rft = new RMFindTranslatables(app, ilo);
-                            rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents());
+                            CommandTag trTag = app.commandTags.get("translatable");
+                            if (trTag != null)
+                                rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents(), trTag);
                             return rft.toArray();
                         }
                     }, new IObjectBackend.ILoadedObject[] {
