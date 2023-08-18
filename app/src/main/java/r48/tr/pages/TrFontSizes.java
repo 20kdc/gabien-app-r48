@@ -64,6 +64,7 @@ public class TrFontSizes extends TrPage {
     public String mapToolbarS;
     public String tilesTabS;
     public String schemaPagerTabS;
+    public String finderTabS;
 
     public String gridS;
     public String cellSelectS;

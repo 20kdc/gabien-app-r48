@@ -114,6 +114,8 @@ public class FontSizes {
     public int tilesTabS;
     @FontSizeDefault(8) @FontSizeOName("S/Scrollersize")
     public int schemaPagerTabS;
+    @FontSizeDefault(16)
+    public int finderTabS;
 
     @FontSizeDefault(24) @FontSizeOName("S/Scrollersize")
     public int gridS;

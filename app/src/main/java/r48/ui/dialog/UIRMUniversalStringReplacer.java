@@ -105,7 +105,7 @@ public class UIRMUniversalStringReplacer extends App.Prx {
 
         layout.panelsAdd(modeSelector);
 
-        UITabPane utp = new UITabPane(app.f.schemaPagerTabS, false, false);
+        UITabPane utp = new UITabPane(app.f.finderTabS, false, false);
         utp.addTab(new Tab(settingsFull, new TabIcon[0]));
         utp.addTab(new Tab(settingsPartial, new TabIcon[0]));
         layout.panelsAdd(utp);
