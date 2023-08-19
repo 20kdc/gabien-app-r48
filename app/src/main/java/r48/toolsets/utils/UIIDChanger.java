@@ -114,6 +114,7 @@ public class UIIDChanger extends App.Prx {
                     updates.add(path);
                 }
             }
+            return true;
         };
         if (fixedPath != null) {
             fixedPath.editor.visit(fixedPath.targetElement, fixedPath, v, false);

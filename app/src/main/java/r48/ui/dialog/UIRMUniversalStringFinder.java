@@ -8,6 +8,7 @@ package r48.ui.dialog;
 
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
@@ -20,7 +21,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import r48.App;
 import r48.dbs.ObjectInfo;
-import r48.io.IObjectBackend;
+import r48.schema.util.SchemaPath;
 import r48.search.USFROperationMode;
 import r48.ui.UIAppendButton;
 import r48.ui.search.UIUSFROperationModeSelector;
@@ -78,22 +79,28 @@ public class UIRMUniversalStringFinder extends App.Prx {
             int files = 0;
             String log = "";
             for (ObjectInfo objInfo : setSelector.getSet()) {
-                IObjectBackend.ILoadedObject rio = objInfo.getILO(true);
-                if (rio != null) {
+                SchemaPath sp = objInfo.makePath(true);
+                if (sp != null) {
                     files++;
                     // now do it!
                     USFROperationMode mode = modeSelector.getSelected();
-                    int count = mode.locate(app, objInfo.schema, rio, (rubyIO) -> {
-                        String dec = rubyIO.decString();
+                    AtomicInteger finds = new AtomicInteger(0);
+                    mode.locate(app, sp, (element, target, path) -> {
+                        String dec = target.decString();
                         if (caseInsensitive)
                             dec = dec.toLowerCase();
-                        if (mapFull.contains(dec))
-                            return 1;
+                        if (mapFull.contains(dec)) {
+                            finds.incrementAndGet();
+                            return false;
+                        }
                         for (String tst : listPartial)
-                            if (dec.contains(tst))
-                                return 1;
-                        return 0;
+                            if (dec.contains(tst)) {
+                                finds.incrementAndGet();
+                                return false;
+                            }
+                        return false;
                     }, false);
+                    int count = finds.get();
                     total += count;
                     if (count != 0)
                         log += "\n" + objInfo.toString() + ": " + count;

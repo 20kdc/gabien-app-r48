@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
@@ -23,15 +24,12 @@ import gabien.ui.UITextBox;
 import gabien.ui.UITextButton;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
-import gabien.uslx.append.IFunction;
 import r48.AdHocSaveLoad;
 import r48.App;
 import r48.dbs.ObjectInfo;
-import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
-import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.search.USFROperationMode;
 import r48.ui.UIAppendButton;
@@ -151,59 +149,58 @@ public class UIRMUniversalStringReplacer extends App.Prx {
                 int files = 0;
                 String log = "";
                 for (ObjectInfo objInfo : setSelector.getSet()) {
-                    IObjectBackend.ILoadedObject rio = objInfo.getILO(true);
-                    SchemaElement se = objInfo.schema;
-                    if (rio != null && se != null) {
+                    SchemaPath sp = objInfo.makePath(true);
+                    if (sp != null) {
                         files++;
                         // now do it!
                         USFROperationMode mode = modeSelector.getSelected();
-                        int count = mode.locate(app, objInfo.schema, rio, new IFunction<IRIO, Integer>() {
-                            @Override
-                            public Integer apply(IRIO rubyIO) {
-                                StringBuilder res = new StringBuilder();
-                                String dec = rubyIO.decString();
-                                String fullReplace = mapFull.get(dec);
-                                if (fullReplace != null) {
-                                    rubyIO.setString(fullReplace);
-                                    return 1;
-                                }
-                                int pos = 0;
-                                int len = dec.length();
-                                while (pos < len) {
-                                    String foundChk = null;
-                                    int foundSkip = 0;
-                                    for (Replacement apply : ent) {
-                                        String key = apply.key;
-                                        // nope
-                                        if (key.equals(""))
-                                            continue;
-                                        if (dec.startsWith(key, pos)) {
-                                            foundChk = apply.value;
-                                            foundSkip = key.length();
-                                            break;
-                                        }
-                                    }
-                                    if (foundChk != null) {
-                                        res.append(foundChk);
-                                        pos += foundSkip;
-                                    } else {
-                                        res.append(dec.charAt(pos++));
-                                    }
-                                }
-                                String resStr = res.toString();
-                                if (!resStr.equals(dec)) {
-                                    rubyIO.setString(resStr);
-                                    return 1;
-                                }
-                                return 0;
+                        AtomicInteger finds = new AtomicInteger(0);
+                        mode.locate(app, sp, (element, target, path) -> {
+                            StringBuilder res = new StringBuilder();
+                            String dec = target.decString();
+                            String fullReplace = mapFull.get(dec);
+                            if (fullReplace != null) {
+                                target.setString(fullReplace);
+                                path.changeOccurred(false);
+                                finds.incrementAndGet();
+                                return false;
                             }
+                            int pos = 0;
+                            int len = dec.length();
+                            while (pos < len) {
+                                String foundChk = null;
+                                int foundSkip = 0;
+                                for (Replacement apply : ent) {
+                                    String key = apply.key;
+                                    // nope
+                                    if (key.equals(""))
+                                        continue;
+                                    if (dec.startsWith(key, pos)) {
+                                        foundChk = apply.value;
+                                        foundSkip = key.length();
+                                        break;
+                                    }
+                                }
+                                if (foundChk != null) {
+                                    res.append(foundChk);
+                                    pos += foundSkip;
+                                } else {
+                                    res.append(dec.charAt(pos++));
+                                }
+                            }
+                            String resStr = res.toString();
+                            if (!resStr.equals(dec)) {
+                                target.setString(resStr);
+                                path.changeOccurred(false);
+                                finds.incrementAndGet();
+                                return false;
+                            }
+                            return false;
                         }, true);
+                        int count = finds.get();
                         total += count;
-                        if (count > 0) {
-                            SchemaPath sp = new SchemaPath(se, rio);
-                            sp.changeOccurred(false);
+                        if (count > 0)
                             log += "\n" + objInfo.toString() + ": " + count;
-                        }
                     }
                 }
                 app.ui.launchDialog(T.u.usl_completeReport.r(total, files) + log);

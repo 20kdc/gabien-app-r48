@@ -23,8 +23,9 @@ import r48.io.data.RORIO;
 import r48.map.systems.IRMMapSystem;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.specialized.IMagicalBinder;
+import r48.schema.specialized.MagicalBinders;
 import r48.schema.util.SchemaPath;
-import r48.search.USFROperationMode;
 import r48.toolsets.utils.UITestGraphicsStuff;
 import r48.tr.pages.TrRoot;
 import r48.ui.UIAppendButton;
@@ -210,13 +211,10 @@ public class BasicToolset extends App.Svc implements IToolset {
                         for (String s : app.getAllObjects()) {
                             IObjectBackend.ILoadedObject obj = app.odb.getObject(s, null);
                             if (obj != null) {
-                                USFROperationMode.All.locate(app, obj.getObject(), new IFunction<IRIO, Integer>() {
-                                    @Override
-                                    public Integer apply(IRIO rubyIO) {
-                                        text.add(rubyIO.decString());
-                                        return 1;
-                                    }
-                                }, false);
+                                locateStrings(app, obj.getObject(), (rubyIO) -> {
+                                    text.add(rubyIO.decString());
+                                    return 1;
+                                });
                             }
                         }
                         for (String st : text) {
@@ -274,6 +272,31 @@ public class BasicToolset extends App.Svc implements IToolset {
                     });
                 }
         }).centred();
+    }
+    
+    private static int locateStrings(App app, IRIO rio, IFunction<IRIO, Integer> string) {
+        // NOTE: Hash keys, ivar keys are not up for modification.
+        int total = 0;
+        int type = rio.getType();
+        if (type == '"')
+            total += string.apply(rio);
+        if ((type == '{') || (type == '}'))
+            for (DMKey me : rio.getHashKeys())
+                total += locateStrings(app, rio.getHashVal(me), string);
+        if (type == '[') {
+            int arrLen = rio.getALen();
+            for (int i = 0; i < arrLen; i++)
+                total += locateStrings(app, rio.getAElem(i), string);
+        }
+        for (String k : rio.getIVars())
+            total += locateStrings(app, rio.getIVar(k), string);
+        IMagicalBinder b = MagicalBinders.getBinderFor(app, rio);
+        if (b != null) {
+            IRIO bound = MagicalBinders.toBoundWithCache(app, b, rio);
+            int c = locateStrings(app, bound, string);
+            total += c;
+        }
+        return total;
     }
 
     private UIElement createOtherButton() {

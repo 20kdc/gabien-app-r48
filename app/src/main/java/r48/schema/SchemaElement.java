@@ -87,8 +87,8 @@ public abstract class SchemaElement extends App.Svc {
      * This is to be used in global operations.
      */
     public final void visit(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
-        v.visit(this, target, path);
-        visitChildren(target, path, v, detailedPaths);
+        if (v.visit(this, target, path))
+            visitChildren(target, path, v, detailedPaths);
     }
 
     /**
@@ -104,8 +104,9 @@ public abstract class SchemaElement extends App.Svc {
     public interface Visitor {
         /**
          * Called from SchemaElement.visit.
+         * If this returns true, the children are visited.
          */
-        void visit(SchemaElement element, IRIO target, SchemaPath path);
+        boolean visit(SchemaElement element, IRIO target, SchemaPath path);
     }
 
     /**
