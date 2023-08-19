@@ -155,7 +155,10 @@ public class UIRMUniversalStringReplacer extends App.Prx {
                         // now do it!
                         USFROperationMode mode = modeSelector.getSelected();
                         AtomicInteger finds = new AtomicInteger(0);
+                        HashSet<IRIO> hsi = new HashSet<>();
                         mode.locate(app, sp, (element, target, path) -> {
+                            if (!hsi.add(target))
+                                return false;
                             StringBuilder res = new StringBuilder();
                             String dec = target.decString();
                             String fullReplace = mapFull.get(dec);

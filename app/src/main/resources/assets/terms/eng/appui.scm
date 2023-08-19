@@ -83,6 +83,7 @@
 		text "Text: "
 		addS "Add search"
 		caseInsensitive "Case Insensitive"
+		detailedInfo "Detailed Info (SLOW, CAN CRASH FOR MANY MATCHES)"
 		modeAll "All"
 		modeCTag (fl1 "Command Tag: " a0)
 	)

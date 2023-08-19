@@ -21,6 +21,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import r48.App;
 import r48.dbs.ObjectInfo;
+import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 import r48.search.USFROperationMode;
 import r48.ui.UIAppendButton;
@@ -38,6 +39,7 @@ public class UIRMUniversalStringFinder extends App.Prx {
     private UIObjectInfoSetSelector setSelector;
     private UIUSFROperationModeSelector modeSelector;
     private boolean caseInsensitive = true;
+    private boolean detailedInfo = false;
 
     public UIRMUniversalStringFinder(App app) {
         super(app);
@@ -66,6 +68,10 @@ public class UIRMUniversalStringFinder extends App.Prx {
             caseInsensitive = !caseInsensitive;
         }).togglable(caseInsensitive));
 
+        layout.panelsAdd(new UITextButton(T.u.usl_detailedInfo, app.f.dialogWindowTH, () -> {
+            detailedInfo = !detailedInfo;
+        }).togglable(detailedInfo));
+
         layout.panelsAdd(new UITextButton(T.u.usl_find, app.f.dialogWindowTH, () -> {
             // full
             final HashSet<String> mapFull = new HashSet<>();
@@ -77,7 +83,7 @@ public class UIRMUniversalStringFinder extends App.Prx {
             // continue...
             int total = 0;
             int files = 0;
-            String log = "";
+            StringBuilder log = new StringBuilder();
             for (ObjectInfo objInfo : setSelector.getSet()) {
                 SchemaPath sp = objInfo.makePath(true);
                 if (sp != null) {
@@ -85,25 +91,36 @@ public class UIRMUniversalStringFinder extends App.Prx {
                     // now do it!
                     USFROperationMode mode = modeSelector.getSelected();
                     AtomicInteger finds = new AtomicInteger(0);
+                    HashSet<IRIO> hsi = new HashSet<>();
                     mode.locate(app, sp, (element, target, path) -> {
+                        if (!hsi.add(target))
+                            return false;
                         String dec = target.decString();
                         if (caseInsensitive)
                             dec = dec.toLowerCase();
+                        boolean didFind = false;
                         if (mapFull.contains(dec)) {
-                            finds.incrementAndGet();
+                            didFind = true;
                             return false;
                         }
-                        for (String tst : listPartial)
-                            if (dec.contains(tst)) {
-                                finds.incrementAndGet();
-                                return false;
-                            }
+                        if (!didFind)
+                            for (String tst : listPartial)
+                                if (dec.contains(tst)) {
+                                    didFind = true;
+                                    break;
+                                }
+                        if (didFind) {
+                            finds.incrementAndGet();
+                            if (detailedInfo)
+                                log.append("\n@ " + path.toString() + ": " + dec);
+                        }
                         return false;
-                    }, false);
+                    }, detailedInfo);
                     int count = finds.get();
                     total += count;
-                    if (count != 0)
-                        log += "\n" + objInfo.toString() + ": " + count;
+                    if (!detailedInfo)
+                        if (count != 0)
+                            log.append("\n" + objInfo.toString() + ": " + count);
                 }
             }
             app.ui.launchDialog(T.u.usl_completeReportFind.r(total, files) + log);
