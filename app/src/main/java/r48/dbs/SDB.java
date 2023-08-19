@@ -270,8 +270,8 @@ public class SDB extends App.Svc {
         }
 
         @Override
-        public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
-            getEntry().visit(target, path, v);
+        public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
+            getEntry().visit(target, path, v, detailedPaths);
         }
     }
 

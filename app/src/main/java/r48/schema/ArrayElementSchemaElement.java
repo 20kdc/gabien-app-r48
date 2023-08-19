@@ -121,10 +121,10 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     }
 
     @Override
-    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
         if (target.getALen() > index) {
             String indexStr = nameCb != null ? "." + nameCb.r() : ("]" + index);
-            subSchema.visit(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), indexStr), v);
+            subSchema.visit(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), indexStr), v, detailedPaths);
         }
     }
 

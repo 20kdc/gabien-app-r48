@@ -386,11 +386,11 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             }
 
             @Override
-            public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+            public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
                 int actualStart = findActualStart(target, tracker);
                 if (actualStart == -1)
                     return;
-                getGroupElement(target, actualStart, this).visit(target, path, v);
+                getGroupElement(target, actualStart, this).visit(target, path, v, detailedPaths);
             }
         };
     }

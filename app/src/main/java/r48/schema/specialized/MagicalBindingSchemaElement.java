@@ -69,9 +69,9 @@ public class MagicalBindingSchemaElement extends SchemaElement {
             }
 
             @Override
-            public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+            public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
                 path = path.tagSEMonitor(target, this, true);
-                inner.visit(target, path, v);
+                inner.visit(target, path, v, detailedPaths);
             }
         }, new IObjectBackend.ILoadedObject() {
             @Override
@@ -102,8 +102,8 @@ public class MagicalBindingSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void visitChildren(IRIO trueTarget, SchemaPath truePath, Visitor v) {
+    public void visitChildren(IRIO trueTarget, SchemaPath truePath, Visitor v, boolean detailedPaths) {
         SchemaPath sp = createPath(trueTarget, truePath);
-        sp.editor.visit(sp.targetElement, sp, v);
+        sp.editor.visit(sp.targetElement, sp, v, detailedPaths);
     }
 }

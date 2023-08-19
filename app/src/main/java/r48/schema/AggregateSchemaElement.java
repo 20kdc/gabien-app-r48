@@ -88,9 +88,9 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     }
 
     @Override
-    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
         for (SchemaElement ise : aggregate)
-            ise.visit(target, path, v);
+            ise.visit(target, path, v, detailedPaths);
     }
 
     // NOTE: In *general* elem should be the SchemaElement.

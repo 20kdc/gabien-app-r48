@@ -85,11 +85,11 @@ public class TypeChangerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
         int rei = getRelevantElementId(target);
         if (rei == -1)
             return;
 
-        targets[rei].visit(target, path, v);
+        targets[rei].visit(target, path, v, detailedPaths);
     }
 }

@@ -106,7 +106,7 @@ public abstract class USFROperationMode {
                     if (base.matches(rc))
                         ai.addAndGet(All.locate(app, target, string, writing));
                 }
-            });
+            }, false);
             return ai.get();
         }
     }

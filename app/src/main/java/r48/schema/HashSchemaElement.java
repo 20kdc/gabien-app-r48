@@ -181,10 +181,10 @@ public class HashSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
         for (DMKey e : target.getHashKeys()) {
             IRIO ek = target.getHashVal(e);
-            valElem.visit(ek, path.arrayHashIndex(e, "{" + getKeyText(e) + "}"), v);
+            valElem.visit(ek, path.arrayHashIndex(e, "{" + getKeyText(e) + "}"), v, detailedPaths);
         }
     }
 }

@@ -513,8 +513,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                         }
 
                         @Override
-                        public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
-                            getSchema(path).visit(target, path, v);
+                        public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
+                            getSchema(path).visit(target, path, v, detailedPaths);
                         }
                     };
                 }
@@ -565,8 +565,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                         }
 
                         @Override
-                        public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
-                            insideThat.visit(target, applySchema(target, path, false), v);
+                        public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
+                            insideThat.visit(target, applySchema(target, path, false), v, detailedPaths);
                         }
                     };
                 }

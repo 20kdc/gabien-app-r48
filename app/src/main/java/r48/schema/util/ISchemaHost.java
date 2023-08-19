@@ -8,6 +8,9 @@
 package r48.schema.util;
 
 import gabien.uslx.append.*;
+
+import java.util.LinkedList;
+
 import gabien.ui.UIElement;
 import r48.App;
 import r48.io.data.IRIO;
@@ -21,6 +24,18 @@ import r48.schema.SchemaElement;
 public interface ISchemaHost {
     void pushObject(SchemaPath nextObject);
     void popObject();
+
+    default void pushPathTree(SchemaPath nextObject) {
+        // "Decompile" the path into a usable forward/back tree.
+        LinkedList<SchemaPath> rv = new LinkedList<>();
+        while (nextObject != null) {
+            if (nextObject.editor != null)
+                rv.addFirst(nextObject);
+            nextObject = nextObject.parent;
+        }
+        for (SchemaPath sp : rv)
+            pushObject(sp);
+    }
 
     void launchOther(UIElement uiTest);
 

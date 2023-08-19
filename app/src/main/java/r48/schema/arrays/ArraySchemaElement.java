@@ -306,13 +306,13 @@ public abstract class ArraySchemaElement extends SchemaElement {
     }
 
     @Override
-    public void visitChildren(IRIO target, SchemaPath path2, Visitor v) {
+    public void visitChildren(IRIO target, SchemaPath path2, Visitor v, boolean detailedPaths) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
         HashMap<Integer, Integer> indentAnchors = new HashMap<Integer, Integer>();
         int alen = target.getALen();
         for (int j = 0; j < alen; j++) {
             IRIO rio = target.getAElem(j);
-            getElementSchema(j).visit(rio, path.arrayHashIndex(DMKey.of(j), "[" + j + "]"), v);
+            getElementSchema(j).visit(rio, path.arrayHashIndex(DMKey.of(j), "[" + j + "]"), v, detailedPaths);
         }
         int groupStep;
         for (int j = 0; j < alen; j += groupStep) {
@@ -321,7 +321,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 groupStep = 1;
                 continue;
             }
-            getElementContextualSchema(target, j, groupStep, indentAnchors).element.visit(target, path, v);
+            getElementContextualSchema(target, j, groupStep, indentAnchors).element.visit(target, path, v, detailedPaths);
         }
     }
 

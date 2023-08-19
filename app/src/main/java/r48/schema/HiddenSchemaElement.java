@@ -59,8 +59,8 @@ public class HiddenSchemaElement extends SchemaElement implements IProxySchemaEl
     }
 
     @Override
-    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
-        content.visit(target, path, v);
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
+        content.visit(target, path, v, detailedPaths);
     }
 
     @Override

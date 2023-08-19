@@ -48,11 +48,8 @@ public class SubwindowSchemaElement extends SchemaElement implements IProxySchem
         // This is never meant to *actually* scroll.
         String text = nameGetter.apply(target);
         String[] lines = text.split("\n");
-        UIElement r = new UITextButton(lines[0], app.f.schemaFieldTH, new Runnable() {
-            @Override
-            public void run() {
-                launcher.pushObject(path.newWindow(heldElement, target));
-            }
+        UIElement r = new UITextButton(lines[0], app.f.schemaFieldTH, () -> {
+            launcher.pushObject(path.newWindow(heldElement, target));
         });
         for (int i = 1; i < lines.length; i++)
             r = new UINSVertLayout(r, new UILabel(lines[i], app.f.schemaFieldTH));
@@ -65,8 +62,8 @@ public class SubwindowSchemaElement extends SchemaElement implements IProxySchem
     }
 
     @Override
-    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
-        heldElement.visit(target, path, v);
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
+        heldElement.visit(target, detailedPaths ? path.newWindow(heldElement, target) : path, v, detailedPaths);
     }
 
     @Override

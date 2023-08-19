@@ -64,15 +64,10 @@ public class RMFindTranslatables extends App.Svc {
 
                 // enter page
                 final SchemaPath pageSchemaPath = eventSchemaPath
-                        .arrayHashIndex(DMKey.of(page), "P" + page)
-                        .newWindow(app.sdb.getSDBEntry(eventPage), pageObj);
+                        .arrayHashIndex(DMKey.of(page), "P" + page);
 
                 IRIO eventList = pageObj.getIVar("@list");
-                addSitesFromList(getEventCommandArraySchemaElement(app, "EventListEditor"), ctx, eventList, new SchemaPath[] {
-                        rootSchemaPath,
-                        eventSchemaPath,
-                        pageSchemaPath
-                }, cf);
+                addSitesFromList(getEventCommandArraySchemaElement(app, "EventListEditor"), ctx, eventList, pageSchemaPath, cf);
             }
         }
     }
@@ -91,21 +86,18 @@ public class RMFindTranslatables extends App.Svc {
                     return;
                 }
                 SchemaPath commonEventSP = rootSP.newWindow(cevElm, rio);
-                addSitesFromList(ecase, null, rio.getIVar("@list"), new SchemaPath[] {
-                        rootSP,
-                        commonEventSP
-                }, cf);
+                addSitesFromList(ecase, null, rio.getIVar("@list"), commonEventSP, cf);
             }
         }
     }
 
-    public void addSitesFromList(final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView ctx, final IRIO eventList, final SchemaPath[] basePaths, final ICommandClassifier cf) {
+    public void addSitesFromList(final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView ctx, final IRIO eventList, final SchemaPath basePath, final ICommandClassifier cf) {
         for (int i = 0; i < eventList.getALen(); i++) {
             IRIO cmd = eventList.getAElem(i);
             long cmdCode = cmd.getIVar("@code").getFX();
             RPGCommand cmdDetail = cmdbEditor.database.knownCommands.get((Integer) (int) cmdCode);
             if (cmdDetail.commandSiteAllowed && cf.matches(cmdDetail)) {
-                CommandSite tu = siteFromContext(app, cmdbEditor, ctx, eventList, i, cmd, basePaths);
+                CommandSite tu = siteFromContext(app, cmdbEditor, ctx, eventList, i, cmd, basePath);
                 sites.add(tu);
             }
         }
@@ -115,21 +107,18 @@ public class RMFindTranslatables extends App.Svc {
         return (EventCommandArraySchemaElement) AggregateSchemaElement.extractField(app.sdb.getSDBEntry(cmdbEditor), null);
     }
 
-    public static CommandSite siteFromContext(App app, final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath[] basePaths) {
+    public static CommandSite siteFromContext(App app, final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath basePath) {
         final CMDB cmdb = cmdbEditor.database;
         String text = cmdb.buildGroupCodename(listObj, codeIndex, true);
         final UITextButton button = new UITextButton(text, app.f.schemaFieldTH, () -> {
             ISchemaHost shi = new SchemaHostImpl(app, mapView);
-            for (SchemaPath sp : basePaths)
-                shi.pushObject(sp);
-            SchemaPath sp = shi.getCurrentObject();
+            SchemaPath sp = basePath;
             // enter list
-            sp = sp.newWindow(cmdbEditor, listObj);
-            shi.pushObject(sp);
+            sp = sp.tagSEMonitor(listObj, cmdbEditor, false);
             // enter command
             sp = sp.arrayHashIndex(DMKey.of(codeIndex), "C" + codeIndex);
             sp = sp.newWindow(cmdbEditor.getElementContextualWindowSchema(command), listObj);
-            shi.pushObject(sp);
+            shi.pushPathTree(sp);
         });
         return new CommandSite(button) {
             @Override

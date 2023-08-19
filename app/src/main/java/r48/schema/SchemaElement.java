@@ -86,16 +86,17 @@ public abstract class SchemaElement extends App.Svc {
      * Visits everything.
      * This is to be used in global operations.
      */
-    public final void visit(IRIO target, SchemaPath path, Visitor v) {
+    public final void visit(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
         v.visit(this, target, path);
-        visitChildren(target, path, v);
+        visitChildren(target, path, v, detailedPaths);
     }
 
     /**
      * Visits all sub-paths of this path.
      * This must only have one reference (visit above).
+     * detailedPaths controls if the path should be generating newWindow elements and descriptives or not.
      */
-    public abstract void visitChildren(IRIO target, SchemaPath path, Visitor v);
+    public abstract void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths);
 
     /**
      * Visits each SchemaPath.
@@ -116,7 +117,7 @@ public abstract class SchemaElement extends App.Svc {
         }
 
         @Override
-        public final void visitChildren(IRIO target, SchemaPath path, Visitor v) {
+        public final void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
         }
     }
 }

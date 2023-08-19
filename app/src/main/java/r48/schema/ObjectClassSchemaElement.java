@@ -98,8 +98,8 @@ public class ObjectClassSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
-        backing.visit(target, path, v);
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
+        backing.visit(target, path, v, detailedPaths);
     }
 
     @Override

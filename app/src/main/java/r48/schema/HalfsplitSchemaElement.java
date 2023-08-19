@@ -47,8 +47,8 @@ public class HalfsplitSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void visitChildren(IRIO target, SchemaPath path, Visitor v) {
-        a.visit(target, path, v);
-        b.visit(target, path, v);
+    public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
+        a.visit(target, path, v, detailedPaths);
+        b.visit(target, path, v, detailedPaths);
     }
 }

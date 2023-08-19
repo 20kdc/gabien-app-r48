@@ -116,13 +116,13 @@ public class UIIDChanger extends App.Prx {
             }
         };
         if (fixedPath != null) {
-            fixedPath.editor.visit(fixedPath.targetElement, fixedPath, v);
+            fixedPath.editor.visit(fixedPath.targetElement, fixedPath, v, false);
         } else {
             for (ObjectInfo oi : app.getObjectInfos()) {
                 SchemaPath root = oi.makePath(true);
                 if (root == null)
                     continue;
-                root.editor.visit(root.targetElement, root, v);
+                root.editor.visit(root.targetElement, root, v, false);
             }
         }
         // Expect the earthquakes to start, around about now...
