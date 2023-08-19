@@ -133,7 +133,7 @@
 	mAudPlay "Audio Player..."
 	mREPL "REPL..."
 	mLocateEventCommand "Locate EventCommand in all Pages"
-	mSearch "Search..."
+	mSearchCmdsCEV "Search Commands In Common Events..."
 	mRMTools "RM-Tools"
 	mRunAutoCorrect "See If Autocorrect Modifies Anything"
 	mR48Version "R48 Version"

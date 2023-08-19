@@ -35,7 +35,7 @@ import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.search.USFROperationMode;
 import r48.ui.UIAppendButton;
-import r48.ui.search.UIUSFROperationModeButton;
+import r48.ui.search.UIUSFROperationModeSelector;
 
 /**
  * Universal string locator fun
@@ -47,12 +47,12 @@ public class UIRMUniversalStringReplacer extends App.Prx {
     private RListPanel settingsPartial = new RListPanel(app, T.u.usl_partial);
 
     private UIObjectInfoSetSelector setSelector;
-    private UIUSFROperationModeButton modeSelector;
+    private UIUSFROperationModeSelector modeSelector;
 
     public UIRMUniversalStringReplacer(App app) {
         super(app);
         setSelector = new UIObjectInfoSetSelector(app);
-        modeSelector = new UIUSFROperationModeButton(app, app.f.dialogWindowTH);
+        modeSelector = new UIUSFROperationModeSelector(app, app.f.dialogWindowTH);
         Set<ObjectInfo> setCopy = setSelector.getSet();
 
         // load config if possible

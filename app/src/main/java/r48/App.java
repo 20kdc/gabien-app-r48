@@ -80,7 +80,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     /**
      * Main list of command classifiers. For use by UICommandClassifierSet.
      */
-    public final LinkedList<ICommandClassifier> classifiers = new LinkedList<>();
+    public final LinkedList<ICommandClassifier> cmdClassifiers = new LinkedList<>();
 
     /**
      * Initialize App.
@@ -88,7 +88,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
      */
     public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, String rp, String sip, IConsumer<String> loadProgress) {
         super(ilg, charset, gp, rp, sip, loadProgress);
-        classifiers.add(new ICommandClassifier() {
+        cmdClassifiers.add(new ICommandClassifier() {
             @Override
             public String getName() {
                 return ilg.t.u.ccAll;

@@ -6,16 +6,16 @@
  */
 package r48.map.systems;
 
-import gabien.uslx.append.ISupplier;
+import gabien.ui.UISplitterLayout;
+import gabien.ui.UITextButton;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.UIMapView;
 import r48.maptools.UIMTBase;
-import r48.search.CommandSite;
-import r48.search.CommandTag;
 import r48.search.RMFindTranslatables;
+import r48.ui.search.UICommandClassifierSelector;
 import r48.ui.search.UICommandSites;
 
 /**
@@ -23,29 +23,30 @@ import r48.ui.search.UICommandSites;
  * Extracted from R2kSystem on 30th September 2022
  */
 public final class FindTranslatablesToolButton extends ToolButton {
+    public final App app;
     public final String ep;
     public FindTranslatablesToolButton(App app, String e) {
-        super(app.t.m.bFindTranslatables);
+        super(app.t.m.bSearchCmds);
+        this.app = app;
         ep = e;
     }
 
     @Override
     public UIMTBase apply(final IMapToolContext a) {
-        UIMapView umv = a.getMapView();
-        final IObjectBackend.ILoadedObject map = umv.map.object;
-        UICommandSites ucs = new UICommandSites(umv.app, umv.map.objectId, new ISupplier<CommandSite[]>() {
-            @Override
-            public CommandSite[] get() {
+        UICommandClassifierSelector uiccs = new UICommandClassifierSelector(app, app.commandTags.get("translatable"));
+        UISplitterLayout uspl = new UISplitterLayout(uiccs, new UITextButton(app.t.g.bConfirm, app.f.dialogWindowTH, () -> {
+            UIMapView umv = a.getMapView();
+            final IObjectBackend.ILoadedObject map = umv.map.object;
+            UICommandSites ucs = new UICommandSites(umv.app, umv.map.objectId, () -> {
                 RMFindTranslatables rft = new RMFindTranslatables(umv.app, map);
-                CommandTag trTag = umv.app.commandTags.get("translatable");
-                if (trTag != null)
-                    rft.addSitesFromMap(a.getMapView(), ep, trTag);
+                rft.addSitesFromMap(a.getMapView(), ep, uiccs.getClassifier());
                 return rft.toArray();
-            }
-        }, new IObjectBackend.ILoadedObject[] {
-            map
-        });
-        ucs.show();
+            }, new IObjectBackend.ILoadedObject[] {
+                map
+            });
+            ucs.show();
+        }), true, 1);
+        app.ui.wm.createWindow(uspl, "mSearchCmds");
         return null;
     }
 }

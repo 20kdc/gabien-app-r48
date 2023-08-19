@@ -84,7 +84,7 @@ public class TrAppUI extends TrPage {
     public String mLoadIMI;
     public String mRMTools;
     public String mLocateEventCommand;
-    public String mSearch;
+    public String mSearchCmdsCEV;
     public String mRunAutoCorrect;
     public String mR48Version;
     public String mUniversalStringFinder;

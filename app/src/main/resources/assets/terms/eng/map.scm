@@ -111,7 +111,7 @@
 
 	shadowLayerRegion "Region:"
 	bLoadMap "Load Map"
-	bFindTranslatables "Find Translatables"
+	bSearchCmds "Search Commands..."
 
 	(mp_
 		noClip "Unable - there is no clipboard."

@@ -210,7 +210,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         for (String s : app.getAllObjects()) {
                             IObjectBackend.ILoadedObject obj = app.odb.getObject(s, null);
                             if (obj != null) {
-                                USFROperationMode.All.INSTANCE.locate(app, obj.getObject(), new IFunction<IRIO, Integer>() {
+                                USFROperationMode.All.locate(app, obj.getObject(), new IFunction<IRIO, Integer>() {
                                     @Override
                                     public Integer apply(IRIO rubyIO) {
                                         text.add(rubyIO.decString());

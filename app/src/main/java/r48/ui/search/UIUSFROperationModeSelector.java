@@ -13,12 +13,12 @@ import r48.ui.UIChoiceButton;
 /**
  * Created 18th August, 2023.
  */
-public class UIUSFROperationModeButton extends UIChoiceButton<USFROperationMode> {
-    public UIUSFROperationModeButton(App app, int h2) {
+public class UIUSFROperationModeSelector extends UIChoiceButton<USFROperationMode> {
+    public UIUSFROperationModeSelector(App app, int h2) {
         this(app, h2, USFROperationMode.listForApp(app));
     }
 
-    private UIUSFROperationModeButton(App app, int h2, USFROperationMode[] b) {
+    private UIUSFROperationModeSelector(App app, int h2, USFROperationMode[] b) {
         super(app, h2, b[0], b);
     }
 

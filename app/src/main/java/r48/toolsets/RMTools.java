@@ -9,6 +9,8 @@ package r48.toolsets;
 
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
+import gabien.ui.UISplitterLayout;
+import gabien.ui.UITextButton;
 import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.ObjectInfo;
@@ -20,14 +22,13 @@ import r48.maptools.UIMTEventPicker;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.SchemaPath;
-import r48.search.CommandSite;
-import r48.search.ICommandClassifier;
 import r48.search.RMFindTranslatables;
 import r48.toolsets.utils.UIIDChanger;
 import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIRMUniversalStringFinder;
 import r48.ui.dialog.UIRMUniversalStringReplacer;
 import r48.ui.dialog.UITranscriptControl;
+import r48.ui.search.UICommandClassifierSelector;
 import r48.ui.search.UICommandSites;
 
 import java.util.LinkedList;
@@ -59,7 +60,7 @@ public class RMTools extends App.Svc {
     public UIElement genButton() {
         return new UIMenuButton(app, T.u.mRMTools, app.f.menuTH, null, new String[] {
                 T.u.mLocateEventCommand,
-                T.u.mSearch,
+                T.u.mSearchCmdsCEV,
                 T.u.mRunAutoCorrect,
                 T.u.mUniversalStringFinder,
                 T.u.mUniversalStringReplacer,
@@ -118,19 +119,19 @@ public class RMTools extends App.Svc {
                     });
                 },
                 () -> {
-                    final IObjectBackend.ILoadedObject ilo = mapSystem.getCommonEventRoot();
-                    UICommandSites ucs = new UICommandSites(app, app.odb.getIdByObject(ilo), new ISupplier<CommandSite[]>() {
-                        @Override
-                        public CommandSite[] get() {
+                    UICommandClassifierSelector uiccs = new UICommandClassifierSelector(app, app.commandTags.get("translatable"));
+                    UISplitterLayout uspl = new UISplitterLayout(uiccs, new UITextButton(T.g.bConfirm, app.f.dialogWindowTH, () -> {
+                        final IObjectBackend.ILoadedObject ilo = mapSystem.getCommonEventRoot();
+                        UICommandSites ucs = new UICommandSites(app, app.odb.getIdByObject(ilo), () -> {
                             RMFindTranslatables rft = new RMFindTranslatables(app, ilo);
-                            ICommandClassifier trTag = app.commandTags.get("translatable");
-                            rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents(), trTag);
+                            rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents(), uiccs.getClassifier());
                             return rft.toArray();
-                        }
-                    }, new IObjectBackend.ILoadedObject[] {
-                        ilo
-                    });
-                    ucs.show();
+                        }, new IObjectBackend.ILoadedObject[] {
+                            ilo
+                        });
+                        ucs.show();
+                    }), true, 1);
+                    app.ui.wm.createWindow(uspl, "mSearchCmds");
                 },
                 () -> {
                     LinkedList<ObjectInfo> objects = app.getObjectInfos();

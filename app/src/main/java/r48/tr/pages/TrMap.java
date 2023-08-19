@@ -116,7 +116,7 @@ public class TrMap extends TrPage {
 
     public String shadowLayerRegion;
     public String bLoadMap;
-    public String bFindTranslatables;
+    public String bSearchCmds;
 
     public String mp_noClip;
     public String mp_notTable;

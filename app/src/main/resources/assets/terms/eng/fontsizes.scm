@@ -55,6 +55,7 @@
 	mapToolbarS "mapToolbarS"
 	tilesTabS "tilesTabS"
 	schemaPagerTabS "schemaPagerTabS"
+	finderTabS "finderTabS"
 	
 	gridS "gridS"
 	cellSelectS "cellSelectS"

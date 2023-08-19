@@ -35,7 +35,7 @@ public abstract class USFROperationMode {
     public static USFROperationMode[] listForApp(App app) {
         LinkedList<USFROperationMode> lls = new LinkedList<>();
         lls.add(All.INSTANCE);
-        for (ICommandClassifier icc : app.classifiers)
+        for (ICommandClassifier icc : app.cmdClassifiers)
             lls.add(new CmdTag(icc));
         return lls.toArray(new USFROperationMode[0]);
     }
@@ -53,7 +53,7 @@ public abstract class USFROperationMode {
             return locate(app, oi.getObject(), string, writing);
         }
 
-        public int locate(App app, IRIO rio, IFunction<IRIO, Integer> string, boolean writing) {
+        public static int locate(App app, IRIO rio, IFunction<IRIO, Integer> string, boolean writing) {
             // NOTE: Hash keys, ivar keys are not up for modification.
             int total = 0;
             int type = rio.getType();
@@ -103,9 +103,8 @@ public abstract class USFROperationMode {
             se.visit(sp.targetElement, sp, (element, target, path) -> {
                 if (element instanceof RPGCommandSchemaElement) {
                     RPGCommand rc = ((RPGCommandSchemaElement) element).getRPGCommand(target);
-                    if (base.matches(rc)) {
-                        ai.addAndGet(All.INSTANCE.locate(app, target, string, writing));
-                    }
+                    if (base.matches(rc))
+                        ai.addAndGet(All.locate(app, target, string, writing));
                 }
             });
             return ai.get();

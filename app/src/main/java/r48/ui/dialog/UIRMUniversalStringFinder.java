@@ -23,7 +23,7 @@ import r48.dbs.ObjectInfo;
 import r48.io.IObjectBackend;
 import r48.search.USFROperationMode;
 import r48.ui.UIAppendButton;
-import r48.ui.search.UIUSFROperationModeButton;
+import r48.ui.search.UIUSFROperationModeSelector;
 
 /**
  * Universal string locator fun, part 2 (almost a year after the first!)
@@ -35,13 +35,13 @@ public class UIRMUniversalStringFinder extends App.Prx {
     private RListPanel settingsPartial = new RListPanel(app, T.u.usl_partial);
 
     private UIObjectInfoSetSelector setSelector;
-    private UIUSFROperationModeButton modeSelector;
+    private UIUSFROperationModeSelector modeSelector;
     private boolean caseInsensitive = true;
 
     public UIRMUniversalStringFinder(App app) {
         super(app);
         setSelector = new UIObjectInfoSetSelector(app);
-        modeSelector = new UIUSFROperationModeButton(app, app.f.dialogWindowTH);
+        modeSelector = new UIUSFROperationModeSelector(app, app.f.dialogWindowTH);
 
         refreshContents();
 

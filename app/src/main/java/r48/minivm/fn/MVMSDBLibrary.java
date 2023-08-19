@@ -36,7 +36,7 @@ public class MVMSDBLibrary {
             FF0 ax = app.dTr(DatumSrcLoc.NONE, TrNames.cmdbCommandTag(id), MVMU.coerceToString(a1));
             CommandTag tag = new CommandTag(id, ax);
             app.commandTags.put(id, tag);
-            app.classifiers.add(tag);
+            app.cmdClassifiers.add(tag);
             return null;
         }).attachHelp("(cmdb-add-tag ID NAME) : Adds a command tag.");
 
