@@ -63,7 +63,9 @@ e event_trigger 0 onInteract 1 onPlayerWalkAgainst 2 onEventWalkAgainst 3 autoru
 e event_movetype 0 fixed 1 random 2 approachPlayer 3 moveRoute
 
 : RPG::Event::Page
+C datum `
 (define-name Class.RPG::Event::Page (@ @condition))
+`
 @condition subwindow RPG::Event::Page::Condition
 @through boolean
 @move_type event_movetype
