@@ -121,4 +121,5 @@ public class TrAppUI extends TrPage {
     public FF1 confirmDeletion;
 
     public String ccAll;
+    public String dumpWhateverICanThinkOfToJSON;
 }

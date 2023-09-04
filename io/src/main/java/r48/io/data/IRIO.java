@@ -87,6 +87,13 @@ public abstract class IRIO extends RORIO {
 
     public abstract IRIO addAElem(int i);
 
+    /**
+     * Appends a new array element to the end of the array.
+     */
+    public IRIO appendAElem() {
+        return addAElem(getALen());
+    }
+
     public abstract void rmAElem(int i);
 
     // If true, safety measures are activated in IMI

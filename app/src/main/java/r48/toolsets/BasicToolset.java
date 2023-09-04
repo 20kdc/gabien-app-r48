@@ -26,6 +26,7 @@ import r48.schema.SchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBinders;
 import r48.schema.util.SchemaPath;
+import r48.toolsets.utils.LibLCF245Dumper;
 import r48.toolsets.utils.UITestGraphicsStuff;
 import r48.tr.pages.TrRoot;
 import r48.ui.UIAppendButton;
@@ -309,6 +310,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 T.u.mTryRecover,
                 T.u.mAudPlay,
                 T.u.mREPL,
+                T.u.dumpWhateverICanThinkOfToJSON
         }, new Runnable[] {
                 () -> {
                     app.ui.launchPrompt(T.u.dlgFontSize, (s) -> {
@@ -368,6 +370,10 @@ public class BasicToolset extends App.Svc implements IToolset {
                     String title = T.t.appREPL;
                     UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(app.c, app.vmCtx, title);
                     app.ui.wm.createWindow(repl);
+                },
+                () -> {
+                    RORIO res = new LibLCF245Dumper(app).dumpRoot();
+                    AdHocSaveLoad.saveJSON("cmdb", res);
                 }
         }).centred();
     }

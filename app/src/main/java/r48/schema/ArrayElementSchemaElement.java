@@ -30,8 +30,8 @@ import r48.ui.UIFieldLayout;
  */
 public class ArrayElementSchemaElement extends SchemaElement implements IFieldSchemaElement {
     public int index;
-    public @Nullable FF0 nameCb;
-    public SchemaElement subSchema;
+    public @Nullable FF0 alias;
+    public SchemaElement subElem;
     public @Nullable FF0 optional;
     // Removes the element rather than cutting the array. Only use when it is safe to do so.
     public boolean delRemove;
@@ -42,17 +42,17 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     public ArrayElementSchemaElement(App app, int ind, @Nullable FF0 niceName, SchemaElement ise, @Nullable FF0 opt, boolean dr) {
         super(app);
         index = ind;
-        nameCb = niceName;
-        subSchema = ise;
+        alias = niceName;
+        subElem = ise;
         optional = opt;
         delRemove = dr;
     }
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
-        if (nameCb == null)
+        if (alias == null)
             return HiddenSchemaElement.makeHiddenElement();
-        final String name = nameCb.r();
+        final String name = alias.r();
         if (target.getALen() <= index) {
             String tx = T.s.aElmInv;
             if (optional != null)
@@ -60,11 +60,11 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
             return new UITextButton(tx, app.f.schemaFieldTH, () -> {
                 // resize to include and set default
                 resizeToInclude(target);
-                subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), "." + name), true);
+                subElem.modifyVal(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), "." + name), true);
                 path.changeOccurred(false);
             });
         }
-        UIElement core = subSchema.buildHoldingEditor(target.getAElem(index), launcher, path.arrayHashIndex(DMKey.of(index), "." + name));
+        UIElement core = subElem.buildHoldingEditor(target.getAElem(index), launcher, path.arrayHashIndex(DMKey.of(index), "." + name));
 
         if (!name.equals("")) {
             UILabel label = new UILabel(name, app.f.schemaFieldTH);
@@ -88,9 +88,9 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
 
     @Override
     public int getDefaultFieldWidth(IRIO target) {
-        if (nameCb == null)
+        if (alias == null)
             return 0;
-        return UIBorderedElement.getRecommendedTextSize(GaBIEn.sysThemeRoot.getTheme(), nameCb.r() + " ", app.f.schemaFieldTH).width;
+        return UIBorderedElement.getRecommendedTextSize(GaBIEn.sysThemeRoot.getTheme(), alias.r() + " ", app.f.schemaFieldTH).width;
     }
 
     @Override
@@ -113,8 +113,8 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         if (optional == null)
             changed |= resizeToInclude(target);
         if (target.getALen() > index) {
-            String indexStr = nameCb != null ? "." + nameCb.r() : ("]" + index);
-            subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), indexStr), setDefault);
+            String indexStr = alias != null ? "." + alias.r() : ("]" + index);
+            subElem.modifyVal(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), indexStr), setDefault);
         }
         if (changed)
             path.changeOccurred(true);
@@ -123,8 +123,8 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     @Override
     public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
         if (target.getALen() > index) {
-            String indexStr = nameCb != null ? "." + nameCb.r() : ("]" + index);
-            subSchema.visit(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), indexStr), v, detailedPaths);
+            String indexStr = alias != null ? "." + alias.r() : ("]" + index);
+            subElem.visit(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), indexStr), v, detailedPaths);
         }
     }
 

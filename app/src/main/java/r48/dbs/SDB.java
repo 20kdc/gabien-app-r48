@@ -26,6 +26,7 @@ import r48.schema.util.SchemaPath;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -160,6 +161,20 @@ public class SDB extends App.Svc {
             schemaDatabase.put(text, npse);
             return npse;
         }
+    }
+
+    /**
+     * Added for liblcf#245, not really something app should use otherwise
+     */
+    public HashSet<String> getAllSDBEntryIDs() {
+        return new HashSet<>(schemaDatabase.keySet());
+    }
+
+    /**
+     * Added for liblcf#245, not really something app should use otherwise
+     */
+    public HashSet<String> getAllCMDBIDs() {
+        return new HashSet<>(cmdbs.keySet());
     }
 
     public LinkedList<ObjectInfo> listFileDefs() {

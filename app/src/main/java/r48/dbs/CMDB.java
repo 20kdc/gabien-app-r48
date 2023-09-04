@@ -451,6 +451,7 @@ public class CMDB extends App.Svc {
                     localAliasing.put(args[0], sdb.getSDBEntry(args[1]));
                 } else if ((c == 'X') || (c == 'x')) {
                     rc.specialSchema = sdb.getSDBEntry(args[0]);
+                    rc.specialSchemaEssential = c == 'X';
                 } else if (c == 'C') {
                     if (args[0].equals("category")) {
                         rc.category = Integer.parseInt(args[1]);

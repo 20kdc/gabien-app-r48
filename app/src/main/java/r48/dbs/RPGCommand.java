@@ -41,6 +41,10 @@ public class RPGCommand extends App.Svc {
     public FF1 name;
 
     public SchemaElement specialSchema;
+    /**
+     * For use by LibLCF245Dumper
+     */
+    public boolean specialSchemaEssential;
 
     // As the entire paramType cannot be replaced (paramType is relied upon for parameter names), this instead allows supplementing it.
     public LinkedList<SpecialTag> paramSpecialTags = new LinkedList<SpecialTag>();

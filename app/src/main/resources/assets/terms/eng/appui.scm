@@ -187,4 +187,5 @@
 	confirmDeletion (fl1 "Are you sure you want to delete " a0 "?")
 
 	ccAll "All Commands"
+	dumpWhateverICanThinkOfToJSON "Command & Enum Information -> cmdb.json"
 )
