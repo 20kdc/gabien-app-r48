@@ -65,11 +65,13 @@ public class TimeWaster {
                 break;
         }
         moveTime += deltaTime * mul;
-        igd.blitScaledImage(0, 0, 64, 64, iconPlanX, iconPlanY, iconSize, iconSize, Art.noMap);
-        type *= 127;
-        if (type > 240)
-            type = 255;
-        igd.fillRect(0, 0, 0, type, iconPlanX, iconPlanY, iconSize, iconSize);
+        // stops flickering on light theme. obviously, it would be better if the no map indicator was better.
+        // more of a reason to start getting serious about PVA, frankly. it'd handle all of this perfectly.
+        if (type != 2) {
+            igd.fillRect(0, 0, 0, 255, iconPlanX, iconPlanY, iconSize, iconSize);
+            igd.blitScaledImage(0, 0, 64, 64, iconPlanX, iconPlanY, iconSize, iconSize, Art.noMap);
+            igd.fillRect(0, 0, 0, type * 127, iconPlanX, iconPlanY, iconSize, iconSize);
+        }
     }
 
     // x/y is a position to stay away from.
