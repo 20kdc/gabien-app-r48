@@ -6,7 +6,7 @@ An editor compatible with RPG Maker 2000/2003, EasyRPG Player,
  RPG Maker XP, RPG Maker VX Ace, and Ikachan. Also a sticky note program.
 
 In *RPG Maker 2000/2003 mode, it allows creating games from scratch*.
-For a runtime, you can use (EasyRPG Player)[https://easyrpg.org/] (a project not related to R48, serving as an open-source replacement RPG_RT).
+For a runtime, you can use [EasyRPG Player](https://easyrpg.org/) (a project not related to R48, serving as an open-source replacement RPG_RT).
 
 As this does not use any assets or executables owned by the makers of RPG Maker, this is an independent open-source free game creation system.
 
@@ -47,7 +47,7 @@ GitHub Issues are used for feature requests and bug reports.
 
 I'm `@20kdc:matrix.org` on Matrix right now but that might change.
 
-Support over Discord is currently only available by finding me (`20kdc#9365`).
+Support over Discord is currently only available by finding me (`20kdc`).
 
 Upon crash, R48 ought to give you the information and data you need to continue, but no guarantees.
 If you have a lot of unsaved data, it may simply freeze while writing tons of data into the crash file.
@@ -84,7 +84,7 @@ Development by everybody in CREDITS.txt (which is pasted into the version.txt of
 
 Support for various target engines was gained by the following:
 
-RPG Maker 2000/2003: Reading the format documentation in EasyRPG's (liblcf)[https://github.com/EasyRPG/liblcf]
+RPG Maker 2000/2003: Reading the format documentation in EasyRPG's [liblcf](https://github.com/EasyRPG/liblcf)
  (I have checked, this use is fine and doesn't require a PD-breaking MIT header, which would have resulted in me splitting the repository),
  some guesswork, and checking the results against several games to ensure compatibility.
 
