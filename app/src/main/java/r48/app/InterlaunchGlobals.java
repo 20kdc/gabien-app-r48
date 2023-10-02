@@ -22,6 +22,7 @@ import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
 import r48.tr.LanguageList;
 import r48.tr.pages.TrRoot;
+import r48.ui.Art;
 
 /**
  * Globals shared between launcher and app.
@@ -29,6 +30,7 @@ import r48.tr.pages.TrRoot;
  * Created 28th February, 2023
  */
 public class InterlaunchGlobals implements IDynTrProxy {
+    public final Art a;
     public final Config c;
     public final TrRoot t = new TrRoot();
     private MVMEnvR48 langVM;
@@ -36,7 +38,8 @@ public class InterlaunchGlobals implements IDynTrProxy {
     private HashMap<String, EngineDef> engineDefs;
     public final IConsumer<String> logTrIssues;
 
-    public InterlaunchGlobals(Config c, IConsumer<MVMEnv> report, IConsumer<String> loadProgress, IConsumer<String> trIssues) {
+    public InterlaunchGlobals(Art a, Config c, IConsumer<MVMEnv> report, IConsumer<String> loadProgress, IConsumer<String> trIssues) {
+        this.a = a;
         this.c = c;
         logTrIssues = trIssues;
         reportVMChanges = report;

@@ -6,22 +6,20 @@
  */
 package gabienapp.state;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import gabien.GaBIEn;
+import gabien.pva.PVAFile;
+import gabien.pva.PVARenderer;
 import gabien.render.IGrDriver;
-import gabien.text.TextTools;
 import gabien.ui.Rect;
-import gabien.ui.UIBorderedElement;
-import gabien.ui.UILabel;
-import gabien.ui.theming.Theme;
-import gabien.ui.theming.ThemingCentral;
 import gabien.uslx.append.IConsumer;
 import gabien.wsi.IGrInDriver;
 import gabien.wsi.WindowSpecs;
 import gabienapp.Launcher;
 import gabienapp.Launcher.State;
-import r48.ui.Art;
 
 /**
  * Initial state of the launcher.
@@ -29,14 +27,13 @@ import r48.ui.Art;
  */
 public class LSSplashScreen extends State {
     private int frames = -1; // Fadeout
-    private int timer2 = 0; // Baton
-    private String movement = " "; // the baton is 'thrown'
+    private double logoAnimationTimer = 0;
     private final IConsumer<Integer> done;
-    private boolean completed = false;
+    private boolean completed = false, isFirstFrame = true;
     private final IGrInDriver gi;
     private IGrDriver backBuffer;
     private final AtomicBoolean donePrimaryTask = new AtomicBoolean(false);
-    private final TextTools.PlainCached progressCache = new TextTools.PlainCached();
+    private PVARenderer r48Logo;
 
     public LSSplashScreen(Launcher lun, Runnable task, IConsumer<Integer> done) {
         super(lun);
@@ -51,77 +48,69 @@ public class LSSplashScreen extends State {
         ws.resizable = true;
         gi = GaBIEn.makeGrIn("R48 Startup...", 800, 600, ws);
         // runs in parallel with font-load wait
-        Thread txdbThread = new Thread() {
-            @Override
-            public void run() {
-                task.run();
-                donePrimaryTask.set(true);
-            }
-        };
+        Thread txdbThread = new Thread(() -> {
+            long a = System.currentTimeMillis();
+            task.run();
+            donePrimaryTask.set(true);
+            long b = System.currentTimeMillis();
+            System.err.println("R48: Splash: Spent " + (b - a) + "ms (of 1000ms logo time) on actual init.");
+        });
         txdbThread.start();
     }
+
+    private static final Rect r48Ver = new Rect(33, 48, 31, 16);
 
     @Override
     public void tick(double dT) {
         if (completed)
             return;
+        if (!isFirstFrame) {
+            logoAnimationTimer += dT * 1000;
+        } else {
+            System.err.println("R48: Splash: Took " + GaBIEn.getTime() + " seconds to get here");
+            // This is kept separate from Art so that Art can be initialized off-thread
+            try (InputStream inp = GaBIEn.getResource("animations/logo.pva")) {
+                r48Logo = new PVARenderer(inp);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            isFirstFrame = false;
+        }
         backBuffer = gi.ensureBackBuffer(backBuffer);
         gi.flush(backBuffer); // to kickstart w/h
         IGrDriver bb = backBuffer = gi.ensureBackBuffer(backBuffer);
         bb.clearAll(255, 255, 255);
         int sz = (Math.min(bb.getWidth(), bb.getHeight()) / 4) * 2;
-        Rect ltPos = Art.r48ico;
-        Rect ltPos2 = Art.r48ver;
 
         // note the swap on Y from - (sz / 2) because of the version
         Rect pos = new Rect((bb.getWidth() / 2) - (sz / 2), (bb.getHeight() / 2) - ((sz * 3) / 4), sz, sz);
-        int fxRatio = ltPos2.width * ltPos2.height;
-        int aspectMul = (ltPos2.height * fxRatio) / ltPos2.width;
+        int fxRatio = r48Ver.width * r48Ver.height;
+        int aspectMul = (r48Ver.height * fxRatio) / r48Ver.width;
         int szVHeight = (sz * aspectMul) / fxRatio;
         // this is where the "big version number" maths get changed to "little version number" maths
         Rect pos2 = new Rect(pos.x + (sz / 4), pos.y + (pos.height + (pos.height / 16)), sz / 2, szVHeight / 2);
-        bb.blitScaledImage(ltPos.x, ltPos.y, ltPos.width, ltPos.height, pos.x, pos.y, pos.width, pos.height, GaBIEn.getImageEx("layertab.png", false, true));
+        if (r48Logo != null) {
+            PVAFile.FrameElm[] logoFrame = r48Logo.pvaFile.frames[r48Logo.pvaFile.frameOfClamped(logoAnimationTimer)];
+            int logoExpand = ((sz * r48Logo.pvaFile.header.width) / r48Logo.pvaFile.header.height) - sz;
+            r48Logo.renderInline(logoFrame, bb, pos.x - (logoExpand / 2), pos.y, pos.width + logoExpand, pos.height);
+        }
         int margin = sz / 124;
         bb.clearRect(192, 192, 192, pos2.x - (margin * 3), pos2.y - (margin * 3), pos2.width + (margin * 6), pos2.height + (margin * 6));
         bb.clearRect(128, 128, 128, pos2.x - (margin * 2), pos2.y - (margin * 2), pos2.width + (margin * 4), pos2.height + (margin * 4));
         bb.clearRect(0, 0, 0, pos2.x - margin, pos2.y - margin, pos2.width + (margin * 2), pos2.height + (margin * 2));
-        bb.blitScaledImage(ltPos2.x, ltPos2.y, ltPos2.width, ltPos2.height, pos2.x, pos2.y, pos2.width, pos2.height, GaBIEn.getImageEx("layertab.png", false, true));
+        bb.blitScaledImage(r48Ver.x, r48Ver.y, r48Ver.width, r48Ver.height, pos2.x, pos2.y, pos2.width, pos2.height, GaBIEn.getImageEx("layertab.png", false, true));
 
-
-        // Can't translate for several reasons (but especially no fonts).
-        // This is really the only reason any of the messages are likely to be seen.
-        String waitingFor = null;
-        // Doesn't matter if it switches font on the last frame or something, just make sure the application remains running
-        if (!donePrimaryTask.get())
-            waitingFor = "Loading";
-        if (waitingFor == null) {
+        if (donePrimaryTask.get()) {
             frames++;
-            if (frames == 16) {
+            // 16 frames for WSI to stabilize OR 1 second
+            if (frames >= 16 && logoAnimationTimer > 1000.0d) {
                 int r = gi.estimateUIScaleTenths();
                 gi.shutdown();
                 done.accept(r);
                 completed = true;
                 return;
             }
-            waitingFor = "Fading";
         }
-        char[] chars = {'|', '/', '-', '\\'};
-        char ch = chars[timer2 % chars.length];
-        timer2++;
-        movement += "  ";
-        // has to be internal-font-able, unless on Android
-        int goodSize = 16;
-        if (lun.isMobile)
-            goodSize = bb.getHeight() / 32;
-        if (goodSize < 8)
-            goodSize = 8;
-        Theme theme = ThemingCentral.themes[0];
-        int goodSizeActual = UIBorderedElement.getBorderedTextHeight(theme, goodSize);
-        UILabel.drawLabel(theme, bb, bb.getWidth(), 0, bb.getHeight() - goodSizeActual, waitingFor + movement + ch, Theme.B_TEXTBOX, goodSize, progressCache);
-
-        // fade
-        int c = Math.max(0, Math.min(255, 25 * frames)) << 24;
-        bb.blitScaledImage(0, 0, 1, 1, 0, 0, bb.getWidth(), bb.getHeight(), GaBIEn.createImage(new int[] {c}, 1, 1));
     }
 
 }

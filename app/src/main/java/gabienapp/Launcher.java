@@ -6,6 +6,8 @@
  */
 package gabienapp;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
@@ -23,6 +25,7 @@ import r48.minivm.MVMEnv;
 import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
 import r48.tr.LanguageList;
+import r48.ui.Art;
 
 /**
  * Rethink of how this should work for code reasons.
@@ -30,11 +33,11 @@ import r48.tr.LanguageList;
  */
 public class Launcher {
     public final boolean isMobile;
-    public final Config c;
     public final WindowCreatingUIElementConsumer uiTicker;
     public State currentState;
 
-    // Warning: These two are not finished until during splash screen (and off-thread at that)
+    // Warning: These are not finished until during splash screen (and off-thread at that)
+    public volatile Config c;
     public volatile MVMEnv vmCtx;
     public volatile InterlaunchGlobals ilg;
 
@@ -43,9 +46,7 @@ public class Launcher {
 
     public Launcher() {
         isMobile = GaBIEn.singleWindowApp();
-        c = new Config(isMobile);
-        final boolean fontsLoaded = ConfigIO.load(true, c);
-        c.applyUIGlobals();
+        final AtomicBoolean fontsLoaded = new AtomicBoolean();
         uiTicker = new WindowCreatingUIElementConsumer() {
             @Override
             public void accept(UIElement o, int scale, boolean fullscreen, boolean resizable) {
@@ -56,7 +57,10 @@ public class Launcher {
         };
         // Setup initial state
         currentState = new LSSplashScreen(this, () -> {
-            ilg = new InterlaunchGlobals(c, (vm) -> vmCtx = vm, (str) -> {
+            // Initialize as much as possible here.
+            c = new Config(isMobile);
+            fontsLoaded.set(ConfigIO.load(true, c));
+            ilg = new InterlaunchGlobals(new Art(), c, (vm) -> vmCtx = vm, (str) -> {
                 // this would presumably go to the splash screen
             }, (str) -> System.err.println("TR: " + str));
             boolean canAvoidWait = c.fontOverride == null;
@@ -71,8 +75,9 @@ public class Launcher {
                 while (!GaBIEn.fontsReady)
                     Thread.yield();
         }, (uiScaleTenths) -> {
+            c.applyUIGlobals();
             globalMS = 33;
-            if (!fontsLoaded)
+            if (!fontsLoaded.get())
                 autoDetectCorrectUISize(uiScaleTenths);
             currentState = new LSMain(this);
         });

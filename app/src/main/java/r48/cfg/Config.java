@@ -52,7 +52,7 @@ public class Config {
         }
 
         windowingExternal = false;
-        fontOverride = GaBIEn.getFontOverrides()[0];
+        fontOverride = GaBIEn.getDefaultNativeFontName();
         fontOverrideUE8 = false;
         borderTheme = 0;
 

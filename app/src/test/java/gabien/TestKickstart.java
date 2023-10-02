@@ -23,6 +23,7 @@ import r48.cfg.Config;
 import r48.dbs.ObjectDB;
 import r48.io.IObjectBackend;
 import r48.tests.grand.GrandExecutionError;
+import r48.ui.Art;
 import r48.wm.GrandWindowManagerUtils;
 
 import java.io.*;
@@ -67,9 +68,10 @@ public class TestKickstart {
         } catch (UnsupportedCharsetException uce) {
             throw new RuntimeException(uce);
         }
+        Art a = new Art();
         Config c = new Config(false);
         c.applyUIGlobals();
-        InterlaunchGlobals ilg = new InterlaunchGlobals(c, (vm) -> {}, (str) -> {}, (str) -> {
+        InterlaunchGlobals ilg = new InterlaunchGlobals(a, c, (vm) -> {}, (str) -> {}, (str) -> {
             // this is to catch any SDB tr conflicts
             throw new RuntimeException("TR issue during tests: " + str);
         });

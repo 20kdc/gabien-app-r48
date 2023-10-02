@@ -29,12 +29,12 @@ public class Art {
     // Generated Images
     private static IImage colourPal, rainbow;
 
-    public static Rect r48ico = new Rect(33, 1, 31, 31);
-    public static Rect r48ver = new Rect(33, 48, 31, 16);
-
     // Must be -dotLineAni
     private static final int dotLineMetric = 27;
     private static final int dotLineAni = 2;
+
+    public Art() {
+    }
 
     // This controls the layout of (in particular) zoom
     public static int getZIconSize(App app) {
