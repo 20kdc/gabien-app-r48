@@ -12,12 +12,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
-import gabien.uslx.append.IConsumer;
 import r48.cfg.Config;
 import r48.cfg.FontSizes;
 import r48.dbs.ATDB;
@@ -57,7 +57,7 @@ public class AppCore {
     public final @NonNull String rootPath;
     public final @Nullable String secondaryImagePath;
 
-    public final @NonNull IConsumer<String> loadProgress;
+    public final @NonNull Consumer<String> loadProgress;
 
     public final boolean deletionButtonsNeedConfirmation;
 
@@ -65,7 +65,7 @@ public class AppCore {
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public AppCore(@NonNull InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef engine, @NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
+    public AppCore(@NonNull InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef engine, @NonNull String rp, @Nullable String sip, @NonNull Consumer<String> lp) {
         this.ilg = ilg;
         this.encoding = charset;
         c = ilg.c;

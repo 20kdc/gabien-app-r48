@@ -21,6 +21,7 @@ import r48.ui.UIAppendButton;
 import r48.wm.IDuplicatableWindow;
 
 import java.util.Stack;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -86,7 +87,7 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDupl
     // Used so this doesn't require too much changes when moved about
     private UIElement toolbarRoot = toolbarSandwich;
 
-    private IConsumer<SchemaPath> nudgeRunnable = new IConsumer<SchemaPath>() {
+    private Consumer<SchemaPath> nudgeRunnable = new Consumer<SchemaPath>() {
         @Override
         public void accept(SchemaPath sp) {
             nudged = true;

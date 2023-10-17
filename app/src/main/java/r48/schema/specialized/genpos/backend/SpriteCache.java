@@ -9,7 +9,6 @@ package r48.schema.specialized.genpos.backend;
 
 import gabien.GaBIEn;
 import gabien.render.IImage;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
@@ -18,6 +17,7 @@ import r48.imagefx.MultiplyImageEffect;
 import r48.io.data.IRIO;
 
 import java.util.LinkedList;
+import java.util.function.Function;
 
 /**
  * RMAnimRootPanel stuff that doesn't fit in IGenposFrame R/N
@@ -26,13 +26,13 @@ import java.util.LinkedList;
 public class SpriteCache extends App.Svc {
     public IRIO target;
     public String framesetALoc, framesetAHue, framesetBLoc, framesetBHue;
-    public IFunction<IRIO, Integer> spsDeterminant;
-    public IFunction<IRIO, String> pfxDeterminant;
+    public Function<IRIO, Integer> spsDeterminant;
+    public Function<IRIO, String> pfxDeterminant;
 
     private IImage framesetCacheA, framesetCacheB;
     public int spriteSize;
 
-    public SpriteCache(App app, IRIO targ, String fal, String fah, String fbl, String fbh, IFunction<IRIO, Integer> spriteSizeDeterminant, IFunction<IRIO, String> prefixDeterminant) {
+    public SpriteCache(App app, IRIO targ, String fal, String fah, String fbl, String fbh, Function<IRIO, Integer> spriteSizeDeterminant, Function<IRIO, String> prefixDeterminant) {
         super(app);
         target = targ;
         framesetALoc = fal;

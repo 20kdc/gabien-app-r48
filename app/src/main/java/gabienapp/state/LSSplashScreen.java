@@ -9,13 +9,13 @@ package gabienapp.state;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 import gabien.GaBIEn;
 import gabien.pva.PVAFile;
 import gabien.pva.PVARenderer;
 import gabien.render.IGrDriver;
-import gabien.ui.Rect;
-import gabien.uslx.append.IConsumer;
+import gabien.uslx.append.Rect;
 import gabien.wsi.IGrInDriver;
 import gabien.wsi.WindowSpecs;
 import gabienapp.Launcher;
@@ -28,14 +28,14 @@ import gabienapp.Launcher.State;
 public class LSSplashScreen extends State {
     private int frames = -1; // Fadeout
     private double logoAnimationTimer = 0;
-    private final IConsumer<Integer> done;
     private boolean completed = false, isFirstFrame = true;
+    private final Consumer<Integer> done;
     private final IGrInDriver gi;
     private IGrDriver backBuffer;
     private final AtomicBoolean donePrimaryTask = new AtomicBoolean(false);
     private PVARenderer r48Logo;
 
-    public LSSplashScreen(Launcher lun, Runnable task, IConsumer<Integer> done) {
+    public LSSplashScreen(Launcher lun, Runnable task, Consumer<Integer> done) {
         super(lun);
         this.done = done;
         // Used for two reasons.

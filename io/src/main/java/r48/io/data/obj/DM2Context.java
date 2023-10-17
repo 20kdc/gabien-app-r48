@@ -10,8 +10,8 @@ package r48.io.data.obj;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
+import java.util.function.Supplier;
 
-import gabien.uslx.append.ISupplier;
 import r48.io.data.IRIO;
 
 /**
@@ -32,7 +32,7 @@ public class DM2Context {
         try {
             final DM2CXSupplier fxd = f.getAnnotation(DM2CXSupplier.class);
             if (fxd != null) {
-                Object i = f.getType().getConstructor(ISupplier.class).newInstance((ISupplier<IRIO>) () -> {
+                Object i = f.getType().getConstructor(Supplier.class).newInstance((Supplier<IRIO>) () -> {
                     try {
                         return (IRIO) createObjectOfClass(f, fxd.value());
                     } catch (Exception e) {

@@ -7,7 +7,8 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.uslx.append.*;
+import java.util.function.Function;
+
 import gabien.ui.UIElement;
 import r48.App;
 
@@ -31,7 +32,7 @@ public class LineImageEditorTool extends StagedImageEditorTool {
         final LineAlgorithm la = new LineAlgorithm();
         la.ax = stageXs[0];
         la.ay = stageYs[0];
-        la.run(stageXs[1], stageYs[1], new IFunction<Boolean, Boolean>() {
+        la.run(stageXs[1], stageYs[1], new Function<Boolean, Boolean>() {
             @Override
             public Boolean apply(Boolean aBoolean) {
                 FillAlgorithm.Point p = view.correctPoint(la.ax, la.ay);

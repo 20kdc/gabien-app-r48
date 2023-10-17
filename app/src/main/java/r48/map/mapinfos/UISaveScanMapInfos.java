@@ -7,10 +7,11 @@
 
 package r48.map.mapinfos;
 
+import java.util.function.Function;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.IMapContext;
 import r48.io.IObjectBackend;
@@ -22,12 +23,12 @@ import r48.ui.UIAppendButton;
  */
 public class UISaveScanMapInfos extends App.Prx {
     public final UIScrollLayout mainLayout = new UIScrollLayout(true, app.f.generalS);
-    public final IFunction<Integer, String> objectMapping, gumMapping;
+    public final Function<Integer, String> objectMapping, gumMapping;
     public final IMapContext context;
     public final int first, last;
     private final String toStringRes;
 
-    public UISaveScanMapInfos(IFunction<Integer, String> map, IFunction<Integer, String> gummap, int f, int l, @NonNull IMapContext ctx, String saves) {
+    public UISaveScanMapInfos(Function<Integer, String> map, Function<Integer, String> gummap, int f, int l, @NonNull IMapContext ctx, String saves) {
         super(ctx.getApp());
         objectMapping = map;
         gumMapping = gummap;

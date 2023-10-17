@@ -8,6 +8,10 @@
 package r48.map.systems;
 
 import gabien.uslx.append.*;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import r48.App;
@@ -143,13 +147,13 @@ public abstract class MapSystem extends App.Svc {
         public final IEventAccess eventAccess;
         public final int width, height, planeCount;
         // int[] contains X, Y, Layer
-        public final IFunction<int[], Short> getTileData;
+        public final Function<int[], Short> getTileData;
         // int[] contains X, Y, Layer, value
-        public final IConsumer<int[]> setTileData;
+        public final Consumer<int[]> setTileData;
         // int[] contains X, Y, (defaults...)
-        public final IConsumer<int[]> resize;
+        public final Consumer<int[]> resize;
 
-        public MapViewState(StuffRenderer r, String usm, String[] exrefresh, int w, int h, int pc, IFunction<int[], Short> gtd, IConsumer<int[]> std, IConsumer<int[]> rz, IEventAccess iea) {
+        public MapViewState(StuffRenderer r, String usm, String[] exrefresh, int w, int h, int pc, Function<int[], Short> gtd, Consumer<int[]> std, Consumer<int[]> rz, IEventAccess iea) {
             renderer = r;
             underscoreMapObjectId = usm;
             refreshOnObjectChange = exrefresh;
@@ -190,16 +194,16 @@ public abstract class MapSystem extends App.Svc {
         }
 
         public static MapViewState getBlank(App app, String underscoreMapObjectId, String[] ex, IEventAccess iea) {
-            return new MapViewState(app.stuffRendererIndependent, underscoreMapObjectId, ex, 0, 0, 0, new IFunction<int[], Short>() {
+            return new MapViewState(app.stuffRendererIndependent, underscoreMapObjectId, ex, 0, 0, 0, new Function<int[], Short>() {
                 @Override
                 public Short apply(int[] ints) {
                     return 0;
                 }
-            }, new IConsumer<int[]>() {
+            }, new Consumer<int[]>() {
                 @Override
                 public void accept(int[] ints) {
                 }
-            }, new IConsumer<int[]>() {
+            }, new Consumer<int[]>() {
                 @Override
                 public void accept(int[] ints) {
 
@@ -211,19 +215,19 @@ public abstract class MapSystem extends App.Svc {
             // This happens once in a blue moon, it's fine
             final IRIO sz = PathSyntax.compile(stuffRenderer.app, str).get(its);
             final RubyTable rt = new RubyTable(sz.getBuffer());
-            return new MapViewState(stuffRenderer, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, new IFunction<int[], Short>() {
+            return new MapViewState(stuffRenderer, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, new Function<int[], Short>() {
                 @Override
                 public Short apply(int[] ints) {
                     return rt.getTiletype(ints[0], ints[1], ints[2]);
                 }
-            }, new IConsumer<int[]>() {
+            }, new Consumer<int[]>() {
                 @Override
                 public void accept(int[] ints) {
                     if (readOnly)
                         return;
                     rt.setTiletype(ints[0], ints[1], ints[2], (short) ints[3]);
                 }
-            }, new IConsumer<int[]>() {
+            }, new Consumer<int[]>() {
                 @Override
                 public void accept(int[] ints) {
                     if (readOnly)

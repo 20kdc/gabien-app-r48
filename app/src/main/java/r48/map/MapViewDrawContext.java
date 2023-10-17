@@ -8,8 +8,8 @@
 package r48.map;
 
 import gabien.render.IGrDriver;
-import gabien.ui.Rect;
 import gabien.ui.UIElement;
+import gabien.uslx.append.Rect;
 import r48.App;
 import r48.ui.Art;
 

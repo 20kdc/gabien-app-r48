@@ -8,8 +8,8 @@
 package r48.map.systems;
 
 import gabien.render.IImage;
-import gabien.ui.Rect;
-import gabien.ui.Size;
+import gabien.uslx.append.Rect;
+import gabien.uslx.append.Size;
 import r48.App;
 import r48.RubyTable;
 import r48.io.data.IRIO;

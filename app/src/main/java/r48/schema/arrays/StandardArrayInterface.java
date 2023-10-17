@@ -7,7 +7,7 @@
 
 package r48.schema.arrays;
 
-import gabien.GaBIEn;
+import gabien.GaBIEnUI;
 import gabien.ui.*;
 import gabien.ui.theming.Theme;
 import gabien.uslx.append.*;
@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Please work.
@@ -38,7 +40,7 @@ public class StandardArrayInterface implements IArrayInterface {
     }
     
     @Override
-    public void provideInterfaceFrom(final Host uiSVL, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
+    public void provideInterfaceFrom(final Host uiSVL, final Supplier<Boolean> valid, final Function<String, IProperty> prop, final Supplier<ArrayPosition[]> getPositions) {
         final ArrayPosition[] positions = getPositions.get();
         final App app = uiSVL.getApp();
         final TrRoot T = app.t;
@@ -64,7 +66,7 @@ public class StandardArrayInterface implements IArrayInterface {
                     r.run();
                 releasers.clear();
                 // Work out how big each array index field has to be.
-                Theme theme = GaBIEn.sysThemeRoot.getTheme();
+                Theme theme = GaBIEnUI.sysThemeRoot.getTheme();
                 final Size maxSizePre = UIBorderedElement.getRecommendedTextSize(theme, "", app.f.schemaFieldTH);
                 final AtomicInteger maxWidth = new AtomicInteger(maxSizePre.width);
                 int selectButtonUnit = maxSizePre.height;

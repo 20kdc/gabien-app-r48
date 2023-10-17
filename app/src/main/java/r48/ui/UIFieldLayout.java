@@ -7,9 +7,9 @@
 
 package r48.ui;
 
-import gabien.ui.Rect;
-import gabien.ui.Size;
 import gabien.ui.UIElement;
+import gabien.uslx.append.Rect;
+import gabien.uslx.append.Size;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

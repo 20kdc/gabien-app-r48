@@ -7,10 +7,11 @@
 
 package r48.schema.specialized.genpos;
 
+import java.util.function.Function;
+
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.*;
-import gabien.ui.Rect;
 import r48.schema.util.SchemaPath;
 
 /**
@@ -38,7 +39,7 @@ public interface IGenposFrame {
     // Semantics of access to this are the same as with getFrame() in GenposAnim.
     IGenposTweeningProp getCellPropTweening(int ct, int i);
 
-    void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y);
+    void moveCell(int ct, Function<Integer, Integer> x, Function<Integer, Integer> y);
 
     int getCellCount();
 

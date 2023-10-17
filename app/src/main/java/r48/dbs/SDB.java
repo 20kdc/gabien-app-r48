@@ -8,7 +8,6 @@
 package r48.dbs;
 
 import gabien.ui.UIElement;
-import gabien.uslx.append.ISupplier;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.io.IObjectBackend.ILoadedObject;
@@ -28,6 +27,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -224,7 +224,7 @@ public class SDB extends App.Svc {
         dictionaryUpdaterRunnables.add(dur);
     }
 
-    public void addMergeRunnable(String id, ISupplier<SchemaElement> s) {
+    public void addMergeRunnable(String id, Supplier<SchemaElement> s) {
         final DynamicSchemaElement dse = ensureSDBProxy(id);
         mergeRunnables.add(() -> {
             dse.setEntry(s.get());

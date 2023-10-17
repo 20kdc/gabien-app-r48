@@ -10,11 +10,11 @@ package r48.dbs;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
-import gabien.uslx.append.*;
 import r48.App;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.function.Function;
 
 /**
  * Created on 04/06/17.
@@ -30,7 +30,7 @@ public class TSDB extends App.Svc {
         super(app);
         DBLoader.readFile(app, arg, new IDatabase() {
 
-            public IFunction<Integer, Boolean> acceptable = new IFunction<Integer, Boolean>() {
+            public Function<Integer, Boolean> acceptable = new Function<Integer, Boolean>() {
                 @Override
                 public Boolean apply(Integer integer) {
                     return true;
@@ -53,7 +53,7 @@ public class TSDB extends App.Svc {
                     xorDoubleclick = Integer.parseInt(args[0]);
                 if (c == 'l') {
                     if (args.length < 2) {
-                        acceptable = new IFunction<Integer, Boolean>() {
+                        acceptable = new Function<Integer, Boolean>() {
                             @Override
                             public Boolean apply(Integer integer) {
                                 return true;
@@ -62,7 +62,7 @@ public class TSDB extends App.Svc {
                     } else {
                         final int first = Integer.parseInt(args[0]);
                         final int len = Integer.parseInt(args[1]);
-                        acceptable = new IFunction<Integer, Boolean>() {
+                        acceptable = new Function<Integer, Boolean>() {
                             @Override
                             public Boolean apply(Integer integer) {
                                 return (integer >= first) && (integer < (first + len));
@@ -136,9 +136,9 @@ public class TSDB extends App.Svc {
         public int layertabIX, layertabIY, layertabAX, layertabAY, x, y, w, h;
         public int[] flagData;
         public String img;
-        public IFunction<Integer, Boolean> acceptable;
+        public Function<Integer, Boolean> acceptable;
 
-        public TSPicture(IFunction<Integer, Boolean> accept, int[] i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, String image) {
+        public TSPicture(Function<Integer, Boolean> accept, int[] i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, String image) {
             acceptable = accept;
             flagData = i;
             layertabIX = i1;

@@ -7,7 +7,6 @@
 
 package r48.schema.specialized.genpos;
 
-import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import r48.App;
@@ -18,6 +17,8 @@ import r48.ui.UIAppendButton;
 import r48.ui.UITimeframeControl;
 
 import java.util.HashMap;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Animation Software For Serious Animation Purposes.
@@ -67,17 +68,17 @@ public class GenposAnimRootPanel extends App.Prx {
                 tweening.disablePropertyKey(target.getFrameIdx(), framePanelController.cellSelection.cellNumber, prop, track);
             }
         }, launcher);
-        timeframe = new UITimeframeControl(app, new ISupplier<Integer>() {
+        timeframe = new UITimeframeControl(app, new Supplier<Integer>() {
             @Override
             public Integer get() {
                 return target.getFrameIdx();
             }
-        }, new ISupplier<Integer>() {
+        }, new Supplier<Integer>() {
             @Override
             public Integer get() {
                 return target.getFrameCount();
             }
-        }, new IConsumer<Integer>() {
+        }, new Consumer<Integer>() {
             @Override
             public void accept(Integer integer) {
                 target.setFrameIdx(integer);

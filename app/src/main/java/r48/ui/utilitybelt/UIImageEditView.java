@@ -7,6 +7,8 @@
 
 package r48.ui.utilitybelt;
 
+import java.util.function.Function;
+
 import gabien.render.*;
 import gabien.ui.*;
 import gabien.uslx.append.*;
@@ -212,7 +214,7 @@ public class UIImageEditView extends UIPlaneView {
         //  and it's W/H is the grid size scaled.
         Rect localGrid = getLocalGridRect(viewRct);
         boolean outerFlip = false;
-        Intersector intersect = MTIntersector.INSTANCE.get();
+        RectIntersector intersect = RectIntersector.THREAD_LOCAL.get();
         for (int ofx = (localGrid.x - (int) planeMulZoom(grid.width)); ofx < (viewRct.x + viewRct.width); ofx += localGrid.width) {
             if (!viewRct.intersects(new Rect(ofx, viewRct.y, localGrid.width, viewRct.height)))
                 continue;
@@ -322,7 +324,7 @@ public class UIImageEditView extends UIPlaneView {
                     final LineAlgorithm lineDraw = new LineAlgorithm();
                     lineDraw.ax = ax;
                     lineDraw.ay = ay;
-                    IFunction<Boolean, Boolean> plotPoint = new IFunction<Boolean, Boolean>() {
+                    Function<Boolean, Boolean> plotPoint = new Function<Boolean, Boolean>() {
                         @Override
                         public Boolean apply(Boolean major) {
                             FillAlgorithm.Point p = correctPoint(lineDraw.ax, lineDraw.ay);

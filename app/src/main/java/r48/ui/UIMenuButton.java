@@ -8,6 +8,9 @@
 package r48.ui;
 
 import gabien.uslx.append.*;
+
+import java.util.function.Supplier;
+
 import gabien.ui.UIAutoclosingPopupMenu;
 import gabien.ui.UIElement;
 import gabien.ui.UIPopupMenu;
@@ -19,7 +22,7 @@ import r48.App;
  * Created on November 14, 2018.
  */
 public class UIMenuButton extends UITextButton {
-    public UIMenuButton(App app, String s, int h2, final ISupplier<UIElement> runnable) {
+    public UIMenuButton(App app, String s, int h2, final Supplier<UIElement> runnable) {
         super(s, h2, null);
         toggle = true;
         onClick = () -> {
@@ -35,8 +38,8 @@ public class UIMenuButton extends UITextButton {
         };
     }
 
-    public UIMenuButton(App app, String s, int h2, final ISupplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
-        this(app, s, h2, new ISupplier<UIElement>() {
+    public UIMenuButton(App app, String s, int h2, final Supplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
+        this(app, s, h2, new Supplier<UIElement>() {
             @Override
             public UIElement get() {
                 return new UIAutoclosingPopupMenu(text, runnables, app.f.menuTH, app.f.menuS, true) {
@@ -52,12 +55,12 @@ public class UIMenuButton extends UITextButton {
         });
     }
 
-    public UIMenuButton(App app, String s, int h2, final ISupplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
+    public UIMenuButton(App app, String s, int h2, final Supplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
         this(app, s, h2, continued, new ArrayIterable<UIPopupMenu.Entry>(runnables));
     }
 
-    public UIMenuButton(App app, String s, int h2, final ISupplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
-        this(app, s, h2, new ISupplier<UIElement>() {
+    public UIMenuButton(App app, String s, int h2, final Supplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
+        this(app, s, h2, new Supplier<UIElement>() {
             @Override
             public UIElement get() {
                 return new UIAutoclosingPopupMenu(runnables, app.f.menuTH, app.f.menuS, true) {

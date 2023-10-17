@@ -7,7 +7,6 @@
 
 package r48.io.r2k;
 
-import gabien.uslx.append.*;
 import r48.io.IntUtils;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -16,6 +15,7 @@ import r48.io.r2k.chunks.IR2kInterpretable;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Created on 30/05/17.
@@ -118,8 +118,8 @@ public class R2kUtil {
                 unknownChunks.put((int) k.getFX(), mt.getHashVal(k).getBuffer());
     }
 
-    public static ISupplier<byte[]> supplyBlank(final int i, final byte i1) {
-        return new ISupplier<byte[]>() {
+    public static Supplier<byte[]> supplyBlank(final int i, final byte i1) {
+        return new Supplier<byte[]>() {
             @Override
             public byte[] get() {
                 byte[] data = new byte[i];
@@ -149,7 +149,7 @@ public class R2kUtil {
         return lli.toArray(new Index[0]);
     }
 
-    public static <T> void importSparse(HashMap<Integer, T> map, ISupplier<T> constructor, InputStream bais) throws IOException {
+    public static <T> void importSparse(HashMap<Integer, T> map, Supplier<T> constructor, InputStream bais) throws IOException {
         map.clear();
         int entries = readLcfVLI(bais);
         for (int i = 0; i < entries; i++) {

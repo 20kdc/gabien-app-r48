@@ -7,7 +7,7 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.ui.Rect;
+import gabien.uslx.append.Rect;
 import r48.App;
 
 /**

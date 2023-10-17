@@ -10,8 +10,6 @@ package r48.map.systems;
 import gabien.GaBIEn;
 import gabien.render.IImage;
 import gabien.uslx.append.*;
-import gabien.ui.Rect;
-import gabien.ui.Size;
 import gabien.ui.UIElement;
 import r48.App;
 import r48.IMapContext;
@@ -37,6 +35,7 @@ import r48.toolsets.utils.RMTranscriptDumper;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.function.Supplier;
 
 /**
  * Created on 03/06/17.
@@ -172,7 +171,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         IRIO mi = app.odb.getObject("MapInfos").getObject();
         for (final DMKey rio : mi.getHashKeys()) {
             int id = (int) rio.getFX();
-            RMMapData rmd = new RMMapData(app, new ISupplier<String>() {
+            RMMapData rmd = new RMMapData(app, new Supplier<String>() {
                 @Override
                 public String get() {
                     IRIO miLocal = app.odb.getObject("MapInfos").getObject();

@@ -7,8 +7,9 @@
 
 package r48.ui.dialog;
 
+import java.util.function.Consumer;
+
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 
 /**
@@ -20,7 +21,7 @@ public class UITextPrompt extends App.Prx {
     public UIScrollLayout uiSVL = new UIScrollLayout(true, app.f.generalS);
     public boolean wantClose = false;
 
-    public UITextPrompt(App app, final String s, final IConsumer<String> iConsumer) {
+    public UITextPrompt(App app, final String s, final Consumer<String> iConsumer) {
         super(app);
         uiSVL.panelsAdd(new UILabel(s, app.f.textDialogDescTH));
         uiSVL.panelsAdd(new UISplitterLayout(utb, new UITextButton(T.g.bOk, app.f.textDialogFieldTH, new Runnable() {

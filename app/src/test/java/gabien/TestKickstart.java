@@ -8,7 +8,6 @@
 package gabien;
 
 import gabien.render.IImage;
-import gabien.uslx.append.*;
 import gabien.uslx.vfs.FSBackend;
 import gabien.wsi.IGrInDriver;
 import gabien.wsi.IPointer;
@@ -32,6 +31,9 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -43,8 +45,8 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class TestKickstart {
     public String currentTestPhase;
-    public LinkedList<ISupplier<Boolean>> waitingTestEntries = new LinkedList<ISupplier<Boolean>>();
-    public IConsumer<String> waitingFileDialog = null;
+    public LinkedList<Supplier<Boolean>> waitingTestEntries = new LinkedList<Supplier<Boolean>>();
+    public Consumer<String> waitingFileDialog = null;
 
     public HashMap<String, byte[]> mockFS = new HashMap<String, byte[]>();
     public HashSet<String> mockDFS = new HashSet<String>();
@@ -111,7 +113,7 @@ public class TestKickstart {
             }
 
             @Override
-            public void startFileBrowser(String text, boolean saving, String exts, IConsumer<String> result, String initialName) {
+            public void startFileBrowser(String text, boolean saving, String exts, Consumer<String> result, String initialName) {
                 waitingFileDialog = result;
             }
         };
@@ -217,6 +219,7 @@ public class TestKickstart {
         GaBIEn.internalFileBrowser = impl;
         GaBIEn.internalWindowing = impl;
         GaBIEn.setupNativesAndAssets(true, false);
+        GaBIEnUI.setupAssets();
         // Reset GaBIEn stuff
         new Config(false).applyUIGlobals();
     }
@@ -264,7 +267,7 @@ public class TestKickstart {
                 }
 
                 @Override
-                public ITextEditingSession openTextEditingSession(@NonNull String text, boolean multiLine, int textHeight, @Nullable IFunction<String, String> feedback) {
+                public ITextEditingSession openTextEditingSession(@NonNull String text, boolean multiLine, int textHeight, @Nullable Function<String, String> feedback) {
                     return new ITextEditingSession() {
                         boolean sessionDeadYet = false;
                         @Override
@@ -337,7 +340,7 @@ public class TestKickstart {
                     gwmu.printTree();
                     throw new GrandExecutionError("Ran out of test sequence data.");
                 }
-                ISupplier<Boolean> isb = waitingTestEntries.getFirst();
+                Supplier<Boolean> isb = waitingTestEntries.getFirst();
                 if (!isb.get())
                     break;
                 waitingTestEntries.removeFirst();

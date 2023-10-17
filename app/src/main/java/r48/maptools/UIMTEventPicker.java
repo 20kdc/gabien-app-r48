@@ -8,6 +8,7 @@
 package r48.maptools;
 
 import gabien.ui.*;
+import gabien.uslx.append.Size;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;

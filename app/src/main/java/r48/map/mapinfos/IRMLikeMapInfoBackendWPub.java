@@ -7,7 +7,8 @@
 
 package r48.map.mapinfos;
 
-import gabien.uslx.append.*;
+import java.util.function.Consumer;
+
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 
@@ -20,7 +21,7 @@ import r48.ui.Art;
  * Created on 02/06/17.
  */
 public interface IRMLikeMapInfoBackendWPub extends IRMLikeMapInfoBackend {
-    void registerModificationHandler(IConsumer<SchemaPath> onMapInfoChange);
+    void registerModificationHandler(Consumer<SchemaPath> onMapInfoChange);
 
     // Gets the actual mapinfo object.
     // The following are PRIMITIVES:

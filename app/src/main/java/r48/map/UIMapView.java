@@ -7,6 +7,8 @@
 
 package r48.map;
 
+import java.util.function.Consumer;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -50,7 +52,7 @@ public class UIMapView extends UIPlaneView {
     public boolean shiftDown = false;
     public IMapViewCallbacks callbacks;
     // Responsible for starting a tool with the given tile.
-    public IConsumer<Short> pickTileHelper = null;
+    public Consumer<Short> pickTileHelper = null;
 
     /**
      * set from UIMapViewContainer 
@@ -75,7 +77,7 @@ public class UIMapView extends UIPlaneView {
     // Regarding how these now work:
     // Modification listeners have to be held by the things that need to be notified.
     // This way, they conveniently disappear when the notified things do.
-    private IConsumer<SchemaPath> listener = new IConsumer<SchemaPath>() {
+    private Consumer<SchemaPath> listener = new Consumer<SchemaPath>() {
         @Override
         public void accept(SchemaPath sp) {
             performRefresh(app.odb.getIdByObject(sp.root));

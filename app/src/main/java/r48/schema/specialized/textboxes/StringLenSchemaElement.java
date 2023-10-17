@@ -7,8 +7,9 @@
 
 package r48.schema.specialized.textboxes;
 
+import java.util.function.Function;
+
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.StringSchemaElement;
@@ -32,7 +33,7 @@ public class StringLenSchemaElement extends StringSchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UITextBox utb = (UITextBox) super.buildHoldingEditor(target, launcher, path);
-        utb.feedback = new IFunction<String, String>() {
+        utb.feedback = new Function<String, String>() {
             @Override
             public String apply(String s) {
                 int l1 = textRules.countCells(s);

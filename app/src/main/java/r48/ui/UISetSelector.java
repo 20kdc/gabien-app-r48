@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import gabien.GaBIEn;
+import gabien.GaBIEnUI;
 import gabien.ui.UIBorderedElement;
 import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
@@ -46,7 +46,7 @@ public class UISetSelector<T> extends App.Prx {
                 refreshContents();
             }
         }));
-        int labelHeight = UIBorderedElement.getBorderedTextHeight(GaBIEn.sysThemeRoot.getTheme(), app.f.dialogWindowTH);
+        int labelHeight = UIBorderedElement.getBorderedTextHeight(GaBIEnUI.sysThemeRoot.getTheme(), app.f.dialogWindowTH);
         for (T o : entries) {
             final T fo = o;
             final UILabel ul = new UILabel(o.toString(), app.f.dialogWindowTH);

@@ -7,7 +7,6 @@
 
 package r48.schema;
 
-import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
@@ -28,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -118,11 +118,11 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
         return button;
     }
 
-    public UIEnumChoice makeEnumChoiceDialog(IConsumer<DMKey> result) {
+    public UIEnumChoice makeEnumChoiceDialog(Consumer<DMKey> result) {
         return new UIEnumChoice(app, result, viewOptions, buttonText.r(), entryMode);
     }
 
-    public static UIEnumChoice.Option makeStandardOption(DMKey val, FF0 text, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
+    public static UIEnumChoice.Option makeStandardOption(DMKey val, FF0 text, @Nullable Consumer<String> edit, @Nullable SchemaPath fdb) {
         return new UIEnumChoice.Option(val.toString() + " : ", text, val, edit, fdb);
     }
 

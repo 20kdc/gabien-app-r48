@@ -7,10 +7,12 @@
 
 package r48.schema.specialized.genpos.backend;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.*;
-import gabien.ui.Rect;
 import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -28,7 +30,7 @@ import r48.ui.dialog.ISpritesheetProvider;
  * Created on 29/07/17.
  */
 public class R2kGenposFrame extends App.Svc implements IGenposFrame {
-    public ISupplier<IRIO> frameSource;
+    public Supplier<IRIO> frameSource;
     public SpriteCache cache;
     public SchemaPath rootPath;
     public Runnable updateNotify;
@@ -90,12 +92,12 @@ public class R2kGenposFrame extends App.Svc implements IGenposFrame {
         if (i == 0)
             se = new BooleanSchemaElement(app, false);
         if (i == 1)
-            se = new SpritesheetCoreSchemaElement(app, (v) -> app.format(v), 0, new IFunction<IRIO, IRIO>() {
+            se = new SpritesheetCoreSchemaElement(app, (v) -> app.format(v), 0, new Function<IRIO, IRIO>() {
                 @Override
                 public IRIO apply(IRIO rubyIO) {
                     return rubyIO;
                 }
-            }, new IFunction<IRIO, ISpritesheetProvider>() {
+            }, new Function<IRIO, ISpritesheetProvider>() {
                 @Override
                 public ISpritesheetProvider apply(final IRIO rubyIO) {
                     return new ISpritesheetProvider() {
@@ -145,7 +147,7 @@ public class R2kGenposFrame extends App.Svc implements IGenposFrame {
     }
 
     @Override
-    public void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y) {
+    public void moveCell(int ct, Function<Integer, Integer> x, Function<Integer, Integer> y) {
         IRIO cell = frameSource.get().getIVar("@cells").getAElem(ct + 1);
         cell.getIVar("@x").setFX(x.apply((int) cell.getIVar("@x").getFX()));
         cell.getIVar("@y").setFX(y.apply((int) cell.getIVar("@y").getFX()));

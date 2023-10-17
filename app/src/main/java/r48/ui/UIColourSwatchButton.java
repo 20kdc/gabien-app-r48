@@ -8,9 +8,9 @@
 package r48.ui;
 
 import gabien.render.IGrDriver;
-import gabien.ui.Rect;
-import gabien.ui.Size;
 import gabien.ui.UIButton;
+import gabien.uslx.append.Rect;
+import gabien.uslx.append.Size;
 
 /**
  * Needed for Demetrius's 'edit colour' request

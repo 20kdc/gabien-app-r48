@@ -7,13 +7,13 @@
 package gabienapp;
 
 import java.util.LinkedList;
+import java.util.function.Function;
 
 import gabien.GaBIEn;
 import gabien.datum.DatumDecToLambdaVisitor;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumTreeUtils;
 import gabien.datum.DatumVisitor;
-import gabien.ui.Rect;
 import gabien.ui.UIAdjuster;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
@@ -26,7 +26,7 @@ import gabien.ui.UIElement.UIProxy;
 import gabien.ui.UIEmpty;
 import gabien.ui.UITabBar.Tab;
 import gabien.ui.UITabBar.TabIcon;
-import gabien.uslx.append.IFunction;
+import gabien.uslx.append.Rect;
 import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.cfg.Config;
@@ -73,7 +73,7 @@ public class UILauncher extends UIProxy {
         };
         tabPane.addTab(new Tab(gamepaks, new TabIcon[0]));
 
-        UIAdjuster msAdjust = new UIAdjuster(c.f.launcherTH, lun.globalMS, new IFunction<Long, Long>() {
+        UIAdjuster msAdjust = new UIAdjuster(c.f.launcherTH, lun.globalMS, new Function<Long, Long>() {
             @Override
             public Long apply(Long aLong) {
                 int gms = (int) (long) aLong;

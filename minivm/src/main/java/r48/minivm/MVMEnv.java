@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -17,8 +19,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.datum.DatumReaderTokenSource;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.IFunction;
-import gabien.uslx.append.ISupplier;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.compiler.MVMToplevelScope;
 import r48.minivm.expr.MVMCExpr;
@@ -119,7 +119,7 @@ public class MVMEnv {
     /**
      * Quickly defines a library function.
      */
-    public MVMFn defLib(String s, ISupplier<Object> fn) {
+    public MVMFn defLib(String s, Supplier<Object> fn) {
         MVMFn f2 = MVMJLambdaConv.c(s, fn);
         defineSlot(new DatumSymbol(s)).v = f2;
         return f2;
@@ -128,7 +128,7 @@ public class MVMEnv {
     /**
      * Quickly defines a library function.
      */
-    public MVMFn defLib(String s, IFunction<Object, Object> fn) {
+    public MVMFn defLib(String s, Function<Object, Object> fn) {
         MVMFn f2 = MVMJLambdaConv.c(s, fn);
         defineSlot(new DatumSymbol(s)).v = f2;
         return f2;

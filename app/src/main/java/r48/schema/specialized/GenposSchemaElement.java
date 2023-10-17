@@ -7,8 +7,10 @@
 
 package r48.schema.specialized;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import gabien.GaBIEn;
-import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
@@ -56,12 +58,12 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
                             path.changeOccurred(false);
                         }
                     };
-                    final SpriteCache sc = new SpriteCache(app, target, a1, a2, b1, b2, new IFunction<IRIO, Integer>() {
+                    final SpriteCache sc = new SpriteCache(app, target, a1, a2, b1, b2, new Function<IRIO, Integer>() {
                         @Override
                         public Integer apply(IRIO rubyIO) {
                             return 192;
                         }
-                    }, new IFunction<IRIO, String>() {
+                    }, new Function<IRIO, String>() {
                         @Override
                         public String apply(IRIO rubyIO) {
                             return "Animations/";
@@ -69,7 +71,7 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
                     });
                     final RGSSGenposFrame frame = new RGSSGenposFrame(app, sc, path, genposType.equals("vxaAnimation"), updater);
                     final RMGenposAnim anim = new RMGenposAnim(app, target.getIVar("@frames"), frame, updater, false);
-                    frame.frameSource = new ISupplier<IRIO>() {
+                    frame.frameSource = new Supplier<IRIO>() {
                         @Override
                         public IRIO get() {
                             return anim.getFrame();
@@ -88,7 +90,7 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
                     // This is particularly mucky because of it's direct interaction with a magically-bound element,
                     //  to increase performance when not dealing with this element.
                     // And also because of the way the battle2 falls back to the older sprites.
-                    final ISupplier<Boolean> actuallyBattle2 = new ISupplier<Boolean>() {
+                    final Supplier<Boolean> actuallyBattle2 = new Supplier<Boolean>() {
                         @Override
                         public Boolean get() {
                             if (app.stuffRendererIndependent.imageLoader.getImage("Battle2/" + target.getIVar("@animation_name").decString(), false) == GaBIEn.getErrorImage())
@@ -96,14 +98,14 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
                             return target.getIVar("@battle2_2k3").getType() == 'T';
                         }
                     };
-                    final SpriteCache sc = new SpriteCache(app, target, a1, null, null, null, new IFunction<IRIO, Integer>() {
+                    final SpriteCache sc = new SpriteCache(app, target, a1, null, null, null, new Function<IRIO, Integer>() {
                         @Override
                         public Integer apply(IRIO rubyIO) {
                             if (actuallyBattle2.get())
                                 return 128;
                             return 96;
                         }
-                    }, new IFunction<IRIO, String>() {
+                    }, new Function<IRIO, String>() {
                         @Override
                         public String apply(IRIO rubyIO) {
                             if (actuallyBattle2.get())
@@ -126,7 +128,7 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
                     final R2kGenposFrame frame = new R2kGenposFrame(app, sc, path, outbound);
                     final RMGenposAnim anim = new RMGenposAnim(app, framesObject, frame, outbound, true);
 
-                    frame.frameSource = new ISupplier<IRIO>() {
+                    frame.frameSource = new Supplier<IRIO>() {
                         @Override
                         public IRIO get() {
                             return anim.getFrame();

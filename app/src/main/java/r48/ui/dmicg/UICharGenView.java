@@ -11,7 +11,7 @@ import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.IPointerReceiver;
-import gabien.ui.Size;
+import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
 import r48.imagefx.MultiplyImageEffect;

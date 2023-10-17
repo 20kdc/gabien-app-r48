@@ -10,7 +10,7 @@ package r48.schema;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.GaBIEn;
+import gabien.GaBIEnUI;
 import gabien.ui.UIBorderedElement;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
@@ -82,7 +82,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     @Override
     public int getDefaultFieldWidth(IRIO target) {
         if (alias != null)
-            return UIBorderedElement.getRecommendedTextSize(GaBIEn.sysThemeRoot.getTheme(), alias.r() + " ", app.f.schemaFieldTH).width;
+            return UIBorderedElement.getRecommendedTextSize(GaBIEnUI.sysThemeRoot.getTheme(), alias.r() + " ", app.f.schemaFieldTH).width;
         return 0;
     }
 

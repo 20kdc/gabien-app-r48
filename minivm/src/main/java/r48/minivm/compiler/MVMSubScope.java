@@ -8,11 +8,11 @@ package r48.minivm.compiler;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.ISupplier;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCLocal;
 
@@ -109,7 +109,7 @@ public class MVMSubScope extends MVMCompileScope {
     }
 
     @Override
-    public MVMCExpr compileDefine(DatumSymbol sym, ISupplier<MVMCExpr> value) {
+    public MVMCExpr compileDefine(DatumSymbol sym, Supplier<MVMCExpr> value) {
         LocalRoot local = new LocalRoot();
         locals.put(sym, local);
         return local.setter(value.get());

@@ -7,7 +7,7 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.uslx.append.*;
+import java.util.function.Function;
 
 /**
  * The Totally Not A Derivative Of That Algorithm Meddling Kids And Their Dog Use For Line Drawing Algorithm.
@@ -16,7 +16,7 @@ import gabien.uslx.append.*;
 public class LineAlgorithm {
     public int ax, ay;
 
-    public boolean run(int nx, int ny, IFunction<Boolean, Boolean> plotPointContinue) {
+    public boolean run(int nx, int ny, Function<Boolean, Boolean> plotPointContinue) {
 
         int absX = Math.abs(ax - nx);
         int absY = Math.abs(ay - ny);

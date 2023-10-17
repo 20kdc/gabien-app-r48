@@ -9,10 +9,10 @@ package r48.maptools;
 
 import gabien.GaBIEn;
 import gabien.atlas.AtlasSet;
-import gabien.render.AtlasPage;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.UIPopupMenu.Entry;
+import gabien.uslx.append.Rect;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
 import r48.App;
@@ -91,7 +91,7 @@ public class UIMTPopupButtons extends UIMTBase {
                 AtlasSet potential = a.getMapView().mapTable.renderer.tileRenderer.getAtlasSet();
                 if (potential == null)
                     return null;
-                for (AtlasPage ap : potential.pages)
+                for (IGrDriver ap : potential.pages)
                     app.ui.wm.createWindow(new UIThumbnail(ap));
                 return null;
             }

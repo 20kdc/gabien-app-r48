@@ -7,7 +7,8 @@
 
 package r48.schema.integers;
 
-import gabien.uslx.append.*;
+import java.util.function.Consumer;
+
 import gabien.ui.UIElement;
 import gabien.ui.UINumberBox;
 import gabien.ui.UIScrollLayout;
@@ -56,7 +57,7 @@ public class IntegerSchemaElement extends SchemaElement.Leaf {
                 context.update(unb.number);
             }
         };
-        return new ActiveInteger(unb, new IConsumer<Long>() {
+        return new ActiveInteger(unb, new Consumer<Long>() {
             @Override
             public void accept(Long aLong) {
                 unb.number = aLong;
@@ -92,9 +93,9 @@ public class IntegerSchemaElement extends SchemaElement.Leaf {
 
     public final class ActiveInteger {
         public final UIElement uie;
-        public final IConsumer<Long> onValueChange;
+        public final Consumer<Long> onValueChange;
 
-        public ActiveInteger(UIElement u, IConsumer<Long> ovc) {
+        public ActiveInteger(UIElement u, Consumer<Long> ovc) {
             uie = u;
             onValueChange = ovc;
         }

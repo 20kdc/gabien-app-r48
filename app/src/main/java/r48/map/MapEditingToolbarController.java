@@ -7,7 +7,6 @@
 
 package r48.map;
 
-import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UITextButton;
@@ -17,6 +16,7 @@ import r48.io.data.RORIO;
 import r48.maptools.*;
 
 import java.util.LinkedList;
+import java.util.function.Function;
 
 /**
  * The standard map editing toolbar is the responsibility of this class.
@@ -201,7 +201,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
         return !readonlyTiles;
     }
 
-    public abstract static class ToolButton implements IFunction<IMapToolContext, UIMTBase> {
+    public abstract static class ToolButton implements Function<IMapToolContext, UIMTBase> {
         public final String text;
         public ToolButton(String txt) {
             text = txt;

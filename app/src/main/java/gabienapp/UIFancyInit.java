@@ -8,16 +8,16 @@
 package gabienapp;
 
 import gabien.render.IGrDriver;
-import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UILayer;
-import gabien.uslx.append.IConsumer;
+import gabien.uslx.append.Rect;
 import gabien.wsi.IPeripherals;
 import r48.cfg.Config;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
  * A loading screen that makes it clear stuff is actually happening.
@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Frankly... this code may as well not be run outside of Android, but for testing purposes it's good to keep the codepaths the same
  * Created on May 14, 2019.
  */
-public class UIFancyInit extends UIElement.UIProxy implements IConsumer<String> {
+public class UIFancyInit extends UIElement.UIProxy implements Consumer<String> {
     // Don't get particularly worked up about memory-safety here, it's not exactly *essential* and so long as the copy-to-local works...
     private ConcurrentLinkedQueue<String> consoletronDataInput;
     public AtomicReference<Runnable> doneInjector = new AtomicReference<Runnable>();

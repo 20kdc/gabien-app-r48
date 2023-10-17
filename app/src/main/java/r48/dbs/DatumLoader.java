@@ -8,13 +8,13 @@ package r48.dbs;
 
 import java.io.InputStreamReader;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import gabien.GaBIEn;
 import gabien.datum.DatumDecToLambdaVisitor;
 import gabien.datum.DatumReaderTokenSource;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumVisitor;
-import gabien.uslx.append.IConsumer;
 
 /**
  * DBLoader, but not DBLoader!
@@ -51,14 +51,14 @@ public class DatumLoader {
     /**
      * Loads the given file into this context.
      */
-    public static boolean read(String filename, IConsumer<String> loadProgress, DatumDecToLambdaVisitor.Handler eval) {
+    public static boolean read(String filename, Consumer<String> loadProgress, DatumDecToLambdaVisitor.Handler eval) {
         return read(filename, loadProgress, new DatumDecToLambdaVisitor(eval));
     }
 
     /**
      * Loads the given file into this context.
      */
-    public static boolean read(String filename, IConsumer<String> loadProgress, DatumVisitor ddv) {
+    public static boolean read(String filename, Consumer<String> loadProgress, DatumVisitor ddv) {
         try (InputStreamReader ins = GaBIEn.getTextResource(filename)) {
             if (ins == null) {
                 if (reportLoadSE)

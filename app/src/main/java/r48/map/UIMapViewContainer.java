@@ -9,9 +9,10 @@ package r48.map;
 
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
+
+import java.util.function.Consumer;
+
 import gabien.render.IGrDriver;
-import gabien.ui.Rect;
-import gabien.ui.Size;
 import gabien.ui.UIElement;
 import gabien.ui.UILayer;
 import r48.App;
@@ -203,7 +204,7 @@ public class UIMapViewContainer extends App.Pan {
         final IEditingToolbarController metc = view.map.makeToolbar(mtc);
 
         if (metc.allowPickTile()) {
-            view.pickTileHelper = new IConsumer<Short>() {
+            view.pickTileHelper = new Consumer<Short>() {
                 @Override
                 public void accept(Short aShort) {
                     UIMTAutotile atf = mtc.showATField();

@@ -7,10 +7,10 @@
 package r48.minivm.compiler;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.ISupplier;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMSlot;
 import r48.minivm.expr.MVMCExpr;
@@ -38,7 +38,7 @@ public abstract class MVMCompileScope {
      * Compiles a define in this scope.
      * Note the supplier. The define/local must be in place before the expression is given.
      */
-    public abstract MVMCExpr compileDefine(DatumSymbol sym, ISupplier<MVMCExpr> value);
+    public abstract MVMCExpr compileDefine(DatumSymbol sym, Supplier<MVMCExpr> value);
 
     /**
      * Extends with a formal frame boundary (into a lambdas for example)

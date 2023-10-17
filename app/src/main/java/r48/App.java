@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -20,7 +21,6 @@ import gabien.datum.DatumSymbol;
 import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIPanel;
 import gabien.ui.UIElement.UIProxy;
-import gabien.uslx.append.IConsumer;
 import r48.app.AppCore;
 import r48.app.AppNewProject;
 import r48.app.AppUI;
@@ -86,7 +86,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, String rp, String sip, IConsumer<String> loadProgress) {
+    public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, String rp, String sip, Consumer<String> loadProgress) {
         super(ilg, charset, gp, rp, sip, loadProgress);
         cmdClassifiers.add(new ICommandClassifier() {
             @Override

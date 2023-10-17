@@ -7,7 +7,6 @@
 
 package r48.dbs;
 
-import gabien.uslx.append.*;
 import gabien.datum.DatumSrcLoc;
 import gabien.ui.UIScrollLayout;
 import r48.App;
@@ -26,6 +25,7 @@ import r48.tr.TrPage.FF1;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -54,7 +54,7 @@ public class RPGCommand extends App.Svc {
      * This is conditional solely because of Show Inn (R2k).
      * Importantly, this accepts the parameters object, like all roots here. There have been some callers disrespecting this.
      */
-    public IFunction<IRIO, Integer> indentPost = (params) -> 0;
+    public Function<IRIO, Integer> indentPost = (params) -> 0;
     // Something that can also go before this command instead of a block leave
     public int blockLeaveReplacement = -1;
     public boolean needsBlockLeavePre;

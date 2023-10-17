@@ -7,7 +7,9 @@
 
 package r48.schema.specialized;
 
-import gabien.uslx.append.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
@@ -23,13 +25,13 @@ import r48.ui.dialog.UISpritesheetChoice;
  * Created on 29/07/17.
  */
 public class SpritesheetCoreSchemaElement extends SchemaElement.Leaf {
-    public IFunction<RORIO, String> text;
+    public Function<RORIO, String> text;
     public int defaultVal;
 
-    public IFunction<IRIO, IRIO> numberProvider;
-    public IFunction<IRIO, ISpritesheetProvider> provider;
+    public Function<IRIO, IRIO> numberProvider;
+    public Function<IRIO, ISpritesheetProvider> provider;
 
-    public SpritesheetCoreSchemaElement(App app, IFunction<RORIO, String> propTranslated, int def, IFunction<IRIO, IRIO> nprov, IFunction<IRIO, ISpritesheetProvider> core) {
+    public SpritesheetCoreSchemaElement(App app, Function<RORIO, String> propTranslated, int def, Function<IRIO, IRIO> nprov, Function<IRIO, ISpritesheetProvider> core) {
         super(app);
         text = propTranslated;
         defaultVal = def;
@@ -46,7 +48,7 @@ public class SpritesheetCoreSchemaElement extends SchemaElement.Leaf {
             public void run() {
                 TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, null, path);
                 final SchemaPath innerPath = path.newWindow(temp, target);
-                temp.heldDialog = new UISpritesheetChoice(app, actTarg.getFX(), localProvider, new IConsumer<Long>() {
+                temp.heldDialog = new UISpritesheetChoice(app, actTarg.getFX(), localProvider, new Consumer<Long>() {
                     @Override
                     public void accept(Long integer) {
                         actTarg.setFX(integer);

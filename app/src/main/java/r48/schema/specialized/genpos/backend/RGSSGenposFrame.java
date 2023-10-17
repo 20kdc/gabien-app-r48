@@ -7,10 +7,12 @@
 
 package r48.schema.specialized.genpos.backend;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.*;
-import gabien.ui.Rect;
 import r48.App;
 import r48.RubyTable;
 import r48.io.data.IRIO;
@@ -41,7 +43,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
     public SchemaPath path;
 
     // Must be initialized before this is used...
-    public ISupplier<IRIO> frameSource;
+    public Supplier<IRIO> frameSource;
 
     public RGSSGenposFrame(App app, SpriteCache sc, SchemaPath basePath, boolean vxaAnimation, Runnable runnable) {
         super(app);
@@ -130,12 +132,12 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
 
     private SchemaElement[] getCellPropSchemas() {
         return new SchemaElement[] {
-                new SpritesheetCoreSchemaElement(app, (v) -> app.format(v), 0, new IFunction<IRIO, IRIO>() {
+                new SpritesheetCoreSchemaElement(app, (v) -> app.format(v), 0, new Function<IRIO, IRIO>() {
                     @Override
                     public IRIO apply(IRIO rubyIO) {
                         return rubyIO;
                     }
-                }, new IFunction<IRIO, ISpritesheetProvider>() {
+                }, new Function<IRIO, ISpritesheetProvider>() {
                     @Override
                     public ISpritesheetProvider apply(final IRIO rubyIO) {
                         return new ISpritesheetProvider() {
@@ -236,7 +238,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
     }
 
     @Override
-    public void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y) {
+    public void moveCell(int ct, Function<Integer, Integer> x, Function<Integer, Integer> y) {
         RubyTable rt = new RubyTable(getFrame().getIVar("@cell_data").getBuffer());
         rt.setTiletype(ct, 1, 0, (short) ((int) x.apply((int) rt.getTiletype(ct, 1, 0))));
         rt.setTiletype(ct, 2, 0, (short) ((int) y.apply((int) rt.getTiletype(ct, 2, 0))));

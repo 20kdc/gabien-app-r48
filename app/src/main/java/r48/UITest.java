@@ -24,6 +24,7 @@ import r48.ui.UINSVertLayout;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.*;
+import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -201,7 +202,7 @@ public class UITest extends App.Prx {
         return sortedKeys(rubyIOs, RORIO::toString);
     }
 
-    public static LinkedList<DMKey> sortedKeys(Set<DMKey> rubyIOs, final IFunction<RORIO, String> toString) {
+    public static LinkedList<DMKey> sortedKeys(Set<DMKey> rubyIOs, final Function<RORIO, String> toString) {
         LinkedList<DMKey> ios = new LinkedList<>(rubyIOs);
         Collections.sort(ios, (t0, t1) -> natStrComp(toString.apply(t0), toString.apply(t1)));
         return ios;
@@ -214,7 +215,7 @@ public class UITest extends App.Prx {
         return sortedKeys(hs);
     }
 
-    public static LinkedList<DMKey> sortedKeysArr(DMKey[] iVarKeys, final IFunction<RORIO, String> toString) {
+    public static LinkedList<DMKey> sortedKeysArr(DMKey[] iVarKeys, final Function<RORIO, String> toString) {
         HashSet<DMKey> hs = new HashSet<>();
         if (iVarKeys != null)
             Collections.addAll(hs, iVarKeys);

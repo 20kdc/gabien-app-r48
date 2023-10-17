@@ -17,6 +17,7 @@ import r48.cfg.FontSizes.FontSizeField;
 import r48.tr.pages.TrRoot;
 
 import java.util.LinkedList;
+import java.util.function.Function;
 
 /**
  * Created on 1/29/17.
@@ -158,7 +159,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                     field.accept(v);
                 }
             });
-            UIAdjuster tb = new UIAdjuster(c.f.fontSizerTH, field.get(), new IFunction<Long, Long>() {
+            UIAdjuster tb = new UIAdjuster(c.f.fontSizerTH, field.get(), new Function<Long, Long>() {
                 @Override
                 public Long apply(Long aLong) {
                     int nv = (int) (long) aLong;

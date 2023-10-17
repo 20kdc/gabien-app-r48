@@ -7,7 +7,8 @@
 
 package r48.io.r2k.obj;
 
-import gabien.uslx.append.*;
+import java.util.function.Supplier;
+
 import r48.io.data.IRIO;
 import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
@@ -37,7 +38,7 @@ public class Event extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@pages"))
-            return pages = new DM2SparseArrayA<EventPage>(new ISupplier<EventPage>() {
+            return pages = new DM2SparseArrayA<EventPage>(new Supplier<EventPage>() {
                 @Override
                 public EventPage get() {
                     return new EventPage(context);

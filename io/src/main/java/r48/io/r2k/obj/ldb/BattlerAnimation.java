@@ -7,7 +7,8 @@
 
 package r48.io.r2k.obj.ldb;
 
-import gabien.uslx.append.*;
+import java.util.function.Supplier;
+
 import r48.io.data.IRIO;
 import r48.io.data.obj.DM2CXSupplier;
 import r48.io.data.obj.DM2Context;
@@ -45,7 +46,7 @@ public class BattlerAnimation extends DM2R2kObject {
     }
 
     private DM2SparseArrayA<BAE> genDefault() {
-        DM2SparseArrayA<BAE> b = new DM2SparseArrayA<BAE>(new ISupplier<BAE>() {
+        DM2SparseArrayA<BAE> b = new DM2SparseArrayA<BAE>(new Supplier<BAE>() {
             @Override
             public BAE get() {
                 return new BAE(context);

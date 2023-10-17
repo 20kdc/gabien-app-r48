@@ -10,9 +10,9 @@ package r48.map;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.GaBIEn;
-import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
+import gabien.uslx.append.Rect;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;

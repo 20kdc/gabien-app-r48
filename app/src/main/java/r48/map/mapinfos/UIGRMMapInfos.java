@@ -7,9 +7,8 @@
 
 package r48.map.mapinfos;
 
-import gabien.GaBIEn;
+import gabien.GaBIEnUI;
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.IMapContext;
 import r48.io.data.IRIO;
@@ -20,6 +19,7 @@ import r48.ui.UITreeView;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 /**
  * Helps jump between maps.
@@ -41,7 +41,7 @@ public class UIGRMMapInfos extends App.Prx {
     private String toStringRes;
 
     // Cannot actually be converted to local variable due to reference issues
-    private IConsumer<SchemaPath> onMapInfoChange = new IConsumer<SchemaPath>() {
+    private Consumer<SchemaPath> onMapInfoChange = new Consumer<SchemaPath>() {
         @Override
         public void accept(SchemaPath sp) {
             rebuildList();
@@ -50,7 +50,7 @@ public class UIGRMMapInfos extends App.Prx {
 
     public UIGRMMapInfos(final IRMLikeMapInfoBackendWPub b, IMapContext context, String mapInfos) {
         super(context.getApp());
-        utv = new UITreeView(UIBorderedElement.getBorderedTextHeight(GaBIEn.sysThemeRoot.getTheme(), app.f.mapInfosTH));
+        utv = new UITreeView(UIBorderedElement.getBorderedTextHeight(GaBIEnUI.sysThemeRoot.getTheme(), app.f.mapInfosTH));
         operators = b;
         mapContext = context;
         toStringRes = mapInfos;
@@ -105,7 +105,7 @@ public class UIGRMMapInfos extends App.Prx {
                 continue;
             
             UIElement elm = extractedElement(k, map, order, parent, name);
-            tree.add(new UITreeView.TreeElement(indent.get(k), operators.getIconForMap(k), elm, new IConsumer<Integer>() {
+            tree.add(new UITreeView.TreeElement(indent.get(k), operators.getIconForMap(k), elm, new Consumer<Integer>() {
                 @Override
                 public void accept(Integer integer) {
                     if (searching)

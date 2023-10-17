@@ -8,7 +8,6 @@
 package r48.schema.arrays;
 
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.io.data.IRIO;
@@ -16,6 +15,8 @@ import r48.io.data.IRIOGeneric;
 import r48.tr.pages.TrRoot;
 
 import java.util.LinkedList;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * And this is why I went and abstracted array UI.
@@ -24,7 +25,7 @@ import java.util.LinkedList;
 public class PagerArrayInterface implements IArrayInterface {
     public StandardArrayInterface regularArrayInterface = new StandardArrayInterface();
     @Override
-    public void provideInterfaceFrom(final Host svl, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
+    public void provideInterfaceFrom(final Host svl, final Supplier<Boolean> valid, final Function<String, IProperty> prop, final Supplier<ArrayPosition[]> getPositions) {
         final App app = svl.getApp();
         final TrRoot T = app.t;
         // work out if we want to be in regular array mode
@@ -94,7 +95,7 @@ public class PagerArrayInterface implements IArrayInterface {
                 }
             }
             if (positions[i].execDelete != null) {
-                final ISupplier<Runnable> r = positions[i].execDelete;
+                final Supplier<Runnable> r = positions[i].execDelete;
                 final String posText = positions[i].text;
                 UITextButton button = new UITextButton("-", app.f.schemaFieldTH, null);
                 button.onClick = () -> {

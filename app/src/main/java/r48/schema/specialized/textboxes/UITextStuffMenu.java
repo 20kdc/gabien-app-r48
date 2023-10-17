@@ -8,25 +8,27 @@ package r48.schema.specialized.textboxes;
 
 import r48.App;
 import r48.ui.UIAppendButton;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UITextButton;
-import gabien.uslx.append.IConsumer;
-import gabien.uslx.append.IFunction;
-import gabien.uslx.append.ISupplier;
 
 /**
  * Created 29th July, 2023.
  */
 public class UITextStuffMenu extends App.Prx {
-    private final ISupplier<String[]> getter;
-    private final IConsumer<String[]> editor;
+    private final Supplier<String[]> getter;
+    private final Consumer<String[]> editor;
     private final TextRules textRules;
     private final int fieldWidth;
     private boolean didAnything = false;
 
-    public UITextStuffMenu(App app, ISupplier<String[]> getter, IConsumer<String[]> editor, TextRules textRules, int fw) {
+    public UITextStuffMenu(App app, Supplier<String[]> getter, Consumer<String[]> editor, TextRules textRules, int fw) {
         super(app);
         this.getter = getter;
         this.editor = editor;
@@ -54,7 +56,7 @@ public class UITextStuffMenu extends App.Prx {
         return didAnything;
     }
 
-    private void editSimple(IFunction<String, String> editDetail) {
+    private void editSimple(Function<String, String> editDetail) {
         didAnything = true;
         String[] res = getter.get();
         for (int i = 0; i < res.length; i++)

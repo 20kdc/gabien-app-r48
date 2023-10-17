@@ -8,8 +8,8 @@
 package r48.ui;
 
 import gabien.render.IGrDriver;
-import gabien.ui.Size;
 import gabien.ui.UIElement;
+import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
 
 /**

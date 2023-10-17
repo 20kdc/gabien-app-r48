@@ -7,13 +7,13 @@
 
 package r48.io.r2k.chunks;
 
-import gabien.uslx.append.*;
 import r48.io.IntUtils;
 import r48.io.data.IRIOFixedUser;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.function.Supplier;
 
 /**
  * Uhoh. These are a lot of classes.
@@ -23,14 +23,14 @@ public class BlobR2kStruct extends IRIOFixedUser implements IR2kInterpretable {
     public BlobR2kStruct(byte[] mkDef) {
         super("Blob", mkDef);
     }
-    public BlobR2kStruct(ISupplier<byte[]> mkDef) {
+    public BlobR2kStruct(Supplier<byte[]> mkDef) {
         super("Blob", mkDef.get());
     }
 
     public BlobR2kStruct(String c, byte[] mkDef) {
         super(c, mkDef);
     }
-    public BlobR2kStruct(String c, ISupplier<byte[]> mkDef) {
+    public BlobR2kStruct(String c, Supplier<byte[]> mkDef) {
         super(c, mkDef.get());
     }
 

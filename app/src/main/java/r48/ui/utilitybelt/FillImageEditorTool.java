@@ -7,6 +7,8 @@
 
 package r48.ui.utilitybelt;
 
+import java.util.function.Function;
+
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
@@ -40,12 +42,12 @@ public class FillImageEditorTool extends ImageEditorTool {
             return;
         final int spi = view.image.getRaw(start.x, start.y);
 
-        FillAlgorithm fa = new FillAlgorithm(new IFunction<FillAlgorithm.Point, FillAlgorithm.Point>() {
+        FillAlgorithm fa = new FillAlgorithm(new Function<FillAlgorithm.Point, FillAlgorithm.Point>() {
             @Override
             public FillAlgorithm.Point apply(FillAlgorithm.Point point) {
                 return view.correctPoint(point.x, point.y);
             }
-        }, new IFunction<FillAlgorithm.Point, Boolean>() {
+        }, new Function<FillAlgorithm.Point, Boolean>() {
             @Override
             public Boolean apply(FillAlgorithm.Point point) {
                 return view.image.getRaw(point.x, point.y) == spi;
