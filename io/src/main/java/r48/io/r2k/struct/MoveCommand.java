@@ -7,6 +7,7 @@
 
 package r48.io.r2k.struct;
 
+import r48.io.IntArrayIterable;
 import r48.io.IntUtils;
 import r48.io.data.*;
 import r48.io.data.obj.DM2Context;
@@ -21,8 +22,6 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import gabien.uslx.append.IntArrayIterable;
 
 /**
  * A MoveCommand! It lets stuff move.
