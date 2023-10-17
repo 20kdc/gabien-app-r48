@@ -9,7 +9,7 @@ package r48.map.tiles;
 
 import gabien.atlas.AtlasDrawable;
 import gabien.atlas.SimpleAtlasBuilder;
-import gabien.render.AtlasPage;
+import gabien.render.IGrDriver;
 import gabien.render.ITexRegion;
 import r48.dbs.ATDB;
 
@@ -43,7 +43,7 @@ public class ATFieldAtlasDrawable extends AtlasDrawable {
     }
 
     @Override
-    public void drawTo(AtlasPage ap, int px, int py) {
+    public void drawTo(IGrDriver ap, int px, int py) {
         int cSize = tileSize / 2;
         for (int sA = 0; sA < 2; sA++)
             for (int sB = 0; sB < 2; sB++) {
@@ -66,7 +66,7 @@ public class ATFieldAtlasDrawable extends AtlasDrawable {
                 }
                 int sX = (sA * cSize);
                 int sY = (sB * cSize);
-                ap.copyFrom((tx * tileSize) + sX, (ty * tileSize) + sY, cSize, cSize, px + sX, py + sY, source);
+                ap.blitImage((tx * tileSize) + sX, (ty * tileSize) + sY, cSize, cSize, px + sX, py + sY, source, IGrDriver.BLEND_NONE, 0);
             }
     }
 }
