@@ -9,6 +9,7 @@ package gabienapp;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
+import gabien.GaBIEnUI;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.ui.UIElement;
@@ -50,7 +51,7 @@ public class Launcher {
             @Override
             public void accept(UIElement o, int scale, boolean fullscreen, boolean resizable) {
                 // This handles pretty much all of these that are needed except in WM and PlaneView
-                o.setLAFParentOverride(GaBIEn.sysThemeRoot);
+                o.setLAFParentOverride(GaBIEnUI.sysThemeRoot);
                 super.accept(o, scale, fullscreen, resizable);
             }
         };

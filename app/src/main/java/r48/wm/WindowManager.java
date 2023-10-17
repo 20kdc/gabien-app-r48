@@ -92,7 +92,7 @@ public class WindowManager extends AppCore.Csv {
         rootView.setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(800), app.f.scaleGuess(600)));
 
         tabPane = new UITabPane(app.f.tabTH, true, true, app.f.maintabsS, thbrL, thbrR);
-        tabPane.setLAFParentOverride(GaBIEn.sysThemeRoot);
+        tabPane.setLAFParentOverride(GaBIEnUI.sysThemeRoot);
 
         UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, tabPane);
         rootView.addShell(backing);
@@ -168,7 +168,7 @@ public class WindowManager extends AppCore.Csv {
     }
 
     public void createWindow(final UIElement uie, final boolean tab, final boolean immortal, final @Nullable String disposition) {
-        uie.setLAFParentOverride(GaBIEn.sysThemeRoot);
+        uie.setLAFParentOverride(GaBIEnUI.sysThemeRoot);
         // Now decide what to actually do.
         LinkedList<UITabBar.TabIcon> icons = new LinkedList<>();
         if (uie instanceof IDuplicatableWindow) {
@@ -342,7 +342,7 @@ public class WindowManager extends AppCore.Csv {
             Rect r2 = results[i].getIntersection(area);
             if (r2 != null) {
                 if (r2.rectEquals(results[i])) {
-                    menu.setLAFParentOverride(GaBIEn.sysThemeRoot);
+                    menu.setLAFParentOverride(GaBIEnUI.sysThemeRoot);
                     menu.setForcedBounds(null, r2);
                     screen.addShell(new UIWindowView.ElementShell(screen, menu) {
                         @Override
@@ -362,7 +362,7 @@ public class WindowManager extends AppCore.Csv {
                             igd.blitScaledImage(0, 0, 1, 1, 0, 0, sz.width, sz.height, modImg);
                             int bw = 4;
                             Rect r = menu.getParentRelativeBounds();
-                            Theme theme = GaBIEn.sysThemeRoot.getTheme();
+                            Theme theme = GaBIEnUI.sysThemeRoot.getTheme();
                             // The border is shown 'behind' the menu base, but the menu is shown over it
                             UIBorderedElement.drawBorder(theme, igd, Theme.B_R48OVERLAY, bw, r.x - bw, r.y - bw, r.width + (bw * 2), r.height + (bw * 2));
                             float otx = igd.trsTXS(base.x);

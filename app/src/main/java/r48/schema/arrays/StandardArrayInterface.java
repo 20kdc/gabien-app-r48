@@ -7,7 +7,7 @@
 
 package r48.schema.arrays;
 
-import gabien.GaBIEn;
+import gabien.GaBIEnUI;
 import gabien.ui.*;
 import gabien.ui.theming.Theme;
 import gabien.uslx.append.*;
@@ -64,7 +64,7 @@ public class StandardArrayInterface implements IArrayInterface {
                     r.run();
                 releasers.clear();
                 // Work out how big each array index field has to be.
-                Theme theme = GaBIEn.sysThemeRoot.getTheme();
+                Theme theme = GaBIEnUI.sysThemeRoot.getTheme();
                 final Size maxSizePre = UIBorderedElement.getRecommendedTextSize(theme, "", app.f.schemaFieldTH);
                 final AtomicInteger maxWidth = new AtomicInteger(maxSizePre.width);
                 int selectButtonUnit = maxSizePre.height;

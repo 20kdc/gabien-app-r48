@@ -8,6 +8,7 @@
 package r48.ui.dialog;
 
 import gabien.GaBIEn;
+import gabien.GaBIEnUI;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.*;
@@ -38,7 +39,7 @@ public class UIColourPicker extends App.Prx {
     private final UITabPane tabPane;
     private final IConsumer<Integer>[] colourListeners;
     private final UINumberBox alphaBox;
-    private final Size numberBoxMinimumSize = UIBorderedElement.getRecommendedTextSize(GaBIEn.sysThemeRoot.getTheme(), "_255_", app.f.imageEditorTH);
+    private final Size numberBoxMinimumSize = UIBorderedElement.getRecommendedTextSize(GaBIEnUI.sysThemeRoot.getTheme(), "_255_", app.f.imageEditorTH);
     private boolean shuttingDown = false;
 
     @SuppressWarnings("unchecked")

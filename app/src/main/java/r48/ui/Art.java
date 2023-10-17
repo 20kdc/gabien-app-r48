@@ -8,6 +8,7 @@
 package r48.ui;
 
 import gabien.GaBIEn;
+import gabien.GaBIEnUI;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.Rect;
@@ -38,7 +39,7 @@ public class Art {
 
     // This controls the layout of (in particular) zoom
     public static int getZIconSize(App app) {
-        return UIBorderedElement.getBorderedTextHeight(GaBIEn.sysThemeRoot.getTheme(), app.f.mapPositionTH);
+        return UIBorderedElement.getBorderedTextHeight(GaBIEnUI.sysThemeRoot.getTheme(), app.f.mapPositionTH);
     }
 
     public static int getZIconMargin(App app) {

@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
+import gabien.GaBIEnUI;
 import gabien.ui.FontManager;
 import gabien.ui.theming.Theme;
 import gabien.ui.theming.ThemingCentral;
@@ -75,7 +76,7 @@ public class Config {
         borderTheme %= ThemingCentral.themes.length;
         Theme base = ThemingCentral.themes[borderTheme];
         base = Theme.FM_GLOBAL.with(base, new FontManager(fontOverride, fontOverrideUE8));
-        GaBIEn.sysThemeRoot.setThemeOverride(base);
+        GaBIEnUI.sysThemeRoot.setThemeOverride(base);
         GaBIEn.sysCoreFontSize = f.gSysCoreTH;
     }
 }
