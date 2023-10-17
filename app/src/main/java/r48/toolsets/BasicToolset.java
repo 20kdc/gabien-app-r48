@@ -142,7 +142,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                     return;
                                 }
                             }
-                            app.ui.launchPrompt(T.u.prSchemaID, new IConsumer<String>() {
+                            app.ui.launchPrompt(T.u.prSchemaID, new Consumer<String>() {
                                 @Override
                                 public void accept(String s) {
                                     app.ui.launchSchema(s, rio, null);
@@ -156,7 +156,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 () -> {
                     app.ui.launchPrompt(T.u.prObjectName, (s) -> {
                         final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
-                        app.ui.launchPrompt(T.u.prSchemaID, new IConsumer<String>() {
+                        app.ui.launchPrompt(T.u.prSchemaID, new Consumer<String>() {
                             @Override
                             public void accept(String s) {
                                 SchemaElement ise = app.sdb.getSDBEntry(s);
@@ -236,7 +236,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     }
                 },
                 () -> {
-                    app.ui.launchPrompt(T.u.prObjectName, new IConsumer<String>() {
+                    app.ui.launchPrompt(T.u.prObjectName, new Consumer<String>() {
                         @Override
                         public void accept(String s) {
                             final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
@@ -275,7 +275,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         }).centred();
     }
     
-    private static int locateStrings(App app, IRIO rio, IFunction<IRIO, Integer> string) {
+    private static int locateStrings(App app, IRIO rio, Function<IRIO, Integer> string) {
         // NOTE: Hash keys, ivar keys are not up for modification.
         int total = 0;
         int type = rio.getType();

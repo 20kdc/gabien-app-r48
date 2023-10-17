@@ -25,7 +25,7 @@ import r48.ui.UINSVertLayout;
  */
 public class SubwindowSchemaElement extends SchemaElement implements IProxySchemaElement {
     public SchemaElement heldElement;
-    public IFunction<IRIO, String> nameGetter = new IFunction<IRIO, String>() {
+    public Function<IRIO, String> nameGetter = new Function<IRIO, String>() {
         @Override
         public String apply(IRIO rubyIO) {
             return app.format(rubyIO, heldElement, EnumSchemaElement.Prefix.Prefix);
@@ -37,7 +37,7 @@ public class SubwindowSchemaElement extends SchemaElement implements IProxySchem
         heldElement = encap;
     }
 
-    public SubwindowSchemaElement(@NonNull SchemaElement encap, IFunction<IRIO, String> naming) {
+    public SubwindowSchemaElement(@NonNull SchemaElement encap, Function<IRIO, String> naming) {
         super(encap.app);
         heldElement = encap;
         nameGetter = naming;

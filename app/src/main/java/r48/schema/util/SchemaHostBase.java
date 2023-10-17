@@ -29,7 +29,7 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
 
     protected EmbedDataTracker embedData = new EmbedDataTracker();
 
-    private ISupplier<Boolean> validitySupplier;
+    private Supplier<Boolean> validitySupplier;
 
     public SchemaHostBase(App app, @Nullable UIMapView rendererSource) {
         super(app);
@@ -37,7 +37,7 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
     }
 
     protected void replaceValidity() {
-        validitySupplier = new ISupplier<Boolean>() {
+        validitySupplier = new Supplier<Boolean>() {
             @Override
             public Boolean get() {
                 return validitySupplier == this;
@@ -80,7 +80,7 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
     }
 
     @Override
-    public ISupplier<Boolean> getValidity() {
+    public Supplier<Boolean> getValidity() {
         return validitySupplier;
     }
 

@@ -57,7 +57,7 @@ public abstract class TroopGenposFrame extends App.Svc implements IGenposFrame {
     }
 
     @Override
-    public void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y) {
+    public void moveCell(int ct, Function<Integer, Integer> x, Function<Integer, Integer> y) {
         SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(DMKey.of(ct + 1), "[" + (ct + 1) + "]");
         IRIO member = troop.getIVar("@members").getAElem(ct + 1);
         member.getIVar("@x").setFX(x.apply((int) member.getIVar("@x").getFX()));

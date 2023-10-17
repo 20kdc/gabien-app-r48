@@ -201,7 +201,7 @@ public class UIMapViewContainer extends App.Pan {
         final IEditingToolbarController metc = view.map.makeToolbar(mtc);
 
         if (metc.allowPickTile()) {
-            view.pickTileHelper = new IConsumer<Short>() {
+            view.pickTileHelper = new Consumer<Short>() {
                 @Override
                 public void accept(Short aShort) {
                     UIMTAutotile atf = mtc.showATField();

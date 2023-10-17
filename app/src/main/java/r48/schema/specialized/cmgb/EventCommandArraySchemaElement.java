@@ -199,7 +199,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
 
     @Override
     protected SchemaElement getElementSchema(int j) {
-        return new SubwindowSchemaElement(baseElement, new IFunction<IRIO, String>() {
+        return new SubwindowSchemaElement(baseElement, new Function<IRIO, String>() {
             @Override
             public String apply(IRIO rubyIO) {
                 return "This text should not be visible. Grouping is used for all commands.";
@@ -343,7 +343,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
      * The IRIO used for this element is expected to be the list.
      */
     private SubwindowSchemaElement getElementContextualSubwindowSchema(final IRIO tracker, final int start, final String displayPrefix) {
-        return new SubwindowSchemaElement(getElementContextualWindowSchema(tracker), new IFunction<IRIO, String>() {
+        return new SubwindowSchemaElement(getElementContextualWindowSchema(tracker), new Function<IRIO, String>() {
             @Override
             public String apply(IRIO rubyIO) {
                 return displayPrefix + database.buildGroupCodename(rubyIO, start, false);
@@ -410,7 +410,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         path = path.newWindow(targ.heldElement, target);
         launcher.pushObject(path);
         // Ok, now navigate to the command selector
-        path = path.newWindow(RPGCommandSchemaElement.navigateToCode(launcher, targetElem, new IConsumer<int[]>() {
+        path = path.newWindow(RPGCommandSchemaElement.navigateToCode(launcher, targetElem, new Consumer<int[]>() {
             @Override
             public void accept(int[] i) {
                 for (int j = 0; j < i.length; j++) {

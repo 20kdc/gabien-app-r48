@@ -84,7 +84,7 @@ public class UISingleFrameView extends UIElement implements OldMouseEmulator.IOl
                     final int ofsY = (y - lastMY) + lossY;
                     lastMX = x;
                     lastMY = y;
-                    basePanelAccess.frame.moveCell(basePanelAccess.cellSelection.cellNumber, new IFunction<Integer, Integer>() {
+                    basePanelAccess.frame.moveCell(basePanelAccess.cellSelection.cellNumber, new Function<Integer, Integer>() {
                         @Override
                         public Integer apply(Integer integer) {
                             int r = offset(integer, ofsX);
@@ -92,7 +92,7 @@ public class UISingleFrameView extends UIElement implements OldMouseEmulator.IOl
                             lossX = ofsX - ao;
                             return r;
                         }
-                    }, new IFunction<Integer, Integer>() {
+                    }, new Function<Integer, Integer>() {
                         @Override
                         public Integer apply(Integer integer) {
                             int r = offset(integer, ofsY);

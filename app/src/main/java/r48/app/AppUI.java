@@ -21,7 +21,7 @@ import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import gabien.ui.WindowCreatingUIElementConsumer;
-import gabien.uslx.append.IConsumer;
+import gabien.uslx.append.Consumer;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import r48.App;
@@ -361,7 +361,7 @@ public class AppUI extends App.Svc {
         launchDialog(T.u.done);
     }
 
-    public void launchPrompt(String text, IConsumer<String> consumer) {
+    public void launchPrompt(String text, Consumer<String> consumer) {
         wm.createWindow(new UITextPrompt(app, text, consumer));
     }
 

@@ -38,7 +38,7 @@ public class StandardArrayInterface implements IArrayInterface {
     }
     
     @Override
-    public void provideInterfaceFrom(final Host uiSVL, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
+    public void provideInterfaceFrom(final Host uiSVL, final Supplier<Boolean> valid, final Function<String, IProperty> prop, final Supplier<ArrayPosition[]> getPositions) {
         final ArrayPosition[] positions = getPositions.get();
         final App app = uiSVL.getApp();
         final TrRoot T = app.t;

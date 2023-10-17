@@ -257,14 +257,14 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             // 2. Any two tiles which are both part of an AT group and that is the same AT group, are the same.
             // 3. Anything else is not the same.
             final int key = map.mapTable.getTiletype(x, y, layer);
-            FillAlgorithm fa = new FillAlgorithm(new IFunction<FillAlgorithm.Point, FillAlgorithm.Point>() {
+            FillAlgorithm fa = new FillAlgorithm(new Function<FillAlgorithm.Point, FillAlgorithm.Point>() {
                 @Override
                 public FillAlgorithm.Point apply(FillAlgorithm.Point point) {
                     if (map.mapTable.outOfBounds(point.x, point.y))
                         return null;
                     return point;
                 }
-            }, new IFunction<FillAlgorithm.Point, Boolean>() {
+            }, new Function<FillAlgorithm.Point, Boolean>() {
                 @Override
                 public Boolean apply(FillAlgorithm.Point point) {
                     short here = map.mapTable.getTiletype(point.x, point.y, layer);

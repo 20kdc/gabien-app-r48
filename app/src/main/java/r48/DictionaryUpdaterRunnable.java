@@ -37,16 +37,16 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
     public final String targ;
     // Responsible for removing any wrapping
     // fieldA gets the root's wrapping, iVar gets the inner wrapping
-    public final IFunction<IRIO, IRIO> fieldA, iVar;
+    public final Function<IRIO, IRIO> fieldA, iVar;
     public final boolean hash;
     public final int defaultVal;
     public final String interpret;
     private String lastTarget = null;
-    private IConsumer<SchemaPath> kickMe;
+    private Consumer<SchemaPath> kickMe;
     public final SchemaElement dataSchema;
 
     // NOTE: targetDictionary must always be referenced by proxy to ensure setSDBEntry works later.
-    public DictionaryUpdaterRunnable(App app, SDB.DynamicSchemaElement targetDictionary, String target, IFunction<IRIO, IRIO> iFunction, boolean b, IFunction<IRIO, IRIO> ivar, int def, String ip, SchemaElement ds) {
+    public DictionaryUpdaterRunnable(App app, SDB.DynamicSchemaElement targetDictionary, String target, Function<IRIO, IRIO> iFunction, boolean b, Function<IRIO, IRIO> ivar, int def, String ip, SchemaElement ds) {
         super(app);
         dict = targetDictionary;
         targ = target;
@@ -118,7 +118,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
         return false;
     }
 
-    public static void coreLogic(App app, LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> innerMap, final @Nullable IObjectBackend.ILoadedObject targetILO, @Nullable SchemaElement dataSchema, IRIO target, boolean hash, String interpret) {
+    public static void coreLogic(App app, LinkedList<UIEnumChoice.Option> finalMap, Function<IRIO, IRIO> innerMap, final @Nullable IObjectBackend.ILoadedObject targetILO, @Nullable SchemaElement dataSchema, IRIO target, boolean hash, String interpret) {
         if (hash) {
             for (DMKey key : target.getHashKeys())
                 handleVal(app, finalMap, innerMap, targetILO, dataSchema, target.getHashVal(key), key, interpret);
@@ -137,7 +137,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
         dict.setEntry(ise);
     }
 
-    private static void handleVal(App app, LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> iVar, final @Nullable IObjectBackend.ILoadedObject targetILO, final @Nullable SchemaElement dataSchema, IRIO rio, DMKey k, String interpret) {
+    private static void handleVal(App app, LinkedList<UIEnumChoice.Option> finalMap, Function<IRIO, IRIO> iVar, final @Nullable IObjectBackend.ILoadedObject targetILO, final @Nullable SchemaElement dataSchema, IRIO rio, DMKey k, String interpret) {
         int type = rio.getType();
         if (type != '0') {
             // Key details
@@ -152,7 +152,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
             final SchemaPath dataSchemaPath = ((rootSchemaPath == null) || (dataSchema == null)) ? null : rootSchemaPath.arrayHashIndex(kc, p).newWindow(dataSchema, rio);
             // Details
             String text;
-            IConsumer<String> editor = null;
+            Consumer<String> editor = null;
             if (mappedRIO.getType() == '\"') {
                 text = mappedRIO.decString();
                 if (rootSchemaPath != null) {

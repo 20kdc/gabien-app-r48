@@ -154,7 +154,7 @@ public class FontSizes {
         throw new RuntimeException("No such field: " + string);
     }
 
-    public class FontSizeField implements IConsumer<Integer>, ISupplier<Integer> {
+    public class FontSizeField implements Consumer<Integer>, Supplier<Integer> {
         // This isn't supposed to be used, because it is subject to change
         private final String name;
         // config

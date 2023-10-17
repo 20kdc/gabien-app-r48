@@ -226,15 +226,15 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
         public final int indent;
         public final Art.Symbol icon;
         public final UIElement innerElement;
-        public final IConsumer<Integer> elementDraggedHere;
+        public final Consumer<Integer> elementDraggedHere;
         public final Runnable expandToggle;
 
-        public TreeElement(int i, Art.Symbol ico, UIElement pineapple, IConsumer<Integer> o, boolean expand, Runnable ext) {
+        public TreeElement(int i, Art.Symbol ico, UIElement pineapple, Consumer<Integer> o, boolean expand, Runnable ext) {
             indent = i;
             icon = ico;
             innerElement = pineapple;
             if (o == null) {
-                elementDraggedHere = new IConsumer<Integer>() {
+                elementDraggedHere = new Consumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                     }

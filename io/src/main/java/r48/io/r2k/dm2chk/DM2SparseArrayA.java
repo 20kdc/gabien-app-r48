@@ -26,9 +26,9 @@ import java.util.Map;
  * Created on December 05, 2018.
  */
 public class DM2SparseArrayA<V extends IRIO> extends IRIOFixedArray<IRIONullable<V>> implements IR2kInterpretable {
-    public final ISupplier<V> constructor;
+    public final Supplier<V> constructor;
 
-    public DM2SparseArrayA(ISupplier<V> cons) {
+    public DM2SparseArrayA(Supplier<V> cons) {
         constructor = cons;
     }
 

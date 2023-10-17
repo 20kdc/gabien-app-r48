@@ -170,7 +170,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         IRIO mi = app.odb.getObject("MapInfos").getObject();
         for (final DMKey rio : mi.getHashKeys()) {
             int id = (int) rio.getFX();
-            RMMapData rmd = new RMMapData(app, new ISupplier<String>() {
+            RMMapData rmd = new RMMapData(app, new Supplier<String>() {
                 @Override
                 public String get() {
                     IRIO miLocal = app.odb.getObject("MapInfos").getObject();

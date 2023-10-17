@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.IConsumer;
+import gabien.uslx.append.Consumer;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMSlot;
 import r48.minivm.fn.MVMFn;
@@ -20,7 +20,7 @@ import r48.minivm.fn.MVMFn;
  * Created 2nd March 2023.
  */
 public class TrPage {
-    public final void fillFromVM(MVMEnvR48 env, IConsumer<String> logTrIssues) {
+    public final void fillFromVM(MVMEnvR48 env, Consumer<String> logTrIssues) {
         for (Field f : getClass().getFields()) {
             try {
                 Type ty = f.getGenericType();
@@ -39,7 +39,7 @@ public class TrPage {
         }
     }
 
-    private final Object calculateValueFor(MVMEnvR48 env, String cName, String name, Type type, IConsumer<String> logTrIssues) {
+    private final Object calculateValueFor(MVMEnvR48 env, String cName, String name, Type type, Consumer<String> logTrIssues) {
         name = cName + "." + name;
         String errMsg = "!!!" + name + "!!!";
         MVMSlot s = env.getSlot(new DatumSymbol(name));
@@ -117,7 +117,7 @@ public class TrPage {
         return missingTerm(name, type, logTrIssues, errMsg);
     }
 
-    private final Object missingTerm(String name, Type type, IConsumer<String> logTrIssues, final String msg) {
+    private final Object missingTerm(String name, Type type, Consumer<String> logTrIssues, final String msg) {
         System.err.println("TrPage: Missing term " + name);
         if (type == String.class) {
             return msg;

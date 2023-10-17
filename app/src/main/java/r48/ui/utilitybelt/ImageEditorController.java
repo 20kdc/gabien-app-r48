@@ -167,7 +167,7 @@ public class ImageEditorController extends App.Svc {
         menuFuncs.add(new Runnable() {
             @Override
             public void run() {
-                app.ui.wm.createMenu(fileButtonMenuHook, showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
+                app.ui.wm.createMenu(fileButtonMenuHook, showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new Consumer<Rect>() {
                     @Override
                     public void accept(Rect rect) {
                         imageEditView.eds.startSection();
@@ -237,7 +237,7 @@ public class ImageEditorController extends App.Svc {
         menuFuncs.add(new Runnable() {
             @Override
             public void run() {
-                GaBIEn.startFileBrowser(fbStrAL, false, "", new IConsumer<String>() {
+                GaBIEn.startFileBrowser(fbStrAL, false, "", new Consumer<String>() {
                     @Override
                     public void accept(String s) {
                         if (s != null)
@@ -279,7 +279,7 @@ public class ImageEditorController extends App.Svc {
                                 if (imageEditView.eds.canSimplySave())
                                     initialName = GaBIEn.nameOf(sss);
                             }
-                            GaBIEn.startFileBrowser(fbStrAS, true, "", new IConsumer<String>() {
+                            GaBIEn.startFileBrowser(fbStrAS, true, "", new Consumer<String>() {
                                 @Override
                                 public void accept(String s) {
                                     if (s != null) {
@@ -313,7 +313,7 @@ public class ImageEditorController extends App.Svc {
             }
         });
 
-        fileButtonMenuHook = new UIMenuButton(app, T.g.bFile, app.f.imageEditorTH, new ISupplier<Boolean>() {
+        fileButtonMenuHook = new UIMenuButton(app, T.g.bFile, app.f.imageEditorTH, new Supplier<Boolean>() {
             @Override
             public Boolean get() {
                 return paletteThing == currentPaletteThing;
@@ -321,7 +321,7 @@ public class ImageEditorController extends App.Svc {
         }, menuDetails.toArray(new String[0]), menuFuncs.toArray(new Runnable[0]));
         paletteView.panelsAdd(fileButtonMenuHook);
 
-        paletteView.panelsAdd(new UIMenuButton(app, T.ie.grid, app.f.imageEditorTH, new ISupplier<UIElement>() {
+        paletteView.panelsAdd(new UIMenuButton(app, T.ie.grid, app.f.imageEditorTH, new Supplier<UIElement>() {
             @Override
             public UIElement get() {
                 // The grid changer used to be using the same XY changer as resizing, then that became impractical.
@@ -351,7 +351,7 @@ public class ImageEditorController extends App.Svc {
                 uicsb.onClick = new Runnable() {
                     @Override
                     public void run() {
-                        app.ui.wm.createMenu(uicsb, new UIColourPicker(app, T.ie.gridColour, imageEditView.gridColour, new IConsumer<Integer>() {
+                        app.ui.wm.createMenu(uicsb, new UIColourPicker(app, T.ie.gridColour, imageEditView.gridColour, new Consumer<Integer>() {
                             @Override
                             public void accept(Integer t) {
                                 if (t != null)
@@ -417,10 +417,10 @@ public class ImageEditorController extends App.Svc {
             paletteView.panelsAdd(sanityButtonHolder = new UISplitterLayout(cType, sanityButton, false, 1));
         }
 
-        paletteView.panelsAdd(new UISplitterLayout(new UIMenuButton(app, "+", app.f.imageEditorTH, new ISupplier<UIElement>() {
+        paletteView.panelsAdd(new UISplitterLayout(new UIMenuButton(app, "+", app.f.imageEditorTH, new Supplier<UIElement>() {
             @Override
             public UIElement get() {
-                return new UIColourPicker(app, T.ie.palAdd, imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex) | 0xFF000000, new IConsumer<Integer>() {
+                return new UIColourPicker(app, T.ie.palAdd, imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex) | 0xFF000000, new Consumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         if (integer == null)
@@ -435,7 +435,7 @@ public class ImageEditorController extends App.Svc {
         }), new UISymbolButton(Symbol.Eyedropper, app.f.imageEditorTH, new Runnable() {
             @Override
             public void run() {
-                imageEditView.currentTool = new AddColourFromImageEditorTool(app, new IConsumer<Integer>() {
+                imageEditView.currentTool = new AddColourFromImageEditorTool(app, new Consumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         imageEditView.eds.startSection();
@@ -482,10 +482,10 @@ public class ImageEditorController extends App.Svc {
                     }
                 }, app.f.imageEditorTH);
             }
-            cPanel = new UISplitterLayout(new UIMenuButton(app, "=", app.f.imageEditorTH, new ISupplier<UIElement>() {
+            cPanel = new UISplitterLayout(new UIMenuButton(app, "=", app.f.imageEditorTH, new Supplier<UIElement>() {
                 @Override
                 public UIElement get() {
-                    return new UIColourPicker(app, T.ie.palChg, imageEditView.image.getPaletteRGB(fidx), new IConsumer<Integer>() {
+                    return new UIColourPicker(app, T.ie.palChg, imageEditView.image.getPaletteRGB(fidx), new Consumer<Integer>() {
                         @Override
                         public void accept(Integer integer) {
                             if (integer == null)
@@ -528,7 +528,7 @@ public class ImageEditorController extends App.Svc {
         return redo;
     }
 
-    private UIElement showXYChanger(Rect targetVal, final IConsumer<Rect> iConsumer, final String title) {
+    private UIElement showXYChanger(Rect targetVal, final Consumer<Rect> iConsumer, final String title) {
         UIScrollLayout xyChanger = new UIScrollLayout(true, app.f.generalS) {
             @Override
             public String toString() {

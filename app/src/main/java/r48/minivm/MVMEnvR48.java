@@ -18,7 +18,7 @@ import gabien.datum.DatumDecToLambdaVisitor;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.datum.DatumWriter;
-import gabien.uslx.append.IConsumer;
+import gabien.uslx.append.Consumer;
 import gabienapp.Application;
 import r48.dbs.DatumLoader;
 import r48.tr.DynTrBase;
@@ -33,12 +33,12 @@ import r48.wm.Coco;
  * Include/loadProgress split from MiniVM core 1st March 2023.
  */
 public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
-    private final IConsumer<String> loadProgress, logTrIssues;
+    private final Consumer<String> loadProgress, logTrIssues;
     private final HashMap<String, DynTrSlot> dynMap;
     private final LinkedList<String> dynList;
     private final String langID;
 
-    public MVMEnvR48(IConsumer<String> loadProgress, IConsumer<String> logTrIssues, String lid) {
+    public MVMEnvR48(Consumer<String> loadProgress, Consumer<String> logTrIssues, String lid) {
         super();
         this.loadProgress = loadProgress;
         this.logTrIssues = logTrIssues;

@@ -201,7 +201,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
         return !readonlyTiles;
     }
 
-    public abstract static class ToolButton implements IFunction<IMapToolContext, UIMTBase> {
+    public abstract static class ToolButton implements Function<IMapToolContext, UIMTBase> {
         public final String text;
         public ToolButton(String txt) {
             text = txt;

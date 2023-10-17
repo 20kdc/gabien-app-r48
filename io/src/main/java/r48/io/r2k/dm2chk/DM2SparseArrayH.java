@@ -24,9 +24,9 @@ import java.io.OutputStream;
  * Created on December 04, 2018.
  */
 public class DM2SparseArrayH<V extends IRIO> extends IRIOFixedHash<Integer, V> implements IR2kInterpretable {
-    public final ISupplier<V> constructor;
+    public final Supplier<V> constructor;
 
-    public DM2SparseArrayH(ISupplier<V> cons) {
+    public DM2SparseArrayH(Supplier<V> cons) {
         constructor = cons;
     }
 

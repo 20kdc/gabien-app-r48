@@ -8,8 +8,8 @@
 package r48.ui.search;
 
 import gabien.ui.UIScrollLayout;
-import gabien.uslx.append.IConsumer;
-import gabien.uslx.append.ISupplier;
+import gabien.uslx.append.Consumer;
+import gabien.uslx.append.Supplier;
 import gabien.uslx.append.Rect;
 import gabien.wsi.IPeripherals;
 import r48.App;
@@ -21,21 +21,21 @@ import r48.search.CommandSite;
  * Created on 17th September 2022
  */
 public class UICommandSites extends App.Prx {
-    private final ISupplier<CommandSite[]> refresh;
+    private final Supplier<CommandSite[]> refresh;
     private final IObjectBackend.ILoadedObject[] roots;
 
     private final UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
     private boolean needsRefresh = false;
     private String objIdName;
 
-    private final IConsumer<SchemaPath> consumer = new IConsumer<SchemaPath>() {
+    private final Consumer<SchemaPath> consumer = new Consumer<SchemaPath>() {
         @Override
         public void accept(SchemaPath t) {
             needsRefresh = true;
         }
     };
 
-    public UICommandSites(App app, String name, ISupplier<CommandSite[]> supplier, IObjectBackend.ILoadedObject[] r) {
+    public UICommandSites(App app, String name, Supplier<CommandSite[]> supplier, IObjectBackend.ILoadedObject[] r) {
         super(app);
         objIdName = name;
         refresh = supplier;

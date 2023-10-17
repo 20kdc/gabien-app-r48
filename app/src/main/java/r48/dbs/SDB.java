@@ -8,7 +8,7 @@
 package r48.dbs;
 
 import gabien.ui.UIElement;
-import gabien.uslx.append.ISupplier;
+import gabien.uslx.append.Supplier;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.io.IObjectBackend.ILoadedObject;
@@ -224,7 +224,7 @@ public class SDB extends App.Svc {
         dictionaryUpdaterRunnables.add(dur);
     }
 
-    public void addMergeRunnable(String id, ISupplier<SchemaElement> s) {
+    public void addMergeRunnable(String id, Supplier<SchemaElement> s) {
         final DynamicSchemaElement dse = ensureSDBProxy(id);
         mergeRunnables.add(() -> {
             dse.setEntry(s.get());

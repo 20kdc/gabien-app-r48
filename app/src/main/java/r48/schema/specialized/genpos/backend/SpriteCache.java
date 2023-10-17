@@ -26,13 +26,13 @@ import java.util.LinkedList;
 public class SpriteCache extends App.Svc {
     public IRIO target;
     public String framesetALoc, framesetAHue, framesetBLoc, framesetBHue;
-    public IFunction<IRIO, Integer> spsDeterminant;
-    public IFunction<IRIO, String> pfxDeterminant;
+    public Function<IRIO, Integer> spsDeterminant;
+    public Function<IRIO, String> pfxDeterminant;
 
     private IImage framesetCacheA, framesetCacheB;
     public int spriteSize;
 
-    public SpriteCache(App app, IRIO targ, String fal, String fah, String fbl, String fbh, IFunction<IRIO, Integer> spriteSizeDeterminant, IFunction<IRIO, String> prefixDeterminant) {
+    public SpriteCache(App app, IRIO targ, String fal, String fah, String fbl, String fbh, Function<IRIO, Integer> spriteSizeDeterminant, Function<IRIO, String> prefixDeterminant) {
         super(app);
         target = targ;
         framesetALoc = fal;

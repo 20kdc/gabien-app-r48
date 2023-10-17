@@ -15,7 +15,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import static gabien.datum.DatumTreeUtils.*;
 
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.ISupplier;
+import gabien.uslx.append.Supplier;
 import r48.minivm.MVMU;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMScope;
@@ -122,7 +122,7 @@ public class MVMScopingLibrary {
         return compileIndividualDefine(cs, head, () -> val.convert(head, args));
     }
 
-    public static MVMCExpr compileIndividualDefine(MVMCompileScope cs, Object k, ISupplier<MVMCExpr> v) {
+    public static MVMCExpr compileIndividualDefine(MVMCompileScope cs, Object k, Supplier<MVMCExpr> v) {
         if (!(k instanceof DatumSymbol))
             throw new RuntimeException(MVMU.userStr(k) + " expected to be sym");
         DatumSymbol k2 = (DatumSymbol) k;

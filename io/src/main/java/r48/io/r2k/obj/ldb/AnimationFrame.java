@@ -29,7 +29,7 @@ public class AnimationFrame extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@cells"))
-            return cells = new DM2SparseArrayA<AnimationCell>(new ISupplier<AnimationCell>() {
+            return cells = new DM2SparseArrayA<AnimationCell>(new Supplier<AnimationCell>() {
                 @Override
                 public AnimationCell get() {
                     return new AnimationCell(context);

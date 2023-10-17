@@ -10,7 +10,7 @@ package r48.dbs;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.IFunction;
+import gabien.uslx.append.Function;
 import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -33,7 +33,7 @@ import r48.minivm.expr.MVMCPathHashDel;
  * With that in mind, do not escape this w/EscapedStringSyntax. It's not necessary.
  * Created on 08/06/17, heavily refactored 26 February 2023.
  */
-public final class PathSyntax implements IFunction<IRIO, IRIO> {
+public final class PathSyntax implements Function<IRIO, IRIO> {
     // MiniVM programs for the various PathSyntax operations.
     public final MVMCExpr getProgram, addProgram, delProgram;
     public final String decompiled;

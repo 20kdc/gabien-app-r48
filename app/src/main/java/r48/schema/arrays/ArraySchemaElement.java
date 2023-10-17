@@ -77,7 +77,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
             public App getApp() {
                 return app;
             }
-        }, launcher.getValidity(), new IFunction<String, IArrayInterface.IProperty>() {
+        }, launcher.getValidity(), new Function<String, IArrayInterface.IProperty>() {
             @Override
             public IArrayInterface.IProperty apply(final String s) {
                 return new IArrayInterface.IProperty() {
@@ -92,7 +92,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     }
                 };
             }
-        }, new ISupplier<IArrayInterface.ArrayPosition[]>() {
+        }, new Supplier<IArrayInterface.ArrayPosition[]>() {
             @Override
             public IArrayInterface.ArrayPosition[] get() {
                 return getPositions(target, launcher, path);
@@ -127,7 +127,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 hasNIdxSchema = true;
             }
 
-            ISupplier<Runnable> deleter = getRemovalCallback(pLevel, target, launcher, i, nextAdvance, path, ind);
+            Supplier<Runnable> deleter = getRemovalCallback(pLevel, target, launcher, i, nextAdvance, path, ind);
             Runnable addition = getAdditionCallback(target, launcher, i, path, ind);
             Runnable clipAddition = getClipAdditionCallback(target, i, path);
 
@@ -164,12 +164,12 @@ public abstract class ArraySchemaElement extends SchemaElement {
         return positions.toArray(new IArrayInterface.ArrayPosition[0]);
     }
 
-    private ISupplier<Runnable> getRemovalCallback(final int pLevel, final IRIO target, final ISchemaHost launcher, final int mi, final int thisNextAdvance, final SchemaPath path, final SchemaPath ind) {
+    private Supplier<Runnable> getRemovalCallback(final int pLevel, final IRIO target, final ISchemaHost launcher, final int mi, final int thisNextAdvance, final SchemaPath path, final SchemaPath ind) {
         if (pLevel < 2)
             return null;
         if (sizeFixed != -1)
             return null;
-        return new ISupplier<Runnable>() {
+        return new Supplier<Runnable>() {
             @Override
             public Runnable get() {
                 for (int j = 0; j < thisNextAdvance; j++)

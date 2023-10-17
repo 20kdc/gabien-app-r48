@@ -6,7 +6,7 @@
  */
 package r48.ui.dialog;
 
-import gabien.uslx.append.IConsumer;
+import gabien.uslx.append.Consumer;
 import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.dbs.ObjectInfo;
@@ -18,7 +18,7 @@ import r48.ui.UISetSelector;
  */
 public class UIObjectInfoSetSelector extends UISetSelector<ObjectInfo> {
     private boolean scheduleSetSelectorUpdate = false;
-    private IConsumer<SchemaPath> refreshOnObjectChange = (t) -> {
+    private Consumer<SchemaPath> refreshOnObjectChange = (t) -> {
         scheduleSetSelectorUpdate = true;
     };
 

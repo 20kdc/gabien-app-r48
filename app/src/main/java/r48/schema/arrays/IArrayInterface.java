@@ -31,9 +31,9 @@ public interface IArrayInterface {
      * state is tied to a unique SchemaElement held by the ArraySchemaElement for the purposes of holding extra state.
      * Also note that the positions are invalidated when any exec function is called.
      */
-    void provideInterfaceFrom(Host svl, ISupplier<Boolean> valid, IFunction<String, IProperty> state, ISupplier<ArrayPosition[]> positions);
+    void provideInterfaceFrom(Host svl, Supplier<Boolean> valid, Function<String, IProperty> state, Supplier<ArrayPosition[]> positions);
 
-    interface IProperty extends ISupplier<Double>, IConsumer<Double> {
+    interface IProperty extends Supplier<Double>, Consumer<Double> {
         // Get returns 0 if the property doesn't exist, like with the usual double interface
     }
 
@@ -63,11 +63,11 @@ public interface IArrayInterface {
         //  to delete more things run getPositions again,
         //  then poke modification using the last runnable you get.
         // See StandardArrayInterface for an example.
-        public final ISupplier<Runnable> execDelete;
+        public final Supplier<Runnable> execDelete;
         public final UIElement core;
         public int coreIndent;
 
-        public ArrayPosition(String txt, IRIO[] elem, UIElement cor, int subelemId, ISupplier<Runnable> exeDelete, Runnable exeInsert, Runnable exeInsertCopiedArray) {
+        public ArrayPosition(String txt, IRIO[] elem, UIElement cor, int subelemId, Supplier<Runnable> exeDelete, Runnable exeInsert, Runnable exeInsertCopiedArray) {
             text = txt;
             elements = elem;
             core = cor;

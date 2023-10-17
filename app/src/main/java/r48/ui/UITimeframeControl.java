@@ -19,8 +19,8 @@ import r48.App;
  * Created on 2/17/17.
  */
 public class UITimeframeControl extends App.Prx {
-    public final ISupplier<Integer> getFrameIdx, getFrameCount;
-    public final IConsumer<Integer> setFrameIdx;
+    public final Supplier<Integer> getFrameIdx, getFrameCount;
+    public final Consumer<Integer> setFrameIdx;
 
     private double playTimer = 0;
     public int recommendedFramerate;
@@ -51,7 +51,7 @@ public class UITimeframeControl extends App.Prx {
     // The rest of the toolbar is constructed in the constructor
     public UIElement toolbar = tsController;
 
-    public UITimeframeControl(App app, ISupplier<Integer> gfi, ISupplier<Integer> gfc, IConsumer<Integer> sfi, int framerate) {
+    public UITimeframeControl(App app, Supplier<Integer> gfi, Supplier<Integer> gfc, Consumer<Integer> sfi, int framerate) {
         super(app);
         getFrameIdx = gfi;
         getFrameCount = gfc;

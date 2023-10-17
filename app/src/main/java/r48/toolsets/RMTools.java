@@ -140,7 +140,7 @@ public class RMTools extends App.Svc {
                         SchemaPath sp = obj.makePath(false);
                         if (sp == null)
                             continue;
-                        IConsumer<SchemaPath> modListen = new IConsumer<SchemaPath>() {
+                        Consumer<SchemaPath> modListen = new Consumer<SchemaPath>() {
                             @Override
                             public void accept(SchemaPath path) {
                                 // yup, and throw an exception to give the user an idea of the tree

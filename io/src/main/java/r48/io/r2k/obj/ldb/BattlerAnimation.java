@@ -45,7 +45,7 @@ public class BattlerAnimation extends DM2R2kObject {
     }
 
     private DM2SparseArrayA<BAE> genDefault() {
-        DM2SparseArrayA<BAE> b = new DM2SparseArrayA<BAE>(new ISupplier<BAE>() {
+        DM2SparseArrayA<BAE> b = new DM2SparseArrayA<BAE>(new Supplier<BAE>() {
             @Override
             public BAE get() {
                 return new BAE(context);

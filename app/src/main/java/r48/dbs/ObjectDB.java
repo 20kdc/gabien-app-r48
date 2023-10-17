@@ -29,10 +29,10 @@ import org.eclipse.jdt.annotation.Nullable;
 public class ObjectDB extends App.Svc {
     // Useful for object shenanigans.
     public final IObjectBackend backend;
-    private final IConsumer<String> saveHook;
+    private final Consumer<String> saveHook;
     public String binderPrefix;
 
-    public ObjectDB(App app, IObjectBackend b, IConsumer<String> sv) {
+    public ObjectDB(App app, IObjectBackend b, Consumer<String> sv) {
         super(app);
         backend = b;
         binderPrefix = b.userspaceBindersPrefix();
@@ -45,8 +45,8 @@ public class ObjectDB extends App.Svc {
     //  this locks the object into memory for as long as it's modified.
     public HashSet<IObjectBackend.ILoadedObject> modifiedObjects = new HashSet<IObjectBackend.ILoadedObject>();
     public HashSet<IObjectBackend.ILoadedObject> newlyCreatedObjects = new HashSet<IObjectBackend.ILoadedObject>();
-    public WeakHashMap<IObjectBackend.ILoadedObject, LinkedList<WeakReference<IConsumer<SchemaPath>>>> objectListenersMap = new WeakHashMap<IObjectBackend.ILoadedObject, LinkedList<WeakReference<IConsumer<SchemaPath>>>>();
-    public HashMap<String, LinkedList<WeakReference<IConsumer<SchemaPath>>>> objectRootListenersMap = new HashMap<String, LinkedList<WeakReference<IConsumer<SchemaPath>>>>();
+    public WeakHashMap<IObjectBackend.ILoadedObject, LinkedList<WeakReference<Consumer<SchemaPath>>>> objectListenersMap = new WeakHashMap<IObjectBackend.ILoadedObject, LinkedList<WeakReference<Consumer<SchemaPath>>>>();
+    public HashMap<String, LinkedList<WeakReference<Consumer<SchemaPath>>>> objectRootListenersMap = new HashMap<String, LinkedList<WeakReference<Consumer<SchemaPath>>>>();
     private HashSet<Runnable> pendingModifications = new HashSet<Runnable>();
 
     private boolean objectRootModifiedRecursion = false;
@@ -149,19 +149,19 @@ public class ObjectDB extends App.Svc {
         return false;
     }
 
-    private LinkedList<WeakReference<IConsumer<SchemaPath>>> getOrCreateModificationHandlers(IObjectBackend.ILoadedObject p) {
-        LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified = objectListenersMap.get(p);
+    private LinkedList<WeakReference<Consumer<SchemaPath>>> getOrCreateModificationHandlers(IObjectBackend.ILoadedObject p) {
+        LinkedList<WeakReference<Consumer<SchemaPath>>> notifyObjectModified = objectListenersMap.get(p);
         if (notifyObjectModified == null) {
-            notifyObjectModified = new LinkedList<WeakReference<IConsumer<SchemaPath>>>();
+            notifyObjectModified = new LinkedList<WeakReference<Consumer<SchemaPath>>>();
             objectListenersMap.put(p, notifyObjectModified);
         }
         return notifyObjectModified;
     }
 
-    private LinkedList<WeakReference<IConsumer<SchemaPath>>> getOrCreateRootModificationHandlers(String p) {
-        LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified = objectRootListenersMap.get(p);
+    private LinkedList<WeakReference<Consumer<SchemaPath>>> getOrCreateRootModificationHandlers(String p) {
+        LinkedList<WeakReference<Consumer<SchemaPath>>> notifyObjectModified = objectRootListenersMap.get(p);
         if (notifyObjectModified == null) {
-            notifyObjectModified = new LinkedList<WeakReference<IConsumer<SchemaPath>>>();
+            notifyObjectModified = new LinkedList<WeakReference<Consumer<SchemaPath>>>();
             objectRootListenersMap.put(p, notifyObjectModified);
         }
         return notifyObjectModified;
@@ -171,19 +171,19 @@ public class ObjectDB extends App.Svc {
     //  because there appears to be a performance issue with these being spammed over and over again. Oops.
     // Also note, these are all weakly referenced.
 
-    public void registerModificationHandler(IObjectBackend.ILoadedObject root, IConsumer<SchemaPath> handler) {
-        getOrCreateModificationHandlers(root).add(new WeakReference<IConsumer<SchemaPath>>(handler));
+    public void registerModificationHandler(IObjectBackend.ILoadedObject root, Consumer<SchemaPath> handler) {
+        getOrCreateModificationHandlers(root).add(new WeakReference<Consumer<SchemaPath>>(handler));
     }
 
-    public void deregisterModificationHandler(IObjectBackend.ILoadedObject root, IConsumer<SchemaPath> handler) {
+    public void deregisterModificationHandler(IObjectBackend.ILoadedObject root, Consumer<SchemaPath> handler) {
         removeFromGOCMH(getOrCreateModificationHandlers(root), handler);
     }
 
-    public void registerModificationHandler(String root, IConsumer<SchemaPath> handler) {
-        getOrCreateRootModificationHandlers(root).add(new WeakReference<IConsumer<SchemaPath>>(handler));
+    public void registerModificationHandler(String root, Consumer<SchemaPath> handler) {
+        getOrCreateRootModificationHandlers(root).add(new WeakReference<Consumer<SchemaPath>>(handler));
     }
 
-    public void deregisterModificationHandler(String root, IConsumer<SchemaPath> handler) {
+    public void deregisterModificationHandler(String root, Consumer<SchemaPath> handler) {
         removeFromGOCMH(getOrCreateRootModificationHandlers(root), handler);
     }
 
@@ -211,7 +211,7 @@ public class ObjectDB extends App.Svc {
         // However, if there are modification listeners on this particular object, they get used
         if (reverseObjectMap.containsKey(p))
             modifiedObjects.add(p);
-        LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified = objectListenersMap.get(p);
+        LinkedList<WeakReference<Consumer<SchemaPath>>> notifyObjectModified = objectListenersMap.get(p);
         handleNotificationList(notifyObjectModified, path);
         String root = getIdByObject(path.root);
         if (root != null) {
@@ -221,11 +221,11 @@ public class ObjectDB extends App.Svc {
         objectRootModifiedRecursion = false;
     }
 
-    private void handleNotificationList(LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified, SchemaPath sp) {
+    private void handleNotificationList(LinkedList<WeakReference<Consumer<SchemaPath>>> notifyObjectModified, SchemaPath sp) {
         if (notifyObjectModified == null)
             return;
-        for (WeakReference<IConsumer<SchemaPath>> spi : new LinkedList<WeakReference<IConsumer<SchemaPath>>>(notifyObjectModified)) {
-            IConsumer<SchemaPath> ics = spi.get();
+        for (WeakReference<Consumer<SchemaPath>> spi : new LinkedList<WeakReference<Consumer<SchemaPath>>>(notifyObjectModified)) {
+            Consumer<SchemaPath> ics = spi.get();
             if (ics == null) {
                 notifyObjectModified.remove(spi);
             } else if (sp != null) {
@@ -236,7 +236,7 @@ public class ObjectDB extends App.Svc {
 
     public int countModificationListeners(IObjectBackend.ILoadedObject p) {
         int n = 0;
-        LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified = objectListenersMap.get(p);
+        LinkedList<WeakReference<Consumer<SchemaPath>>> notifyObjectModified = objectListenersMap.get(p);
         handleNotificationList(notifyObjectModified, null);
         if (notifyObjectModified != null)
             n += notifyObjectModified.size();
@@ -250,9 +250,9 @@ public class ObjectDB extends App.Svc {
         return n;
     }
 
-    private void removeFromGOCMH(LinkedList<WeakReference<IConsumer<SchemaPath>>> orCreateModificationHandlers, IConsumer<SchemaPath> handler) {
-        WeakReference<IConsumer<SchemaPath>> wr = null;
-        for (WeakReference<IConsumer<SchemaPath>> w : orCreateModificationHandlers) {
+    private void removeFromGOCMH(LinkedList<WeakReference<Consumer<SchemaPath>>> orCreateModificationHandlers, Consumer<SchemaPath> handler) {
+        WeakReference<Consumer<SchemaPath>> wr = null;
+        for (WeakReference<Consumer<SchemaPath>> w : orCreateModificationHandlers) {
             if (w.get() == handler) {
                 wr = w;
                 break;

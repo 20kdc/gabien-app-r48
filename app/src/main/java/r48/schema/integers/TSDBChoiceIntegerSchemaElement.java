@@ -62,7 +62,7 @@ public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
         };
         usl.panelsAdd(uig);
         usl.panelsAdd(ai.uie);
-        return new ActiveInteger(usl, new IConsumer<Long>() {
+        return new ActiveInteger(usl, new Consumer<Long>() {
             @Override
             public void accept(Long aLong) {
                 Runnable osc = uig.onSelectionChange;

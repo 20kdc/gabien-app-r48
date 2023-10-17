@@ -322,7 +322,7 @@ public class UIImageEditView extends UIPlaneView {
                     final LineAlgorithm lineDraw = new LineAlgorithm();
                     lineDraw.ax = ax;
                     lineDraw.ay = ay;
-                    IFunction<Boolean, Boolean> plotPoint = new IFunction<Boolean, Boolean>() {
+                    Function<Boolean, Boolean> plotPoint = new Function<Boolean, Boolean>() {
                         @Override
                         public Boolean apply(Boolean major) {
                             FillAlgorithm.Point p = correctPoint(lineDraw.ax, lineDraw.ay);

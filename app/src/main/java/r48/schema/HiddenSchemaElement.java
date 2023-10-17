@@ -24,9 +24,9 @@ import r48.schema.util.SchemaPath;
  */
 public class HiddenSchemaElement extends SchemaElement implements IProxySchemaElement {
     public final SchemaElement content;
-    public final IFunction<IRIO, Boolean> show;
+    public final Function<IRIO, Boolean> show;
 
-    public HiddenSchemaElement(@NonNull SchemaElement hide, IFunction<IRIO, Boolean> shouldShow) {
+    public HiddenSchemaElement(@NonNull SchemaElement hide, Function<IRIO, Boolean> shouldShow) {
         super(hide.app);
         content = hide;
         show = shouldShow;

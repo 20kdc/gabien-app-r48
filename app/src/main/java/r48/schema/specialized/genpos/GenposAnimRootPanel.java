@@ -67,17 +67,17 @@ public class GenposAnimRootPanel extends App.Prx {
                 tweening.disablePropertyKey(target.getFrameIdx(), framePanelController.cellSelection.cellNumber, prop, track);
             }
         }, launcher);
-        timeframe = new UITimeframeControl(app, new ISupplier<Integer>() {
+        timeframe = new UITimeframeControl(app, new Supplier<Integer>() {
             @Override
             public Integer get() {
                 return target.getFrameIdx();
             }
-        }, new ISupplier<Integer>() {
+        }, new Supplier<Integer>() {
             @Override
             public Integer get() {
                 return target.getFrameCount();
             }
-        }, new IConsumer<Integer>() {
+        }, new Consumer<Integer>() {
             @Override
             public void accept(Integer integer) {
                 target.setFrameIdx(integer);

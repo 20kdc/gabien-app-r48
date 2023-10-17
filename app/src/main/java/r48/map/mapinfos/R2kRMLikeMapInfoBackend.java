@@ -23,7 +23,7 @@ import java.util.*;
  * Created on 02/06/17.
  */
 public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
-    public IConsumer<SchemaPath> modHandler;
+    public Consumer<SchemaPath> modHandler;
     public IObjectBackend.ILoadedObject mapTree = app.odb.getObject("RPG_RT.lmt");
     // Note: The orders table is [order] = map.
     // So swapping orders is probably the easiest operation here.
@@ -73,7 +73,7 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     }
 
     @Override
-    public void registerModificationHandler(IConsumer<SchemaPath> onMapInfoChange) {
+    public void registerModificationHandler(Consumer<SchemaPath> onMapInfoChange) {
         modHandler = onMapInfoChange;
         app.odb.registerModificationHandler(mapTree, onMapInfoChange);
     }

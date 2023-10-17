@@ -34,7 +34,7 @@ public class GrandTestBuilder {
     }
 
     public void thenWaitFrame() {
-        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new Supplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
@@ -49,7 +49,7 @@ public class GrandTestBuilder {
     }
 
     public void thenSetPhase(final String phase) {
-        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new Supplier<Boolean>() {
             @Override
             public Boolean get() {
                 kick.currentTestPhase = phase;
@@ -67,7 +67,7 @@ public class GrandTestBuilder {
     }
 
     public void thenClick(final String id, final int ox, final int oy) {
-        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new Supplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
@@ -93,7 +93,7 @@ public class GrandTestBuilder {
     }
 
     public void thenDrag(final String n1, final int i, final int i1, final String n2, final int i2, final int i3) {
-        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new Supplier<Boolean>() {
             int waitFrame = 0;
 
             @Override
@@ -117,7 +117,7 @@ public class GrandTestBuilder {
     }
 
     public void thenScroll(final String n1, final String n2) {
-        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new Supplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
@@ -134,7 +134,7 @@ public class GrandTestBuilder {
     }
 
     public void thenWaitWC(final int wc) {
-        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new Supplier<Boolean>() {
             @Override
             public Boolean get() {
                 return kick.windowCount == wc;
@@ -156,7 +156,7 @@ public class GrandTestBuilder {
     }
 
     public void thenIcon(final String title, final int idx) {
-        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new Supplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
@@ -172,7 +172,7 @@ public class GrandTestBuilder {
     }
 
     public void thenSelectTab(final String title) {
-        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new Supplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
@@ -188,7 +188,7 @@ public class GrandTestBuilder {
     }
 
     public void thenType(final String s) {
-        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new Supplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
@@ -205,7 +205,7 @@ public class GrandTestBuilder {
     }
 
     public void thenCloseWindow() {
-        kick.waitingTestEntries.add(new ISupplier<Boolean>() {
+        kick.waitingTestEntries.add(new Supplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override

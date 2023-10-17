@@ -41,7 +41,7 @@ public class UIGRMMapInfos extends App.Prx {
     private String toStringRes;
 
     // Cannot actually be converted to local variable due to reference issues
-    private IConsumer<SchemaPath> onMapInfoChange = new IConsumer<SchemaPath>() {
+    private Consumer<SchemaPath> onMapInfoChange = new Consumer<SchemaPath>() {
         @Override
         public void accept(SchemaPath sp) {
             rebuildList();
@@ -105,7 +105,7 @@ public class UIGRMMapInfos extends App.Prx {
                 continue;
             
             UIElement elm = extractedElement(k, map, order, parent, name);
-            tree.add(new UITreeView.TreeElement(indent.get(k), operators.getIconForMap(k), elm, new IConsumer<Integer>() {
+            tree.add(new UITreeView.TreeElement(indent.get(k), operators.getIconForMap(k), elm, new Consumer<Integer>() {
                 @Override
                 public void accept(Integer integer) {
                     if (searching)

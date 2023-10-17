@@ -108,7 +108,7 @@ public class CharacterGeneratorController extends App.Svc {
                     l.swatch.onClick = new Runnable() {
                         @Override
                         public void run() {
-                            app.ui.wm.createMenu(l.swatch, new UIColourPicker(app, l.naming.text, l.swatch.col, new IConsumer<Integer>() {
+                            app.ui.wm.createMenu(l.swatch, new UIColourPicker(app, l.naming.text, l.swatch.col, new Consumer<Integer>() {
                                 @Override
                                 public void accept(Integer integer) {
                                     if (integer != null)
@@ -167,7 +167,7 @@ public class CharacterGeneratorController extends App.Svc {
             public void run() {
                 // We have a PNG, ask for a file to stuff it into
                 final byte[] b = createPNG();
-                GaBIEn.startFileBrowser(T.u.cg_savePNG, true, "", new IConsumer<String>() {
+                GaBIEn.startFileBrowser(T.u.cg_savePNG, true, "", new Consumer<String>() {
                     @Override
                     public void accept(String s) {
                         try {

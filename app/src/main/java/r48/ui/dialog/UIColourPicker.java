@@ -37,24 +37,24 @@ public class UIColourPicker extends App.Prx {
     // This is the colour that we agree every ColourPickerPanel has.
     private UIColourSwatch currentColour;
     private final UITabPane tabPane;
-    private final IConsumer<Integer>[] colourListeners;
+    private final Consumer<Integer>[] colourListeners;
     private final UINumberBox alphaBox;
     private final Size numberBoxMinimumSize = UIBorderedElement.getRecommendedTextSize(GaBIEnUI.sysThemeRoot.getTheme(), "_255_", app.f.imageEditorTH);
     private boolean shuttingDown = false;
 
     @SuppressWarnings("unchecked")
-    public UIColourPicker(App app, String purpose, int baseCol, final IConsumer<Integer> iConsumer, boolean alpha) {
+    public UIColourPicker(App app, String purpose, int baseCol, final Consumer<Integer> iConsumer, boolean alpha) {
         super(app);
         currentColour = new UIColourSwatch(baseCol);
         wTitle = purpose;
         tabPane = new UITabPane(app.f.imageEditorTH, false, true);
         // IGNORE THE WARNING. There is no way to fix this.
-        colourListeners = new IConsumer[] {
+        colourListeners = new Consumer[] {
                 new UIHSVColourView(app.f.getSpriteScale()),
                 new UIRGBColourView()
         };
         UITabBar.TabIcon[] noIcons = new UITabBar.TabIcon[0];
-        for (IConsumer<Integer> ici : colourListeners) {
+        for (Consumer<Integer> ici : colourListeners) {
             ici.accept(baseCol & 0xFFFFFF);
             // This makes sense. Yup.
             tabPane.addTab(new UITabBar.Tab((UIElement) ici, noIcons));
@@ -123,10 +123,10 @@ public class UIColourPicker extends App.Prx {
         return wTitle;
     }
 
-    private void setColour(IConsumer<Integer> onBehalfOf, int argb) {
+    private void setColour(Consumer<Integer> onBehalfOf, int argb) {
         argb &= 0xFFFFFF;
         currentColour.col = argb | (((int) alphaBox.number & 0xFF) << 24);
-        for (IConsumer<Integer> cl : colourListeners)
+        for (Consumer<Integer> cl : colourListeners)
             if (cl != onBehalfOf)
                 cl.accept(argb & 0xFFFFFF);
     }
@@ -163,9 +163,9 @@ public class UIColourPicker extends App.Prx {
         public IImage baseImage;
         private final int baseW, baseH, targetScale;
         public Size targetSize;
-        private final IConsumer<Size> resultConsumer;
+        private final Consumer<Size> resultConsumer;
 
-        public UIPickCoordinator(App app, int bw, int bh, int sc, IConsumer<Size> setter) {
+        public UIPickCoordinator(App app, int bw, int bh, int sc, Consumer<Size> setter) {
             super(app, bw * sc, bh * sc);
             targetScale = sc;
             baseW = bw;
@@ -249,7 +249,7 @@ public class UIColourPicker extends App.Prx {
 
     // -- ColourViews --
 
-    private class UIRGBColourView extends UIProxy implements IConsumer<Integer> {
+    private class UIRGBColourView extends UIProxy implements Consumer<Integer> {
         private UIChannelBox rA, gA, bA;
         private UIScrollbar rB, gB, bB;
         private int lastKnownBVal = 0;
@@ -348,17 +348,17 @@ public class UIColourPicker extends App.Prx {
         }
     }
 
-    private class UIHSVColourView extends UIProxy implements IConsumer<Integer> {
+    private class UIHSVColourView extends UIProxy implements Consumer<Integer> {
         public final UIPickCoordinator svCoordinator, hCoordinator;
 
         public UIHSVColourView(int sc) {
-            svCoordinator = new UIPickCoordinator(app, 256, 256, sc, new IConsumer<Size>() {
+            svCoordinator = new UIPickCoordinator(app, 256, 256, sc, new Consumer<Size>() {
                 @Override
                 public void accept(Size size) {
                     performSendStuff();
                 }
             });
-            hCoordinator = new UIPickCoordinator(app, 256, 16, sc, new IConsumer<Size>() {
+            hCoordinator = new UIPickCoordinator(app, 256, 16, sc, new Consumer<Size>() {
                 @Override
                 public void accept(Size size) {
                     svCoordinator.baseImage = Art.getColourPal(app, Art.getRainbowHue(size.width));

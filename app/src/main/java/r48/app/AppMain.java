@@ -32,7 +32,7 @@ import java.nio.charset.StandardCharsets;
  * Created on 12/27/16. Being phased out as of 26th February 2023, reduced to static methods as of the 28th.
  */
 public class AppMain {
-    public static App initializeCore(InterlaunchGlobals ilg, Charset charset, final String rp, final String sip, final EngineDef engine, final IConsumer<String> progress) {
+    public static App initializeCore(InterlaunchGlobals ilg, Charset charset, final String rp, final String sip, final EngineDef engine, final Consumer<String> progress) {
         final App app = new App(ilg, charset, engine, rp, sip, progress);
 
         // initialize core resources

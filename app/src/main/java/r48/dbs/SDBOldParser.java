@@ -16,8 +16,8 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.datum.DatumSrcLoc;
 import gabien.ui.UIElement;
-import gabien.uslx.append.IFunction;
-import gabien.uslx.append.ISupplier;
+import gabien.uslx.append.Function;
+import gabien.uslx.append.Supplier;
 import r48.App;
 import r48.DictionaryUpdaterRunnable;
 import r48.dbs.SDB.DynamicSchemaElement;
@@ -73,8 +73,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
         return PathSyntax.compile(app, text);
     }
 
-    private IFunction<IRIO, String> getFunctionToReturn(final String s) {
-        return new IFunction<IRIO, String>() {
+    private Function<IRIO, String> getFunctionToReturn(final String s) {
+        return new Function<IRIO, String>() {
             @Override
             public String apply(IRIO rubyIO) {
                 return s;
@@ -126,7 +126,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     }
 
     public SchemaElement handleChain(final String[] args, final int start) {
-        return new ISupplier<SchemaElement>() {
+        return new Supplier<SchemaElement>() {
             // This function is recursive but needs state to be kept around after exit.
             // Kind of a pain, *unless* you have a surrounding instance.
             public int point = start;
@@ -197,7 +197,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 }
                 if (text.equals("hide")) {
                     SchemaElement hide = get();
-                    return new HiddenSchemaElement(hide, new IFunction<IRIO, Boolean>() {
+                    return new HiddenSchemaElement(hide, new Function<IRIO, Boolean>() {
                         @Override
                         public Boolean apply(IRIO rubyIO) {
                             return false;
@@ -207,7 +207,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (text.equals("condHide") || text.equals("condHide!")) {
                     final PathSyntax path = getPathSyntax();
                     SchemaElement hide = get();
-                    return new HiddenSchemaElement(hide, new IFunction<IRIO, Boolean>() {
+                    return new HiddenSchemaElement(hide, new Function<IRIO, Boolean>() {
                         @Override
                         public Boolean apply(IRIO rubyIO) {
                             return path.get(rubyIO).getType() == (text.endsWith("!") ? 'F' : 'T');
@@ -597,7 +597,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     PathSyntax wV = getNullablePathSyntax();
                     PathSyntax hV = getNullablePathSyntax();
 
-                    IFunction<IRIO, String> iVT;
+                    Function<IRIO, String> iVT;
                     if (iV == null) {
                         iVT = (irio) -> T.s.bOpenTable;
                     } else {

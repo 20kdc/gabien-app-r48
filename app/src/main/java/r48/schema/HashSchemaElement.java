@@ -97,7 +97,7 @@ public class HashSchemaElement extends SchemaElement {
 
                 AtomicInteger fw = new AtomicInteger(0);
 
-                for (DMKey key : UITest.sortedKeysArr(target.getHashKeys(), new IFunction<RORIO, String>() {
+                for (DMKey key : UITest.sortedKeysArr(target.getHashKeys(), new Function<RORIO, String>() {
                     @Override
                     public String apply(RORIO rubyIO) {
                         return getKeyText(rubyIO);

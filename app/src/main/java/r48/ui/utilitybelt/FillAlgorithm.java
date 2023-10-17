@@ -19,10 +19,10 @@ import java.util.HashSet;
 public class FillAlgorithm {
     public final HashSet<Point> executedPointSet = new HashSet<Point>();
     public HashSet<Point> availablePointSet = new HashSet<Point>();
-    public final IFunction<Point, Point> inBounds;
-    public final IFunction<Point, Boolean> matchesFill;
+    public final Function<Point, Point> inBounds;
+    public final Function<Point, Boolean> matchesFill;
 
-    public FillAlgorithm(IFunction<Point, Point> bounds, IFunction<Point, Boolean> points) {
+    public FillAlgorithm(Function<Point, Point> bounds, Function<Point, Boolean> points) {
         inBounds = bounds;
         matchesFill = points;
     }

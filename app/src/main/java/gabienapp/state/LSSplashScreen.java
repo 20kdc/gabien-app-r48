@@ -15,7 +15,7 @@ import gabien.ui.UIBorderedElement;
 import gabien.ui.UILabel;
 import gabien.ui.theming.Theme;
 import gabien.ui.theming.ThemingCentral;
-import gabien.uslx.append.IConsumer;
+import gabien.uslx.append.Consumer;
 import gabien.uslx.append.Rect;
 import gabien.wsi.IGrInDriver;
 import gabien.wsi.WindowSpecs;
@@ -31,14 +31,14 @@ public class LSSplashScreen extends State {
     private int frames = -1; // Fadeout
     private int timer2 = 0; // Baton
     private String movement = " "; // the baton is 'thrown'
-    private final IConsumer<Integer> done;
+    private final Consumer<Integer> done;
     private boolean completed = false;
     private final IGrInDriver gi;
     private IGrDriver backBuffer;
     private final AtomicBoolean donePrimaryTask = new AtomicBoolean(false);
     private final TextTools.PlainCached progressCache = new TextTools.PlainCached();
 
-    public LSSplashScreen(Launcher lun, Runnable task, IConsumer<Integer> done) {
+    public LSSplashScreen(Launcher lun, Runnable task, Consumer<Integer> done) {
         super(lun);
         this.done = done;
         // Used for two reasons.

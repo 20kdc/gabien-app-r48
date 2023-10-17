@@ -6,15 +6,15 @@
  */
 package r48.minivm.fn;
 
-import gabien.uslx.append.IFunction;
-import gabien.uslx.append.ISupplier;
+import gabien.uslx.append.Function;
+import gabien.uslx.append.Supplier;
 
 /**
  * Conversions.
  * Created 10th March 2023.
  */
 public class MVMJLambdaConv {
-    public static MVMFn c(String s, ISupplier<Object> fn) {
+    public static MVMFn c(String s, Supplier<Object> fn) {
         return new MVMFn.Fixed(s) {
             @Override
             public Object callDirect() {
@@ -22,7 +22,7 @@ public class MVMJLambdaConv {
             }
         };
     }
-    public static MVMFn c(String s, IFunction<Object, Object> fn) {
+    public static MVMFn c(String s, Function<Object, Object> fn) {
         return new MVMFn.Fixed(s) {
             @Override
             public Object callDirect(Object a0) {

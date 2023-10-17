@@ -22,8 +22,8 @@ import java.util.LinkedList;
  * Helping things along where needed.
  * Created on 1/25/17.
  */
-public class UIHelpSystem extends UIPanel implements IConsumer<String> {
-    public IConsumer<String> onLinkClick;
+public class UIHelpSystem extends UIPanel implements Consumer<String> {
+    public Consumer<String> onLinkClick;
 
     public LinkedList<HelpElement> page = new LinkedList<HelpElement>();
 
@@ -84,7 +84,7 @@ public class UIHelpSystem extends UIPanel implements IConsumer<String> {
     public static class HelpElement {
         public final UIElement element;
         // Set by the UIHelpSystem.
-        private IConsumer<String> onLinkClick;
+        private Consumer<String> onLinkClick;
         public final boolean position;
 
         public HelpElement(Config c, char ch, String arg) {

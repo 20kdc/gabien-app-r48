@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 import gabien.datum.DatumKVDVisitor;
 import gabien.datum.DatumVisitor;
-import gabien.uslx.append.IConsumer;
+import gabien.uslx.append.Consumer;
 import r48.dbs.DatumLoader;
 
 /**
@@ -19,7 +19,7 @@ import r48.dbs.DatumLoader;
  * Created 10th March 2023.
  */
 public class EnginesList {
-    public static HashMap<String, EngineDef> getEngines(IConsumer<String> loadProgress) {
+    public static HashMap<String, EngineDef> getEngines(Consumer<String> loadProgress) {
         HashMap<String, EngineDef> hm = new HashMap<>();
         DatumKVDVisitor kvd = new DatumKVDVisitor() {
             @Override

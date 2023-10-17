@@ -38,7 +38,7 @@ class SDBHelpers extends App.Svc {
         super(app);
     }
     // Spritesheet definitions are quite opaque lists of numbers defining how a grid sheet should appear. See spriteSelector.
-    protected HashMap<String, IFunction<String, ISpritesheetProvider>> spritesheets = new HashMap<String, IFunction<String, ISpritesheetProvider>>();
+    protected HashMap<String, Function<String, ISpritesheetProvider>> spritesheets = new HashMap<String, Function<String, ISpritesheetProvider>>();
     protected HashMap<String, FF0> spritesheetN = new HashMap<String, FF0>();
 
     // cellW/cellH is the skip size.
@@ -86,16 +86,16 @@ class SDBHelpers extends App.Svc {
     }
 
     public SchemaElement makeSpriteSelector(final PathSyntax varPath, final PathSyntax imgPath, final String imgPfx) {
-        final IFunction<String, ISpritesheetProvider> args2 = spritesheets.get(imgPfx);
+        final Function<String, ISpritesheetProvider> args2 = spritesheets.get(imgPfx);
         return new SpritesheetCoreSchemaElement(app, (v) -> {
             // used to be a FormatSyntax step buried in SpritesheetCoreSchemaElement, but it never got used here
             return spritesheetN.get(imgPfx).r();
-        }, 0, new IFunction<IRIO, IRIO>() {
+        }, 0, new Function<IRIO, IRIO>() {
             @Override
             public IRIO apply(IRIO rubyIO) {
                 return varPath.get(rubyIO);
             }
-        }, new IFunction<IRIO, ISpritesheetProvider>() {
+        }, new Function<IRIO, ISpritesheetProvider>() {
             @Override
             public ISpritesheetProvider apply(IRIO rubyIO) {
                 return args2.apply(imgPath.get(rubyIO).decString());
@@ -182,7 +182,7 @@ class SDBHelpers extends App.Svc {
                         new ArrayElementSchemaElement(app, 0, () -> S.ppp_typeFN, new EnumSchemaElement(app, types, DMKey.of(0), EntryMode.LOCK, () -> ""), null, false),
                         new DisambiguatorSchemaElement(app, PathSyntax.compile(app, "]0"), disambiguations)
                 ),
-                new SubwindowSchemaElement(new HWNDSchemaElement(app, PathSyntax.compile(app, "]0"), "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {
+                new SubwindowSchemaElement(new HWNDSchemaElement(app, PathSyntax.compile(app, "]0"), "R2K/H_Internal_PPP"), new Function<IRIO, String>() {
                     @Override
                     public String apply(IRIO rubyIO) {
                         return S.ppp_explain;

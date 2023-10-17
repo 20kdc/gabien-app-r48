@@ -23,7 +23,7 @@ import java.util.*;
  * Created on 02/06/17.
  */
 public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
-    public IConsumer<SchemaPath> modHandler;
+    public Consumer<SchemaPath> modHandler;
     public IObjectBackend.ILoadedObject mapInfos;
     public RXPRMLikeMapInfoBackend(App app) {
         super(app);
@@ -38,7 +38,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     }
 
     @Override
-    public void registerModificationHandler(IConsumer<SchemaPath> onMapInfoChange) {
+    public void registerModificationHandler(Consumer<SchemaPath> onMapInfoChange) {
         modHandler = onMapInfoChange;
         app.odb.registerModificationHandler(mapInfos, onMapInfoChange);
     }

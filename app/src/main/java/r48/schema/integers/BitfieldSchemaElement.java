@@ -31,12 +31,12 @@ public class BitfieldSchemaElement extends IntegerSchemaElement {
     @Override
     public ActiveInteger buildIntegerEditor(long oldVal, final IIntegerContext context) {
         final UIScrollLayout uiSVL = context.newSVL();
-        final IConsumer<Integer> refresh = BitfieldTableCellEditor.installEditor(app, flags, new IConsumer<UIElement>() {
+        final Consumer<Integer> refresh = BitfieldTableCellEditor.installEditor(app, flags, new Consumer<UIElement>() {
             @Override
             public void accept(UIElement element) {
                 uiSVL.panelsAdd(element);
             }
-        }, new AtomicReference<IConsumer<Integer>>(new IConsumer<Integer>() {
+        }, new AtomicReference<Consumer<Integer>>(new Consumer<Integer>() {
             @Override
             public void accept(Integer integer) {
                 context.update((long) (int) integer);
@@ -46,7 +46,7 @@ public class BitfieldSchemaElement extends IntegerSchemaElement {
         uiSVL.panelsAdd(new UILabel(T.s.manualEdit, app.f.tableElementTH));
         final ActiveInteger ai = super.buildIntegerEditor(oldVal, context);
         uiSVL.panelsAdd(ai.uie);
-        return new ActiveInteger(uiSVL, new IConsumer<Long>() {
+        return new ActiveInteger(uiSVL, new Consumer<Long>() {
             @Override
             public void accept(Long aLong) {
                 refresh.accept((int) (long) aLong);

@@ -31,12 +31,12 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
 
     @Override
     public Runnable createEditor(final UIScrollLayout base, final int[] planes, final Runnable changeOccurred) {
-        final IConsumer<Integer> editor1 = installEditor(app, flags, new IConsumer<UIElement>() {
+        final Consumer<Integer> editor1 = installEditor(app, flags, new Consumer<UIElement>() {
             @Override
             public void accept(UIElement element) {
                 base.panelsAdd(element);
             }
-        }, new AtomicReference<IConsumer<Integer>>(new IConsumer<Integer>() {
+        }, new AtomicReference<Consumer<Integer>>(new Consumer<Integer>() {
             @Override
             public void accept(Integer t) {
                 planes[0] = t;
@@ -57,7 +57,7 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
 
     // Returns 'update' runnable (which you should immediately run when ready).
     // Calls callbacks for various reasons.
-    public static IConsumer<Integer> installEditor(App app, final String[] flags, final IConsumer<UIElement> panelAdder, final AtomicReference<IConsumer<Integer>> set) {
+    public static Consumer<Integer> installEditor(App app, final String[] flags, final Consumer<UIElement> panelAdder, final AtomicReference<Consumer<Integer>> set) {
         int bit = 1;
         // When the value changes, all of these are called.
         final Runnable[] flagStates = new Runnable[flags.length];
@@ -136,7 +136,7 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
                 bit <<= 1;
             }
         }
-        return new IConsumer<Integer>() {
+        return new Consumer<Integer>() {
             @Override
             public void accept(Integer i2) {
                 currentState.set(i2);

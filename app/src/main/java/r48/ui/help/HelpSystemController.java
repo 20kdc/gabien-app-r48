@@ -22,7 +22,7 @@ import java.io.InputStream;
  * One of those mind-controlling classes that oversees everything!
  * Created on 04/06/17.
  */
-public class HelpSystemController implements IConsumer<String> {
+public class HelpSystemController implements Consumer<String> {
     private UILabel pageName;
     private String helpFile;
     private UIHelpSystem hs;

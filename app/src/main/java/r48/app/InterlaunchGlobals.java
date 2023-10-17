@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.GaBIEn;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.IConsumer;
+import gabien.uslx.append.Consumer;
 import r48.cfg.Config;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
@@ -32,11 +32,11 @@ public class InterlaunchGlobals implements IDynTrProxy {
     public final Config c;
     public final TrRoot t = new TrRoot();
     private MVMEnvR48 langVM;
-    private IConsumer<MVMEnv> reportVMChanges;
+    private Consumer<MVMEnv> reportVMChanges;
     private HashMap<String, EngineDef> engineDefs;
-    public final IConsumer<String> logTrIssues;
+    public final Consumer<String> logTrIssues;
 
-    public InterlaunchGlobals(Config c, IConsumer<MVMEnv> report, IConsumer<String> loadProgress, IConsumer<String> trIssues) {
+    public InterlaunchGlobals(Config c, Consumer<MVMEnv> report, Consumer<String> loadProgress, Consumer<String> trIssues) {
         this.c = c;
         logTrIssues = trIssues;
         reportVMChanges = report;
@@ -65,7 +65,7 @@ public class InterlaunchGlobals implements IDynTrProxy {
      * Will reset language if not found.
      * If the app is running you're expected to figure that out yourself.
      */
-    public void updateLanguage(IConsumer<String> loadProgress) {
+    public void updateLanguage(Consumer<String> loadProgress) {
         String lang = c.language;
         if (LanguageList.getLangInfo(lang) == null)
             lang = LanguageList.defaultLang;

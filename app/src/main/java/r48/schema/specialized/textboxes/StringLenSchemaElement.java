@@ -32,7 +32,7 @@ public class StringLenSchemaElement extends StringSchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UITextBox utb = (UITextBox) super.buildHoldingEditor(target, launcher, path);
-        utb.feedback = new IFunction<String, String>() {
+        utb.feedback = new Function<String, String>() {
             @Override
             public String apply(String s) {
                 int l1 = textRules.countCells(s);

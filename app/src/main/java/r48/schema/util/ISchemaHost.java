@@ -74,7 +74,7 @@ public interface ISchemaHost {
 
     void setEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop, Object dbl);
 
-    ISupplier<Boolean> getValidity();
+    Supplier<Boolean> getValidity();
 
     // Used to shutdown all schema hosts during a revert.
     // No-op if the host isn't active.

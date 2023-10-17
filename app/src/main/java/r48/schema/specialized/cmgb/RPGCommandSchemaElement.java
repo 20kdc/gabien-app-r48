@@ -82,7 +82,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             UIElement chooseCode = new UIAppendButton(T.s.cmdHelp, new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTH, new Runnable() {
                 @Override
                 public void run() {
-                    launcher.pushObject(path2.newWindow(navigateToCode(launcher, target, new IConsumer<int[]>() {
+                    launcher.pushObject(path2.newWindow(navigateToCode(launcher, target, new Consumer<int[]>() {
                         @Override
                         public void accept(int[] tmp) {
                             // Templates don't work from here, but the path does
@@ -158,7 +158,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
     // Used by EventCommandArray for edit-on-create.
     // NOTE: displayPath is the path of the command window
-    protected static TempDialogSchemaChoice navigateToCode(final ISchemaHost launcher, final IRIO target, final IConsumer<int[]> templateAndConfirm, final SchemaPath path, final CMDB database) {
+    protected static TempDialogSchemaChoice navigateToCode(final ISchemaHost launcher, final IRIO target, final Consumer<int[]> templateAndConfirm, final SchemaPath path, final CMDB database) {
         UIEnumChoice.Category[] categories = new UIEnumChoice.Category[database.categories.length];
         for (int i = 0; i < categories.length; i++) {
             LinkedList<UIEnumChoice.Option> llo = new LinkedList<UIEnumChoice.Option>();

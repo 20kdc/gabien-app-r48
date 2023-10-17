@@ -86,7 +86,7 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDupl
     // Used so this doesn't require too much changes when moved about
     private UIElement toolbarRoot = toolbarSandwich;
 
-    private IConsumer<SchemaPath> nudgeRunnable = new IConsumer<SchemaPath>() {
+    private Consumer<SchemaPath> nudgeRunnable = new Consumer<SchemaPath>() {
         @Override
         public void accept(SchemaPath sp) {
             nudged = true;

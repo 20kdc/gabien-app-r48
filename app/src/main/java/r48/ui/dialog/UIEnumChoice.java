@@ -32,11 +32,11 @@ public class UIEnumChoice extends App.Prx {
     private boolean wantsSelfClose = false;
 
     // entryText defaults to "Manual."
-    public UIEnumChoice(App app, final IConsumer<DMKey> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
+    public UIEnumChoice(App app, final Consumer<DMKey> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
         this(app, result, new Category[] {new Category(app.t.u.enumOptions, options)}, entryText, entryType);
     }
 
-    public UIEnumChoice(App app, final IConsumer<DMKey> result, final Category[] order, String entryText, EntryMode entryType) {
+    public UIEnumChoice(App app, final Consumer<DMKey> result, final Category[] order, String entryText, EntryMode entryType) {
         super(app);
         categoryPanels = new UIScrollLayout[order.length];
         for (int i = 0; i < categoryPanels.length; i++) {
@@ -171,7 +171,7 @@ public class UIEnumChoice extends App.Prx {
         public final FF0 textSuffix;
         private String textMerged;
         public final DMKey value;
-        public final @Nullable IConsumer<String> editSuffix;
+        public final @Nullable Consumer<String> editSuffix;
         public final @Nullable SchemaPath furtherDataButton;
 
         public Option(String s, DMKey integer) {
@@ -182,7 +182,7 @@ public class UIEnumChoice extends App.Prx {
             furtherDataButton = null;
         }
 
-        public Option(String pfx, FF0 sfx, DMKey integer, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
+        public Option(String pfx, FF0 sfx, DMKey integer, @Nullable Consumer<String> edit, @Nullable SchemaPath fdb) {
             textPrefix = pfx;
             textSuffix = sfx;
             value = integer;

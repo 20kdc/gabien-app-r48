@@ -21,7 +21,7 @@ public class UISpritesheetChoice extends UIElement.UIProxy {
     public UISplitterLayout rootLayout;
     public UIGrid spriteGrid;
 
-    public UISpritesheetChoice(App app, long oldVal, final ISpritesheetProvider provider, final IConsumer<Long> consumer) {
+    public UISpritesheetChoice(App app, long oldVal, final ISpritesheetProvider provider, final Consumer<Long> consumer) {
         spriteGrid = new UIGrid(app, provider.itemWidth() * app.f.getSpriteScale(), provider.itemHeight() * app.f.getSpriteScale(), provider.itemCount()) {
             @Override
             protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {

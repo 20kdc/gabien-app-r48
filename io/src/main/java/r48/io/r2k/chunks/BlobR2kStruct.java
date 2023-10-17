@@ -23,14 +23,14 @@ public class BlobR2kStruct extends IRIOFixedUser implements IR2kInterpretable {
     public BlobR2kStruct(byte[] mkDef) {
         super("Blob", mkDef);
     }
-    public BlobR2kStruct(ISupplier<byte[]> mkDef) {
+    public BlobR2kStruct(Supplier<byte[]> mkDef) {
         super("Blob", mkDef.get());
     }
 
     public BlobR2kStruct(String c, byte[] mkDef) {
         super(c, mkDef);
     }
-    public BlobR2kStruct(String c, ISupplier<byte[]> mkDef) {
+    public BlobR2kStruct(String c, Supplier<byte[]> mkDef) {
         super(c, mkDef.get());
     }
 
