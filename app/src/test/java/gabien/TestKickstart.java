@@ -8,7 +8,6 @@
 package gabien;
 
 import gabien.render.IImage;
-import gabien.uslx.append.*;
 import gabien.uslx.vfs.FSBackend;
 import gabien.wsi.IGrInDriver;
 import gabien.wsi.IPointer;
@@ -31,6 +30,9 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;

@@ -8,11 +8,11 @@ package r48.minivm.compiler;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.Supplier;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCLocal;
 

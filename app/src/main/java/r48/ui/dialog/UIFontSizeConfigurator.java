@@ -17,6 +17,7 @@ import r48.cfg.FontSizes.FontSizeField;
 import r48.tr.pages.TrRoot;
 
 import java.util.LinkedList;
+import java.util.function.Function;
 
 /**
  * Created on 1/29/17.

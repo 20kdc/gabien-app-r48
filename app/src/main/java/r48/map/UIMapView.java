@@ -7,6 +7,8 @@
 
 package r48.map;
 
+import java.util.function.Consumer;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 

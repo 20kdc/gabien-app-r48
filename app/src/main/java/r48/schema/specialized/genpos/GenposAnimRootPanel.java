@@ -7,7 +7,6 @@
 
 package r48.schema.specialized.genpos;
 
-import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import r48.App;
@@ -18,6 +17,8 @@ import r48.ui.UIAppendButton;
 import r48.ui.UITimeframeControl;
 
 import java.util.HashMap;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Animation Software For Serious Animation Purposes.

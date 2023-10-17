@@ -7,9 +7,8 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.uslx.append.*;
-
 import java.util.HashSet;
+import java.util.function.Function;
 
 /**
  * inBounds handles wrapping within the same simple 2D geometry.

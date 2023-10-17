@@ -6,8 +6,8 @@
  */
 package r48.minivm.fn;
 
-import gabien.uslx.append.Function;
-import gabien.uslx.append.Supplier;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Conversions.

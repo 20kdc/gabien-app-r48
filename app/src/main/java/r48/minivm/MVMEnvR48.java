@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -18,7 +19,6 @@ import gabien.datum.DatumDecToLambdaVisitor;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.datum.DatumWriter;
-import gabien.uslx.append.Consumer;
 import gabienapp.Application;
 import r48.dbs.DatumLoader;
 import r48.tr.DynTrBase;

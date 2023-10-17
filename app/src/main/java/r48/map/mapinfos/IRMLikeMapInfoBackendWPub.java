@@ -7,7 +7,8 @@
 
 package r48.map.mapinfos;
 
-import gabien.uslx.append.*;
+import java.util.function.Consumer;
+
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 

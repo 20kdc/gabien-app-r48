@@ -10,14 +10,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.datum.DatumSrcLoc;
 import gabien.ui.UIElement;
-import gabien.uslx.append.Function;
-import gabien.uslx.append.Supplier;
 import r48.App;
 import r48.DictionaryUpdaterRunnable;
 import r48.dbs.SDB.DynamicSchemaElement;

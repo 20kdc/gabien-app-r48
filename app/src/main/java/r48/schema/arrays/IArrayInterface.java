@@ -7,8 +7,11 @@
 
 package r48.schema.arrays;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.io.data.IRIO;
 

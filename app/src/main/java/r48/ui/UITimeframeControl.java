@@ -7,8 +7,10 @@
 
 package r48.ui;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import r48.App;
 

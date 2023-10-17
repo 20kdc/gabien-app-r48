@@ -9,7 +9,6 @@ package r48.app;
 
 import gabien.GaBIEn;
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.AdHocSaveLoad;
 import r48.App;
 import r48.dbs.ObjectDB;
@@ -25,6 +24,7 @@ import r48.schema.util.SchemaPath;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
 /**
  * Used to contain static variables, now just initialization routines.

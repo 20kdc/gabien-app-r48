@@ -7,6 +7,9 @@
 
 package r48.schema.specialized.genpos.backend;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.*;

@@ -7,8 +7,10 @@
 
 package r48.schema.specialized;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import gabien.GaBIEn;
-import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;

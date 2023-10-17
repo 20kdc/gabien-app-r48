@@ -7,7 +7,6 @@
 
 package r48.io.r2k.dm2chk;
 
-import gabien.uslx.append.*;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedHash;
@@ -18,6 +17,7 @@ import r48.io.r2k.chunks.IR2kInterpretable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.function.Supplier;
 
 /**
  * Not much can be done about the generics situation here.

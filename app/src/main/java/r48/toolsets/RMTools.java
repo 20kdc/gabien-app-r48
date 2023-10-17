@@ -7,7 +7,6 @@
 
 package r48.toolsets;
 
-import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
@@ -32,6 +31,7 @@ import r48.ui.search.UICommandClassifierSelector;
 import r48.ui.search.UICommandSites;
 
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 /**
  * Right now this breaks under R2k for various reasons, first being the versionId assumption.

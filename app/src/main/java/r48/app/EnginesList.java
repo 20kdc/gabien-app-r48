@@ -7,10 +7,10 @@
 package r48.app;
 
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 import gabien.datum.DatumKVDVisitor;
 import gabien.datum.DatumVisitor;
-import gabien.uslx.append.Consumer;
 import r48.dbs.DatumLoader;
 
 /**

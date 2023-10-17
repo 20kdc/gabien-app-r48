@@ -7,7 +7,8 @@
 
 package r48.schema.displays;
 
-import gabien.uslx.append.*;
+import java.util.function.Consumer;
+
 import gabien.render.IImage;
 import gabien.ui.UIPublicPanel;
 import gabien.ui.UISplitterLayout;

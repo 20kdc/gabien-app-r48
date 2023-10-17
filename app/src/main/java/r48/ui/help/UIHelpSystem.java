@@ -17,6 +17,7 @@ import r48.cfg.Config;
 import r48.ui.UIThumbnail;
 
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 /**
  * Helping things along where needed.

@@ -10,8 +10,8 @@ package r48.io.data.obj;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
+import java.util.function.Supplier;
 
-import gabien.uslx.append.Supplier;
 import r48.io.data.IRIO;
 
 /**

@@ -8,13 +8,15 @@ package r48.schema.specialized.textboxes;
 
 import r48.App;
 import r48.ui.UIAppendButton;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UITextButton;
-import gabien.uslx.append.Consumer;
-import gabien.uslx.append.Function;
-import gabien.uslx.append.Supplier;
 
 /**
  * Created 29th July, 2023.

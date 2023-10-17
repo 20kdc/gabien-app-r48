@@ -7,7 +7,6 @@
 
 package r48.io.r2k.dm2chk;
 
-import gabien.uslx.append.*;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedArray;
 import r48.io.data.IRIONullable;
@@ -19,6 +18,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Same as DM2SparseArrayH.

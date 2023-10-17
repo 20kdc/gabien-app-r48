@@ -7,8 +7,9 @@
 
 package r48.schema.specialized.textboxes;
 
+import java.util.function.Function;
+
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.StringSchemaElement;

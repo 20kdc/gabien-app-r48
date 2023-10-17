@@ -7,9 +7,10 @@
 
 package r48.schema;
 
+import java.util.function.Function;
+
 import org.eclipse.jdt.annotation.NonNull;
 
-import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import gabien.render.IGrDriver;
 import gabien.ui.UIElement;

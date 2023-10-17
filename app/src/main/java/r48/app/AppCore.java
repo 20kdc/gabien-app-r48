@@ -12,12 +12,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
-import gabien.uslx.append.Consumer;
 import r48.cfg.Config;
 import r48.cfg.FontSizes;
 import r48.dbs.ATDB;

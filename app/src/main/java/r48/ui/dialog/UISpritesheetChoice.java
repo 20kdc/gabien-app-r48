@@ -7,9 +7,10 @@
 
 package r48.ui.dialog;
 
+import java.util.function.Consumer;
+
 import gabien.render.IGrDriver;
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.ui.UIGrid;
 

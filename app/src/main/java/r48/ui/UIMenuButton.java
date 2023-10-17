@@ -8,6 +8,9 @@
 package r48.ui;
 
 import gabien.uslx.append.*;
+
+import java.util.function.Supplier;
+
 import gabien.ui.UIAutoclosingPopupMenu;
 import gabien.ui.UIElement;
 import gabien.ui.UIPopupMenu;

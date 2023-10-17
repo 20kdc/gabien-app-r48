@@ -8,7 +8,6 @@
 package r48.schema;
 
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.UITest;
 import r48.io.IObjectBackend;
@@ -23,6 +22,7 @@ import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 /**
  * Created on 12/29/16.

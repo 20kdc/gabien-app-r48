@@ -7,8 +7,9 @@
 
 package r48.ui.dialog;
 
+import java.util.function.Consumer;
+
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 
 /**

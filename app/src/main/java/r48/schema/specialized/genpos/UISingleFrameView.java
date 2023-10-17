@@ -7,6 +7,8 @@
 
 package r48.schema.specialized.genpos;
 
+import java.util.function.Function;
+
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.*;

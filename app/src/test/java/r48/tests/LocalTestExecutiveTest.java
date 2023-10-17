@@ -7,7 +7,6 @@
 package r48.tests;
 
 import gabien.TestKickstart;
-import gabien.uslx.append.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -26,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 /**
  * The Local Test Executive (LTE) is responsible for executing tests containing copyrighted data

@@ -7,7 +7,6 @@
 
 package r48.io.r2k;
 
-import gabien.uslx.append.*;
 import r48.io.IntUtils;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -16,6 +15,7 @@ import r48.io.r2k.chunks.IR2kInterpretable;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Created on 30/05/17.

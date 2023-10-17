@@ -9,6 +9,7 @@ package r48.app;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -21,7 +22,6 @@ import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import gabien.ui.WindowCreatingUIElementConsumer;
-import gabien.uslx.append.Consumer;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import r48.App;

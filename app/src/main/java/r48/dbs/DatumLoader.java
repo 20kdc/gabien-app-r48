@@ -8,13 +8,13 @@ package r48.dbs;
 
 import java.io.InputStreamReader;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import gabien.GaBIEn;
 import gabien.datum.DatumDecToLambdaVisitor;
 import gabien.datum.DatumReaderTokenSource;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumVisitor;
-import gabien.uslx.append.Consumer;
 
 /**
  * DBLoader, but not DBLoader!

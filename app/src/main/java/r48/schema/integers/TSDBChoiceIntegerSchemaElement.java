@@ -7,6 +7,8 @@
 
 package r48.schema.integers;
 
+import java.util.function.Consumer;
+
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.*;

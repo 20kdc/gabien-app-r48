@@ -10,7 +10,6 @@ package r48.toolsets;
 import gabien.GaBIEn;
 import gabien.natives.BadGPU;
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.*;
 import r48.app.AppMain;
 import r48.dbs.ObjectInfo;
@@ -40,6 +39,8 @@ import r48.ui.spacing.UIBorderedSubpanel;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Provides some basic tools for changing the configuration of R48 and doing various bits and pieces.

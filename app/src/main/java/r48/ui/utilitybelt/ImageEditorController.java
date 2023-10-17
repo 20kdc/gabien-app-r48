@@ -23,6 +23,8 @@ import r48.ui.dmicg.CharacterGeneratorController;
 
 import java.io.OutputStream;
 import java.util.LinkedList;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Oh, this can't be good news.

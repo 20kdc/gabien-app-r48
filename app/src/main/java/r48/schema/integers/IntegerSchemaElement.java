@@ -7,7 +7,8 @@
 
 package r48.schema.integers;
 
-import gabien.uslx.append.*;
+import java.util.function.Consumer;
+
 import gabien.ui.UIElement;
 import gabien.ui.UINumberBox;
 import gabien.ui.UIScrollLayout;

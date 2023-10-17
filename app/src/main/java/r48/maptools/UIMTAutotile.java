@@ -21,6 +21,7 @@ import r48.ui.UITileGrid;
 import r48.ui.utilitybelt.FillAlgorithm;
 
 import java.util.LinkedList;
+import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 

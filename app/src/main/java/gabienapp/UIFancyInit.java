@@ -11,13 +11,13 @@ import gabien.render.IGrDriver;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UILayer;
-import gabien.uslx.append.Consumer;
 import gabien.uslx.append.Rect;
 import gabien.wsi.IPeripherals;
 import r48.cfg.Config;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
  * A loading screen that makes it clear stuff is actually happening.

@@ -7,7 +7,6 @@
 
 package r48.schema.integers;
 
-import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
@@ -15,6 +14,7 @@ import r48.App;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
  * BitfieldTableCellEditor as a schema element

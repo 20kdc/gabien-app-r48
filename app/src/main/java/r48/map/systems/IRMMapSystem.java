@@ -8,8 +8,8 @@
 package r48.map.systems;
 
 import java.util.Comparator;
+import java.util.function.Supplier;
 
-import gabien.uslx.append.Supplier;
 import r48.App;
 import r48.dbs.ObjectInfo;
 import r48.io.IObjectBackend;

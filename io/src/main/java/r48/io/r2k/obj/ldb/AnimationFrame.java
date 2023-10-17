@@ -7,7 +7,8 @@
 
 package r48.io.r2k.obj.ldb;
 
-import gabien.uslx.append.*;
+import java.util.function.Supplier;
+
 import r48.io.data.IRIO;
 import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;

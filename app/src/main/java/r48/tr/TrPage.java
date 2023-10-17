@@ -8,9 +8,9 @@ package r48.tr;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.function.Consumer;
 
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.Consumer;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMSlot;
 import r48.minivm.fn.MVMFn;

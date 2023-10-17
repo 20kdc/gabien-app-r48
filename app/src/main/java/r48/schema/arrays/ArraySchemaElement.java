@@ -7,7 +7,6 @@
 
 package r48.schema.arrays;
 
-import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import r48.App;
@@ -26,6 +25,8 @@ import r48.schema.util.SchemaPath;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Notably, abstracting away sizeFixed and atLeastOne would just be an overcomplication.

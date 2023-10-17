@@ -8,7 +8,6 @@
 package r48.ui.help;
 
 import gabien.GaBIEn;
-import gabien.uslx.append.*;
 import gabien.ui.UILabel;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
@@ -17,6 +16,7 @@ import r48.cfg.Config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.Consumer;
 
 /**
  * One of those mind-controlling classes that oversees everything!

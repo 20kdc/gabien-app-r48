@@ -7,6 +7,7 @@
 package gabienapp;
 
 import java.util.LinkedList;
+import java.util.function.Function;
 
 import gabien.GaBIEn;
 import gabien.datum.DatumDecToLambdaVisitor;
@@ -25,7 +26,6 @@ import gabien.ui.UIElement.UIProxy;
 import gabien.ui.UIEmpty;
 import gabien.ui.UITabBar.Tab;
 import gabien.ui.UITabBar.TabIcon;
-import gabien.uslx.append.Function;
 import gabien.uslx.append.Rect;
 import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;

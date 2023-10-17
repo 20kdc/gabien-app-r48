@@ -7,6 +7,8 @@
 
 package r48.ui;
 
+import java.util.function.Supplier;
+
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;

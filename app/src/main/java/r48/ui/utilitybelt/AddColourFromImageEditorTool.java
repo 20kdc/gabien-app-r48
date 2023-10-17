@@ -8,6 +8,9 @@
 package r48.ui.utilitybelt;
 
 import gabien.uslx.append.*;
+
+import java.util.function.Consumer;
+
 import gabien.ui.UIElement;
 import r48.App;
 

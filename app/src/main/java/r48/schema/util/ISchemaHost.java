@@ -7,9 +7,8 @@
 
 package r48.schema.util;
 
-import gabien.uslx.append.*;
-
 import java.util.LinkedList;
+import java.util.function.Supplier;
 
 import gabien.ui.UIElement;
 import r48.App;

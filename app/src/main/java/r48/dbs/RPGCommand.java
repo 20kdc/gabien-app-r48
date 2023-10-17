@@ -7,7 +7,6 @@
 
 package r48.dbs;
 
-import gabien.uslx.append.*;
 import gabien.datum.DatumSrcLoc;
 import gabien.ui.UIScrollLayout;
 import r48.App;
@@ -26,6 +25,7 @@ import r48.tr.TrPage.FF1;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;

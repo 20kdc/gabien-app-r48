@@ -7,7 +7,6 @@
 
 package r48.map.mapinfos;
 
-import gabien.uslx.append.*;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
@@ -17,6 +16,7 @@ import r48.tr.pages.TrRoot;
 import r48.ui.Art;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Going to have to move it over here

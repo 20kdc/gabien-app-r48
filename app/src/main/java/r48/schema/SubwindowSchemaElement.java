@@ -7,7 +7,7 @@
 
 package r48.schema;
 
-import gabien.uslx.append.*;
+import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 

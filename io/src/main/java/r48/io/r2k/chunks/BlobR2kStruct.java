@@ -7,13 +7,13 @@
 
 package r48.io.r2k.chunks;
 
-import gabien.uslx.append.*;
 import r48.io.IntUtils;
 import r48.io.data.IRIOFixedUser;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.function.Supplier;
 
 /**
  * Uhoh. These are a lot of classes.

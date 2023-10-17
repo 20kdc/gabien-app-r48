@@ -7,7 +7,6 @@
 
 package r48.schema;
 
-import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
@@ -28,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 

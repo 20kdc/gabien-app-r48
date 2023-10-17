@@ -6,7 +6,8 @@
  */
 package r48.ui.dialog;
 
-import gabien.uslx.append.Consumer;
+import java.util.function.Consumer;
+
 import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.dbs.ObjectInfo;

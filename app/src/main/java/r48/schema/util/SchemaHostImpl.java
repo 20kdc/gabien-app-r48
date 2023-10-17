@@ -21,6 +21,7 @@ import r48.ui.UIAppendButton;
 import r48.wm.IDuplicatableWindow;
 
 import java.util.Stack;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 

@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -17,8 +19,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.datum.DatumReaderTokenSource;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.Function;
-import gabien.uslx.append.Supplier;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.compiler.MVMToplevelScope;
 import r48.minivm.expr.MVMCExpr;

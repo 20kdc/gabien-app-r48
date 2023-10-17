@@ -7,10 +7,11 @@
 
 package r48.map.mapinfos;
 
+import java.util.function.Function;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.IMapContext;
 import r48.io.IObjectBackend;

@@ -24,6 +24,7 @@ import r48.ui.UINSVertLayout;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.*;
+import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.Nullable;
 

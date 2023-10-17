@@ -8,6 +8,10 @@
 package r48.map.systems;
 
 import gabien.uslx.append.*;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import r48.App;

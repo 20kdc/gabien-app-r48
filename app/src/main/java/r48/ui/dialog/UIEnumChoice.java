@@ -8,7 +8,6 @@
 package r48.ui.dialog;
 
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.UITest;
 import r48.io.data.DMKey;
@@ -19,6 +18,7 @@ import r48.ui.UIAppendButton;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 

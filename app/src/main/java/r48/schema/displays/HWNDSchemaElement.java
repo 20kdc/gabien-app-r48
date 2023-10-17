@@ -7,7 +7,8 @@
 
 package r48.schema.displays;
 
-import gabien.uslx.append.*;
+import java.util.function.Consumer;
+
 import gabien.ui.UIElement;
 import r48.App;
 import r48.dbs.PathSyntax;

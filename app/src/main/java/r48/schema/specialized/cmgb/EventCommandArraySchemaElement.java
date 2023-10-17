@@ -9,9 +9,10 @@ package r48.schema.specialized.cmgb;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;

@@ -8,7 +8,6 @@
 package r48.schema.specialized.cmgb;
 
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.PathSyntax;
@@ -35,6 +34,7 @@ import r48.ui.dialog.UIEnumChoice;
 
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 

@@ -9,7 +9,6 @@ package r48.map.mapinfos;
 
 import gabien.GaBIEnUI;
 import gabien.ui.*;
-import gabien.uslx.append.*;
 import r48.App;
 import r48.IMapContext;
 import r48.io.data.IRIO;
@@ -20,6 +19,7 @@ import r48.ui.UITreeView;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 /**
  * Helps jump between maps.

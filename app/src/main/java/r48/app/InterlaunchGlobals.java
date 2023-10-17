@@ -7,13 +7,13 @@
 package r48.app;
 
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.Consumer;
 import r48.cfg.Config;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;

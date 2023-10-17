@@ -7,6 +7,7 @@
 package gabienapp.state;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
@@ -15,7 +16,6 @@ import gabien.ui.UIBorderedElement;
 import gabien.ui.UILabel;
 import gabien.ui.theming.Theme;
 import gabien.ui.theming.ThemingCentral;
-import gabien.uslx.append.Consumer;
 import gabien.uslx.append.Rect;
 import gabien.wsi.IGrInDriver;
 import gabien.wsi.WindowSpecs;

@@ -9,6 +9,9 @@ package r48.map;
 
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
+
+import java.util.function.Consumer;
+
 import gabien.render.IGrDriver;
 import gabien.ui.UIElement;
 import gabien.ui.UILayer;

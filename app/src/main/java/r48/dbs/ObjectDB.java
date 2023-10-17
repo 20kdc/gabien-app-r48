@@ -7,7 +7,6 @@
 
 package r48.dbs;
 
-import gabien.uslx.append.*;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.schema.SchemaElement;
@@ -18,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;

@@ -7,6 +7,8 @@
 
 package r48.ui.dialog;
 
+import java.util.function.Consumer;
+
 import gabien.GaBIEn;
 import gabien.GaBIEnUI;
 import gabien.render.IGrDriver;
