@@ -14,8 +14,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
-import gabien.ui.Rect;
-import gabien.ui.Size;
 import gabien.ui.UIAutoclosingPopupMenu;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
@@ -24,6 +22,8 @@ import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.uslx.append.IConsumer;
+import gabien.uslx.append.Rect;
+import gabien.uslx.append.Size;
 import r48.App;
 import r48.IMapContext;
 import r48.imagefx.ImageFXCache;

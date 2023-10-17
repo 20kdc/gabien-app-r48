@@ -10,7 +10,6 @@ package r48.schema.specialized.genpos.backend;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.*;
-import gabien.ui.Rect;
 import r48.App;
 import r48.RubyTable;
 import r48.io.data.IRIO;

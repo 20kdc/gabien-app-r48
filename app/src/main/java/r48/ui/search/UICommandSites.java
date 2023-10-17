@@ -7,10 +7,10 @@
 
 package r48.ui.search;
 
-import gabien.ui.Rect;
 import gabien.ui.UIScrollLayout;
 import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.ISupplier;
+import gabien.uslx.append.Rect;
 import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.io.IObjectBackend;

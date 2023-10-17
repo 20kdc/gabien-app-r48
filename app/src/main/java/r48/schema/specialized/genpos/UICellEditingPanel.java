@@ -8,6 +8,8 @@
 package r48.schema.specialized.genpos;
 
 import gabien.ui.*;
+import gabien.uslx.append.Rect;
+import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.schema.HiddenSchemaElement;

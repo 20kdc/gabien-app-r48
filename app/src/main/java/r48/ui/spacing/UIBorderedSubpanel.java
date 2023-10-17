@@ -6,9 +6,9 @@
  */
 package r48.ui.spacing;
 
-import gabien.ui.Rect;
-import gabien.ui.Size;
 import gabien.ui.UIElement;
+import gabien.uslx.append.Rect;
+import gabien.uslx.append.Size;
 
 /**
  * Doesn't draw anything, just a sort of thing that's there

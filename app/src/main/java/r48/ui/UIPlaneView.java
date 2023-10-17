@@ -10,6 +10,8 @@ package r48.ui;
 import gabien.GaBIEnUI;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.uslx.append.Rect;
+import gabien.uslx.append.Size;
 import gabien.wsi.IPointer;
 import r48.App;
 import java.util.HashMap;

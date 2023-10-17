@@ -9,6 +9,7 @@ package r48.wm;
 
 import gabien.TestKickstart;
 import gabien.ui.*;
+import gabien.uslx.append.Rect;
 import r48.App;
 import r48.tests.grand.GrandExecutionError;
 import r48.tests.grand.GrandTestBuilder;

@@ -8,11 +8,11 @@
 package gabienapp;
 
 import gabien.render.IGrDriver;
-import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UILayer;
 import gabien.uslx.append.IConsumer;
+import gabien.uslx.append.Rect;
 import gabien.wsi.IPeripherals;
 import r48.cfg.Config;
 

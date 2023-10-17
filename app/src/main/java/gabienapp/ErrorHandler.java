@@ -16,11 +16,11 @@ import java.io.UnsupportedEncodingException;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
-import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.WindowCreatingUIElementConsumer;
+import gabien.uslx.append.Rect;
 import r48.AdHocSaveLoad;
 import r48.App;
 import r48.app.AppMain;

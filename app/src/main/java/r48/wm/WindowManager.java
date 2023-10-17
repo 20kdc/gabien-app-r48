@@ -13,6 +13,8 @@ import gabien.render.IImage;
 import gabien.ui.*;
 import gabien.ui.UIWindowView.TabShell;
 import gabien.ui.theming.Theme;
+import gabien.uslx.append.Rect;
+import gabien.uslx.append.Size;
 import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;

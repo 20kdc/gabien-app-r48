@@ -12,6 +12,8 @@ import java.util.WeakHashMap;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.theming.Theme;
+import gabien.uslx.append.Rect;
+import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
 import gabien.text.TextTools;

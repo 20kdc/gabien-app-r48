@@ -8,8 +8,8 @@
 package r48.ui;
 
 import gabien.render.IGrDriver;
-import gabien.ui.Rect;
 import gabien.ui.UIButton;
+import gabien.uslx.append.Rect;
 
 /**
  * Part of plan "Reduce translator work"

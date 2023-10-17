@@ -10,6 +10,8 @@ package r48.ui;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.uslx.append.Rect;
+import gabien.uslx.append.Size;
 import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;

@@ -13,6 +13,7 @@ import gabien.render.AtlasPage;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.UIPopupMenu.Entry;
+import gabien.uslx.append.Rect;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
 import r48.App;

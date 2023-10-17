@@ -8,7 +8,7 @@
 package r48.schema.specialized;
 
 import gabien.render.IGrDriver;
-import gabien.ui.Size;
+import gabien.uslx.append.Size;
 import r48.App;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;

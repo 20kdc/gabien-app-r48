@@ -8,6 +8,7 @@
 package r48.ui.utilitybelt;
 
 import gabien.ui.*;
+import gabien.uslx.append.Rect;
 import r48.App;
 import r48.io.BMPConnection;
 import r48.io.data.RORIO;

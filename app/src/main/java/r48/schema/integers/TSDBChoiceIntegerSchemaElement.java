@@ -10,7 +10,6 @@ package r48.schema.integers;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.*;
-import gabien.ui.Size;
 import gabien.ui.UIScrollLayout;
 import r48.App;
 import r48.dbs.TSDB;

@@ -10,8 +10,6 @@ package r48.map;
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import gabien.render.IGrDriver;
-import gabien.ui.Rect;
-import gabien.ui.Size;
 import gabien.ui.UIElement;
 import gabien.ui.UILayer;
 import r48.App;
