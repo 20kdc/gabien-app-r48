@@ -26,6 +26,7 @@ import gabien.ui.UIElement.UIProxy;
 import gabien.ui.UIEmpty;
 import gabien.ui.UITabBar.Tab;
 import gabien.ui.UITabBar.TabIcon;
+import gabien.ui.dialogs.UICredits;
 import gabien.uslx.append.Rect;
 import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
@@ -72,6 +73,14 @@ public class UILauncher extends UIProxy {
             }
         };
         tabPane.addTab(new Tab(gamepaks, new TabIcon[0]));
+
+        UICredits credits = new UICredits(c.f.generalS, c.f.launcherTH) {
+            @Override
+            public String toString() {
+                return tr.bCredits;
+            }
+        };
+        tabPane.addTab(new Tab(credits, new TabIcon[0]));
 
         UIAdjuster msAdjust = new UIAdjuster(c.f.launcherTH, lun.globalMS, new Function<Long, Long>() {
             @Override
