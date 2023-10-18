@@ -15,8 +15,8 @@ mkdir -p metadata/src/main/resources/assets || exit
 
 VERSIONFILE="metadata/src/main/resources/assets/version.txt"
 
-cp ../CREDITS.txt metadata/src/main/resources/ || exit
-cp ../COPYING.txt metadata/src/main/resources/ || exit
+cp ../CREDITS.txt metadata/src/main/resources/assets/ || exit
+cp ../COPYING.txt metadata/src/main/resources/assets/ || exit
 # The date is represented with the last commit's date.
 echo "R48 $1 (AVC $2), last commit:" `git show-ref HEAD` `git log | grep Date | head -n 1` >> $VERSIONFILE || exit
 # Write in the boring details

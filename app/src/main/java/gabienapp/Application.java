@@ -7,6 +7,9 @@
 
 package gabienapp;
 
+import gabien.uslx.licensing.LicenseComponent;
+import gabien.uslx.licensing.LicenseManager;
+
 /**
  * Created on 1/27/17.
  */
@@ -15,6 +18,13 @@ public class Application {
     public static final String BRAND = "r48";
     public static final String BRAND_C = "R48";
     public static final String[] appPrefixes = new String[] {Application.BRAND + "/"};
+
+    public static final LicenseComponent LC_R48 = new LicenseComponent("R48", "https://github.com/20kdc/gabien-app-r48/", "COPYING.txt", "CREDITS.txt");
+
+    static {
+        LicenseManager.I.register(LC_R48);
+        LicenseManager.I.dependency(LC_R48, LicenseComponent.LC_GABIEN);
+    }
 
     public static void gabienmain() {
         Launcher lun = new Launcher();

@@ -22,6 +22,7 @@ import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import gabien.ui.WindowCreatingUIElementConsumer;
+import gabien.ui.dialogs.UICredits;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import r48.App;
@@ -286,7 +287,18 @@ public class AppUI extends App.Svc {
         UILabel uil = new UILabel("", app.f.helpPathH);
         final UIHelpSystem uis = new UIHelpSystem(app.ilg);
         final HelpSystemController hsc = new HelpSystemController(uil, base, uis);
-        uis.onLinkClick = hsc;
+        uis.onLinkClick = (linkId) -> {
+            if (linkId.equals("CREDITS")) {
+                wm.createWindow(new UICredits(app.f.generalS, app.f.dialogWindowTH) {
+                    @Override
+                    public String toString() {
+                        return T.g.bCredits;
+                    }
+                });
+                return;
+            }
+            hsc.accept(linkId);
+        };
         final UIScrollLayout uus = new UIScrollLayout(true, app.f.generalS);
         uus.panelsAdd(uis);
         Size rootSize = wm.getRootSize();
@@ -302,7 +314,7 @@ public class AppUI extends App.Svc {
             uus.scrollbar.scrollPoint = 0;
         };
         topbar.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, rootSize.height / 2));
-        wm.createWindow(topbar);
+        wm.createWindow(topbar, "HelpWindow");
         hsc.accept(link);
     }
 
