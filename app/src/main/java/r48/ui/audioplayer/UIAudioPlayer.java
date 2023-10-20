@@ -20,7 +20,7 @@ import gabien.ui.UIScrollbar;
 import gabien.ui.UISplitterLayout;
 import gabien.wsi.IPeripherals;
 import gabien.media.audio.*;
-import gabien.media.audio.fileio.WavIO;
+import gabien.media.audio.fileio.ReadAnySupportedAudioSource;
 import r48.App;
 import r48.app.AppMain;
 import r48.ui.Art;
@@ -116,7 +116,7 @@ public class UIAudioPlayer extends App.Prx {
         try {
             InputStream tryWav = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + filename + ".wav"));
             if (tryWav != null)
-                return new UIAudioPlayer(app, WavIO.readWAV(tryWav, true), speed);
+                return new UIAudioPlayer(app, ReadAnySupportedAudioSource.open(tryWav, true), speed);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,7 +127,7 @@ public class UIAudioPlayer extends App.Prx {
         try {
             InputStream tryWav = GaBIEn.getInFile(filename);
             if (tryWav != null)
-                return new UIAudioPlayer(app, WavIO.readWAV(tryWav, true), speed);
+                return new UIAudioPlayer(app, ReadAnySupportedAudioSource.open(tryWav, true), speed);
         } catch (Exception e) {
             e.printStackTrace();
         }
