@@ -20,6 +20,7 @@ import gabien.ui.UIScrollbar;
 import gabien.ui.UISplitterLayout;
 import gabien.wsi.IPeripherals;
 import gabien.media.audio.*;
+import gabien.media.audio.fileio.WavIO;
 import r48.App;
 import r48.app.AppMain;
 import r48.ui.Art;
@@ -54,7 +55,7 @@ public class UIAudioPlayer extends App.Prx {
     public UIAudioPlayer(App app, AudioIOSource data, double spd) {
         super(app);
         speed = spd;
-        source = new StreamingAudioDiscreteSample(data);
+        source = new StreamingAudioDiscreteSample(data, (data.formatHint == null) ? AudioIOFormat.F_F32 : data.formatHint);
         audioThreadBuffer = new float[data.crSet.channels];
         UIScrollLayout svl = new UIScrollLayout(false, app.f.mapToolbarS);
         svl.panelsAdd(new UISymbolButton(Art.Symbol.Back, app.f.schemaFieldTH, new Runnable() {

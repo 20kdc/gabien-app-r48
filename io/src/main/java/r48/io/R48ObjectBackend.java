@@ -7,7 +7,7 @@
 
 package r48.io;
 
-import gabien.uslx.append.HexByteEncoding;
+import gabien.uslx.io.HexByteEncoding;
 import gabien.uslx.vfs.FSBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
