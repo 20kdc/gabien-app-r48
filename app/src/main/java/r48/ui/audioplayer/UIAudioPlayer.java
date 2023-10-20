@@ -112,13 +112,22 @@ public class UIAudioPlayer extends App.Prx {
         lastSeekerScrollPoint = seeker.scrollPoint;
     }
 
+    private static final String[] extensionsWeWillTry = {
+            ".wav",
+            ".ogg",
+            ".mp3",
+            ".mid"
+    };
+
     public static UIElement create(App app, String filename, double speed) {
-        try {
-            InputStream tryWav = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + filename + ".wav"));
-            if (tryWav != null)
-                return new UIAudioPlayer(app, ReadAnySupportedAudioSource.open(tryWav, true), speed);
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (String mnt : extensionsWeWillTry) {
+            try {
+                InputStream tryWav = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + filename + mnt));
+                if (tryWav != null)
+                    return new UIAudioPlayer(app, ReadAnySupportedAudioSource.open(tryWav, true), speed);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return new UILabel(app.t.u.soundFail, app.f.schemaFieldTH);
     }
