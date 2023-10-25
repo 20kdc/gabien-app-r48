@@ -12,18 +12,18 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UIElement.UIProxy;
 import r48.App;
-import r48.search.ICommandClassifier;
+import r48.search.IClassifierish;
 
 /**
  * Created 19th August, 2023
- * Pivoted to UICommandClassifierInstanceWidget, 25th October, 2023
+ * Pivoted to UIClassifierishInstanceWidget, 25th October, 2023
  */
-public class UICommandClassifierInstanceWidget extends UIProxy {
+public class UIClassifierishInstanceWidget<I extends IClassifierish.BaseInstance> extends UIProxy {
     public final UIScrollLayout usl;
-    public final ICommandClassifier.Instance instance;
+    public final I instance;
     public Runnable onEdit;
 
-    public UICommandClassifierInstanceWidget(App app, @NonNull ICommandClassifier.Instance inst) {
+    public UIClassifierishInstanceWidget(App app, @NonNull I inst) {
         this.instance = inst;
         usl = new UIScrollLayout(true, app.f.generalS);
         onEdit = () -> {

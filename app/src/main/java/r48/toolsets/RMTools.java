@@ -29,7 +29,7 @@ import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIRMUniversalStringFinder;
 import r48.ui.dialog.UIRMUniversalStringReplacer;
 import r48.ui.dialog.UITranscriptControl;
-import r48.ui.search.UICommandClassifierInstanceWidget;
+import r48.ui.search.UIClassifierishInstanceWidget;
 import r48.ui.search.UICommandSites;
 
 import java.util.LinkedList;
@@ -122,7 +122,7 @@ public class RMTools extends App.Svc {
                 },
                 () -> {
                     ICommandClassifier.Instance ccc = new CompoundCommandClassifier(app).instance();
-                    UICommandClassifierInstanceWidget uiccs = new UICommandClassifierInstanceWidget(app, ccc);
+                    UIClassifierishInstanceWidget<ICommandClassifier.Instance> uiccs = new UIClassifierishInstanceWidget<>(app, ccc);
                     UISplitterLayout uspl = new UISplitterLayout(uiccs, new UITextButton(T.g.bConfirm, app.f.dialogWindowTH, () -> {
                         final IObjectBackend.ILoadedObject ilo = mapSystem.getCommonEventRoot();
                         UICommandSites ucs = new UICommandSites(app, app.odb.getIdByObject(ilo), () -> {

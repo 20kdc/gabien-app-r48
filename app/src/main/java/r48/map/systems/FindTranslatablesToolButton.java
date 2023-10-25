@@ -17,7 +17,7 @@ import r48.maptools.UIMTBase;
 import r48.search.CompoundCommandClassifier;
 import r48.search.ICommandClassifier;
 import r48.search.RMFindTranslatables;
-import r48.ui.search.UICommandClassifierInstanceWidget;
+import r48.ui.search.UIClassifierishInstanceWidget;
 import r48.ui.search.UICommandSites;
 
 /**
@@ -36,7 +36,7 @@ public final class FindTranslatablesToolButton extends ToolButton {
     @Override
     public UIMTBase apply(final IMapToolContext a) {
         ICommandClassifier.Instance ccc = new CompoundCommandClassifier(app).instance();
-        UICommandClassifierInstanceWidget uiccs = new UICommandClassifierInstanceWidget(app, ccc);
+        UIClassifierishInstanceWidget<ICommandClassifier.Instance> uiccs = new UIClassifierishInstanceWidget<>(app, ccc);
         UISplitterLayout uspl = new UISplitterLayout(uiccs, new UITextButton(app.t.g.bConfirm, app.f.dialogWindowTH, () -> {
             UIMapView umv = a.getMapView();
             final IObjectBackend.ILoadedObject map = umv.map.object;
