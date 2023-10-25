@@ -122,4 +122,10 @@ public class TrAppUI extends TrPage {
 
     public String ccAll;
     public String dumpWhateverICanThinkOfToJSON;
+
+    public String ccs_addCondition;
+    public String ccs_and;
+    public String ccs_or;
+    public String ccs_andNot;
+    public String ccs_orNot;
 }

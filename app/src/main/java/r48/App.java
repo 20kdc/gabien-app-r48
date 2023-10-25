@@ -88,7 +88,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
      */
     public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, String rp, String sip, Consumer<String> loadProgress) {
         super(ilg, charset, gp, rp, sip, loadProgress);
-        cmdClassifiers.add(new ICommandClassifier() {
+        cmdClassifiers.add(new ICommandClassifier.Immutable() {
             @Override
             public String getName() {
                 return ilg.t.u.ccAll;

@@ -45,7 +45,7 @@ public class RMFindTranslatables extends App.Svc {
         return sites.toArray(new CommandSite[0]);
     }
 
-    public void addSitesFromMap(final @Nullable UIMapView ctx, String eventPage, final ICommandClassifier cf) {
+    public void addSitesFromMap(final @Nullable UIMapView ctx, String eventPage, final ICommandClassifier.Instance cf) {
         final SchemaPath rootSchemaPath = new SchemaPath(app.sdb.getSDBEntry("RPG::Map"), objRoot);
 
         IRIO events = objRoot.getObject().getIVar("@events");
@@ -72,7 +72,7 @@ public class RMFindTranslatables extends App.Svc {
         }
     }
 
-    public void addSitesFromCommonEvents(IRIO[] commonEvents, final ICommandClassifier cf) {
+    public void addSitesFromCommonEvents(IRIO[] commonEvents, final ICommandClassifier.Instance cf) {
         SchemaElement sch = app.sdb.findSchemaFor(objIdName, objRoot.getObject());
         if (sch == null) {
             app.ui.launchDialog(T.u.cCommonEventsNoSchema);
@@ -91,7 +91,7 @@ public class RMFindTranslatables extends App.Svc {
         }
     }
 
-    public void addSitesFromList(final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView ctx, final IRIO eventList, final SchemaPath basePath, final ICommandClassifier cf) {
+    public void addSitesFromList(final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView ctx, final IRIO eventList, final SchemaPath basePath, final ICommandClassifier.Instance cf) {
         for (int i = 0; i < eventList.getALen(); i++) {
             IRIO cmd = eventList.getAElem(i);
             long cmdCode = cmd.getIVar("@code").getFX();

@@ -28,7 +28,8 @@ public abstract class USFROperationMode {
         LinkedList<USFROperationMode> lls = new LinkedList<>();
         lls.add(All.INSTANCE);
         for (ICommandClassifier icc : app.cmdClassifiers)
-            lls.add(new CmdTag(icc));
+            if (icc instanceof ICommandClassifier.Immutable)
+                lls.add(new CmdTag((ICommandClassifier.Immutable) icc));
         return lls.toArray(new USFROperationMode[0]);
     }
 
@@ -60,9 +61,9 @@ public abstract class USFROperationMode {
     }
 
     public static final class CmdTag extends USFROperationMode {
-        public final ICommandClassifier base;
+        public final ICommandClassifier.Immutable base;
 
-        public CmdTag(ICommandClassifier b) {
+        public CmdTag(ICommandClassifier.Immutable b) {
             base = b;
         }
 

@@ -188,4 +188,12 @@
 
 	ccAll "All Commands"
 	dumpWhateverICanThinkOfToJSON "Command & Enum Information -> cmdb.json"
+
+	(ccs_
+		addCondition "Add condition..."
+		and "And: "
+		or "Or: "
+		andNot "And Not: "
+		orNot "Or Not: "
+	)
 )

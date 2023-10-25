@@ -7,6 +7,9 @@
 
 package r48.search;
 
+import org.eclipse.jdt.annotation.Nullable;
+
+import gabien.ui.UIScrollLayout;
 import r48.dbs.RPGCommand;
 
 /**
@@ -17,10 +20,41 @@ public interface ICommandClassifier {
     /**
      * Returns a localized name for this classifier.
      */
-    public String getName();
+    String getName();
 
     /**
-     * Checks if the given RPGCommand matches this classifier.
+     * Creates an instance of this classifier.
      */
-    public abstract boolean matches(RPGCommand target);
+    Instance instance();
+
+    /**
+     * Instance of a classifier. Immutable Instances need not be unique.
+     */
+    interface Instance {
+        /**
+         * Installs an editor for this classifier instance, if possible.
+         * Only one editor should be present at a given time for this instance.
+         */
+        void setupEditor(UIScrollLayout usl, Runnable onEdit);
+
+        /**
+         * Checks if the given RPGCommand matches this classifier instance.
+         */
+        boolean matches(@Nullable RPGCommand target);
+    }
+
+    /**
+     * Immutable ICommandClassifiers should extend this so they can be used by appropriate logic.
+     * (In particular Universal String Locator logic.)
+     */
+    interface Immutable extends ICommandClassifier, Instance {
+        @Override
+        default void setupEditor(UIScrollLayout usl, Runnable onEdit) {
+        }
+
+        @Override
+        default Instance instance() {
+            return this;
+        }
+    }
 }

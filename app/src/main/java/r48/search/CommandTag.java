@@ -7,6 +7,8 @@
 
 package r48.search;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import r48.dbs.RPGCommand;
 import r48.tr.TrPage.FF0;
 
@@ -14,9 +16,10 @@ import r48.tr.TrPage.FF0;
  * Tags a command for search.
  * Created 18th August, 2023.
  */
-public final class CommandTag implements ICommandClassifier {
+public final class CommandTag implements ICommandClassifier.Immutable {
     public final String id;
     private final FF0 translated;
+
     public CommandTag(String i, FF0 ti) {
         id = i;
         translated = ti;
@@ -28,7 +31,7 @@ public final class CommandTag implements ICommandClassifier {
     }
 
     @Override
-    public boolean matches(RPGCommand target) {
-        return target.tags.contains(this);
+    public boolean matches(@Nullable RPGCommand target) {
+        return target.tags.contains(CommandTag.this);
     }
 }
