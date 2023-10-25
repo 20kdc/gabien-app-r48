@@ -11,6 +11,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIScrollLayout;
 import r48.dbs.RPGCommand;
+import r48.io.data.RORIO;
 
 /**
  * Generic classifier of which CommandTag is a kind.
@@ -38,9 +39,9 @@ public interface ICommandClassifier {
         void setupEditor(UIScrollLayout usl, Runnable onEdit);
 
         /**
-         * Checks if the given RPGCommand matches this classifier instance.
+         * Checks if the given RPGCommand/RORIO matches this classifier instance.
          */
-        boolean matches(@Nullable RPGCommand target);
+        boolean matches(@Nullable RPGCommand dbEntry, @Nullable RORIO cmd);
     }
 
     /**

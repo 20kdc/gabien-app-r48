@@ -38,6 +38,7 @@ import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.search.CommandTag;
 import r48.search.ICommandClassifier;
+import r48.search.TextAnalyzerCommandClassifier;
 import r48.toolsets.utils.IDChangerEntry;
 import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
@@ -94,10 +95,13 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
                 return ilg.t.u.ccAll;
             }
             @Override
-            public boolean matches(RPGCommand target) {
+            public boolean matches(RPGCommand target, @Nullable RORIO data) {
                 return true;
             }
         });
+        cmdClassifiers.add(new TextAnalyzerCommandClassifier.CJK(this));
+        cmdClassifiers.add(new TextAnalyzerCommandClassifier.Latin1Only(this));
+        cmdClassifiers.add(new TextAnalyzerCommandClassifier.Latin1AndFullwidthOnly(this));
         vmCtx = new MVMEnvR48((str) -> {
             loadProgress.accept(t.g.loadingProgress.r(str));
         }, ilg.logTrIssues, ilg.c.language);

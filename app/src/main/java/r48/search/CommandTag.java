@@ -10,6 +10,7 @@ package r48.search;
 import org.eclipse.jdt.annotation.Nullable;
 
 import r48.dbs.RPGCommand;
+import r48.io.data.RORIO;
 import r48.tr.TrPage.FF0;
 
 /**
@@ -31,7 +32,9 @@ public final class CommandTag implements ICommandClassifier.Immutable {
     }
 
     @Override
-    public boolean matches(@Nullable RPGCommand target) {
+    public boolean matches(@Nullable RPGCommand target, @Nullable RORIO data) {
+        if (target == null)
+            return false;
         return target.tags.contains(CommandTag.this);
     }
 }

@@ -14,6 +14,7 @@ import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.App;
 import r48.dbs.RPGCommand;
+import r48.io.data.RORIO;
 import r48.ui.UIAppendButton;
 import r48.ui.UIChoiceButton;
 
@@ -104,10 +105,10 @@ public class CompoundCommandClassifier extends App.Svc implements ICommandClassi
             }
             
             @Override
-            public boolean matches(@Nullable RPGCommand target) {
+            public boolean matches(@Nullable RPGCommand target, @Nullable RORIO data) {
                 boolean value = true;
                 for (Entry ent : entries)
-                    value = ent.chain.evaluate(value, ent.cInstance.matches(target));
+                    value = ent.chain.evaluate(value, ent.cInstance.matches(target, data));
                 return value;
             }
         };

@@ -96,7 +96,7 @@ public class RMFindTranslatables extends App.Svc {
             IRIO cmd = eventList.getAElem(i);
             long cmdCode = cmd.getIVar("@code").getFX();
             RPGCommand cmdDetail = cmdbEditor.database.knownCommands.get((Integer) (int) cmdCode);
-            if (cmdDetail.commandSiteAllowed && cf.matches(cmdDetail)) {
+            if (cmdDetail.commandSiteAllowed && cf.matches(cmdDetail, cmd)) {
                 CommandSite tu = siteFromContext(app, cmdbEditor, ctx, eventList, i, cmd, basePath);
                 sites.add(tu);
             }

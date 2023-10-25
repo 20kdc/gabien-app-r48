@@ -128,4 +128,7 @@ public class TrAppUI extends TrPage {
     public String ccs_or;
     public String ccs_andNot;
     public String ccs_orNot;
+    public String ccs_cjk;
+    public String ccs_latin1Only;
+    public String ccs_latin1AndFullwidthOnly;
 }
