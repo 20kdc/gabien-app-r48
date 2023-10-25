@@ -17,27 +17,11 @@ import r48.io.data.RORIO;
  * Generic classifier of which CommandTag is a kind.
  * Created 18th August, 2023.
  */
-public interface ICommandClassifier {
-    /**
-     * Returns a localized name for this classifier.
-     */
-    String getName();
-
-    /**
-     * Creates an instance of this classifier.
-     */
-    Instance instance();
-
+public interface ICommandClassifier extends IClassifierish<ICommandClassifier.Instance> {
     /**
      * Instance of a classifier. Immutable Instances need not be unique.
      */
-    interface Instance {
-        /**
-         * Installs an editor for this classifier instance, if possible.
-         * Only one editor should be present at a given time for this instance.
-         */
-        void setupEditor(UIScrollLayout usl, Runnable onEdit);
-
+    interface Instance extends IClassifierish.BaseInstance {
         /**
          * Checks if the given RPGCommand/RORIO matches this classifier instance.
          */

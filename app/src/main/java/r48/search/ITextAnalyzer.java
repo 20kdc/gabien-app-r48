@@ -7,66 +7,48 @@
 
 package r48.search;
 
-import org.eclipse.jdt.annotation.Nullable;
-
+import gabien.ui.UIScrollLayout;
 import r48.app.AppCore;
-import r48.dbs.RPGCommand;
-import r48.io.data.RORIO;
 
 /**
+ * Just get this here.
+ * This is to allow plugging in more generalized text transforms into USL.
  * UNDERSTAND: These are estimates ONLY, intended to aid in translation.
  * Created 25th October, 2023.
  */
-public abstract class TextAnalyzerCommandClassifier extends AppCore.Csv implements ICommandClassifier.Immutable {
-    public TextAnalyzerCommandClassifier(AppCore ac) {
-        super(ac);
+public interface ITextAnalyzer extends IClassifierish<ITextAnalyzer.Instance> {
+    /**
+     * Instance of a text analyzer. Instances need not be unique.
+     */
+    interface Instance extends IClassifierish.BaseInstance {
+        /**
+         * Checks if text matches the analyzer.
+         */
+        boolean matches(String text);
     }
 
-    public abstract boolean matches(String text);
+    /**
+     * Immutable analyzers should extend this so they can be used by appropriate logic.
+     */
+    interface Immutable extends ITextAnalyzer, Instance {
+        @Override
+        default void setupEditor(UIScrollLayout usl, Runnable onEdit) {
+        }
 
-    @Override
-    public boolean matches(@Nullable RPGCommand target, @Nullable RORIO data) {
-        if (target == null)
-            return false;
-        if (data == null)
-            return false;
-        if (target.textArg == -1)
-            return false;
-        return matches(data.getIVar("@parameters").getAElem(target.textArg).decString());
+        @Override
+        default Instance instance() {
+            return this;
+        }
     }
 
     /**
      * Tests each character individually, ORs results basically
      */
-    public abstract static class OrCharTest extends TextAnalyzerCommandClassifier {
-        public OrCharTest(AppCore ac) {
-            super(ac);
-        }
-
-        public abstract boolean testChar(char c);
+    interface OrCharTest extends ITextAnalyzer.Instance {
+        boolean testChar(char c);
 
         @Override
-        public boolean matches(String text) {
-            int len = text.length();
-            for (int i = 0; i < len; i++)
-                if (testChar(text.charAt(i)))
-                    return true;
-            return false;
-        }
-    }
-
-    /**
-     * Tests each character individually, ANDs results basically
-     */
-    public abstract static class AndCharTest extends TextAnalyzerCommandClassifier {
-        public AndCharTest(AppCore ac) {
-            super(ac);
-        }
-
-        public abstract boolean testChar(char c);
-
-        @Override
-        public boolean matches(String text) {
+        default boolean matches(String text) {
             int len = text.length();
             for (int i = 0; i < len; i++)
                 if (testChar(text.charAt(i)))
@@ -79,7 +61,7 @@ public abstract class TextAnalyzerCommandClassifier extends AppCore.Csv implemen
      * So originally there was separation here between Chinese/Japanese and Korean.
      * But apparently there's just overlap anyway.
      */
-    public static class CJK extends OrCharTest {
+    public static class CJK extends AppCore.Csv implements ITextAnalyzer.Immutable, OrCharTest {
         public CJK(AppCore ac) {
             super(ac);
         }
@@ -120,8 +102,8 @@ public abstract class TextAnalyzerCommandClassifier extends AppCore.Csv implemen
     /**
      * The text is solely made up of codepoints 0-255.
      */
-    public static class Latin1Only extends AndCharTest {
-        public Latin1Only(AppCore ac) {
+    public static class NotLatin1 extends AppCore.Csv implements ITextAnalyzer.Immutable, OrCharTest {
+        public NotLatin1(AppCore ac) {
             super(ac);
         }
 
@@ -132,7 +114,7 @@ public abstract class TextAnalyzerCommandClassifier extends AppCore.Csv implemen
 
         @Override
         public boolean testChar(char c) {
-            return c <= 0xFF;
+            return c > 0xFF;
         }
     }
 
@@ -140,8 +122,8 @@ public abstract class TextAnalyzerCommandClassifier extends AppCore.Csv implemen
      * Latin1Only plus those codepoints which don't strictly scream "Japanese or Korean text".
      * (This can be useful for translation projects working with these characters)
      */
-    public static class Latin1AndFullwidthOnly extends AndCharTest {
-        public Latin1AndFullwidthOnly(AppCore ac) {
+    public static class NotLatin1OrFullwidth extends AppCore.Csv implements ITextAnalyzer.Immutable, OrCharTest {
+        public NotLatin1OrFullwidth(AppCore ac) {
             super(ac);
         }
 
@@ -152,7 +134,8 @@ public abstract class TextAnalyzerCommandClassifier extends AppCore.Csv implemen
 
         @Override
         public boolean testChar(char c) {
-            return (c <= 0xFF) || (c >= 0xFF00 && c <= 0xFF65) || (c >= 0xFFE0 && c <= 0xFFEF);
+            boolean l1orfw = (c <= 0xFF) || (c >= 0xFF00 && c <= 0xFF65) || (c >= 0xFFE0 && c <= 0xFFEF);
+            return !l1orfw;
         }
     }
 }

@@ -196,7 +196,7 @@
 		andNot "And Not: "
 		orNot "Or Not: "
 		cjk "Contains CJK (Chinese, Japanese, Korean)"
-		latin1Only "Latin-1 Only (U+00 to U+FF)"
-		latin1AndFullwidthOnly "Latin-1 + Ｗｉｄｅ Text"
+		latin1Only "Not Latin-1 (U+00 to U+FF)"
+		latin1AndFullwidthOnly "Not Latin-1 or Ｗｉｄｅ Text"
 	)
 )
