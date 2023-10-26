@@ -121,7 +121,7 @@ public class RMTools extends App.Svc {
                     });
                 },
                 () -> {
-                    ICommandClassifier.Instance ccc = new CompoundCommandClassifier(app).instance();
+                    ICommandClassifier.Instance ccc = CompoundCommandClassifier.I.instance(app);
                     UIClassifierishInstanceWidget<ICommandClassifier.Instance> uiccs = new UIClassifierishInstanceWidget<>(app, ccc);
                     UISplitterLayout uspl = new UISplitterLayout(uiccs, new UITextButton(T.g.bConfirm, app.f.dialogWindowTH, () -> {
                         final IObjectBackend.ILoadedObject ilo = mapSystem.getCommonEventRoot();

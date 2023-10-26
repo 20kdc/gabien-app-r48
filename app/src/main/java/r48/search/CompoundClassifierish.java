@@ -11,6 +11,7 @@ import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.App;
+import r48.ui.Art.Symbol;
 import r48.ui.UIAppendButton;
 import r48.ui.UIChoiceButton;
 
@@ -28,7 +29,7 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
         ents = e;
         defaultEntry = de;
         if (hasFirst)
-            entries = new Entry[] {new Entry(de)};
+            entries = new Entry[] {new Entry(app, de)};
         else
             entries = new Entry[] {};
     }
@@ -44,7 +45,7 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
             UIChoiceButton<C> ccs = new UIChoiceButton<C>(app, app.f.dialogWindowTH, (C) entries[i].cType, ents) {
                 @Override
                 public String choiceToText(C choice) {
-                    return choice.getName();
+                    return choice.getName(app);
                 }
                 @Override
                 public void setSelected(C defChoice) {
@@ -52,10 +53,14 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
                     if (ent.cType == defChoice)
                         return;
                     ent.cType = defChoice;
-                    ent.cInstance = ent.cType.instance();
+                    ent.cInstance = ent.cType.instance(app);
                     onEdit.run();
                 }
             };
+            UIScrollLayout interiorScrollLayout = new UIScrollLayout(true, app.f.generalS);
+            interiorScrollLayout.panelsAdd(ccs);
+            entries[i].cInstance.setupEditor(interiorScrollLayout, onEdit);
+            // wrapping & such
             UIChoiceButton<BooleanChainOperator> bco = new UIChoiceButton<BooleanChainOperator>(app, app.f.dialogWindowTH, ent.chain, BooleanChainOperator.values()) {
                 @Override
                 public String choiceToText(BooleanChainOperator choice) {
@@ -67,7 +72,7 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
                     ent.chain = defChoice;
                 }
             };
-            UIElement hLine = new UISplitterLayout(bco, ccs, false, 0);
+            UIElement hLine = new UISplitterLayout(bco, interiorScrollLayout, false, 0);
             if (i > 0) {
                 hLine = new UIAppendButton(" ^ ", hLine, () -> {
                     if (entries != currentEntriesArray)
@@ -77,7 +82,7 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
                     onEdit.run();
                 }, app.f.dialogWindowTH);
             }
-            hLine = new UIAppendButton("-", hLine, () -> {
+            hLine = new UIAppendButton(Symbol.XRed, hLine, () -> {
                 if (entries != currentEntriesArray)
                     return;
                 System.arraycopy(entries, iFinal + 1, entries, iFinal, entries.length - (iFinal + 1));
@@ -87,15 +92,13 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
                 onEdit.run();
             }, app.f.dialogWindowTH);
             usl.panelsAdd(hLine);
-            // body
-            entries[i].cInstance.setupEditor(usl, onEdit);
         }
         usl.panelsAdd(new UITextButton(app.t.u.ccs_addCondition, app.f.dialogWindowTH, () -> {
             if (entries != currentEntriesArray)
                 return;
             Entry[] entries2 = new Entry[entries.length + 1];
             System.arraycopy(entries, 0, entries2, 0, entries.length);
-            entries2[entries.length] = new Entry(defaultEntry);
+            entries2[entries.length] = new Entry(app, defaultEntry);
             entries = entries2;
             onEdit.run();
         }));
@@ -106,9 +109,9 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
         public IClassifierish.BaseInstance cInstance;
         public BooleanChainOperator chain = BooleanChainOperator.And;
 
-        public Entry(IClassifierish<?> ct) {
+        public Entry(App app, IClassifierish<?> ct) {
             cType = ct;
-            cInstance = cType.instance();
+            cInstance = cType.instance(app);
         }
     }
 }

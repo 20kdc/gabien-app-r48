@@ -76,7 +76,7 @@ public abstract class USFROperationMode {
 
         @Override
         public String translate(App app) {
-            return app.t.u.usl_modeCTag.r(base.getName());
+            return app.t.u.usl_modeCTag.r(base.getName(app));
         }
 
         @Override

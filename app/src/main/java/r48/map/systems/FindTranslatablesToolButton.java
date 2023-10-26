@@ -35,7 +35,7 @@ public final class FindTranslatablesToolButton extends ToolButton {
 
     @Override
     public UIMTBase apply(final IMapToolContext a) {
-        ICommandClassifier.Instance ccc = new CompoundCommandClassifier(app).instance();
+        ICommandClassifier.Instance ccc = CompoundCommandClassifier.I.instance(app);
         UIClassifierishInstanceWidget<ICommandClassifier.Instance> uiccs = new UIClassifierishInstanceWidget<>(app, ccc);
         UISplitterLayout uspl = new UISplitterLayout(uiccs, new UITextButton(app.t.g.bConfirm, app.f.dialogWindowTH, () -> {
             UIMapView umv = a.getMapView();

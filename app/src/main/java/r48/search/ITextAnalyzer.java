@@ -8,7 +8,7 @@
 package r48.search;
 
 import gabien.ui.UIScrollLayout;
-import r48.app.AppCore;
+import r48.App;
 
 /**
  * Just get this here.
@@ -36,7 +36,7 @@ public interface ITextAnalyzer extends IClassifierish<ITextAnalyzer.Instance> {
         }
 
         @Override
-        default Instance instance() {
+        default Instance instance(App app) {
             return this;
         }
     }
@@ -61,13 +61,11 @@ public interface ITextAnalyzer extends IClassifierish<ITextAnalyzer.Instance> {
      * So originally there was separation here between Chinese/Japanese and Korean.
      * But apparently there's just overlap anyway.
      */
-    public static class CJK extends AppCore.Csv implements ITextAnalyzer.Immutable, OrCharTest {
-        public CJK(AppCore ac) {
-            super(ac);
-        }
+    public static enum CJK implements ITextAnalyzer.Immutable, OrCharTest {
+        I;
 
         @Override
-        public String getName() {
+        public String getName(App app) {
             return app.t.u.ccs_cjk;
         }
 
@@ -102,13 +100,11 @@ public interface ITextAnalyzer extends IClassifierish<ITextAnalyzer.Instance> {
     /**
      * The text is solely made up of codepoints 0-255.
      */
-    public static class NotLatin1 extends AppCore.Csv implements ITextAnalyzer.Immutable, OrCharTest {
-        public NotLatin1(AppCore ac) {
-            super(ac);
-        }
+    public static enum NotLatin1 implements ITextAnalyzer.Immutable, OrCharTest {
+        I;
 
         @Override
-        public String getName() {
+        public String getName(App app) {
             return app.t.u.ccs_latin1Only;
         }
 
@@ -122,13 +118,11 @@ public interface ITextAnalyzer extends IClassifierish<ITextAnalyzer.Instance> {
      * Latin1Only plus those codepoints which don't strictly scream "Japanese or Korean text".
      * (This can be useful for translation projects working with these characters)
      */
-    public static class NotLatin1OrFullwidth extends AppCore.Csv implements ITextAnalyzer.Immutable, OrCharTest {
-        public NotLatin1OrFullwidth(AppCore ac) {
-            super(ac);
-        }
+    public static enum NotLatin1OrFullwidth implements ITextAnalyzer.Immutable, OrCharTest {
+        I;
 
         @Override
-        public String getName() {
+        public String getName(App app) {
             return app.t.u.ccs_latin1AndFullwidthOnly;
         }
 

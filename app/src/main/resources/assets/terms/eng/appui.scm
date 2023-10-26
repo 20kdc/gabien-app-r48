@@ -198,5 +198,11 @@
 		cjk "Contains CJK (Chinese, Japanese, Korean)"
 		latin1Only "Not Latin-1 (U+00 to U+FF)"
 		latin1AndFullwidthOnly "Not Latin-1 or Ｗｉｄｅ Text"
+		textAnalyzer "Text Analyzer"
+		textEq "With text..."
+		tContains "Contains (Exact): "
+		tContainsI "Contains: "
+		tEquals "Equals (Exact): "
+		tEqualsI "Equals: "
 	)
 )

@@ -10,6 +10,7 @@ package r48.search;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIScrollLayout;
+import r48.App;
 
 /**
  * Generic classifier of which CommandTag is a kind.
@@ -19,12 +20,12 @@ public interface IClassifierish<T extends IClassifierish.BaseInstance> {
     /**
      * Returns a localized name for this classifier.
      */
-    @NonNull String getName();
+    @NonNull String getName(App app);
 
     /**
      * Creates an instance of this classifier.
      */
-    @NonNull T instance();
+    @NonNull T instance(App app);
 
     /**
      * Instance of a classifier. Immutable Instances need not be unique.

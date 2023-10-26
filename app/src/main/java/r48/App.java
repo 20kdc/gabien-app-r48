@@ -37,9 +37,12 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.search.CommandTag;
+import r48.search.CompoundTextAnalyzer;
 import r48.search.ICommandClassifier;
 import r48.search.ITextAnalyzer;
 import r48.search.ImmutableTextAnalyzerCommandClassifier;
+import r48.search.TextAnalyzerCommandClassifier;
+import r48.search.TextOperator;
 import r48.toolsets.utils.IDChangerEntry;
 import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
@@ -98,7 +101,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
         // setup command classifiers
         cmdClassifiers.add(new ICommandClassifier.Immutable() {
             @Override
-            public String getName() {
+            public String getName(App app) {
                 return ilg.t.u.ccAll;
             }
             @Override
@@ -107,10 +110,14 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
             }
         });
         // setup text analyzers
-        textAnalyzers.add(new ITextAnalyzer.CJK(this));
-        textAnalyzers.add(new ITextAnalyzer.NotLatin1(this));
-        textAnalyzers.add(new ITextAnalyzer.NotLatin1OrFullwidth(this));
-        // mirror immutable text analyzers to command classifiers (so Find Translatables can access them)
+        textAnalyzers.add(ITextAnalyzer.CJK.I);
+        textAnalyzers.add(ITextAnalyzer.NotLatin1.I);
+        textAnalyzers.add(ITextAnalyzer.NotLatin1OrFullwidth.I);
+        for (ITextAnalyzer ita : TextOperator.values())
+            textAnalyzers.add(ita);
+        // mutable text analyzers to command classifier
+        cmdClassifiers.add(new TextAnalyzerCommandClassifier(CompoundTextAnalyzer.I));
+        // mirror immutable text analyzers to command classifiers (so USL can access them)
         for (ITextAnalyzer ita : textAnalyzers)
             if (ita instanceof ITextAnalyzer.Immutable)
                 cmdClassifiers.add(new ImmutableTextAnalyzerCommandClassifier((ITextAnalyzer.Immutable) ita));

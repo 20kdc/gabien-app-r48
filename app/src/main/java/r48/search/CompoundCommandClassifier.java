@@ -16,18 +16,16 @@ import r48.io.data.RORIO;
  * Used as the root command classifier.
  * Created October 25th, 2023.
  */
-public class CompoundCommandClassifier extends App.Svc implements ICommandClassifier {
-    public CompoundCommandClassifier(App ac) {
-        super(ac);
-    }
+public enum CompoundCommandClassifier implements ICommandClassifier {
+    I;
 
     @Override
-    public String getName() {
+    public String getName(App app) {
         return "Compound classifier [INTERNAL]";
     }
 
     @Override
-    public Instance instance() {
+    public Instance instance(App app) {
         final ICommandClassifier[] ents = app.cmdClassifiers.toArray(new ICommandClassifier[0]);
         ICommandClassifier de = app.commandTags.get("translatable");        
         return new CCCI(app, ents, de);

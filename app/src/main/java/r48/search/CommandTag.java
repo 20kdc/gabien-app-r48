@@ -9,6 +9,7 @@ package r48.search;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import r48.App;
 import r48.dbs.RPGCommand;
 import r48.io.data.RORIO;
 import r48.tr.TrPage.FF0;
@@ -27,7 +28,7 @@ public final class CommandTag implements ICommandClassifier.Immutable {
     }
 
     @Override
-    public String getName() {
+    public String getName(App app) {
         return translated.r();
     }
 

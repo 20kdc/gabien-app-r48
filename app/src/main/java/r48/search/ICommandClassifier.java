@@ -10,6 +10,7 @@ package r48.search;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIScrollLayout;
+import r48.App;
 import r48.dbs.RPGCommand;
 import r48.io.data.RORIO;
 
@@ -38,7 +39,7 @@ public interface ICommandClassifier extends IClassifierish<ICommandClassifier.In
         }
 
         @Override
-        default Instance instance() {
+        default Instance instance(App app) {
             return this;
         }
     }

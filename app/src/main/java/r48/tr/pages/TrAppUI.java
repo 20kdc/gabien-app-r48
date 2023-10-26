@@ -131,4 +131,10 @@ public class TrAppUI extends TrPage {
     public String ccs_cjk;
     public String ccs_latin1Only;
     public String ccs_latin1AndFullwidthOnly;
+    public String ccs_textAnalyzer;
+    public String ccs_textEq;
+    public String ccs_tContains;
+    public String ccs_tContainsI;
+    public String ccs_tEquals;
+    public String ccs_tEqualsI;
 }

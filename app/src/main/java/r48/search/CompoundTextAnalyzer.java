@@ -12,18 +12,16 @@ import r48.App;
  * Used as the root text analyzer.
  * Created October 25th, 2023.
  */
-public class CompoundTextAnalyzer extends App.Svc implements ITextAnalyzer {
-    public CompoundTextAnalyzer(App ac) {
-        super(ac);
+public enum CompoundTextAnalyzer implements ITextAnalyzer {
+    I;
+
+    @Override
+    public String getName(App app) {
+        return app.t.u.ccs_textAnalyzer;
     }
 
     @Override
-    public String getName() {
-        return "Compound text analyzer [INTERNAL]";
-    }
-
-    @Override
-    public Instance instance() {
+    public Instance instance(App app) {
         final ITextAnalyzer[] ents = app.textAnalyzers.toArray(new ITextAnalyzer[0]);
         return new CCCI(app, ents, ents[0]);
     }
