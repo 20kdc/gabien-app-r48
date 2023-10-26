@@ -6,8 +6,8 @@
  */
 package r48.ui;
 
+import gabien.render.IDrawable;
 import gabien.render.IGrDriver;
-import gabien.render.ITexRegion;
 import gabien.ui.UIElement;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
@@ -17,15 +17,15 @@ import gabien.wsi.IPeripherals;
  * Created on September 03, 2018.
  */
 public class UIThumbnail extends UIElement {
-    public ITexRegion viewedImage;
+    public IDrawable viewedImage;
     private Rect drawRect;
     private int wantedW;
 
-    public UIThumbnail(ITexRegion im) {
+    public UIThumbnail(IDrawable im) {
         this(im, (int) im.getRegionWidth());
     }
 
-    public UIThumbnail(ITexRegion im, int wanted) {
+    public UIThumbnail(IDrawable im, int wanted) {
         super(wanted, (int) ((im.getRegionHeight() * wanted) / im.getRegionWidth()));
         wantedW = wanted;
         viewedImage = im;
@@ -59,6 +59,6 @@ public class UIThumbnail extends UIElement {
 
     @Override
     public void render(IGrDriver igd) {
-        igd.blitScaledImage(drawRect.x, drawRect.y, drawRect.width, drawRect.height, viewedImage);
+        viewedImage.draw(drawRect.x, drawRect.y, drawRect.width, drawRect.height, igd);
     }
 }
