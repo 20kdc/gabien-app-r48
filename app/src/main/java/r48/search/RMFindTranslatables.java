@@ -105,9 +105,9 @@ public class RMFindTranslatables extends App.Svc {
             }
             if (pendingCommandSiteData != null) {
                 if (cf.matches(cmdDetail, cmd)) {
-                    pendingCommandSiteData = null;
                     CommandSite tu = siteFromContext(app, cmdbEditor, ctx, eventList, pendingCommandSiteIndex, pendingCommandSiteData, basePath);
                     sites.add(tu);
+                    pendingCommandSiteData = null;
                 }
             }
         }
