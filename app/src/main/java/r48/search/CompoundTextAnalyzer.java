@@ -28,14 +28,21 @@ public enum CompoundTextAnalyzer implements ITextAnalyzer {
 
     private final class CCCI extends CompoundClassifierish<ITextAnalyzer, ITextAnalyzer.Instance> implements ITextAnalyzer.Instance {
         private CCCI(App ac, ITextAnalyzer[] e, ITextAnalyzer de) {
-            super(ac, e, de, true);
+            super(ac, e, de, false, BooleanChainOperator.Or);
         }
 
         @Override
         public boolean matches(String text) {
             boolean value = true;
-            for (Entry ent : entries)
-                value = ent.chain.evaluate(value, ((ITextAnalyzer.Instance) ent.cInstance).matches(text));
+            boolean first = true;
+            for (Entry ent : entries) {
+                boolean m = ((ITextAnalyzer.Instance) ent.cInstance).matches(text);
+                if (first)
+                    value = m;
+                else
+                    value = ent.chain.evaluate(value, m);
+                first = false;
+            }
             return value;
         }
     }

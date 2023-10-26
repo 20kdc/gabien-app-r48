@@ -110,11 +110,11 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
             }
         });
         // setup text analyzers
+        for (ITextAnalyzer ita : TextOperator.values())
+            textAnalyzers.add(ita);
         textAnalyzers.add(ITextAnalyzer.CJK.I);
         textAnalyzers.add(ITextAnalyzer.NotLatin1.I);
         textAnalyzers.add(ITextAnalyzer.NotLatin1OrFullwidth.I);
-        for (ITextAnalyzer ita : TextOperator.values())
-            textAnalyzers.add(ita);
         // mutable text analyzers to command classifier
         cmdClassifiers.add(new TextAnalyzerCommandClassifier(CompoundTextAnalyzer.I));
         // mirror immutable text analyzers to command classifiers (so USL can access them)

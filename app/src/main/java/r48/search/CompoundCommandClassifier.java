@@ -33,14 +33,21 @@ public enum CompoundCommandClassifier implements ICommandClassifier {
 
     private final class CCCI extends CompoundClassifierish<ICommandClassifier, ICommandClassifier.Instance> implements ICommandClassifier.Instance {
         private CCCI(App ac, ICommandClassifier[] e, ICommandClassifier de) {
-            super(ac, e, de, true);
+            super(ac, e, de, true, BooleanChainOperator.And);
         }
 
         @Override
         public boolean matches(@Nullable RPGCommand target, @Nullable RORIO data) {
             boolean value = true;
-            for (Entry ent : entries)
-                value = ent.chain.evaluate(value, ((ICommandClassifier.Instance) ent.cInstance).matches(target, data));
+            boolean first = true;
+            for (Entry ent : entries) {
+                boolean m = ((ICommandClassifier.Instance) ent.cInstance).matches(target, data);
+                if (first)
+                    value = m;
+                else
+                    value = ent.chain.evaluate(value, m);
+                first = false;
+            }
             return value;
         }
     }

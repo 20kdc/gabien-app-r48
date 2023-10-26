@@ -17,7 +17,8 @@ import r48.App;
  * Created October 26th, 2023.
  */
 public enum TextOperator implements ITextAnalyzer {
-    Contains, Equals, ContainsInsensitive, EqualsInsensitive;
+    // Order is also order in UI
+    ContainsInsensitive, Contains, Equals, EqualsInsensitive;
 
     private TextOperator() {
     }

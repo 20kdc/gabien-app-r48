@@ -23,13 +23,15 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
     private final C[] ents;
     public final C defaultEntry;
     public Entry[] entries;
+    public final BooleanChainOperator defaultBCO;
 
-    public CompoundClassifierish(App ac, final C[] e, C de, boolean hasFirst) {
+    public CompoundClassifierish(App ac, final C[] e, C de, boolean hasFirst, BooleanChainOperator db) {
         super(ac);
         ents = e;
         defaultEntry = de;
+        defaultBCO = db;
         if (hasFirst)
-            entries = new Entry[] {new Entry(app, de)};
+            entries = new Entry[] {new Entry(app, de, db)};
         else
             entries = new Entry[] {};
     }
@@ -98,7 +100,7 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
                 return;
             Entry[] entries2 = new Entry[entries.length + 1];
             System.arraycopy(entries, 0, entries2, 0, entries.length);
-            entries2[entries.length] = new Entry(app, defaultEntry);
+            entries2[entries.length] = new Entry(app, defaultEntry, defaultBCO);
             entries = entries2;
             onEdit.run();
         }));
@@ -109,7 +111,8 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
         public IClassifierish.BaseInstance cInstance;
         public BooleanChainOperator chain = BooleanChainOperator.And;
 
-        public Entry(App app, IClassifierish<?> ct) {
+        public Entry(App app, IClassifierish<?> ct, BooleanChainOperator bco) {
+            chain = bco;
             cType = ct;
             cInstance = cType.instance(app);
         }
