@@ -12,6 +12,7 @@ import gabien.ui.UILabel;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.tr.LanguageList;
+import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
 
 import java.io.IOException;
@@ -48,13 +49,14 @@ public class HelpSystemController implements Consumer<String> {
 
     public void loadPage(final int i) {
         hs.page.clear();
+        final InterlaunchGlobals ilg = hs.ilg;
         String efl = c.language;
         if (efl.equals(LanguageList.helpLang))
             efl = "";
         String actualFN = helpFile + efl + ".txt";
         InputStream helpStream = GaBIEn.getResource(actualFN);
         if (helpStream == null) {
-            hs.page.add(new UIHelpSystem.HelpElement(c, '.', hs.ilg.t.g.helpUnavailable));
+            hs.page.add(new UIHelpSystem.HelpElement(ilg, '.', hs.ilg.t.g.helpUnavailable));
             actualFN = helpFile + ".txt";
             helpStream = GaBIEn.getResource(actualFN);
         }
@@ -90,7 +92,7 @@ public class HelpSystemController implements Consumer<String> {
                         if (ch == ',') {
                             ((UILabel) workingElement.element).text += "\n" + argbuilder.toString();
                         } else {
-                            hs.page.add(workingElement = new UIHelpSystem.HelpElement(c, ch, argbuilder.toString()));
+                            hs.page.add(workingElement = new UIHelpSystem.HelpElement(ilg, ch, argbuilder.toString()));
                         }
                     }
                 }

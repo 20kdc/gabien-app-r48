@@ -8,13 +8,14 @@
 package r48.ui.help;
 
 import gabien.GaBIEn;
+import gabien.pva.PVAFrameDrawable;
 import gabien.render.IDrawable;
 import gabien.ui.*;
 import gabien.ui.UIElement.UIPanel;
+import gabien.ui.elements.UIThumbnail;
 import gabien.uslx.append.*;
 import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
-import r48.ui.UIThumbnail;
 
 import java.util.LinkedList;
 import java.util.function.Consumer;
@@ -88,7 +89,8 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
         private Consumer<String> onLinkClick;
         public final boolean position;
 
-        public HelpElement(Config c, char ch, String arg) {
+        public HelpElement(InterlaunchGlobals ilg, char ch, String arg) {
+            Config c = ilg.c;
             String[] args = arg.split(" ");
             if (ch == '.') {
                 position = false;
@@ -130,7 +132,13 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
                 element = new UIEmpty(0, c.f.scaleGuess(Integer.parseInt(args[0])));
             } else if ((ch == 'i') || (ch == 'I')) {
                 IDrawable r;
-                r = GaBIEn.getImageEx(args[0], false, true);
+                if (args[0].equals("R48LOGO")) {
+                    r = new PVAFrameDrawable(ilg.a.r48Logo, ilg.a.r48Logo.pvaFile.frames.length - 1);
+                    float square = r.getRegionHeight();
+                    r = r.subRegion((r.getRegionWidth() - square) / 2, 0, square, square);
+                } else {
+                    r = GaBIEn.getImageEx(args[0], false, true);
+                }
                 boolean extended = args.length > 1;
                 boolean extended2 = args.length > 5;
                 // uiGuessScaler takes over

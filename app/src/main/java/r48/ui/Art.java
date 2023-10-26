@@ -7,8 +7,12 @@
 
 package r48.ui;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import gabien.GaBIEn;
 import gabien.GaBIEnUI;
+import gabien.pva.PVARenderer;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.UIBorderedElement;
@@ -30,11 +34,19 @@ public class Art {
     // Generated Images
     private static IImage colourPal, rainbow;
 
+    // PVA Animations
+    public final PVARenderer r48Logo;
+
     // Must be -dotLineAni
     private static final int dotLineMetric = 27;
     private static final int dotLineAni = 2;
 
     public Art() {
+        try (InputStream inp = GaBIEn.getResource("animations/logo.pva")) {
+            r48Logo = new PVARenderer(inp);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // This controls the layout of (in particular) zoom

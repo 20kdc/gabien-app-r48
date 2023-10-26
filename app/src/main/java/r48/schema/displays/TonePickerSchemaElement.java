@@ -12,6 +12,7 @@ import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.UIElement;
 import gabien.ui.UIPublicPanel;
+import gabien.ui.elements.UIThumbnail;
 import r48.App;
 import r48.dbs.PathSyntax;
 import r48.imagefx.IImageEffect;
@@ -21,7 +22,6 @@ import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.pages.TrRoot;
-import r48.ui.UIThumbnail;
 
 /**
  * Shows test images for tone selection.
