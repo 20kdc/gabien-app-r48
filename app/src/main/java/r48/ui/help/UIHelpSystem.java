@@ -11,10 +11,10 @@ import gabien.GaBIEn;
 import gabien.render.IDrawable;
 import gabien.ui.*;
 import gabien.ui.UIElement.UIPanel;
+import gabien.ui.elements.UIThumbnail;
 import gabien.uslx.append.*;
 import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
-import r48.ui.UIThumbnail;
 
 import java.util.LinkedList;
 import java.util.function.Consumer;

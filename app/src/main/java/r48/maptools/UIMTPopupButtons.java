@@ -12,6 +12,7 @@ import gabien.atlas.AtlasSet;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.UIPopupMenu.Entry;
+import gabien.ui.elements.UIThumbnail;
 import gabien.uslx.append.Rect;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
@@ -19,7 +20,6 @@ import r48.App;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.UIMapView;
-import r48.ui.UIThumbnail;
 
 import java.io.OutputStream;
 import java.util.LinkedList;

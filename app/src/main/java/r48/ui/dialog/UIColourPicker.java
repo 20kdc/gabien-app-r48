@@ -14,13 +14,13 @@ import gabien.GaBIEnUI;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.*;
+import gabien.ui.elements.UIThumbnail;
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
 import r48.App;
 import r48.ui.Art;
 import r48.ui.UIColourSwatch;
-import r48.ui.UIThumbnail;
 
 /**
  * RGBHSV

@@ -10,6 +10,7 @@ package r48.schema.specialized;
 import gabien.GaBIEn;
 import gabien.render.IImage;
 import gabien.ui.*;
+import gabien.ui.elements.UIThumbnail;
 import r48.App;
 import r48.app.AppMain;
 import r48.io.data.IRIO;
@@ -17,7 +18,6 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.ui.UIThumbnail;
 import r48.ui.spacing.UIBorderedSubpanel;
 
 import java.util.Arrays;
