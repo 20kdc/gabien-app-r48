@@ -8,7 +8,7 @@
 package r48.ui.help;
 
 import gabien.GaBIEn;
-import gabien.render.IImage;
+import gabien.render.ITexRegion;
 import gabien.ui.*;
 import gabien.ui.UIElement.UIPanel;
 import gabien.uslx.append.*;
@@ -129,16 +129,17 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
                 position = false;
                 element = new UIEmpty(0, c.f.scaleGuess(Integer.parseInt(args[0])));
             } else if ((ch == 'i') || (ch == 'I')) {
-                final IImage r = GaBIEn.getImageEx(args[0], false, true);
+                ITexRegion r = GaBIEn.getImageEx(args[0], false, true);
                 boolean extended = args.length > 1;
                 boolean extended2 = args.length > 5;
                 // uiGuessScaler takes over
                 final int xx = extended ? Integer.parseInt(args[1]) : 0;
                 final int yy = extended ? Integer.parseInt(args[2]) : 0;
-                final int sw = extended ? Integer.parseInt(args[3]) : r.getWidth();
-                final int sh = extended ? Integer.parseInt(args[4]) : r.getHeight();
-                final int w = c.f.scaleGuess(extended2 ? Integer.parseInt(args[5]) : sw);
-                UIThumbnail uie = new UIThumbnail(r, w, new Rect(xx, yy, sw, sh));
+                final float sw = extended ? Integer.parseInt(args[3]) : r.getRegionWidth();
+                final float sh = extended ? Integer.parseInt(args[4]) : r.getRegionHeight();
+                final int w = c.f.scaleGuess(extended2 ? Integer.parseInt(args[5]) : (int) sw);
+                r = r.subRegion(xx, yy, sw, sh);
+                UIThumbnail uie = new UIThumbnail(r, w);
                 position = ch == 'i';
                 element = uie;
             } else {
