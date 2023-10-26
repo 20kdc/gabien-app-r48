@@ -8,7 +8,7 @@
 package r48.ui.help;
 
 import gabien.GaBIEn;
-import gabien.render.ITexRegion;
+import gabien.render.IDrawable;
 import gabien.ui.*;
 import gabien.ui.UIElement.UIPanel;
 import gabien.uslx.append.*;
@@ -129,7 +129,8 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
                 position = false;
                 element = new UIEmpty(0, c.f.scaleGuess(Integer.parseInt(args[0])));
             } else if ((ch == 'i') || (ch == 'I')) {
-                ITexRegion r = GaBIEn.getImageEx(args[0], false, true);
+                IDrawable r;
+                r = GaBIEn.getImageEx(args[0], false, true);
                 boolean extended = args.length > 1;
                 boolean extended2 = args.length > 5;
                 // uiGuessScaler takes over
