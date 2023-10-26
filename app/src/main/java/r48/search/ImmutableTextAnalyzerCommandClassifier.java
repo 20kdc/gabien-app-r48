@@ -12,30 +12,31 @@ import org.eclipse.jdt.annotation.Nullable;
 import r48.App;
 import r48.dbs.RPGCommand;
 import r48.io.data.RORIO;
-import r48.tr.TrPage.FF0;
 
 /**
- * Tags a command for search.
- * Created 18th August, 2023.
+ * UNDERSTAND: These are estimates ONLY, intended to aid in translation.
+ * Created 25th October, 2023.
  */
-public final class CommandTag implements ICommandClassifier.Immutable {
-    public final String id;
-    private final FF0 translated;
+public class ImmutableTextAnalyzerCommandClassifier implements ICommandClassifier.Immutable {
+    public final ITextAnalyzer.Immutable instance;
 
-    public CommandTag(String i, FF0 ti) {
-        id = i;
-        translated = ti;
+    public ImmutableTextAnalyzerCommandClassifier(ITextAnalyzer.Immutable inst) {
+        this.instance = inst;
     }
 
     @Override
     public String getName(App app) {
-        return translated.r();
+        return instance.getName(app);
     }
 
     @Override
     public boolean matches(@Nullable RPGCommand target, @Nullable RORIO data) {
         if (target == null)
             return false;
-        return target.tags.contains(CommandTag.this);
+        if (data == null)
+            return false;
+        if (target.textArg == -1)
+            return false;
+        return instance.matches(data.getIVar("@parameters").getAElem(target.textArg).decString());
     }
 }

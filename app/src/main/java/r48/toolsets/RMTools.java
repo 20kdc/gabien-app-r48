@@ -21,13 +21,15 @@ import r48.maptools.UIMTEventPicker;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.SchemaPath;
+import r48.search.CompoundCommandClassifier;
+import r48.search.ICommandClassifier;
 import r48.search.RMFindTranslatables;
 import r48.toolsets.utils.UIIDChanger;
 import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIRMUniversalStringFinder;
 import r48.ui.dialog.UIRMUniversalStringReplacer;
 import r48.ui.dialog.UITranscriptControl;
-import r48.ui.search.UICommandClassifierSelector;
+import r48.ui.search.UIClassifierishInstanceWidget;
 import r48.ui.search.UICommandSites;
 
 import java.util.LinkedList;
@@ -119,12 +121,13 @@ public class RMTools extends App.Svc {
                     });
                 },
                 () -> {
-                    UICommandClassifierSelector uiccs = new UICommandClassifierSelector(app, app.commandTags.get("translatable"));
+                    ICommandClassifier.Instance ccc = CompoundCommandClassifier.I.instance(app);
+                    UIClassifierishInstanceWidget<ICommandClassifier.Instance> uiccs = new UIClassifierishInstanceWidget<>(app, ccc);
                     UISplitterLayout uspl = new UISplitterLayout(uiccs, new UITextButton(T.g.bConfirm, app.f.dialogWindowTH, () -> {
                         final IObjectBackend.ILoadedObject ilo = mapSystem.getCommonEventRoot();
                         UICommandSites ucs = new UICommandSites(app, app.odb.getIdByObject(ilo), () -> {
                             RMFindTranslatables rft = new RMFindTranslatables(app, ilo);
-                            rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents(), uiccs.getClassifier());
+                            rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents(), ccc);
                             return rft.toArray();
                         }, new IObjectBackend.ILoadedObject[] {
                             ilo

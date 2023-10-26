@@ -20,6 +20,7 @@ import gabien.ui.UIScrollbar;
 import gabien.ui.UISplitterLayout;
 import gabien.wsi.IPeripherals;
 import gabien.media.audio.*;
+import gabien.media.audio.fileio.ReadAnySupportedAudioSource;
 import r48.App;
 import r48.app.AppMain;
 import r48.ui.Art;
@@ -54,7 +55,7 @@ public class UIAudioPlayer extends App.Prx {
     public UIAudioPlayer(App app, AudioIOSource data, double spd) {
         super(app);
         speed = spd;
-        source = new StreamingAudioDiscreteSample(data);
+        source = new StreamingAudioDiscreteSample(data, (data.formatHint == null) ? AudioIOFormat.F_F32 : data.formatHint);
         audioThreadBuffer = new float[data.crSet.channels];
         UIScrollLayout svl = new UIScrollLayout(false, app.f.mapToolbarS);
         svl.panelsAdd(new UISymbolButton(Art.Symbol.Back, app.f.schemaFieldTH, new Runnable() {
@@ -111,13 +112,22 @@ public class UIAudioPlayer extends App.Prx {
         lastSeekerScrollPoint = seeker.scrollPoint;
     }
 
+    private static final String[] extensionsWeWillTry = {
+            ".wav",
+            ".ogg",
+            ".mp3",
+            ".mid"
+    };
+
     public static UIElement create(App app, String filename, double speed) {
-        try {
-            InputStream tryWav = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + filename + ".wav"));
-            if (tryWav != null)
-                return new UIAudioPlayer(app, WavIO.readWAV(tryWav, true), speed);
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (String mnt : extensionsWeWillTry) {
+            try {
+                InputStream tryWav = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + filename + mnt));
+                if (tryWav != null)
+                    return new UIAudioPlayer(app, ReadAnySupportedAudioSource.open(tryWav, true), speed);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return new UILabel(app.t.u.soundFail, app.f.schemaFieldTH);
     }
@@ -126,7 +136,7 @@ public class UIAudioPlayer extends App.Prx {
         try {
             InputStream tryWav = GaBIEn.getInFile(filename);
             if (tryWav != null)
-                return new UIAudioPlayer(app, WavIO.readWAV(tryWav, true), speed);
+                return new UIAudioPlayer(app, ReadAnySupportedAudioSource.open(tryWav, true), speed);
         } catch (Exception e) {
             e.printStackTrace();
         }

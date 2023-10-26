@@ -14,8 +14,10 @@ import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.UIMapView;
 import r48.maptools.UIMTBase;
+import r48.search.CompoundCommandClassifier;
+import r48.search.ICommandClassifier;
 import r48.search.RMFindTranslatables;
-import r48.ui.search.UICommandClassifierSelector;
+import r48.ui.search.UIClassifierishInstanceWidget;
 import r48.ui.search.UICommandSites;
 
 /**
@@ -33,13 +35,14 @@ public final class FindTranslatablesToolButton extends ToolButton {
 
     @Override
     public UIMTBase apply(final IMapToolContext a) {
-        UICommandClassifierSelector uiccs = new UICommandClassifierSelector(app, app.commandTags.get("translatable"));
+        ICommandClassifier.Instance ccc = CompoundCommandClassifier.I.instance(app);
+        UIClassifierishInstanceWidget<ICommandClassifier.Instance> uiccs = new UIClassifierishInstanceWidget<>(app, ccc);
         UISplitterLayout uspl = new UISplitterLayout(uiccs, new UITextButton(app.t.g.bConfirm, app.f.dialogWindowTH, () -> {
             UIMapView umv = a.getMapView();
             final IObjectBackend.ILoadedObject map = umv.map.object;
             UICommandSites ucs = new UICommandSites(umv.app, umv.map.objectId, () -> {
                 RMFindTranslatables rft = new RMFindTranslatables(umv.app, map);
-                rft.addSitesFromMap(a.getMapView(), ep, uiccs.getClassifier());
+                rft.addSitesFromMap(a.getMapView(), ep, ccc);
                 return rft.toArray();
             }, new IObjectBackend.ILoadedObject[] {
                 map

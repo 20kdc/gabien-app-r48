@@ -8,6 +8,9 @@ package r48.search;
 
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.Nullable;
+
+import gabien.ui.UIElement;
 import r48.App;
 import r48.dbs.RPGCommand;
 import r48.io.data.IRIO;
@@ -22,13 +25,18 @@ import r48.schema.util.SchemaPath;
 public abstract class USFROperationMode {
     public abstract String translate(App app);
 
+    public @Nullable UIElement makeEditor() {
+        return null;
+    }
+
     public abstract void locate(App app, SchemaPath root, Visitor visitor, boolean detailedPaths);
 
     public static USFROperationMode[] listForApp(App app) {
         LinkedList<USFROperationMode> lls = new LinkedList<>();
         lls.add(All.INSTANCE);
         for (ICommandClassifier icc : app.cmdClassifiers)
-            lls.add(new CmdTag(icc));
+            if (icc instanceof ICommandClassifier.Immutable)
+                lls.add(new CmdTag((ICommandClassifier.Immutable) icc));
         return lls.toArray(new USFROperationMode[0]);
     }
 
@@ -60,15 +68,15 @@ public abstract class USFROperationMode {
     }
 
     public static final class CmdTag extends USFROperationMode {
-        public final ICommandClassifier base;
+        public final ICommandClassifier.Immutable base;
 
-        public CmdTag(ICommandClassifier b) {
+        public CmdTag(ICommandClassifier.Immutable b) {
             base = b;
         }
 
         @Override
         public String translate(App app) {
-            return app.t.u.usl_modeCTag.r(base.getName());
+            return app.t.u.usl_modeCTag.r(base.getName(app));
         }
 
         @Override
@@ -77,7 +85,7 @@ public abstract class USFROperationMode {
             root.editor.visit(root.targetElement, root, (element, target, path) -> {
                 if (element instanceof RPGCommandSchemaElement) {
                     RPGCommand rc = ((RPGCommandSchemaElement) element).getRPGCommand(target);
-                    if (base.matches(rc)) {
+                    if (base.matches(rc, target)) {
                         element.visit(target, path, mod, detailedPaths);
                         return false;
                     }

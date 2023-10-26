@@ -55,7 +55,7 @@
 		num "Sprite Num."
 		msgNoImage "The image wasn't specified."
 	)
-	soundFail "Unable to load sound."
+	soundFail "R48 can't load sound (may be a format R48 doesn't support - the game may still play it!)"
 	(cg_
 		savePNG "Save PNG..."
 		copyR48 "Copy to R48 Clipboard"
@@ -188,4 +188,21 @@
 
 	ccAll "All Commands"
 	dumpWhateverICanThinkOfToJSON "Command & Enum Information -> cmdb.json"
+
+	(ccs_
+		addCondition "Add condition..."
+		and "And: "
+		or "Or: "
+		andNot "And Not: "
+		orNot "Or Not: "
+		cjk "Contains CJK (Chinese, Japanese, Korean)"
+		latin1Only "Not Latin-1 (U+00 to U+FF)"
+		latin1AndFullwidthOnly "Not Latin-1 or Ｗｉｄｅ Text"
+		textAnalyzer "Text..."
+		textEq "With text..."
+		tContains "Contains (Exact): "
+		tContainsI "Contains: "
+		tEquals "Equals (Exact): "
+		tEqualsI "Equals: "
+	)
 )

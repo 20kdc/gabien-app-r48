@@ -37,7 +37,12 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.search.CommandTag;
+import r48.search.CompoundTextAnalyzer;
 import r48.search.ICommandClassifier;
+import r48.search.ITextAnalyzer;
+import r48.search.ImmutableTextAnalyzerCommandClassifier;
+import r48.search.TextAnalyzerCommandClassifier;
+import r48.search.TextOperator;
 import r48.toolsets.utils.IDChangerEntry;
 import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
@@ -83,21 +88,40 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     public final LinkedList<ICommandClassifier> cmdClassifiers = new LinkedList<>();
 
     /**
+     * Main list of text analyzers. For use by all sorts of stuff.
+     */
+    public final LinkedList<ITextAnalyzer> textAnalyzers = new LinkedList<>();
+
+    /**
      * Initialize App.
      * Warning: Occurs off main thread.
      */
     public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, String rp, String sip, Consumer<String> loadProgress) {
         super(ilg, charset, gp, rp, sip, loadProgress);
-        cmdClassifiers.add(new ICommandClassifier() {
+        // setup command classifiers
+        cmdClassifiers.add(new ICommandClassifier.Immutable() {
             @Override
-            public String getName() {
+            public String getName(App app) {
                 return ilg.t.u.ccAll;
             }
             @Override
-            public boolean matches(RPGCommand target) {
+            public boolean matches(RPGCommand target, @Nullable RORIO data) {
                 return true;
             }
         });
+        // setup text analyzers
+        for (ITextAnalyzer ita : TextOperator.values())
+            textAnalyzers.add(ita);
+        textAnalyzers.add(ITextAnalyzer.CJK.I);
+        textAnalyzers.add(ITextAnalyzer.NotLatin1.I);
+        textAnalyzers.add(ITextAnalyzer.NotLatin1OrFullwidth.I);
+        // mutable text analyzers to command classifier
+        cmdClassifiers.add(new TextAnalyzerCommandClassifier(CompoundTextAnalyzer.I));
+        // mirror immutable text analyzers to command classifiers (so USL can access them)
+        for (ITextAnalyzer ita : textAnalyzers)
+            if (ita instanceof ITextAnalyzer.Immutable)
+                cmdClassifiers.add(new ImmutableTextAnalyzerCommandClassifier((ITextAnalyzer.Immutable) ita));
+        // do VM stuff
         vmCtx = new MVMEnvR48((str) -> {
             loadProgress.accept(t.g.loadingProgress.r(str));
         }, ilg.logTrIssues, ilg.c.language);

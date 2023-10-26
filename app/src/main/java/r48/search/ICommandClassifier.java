@@ -7,20 +7,40 @@
 
 package r48.search;
 
+import org.eclipse.jdt.annotation.Nullable;
+
+import gabien.ui.UIScrollLayout;
+import r48.App;
 import r48.dbs.RPGCommand;
+import r48.io.data.RORIO;
 
 /**
  * Generic classifier of which CommandTag is a kind.
  * Created 18th August, 2023.
  */
-public interface ICommandClassifier {
+public interface ICommandClassifier extends IClassifierish<ICommandClassifier.Instance> {
     /**
-     * Returns a localized name for this classifier.
+     * Instance of a classifier. Immutable Instances need not be unique.
      */
-    public String getName();
+    interface Instance extends IClassifierish.BaseInstance {
+        /**
+         * Checks if the given RPGCommand/RORIO matches this classifier instance.
+         */
+        boolean matches(@Nullable RPGCommand dbEntry, @Nullable RORIO cmd);
+    }
 
     /**
-     * Checks if the given RPGCommand matches this classifier.
+     * Immutable ICommandClassifiers should extend this so they can be used by appropriate logic.
+     * (In particular Universal String Locator logic.)
      */
-    public abstract boolean matches(RPGCommand target);
+    interface Immutable extends ICommandClassifier, Instance {
+        @Override
+        default void setupEditor(UIScrollLayout usl, Runnable onEdit) {
+        }
+
+        @Override
+        default Instance instance(App app) {
+            return this;
+        }
+    }
 }
