@@ -33,7 +33,7 @@ public abstract class UIPlaneView extends App.Elm {
     private double dragNexusX, dragNexusY, firstDragDist, firstDragZoom, dragAvgDist;
 
     public UIPlaneView(App app) {
-        super(app);
+        super(app, app.f.scaleGuess(320), app.f.scaleGuess(200));
     }
 
     protected abstract String planeGetStatus();
