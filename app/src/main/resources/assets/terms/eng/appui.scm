@@ -55,7 +55,8 @@
 		num "Sprite Num."
 		msgNoImage "The image wasn't specified."
 	)
-	soundFail "R48 can't load sound (may be a format R48 doesn't support - the game may still play it!)"
+	soundFail "R48 can't load sound.\nIt may be a format R48 doesn't support, so the game may still play it."
+	soundFailFileNotFound "Unable to find sound.\nIt may be a format R48 doesn't support, so the game may still play it."
 	(cg_
 		savePNG "Save PNG..."
 		copyR48 "Copy to R48 Clipboard"
