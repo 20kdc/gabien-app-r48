@@ -11,10 +11,10 @@ import gabien.uslx.append.*;
 
 import java.util.function.Supplier;
 
-import gabien.ui.UIAutoclosingPopupMenu;
 import gabien.ui.UIElement;
-import gabien.ui.UIPopupMenu;
-import gabien.ui.UITextButton;
+import gabien.ui.dialogs.UIAutoclosingPopupMenu;
+import gabien.ui.dialogs.UIPopupMenu;
+import gabien.ui.elements.UITextButton;
 import r48.App;
 
 /**

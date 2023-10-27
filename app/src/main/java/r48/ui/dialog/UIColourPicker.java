@@ -9,12 +9,22 @@ package r48.ui.dialog;
 
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.GaBIEn;
 import gabien.GaBIEnUI;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.*;
+import gabien.ui.elements.UIBorderedElement;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UINumberBox;
+import gabien.ui.elements.UIScrollbar;
+import gabien.ui.elements.UITextButton;
 import gabien.ui.elements.UIThumbnail;
+import gabien.ui.layouts.UISplitterLayout;
+import gabien.ui.layouts.UITabBar;
+import gabien.ui.layouts.UITabPane;
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
@@ -66,13 +76,9 @@ public class UIColourPicker extends App.Prx {
         // Part marked 'S2'
         // This part is made up of colour swatches which don't care about size,
         // so they need to be given a size - imageEditorTextHeight * 2 should do it
-        UISplitterLayout s2Layout = new UISplitterLayout(new UIColourSwatch(baseCol), currentColour, true, 0.5d) {
-            @Override
-            public void setWantedSize(Size size) {
-                int v = app.f.imageEditorTH * 2;
-                super.setWantedSize(new Size(v, v));
-            }
-        };
+        UISplitterLayout s2Layout = new UISplitterLayout(new UIColourSwatch(baseCol), currentColour, true, 0.5d);
+        int s2WSO = app.f.imageEditorTH * 2;
+        s2Layout.setWantedSizeOverride(new Size(s2WSO, s2WSO));
 
         // Part marked 'a0'
         alphaBox = new UIChannelBox((baseCol >> 24) & 0xFF);
@@ -141,12 +147,11 @@ public class UIColourPicker extends App.Prx {
         }
 
         @Override
-        public void setWantedSize(Size size) {
-            if ((size.width < numberBoxMinimumSize.width) || (size.height < numberBoxMinimumSize.height)) {
-                super.setWantedSize(new Size(Math.max(size.width, numberBoxMinimumSize.width), Math.max(size.height, numberBoxMinimumSize.height)));
-                return;
-            }
-            super.setWantedSize(size);
+        protected @Nullable Size layoutRecalculateMetricsImpl() {
+            Size size = super.layoutRecalculateMetricsImpl();
+            if ((size.width < numberBoxMinimumSize.width) || (size.height < numberBoxMinimumSize.height))
+                return new Size(Math.max(size.width, numberBoxMinimumSize.width), Math.max(size.height, numberBoxMinimumSize.height));
+            return size;
         }
     }
 
@@ -156,8 +161,9 @@ public class UIColourPicker extends App.Prx {
         }
 
         @Override
-        public void setWantedSize(Size size) {
-            super.setWantedSize(new Size(size.height, size.height));
+        protected @Nullable Size layoutRecalculateMetricsImpl() {
+            Size size = super.layoutRecalculateMetricsImpl();
+            return new Size(size.height, size.height);
         }
     }
 
@@ -185,7 +191,9 @@ public class UIColourPicker extends App.Prx {
         }
 
         @Override
-        public void render(IGrDriver igd) {
+        public void renderLayer(IGrDriver igd, UILayer layer) {
+            if (layer != UILayer.Content)
+                return;
             Rect intPos = determineInteriorPosition();
             int bw = baseImage.getWidth();
             int bh = baseImage.getHeight();

@@ -9,9 +9,9 @@ package r48.ui.dialog;
 import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UISplitterLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.dbs.ObjectInfo;
 import r48.io.data.IRIO;

@@ -8,8 +8,8 @@
 package r48.map;
 
 import gabien.ui.UIElement;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.RubyTable;
 import r48.io.data.RORIO;

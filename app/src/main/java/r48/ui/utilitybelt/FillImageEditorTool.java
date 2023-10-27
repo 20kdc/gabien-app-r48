@@ -10,6 +10,9 @@ package r48.ui.utilitybelt;
 import java.util.function.Function;
 
 import gabien.ui.*;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.*;
 import r48.App;
 

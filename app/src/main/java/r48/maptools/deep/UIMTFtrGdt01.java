@@ -9,7 +9,7 @@ package r48.maptools.deep;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UITextButton;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;

@@ -9,6 +9,7 @@ package r48.schema.displays;
 
 import gabien.render.IGrDriver;
 import gabien.ui.UIElement;
+import gabien.ui.UILayer;
 import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
 import r48.App;
@@ -37,7 +38,9 @@ public class EPGDisplaySchemaElement extends SchemaElement.Leaf {
             }
 
             @Override
-            public void render(IGrDriver igd) {
+            public void renderLayer(IGrDriver igd, UILayer layer) {
+                if (layer != UILayer.Content)
+                    return;
                 Size bounds = getSize();
                 igd.clearRect(255, 0, 255, 0, 0, bounds.width, bounds.height);
                 StuffRenderer r = launcher.getContextRenderer();

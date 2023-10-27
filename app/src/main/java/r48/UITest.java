@@ -10,6 +10,8 @@ package r48;
 import gabien.GaBIEn;
 import gabien.datum.DatumSymbol;
 import gabien.ui.*;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.*;
 import r48.app.AppMain;
 import r48.io.IObjectBackend;

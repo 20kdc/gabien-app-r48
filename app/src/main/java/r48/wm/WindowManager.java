@@ -11,7 +11,11 @@ import gabien.*;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.*;
-import gabien.ui.UIWindowView.TabShell;
+import gabien.ui.elements.UIBorderedElement;
+import gabien.ui.layouts.UITabBar;
+import gabien.ui.layouts.UITabPane;
+import gabien.ui.layouts.UIWindowView;
+import gabien.ui.layouts.UIWindowView.TabShell;
 import gabien.ui.theming.Theme;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
@@ -77,11 +81,6 @@ public class WindowManager extends AppCore.Csv {
             }
 
             @Override
-            public void render(IGrDriver igd) {
-                super.render(igd);
-            }
-
-            @Override
             public void onWindowClose() {
                 // This has nasty side effects if the window is merely being transferred around, so check for that.
                 if (!performingScreenTransfer)
@@ -94,7 +93,6 @@ public class WindowManager extends AppCore.Csv {
         rootView.setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(800), app.f.scaleGuess(600)));
 
         tabPane = new UITabPane(app.f.tabTH, true, true, app.f.maintabsS, thbrL, thbrR);
-        tabPane.setLAFParentOverride(GaBIEnUI.sysThemeRoot);
 
         UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, tabPane);
         rootView.addShell(backing);
@@ -170,7 +168,6 @@ public class WindowManager extends AppCore.Csv {
     }
 
     public void createWindow(final UIElement uie, final boolean tab, final boolean immortal, final @Nullable String disposition) {
-        uie.setLAFParentOverride(GaBIEnUI.sysThemeRoot);
         // Now decide what to actually do.
         LinkedList<UITabBar.TabIcon> icons = new LinkedList<>();
         if (uie instanceof IDuplicatableWindow) {
@@ -344,7 +341,6 @@ public class WindowManager extends AppCore.Csv {
             Rect r2 = results[i].getIntersection(area);
             if (r2 != null) {
                 if (r2.rectEquals(results[i])) {
-                    menu.setLAFParentOverride(GaBIEnUI.sysThemeRoot);
                     menu.setForcedBounds(null, r2);
                     screen.addShell(new UIWindowView.ElementShell(screen, menu) {
                         @Override

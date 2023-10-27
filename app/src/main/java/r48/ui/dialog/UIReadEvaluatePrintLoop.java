@@ -6,13 +6,13 @@
  */
 package r48.ui.dialog;
 
-import gabien.ui.UIChatBox;
 import gabien.ui.UIElement.UIProxy;
+import gabien.ui.elements.UIChatBox;
+import gabien.ui.elements.UILabel;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
-import gabien.ui.UILabel;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UISplitterLayout;
 import r48.cfg.Config;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMU;

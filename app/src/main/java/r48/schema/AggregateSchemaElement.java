@@ -8,6 +8,8 @@
 package r48.schema;
 
 import gabien.ui.*;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
 import gabien.wsi.IPointer;
 import r48.App;
 import r48.dbs.IProxySchemaElement;

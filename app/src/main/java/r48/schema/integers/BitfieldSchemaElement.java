@@ -8,8 +8,8 @@
 package r48.schema.integers;
 
 import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import gabien.ui.UIScrollLayout;
+import gabien.ui.elements.UILabel;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 

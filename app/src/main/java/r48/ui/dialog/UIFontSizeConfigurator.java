@@ -9,6 +9,11 @@ package r48.ui.dialog;
 
 import gabien.GaBIEn;
 import gabien.ui.*;
+import gabien.ui.elements.UIAdjuster;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import r48.cfg.Config;
@@ -52,7 +57,6 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         lastSBSize = c.f.generalS;
 
         outerLayout.panelsClear();
-        outerLayout.setSBSize(lastSBSize);
         outerLayout.scrollbar.scrollPoint = iniScroll;
         final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
         final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();

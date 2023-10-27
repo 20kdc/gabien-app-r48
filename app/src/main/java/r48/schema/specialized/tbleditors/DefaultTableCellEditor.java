@@ -7,8 +7,8 @@
 
 package r48.schema.specialized.tbleditors;
 
-import gabien.ui.UINumberBox;
-import gabien.ui.UIScrollLayout;
+import gabien.ui.elements.UINumberBox;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 
 /**

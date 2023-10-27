@@ -9,8 +9,8 @@ package gabienapp;
 
 import gabien.render.IGrDriver;
 import gabien.ui.UIElement;
-import gabien.ui.UILabel;
 import gabien.ui.UILayer;
+import gabien.ui.elements.UILabel;
 import gabien.uslx.append.Rect;
 import gabien.wsi.IPeripherals;
 import r48.cfg.Config;
@@ -57,18 +57,17 @@ public class UIFancyInit extends UIElement.UIProxy implements Consumer<String> {
                 ackDoneInjector = 1;
         ConcurrentLinkedQueue<String> get = consoletronDataInput;
         if (get != null) {
-            boolean didThing = false;
+            String didThing = null;
             while (true) {
                 String st = get.poll();
                 if (st != null) {
-                    layout.text = st;
-                    didThing = true;
+                    didThing = st;
                 } else {
                     break;
                 }
             }
-            if (didThing)
-                runLayoutLoop();
+            if (didThing != null)
+                layout.setText(didThing);
         }
         super.update(deltaTime, selected, peripherals);
     }

@@ -9,7 +9,7 @@ package r48.maptools;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import gabien.ui.UILabel;
+import gabien.ui.elements.UILabel;
 import r48.io.data.DMKey;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;

@@ -9,8 +9,9 @@ package r48.ui.spacing;
 
 import gabien.render.IGrDriver;
 import gabien.ui.IPointerReceiver;
-import gabien.ui.UIBorderedElement;
 import gabien.ui.UIElement;
+import gabien.ui.UILayer;
+import gabien.ui.elements.UIBorderedElement;
 import gabien.ui.theming.IBorder;
 import gabien.ui.theming.Theme;
 import gabien.wsi.IPeripherals;
@@ -48,7 +49,9 @@ public class UIIndentThingy extends UIElement {
     }
 
     @Override
-    public void render(IGrDriver igd) {
+    public void renderLayer(IGrDriver igd, UILayer layer) {
+        if (layer != UILayer.Content)
+            return;
         int bW = Math.max(selectUnit / 6, 1);
         int height = getSize().height;
         Theme theme = getTheme();

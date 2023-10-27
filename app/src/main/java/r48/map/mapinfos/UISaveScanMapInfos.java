@@ -11,7 +11,9 @@ import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import gabien.ui.*;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.IMapContext;
 import r48.io.IObjectBackend;

@@ -10,7 +10,7 @@ package r48.ui.search;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import gabien.ui.UIScrollLayout;
+import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.Rect;
 import gabien.wsi.IPeripherals;
 import r48.App;

@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UITextButton;
 import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;

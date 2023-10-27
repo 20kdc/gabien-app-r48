@@ -9,6 +9,7 @@ package r48.ui;
 
 import gabien.render.IGrDriver;
 import gabien.ui.UIElement;
+import gabien.ui.UILayer;
 import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
 
@@ -29,7 +30,9 @@ public class UIColourSwatch extends UIElement {
     }
 
     @Override
-    public void render(IGrDriver igd) {
+    public void renderLayer(IGrDriver igd, UILayer layer) {
+        if (layer != UILayer.Content)
+            return;
         Size bounds = getSize();
         doRender(igd, col, 0, 0, bounds.width, bounds.height);
     }

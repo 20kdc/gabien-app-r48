@@ -8,6 +8,13 @@
 package r48.ui.dialog;
 
 import gabien.ui.*;
+import gabien.ui.elements.UINumberBox;
+import gabien.ui.elements.UITextBox;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
+import gabien.ui.layouts.UITabBar;
+import gabien.ui.layouts.UITabPane;
 import r48.App;
 import r48.UITest;
 import r48.io.data.DMKey;

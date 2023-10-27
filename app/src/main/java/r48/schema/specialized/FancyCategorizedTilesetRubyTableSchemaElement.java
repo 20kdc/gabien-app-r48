@@ -8,10 +8,10 @@
 package r48.schema.specialized;
 
 import gabien.ui.UIElement;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UISplitterLayout;
-import gabien.ui.UITabBar;
-import gabien.ui.UITabPane;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
+import gabien.ui.layouts.UITabBar;
+import gabien.ui.layouts.UITabPane;
 import r48.App;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;

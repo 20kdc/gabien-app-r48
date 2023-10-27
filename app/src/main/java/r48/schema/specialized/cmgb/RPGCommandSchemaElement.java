@@ -8,6 +8,10 @@
 package r48.schema.specialized.cmgb;
 
 import gabien.ui.*;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.PathSyntax;

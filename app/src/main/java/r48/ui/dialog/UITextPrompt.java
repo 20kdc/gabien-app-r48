@@ -9,7 +9,11 @@ package r48.ui.dialog;
 
 import java.util.function.Consumer;
 
-import gabien.ui.*;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextBox;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 
 /**

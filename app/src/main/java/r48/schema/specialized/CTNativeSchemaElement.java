@@ -8,6 +8,10 @@
 package r48.schema.specialized;
 
 import gabien.ui.*;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UINumberBox;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.RubyCT;
 import r48.io.data.IRIO;

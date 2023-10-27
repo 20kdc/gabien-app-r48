@@ -8,7 +8,7 @@
 package r48.dbs;
 
 import gabien.datum.DatumSrcLoc;
-import gabien.ui.UIScrollLayout;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;

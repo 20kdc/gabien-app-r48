@@ -9,6 +9,7 @@ package r48.ui;
 
 import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.ui.elements.UIBorderedElement;
 import gabien.uslx.append.*;
 import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
@@ -16,6 +17,8 @@ import gabien.wsi.IPointer;
 
 import java.util.HashSet;
 import java.util.function.Consumer;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * NOTE: This must be recreated every time it needs to be reloaded, and needs to be contained in a UIScrollViewLayout to work properly.
@@ -41,12 +44,27 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
             layoutRemoveElement(uie);
         for (TreeElement te : e)
             layoutAddElement(te.innerElement);
-        runLayout();
+        layoutRecalculateMetrics();
     }
 
     @Override
-    public void runLayout() {
+    protected void layoutRunImpl() {
         Size r = getSize();
+        int y = 0;
+        for (TreeElement te : elements) {
+            int x = nodeWidth * (te.indent + 1);
+            int h = te.innerElement.layoutGetHForW(r.width - x);
+            te.innerElement.setForcedBounds(this, new Rect(x, y, r.width - x, h));
+            if (!te.visible)
+                h = 0;
+            y += h;
+            te.h = h;
+            layoutSetElementVis(te.innerElement, te.visible);
+        }
+    }
+
+    @Override
+    protected @Nullable Size layoutRecalculateMetricsImpl() {
         int y = 0;
         // If not handled carefully, this will almost certainly be a vicious cycle.
         // 'tis the cost of buttons that are allowed to specify new sizes.
@@ -60,17 +78,12 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
             if (lastElement != null)
                 if (te.indent > lastElement.indent)
                     lastElement.hasChildren = true;
-            int x = nodeWidth * (te.indent + 1);
             int h = te.innerElement.getWantedSize().height;
-            te.innerElement.setForcedBounds(this, new Rect(x, y, r.width - x, h));
             h = te.innerElement.getWantedSize().height;
-            te.innerElement.setForcedBounds(this, new Rect(x, y, r.width - x, h));
             width = Math.max(width, te.innerElement.getWantedSize().width);
             if (!te.visible)
                 h = 0;
             y += h;
-            te.h = h;
-            layoutSetElementVis(te.innerElement, te.visible);
             lastElement = te;
             // If we're visible, set invisibleAboveIndent.
             // If expanded, then set it to "infinite"
@@ -78,7 +91,7 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
             if (te.visible)
                 invisibleAboveIndent = te.expanded ? 0x7FFFFFFF : te.indent;
         }
-        setWantedSize(new Size(width, y));
+        return new Size(width, y);
     }
 
     @Override

@@ -8,6 +8,8 @@
 package r48.schema.specialized.genpos;
 
 import gabien.ui.*;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.ui.UIAppendButton;
 

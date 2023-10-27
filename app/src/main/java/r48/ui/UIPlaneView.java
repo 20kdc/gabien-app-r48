@@ -7,9 +7,9 @@
 
 package r48.ui;
 
-import gabien.GaBIEnUI;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.ui.elements.UILabel;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import gabien.wsi.IPointer;
@@ -33,8 +33,7 @@ public abstract class UIPlaneView extends App.Elm {
     private double dragNexusX, dragNexusY, firstDragDist, firstDragZoom, dragAvgDist;
 
     public UIPlaneView(App app) {
-        super(app);
-        planeStatusLine.setLAFParentOverride(GaBIEnUI.sysThemeRoot);
+        super(app, app.f.scaleGuess(320), app.f.scaleGuess(200));
     }
 
     protected abstract String planeGetStatus();
@@ -80,6 +79,12 @@ public abstract class UIPlaneView extends App.Elm {
     }
 
     @Override
+    public final void renderLayer(IGrDriver igd, UILayer layer) {
+        if (layer != UILayer.Content)
+            return;
+        render(igd);
+    }
+
     public void render(IGrDriver igd) {
         Rect plusRect = Art.getZIconRect(app, false, 0);
         Rect plusRectFull = Art.getZIconRect(app, true, 0); // used for X calc on the label

@@ -9,6 +9,11 @@ package r48.schema.arrays;
 
 import gabien.GaBIEnUI;
 import gabien.ui.*;
+import gabien.ui.elements.UIBorderedElement;
+import gabien.ui.elements.UIEmpty;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UISplitterLayout;
 import gabien.ui.theming.Theme;
 import gabien.uslx.append.*;
 import r48.App;

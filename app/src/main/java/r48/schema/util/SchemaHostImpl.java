@@ -8,6 +8,9 @@
 package r48.schema.util;
 
 import gabien.ui.*;
+import gabien.ui.dialogs.UIAutoclosingPopupMenu;
+import gabien.ui.dialogs.UIPopupMenu;
+import gabien.ui.elements.UILabel;
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import r48.App;
@@ -145,7 +148,7 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDupl
 
         pathLabel.text = innerElem.toStringMissingRoot();
 
-        runLayout();
+        layoutRecalculateMetrics();
 
         if (doLaunch) {
             windowOpen = true;
@@ -155,16 +158,21 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDupl
     }
 
     @Override
-    public void runLayout() {
+    protected void layoutRunImpl() {
         Size tb = toolbarRoot.getWantedSize();
         Size r = getSize();
         toolbarRoot.setForcedBounds(this, new Rect(0, 0, r.width, tb.height));
-        Size iee = tb;
-        if (innerElemEditor != null) {
-            iee = innerElemEditor.getWantedSize();
+        if (innerElemEditor != null)
             innerElemEditor.setForcedBounds(this, new Rect(0, tb.height, r.width, r.height - tb.height));
-        }
-        setWantedSize(new Size(Math.max(tb.width, iee.width), tb.height + iee.height));
+    }
+
+    @Override
+    protected @Nullable Size layoutRecalculateMetricsImpl() {
+        Size tb = toolbarRoot.getWantedSize();
+        Size iee = tb;
+        if (innerElemEditor != null)
+            iee = innerElemEditor.getWantedSize();
+        return new Size(Math.max(tb.width, iee.width), tb.height + iee.height);
     }
 
     @Override

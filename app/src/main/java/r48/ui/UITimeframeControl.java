@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import gabien.ui.*;
+import gabien.ui.elements.UILabel;
 import gabien.wsi.IPeripherals;
 import r48.App;
 

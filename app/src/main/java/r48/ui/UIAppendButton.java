@@ -9,7 +9,11 @@ package r48.ui;
 
 import java.util.function.Supplier;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.ui.*;
+import gabien.ui.elements.UIButton;
+import gabien.ui.elements.UITextButton;
 import gabien.uslx.append.*;
 import r48.App;
 
@@ -47,7 +51,7 @@ public class UIAppendButton extends UIElement.UIPanel {
         layoutRemoveElement(subElement);
         subElement = n;
         layoutAddElement(n);
-        runLayoutLoop();
+        layoutRecalculateMetrics();
     }
 
     public UIElement getSubElement() {
@@ -55,7 +59,18 @@ public class UIAppendButton extends UIElement.UIPanel {
     }
 
     @Override
-    public void runLayout() {
+    public int layoutGetHForW(int width) {
+        Size bgb1 = subElement.getWantedSize();
+        Size bgb2 = button.getWantedSize();
+        if (bgb1.width + bgb2.width <= width) {
+            return Math.max(bgb1.height, bgb2.height);
+        } else {
+            return bgb1.height + bgb2.height;
+        }
+    }
+
+    @Override
+    protected void layoutRunImpl() {
         Size r = getSize();
 
         Size bgb1 = subElement.getWantedSize();
@@ -63,15 +78,20 @@ public class UIAppendButton extends UIElement.UIPanel {
         if (bgb1.width + bgb2.width <= r.width) {
             subElement.setForcedBounds(this, new Rect(0, 0, r.width - bgb2.width, r.height));
             button.setForcedBounds(this, new Rect(r.width - bgb2.width, 0, bgb2.width, r.height));
-            setWantedSize(new Size(bgb1.width + bgb2.width, Math.max(bgb1.height, bgb2.height)));
         } else {
             subElement.setForcedBounds(this, new Rect(0, 0, r.width, r.height - bgb2.height));
             button.setForcedBounds(this, new Rect(0, r.height - bgb2.height, r.width, bgb2.height));
             // Not a typo! If the width constraint is loosened we could be forced into going back & forth between cases.
             // This WILL cause an infinite loop in the layout code.
             // See issue #38 for more details.
-            setWantedSize(new Size(bgb1.width + bgb2.width, bgb1.height + bgb2.height));
         }
+    }
+
+    @Override
+    protected @Nullable Size layoutRecalculateMetricsImpl() {
+        Size bgb1 = subElement.getWantedSize();
+        Size bgb2 = button.getWantedSize();
+        return new Size(bgb1.width + bgb2.width, Math.max(bgb1.height, bgb2.height));
     }
 
     public UIAppendButton togglable(boolean gridST) {

@@ -7,7 +7,7 @@
 
 package r48.schema.specialized.tbleditors;
 
-import gabien.ui.UIScrollLayout;
+import gabien.ui.layouts.UIScrollLayout;
 
 /**
  * Created on 2/18/17.

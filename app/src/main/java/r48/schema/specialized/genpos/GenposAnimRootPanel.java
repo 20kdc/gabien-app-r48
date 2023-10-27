@@ -8,7 +8,7 @@
 package r48.schema.specialized.genpos;
 
 import gabien.ui.UIElement;
-import gabien.ui.UISplitterLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;

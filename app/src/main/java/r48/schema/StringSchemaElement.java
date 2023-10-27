@@ -8,7 +8,7 @@
 package r48.schema;
 
 import gabien.ui.UIElement;
-import gabien.ui.UITextBox;
+import gabien.ui.elements.UITextBox;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;

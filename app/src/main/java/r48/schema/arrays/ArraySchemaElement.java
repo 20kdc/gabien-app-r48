@@ -8,7 +8,7 @@
 package r48.schema.arrays;
 
 import gabien.ui.UIElement;
-import gabien.ui.UIScrollLayout;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.io.IntUtils;
 import r48.io.data.DMKey;

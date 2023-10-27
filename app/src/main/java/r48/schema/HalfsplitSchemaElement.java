@@ -10,7 +10,7 @@ package r48.schema;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
-import gabien.ui.UISplitterLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;

@@ -11,6 +11,9 @@ import java.util.function.Consumer;
 
 import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.ui.elements.UINumberBox;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.ui.UIGrid;
 

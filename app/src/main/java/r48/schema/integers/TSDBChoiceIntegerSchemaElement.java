@@ -11,8 +11,8 @@ import java.util.function.Consumer;
 
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
+import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.*;
-import gabien.ui.UIScrollLayout;
 import r48.App;
 import r48.dbs.TSDB;
 import r48.ui.UIGrid;
@@ -47,11 +47,12 @@ public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
             }
 
             @Override
-            public void setWantedSize(Size size) {
+            public Size layoutRecalculateMetricsImpl() {
+                Size res = super.layoutRecalculateMetricsImpl();
                 if (uivScrollbar != null) {
-                    super.setWantedSize(new Size((16 * 16 * sprScale) + uivScrollbar.getWantedSize().width, size.height));
+                    return new Size((16 * 16 * sprScale) + uivScrollbar.getWantedSize().width, res.height);
                 } else {
-                    super.setWantedSize(size);
+                    return res;
                 }
             }
         };

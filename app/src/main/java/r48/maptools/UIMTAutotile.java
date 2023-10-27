@@ -8,6 +8,10 @@
 package r48.maptools;
 
 import gabien.ui.*;
+import gabien.ui.elements.UIButton;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UITabBar;
+import gabien.ui.layouts.UITabPane;
 import gabien.uslx.append.*;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;

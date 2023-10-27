@@ -9,8 +9,8 @@ package r48.schema.specialized;
 
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
-import gabien.ui.UISplitterLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.io.JsonObjectBackend;
 import r48.io.data.IRIO;

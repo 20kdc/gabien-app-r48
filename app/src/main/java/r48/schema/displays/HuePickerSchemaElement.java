@@ -10,8 +10,8 @@ package r48.schema.displays;
 import java.util.function.Consumer;
 
 import gabien.render.IImage;
-import gabien.ui.UIPublicPanel;
-import gabien.ui.UISplitterLayout;
+import gabien.ui.elements.UIPublicPanel;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.imagefx.HueShiftImageEffect;
 import r48.schema.integers.IntegerSchemaElement;

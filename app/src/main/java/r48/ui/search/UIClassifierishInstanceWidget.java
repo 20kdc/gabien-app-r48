@@ -9,8 +9,8 @@ package r48.ui.search;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import gabien.ui.UIScrollLayout;
 import gabien.ui.UIElement.UIProxy;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.search.IClassifierish;
 

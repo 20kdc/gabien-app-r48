@@ -9,6 +9,12 @@ package r48.ui.utilitybelt;
 
 import gabien.GaBIEn;
 import gabien.ui.*;
+import gabien.ui.dialogs.UIAutoclosingPopupMenu;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UINumberBox;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.imageio.ImageIOFormat;
@@ -503,7 +509,7 @@ public class ImageEditorController extends App.Svc {
             }), cPanel, false, 0.0d);
             paletteView.panelsAdd(cPanel);
         }
-        paletteView.runLayoutLoop();
+        paletteView.panelsFinished();
     }
 
     private Runnable addPresaveWarningWrapper(final Runnable runnable) {

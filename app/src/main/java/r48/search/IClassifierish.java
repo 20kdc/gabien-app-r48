@@ -9,7 +9,7 @@ package r48.search;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import gabien.ui.UIScrollLayout;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 
 /**

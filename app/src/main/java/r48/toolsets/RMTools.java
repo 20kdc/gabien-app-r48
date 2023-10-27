@@ -8,8 +8,8 @@
 package r48.toolsets;
 
 import gabien.ui.UIElement;
-import gabien.ui.UISplitterLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.ObjectInfo;

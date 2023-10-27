@@ -9,8 +9,12 @@ package r48;
 
 import java.util.WeakHashMap;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.ui.elements.UIBorderedElement;
+import gabien.ui.elements.UILabel;
 import gabien.ui.theming.Theme;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
@@ -28,9 +32,12 @@ public class UIObjectDBMonitor extends App.Elm {
     private final TextTools.PlainCached textCacheStatus = new TextTools.PlainCached();
     private final TextTools.PlainCached textCacheLost = new TextTools.PlainCached();
 
+    private final int pointlessWidth = app.f.scaleGuess(320);
+    private int maxHeight = 0;
+
     public UIObjectDBMonitor(App app) {
         super(app);
-        setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(320), app.f.scaleGuess(240)));
+        setForcedBounds(null, new Rect(0, 0, pointlessWidth, app.f.scaleGuess(240)));
     }
 
     @Override
@@ -77,7 +84,13 @@ public class UIObjectDBMonitor extends App.Elm {
             UILabel.drawLabel(theme, igd, width, 0, oy, s + status, Theme.B_LABEL, app.f.objectDBMonitorTH, tc, isBackground, !isBackground);
             oy += step;
         }
-        setWantedSize(new Size(width, oy));
+        maxHeight = oy;
+        layoutRecalculateMetrics();
+    }
+
+    @Override
+    protected @Nullable Size layoutRecalculateMetricsImpl() {
+        return new Size(pointlessWidth, maxHeight);
     }
 
     @Override

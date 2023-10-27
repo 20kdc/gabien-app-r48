@@ -15,8 +15,8 @@ import java.util.function.Supplier;
 
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
 
 /**
  * Created 29th July, 2023.
