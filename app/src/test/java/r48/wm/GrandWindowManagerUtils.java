@@ -9,6 +9,12 @@ package r48.wm;
 
 import gabien.TestKickstart;
 import gabien.ui.*;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextBox;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UITabBar;
+import gabien.ui.layouts.UIWindowView;
 import gabien.uslx.append.Rect;
 import r48.App;
 import r48.tests.grand.GrandExecutionError;

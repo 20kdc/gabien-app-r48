@@ -10,8 +10,8 @@ package r48.schema.specialized.genpos;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.render.IImage;
-import gabien.ui.UISplitterLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.schema.util.ISchemaHost;
 import r48.tr.pages.TrRoot;

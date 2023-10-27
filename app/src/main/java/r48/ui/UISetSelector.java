@@ -12,11 +12,11 @@ import java.util.Map;
 import java.util.Set;
 
 import gabien.GaBIEnUI;
-import gabien.ui.UIBorderedElement;
-import gabien.ui.UILabel;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UISplitterLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UIBorderedElement;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.ui.spacing.UIIndentThingy;
 

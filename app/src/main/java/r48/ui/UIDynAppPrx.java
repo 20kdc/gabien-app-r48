@@ -7,9 +7,11 @@
 package r48.ui;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
 import gabien.uslx.append.Rect;
+import gabien.uslx.append.Size;
 import r48.App;
 import r48.App.Pan;
 
@@ -40,7 +42,7 @@ public class UIDynAppPrx extends Pan {
             layoutAddElement(inner);
             // This is just to do the set forced bounds -> set wanted size thing.
             if (!inConstructor) {
-                runLayout();
+                layoutRecalculateMetrics();
             } else {
                 setForcedBounds(null, new Rect(inner.getSize()));
             }
@@ -53,17 +55,30 @@ public class UIDynAppPrx extends Pan {
     }
 
     @Override
-    public void runLayout() {
-        if (innerElem != null) {
-            // If it doesn't change anything, this won't work very well
-            boolean cannotSFB = innerElem.getSize().sizeEquals(getSize());
-            if (!cannotSFB) {
-                innerElem.setForcedBounds(this, new Rect(getSize()));
-            } else {
-                innerElem.runLayoutLoop();
-            }
-            setWantedSize(innerElem.getWantedSize());
-        }
+    public int layoutGetHForW(int width) {
+        if (innerElem != null)
+            return innerElem.layoutGetHForW(width);
+        return super.layoutGetHForW(width);
+    }
+
+    @Override
+    public int layoutGetWForH(int height) {
+        if (innerElem != null)
+            return innerElem.layoutGetWForH(height);
+        return super.layoutGetWForH(height);
+    }
+
+    @Override
+    protected void layoutRunImpl() {
+        if (innerElem != null)
+            innerElem.setForcedBounds(this, new Rect(getSize()));
+    }
+
+    @Override
+    protected @Nullable Size layoutRecalculateMetricsImpl() {
+        if (innerElem != null)
+            return innerElem.getWantedSize();
+        return null;
     }
 
     @Override

@@ -8,6 +8,9 @@
 package r48.ui.utilitybelt;
 
 import gabien.ui.*;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
 import r48.App;
 import r48.io.BMPConnection;

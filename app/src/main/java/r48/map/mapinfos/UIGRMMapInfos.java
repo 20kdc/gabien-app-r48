@@ -9,6 +9,13 @@ package r48.map.mapinfos;
 
 import gabien.GaBIEnUI;
 import gabien.ui.*;
+import gabien.ui.elements.UIBorderedElement;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UINumberBox;
+import gabien.ui.elements.UITextBox;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.IMapContext;
 import r48.io.data.IRIO;

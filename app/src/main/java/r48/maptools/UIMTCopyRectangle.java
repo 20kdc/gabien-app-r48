@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.GaBIEn;
-import gabien.ui.UILabel;
+import gabien.ui.elements.UILabel;
 import r48.RubyTable;
 import r48.io.data.IRIOGeneric;
 import r48.map.IMapToolContext;

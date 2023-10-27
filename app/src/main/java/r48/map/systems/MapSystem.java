@@ -14,6 +14,7 @@ import java.util.function.Function;
 
 import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.ui.dialogs.UIPopupMenu;
 import r48.App;
 import r48.IMapContext;
 import r48.RubyTable;

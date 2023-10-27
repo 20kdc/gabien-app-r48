@@ -10,7 +10,7 @@ package r48.schema;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UITextButton;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.util.ISchemaHost;

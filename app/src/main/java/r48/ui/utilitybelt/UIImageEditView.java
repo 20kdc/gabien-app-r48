@@ -170,13 +170,6 @@ public class UIImageEditView extends UIPlaneView {
         super.render(igd);
     }
 
-    @Override
-    public void runLayout() {
-        // Used to keep this sane on initialization
-        int h = getSize().height;
-        setWantedSize(new Size(h, h));
-    }
-
     private void blitTiledScaledImage(IGrDriver igd, int ofsX, int ofsY, int ofsW, int ofsH, int x, int y, int soW, int soH, IImage tempImg) {
         if (ofsW <= 0 || ofsH <= 0)
             return;

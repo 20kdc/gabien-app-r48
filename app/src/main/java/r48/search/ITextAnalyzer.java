@@ -7,7 +7,7 @@
 
 package r48.search;
 
-import gabien.ui.UIScrollLayout;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 
 /**

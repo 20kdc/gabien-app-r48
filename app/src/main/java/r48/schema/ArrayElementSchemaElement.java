@@ -10,10 +10,10 @@ package r48.schema;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEnUI;
-import gabien.ui.UIBorderedElement;
 import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UIBorderedElement;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
 import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;

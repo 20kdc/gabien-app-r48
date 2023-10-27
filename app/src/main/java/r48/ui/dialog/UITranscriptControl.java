@@ -14,9 +14,9 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import gabien.GaBIEn;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UISplitterLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.dbs.CMDB;
 import r48.io.IObjectBackend;

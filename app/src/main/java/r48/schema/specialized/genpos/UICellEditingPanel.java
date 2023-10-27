@@ -7,7 +7,11 @@
 
 package r48.schema.specialized.genpos;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.ui.*;
+import gabien.ui.elements.UILabel;
+import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
@@ -79,7 +83,7 @@ public class UICellEditingPanel extends App.Pan {
 
     public void somethingChanged() {
         recreateHalfSplits();
-        runLayout();
+        layoutRecalculateMetrics();
     }
 
     @Override
@@ -93,16 +97,33 @@ public class UICellEditingPanel extends App.Pan {
     }
 
     @Override
-    public void runLayout() {
+    public int layoutGetHForW(int width) {
+        int h = 0;
+        for (int i = 0; i < halfsplits.length; i++)
+            h += halfsplits[i].layoutGetHForW(width);
+        return h;
+    }
+
+    @Override
+    protected @Nullable Size layoutRecalculateMetricsImpl() {
         int w = 0;
+        int h = 0;
+        for (int i = 0; i < halfsplits.length; i++) {
+            Size ws = halfsplits[i].getWantedSize();
+            w = Math.max(w, ws.width);
+            h += ws.height;
+        }
+        return new Size(w, h);
+    }
+
+    @Override
+    protected void layoutRunImpl() {
         int h = 0;
         Size r = getSize();
         for (int i = 0; i < halfsplits.length; i++) {
             Size ws = halfsplits[i].getWantedSize();
             halfsplits[i].setForcedBounds(this, new Rect(0, h, r.width, ws.height));
-            w = Math.max(w, ws.width);
             h += ws.height;
         }
-        setWantedSize(new Size(w, h));
     }
 }

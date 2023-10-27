@@ -10,8 +10,8 @@ package r48.maptools;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
 import r48.RubyTable;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;

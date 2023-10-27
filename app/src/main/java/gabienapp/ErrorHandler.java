@@ -17,9 +17,9 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import gabien.ui.UIScrollLayout;
 import gabien.ui.WindowCreatingUIElementConsumer;
+import gabien.ui.elements.UILabel;
+import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.Rect;
 import r48.AdHocSaveLoad;
 import r48.App;

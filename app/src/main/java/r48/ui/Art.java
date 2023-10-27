@@ -11,7 +11,7 @@ import gabien.GaBIEn;
 import gabien.GaBIEnUI;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
-import gabien.ui.UIBorderedElement;
+import gabien.ui.elements.UIBorderedElement;
 import gabien.uslx.append.Rect;
 import r48.App;
 import r48.imagefx.HueShiftImageEffect;

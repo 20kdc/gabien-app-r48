@@ -12,8 +12,8 @@ import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;

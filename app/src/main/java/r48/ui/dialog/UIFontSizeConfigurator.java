@@ -9,6 +9,11 @@ package r48.ui.dialog;
 
 import gabien.GaBIEn;
 import gabien.ui.*;
+import gabien.ui.elements.UIAdjuster;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import r48.cfg.Config;

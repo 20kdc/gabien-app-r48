@@ -11,7 +11,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
-import gabien.ui.UILabel;
+import gabien.ui.elements.UILabel;
 import gabien.uslx.append.Rect;
 import r48.App;
 import r48.io.IObjectBackend;

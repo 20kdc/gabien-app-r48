@@ -7,9 +7,12 @@
 
 package r48.ui;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.ui.elements.UIScrollbar;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import gabien.wsi.IDesktopPeripherals;
@@ -138,7 +141,7 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
     }
 
     @Override
-    public void runLayout() {
+    protected void layoutRunImpl() {
         int scrollBarW = uivScrollbar.getWantedSize().width;
         Size r = getSize();
         int tiles = (r.width - scrollBarW) / tileSizeW;
@@ -151,7 +154,12 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
         if (tileCount > 0)
             uivScrollbar.wheelScale = (availableRows * tiles) / (tileCount * 2d);
         uivScrollbar.setForcedBounds(this, new Rect(r.width - scrollBarW, 0, scrollBarW, availableRows * tileSizeH));
-        setWantedSize(new Size(r.width, availableRows * tileSizeH));
+    }
+
+    @Override
+    protected @Nullable Size layoutRecalculateMetricsImpl() {
+        // uhhh
+        return new Size(tileSizeW * 3, tileSizeH * 3);
     }
 
     @Override

@@ -6,13 +6,12 @@
  */
 package gabienapp;
 
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UITextBox;
-import gabien.ui.UITextButton;
-
 import java.util.List;
 
 import gabien.ui.UIElement.UIProxy;
+import gabien.ui.elements.UITextBox;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.cfg.Config;
 import r48.ui.UIAppendButton;
 

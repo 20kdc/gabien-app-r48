@@ -10,9 +10,9 @@ package r48.maptools;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.GaBIEn;
-import gabien.ui.UILabel;
-import gabien.ui.UINumberBox;
-import gabien.ui.UISplitterLayout;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UINumberBox;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;

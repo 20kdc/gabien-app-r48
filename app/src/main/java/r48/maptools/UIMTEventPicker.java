@@ -8,6 +8,9 @@
 package r48.maptools;
 
 import gabien.ui.*;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.Size;
 import r48.App;
 import r48.io.IObjectBackend;
@@ -37,12 +40,8 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public UIMTEventPicker(IMapToolContext mv) {
         super(mv);
         mapView = mv.getMapView();
-        svl.panelsAdd(new UILabel(T.m.tsClickToShowEv, app.f.eventPickerEntryTH) {
-            @Override
-            public void setWantedSize(Size size) {
-                super.setWantedSize(new Size(size.width, size.height * 8));
-            }
-        });
+        svl.panelsAdd(new UILabel(T.m.tsClickToShowEv, app.f.eventPickerEntryTH));
+        svl.setWantedSize(new Size(app.f.eventPickerEntryTH * 12, app.f.eventPickerEntryTH * 8));
         changeInner(svl, true);
     }
 

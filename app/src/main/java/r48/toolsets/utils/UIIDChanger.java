@@ -10,11 +10,11 @@ import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.ui.UIAutoclosingPopupMenu;
-import gabien.ui.UILabel;
-import gabien.ui.UIPopupMenu;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.dialogs.UIAutoclosingPopupMenu;
+import gabien.ui.dialogs.UIPopupMenu;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.Rect;
 import r48.App;
 import r48.dbs.ObjectInfo;

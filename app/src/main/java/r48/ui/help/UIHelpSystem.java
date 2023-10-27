@@ -11,6 +11,9 @@ import gabien.GaBIEn;
 import gabien.render.IDrawable;
 import gabien.ui.*;
 import gabien.ui.UIElement.UIPanel;
+import gabien.ui.elements.UIEmpty;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
 import gabien.ui.elements.UIThumbnail;
 import gabien.uslx.append.*;
 import r48.app.InterlaunchGlobals;
@@ -18,6 +21,8 @@ import r48.cfg.Config;
 
 import java.util.LinkedList;
 import java.util.function.Consumer;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Helping things along where needed.
@@ -40,7 +45,7 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
     }
 
     @Override
-    public void runLayout() {
+    protected void layoutRunImpl() {
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
         Size s = getSize();
@@ -74,7 +79,60 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
                 rightY += ws.height;
             }
         }
-        setWantedSize(new Size(1, Math.max(y, rightY)));
+    }
+
+    @Override
+    public int layoutGetHForW(int width) {
+        int y = 0;
+        // Acts as a limiting factor at all times, so reset when setting rightY to -1.
+        int rightX = width;
+        // NOTE: This is set to -1 as a signal that the 'right-side-panel' is no longer being concatenated,
+        //  so a new right-side-panel should be setup at the current anchor.
+        int rightY = -1;
+        for (HelpElement he : page) {
+            if (y >= rightY) {
+                rightY = -1;
+                rightX = width;
+            }
+            Size ws = he.element.getWantedSize();
+            boolean effectivePosition = he.position;
+            if (ws.width > width)
+                effectivePosition = false;
+            if (!effectivePosition) {
+                // Centre/left.
+                y += ws.height;
+            } else {
+                if (rightY == -1)
+                    rightY = y;
+                // Right side.
+                rightX = Math.min(width - ws.width, rightX);
+                rightY += ws.height;
+            }
+        }
+        return Math.max(y, rightY);
+    }
+
+    @Override
+    protected @Nullable Size layoutRecalculateMetricsImpl() {
+        int y = 0;
+        // NOTE: This is set to -1 as a signal that the 'right-side-panel' is no longer being concatenated,
+        //  so a new right-side-panel should be setup at the current anchor.
+        int rightY = -1;
+        for (HelpElement he : page) {
+            if (y >= rightY)
+                rightY = -1;
+            Size ws = he.element.getWantedSize();
+            if (!he.position) {
+                // Centre/left.
+                y += ws.height;
+            } else {
+                if (rightY == -1)
+                    rightY = y;
+                // Right side.
+                rightY += ws.height;
+            }
+        }
+        return new Size(1, Math.max(y, rightY));
     }
 
     @Override
@@ -147,5 +205,9 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
                 throw new RuntimeException("Cannot handle!");
             }
         }
+    }
+
+    public void tightlyCoupledLayoutRecalculateMetrics() {
+        layoutRecalculateMetrics();
     }
 }

@@ -11,7 +11,7 @@ import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.UIElement;
-import gabien.ui.UIPublicPanel;
+import gabien.ui.elements.UIPublicPanel;
 import gabien.ui.elements.UIThumbnail;
 import r48.App;
 import r48.dbs.PathSyntax;

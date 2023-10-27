@@ -8,6 +8,11 @@
 package r48.schema.arrays;
 
 import gabien.ui.*;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
+import gabien.ui.layouts.UITabBar;
+import gabien.ui.layouts.UITabPane;
 import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.io.data.IRIO;

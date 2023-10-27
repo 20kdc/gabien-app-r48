@@ -13,6 +13,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import gabien.ui.*;
+import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;

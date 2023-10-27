@@ -9,7 +9,7 @@ package r48.schema.specialized;
 
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
-import gabien.ui.UITextBox;
+import gabien.ui.elements.UITextBox;
 import r48.App;
 import r48.app.AppMain;
 import r48.io.IMIUtils;

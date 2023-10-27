@@ -10,7 +10,7 @@ package r48.maptools;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.GaBIEn;
-import gabien.ui.UILabel;
+import gabien.ui.elements.UILabel;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
 import r48.ui.UIAppendButton;

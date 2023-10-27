@@ -10,7 +10,7 @@ package r48.schema.specialized;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
-import gabien.ui.UILabel;
+import gabien.ui.elements.UILabel;
 import r48.App;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;

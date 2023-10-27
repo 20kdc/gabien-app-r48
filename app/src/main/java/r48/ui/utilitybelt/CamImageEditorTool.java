@@ -10,7 +10,7 @@ package r48.ui.utilitybelt;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
-import gabien.ui.UIEmpty;
+import gabien.ui.elements.UIEmpty;
 import gabien.uslx.append.Rect;
 
 /**

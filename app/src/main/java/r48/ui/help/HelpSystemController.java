@@ -8,7 +8,7 @@
 package r48.ui.help;
 
 import gabien.GaBIEn;
-import gabien.ui.UILabel;
+import gabien.ui.elements.UILabel;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.tr.LanguageList;
@@ -95,7 +95,7 @@ public class HelpSystemController implements Consumer<String> {
                     }
                 }
             });
-            hs.runLayoutLoop();
+            hs.tightlyCoupledLayoutRecalculateMetrics();
         }
         if (onLoad != null)
             onLoad.run();

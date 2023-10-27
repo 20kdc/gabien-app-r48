@@ -9,6 +9,7 @@ package r48.ui;
 
 import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.ui.elements.UILabel;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import gabien.wsi.IPointer;

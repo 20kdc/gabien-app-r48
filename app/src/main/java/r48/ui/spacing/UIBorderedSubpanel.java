@@ -6,6 +6,8 @@
  */
 package r48.ui.spacing;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.ui.UIElement;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
@@ -17,7 +19,6 @@ import gabien.uslx.append.Size;
 public class UIBorderedSubpanel extends UIElement.UIPanel {
     private UIElement innerPanel;
     private int bw;
-    private boolean doing2Way = false;
     private boolean enableBorder = true;
 
     public UIBorderedSubpanel(UIElement ip, int border) {
@@ -27,42 +28,24 @@ public class UIBorderedSubpanel extends UIElement.UIPanel {
     }
 
     @Override
-    public void runLayoutLoop() {
-        if (doing2Way) {
-            super.runLayoutLoop();
-            return;
-        }
-        doing2Way = true;
+    protected @Nullable Size layoutRecalculateMetricsImpl() {
+        Size s2 = innerPanel.getWantedSize();
+        return new Size(s2.width + (bw * 2), s2.height + (bw * 2));
+    }
 
+    @Override
+    protected void layoutRunImpl() {
         enableBorder = true;
-        super.runLayoutLoop();
 
         Size s = getSize();
         Size s2 = innerPanel.getWantedSize();
         Rect plannedSize = new Rect(bw, bw, s.width - (bw * 2), s.height - (bw * 2));
-        if ((s2.width > plannedSize.width) || (s2.height > plannedSize.height)) {
+        if ((s2.width > plannedSize.width) || (s2.height > plannedSize.height))
             enableBorder = false;
-            super.runLayoutLoop();
-        }
-        s2 = innerPanel.getWantedSize();
-
-        doing2Way = false;
-        setWantedSize(new Size(s2.width + (bw * 2), s2.height + (bw * 2)));
-    }
-
-    @Override
-    public void runLayout() {
-        Size s = getSize();
-        Rect plannedSize = new Rect(bw, bw, s.width - (bw * 2), s.height - (bw * 2));
         if (!enableBorder) {
             innerPanel.setForcedBounds(this, new Rect(s));
         } else {
-            boolean cannotSFB = innerPanel.getSize().sizeEquals(plannedSize);
-            if (!cannotSFB) {
-                innerPanel.setForcedBounds(this, plannedSize);
-            } else {
-                innerPanel.runLayoutLoop();
-            }
+            innerPanel.setForcedBounds(this, plannedSize);
         }
     }
 }

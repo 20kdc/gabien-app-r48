@@ -12,6 +12,8 @@ import gabien.wsi.IPeripherals;
 
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.render.IGrDriver;
 import gabien.ui.UIElement;
 import gabien.ui.UILayer;
@@ -58,11 +60,30 @@ public class UIMapViewContainer extends App.Pan {
     }
 
     @Override
-    public void runLayout() {
-        if (viewToolbarSplit != null) {
+    protected void layoutRunImpl() {
+        if (viewToolbarSplit != null)
             viewToolbarSplit.setForcedBounds(this, new Rect(getSize()));
-            setWantedSize(viewToolbarSplit.getWantedSize());
-        }
+    }
+
+    @Override
+    protected @Nullable Size layoutRecalculateMetricsImpl() {
+        if (viewToolbarSplit != null)
+            return viewToolbarSplit.getWantedSize();
+        return super.layoutRecalculateMetricsImpl();
+    }
+
+    @Override
+    public int layoutGetHForW(int width) {
+        if (viewToolbarSplit != null)
+            return viewToolbarSplit.layoutGetHForW(width);
+        return super.layoutGetHForW(width);
+    }
+
+    @Override
+    public int layoutGetWForH(int height) {
+        if (viewToolbarSplit != null)
+            return viewToolbarSplit.layoutGetWForH(height);
+        return super.layoutGetWForH(height);
     }
 
     @Override

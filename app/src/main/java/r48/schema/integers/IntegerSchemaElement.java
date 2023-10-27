@@ -10,8 +10,8 @@ package r48.schema.integers;
 import java.util.function.Consumer;
 
 import gabien.ui.UIElement;
-import gabien.ui.UINumberBox;
-import gabien.ui.UIScrollLayout;
+import gabien.ui.elements.UINumberBox;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;

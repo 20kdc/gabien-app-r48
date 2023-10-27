@@ -9,8 +9,8 @@ package r48.ui.spacing;
 
 import gabien.render.IGrDriver;
 import gabien.ui.IPointerReceiver;
-import gabien.ui.UIBorderedElement;
 import gabien.ui.UIElement;
+import gabien.ui.elements.UIBorderedElement;
 import gabien.ui.theming.IBorder;
 import gabien.ui.theming.Theme;
 import gabien.wsi.IPeripherals;

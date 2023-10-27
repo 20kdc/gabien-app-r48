@@ -8,8 +8,8 @@ package r48.search;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UITextBox;
+import gabien.ui.elements.UITextBox;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 
 /**

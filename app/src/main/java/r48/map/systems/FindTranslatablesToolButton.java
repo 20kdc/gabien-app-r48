@@ -6,8 +6,8 @@
  */
 package r48.map.systems;
 
-import gabien.ui.UISplitterLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.map.IMapToolContext;

@@ -8,7 +8,7 @@
 package r48.ui;
 
 import gabien.ui.UIElement;
-import gabien.ui.UISplitterLayout;
+import gabien.ui.layouts.UISplitterLayout;
 
 /**
  * COMPATIBILITY CLASS
