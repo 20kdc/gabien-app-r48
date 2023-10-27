@@ -14,6 +14,7 @@ import gabien.natives.BadGPU;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.UIElement;
+import gabien.ui.UILayer;
 import gabien.wsi.IPeripherals;
 
 /**
@@ -35,7 +36,9 @@ public class UITestGraphicsStuff extends UIElement {
     }
 
     @Override
-    public void render(IGrDriver igd) {
+    public void renderLayer(IGrDriver igd, UILayer layer) {
+        if (layer != UILayer.Content)
+            return;
         IImage tst = TonePickerSchemaElement.getOneTrueTotem();
         for (int j = 0; j < 3; j++) {
             int angle = j * 22;

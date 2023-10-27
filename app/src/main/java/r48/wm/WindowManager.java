@@ -81,11 +81,6 @@ public class WindowManager extends AppCore.Csv {
             }
 
             @Override
-            public void render(IGrDriver igd) {
-                super.render(igd);
-            }
-
-            @Override
             public void onWindowClose() {
                 // This has nasty side effects if the window is merely being transferred around, so check for that.
                 if (!performingScreenTransfer)

@@ -40,7 +40,9 @@ public class UISingleFrameView extends UIElement implements OldMouseEmulator.IOl
     }
 
     @Override
-    public void render(IGrDriver igd) {
+    public void renderLayer(IGrDriver igd, UILayer layer) {
+        if (layer != UILayer.Content)
+            return;
         Size b = getSize();
 
         igd.clearAll(255, 0, 255);

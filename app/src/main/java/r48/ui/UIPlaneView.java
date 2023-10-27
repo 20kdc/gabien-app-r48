@@ -79,6 +79,12 @@ public abstract class UIPlaneView extends App.Elm {
     }
 
     @Override
+    public final void renderLayer(IGrDriver igd, UILayer layer) {
+        if (layer != UILayer.Content)
+            return;
+        render(igd);
+    }
+
     public void render(IGrDriver igd) {
         Rect plusRect = Art.getZIconRect(app, false, 0);
         Rect plusRectFull = Art.getZIconRect(app, true, 0); // used for X calc on the label

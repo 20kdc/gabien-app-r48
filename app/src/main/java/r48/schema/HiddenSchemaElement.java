@@ -12,7 +12,6 @@ import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.wsi.IPeripherals;
-import gabien.render.IGrDriver;
 import gabien.ui.UIElement;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;
@@ -44,11 +43,6 @@ public class HiddenSchemaElement extends SchemaElement implements IProxySchemaEl
         return new UIElement(0, 0) {
             @Override
             public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
-
-            }
-
-            @Override
-            public void render(IGrDriver igd) {
 
             }
         };

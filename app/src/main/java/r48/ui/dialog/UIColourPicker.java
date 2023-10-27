@@ -191,7 +191,9 @@ public class UIColourPicker extends App.Prx {
         }
 
         @Override
-        public void render(IGrDriver igd) {
+        public void renderLayer(IGrDriver igd, UILayer layer) {
+            if (layer != UILayer.Content)
+                return;
             Rect intPos = determineInteriorPosition();
             int bw = baseImage.getWidth();
             int bh = baseImage.getHeight();
