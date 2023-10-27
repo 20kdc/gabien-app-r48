@@ -52,7 +52,6 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         lastSBSize = c.f.generalS;
 
         outerLayout.panelsClear();
-        outerLayout.setSBSize(lastSBSize);
         outerLayout.scrollbar.scrollPoint = iniScroll;
         final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
         final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();
