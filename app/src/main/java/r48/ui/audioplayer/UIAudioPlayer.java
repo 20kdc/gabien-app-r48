@@ -79,8 +79,14 @@ public class UIAudioPlayer extends UIDynAppPrx {
     private boolean ensureSourceHasBeenInitialized() {
         if (source != null)
             return true;
+        if (dataSupplier == null)
+            return false;
+        // Note (and beware!) the changeover here
+        // dataSupplier becomes null so that it isn't attempted twice
+        Supplier<AudioIOSource> dsrc = dataSupplier;
+        dataSupplier = null;
         try {
-            AudioIOSource data = dataSupplier.get();
+            AudioIOSource data = dsrc.get();
             source = new StreamingAudioDiscreteSample(data, (data.formatHint == null) ? AudioIOFormat.F_F32 : data.formatHint);
             audioThreadBuffer = new float[data.crSet.channels];
         } catch (Exception ex) {
@@ -153,28 +159,29 @@ public class UIAudioPlayer extends UIDynAppPrx {
     };
 
     public static UIElement create(App app, String filename, double speed) {
+        InputStream theInputStream = null;
         for (String mnt : extensionsWeWillTry) {
-            try {
-                InputStream tryWav = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + filename + mnt));
-                if (tryWav != null)
-                    return new UIAudioPlayer(app, () -> {
-                        try {
-                            return ReadAnySupportedAudioSource.open(tryWav, true);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }, speed);
-            } catch (Exception e) {
-                e.printStackTrace();
+            theInputStream = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + filename + mnt));
+            if (theInputStream != null)
+                break;
+        }
+        if (theInputStream == null && (app.secondaryImagePath.length() > 0)) {
+            for (String mnt : extensionsWeWillTry) {
+                theInputStream = GaBIEn.getInFile(AppMain.autoDetectWindows(app.secondaryImagePath + filename + mnt));
+                if (theInputStream != null)
+                    break;
             }
         }
-        return new UILabel(app.t.u.soundFailFileNotFound, app.f.schemaFieldTH);
+        return create(app, theInputStream, speed);
     }
 
     public static UIElement createAbsoluteName(App app, String filename, double speed) {
-        try {
-            InputStream tryWav = GaBIEn.getInFile(filename);
-            if (tryWav != null)
+        return create(app, GaBIEn.getInFile(filename), speed);
+    }
+
+    public static UIElement create(App app, final InputStream tryWav, double speed) {
+        if (tryWav != null) {
+            try {
                 return new UIAudioPlayer(app, () -> {
                     try {
                         return ReadAnySupportedAudioSource.open(tryWav, true);
@@ -182,8 +189,9 @@ public class UIAudioPlayer extends UIDynAppPrx {
                         throw new RuntimeException(e);
                     }
                 }, speed);
-        } catch (Exception e) {
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return new UILabel(app.t.u.soundFailFileNotFound, app.f.schemaFieldTH);
     }
