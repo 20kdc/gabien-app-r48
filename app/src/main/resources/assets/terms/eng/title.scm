@@ -21,4 +21,5 @@
 	mMapInfos "MapInfos"
 	mSaves "Saves"
 	map "Map"
+	audioPlayer "Audio Player"
 )

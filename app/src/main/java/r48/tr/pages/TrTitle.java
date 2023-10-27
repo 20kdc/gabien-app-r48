@@ -23,4 +23,5 @@ public class TrTitle extends TrPage {
     public String mMapInfos;
     public String mSaves;
     public String map;
+    public String audioPlayer;
 }

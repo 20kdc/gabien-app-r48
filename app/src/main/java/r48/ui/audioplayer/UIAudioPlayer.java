@@ -8,6 +8,7 @@
 package r48.ui.audioplayer;
 
 import java.io.InputStream;
+import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -24,24 +25,26 @@ import gabien.media.audio.fileio.ReadAnySupportedAudioSource;
 import r48.App;
 import r48.app.AppMain;
 import r48.ui.Art;
+import r48.ui.UIDynAppPrx;
 import r48.ui.UISymbolButton;
 
 /**
  * Audio player!
  * Created on 2nd August 2022.
  */
-public class UIAudioPlayer extends App.Prx {
+public class UIAudioPlayer extends UIDynAppPrx {
     // These two are only interacted with from the audio thread.
-    public final StreamingAudioDiscreteSample source;
-    public volatile double position;
+    private StreamingAudioDiscreteSample source;
+    private volatile double position;
     private boolean playing;
-    private final float[] audioThreadBuffer;
+    private float[] audioThreadBuffer;
+
+    // delay load stuff
+    private Supplier<AudioIOSource> dataSupplier;
 
     private final UISymbolButton playButton = new UISymbolButton(Art.Symbol.Play, app.f.schemaFieldTH, new Runnable() {
         @Override
         public void run() {
-            if (position > source.length)
-                position = 0;
             setPlaying(playButton.state);
         }
     }).togglable(false);
@@ -49,14 +52,13 @@ public class UIAudioPlayer extends App.Prx {
     private final UISymbolButton loopButton = new UISymbolButton(Art.Symbol.Loop, app.f.schemaFieldTH, null).togglable(false);
 
     private final UIScrollbar seeker = new UIScrollbar(false, app.f.generalS);
-    private double lastSeekerScrollPoint;
+    private double lastSeekerScrollPoint = -1;
     private double speed;
 
-    public UIAudioPlayer(App app, AudioIOSource data, double spd) {
+    public UIAudioPlayer(App app, Supplier<AudioIOSource> dataSupplier, double spd) {
         super(app);
+        this.dataSupplier = dataSupplier;
         speed = spd;
-        source = new StreamingAudioDiscreteSample(data, (data.formatHint == null) ? AudioIOFormat.F_F32 : data.formatHint);
-        audioThreadBuffer = new float[data.crSet.channels];
         UIScrollLayout svl = new UIScrollLayout(false, app.f.mapToolbarS);
         svl.panelsAdd(new UISymbolButton(Art.Symbol.Back, app.f.schemaFieldTH, new Runnable() {
             @Override
@@ -66,12 +68,37 @@ public class UIAudioPlayer extends App.Prx {
         }));
         svl.panelsAdd(playButton);
         svl.panelsAdd(loopButton);
-        proxySetElement(new UISplitterLayout(svl, seeker, false, 0), true);
+        changeInner(new UISplitterLayout(svl, seeker, false, 0), true);
+    }
+
+    @Override
+    public String toString() {
+        return T.t.audioPlayer;
+    }
+
+    private boolean ensureSourceHasBeenInitialized() {
+        if (source != null)
+            return true;
+        try {
+            AudioIOSource data = dataSupplier.get();
+            source = new StreamingAudioDiscreteSample(data, (data.formatHint == null) ? AudioIOFormat.F_F32 : data.formatHint);
+            audioThreadBuffer = new float[data.crSet.channels];
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            changeInner(new UILabel(T.u.soundFail, app.f.schemaFieldTH), false);
+            return false;
+        }
+        updateSeeker();
+        return true;
     }
 
     public void setPlaying(boolean playing) {
+        if (!ensureSourceHasBeenInitialized())
+            return;
         if (this.playing != playing)
             GaBIEn.hintShutdownRawAudio();
+        if (position > source.length)
+            position = 0;
         this.playing = playing;
         this.playButton.state = playing;
         if (playing) {
@@ -94,22 +121,28 @@ public class UIAudioPlayer extends App.Prx {
         }
     }
 
+    private void updateSeeker() {
+        if (source != null) {
+            int len = source.length;
+            if (len < 1)
+                len = 1;
+            if (seeker.scrollPoint != lastSeekerScrollPoint) {
+                position = seeker.scrollPoint * len;
+            } else {
+                seeker.scrollPoint = position / len;
+                if (seeker.scrollPoint < 0)
+                    seeker.scrollPoint = 0;
+                if (seeker.scrollPoint > 1)
+                    seeker.scrollPoint = 1;
+            }
+            lastSeekerScrollPoint = seeker.scrollPoint;
+        }
+    }
+
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
         super.update(deltaTime, selected, peripherals);
-        int len = source.length;
-        if (len < 1)
-            len = 1;
-        if (seeker.scrollPoint != lastSeekerScrollPoint) {
-            position = seeker.scrollPoint * len;
-        } else {
-            seeker.scrollPoint = position / len;
-            if (seeker.scrollPoint < 0)
-                seeker.scrollPoint = 0;
-            if (seeker.scrollPoint > 1)
-                seeker.scrollPoint = 1;
-        }
-        lastSeekerScrollPoint = seeker.scrollPoint;
+        updateSeeker();
     }
 
     private static final String[] extensionsWeWillTry = {
@@ -124,23 +157,35 @@ public class UIAudioPlayer extends App.Prx {
             try {
                 InputStream tryWav = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + filename + mnt));
                 if (tryWav != null)
-                    return new UIAudioPlayer(app, ReadAnySupportedAudioSource.open(tryWav, true), speed);
+                    return new UIAudioPlayer(app, () -> {
+                        try {
+                            return ReadAnySupportedAudioSource.open(tryWav, true);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }, speed);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return new UILabel(app.t.u.soundFail, app.f.schemaFieldTH);
+        return new UILabel(app.t.u.soundFailFileNotFound, app.f.schemaFieldTH);
     }
 
     public static UIElement createAbsoluteName(App app, String filename, double speed) {
         try {
             InputStream tryWav = GaBIEn.getInFile(filename);
             if (tryWav != null)
-                return new UIAudioPlayer(app, ReadAnySupportedAudioSource.open(tryWav, true), speed);
+                return new UIAudioPlayer(app, () -> {
+                    try {
+                        return ReadAnySupportedAudioSource.open(tryWav, true);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }, speed);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new UILabel(app.t.u.soundFail, app.f.schemaFieldTH);
+        return new UILabel(app.t.u.soundFailFileNotFound, app.f.schemaFieldTH);
     }
 
     @Override
