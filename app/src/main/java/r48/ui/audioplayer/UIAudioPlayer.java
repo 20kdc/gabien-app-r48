@@ -199,7 +199,7 @@ public class UIAudioPlayer extends UIDynAppPrx {
     @Override
     public void setAttachedToRoot(boolean attached) {
         super.setAttachedToRoot(attached);
-        if (!attached)
+        if ((source != null) && !attached)
             setPlaying(false);
     }
 }
