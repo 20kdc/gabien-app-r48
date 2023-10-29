@@ -8,7 +8,6 @@
 package r48.toolsets;
 
 import gabien.GaBIEn;
-import gabien.datum.DatumWriter;
 import gabien.natives.BadGPU;
 import gabien.ui.*;
 import gabien.ui.dialogs.UIPopupMenu;
@@ -350,10 +349,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     app.ui.launchDialog(sb.toString());
                 },
                 () -> {
-                    StringWriter sw = new StringWriter();
-                    DatumWriter dw = new DatumWriter(sw);
-                    app.ui.wm.debugDumpUITree(dw);
-                    GaBIEn.clipboard.copyText(sw.toString());
+                    app.ui.copyUITree();
                 },
                 () -> {
                     app.ui.wm.toggleFullscreen();
