@@ -85,6 +85,6 @@ public class UISetSelector<T> extends App.Prx {
     public void refreshButtonText() {
         // System.out.println("Refreshing button text!!!");
         for (Map.Entry<T, UILabel> buttons : setLabels.entrySet())
-            buttons.getValue().text = buttons.getKey().toString();
+            buttons.getValue().setText(buttons.getKey().toString());
     }
 }

@@ -340,11 +340,8 @@ public class ImageEditorController extends App.Svc {
                 gridY = new UINumberBox(imageEditView.grid.y, app.f.imageEditorTH);
                 gridW = new UINumberBox(imageEditView.grid.width, app.f.imageEditorTH);
                 gridH = new UINumberBox(imageEditView.grid.height, app.f.imageEditorTH);
-                Runnable sendUpdates = new Runnable() {
-                    @Override
-                    public void run() {
-                        imageEditView.grid = new Rect((int) gridX.number, (int) gridY.number, (int) gridW.number, (int) gridH.number);
-                    }
+                Runnable sendUpdates = () -> {
+                    imageEditView.grid = new Rect((int) gridX.getNumber(), (int) gridY.getNumber(), (int) gridW.getNumber(), (int) gridH.getNumber());
                 };
                 gridX.onEdit = sendUpdates;
                 gridY.onEdit = sendUpdates;
@@ -553,13 +550,13 @@ public class ImageEditorController extends App.Svc {
         hVal.onEdit = wVal.onEdit = new Runnable() {
             @Override
             public void run() {
-                wVal.number = Math.max(1, wVal.number);
-                hVal.number = Math.max(1, hVal.number);
+                wVal.setNumber(Math.max(1, wVal.getNumber()));
+                hVal.setNumber(Math.max(1, hVal.getNumber()));
             }
         };
 
         acceptButton = new UITextButton(T.g.bAccept, app.f.imageEditorTH, () -> {
-            Rect r = new Rect((int) xVal.number, (int) yVal.number, Math.max((int) wVal.number, 1), Math.max((int) hVal.number, 1));
+            Rect r = new Rect((int) xVal.getNumber(), (int) yVal.getNumber(), Math.max((int) wVal.getNumber(), 1), Math.max((int) hVal.getNumber(), 1));
             iConsumer.accept(r);
             res.selfClose = true;
         });

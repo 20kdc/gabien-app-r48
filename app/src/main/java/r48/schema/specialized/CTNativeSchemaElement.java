@@ -45,21 +45,18 @@ public class CTNativeSchemaElement extends SchemaElement.Leaf {
 
     private void addField(UIScrollLayout uiSVL, String r, final int i, final RubyCT targ, final SchemaPath sp) {
         final UINumberBox uinb = new UINumberBox((long) targ.innerTable.getDouble(i), app.f.schemaFieldTH);
-        uinb.onEdit = new Runnable() {
-            @Override
-            public void run() {
-                if (cls.equals("Tone")) {
-                    if (uinb.number < -255)
-                        uinb.number = -255;
-                } else {
-                    if (uinb.number < 0)
-                        uinb.number = 0;
-                }
-                if (uinb.number > 255)
-                    uinb.number = 255;
-                targ.innerTable.putDouble(i, uinb.number);
-                sp.changeOccurred(false);
+        uinb.onEdit = () -> {
+            if (cls.equals("Tone")) {
+                if (uinb.getNumber() < -255)
+                    uinb.setNumber(-255);
+            } else {
+                if (uinb.getNumber() < 0)
+                    uinb.setNumber(0);
             }
+            if (uinb.getNumber() > 255)
+                uinb.setNumber(255);;
+            targ.innerTable.putDouble(i, uinb.getNumber());
+            sp.changeOccurred(false);
         };
         uiSVL.panelsAdd(new UISplitterLayout(new UILabel(r, app.f.schemaFieldTH), uinb, false, 1, 3));
     }

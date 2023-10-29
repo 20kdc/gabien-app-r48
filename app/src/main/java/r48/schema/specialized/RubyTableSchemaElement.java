@@ -149,30 +149,24 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
 
         if (allowResize) {
             final UINumberBox wNB = new UINumberBox(targ.width, app.f.tableSizeTH);
-            wNB.onEdit = new Runnable() {
-                @Override
-                public void run() {
-                    if (wNB.number < 0)
-                        wNB.number = 0;
-                }
+            wNB.onEdit = () -> {
+                if (wNB.getNumber() < 0)
+                    wNB.setNumber(0);
             };
             final UINumberBox hNB = new UINumberBox(targ.height, app.f.tableSizeTH);
-            hNB.onEdit = new Runnable() {
-                @Override
-                public void run() {
-                    if (hNB.number < 0)
-                        hNB.number = 0;
-                }
+            hNB.onEdit = () -> {
+                if (hNB.getNumber() < 0)
+                    hNB.setNumber(0);
             };
             UIElement uie = new UISplitterLayout(wNB, hNB, false, 1, 2);
             uiSVL.panelsAdd(uie);
             uiSVL.panelsAdd(new UITextButton(T.g.bResize, app.f.tableResizeTH, new Runnable() {
                 @Override
                 public void run() {
-                    int w = (int) wNB.number;
+                    int w = (int) wNB.getNumber();
                     if (w < 0)
                         w = 0;
-                    int h = (int) hNB.number;
+                    int h = (int) hNB.getNumber();
                     if (h < 0)
                         h = 0;
                     RubyTable r2 = targ.resize(w, h, defVals);

@@ -51,7 +51,7 @@ public enum TextOperator implements ITextAnalyzer {
             public void setupEditor(@NonNull UIScrollLayout usl, @NonNull Runnable onEdit) {
                 UITextBox uil = new UITextBox(needle, app.f.dialogWindowTH);
                 uil.onEdit = () -> {
-                    needle = uil.text;
+                    needle = uil.getText();
                     needleTLC = needle.toLowerCase();
                 };
                 usl.panelsAdd(uil);

@@ -102,7 +102,7 @@ public class UITimeframeControl extends App.Prx {
         } else {
             playTimer = 0;
         }
-        currentFrame.text = T.u.frameDisplay.r(getFrameIdx.get(), getFrameCount.get());
+        currentFrame.setText(T.u.frameDisplay.r(getFrameIdx.get(), getFrameCount.get()));
 
         super.update(deltaTime, selected, peripherals);
     }

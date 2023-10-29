@@ -39,8 +39,8 @@ public class StartupCause implements Runnable {
             } catch (UnsupportedCharsetException uce) {
                 throw new RuntimeException(uce);
             }
-            final String rootPath = PathUtils.fixRootPath(ls.uiLauncher.rootBox.text.text);
-            final String silPath = PathUtils.fixRootPath(ls.uiLauncher.sillBox.text.text);
+            final String rootPath = PathUtils.fixRootPath(ls.uiLauncher.rootBox.text.getText());
+            final String silPath = PathUtils.fixRootPath(ls.uiLauncher.sillBox.text.getText());
 
             final LSInApp lia = new LSInApp(ls.lun);
             ls.lun.currentState = lia;

@@ -28,6 +28,22 @@ public class UIBorderedSubpanel extends UIElement.UIPanel {
     }
 
     @Override
+    public int layoutGetHForW(int width) {
+        int wm = width - (bw * 2);
+        if (wm < innerPanel.getWantedSize().width)
+            return innerPanel.layoutGetHForW(width);
+        return innerPanel.layoutGetHForW(wm) + (bw * 2);
+    }
+
+    @Override
+    public int layoutGetWForH(int height) {
+        int hm = height - (bw * 2);
+        if (hm < innerPanel.getWantedSize().height)
+            return innerPanel.layoutGetWForH(height);
+        return innerPanel.layoutGetWForH(hm) + (bw * 2);
+    }
+
+    @Override
     protected @Nullable Size layoutRecalculateMetricsImpl() {
         Size s2 = innerPanel.getWantedSize();
         return new Size(s2.width + (bw * 2), s2.height + (bw * 2));

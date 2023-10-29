@@ -87,14 +87,14 @@ public class HashSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 uiSV.panelsClear();
-                final UITextBox searchBox = new UITextBox("", app.f.schemaFieldTH);
                 String oldSearchTerm = (String) launcher.getEmbedObject(HashSchemaElement.this, target, "searchTerm");
-                if (oldSearchTerm != null)
-                    searchBox.text = oldSearchTerm;
+                if (oldSearchTerm == null)
+                    oldSearchTerm = "";
+                final UITextBox searchBox = new UITextBox(oldSearchTerm, app.f.schemaFieldTH);
                 searchBox.onEdit = new Runnable() {
                     @Override
                     public void run() {
-                        launcher.setEmbedObject(HashSchemaElement.this, target, "searchTerm", searchBox.text);
+                        launcher.setEmbedObject(HashSchemaElement.this, target, "searchTerm", searchBox.getText());
                         trigger();
                     }
                 };
@@ -113,8 +113,9 @@ public class HashSchemaElement extends SchemaElement {
                     IRIO value = target.getHashVal(key);
 
                     boolean relevantToSearch = false;
-                    relevantToSearch |= keyText.contains(searchBox.text);
-                    relevantToSearch |= app.format(value, valElem, EnumSchemaElement.Prefix.Prefix).contains(searchBox.text);
+                    String searchBoxText = searchBox.getText();
+                    relevantToSearch |= keyText.contains(searchBoxText);
+                    relevantToSearch |= app.format(value, valElem, EnumSchemaElement.Prefix.Prefix).contains(searchBoxText);
                     if (!relevantToSearch)
                         continue;
 

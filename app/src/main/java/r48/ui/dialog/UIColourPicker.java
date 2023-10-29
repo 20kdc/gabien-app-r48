@@ -133,7 +133,7 @@ public class UIColourPicker extends App.Prx {
 
     private void setColour(Consumer<Integer> onBehalfOf, int argb) {
         argb &= 0xFFFFFF;
-        currentColour.col = argb | (((int) alphaBox.number & 0xFF) << 24);
+        currentColour.col = argb | (((int) alphaBox.getNumber() & 0xFF) << 24);
         for (Consumer<Integer> cl : colourListeners)
             if (cl != onBehalfOf)
                 cl.accept(argb & 0xFFFFFF);
@@ -341,15 +341,15 @@ public class UIColourPicker extends App.Prx {
         }
 
         private void updateA(int x) {
-            rA.number = (x & 0xFF0000) >> 16;
-            gA.number = (x & 0xFF00) >> 8;
-            bA.number = (x & 0xFF);
+            rA.setNumber((x & 0xFF0000) >> 16);
+            gA.setNumber((x & 0xFF00) >> 8);
+            bA.setNumber((x & 0xFF));
         }
 
         private void updateBFromA() {
-            rB.scrollPoint = Math.min(255, Math.max(0, rA.number / 255.0d));
-            gB.scrollPoint = Math.min(255, Math.max(0, gA.number / 255.0d));
-            bB.scrollPoint = Math.min(255, Math.max(0, bA.number / 255.0d));
+            rB.scrollPoint = Math.min(255, Math.max(0, rA.getNumber() / 255.0d));
+            gB.scrollPoint = Math.min(255, Math.max(0, gA.getNumber() / 255.0d));
+            bB.scrollPoint = Math.min(255, Math.max(0, bA.getNumber() / 255.0d));
         }
 
         @Override

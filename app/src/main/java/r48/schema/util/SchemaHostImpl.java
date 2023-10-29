@@ -146,7 +146,7 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDupl
         // Not actually correct, but serves to help assist the layout code
         innerElemEditor.setForcedBounds(this, new Rect(getSize()));
 
-        pathLabel.text = innerElem.toStringMissingRoot();
+        pathLabel.setText(innerElem.toStringMissingRoot());
 
         layoutRecalculateMetrics();
 

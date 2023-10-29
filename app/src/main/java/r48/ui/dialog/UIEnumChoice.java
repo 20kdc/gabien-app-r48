@@ -83,8 +83,9 @@ public class UIEnumChoice extends App.Prx {
                     textbox.onEdit = new Runnable() {
                         @Override
                         public void run() {
-                            button.text = o.textPrefix + textbox.text;
-                            o.editSuffix.accept(textbox.text);
+                            String txt = textbox.getText();
+                            button.setText(o.textPrefix + txt);
+                            o.editSuffix.accept(txt);
                             ab.set(false);
                             switcheroo.setSubElement(button);
                         }
@@ -105,7 +106,7 @@ public class UIEnumChoice extends App.Prx {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
-                        result.accept(DMKey.ofStr(nb.text));
+                        result.accept(DMKey.ofStr(nb.getText()));
                     wantsSelfClose = true;
                 }
             }), false, 1, 3);
@@ -115,7 +116,7 @@ public class UIEnumChoice extends App.Prx {
                 @Override
                 public void run() {
                     if (!wantsSelfClose) {
-                        result.accept(DMKey.ofSym(nb.text));
+                        result.accept(DMKey.ofSym(nb.getText()));
                     }
                     wantsSelfClose = true;
                 }
@@ -126,7 +127,7 @@ public class UIEnumChoice extends App.Prx {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
-                        result.accept(DMKey.of(nb.number));
+                        result.accept(DMKey.of(nb.getNumber()));
                     wantsSelfClose = true;
                 }
             }), false, 1, 3);

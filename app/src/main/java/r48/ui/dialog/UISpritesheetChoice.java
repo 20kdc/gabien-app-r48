@@ -40,11 +40,8 @@ public class UISpritesheetChoice extends UIElement.UIProxy {
             }
         };
         final UINumberBox nb = new UINumberBox(oldVal, app.f.dialogWindowTH);
-        UISplitterLayout msp = new UISplitterLayout(nb, new UITextButton(app.t.u.spr_num, app.f.dialogWindowTH, new Runnable() {
-            @Override
-            public void run() {
-                consumer.accept(nb.number);
-            }
+        UISplitterLayout msp = new UISplitterLayout(nb, new UITextButton(app.t.u.spr_num, app.f.dialogWindowTH, () -> {
+            consumer.accept(nb.getNumber());
         }), false, 1);
         rootLayout = new UISplitterLayout(spriteGrid, msp, true, 1);
         proxySetElement(rootLayout, true);

@@ -51,17 +51,11 @@ public class IntegerSchemaElement extends SchemaElement.Leaf {
     public ActiveInteger buildIntegerEditor(long oldVal, final IntegerSchemaElement.IIntegerContext context) {
         final UINumberBox unb = new UINumberBox(oldVal, app.f.schemaFieldTH);
         unb.readOnly = isReadOnly();
-        unb.onEdit = new Runnable() {
-            @Override
-            public void run() {
-                context.update(unb.number);
-            }
+        unb.onEdit = () -> {
+            context.update(unb.getNumber());
         };
-        return new ActiveInteger(unb, new Consumer<Long>() {
-            @Override
-            public void accept(Long aLong) {
-                unb.number = aLong;
-            }
+        return new ActiveInteger(unb, (aLong) -> {
+            unb.setNumber(aLong);
         });
     }
 

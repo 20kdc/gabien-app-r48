@@ -43,10 +43,10 @@ public class FloatSchemaElement extends SchemaElement.Leaf {
         utb.onEdit = new Runnable() {
             @Override
             public void run() {
-                if (IntUtils.encodeRbFloat(target, utb.text, jsonCoerce)) {
+                if (IntUtils.encodeRbFloat(target, utb.getText(), jsonCoerce)) {
                     path.changeOccurred(false);
                 } else {
-                    utb.text = oldValue;
+                    utb.setText(oldValue);
                 }
             }
         };

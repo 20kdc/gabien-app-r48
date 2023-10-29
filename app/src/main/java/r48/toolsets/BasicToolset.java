@@ -402,7 +402,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
                 RORIO clipGet = (app.theClipboard == null) ? new IRIOGeneric(app.encoding) : app.theClipboard;
                 String clipText = app.format(clipGet);
-                uiStatusLabel.text = T.u.statusLine.r(app.odb.modifiedObjects.size(), clipText);
+                uiStatusLabel.setText(T.u.statusLine.r(app.odb.modifiedObjects.size(), clipText));
                 app.uiPendingRunnables.add(this);
             }
         });

@@ -25,7 +25,7 @@ public abstract class UIChoiceButton<T> extends UITextButton {
     public UIChoiceButton(App app, int h2, T defChoice, T[] choices) {
         super("", h2, null);
         this.app = app;
-        text = choiceToText(defChoice);
+        setText(choiceToText(defChoice));
         forceToRecommended();
         currentChoice = defChoice;
         this.choices = choices;
@@ -63,7 +63,7 @@ public abstract class UIChoiceButton<T> extends UITextButton {
 
     public void setSelected(T defChoice) {
         currentChoice = defChoice;
-        text = choiceToText(defChoice);
+        setText(choiceToText(defChoice));
     }
 
     public T getSelected() {

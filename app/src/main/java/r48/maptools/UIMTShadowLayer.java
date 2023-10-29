@@ -75,7 +75,7 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
         if (pixy > sz)
             flagId += 2;
         shadowBasis ^= 1 << flagId;
-        map.mapTable.setTiletype(x, y, 3, (short) (shadowBasis | (regionId.number << 8)));
+        map.mapTable.setTiletype(x, y, 3, (short) (shadowBasis | (regionId.getNumber() << 8)));
         map.passModificationNotification();
     }
 

@@ -32,15 +32,13 @@ public class StringSchemaElement extends SchemaElement.Leaf {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UITextBox tb = new UITextBox(decodeVal(target), app.f.schemaFieldTH);
-        tb.onEdit = new Runnable() {
-            @Override
-            public void run() {
-                if (verifier(tb.text)) {
-                    encodeVal(tb.text, target);
-                    path.changeOccurred(false);
-                } else {
-                    tb.text = decodeVal(target);
-                }
+        tb.onEdit = () -> {
+            String text = tb.getText();
+            if (verifier(text)) {
+                encodeVal(text, target);
+                path.changeOccurred(false);
+            } else {
+                tb.setText(decodeVal(target));
             }
         };
         return tb;

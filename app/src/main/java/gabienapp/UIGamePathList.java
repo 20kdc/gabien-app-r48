@@ -27,18 +27,20 @@ public class UIGamePathList extends UIProxy {
 
     public UIGamePathList(Config c, List<String> val) {
         this.c = c;
-        text = new UITextBox("", c.f.launcherTH);
+        String initText = "";
+        if (val.size() > 0)
+            initText = val.get(val.size() - 1);
+        text = new UITextBox(initText, c.f.launcherTH);
         appendButton = new UIAppendButton("+", text, new Runnable() {
             @Override
             public void run() {
-                if (!values.contains(text.text)) {
-                    values.add(text.text);
+                String v = text.getText();
+                if (!values.contains(v)) {
+                    values.add(v);
                     modified();
                 }
             }
         }, c.f.launcherTH);
-        if (val.size() > 0)
-            text.text = val.get(val.size() - 1);
         values = val;
         layout = new UIScrollLayout(true, c.f.generalS);
         refresh();
@@ -51,7 +53,7 @@ public class UIGamePathList extends UIProxy {
             UITextButton mainButton = new UITextButton(v, c.f.launcherTH, new Runnable() {
                 @Override
                 public void run() {
-                    text.text = v;
+                    text.setText(v);
                     values.remove(v);
                     values.add(v);
                     modified();

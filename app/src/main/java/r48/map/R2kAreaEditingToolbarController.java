@@ -103,7 +103,7 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
                 firstPointX = x;
                 firstPointY = y;
                 definingPoint2 = true;
-                label.text = textB;
+                label.setText(textB);
             } else {
                 IRIO rect = areaInfo.getIVar("@area_rect");
                 IRIO l = rect.getIVar("@left");
@@ -116,7 +116,7 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
                 d.setFX(Math.max(firstPointY, y) + 1);
                 App app = mapToolContext.getMapView().app;
                 app.odb.objectRootModified(mapInfosRoot, new SchemaPath(app.sdb.getSDBEntry("RPG::MapTree"), mapInfosRoot));
-                label.text = textA;
+                label.setText(textA);
                 definingPoint2 = false;
             }
         }

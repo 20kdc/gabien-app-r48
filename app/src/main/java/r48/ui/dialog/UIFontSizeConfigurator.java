@@ -109,7 +109,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 } else {
                     fName = T.g.fsc_fontInternal;
                 }
-                text = T.g.fsc_font.r(fName);
+                setText(T.g.fsc_font.r(fName));
                 super.updateContents(deltaTime, selected, peripherals);
             }
         };
@@ -135,7 +135,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         }) {
             @Override
             public void updateContents(double deltaTime, boolean selected, IPeripherals peripherals) {
-                text = T.g.fsc_theme.r(c.borderTheme);
+                setText(T.g.fsc_theme.r(c.borderTheme));
                 super.updateContents(deltaTime, selected, peripherals);
             }
         }, new UITextButton(T.g.fsc_externalWindowing, c.f.fontSizerTH, new Runnable() {
