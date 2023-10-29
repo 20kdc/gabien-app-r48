@@ -38,34 +38,20 @@ public class UIFieldLayout extends UIElement.UIPanel {
 
     @Override
     protected void layoutRunImpl() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    protected @Nullable Size layoutRecalculateMetricsImpl() {
-        // TODO Auto-generated method stub
-        return super.layoutRecalculateMetricsImpl();
-    }
-
-    public void runLayout() {
         Size aWanted = a.getWantedSize(), bWanted = b.getWantedSize();
         Size mySize = getSize();
         int qWidth = aWanted.width;
         if (hasOverride)
             qWidth = overrideValue.get();
         int reqWidth = qWidth + bWanted.width;
-        int reqHeight = Math.max(aWanted.height, bWanted.height);
 
         boolean performHorizontal = true;
         if (mySize.width < reqWidth) {
             qWidth = aWanted.width;
             int req2Width = qWidth + bWanted.width;
-            if (mySize.width < req2Width) {
-                // Cannot fit within constraints.
+            // Cannot fit within constraints.
+            if (mySize.width < req2Width)
                 performHorizontal = false;
-                reqHeight = aWanted.height + bWanted.height;
-            }
         }
         if (performHorizontal) {
             // use qWidth & fill rest with B
@@ -76,6 +62,35 @@ public class UIFieldLayout extends UIElement.UIPanel {
             a.setForcedBounds(this, new Rect(0, 0, mySize.width, split));
             b.setForcedBounds(this, new Rect(0, split, mySize.width, mySize.height - split));
         }
-        setWantedSize(new Size(reqWidth, reqHeight));
+    }
+
+    @Override
+    protected @Nullable Size layoutRecalculateMetricsImpl() {
+        Size aWanted = a.getWantedSize(), bWanted = b.getWantedSize();
+        int qWidth = aWanted.width;
+        if (hasOverride)
+            qWidth = overrideValue.get();
+        int reqWidth = qWidth + bWanted.width;
+        int reqHeight = Math.max(aWanted.height, bWanted.height);
+        return new Size(reqWidth, reqHeight);
+    }
+
+    @Override
+    public int layoutGetHForW(int width) {
+        Size aWanted = a.getWantedSize(), bWanted = b.getWantedSize();
+        int qWidth = aWanted.width;
+        if (hasOverride)
+            qWidth = overrideValue.get();
+        int reqWidth = qWidth + bWanted.width;
+        int reqHeight = Math.max(aWanted.height, bWanted.height);
+
+        if (width < reqWidth) {
+            qWidth = aWanted.width;
+            int req2Width = qWidth + bWanted.width;
+            // Cannot fit within constraints.
+            if (width < req2Width)
+                reqHeight = aWanted.height + bWanted.height;
+        }
+        return reqHeight;
     }
 }

@@ -8,6 +8,7 @@
 package r48.toolsets;
 
 import gabien.GaBIEn;
+import gabien.datum.DatumWriter;
 import gabien.natives.BadGPU;
 import gabien.ui.*;
 import gabien.ui.dialogs.UIPopupMenu;
@@ -311,6 +312,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 T.u.mTestFonts,
                 T.u.mTestGraphics,
                 T.u.mGetGPUInfo,
+                T.u.mUITree,
                 T.u.mToggleFull,
                 T.u.mSchemaTranslator,
                 T.u.mTryRecover,
@@ -346,6 +348,12 @@ public class BasicToolset extends App.Svc implements IToolset {
                         sb.append(ex.toString());
                     }
                     app.ui.launchDialog(sb.toString());
+                },
+                () -> {
+                    StringWriter sw = new StringWriter();
+                    DatumWriter dw = new DatumWriter(sw);
+                    app.ui.wm.debugDumpUITree(dw);
+                    GaBIEn.clipboard.copyText(sw.toString());
                 },
                 () -> {
                     app.ui.wm.toggleFullscreen();

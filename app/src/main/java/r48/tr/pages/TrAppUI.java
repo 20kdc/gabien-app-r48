@@ -107,6 +107,7 @@ public class TrAppUI extends TrPage {
     public String dCannotReadPRINT;
     public String mOther;
     public FF2 statusLine;
+    public String mUITree;
     public String mClipboard;
     public String mClipSave;
     public String mClipLoad;
