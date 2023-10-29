@@ -8,6 +8,7 @@
 package r48.schema.specialized;
 
 import gabien.ui.UIElement;
+import gabien.ui.elements.UIEmpty;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
@@ -20,7 +21,6 @@ import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.map.events.R2kSavefileEventAccess;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
-import r48.schema.HiddenSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -87,7 +87,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
             });
             return new UISplitterLayout(utb1, utb2, true, 0.5d);
         } else {
-            return HiddenSchemaElement.makeHiddenElement();
+            return new UIEmpty();
         }
     }
 

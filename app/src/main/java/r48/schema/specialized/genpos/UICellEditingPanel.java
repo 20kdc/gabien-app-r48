@@ -10,13 +10,13 @@ package r48.schema.specialized.genpos;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.*;
+import gabien.ui.elements.UIEmpty;
 import gabien.ui.elements.UILabel;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
 import r48.App;
-import r48.schema.HiddenSchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
@@ -78,7 +78,7 @@ public class UICellEditingPanel extends App.Pan {
             }
             return uie;
         }
-        return HiddenSchemaElement.makeHiddenElement();
+        return new UIEmpty();
     }
 
     public void somethingChanged() {

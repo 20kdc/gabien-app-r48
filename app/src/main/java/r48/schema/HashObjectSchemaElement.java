@@ -8,6 +8,7 @@
 package r48.schema;
 
 import gabien.ui.UIElement;
+import gabien.ui.elements.UIEmpty;
 import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -34,7 +35,7 @@ public class HashObjectSchemaElement extends SchemaElement.Leaf {
 
     @Override
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
-        return HiddenSchemaElement.makeHiddenElement();
+        return new UIEmpty();
     }
 
     @Override
