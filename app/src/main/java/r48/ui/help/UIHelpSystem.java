@@ -50,90 +50,107 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
         Size s = getSize();
-        int y = 0;
+        int leftY = 0;
         // Acts as a limiting factor at all times, so reset when setting rightY to -1.
         int rightX = s.width;
         // NOTE: This is set to -1 as a signal that the 'right-side-panel' is no longer being concatenated,
         //  so a new right-side-panel should be setup at the current anchor.
         int rightY = -1;
         for (HelpElement he : page) {
-            if (y >= rightY) {
+            if (leftY >= rightY) {
                 rightY = -1;
                 rightX = s.width;
             }
             he.onLinkClick = this;
             layoutAddElement(he.element);
-            Size ws = he.element.getWantedSize();
+            Size wantedSize = he.element.getWantedSize();
             boolean effectivePosition = he.position;
-            if (ws.width > s.width)
+            if (wantedSize.width > s.width)
                 effectivePosition = false;
             if (!effectivePosition) {
                 // Centre/left.
-                he.element.setForcedBounds(this, new Rect(0, y, rightX, ws.height));
-                y += ws.height;
+                int wantedHeight = he.element.layoutGetHForW(rightX);
+                he.element.setForcedBounds(this, new Rect(0, leftY, rightX, wantedHeight));
+                leftY += wantedHeight;
             } else {
                 if (rightY == -1)
-                    rightY = y;
+                    rightY = leftY;
                 // Right side.
-                he.element.setForcedBounds(this, new Rect(s.width - ws.width, rightY, ws.width, ws.height));
-                rightX = Math.min(s.width - ws.width, rightX);
-                rightY += ws.height;
+                int gottenWidth = Math.min(s.width, wantedSize.width);
+                int gottenX = s.width - gottenWidth;
+                int wantedHeight = he.element.layoutGetHForW(gottenWidth);
+                he.element.setForcedBounds(this, new Rect(gottenX, rightY, gottenWidth, wantedHeight));
+                rightX = Math.min(gottenX, rightX);
+                rightY += wantedHeight;
             }
         }
     }
 
     @Override
     public int layoutGetHForW(int width) {
-        int y = 0;
+        int leftY = 0;
         // Acts as a limiting factor at all times, so reset when setting rightY to -1.
         int rightX = width;
         // NOTE: This is set to -1 as a signal that the 'right-side-panel' is no longer being concatenated,
         //  so a new right-side-panel should be setup at the current anchor.
         int rightY = -1;
         for (HelpElement he : page) {
-            if (y >= rightY) {
+            if (leftY >= rightY) {
                 rightY = -1;
                 rightX = width;
             }
-            Size ws = he.element.getWantedSize();
+            Size wantedSize = he.element.getWantedSize();
             boolean effectivePosition = he.position;
-            if (ws.width > width)
+            if (wantedSize.width > width)
                 effectivePosition = false;
             if (!effectivePosition) {
                 // Centre/left.
-                y += ws.height;
+                leftY += wantedSize.height;
             } else {
                 if (rightY == -1)
-                    rightY = y;
+                    rightY = leftY;
                 // Right side.
-                rightX = Math.min(width - ws.width, rightX);
-                rightY += ws.height;
+                int gottenWidth = Math.min(width, wantedSize.width);
+                int gottenX = width - gottenWidth;
+                int wantedHeight = he.element.layoutGetHForW(gottenWidth);
+                rightX = Math.min(gottenX, rightX);
+                rightY += wantedHeight;
             }
         }
-        return Math.max(y, rightY);
+        return Math.max(leftY, rightY);
     }
 
     @Override
     protected @Nullable Size layoutRecalculateMetricsImpl() {
-        int y = 0;
+        int leftY = 0;
+        int leftWidth = 0;
+        int rightWidth = 0;
+        int maxWidth = 0;
         // NOTE: This is set to -1 as a signal that the 'right-side-panel' is no longer being concatenated,
         //  so a new right-side-panel should be setup at the current anchor.
         int rightY = -1;
         for (HelpElement he : page) {
-            if (y >= rightY)
+            if (leftY >= rightY) {
                 rightY = -1;
+                rightWidth = 0;
+            }
             Size ws = he.element.getWantedSize();
             if (!he.position) {
                 // Centre/left.
-                y += ws.height;
+                leftY += ws.height;
+                leftWidth = ws.width;
             } else {
                 if (rightY == -1)
-                    rightY = y;
+                    rightY = leftY;
                 // Right side.
                 rightY += ws.height;
+                rightWidth = ws.width;
             }
+            int totalWidth = leftWidth + rightWidth;
+            if (totalWidth > maxWidth)
+                maxWidth = totalWidth;
         }
-        return new Size(1, Math.max(y, rightY));
+        return new Size(maxWidth, Math.max(leftY, rightY));
     }
 
     @Override
