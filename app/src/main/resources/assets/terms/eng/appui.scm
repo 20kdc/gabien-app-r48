@@ -174,6 +174,7 @@
 	dCannotReadPRINT "The PRINT.txt file couldn't be read."
 	mOther "Other..."
 	statusLine (fl2 a0 " modified. Clipboard: " a1)
+	mUITree "Copy UI Tree To System Clipboard"
 	mClipboard "Clipboard"
 	mClipSave "Save Clipboard To 'clip.r48'"
 	mClipLoad "Load Clipboard From 'clip.r48'"

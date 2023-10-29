@@ -8,6 +8,7 @@
 package r48.wm;
 
 import gabien.*;
+import gabien.datum.DatumWriter;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.*;
@@ -384,5 +385,9 @@ public class WindowManager extends AppCore.Csv {
 
     public void setOrange(double v) {
         tabPane.visualizationOrange = v;
+    }
+
+    public void debugDumpUITree(DatumWriter dw) {
+        rootView.debugDumpUITree(dw);
     }
 }

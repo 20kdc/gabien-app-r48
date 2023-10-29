@@ -41,7 +41,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         super(mv);
         mapView = mv.getMapView();
         svl.panelsAdd(new UILabel(T.m.tsClickToShowEv, app.f.eventPickerEntryTH));
-        svl.setWantedSize(new Size(app.f.eventPickerEntryTH * 12, app.f.eventPickerEntryTH * 8));
+        svl.setWantedSizeOverride(new Size(app.f.eventPickerEntryTH * 12, app.f.eventPickerEntryTH * 8));
         changeInner(svl, true);
     }
 
