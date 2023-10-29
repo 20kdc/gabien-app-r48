@@ -248,24 +248,21 @@ public class AppUI extends App.Svc {
     }
 
     public Runnable createLaunchConfirmation(final String s, final Runnable runnable) {
-        return new Runnable() {
-            @Override
-            public void run() {
-                UITextButton accept = new UITextButton(T.u.confirm_accept, app.f.dialogWindowTH, null).centred();
-                UITextButton cancel = new UITextButton(T.u.confirm_cancel, app.f.dialogWindowTH, null).centred();
-                UIElement uie = new UISplitterLayout(new UILabel(s, app.f.dialogWindowTH),
-                        new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
-                final UIDynAppPrx mtb = UIDynAppPrx.wrap(app, uie);
-                mtb.titleOverride = T.t.confirm;
-                accept.onClick = () -> {
-                    runnable.run();
-                    mtb.selfClose = true;
-                };
-                cancel.onClick = () -> {
-                    mtb.selfClose = true;
-                };
-                app.ui.wm.createWindowSH(mtb);
-            }
+        return () -> {
+            UITextButton accept = new UITextButton(T.u.confirm_accept, app.f.dialogWindowTH, null).centred();
+            UITextButton cancel = new UITextButton(T.u.confirm_cancel, app.f.dialogWindowTH, null).centred();
+            UIElement uie = new UISplitterLayout(new UILabel(s, app.f.dialogWindowTH),
+                    new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
+            final UIDynAppPrx mtb = UIDynAppPrx.wrap(app, uie);
+            mtb.titleOverride = T.t.confirm;
+            accept.onClick = () -> {
+                runnable.run();
+                mtb.selfClose = true;
+            };
+            cancel.onClick = () -> {
+                mtb.selfClose = true;
+            };
+            app.ui.wm.createWindowSH(mtb);
         };
     }
 

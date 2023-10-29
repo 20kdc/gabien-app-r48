@@ -138,15 +138,14 @@ public class WindowManager extends AppCore.Csv {
     }
 
     public void adjustWindowSH(final UIElement mtb) {
-        // This logic makes sense since we're trying to force a certain width but not a certain height.
-        // It is NOT a bug in gabien-common so long as this code works (that is, the first call immediately prepares a correct wanted size).
         Size rootSize = getRootSize();
         Size validSize = new Size((rootSize.width * 3) / 4, (rootSize.height * 3) / 4);
-        mtb.setForcedBounds(null, new Rect(validSize));
-        Size recSize = mtb.getWantedSize();
+        int recWidth = mtb.getWantedSize().width;
 
-        int w = Math.min(recSize.width, validSize.width);
-        int h = Math.min(recSize.height, validSize.height);
+        // As of UI rewrite, this logic is much clearer
+        int w = Math.min(recWidth, validSize.width);
+        int recHeight = mtb.layoutGetHForW(w);
+        int h = Math.min(recHeight, validSize.height);
 
         mtb.setForcedBounds(null, new Rect(0, 0, w, h));
     }

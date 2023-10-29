@@ -44,7 +44,7 @@ public class UIDynAppPrx extends Pan {
             if (!inConstructor) {
                 layoutRecalculateMetrics();
             } else {
-                setForcedBounds(null, new Rect(inner.getSize()));
+                forceToRecommended();
             }
         }
     }
