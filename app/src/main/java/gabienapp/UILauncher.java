@@ -6,6 +6,7 @@
  */
 package gabienapp;
 
+import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.function.Function;
 
@@ -14,6 +15,7 @@ import gabien.datum.DatumDecToLambdaVisitor;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumTreeUtils;
 import gabien.datum.DatumVisitor;
+import gabien.datum.DatumWriter;
 import gabien.ui.UIElement;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.ui.UIElement.UIProxy;
@@ -28,6 +30,9 @@ import gabien.ui.layouts.UITabPane;
 import gabien.ui.layouts.UITabBar.Tab;
 import gabien.ui.layouts.UITabBar.TabIcon;
 import gabien.uslx.append.Rect;
+import gabien.wsi.IDesktopPeripherals;
+import gabien.wsi.IGrInDriver;
+import gabien.wsi.IPeripherals;
 import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.cfg.Config;
@@ -51,6 +56,7 @@ public class UILauncher extends UIProxy {
     private final LinkedList<UIElement> basePanels = new LinkedList<UIElement>();
     private final UIScrollLayout gamepaks;
     private final Config c;
+    private int counterForTree;
 
     public UILauncher(final LSMain ls) {
         final Launcher lun = ls.lun;
@@ -167,6 +173,25 @@ public class UILauncher extends UIProxy {
         }
         for (LauncherEntry panel : igpMenuPanel)
             gamepaks.panelsAdd(new UITextButton(panel.name.r(), c.f.launcherTH, panel.runnable));
+    }
+
+    @Override
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+        super.update(deltaTime, selected, peripherals);
+        if (peripherals instanceof IDesktopPeripherals) {
+            IDesktopPeripherals dph = (IDesktopPeripherals) peripherals;
+            // UI debugging feature
+            if (dph.isKeyDown(IGrInDriver.VK_CONTROL) && dph.isKeyJustPressed(IGrInDriver.VK_I)) {
+                counterForTree++;
+                if (counterForTree == 3) {
+                    counterForTree = 0;
+                    StringWriter sw = new StringWriter();
+                    DatumWriter dw = new DatumWriter(sw);
+                    debugDumpUITree(dw);
+                    GaBIEn.clipboard.copyText(sw.toString());
+                }
+            }
+        }
     }
 
     private UIElement figureOutTopBar(final Launcher lun) {
