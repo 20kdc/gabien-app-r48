@@ -114,7 +114,7 @@ public class CharacterGeneratorController extends App.Svc {
                     l.swatch.onClick = new Runnable() {
                         @Override
                         public void run() {
-                            app.ui.wm.createMenu(l.swatch, new UIColourPicker(app, l.naming.text, l.swatch.col, new Consumer<Integer>() {
+                            app.ui.wm.createMenu(l.swatch, new UIColourPicker(app, l.naming.getText(), l.swatch.col, new Consumer<Integer>() {
                                 @Override
                                 public void accept(Integer integer) {
                                     if (integer != null)
@@ -141,10 +141,10 @@ public class CharacterGeneratorController extends App.Svc {
                     charLay.add(new LayerImage(Integer.parseInt(args[1]), "CharGen/" + target.id + args[0] + ".png", mode, target.id));
                 } else if (c == '.') {
                     if (args.length == 1)
-                        target.naming.text = args[0];
+                        target.naming.setText(args[0]);
                     if (args.length == 2)
                         if (app.c.language.equals(args[0]))
-                            target.naming.text = args[1];
+                            target.naming.setText(args[1]);
                 }
             }
         });

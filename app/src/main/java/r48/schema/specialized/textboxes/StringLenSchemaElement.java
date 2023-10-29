@@ -9,12 +9,10 @@ package r48.schema.specialized.textboxes;
 
 import java.util.function.Function;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 import gabien.ui.*;
 import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
-import gabien.uslx.append.Size;
+import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.StringSchemaElement;
@@ -47,20 +45,20 @@ public class StringLenSchemaElement extends StringSchemaElement {
         };
         UITextButton uimu = new UITextButton("-00000", app.f.schemaFieldTH, null) {
             @Override
-            protected @Nullable Size layoutRecalculateMetricsImpl() {
-                int l1 = textRules.countCells(utb.text);
-                text = Integer.toString(len - l1);
-                return super.layoutRecalculateMetricsImpl();
+            public void updateContents(double deltaTime, boolean selected, IPeripherals peripherals) {
+                super.updateContents(deltaTime, selected, peripherals);
+                int l1 = textRules.countCells(utb.getText());
+                setText(Integer.toString(len - l1));
             }
         };
         uimu.onClick = () -> {
             app.ui.wm.createMenu(uimu, new UITextStuffMenu(app, () -> {
-                return new String[] {utb.text};
+                return new String[] {utb.getText()};
             }, (res) -> {
                 if (res.length < 1) {
                     // refuse
                 } else {
-                    utb.text = res[0];
+                    utb.setText(res[0]);
                     utb.onEdit.run();
                 }
             }, textRules, len));

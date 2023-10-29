@@ -183,11 +183,11 @@ public class GrandWindowManagerUtils {
         if (uie instanceof UISymbolButton)
             return "symbol:" + ((UISymbolButton) uie).symbol.name();
         if (uie instanceof UITextButton)
-            return "button:" + ((UITextButton) uie).text;
+            return "button:" + ((UITextButton) uie).getText();
         if (uie instanceof UITextBox)
-            return "textbox:" + ((UITextBox) uie).text;
+            return "textbox:" + ((UITextBox) uie).getText();
         if (uie instanceof UILabel)
-            return "label:" + ((UILabel) uie).text;
+            return "label:" + ((UILabel) uie).getText();
         if (uie instanceof UIScrollLayout)
             return "scroll:";
         return "?:" + uie.toString();

@@ -90,7 +90,7 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
         } else {
             startX = x;
             startY = y;
-            innerLabel.text = T.m.tsFinishCopy;
+            innerLabel.setText(T.m.tsFinishCopy);
             stage = true;
         }
     }

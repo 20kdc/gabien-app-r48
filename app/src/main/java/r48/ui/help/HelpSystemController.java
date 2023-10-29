@@ -69,7 +69,7 @@ public class HelpSystemController implements Consumer<String> {
                 public void newObj(int objId, String objName) throws IOException {
                     if (objId == i) {
                         if (pageName != null)
-                            pageName.text = objName;
+                            pageName.setText(objName);
                         working = true;
                     } else {
                         working = false;
@@ -90,7 +90,11 @@ public class HelpSystemController implements Consumer<String> {
                             argbuilder.append(s);
                         }
                         if (ch == ',') {
-                            ((UILabel) workingElement.element).text += "\n" + argbuilder.toString();
+                            UILabel uil = ((UILabel) workingElement.element);
+                            // this is bad code and I should feel bad
+                            // luckily this only happens on pageswitch
+                            // REST of layout should be faster now!
+                            uil.setText(uil.getText() + "\n" + argbuilder.toString());
                         } else {
                             hs.page.add(workingElement = new UIHelpSystem.HelpElement(ilg, ch, argbuilder.toString()));
                         }

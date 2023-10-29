@@ -135,9 +135,9 @@ public class RMFindTranslatables extends App.Svc {
             public void run() {
                 int idx = EventCommandArraySchemaElement.findActualStart(listObj, command);
                 if (idx != -1) {
-                    button.text = cmdb.buildGroupCodename(listObj, codeIndex, true);
+                    button.setText(cmdb.buildGroupCodename(listObj, codeIndex, true));
                 } else {
-                    button.text = cmdb.buildCodename(command, false, true);
+                    button.setText(cmdb.buildCodename(command, false, true));
                 }
             }
         };

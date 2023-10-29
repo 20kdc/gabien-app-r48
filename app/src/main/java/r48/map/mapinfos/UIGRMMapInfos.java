@@ -65,7 +65,7 @@ public class UIGRMMapInfos extends App.Prx {
         searchBarBox.onEdit = new Runnable() {
             @Override
             public void run() {
-                lastSearchTerm = searchBarBox.text;
+                lastSearchTerm = searchBarBox.getText();
                 rebuildList();
             }
         };
@@ -153,7 +153,7 @@ public class UIGRMMapInfos extends App.Prx {
                         int i = 1;
                         while (operators.getHashBID(i) != null)
                             i++;
-                        num.number = i;
+                        num.setNumber(i);
                     }
                 };
                 unusedID.run();
@@ -161,7 +161,7 @@ public class UIGRMMapInfos extends App.Prx {
                 UIAppendButton prompt = new UIAppendButton(T.g.bConfirm, num, new Runnable() {
                     @Override
                     public void run() {
-                        long i = num.number;
+                        long i = num.getNumber();
                         if (operators.getHashBID(i) != null) {
                             app.ui.launchDialog(T.m.dIDInUse);
                             return;

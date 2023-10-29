@@ -220,13 +220,12 @@ public class UIRMUniversalStringReplacer extends App.Prx {
 
         private UIElement adderA = new UISplitterLayout(new UILabel(T.u.usl_from, app.f.dialogWindowTH), adderK, false, 0);
         private UIElement adderB = new UISplitterLayout(new UILabel(T.u.usl_to, app.f.dialogWindowTH), adderV, false, 0);
-        private UIElement adderC = new UITextButton(T.u.usl_addR, app.f.dialogWindowTH, new Runnable() {
-            @Override
-            public void run() {
-                settingsRemoveByKey(adderK.text);
-                settings.add(new Replacement(adderK.text, adderV.text));
-                refreshContents();
-            }
+        private UIElement adderC = new UITextButton(T.u.usl_addR, app.f.dialogWindowTH, () -> {
+            String k = adderK.getText();
+            String v = adderV.getText();
+            settingsRemoveByKey(k);
+            settings.add(new Replacement(k, v));
+            refreshContents();
         });
 
         private final String title;

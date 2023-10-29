@@ -78,9 +78,9 @@ public class UIIDChanger extends App.Prx {
     }
 
     private void updateText() {
-        chooseButton.text = T.u.idc_typeButton.r(entry.text.r());
-        fromButton.text = T.u.idc_fromButton.r(app.format(fromValue, entry.userFacing, EnumSchemaElement.Prefix.Prefix));
-        toButton.text = T.u.idc_toButton.r(app.format(toValue, entry.userFacing, EnumSchemaElement.Prefix.Prefix));
+        chooseButton.setText(T.u.idc_typeButton.r(entry.text.r()));
+        fromButton.setText(T.u.idc_fromButton.r(app.format(fromValue, entry.userFacing, EnumSchemaElement.Prefix.Prefix)));
+        toButton.setText(T.u.idc_toButton.r(app.format(toValue, entry.userFacing, EnumSchemaElement.Prefix.Prefix)));
     }
 
     private void fromButton() {

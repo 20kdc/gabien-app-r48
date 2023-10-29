@@ -44,7 +44,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement.Leaf {
             @Override
             public void run() {
                 try {
-                    target.setFX(hashString(utb.text.getBytes("UTF-8")));
+                    target.setFX(hashString(utb.getText().getBytes("UTF-8")));
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }

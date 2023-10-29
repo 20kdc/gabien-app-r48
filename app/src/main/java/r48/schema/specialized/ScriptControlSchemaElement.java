@@ -159,7 +159,7 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
                 StringBuilder results = new StringBuilder();
                 results.append(T.s.searchResults);
                 results.append("\n");
-                String searchFor = searchText.text;
+                String searchFor = searchText.getText();
                 int alen = target.getALen();
                 for (int i = 0; i < alen; i++) {
                     String name = target.getAElem(i).getAElem(1).decString();

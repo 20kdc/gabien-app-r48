@@ -28,7 +28,7 @@ public class DefaultTableCellEditor extends App.Svc implements ITableCellEditor 
             box.onEdit = new Runnable() {
                 @Override
                 public void run() {
-                    planes[index] = (int) box.number;
+                    planes[index] = (int) box.getNumber();
                     changeOccurred.run();
                 }
             };
@@ -38,7 +38,7 @@ public class DefaultTableCellEditor extends App.Svc implements ITableCellEditor 
             @Override
             public void run() {
                 for (int i = 0; i < planes.length; i++)
-                    numbers[i].number = planes[i];
+                    numbers[i].setNumber(planes[i]);
             }
         };
     }

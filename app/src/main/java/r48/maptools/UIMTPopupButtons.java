@@ -129,27 +129,21 @@ public class UIMTPopupButtons extends UIMTBase {
             final UIMapView view = mtc.getMapView();
             final UINumberBox a = new UINumberBox(view.mapTable.width, app.f.textDialogFieldTH);
             final UINumberBox b = new UINumberBox(view.mapTable.height, app.f.textDialogFieldTH);
-            a.onEdit = new Runnable() {
-                @Override
-                public void run() {
-                    if (a.number < 1)
-                        a.number = 1;
-                }
+            a.onEdit = () -> {
+                if (a.getNumber() < 1)
+                    a.setNumber(1);
             };
-            b.onEdit = new Runnable() {
-                @Override
-                public void run() {
-                    if (b.number < 1)
-                        b.number = 1;
-                }
+            b.onEdit = () -> {
+                if (b.getNumber() < 1)
+                    b.setNumber(1);
             };
             UISplitterLayout root = new UISplitterLayout(new UISplitterLayout(a, b, false, 0.5d), new UITextButton("Resize", app.f.textDialogFieldTH, new Runnable() {
                 @Override
                 public void run() {
-                    int w = (int) a.number;
+                    int w = (int) a.getNumber();
                     if (w < 1)
                         w = 1;
-                    int h = (int) b.number;
+                    int h = (int) b.getNumber();
                     if (h < 1)
                         h = 1;
                     view.mapTable.resize(w, h);

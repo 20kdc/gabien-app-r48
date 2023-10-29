@@ -74,28 +74,22 @@ public class StringBlobSchemaElement extends SchemaElement.Leaf {
             @Override
             public void run() {
                 final UITextBox utb = new UITextBox("", app.f.schemaFieldTH).setMultiLine();
-                Runnable update = new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            utb.text = readContentString(target);
-                        } catch (IOException e) {
-                            app.ui.launchDialog(T.s.dErrNoRead, e);
-                        }
+                Runnable update = () -> {
+                    try {
+                        utb.setText(readContentString(target));
+                    } catch (IOException e) {
+                        app.ui.launchDialog(T.s.dErrNoRead, e);
                     }
                 };
                 update.run();
-                UIElement ui = new UISplitterLayout(utb, new UITextButton(T.g.bConfirm, app.f.schemaFieldTH, new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            writeContentString(target, utb.text);
-                        } catch (IOException e) {
-                            app.ui.launchDialog(T.s.dErrNoWrite, e);
-                            return;
-                        }
-                        path.changeOccurred(false);
+                UIElement ui = new UISplitterLayout(utb, new UITextButton(T.g.bConfirm, app.f.schemaFieldTH, () -> {
+                    try {
+                        writeContentString(target, utb.getText());
+                    } catch (IOException e) {
+                        app.ui.launchDialog(T.s.dErrNoWrite, e);
+                        return;
                     }
+                    path.changeOccurred(false);
                 }), true, 1);
                 launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, ui, update, path), target));
             }
