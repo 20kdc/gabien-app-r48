@@ -104,7 +104,7 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
                 effectivePosition = false;
             if (!effectivePosition) {
                 // Centre/left.
-                leftY += wantedSize.height;
+                leftY += he.element.layoutGetHForW(rightX);
             } else {
                 if (rightY == -1)
                     rightY = leftY;
