@@ -364,6 +364,7 @@ public class AppUI extends App.Svc {
             }
         };
         svl.panelsAdd(ul);
+        svl.panelsFinished();
         wm.createWindowSH(svl);
     }
 
