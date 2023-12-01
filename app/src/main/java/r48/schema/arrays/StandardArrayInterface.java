@@ -19,8 +19,11 @@ import gabien.uslx.append.*;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
+import r48.schema.util.EmbedDataKey;
+import r48.schema.util.EmbedDataSlot;
 import r48.schema.util.IEmbedDataContext;
 import r48.tr.pages.TrRoot;
+import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 import r48.ui.UIMenuButton;
@@ -29,6 +32,7 @@ import r48.ui.spacing.UIIndentThingy;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -38,6 +42,7 @@ import java.util.function.Supplier;
  */
 public class StandardArrayInterface implements IArrayInterface {
     public boolean hasIndexLabels = true;
+    public EmbedDataKey<WeakHashMap<IRIO, Object>> indentTreeClosedKey = new EmbedDataKey<>();
 
     public StandardArrayInterface withoutIndexLabels() {
         hasIndexLabels = false;
@@ -46,6 +51,9 @@ public class StandardArrayInterface implements IArrayInterface {
     
     @Override
     public void provideInterfaceFrom(final Host uiSVL, final Supplier<Boolean> valid, final IEmbedDataContext prop, final Supplier<ArrayPosition[]> getPositions) {
+        final EmbedDataSlot<WeakHashMap<IRIO, Object>> indentTreeClosedSlot = prop.embedSlot(indentTreeClosedKey, null);
+        if (indentTreeClosedSlot.value == null)
+            indentTreeClosedSlot.value = new WeakHashMap<>();
         final ArrayPosition[] positions = getPositions.get();
         final App app = uiSVL.getApp();
         final TrRoot T = app.t;
@@ -83,18 +91,21 @@ public class StandardArrayInterface implements IArrayInterface {
                             uiSVL.panelsAdd(button);
                     }
                 }
-                int hiddenAtThisIndentOrAbove = -1;
+                // for tree open/close logic: hide stuff until this indent arrives
+                // if -1, disabled
+                int hiddenUntilThisIndent = -1;
+                WeakHashMap<IRIO, Object> indentTreeClosed = indentTreeClosedSlot.value;
                 for (int i = 0; i < positions.length; i++) {
                     // Positions
                     final int mi = i;
                     final ArrayPosition thisAPos = positions[mi];
-                    // final ArrayPosition nextAPos = (i < positions.length - 1) ? positions[mi + 1] : null;
+                    final ArrayPosition nextAPos = (i < positions.length - 1) ? positions[mi + 1] : null;
                     // "Indent skip" (open/close tree) logic
-                    if (hiddenAtThisIndentOrAbove != -1) {
-                        if (thisAPos.coreIndent >= hiddenAtThisIndentOrAbove) {
+                    if (hiddenUntilThisIndent != -1) {
+                        if (thisAPos.coreIndent > hiddenUntilThisIndent) {
                             continue;
                         } else {
-                            hiddenAtThisIndentOrAbove = -1;
+                            hiddenUntilThisIndent = -1;
                         }
                     }
                     // The guts
@@ -193,6 +204,26 @@ public class StandardArrayInterface implements IArrayInterface {
                         } else {
                             label = indentThingy;
                         }
+                        if (nextAPos != null && nextAPos.coreIndent > thisAPos.coreIndent) {
+                            // Needs tree thingy!
+                            IRIO treeCheckKey = thisAPos.elements[0];
+                            boolean inSet = indentTreeClosed.containsKey(treeCheckKey);
+                            Art.Symbol sym = inSet ? Art.Symbol.BarCornerUR : Art.Symbol.BarVBranchR;
+                            label = new UIAppendButton(sym, label, () -> {
+                                // Toggle
+                                WeakHashMap<IRIO, Object> itc2 = new WeakHashMap<IRIO, Object>(indentTreeClosed);
+                                if (inSet) {
+                                    itc2.remove(treeCheckKey);
+                                } else {
+                                    itc2.put(treeCheckKey, Boolean.TRUE);
+                                }
+                                indentTreeClosedSlot.value = itc2;
+                                containerRCL();
+                            }, app.f.schemaFieldTH);
+                            // And actually hide future nodes etc.
+                            if (inSet)
+                                hiddenUntilThisIndent = thisAPos.coreIndent;
+                        }
 
                         final UISplitterLayout outerSplit = new UISplitterLayout(label, editor, false, 0);
                         releasers.add(() -> {
@@ -204,7 +235,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         uie = new UIEmpty();
                         clarifyEmpty = true;
                     }
-                    if (selectedStart == -1)
+                    if (selectedStart == -1 && hiddenUntilThisIndent == -1)
                         if (mi + 1 < positions.length)
                             uie = addAdditionButton(uie, clarifyEmpty, positions[mi + 1].execInsert, positions[mi + 1].execInsertCopiedArray);
                     uiSVL.panelsAdd(uie);
