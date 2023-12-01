@@ -20,6 +20,8 @@ import r48.map.StuffRenderer;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
+import r48.schema.util.EmbedDataKey;
+import r48.schema.util.EmbedDataSlot;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UITileGrid;
@@ -31,7 +33,9 @@ import r48.ui.UITileGrid;
  */
 public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTableSchemaElement {
     public final ITableCellEditor editor;
-    
+    public final EmbedDataKey<Integer> tabKey = new EmbedDataKey<>();
+    public final EmbedDataKey<UITileGrid> tabCopyKey = new EmbedDataKey<>();
+
     public FancyCategorizedTilesetRubyTableSchemaElement(App app, int dw, int dh, int p, int d, PathSyntax iV, int[] defaults, ITableCellEditor editor) {
         super(app, dw, dh, p, d, iV, defaults);
         this.editor = editor;
@@ -46,6 +50,9 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
         final UIElement[] tileTabElements = new UIElement[tileTabs.length];
         final UITileGrid[] tileTabGrids = new UITileGrid[tileTabs.length];
         int spriteScale = app.f.getSpriteScale();
+        // -- keys/slots --
+        EmbedDataSlot<Integer> tabSlot = launcher.embedSlot(target, tabKey, 0);
+        EmbedDataSlot<UITileGrid> tabCopySlot = launcher.embedSlot(target, tabCopyKey, null);
         // -- Assemble tab pane --
         final UITabPane tabPane = new UITabPane(app.f.tilesTabTH, true, false, app.f.tilesTabS);
         for (int i = 0; i < tileTabs.length; i++) {
@@ -60,8 +67,8 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
                 @Override
                 public void run() {
                     // -- Backup scroll values --
-                    launcher.setEmbedDouble(FancyCategorizedTilesetRubyTableSchemaElement.this, target, "tab", tabPane.getTabIndex());
-                    launcher.setEmbedObject(FancyCategorizedTilesetRubyTableSchemaElement.this, target, "tabCopy", tileGrid);
+                    tabSlot.value = tabPane.getTabIndex();
+                    tabCopySlot.value = tileGrid;
                     // -- Actually write data --
                     int base = tileGrid.getSelected();
                     int stride = tileGrid.getSelectStride();
@@ -92,16 +99,13 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
                 }
             });
             
-            tileGrid.onSelectionChange = new Runnable() {
-                @Override
-                public void run() {
-                    int tile = tab.actTiles[tileGrid.getSelected()];
-                    if ((tile < 0) || (tile >= targ.width))
-                        return;
-                    for (int p = 0; p < targ.planeCount; p++)
-                        values[p] = targ.getTiletype(tile, 0, p);
-                    onChange.run();
-                }
+            tileGrid.onSelectionChange = () -> {
+                int tile = tab.actTiles[tileGrid.getSelected()];
+                if ((tile < 0) || (tile >= targ.width))
+                    return;
+                for (int p = 0; p < targ.planeCount; p++)
+                    values[p] = targ.getTiletype(tile, 0, p);
+                onChange.run();
             };
             // Done to initialize the values
             tileGrid.onSelectionChange.run();
@@ -119,10 +123,10 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
             tabPane.addTab(new UITabBar.Tab(uie, new UITabBar.TabIcon[] {}));
         }
         // -- Restore scroll values --
-        int oldTabIndex = (int) launcher.getEmbedDouble(this, target, "tab");
+        int oldTabIndex = tabSlot.value;
         if (oldTabIndex < tileTabElements.length) {
             tabPane.selectTab(tileTabElements[oldTabIndex]);
-            UITileGrid oldTabCopy = (UITileGrid) launcher.getEmbedObject(this, target, "tabCopy");
+            UITileGrid oldTabCopy = tabCopySlot.value;
             if (oldTabCopy != null) {
                 tileTabGrids[oldTabIndex].setSelected(oldTabCopy.getSelected());
                 tileTabGrids[oldTabIndex].selWidth = oldTabCopy.selWidth;

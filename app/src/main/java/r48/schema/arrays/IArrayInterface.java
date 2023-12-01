@@ -8,12 +8,12 @@
 package r48.schema.arrays;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import gabien.ui.*;
 import r48.App;
 import r48.io.data.IRIO;
+import r48.schema.util.IEmbedDataContext;
 
 /**
  * Simplifies the code involved in an array UI by abstracting away the complicated permissions logic.
@@ -34,7 +34,7 @@ public interface IArrayInterface {
      * state is tied to a unique SchemaElement held by the ArraySchemaElement for the purposes of holding extra state.
      * Also note that the positions are invalidated when any exec function is called.
      */
-    void provideInterfaceFrom(Host svl, Supplier<Boolean> valid, Function<String, IProperty> state, Supplier<ArrayPosition[]> positions);
+    void provideInterfaceFrom(Host svl, Supplier<Boolean> valid, IEmbedDataContext state, Supplier<ArrayPosition[]> positions);
 
     interface IProperty extends Supplier<Double>, Consumer<Double> {
         // Get returns 0 if the property doesn't exist, like with the usual double interface

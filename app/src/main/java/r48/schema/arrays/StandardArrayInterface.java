@@ -19,6 +19,7 @@ import gabien.uslx.append.*;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
+import r48.schema.util.IEmbedDataContext;
 import r48.tr.pages.TrRoot;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
@@ -29,7 +30,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -45,7 +45,7 @@ public class StandardArrayInterface implements IArrayInterface {
     }
     
     @Override
-    public void provideInterfaceFrom(final Host uiSVL, final Supplier<Boolean> valid, final Function<String, IProperty> prop, final Supplier<ArrayPosition[]> getPositions) {
+    public void provideInterfaceFrom(final Host uiSVL, final Supplier<Boolean> valid, final IEmbedDataContext prop, final Supplier<ArrayPosition[]> getPositions) {
         final ArrayPosition[] positions = getPositions.get();
         final App app = uiSVL.getApp();
         final TrRoot T = app.t;
@@ -83,9 +83,22 @@ public class StandardArrayInterface implements IArrayInterface {
                             uiSVL.panelsAdd(button);
                     }
                 }
+                int hiddenAtThisIndentOrAbove = -1;
                 for (int i = 0; i < positions.length; i++) {
+                    // Positions
                     final int mi = i;
-                    UIElement uie = positions[mi].core;
+                    final ArrayPosition thisAPos = positions[mi];
+                    // final ArrayPosition nextAPos = (i < positions.length - 1) ? positions[mi + 1] : null;
+                    // "Indent skip" (open/close tree) logic
+                    if (hiddenAtThisIndentOrAbove != -1) {
+                        if (thisAPos.coreIndent >= hiddenAtThisIndentOrAbove) {
+                            continue;
+                        } else {
+                            hiddenAtThisIndentOrAbove = -1;
+                        }
+                    }
+                    // The guts
+                    UIElement uie = thisAPos.core;
                     boolean clarifyEmpty = false;
                     if (uie != null) {
                         // Changes dependent on behavior.

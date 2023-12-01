@@ -29,6 +29,7 @@ import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.ROIntegerSchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
+import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.pages.TrRoot;
@@ -59,6 +60,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
     public final CMDB database;
 
     private RPGCommandSchemaElement hiddenHeadVer;
+
+    public final EmbedDataKey<Double> scrollPointKey = new EmbedDataKey<>();
 
     public RPGCommandSchemaElement(App app, SchemaElement ise, SchemaElement mos, CMDB db, boolean allowIndentControl, boolean showHdr) {
         super(app);
@@ -126,7 +129,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             if (rc.specialSchema != null)
                 return rc.specialSchema.buildHoldingEditor(target, launcher, path);
             IRIO param = target.getIVar("@parameters");
-            final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, RPGCommandSchemaElement.this, target);
+            final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
 
             if (target.getIVar("@indent") != null) {
                 if (showHeader) {

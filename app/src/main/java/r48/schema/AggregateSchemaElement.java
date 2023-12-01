@@ -10,11 +10,13 @@ package r48.schema;
 import gabien.ui.*;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
+import gabien.uslx.append.IGetSet;
 import gabien.wsi.IPointer;
 import r48.App;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
+import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -29,7 +31,7 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class AggregateSchemaElement extends SchemaElement implements IFieldSchemaElement {
     public final LinkedList<SchemaElement> aggregate = new LinkedList<SchemaElement>();
-    public final SchemaElement impersonatorScroll;
+    public final EmbedDataKey<Double> scrollPointKey;
 
     private int overrideFW = -1;
     private boolean overrideSet = false;
@@ -37,19 +39,19 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     public AggregateSchemaElement(App app, SchemaElement[] ag) {
         super(app);
         Collections.addAll(aggregate, ag);
-        impersonatorScroll = this;
+        scrollPointKey = new EmbedDataKey<>();
     }
 
-    public AggregateSchemaElement(App app, SchemaElement[] ag, SchemaElement fake) {
+    public AggregateSchemaElement(App app, SchemaElement[] ag, EmbedDataKey<Double> fake) {
         super(app);
         Collections.addAll(aggregate, ag);
-        impersonatorScroll = fake;
+        scrollPointKey = fake;
     }
 
     @Override
     public UIElement buildHoldingEditor(IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         // Possibly question if this aggregate is useless???
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, impersonatorScroll, target);
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
         // Assist with the layout of "property grids".
         if (!overrideSet)
             overrideFW = getDefaultFieldWidth(target);
@@ -99,13 +101,14 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     // HOWEVER, if the object is regen-on-change w/ subwindows,
     //  this causes awful scroll loss, so instead nab the regenerator (it's not like the regenerator uses it for anything)
     // PREFERABLY avoid regeneration of schema objects that are reusable (RPGCommandSchemaElement was fixed this way)
-    public static UIScrollLayout createScrollSavingSVL(final ISchemaHost host, final SchemaElement elem, final IRIO target) {
+    public static UIScrollLayout createScrollSavingSVL(final ISchemaHost host, final EmbedDataKey<Double> key, final IRIO target) {
+        final IGetSet<Double> savedPoint = host.embedSlot(target, key, 0.0d);
         final App app = host.getApp();
         final UIScrollLayout uiSVL = new UIScrollLayout(true, app.f.generalS) {
             @Override
             public void handleMousewheel(int x, int y, boolean north) {
                 super.handleMousewheel(x, y, north);
-                host.setEmbedDouble(elem, target, "N/scrollSavingSVL", scrollbar.scrollPoint);
+                savedPoint.accept(scrollbar.scrollPoint);
             }
 
             @Override
@@ -126,31 +129,29 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
                         @Override
                         public void handlePointerEnd(IPointer state) {
                             ipr.handlePointerEnd(state);
-                            host.setEmbedDouble(elem, target, "N/scrollSavingSVL", scrollbar.scrollPoint);
+                            savedPoint.accept(scrollbar.scrollPoint);
                         }
                     };
                 }
                 return null;
             }
         };
-        uiSVL.scrollbar.scrollPoint = host.getEmbedDouble(elem, target, "N/scrollSavingSVL");
+        uiSVL.scrollbar.scrollPoint = savedPoint.get();
         return uiSVL;
     }
 
     // Only to be used if this button is known to cause changeOccurred.
-    public static void hookButtonForPressPreserve(final ISchemaHost host, final SchemaElement elem, final IRIO target, final UITextButton utb, final String id) {
+    public static void hookButtonForPressPreserve(final ISchemaHost host, final IRIO target, final UITextButton utb, final EmbedDataKey<Boolean> id) {
+        IGetSet<Boolean> wasPressed = host.embedSlot(target, id, false);
         final Runnable next = utb.onClick;
-        utb.onClick = new Runnable() {
-            @Override
-            public void run() {
-                if (next != null)
-                    next.run();
-                host.setEmbedDouble(elem, target, "B/" + id, 1d);
-            }
+        utb.onClick = () -> {
+            wasPressed.accept(true);
+            if (next != null)
+                next.run();
         };
-        if (host.getEmbedDouble(elem, target, "B/" + id) != 0d)
+        if (wasPressed.get())
             utb.enableStateForClick();
-        host.setEmbedDouble(elem, target, "B/" + id, 0d);
+        wasPressed.accept(false);
     }
 
     @Override

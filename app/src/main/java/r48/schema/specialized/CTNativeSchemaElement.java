@@ -17,6 +17,7 @@ import r48.RubyCT;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -26,6 +27,7 @@ import r48.schema.util.SchemaPath;
  */
 public class CTNativeSchemaElement extends SchemaElement.Leaf {
     public final String cls;
+    public final EmbedDataKey<Double> scrollPointKey = new EmbedDataKey<>();
 
     public CTNativeSchemaElement(App app, String c) {
         super(app);
@@ -34,7 +36,7 @@ public class CTNativeSchemaElement extends SchemaElement.Leaf {
 
     @Override
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
         RubyCT rct = new RubyCT(target.getBuffer());
         addField(uiSVL, T.s.toneR, 0, rct, path);
         addField(uiSVL, T.s.toneG, 8, rct, path);

@@ -8,7 +8,6 @@
 package r48.schema.util;
 
 import r48.io.data.IRIO;
-import r48.schema.SchemaElement;
 
 import java.util.LinkedList;
 import java.util.Stack;
@@ -35,18 +34,17 @@ public class EmbedDataTracker {
     }
 
     @SuppressWarnings("unchecked")
-    public @NonNull <T> EmbedDataSlot<T> createSlot(SchemaPath current, SchemaElement source, IRIO target, Object prop, T defVal) {
+    public @NonNull <T> EmbedDataSlot<T> createSlot(SchemaPath current, IRIO target, EmbedDataKey<T> prop, T defVal) {
         LinkedList<EmbedDataSlot<?>> localEDKs = mapTree.get(current);
         if (localEDKs == null) {
             localEDKs = new LinkedList<EmbedDataSlot<?>>();
             mapTree.put(current, localEDKs);
         }
         for (EmbedDataSlot<?> edk : localEDKs)
-            if (edk.source.equals(source))
-                if (edk.target.equals(target))
-                    if (edk.prop.equals(prop))
-                        return (EmbedDataSlot<T>) edk;
-        EmbedDataSlot<T> newEDK = new EmbedDataSlot<>(source, target, prop);
+            if (edk.target.equals(target))
+                if (edk.prop.equals(prop))
+                    return (EmbedDataSlot<T>) edk;
+        EmbedDataSlot<T> newEDK = new EmbedDataSlot<T>(target, prop);
         newEDK.value = defVal;
         localEDKs.add(newEDK);
         return newEDK;

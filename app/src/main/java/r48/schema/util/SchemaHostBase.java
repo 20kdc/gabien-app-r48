@@ -12,7 +12,6 @@ import r48.App;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
-import r48.schema.SchemaElement;
 
 import java.util.function.Supplier;
 
@@ -61,23 +60,8 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
     }
 
     @Override
-    public void setEmbedObject(SchemaElement source, IRIO target, String prop, Object dbl) {
-        setEmbedObject(innerElem, source, target, prop, dbl);
-    }
-
-    @Override
-    public Object getEmbedObject(SchemaElement source, IRIO target, String prop, Object def) {
-        return getEmbedObject(innerElem, source, target, prop, def);
-    }
-
-    @Override
-    public Object getEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop, Object def) {
-        return embedData.createSlot(locale, source, target, prop, def).value;
-    }
-
-    @Override
-    public void setEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop, Object dbl) {
-        embedData.createSlot(locale, source, target, prop, dbl).value = dbl;
+    public <T> EmbedDataSlot<T> embedSlot(SchemaPath locale, IRIO target, EmbedDataKey<T> prop, T def) {
+        return embedData.createSlot(locale, target, prop, def);
     }
 
     @Override

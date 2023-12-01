@@ -29,6 +29,7 @@ import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.arrays.StandardArrayInterface;
 import r48.schema.specialized.textboxes.R2kTextRules;
 import r48.schema.specialized.textboxes.UITextStuffMenu;
+import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -211,7 +212,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         });
     }
 
-    private SchemaElement getGroupElement(IRIO arr, final int start, final SchemaElement binding) {
+    private SchemaElement getGroupElement(IRIO arr, final int start, final EmbedDataKey<Double> scrollKey) {
         // Uhoh.
         final int length;
         boolean addRemove = false;
@@ -305,7 +306,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
             }
         };
-        return new AggregateSchemaElement(app, group, binding);
+        return new AggregateSchemaElement(app, group, scrollKey);
     }
 
     @Override
@@ -372,13 +373,14 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
      * The IRIO used for this element is expected to be the list.
      */
     public SchemaElement getElementContextualWindowSchema(final IRIO tracker) {
+        EmbedDataKey<Double> ecwsKey = new EmbedDataKey<>();
         return new SchemaElement(app) {
             @Override
             public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
                 int actualStart = findActualStart(target, tracker);
                 if (actualStart == -1)
                     return new UILabel(T.s.cmdOutOfList, app.f.schemaFieldTH);
-                return getGroupElement(target, actualStart, this).buildHoldingEditor(target, launcher, path);
+                return getGroupElement(target, actualStart, ecwsKey).buildHoldingEditor(target, launcher, path);
             }
 
             @Override
@@ -386,7 +388,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 int actualStart = findActualStart(target, tracker);
                 if (actualStart == -1)
                     return;
-                getGroupElement(target, actualStart, this).modifyVal(target, path, setDefault);
+                getGroupElement(target, actualStart, ecwsKey).modifyVal(target, path, setDefault);
             }
 
             @Override
@@ -394,7 +396,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 int actualStart = findActualStart(target, tracker);
                 if (actualStart == -1)
                     return;
-                getGroupElement(target, actualStart, this).visit(target, path, v, detailedPaths);
+                getGroupElement(target, actualStart, ecwsKey).visit(target, path, v, detailedPaths);
             }
         };
     }

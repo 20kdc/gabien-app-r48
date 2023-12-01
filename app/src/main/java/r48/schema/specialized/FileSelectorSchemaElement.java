@@ -22,6 +22,7 @@ import r48.app.AppMain;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.spacing.UIBorderedSubpanel;
@@ -38,6 +39,7 @@ import java.util.HashSet;
 public class FileSelectorSchemaElement extends SchemaElement.Leaf {
     public final String pathExtender;
     public final String mustBeImage;
+    public final EmbedDataKey<Double> scrollPointKey = new EmbedDataKey<>();
 
     public FileSelectorSchemaElement(App app, String ext, String img) {
         super(app);
@@ -48,7 +50,7 @@ public class FileSelectorSchemaElement extends SchemaElement.Leaf {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         app.ui.performFullImageFlush();
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
         String[] strs = GaBIEn.listEntries(AppMain.autoDetectWindows(app.rootPath + pathExtender));
         if (strs == null)
             return new UILabel("The folder does not exist or was not accessible.", app.f.schemaFieldTH);

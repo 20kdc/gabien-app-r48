@@ -16,6 +16,7 @@ import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -26,6 +27,7 @@ import r48.schema.util.SchemaPath;
  */
 public class IntegerSchemaElement extends SchemaElement.Leaf {
     public long defaultInt;
+    public final EmbedDataKey<Double> scrollPointKey = new EmbedDataKey<>();
 
     public IntegerSchemaElement(App app, long i) {
         super(app);
@@ -43,7 +45,7 @@ public class IntegerSchemaElement extends SchemaElement.Leaf {
 
             @Override
             public UIScrollLayout newSVL() {
-                return AggregateSchemaElement.createScrollSavingSVL(launcher, IntegerSchemaElement.this, target);
+                return AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
             }
         }).uie;
     }
