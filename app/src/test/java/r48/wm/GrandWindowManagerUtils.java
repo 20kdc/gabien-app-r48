@@ -9,6 +9,7 @@ package r48.wm;
 
 import gabien.TestKickstart;
 import gabien.ui.*;
+import gabien.ui.elements.UIIconButton;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
@@ -19,7 +20,7 @@ import gabien.uslx.append.Rect;
 import r48.App;
 import r48.tests.grand.GrandExecutionError;
 import r48.tests.grand.GrandTestBuilder;
-import r48.ui.UISymbolButton;
+import r48.ui.Art;
 
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -166,7 +167,7 @@ public class GrandWindowManagerUtils {
 
     // Should match identify
     private static String identifyCls(UIElement uie) {
-        if (uie instanceof UISymbolButton)
+        if (uie instanceof UIIconButton)
             return "symbol";
         if (uie instanceof UITextButton)
             return "button";
@@ -180,8 +181,8 @@ public class GrandWindowManagerUtils {
     }
 
     private static String identify(UIElement uie) {
-        if (uie instanceof UISymbolButton)
-            return "symbol:" + ((UISymbolButton) uie).symbol.name();
+        if (uie instanceof UIIconButton)
+            return "symbol:" + ((Art.Symbol) (((UIIconButton) uie).symbol)).name();
         if (uie instanceof UITextButton)
             return "button:" + ((UITextButton) uie).getText();
         if (uie instanceof UITextBox)

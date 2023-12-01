@@ -16,6 +16,7 @@ import gabien.pva.PVARenderer;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.elements.UIBorderedElement;
+import gabien.ui.theming.IIcon;
 import gabien.uslx.append.Rect;
 import r48.App;
 import r48.imagefx.HueShiftImageEffect;
@@ -262,7 +263,7 @@ public class Art {
         Art.drawSymbol(igd, Art.Symbol.Target, px + (tileSize / 4), py + (tileSize / 4), tileSize / 2, false, false);
     }
 
-    public enum Symbol {
+    public enum Symbol implements IIcon {
         // NOTE! If you can't tell the difference in grayscale, it's too alike.
         Map, BarV, BarVBranchR, BarCornerUR,
         Target, Area, Expandable, Play,
@@ -276,6 +277,11 @@ public class Art {
         Camera, New, Folder, Keyframe,
         Tween, SaveDisabled, Forward, Eyedropper,
         // "Fill" is for a flood fill, so it's a bucket
-        Line, Fill
+        Line, Fill;
+
+        @Override
+        public void draw(IGrDriver igd, int x, int y, int size) {
+            drawSymbol(igd, this, x, y, size, false, false);
+        }
     }
 }

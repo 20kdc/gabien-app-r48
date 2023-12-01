@@ -8,11 +8,11 @@
 package r48.ui.utilitybelt;
 
 import gabien.ui.*;
+import gabien.ui.elements.UIIconButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
 import r48.App;
-import r48.ui.UISymbolButton;
 import r48.ui.Art.Symbol;
 
 /**
@@ -52,7 +52,7 @@ public class RootImageEditorTool extends ImageEditorTool {
         UIElement left = null;
         for (int i = 0; i < toolClasses.length; i++) {
             final int ic = i;
-            UIElement nx = new UISymbolButton(toolSymbol[i], app.f.schemaFieldTH, new Runnable() {
+            UIElement nx = new UIIconButton(toolSymbol[i], app.f.schemaFieldTH, new Runnable() {
                 @SuppressWarnings("unchecked")
                 @Override
                 public void run() {

@@ -20,6 +20,7 @@ import gabien.ui.UIElement;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.ui.dialogs.UIAutoclosingPopupMenu;
 import gabien.ui.dialogs.UICredits;
+import gabien.ui.elements.UIIconButton;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
@@ -45,7 +46,6 @@ import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UIDynAppPrx;
 import r48.ui.UINSVertLayout;
-import r48.ui.UISymbolButton;
 import r48.ui.dialog.UITextPrompt;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
@@ -73,7 +73,7 @@ public class AppUI extends App.Svc {
     // This is the main map context. Expect this to randomly be null and try to avoid accessing it.
     public IMapContext mapContext;
 
-    private UISymbolButton saveButtonSym;
+    private UIIconButton saveButtonSym;
 
     public AppUI(App app, boolean mobile) {
         super(app);
@@ -94,8 +94,8 @@ public class AppUI extends App.Svc {
         app.stuffRendererIndependent = app.system.rendererFromTso(null);
 
         // initialize UI
-        saveButtonSym = new UISymbolButton(Art.Symbol.Save, app.f.tabTH, this::saveAllModified);
-        final UISymbolButton sym2 = new UISymbolButton(Art.Symbol.Back, app.f.tabTH, createLaunchConfirmation(T.u.revertWarn, () -> {
+        saveButtonSym = new UIIconButton(Art.Symbol.Save, app.f.tabTH, this::saveAllModified);
+        final UIIconButton sym2 = new UIIconButton(Art.Symbol.Back, app.f.tabTH, createLaunchConfirmation(T.u.revertWarn, () -> {
             AppMain.performSystemDump(app, false, "revert file");
             // Shutdown schema hosts
             for (ISchemaHost ish : activeHosts)
