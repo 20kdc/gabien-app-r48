@@ -10,6 +10,7 @@ package r48.ui.utilitybelt;
 import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.ui.dialogs.UIAutoclosingPopupMenu;
+import gabien.ui.elements.UIIconButton;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UINumberBox;
 import gabien.ui.elements.UITextButton;
@@ -23,7 +24,6 @@ import r48.ui.UIColourSwatchButton;
 import r48.ui.UIDynAppPrx;
 import r48.ui.UIMenuButton;
 import r48.ui.Art.Symbol;
-import r48.ui.UISymbolButton;
 import r48.ui.dialog.UIColourPicker;
 import r48.ui.dmicg.CharacterGeneratorController;
 
@@ -379,7 +379,7 @@ public class ImageEditorController extends App.Svc {
             }
         }));
 
-        UIElement ul = new UISymbolButton(Symbol.Target, app.f.imageEditorTH, new Runnable() {
+        UIElement ul = new UIIconButton(Symbol.Target, app.f.imageEditorTH, new Runnable() {
             @Override
             public void run() {
                 imageEditView.camX = 0;
@@ -437,7 +437,7 @@ public class ImageEditorController extends App.Svc {
                     }
                 }, !imageEditView.image.t1Lock);
             }
-        }), new UISymbolButton(Symbol.Eyedropper, app.f.imageEditorTH, new Runnable() {
+        }), new UIIconButton(Symbol.Eyedropper, app.f.imageEditorTH, new Runnable() {
             @Override
             public void run() {
                 imageEditView.currentTool = new AddColourFromImageEditorTool(app, new Consumer<Integer>() {

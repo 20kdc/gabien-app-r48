@@ -15,6 +15,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.GaBIEn;
 import gabien.audio.IRawAudioDriver.IRawAudioSource;
 import gabien.ui.UIElement;
+import gabien.ui.elements.UIIconButton;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UIScrollbar;
 import gabien.ui.layouts.UIScrollLayout;
@@ -26,7 +27,6 @@ import r48.App;
 import r48.app.AppMain;
 import r48.ui.Art;
 import r48.ui.UIDynAppPrx;
-import r48.ui.UISymbolButton;
 
 /**
  * Audio player!
@@ -42,14 +42,14 @@ public class UIAudioPlayer extends UIDynAppPrx {
     // delay load stuff
     private Supplier<AudioIOSource> dataSupplier;
 
-    private final UISymbolButton playButton = new UISymbolButton(Art.Symbol.Play, app.f.schemaFieldTH, new Runnable() {
+    private final UIIconButton playButton = new UIIconButton(Art.Symbol.Play, app.f.schemaFieldTH, new Runnable() {
         @Override
         public void run() {
             setPlaying(playButton.state);
         }
     }).togglable(false);
 
-    private final UISymbolButton loopButton = new UISymbolButton(Art.Symbol.Loop, app.f.schemaFieldTH, null).togglable(false);
+    private final UIIconButton loopButton = new UIIconButton(Art.Symbol.Loop, app.f.schemaFieldTH, null).togglable(false);
 
     private final UIScrollbar seeker = new UIScrollbar(false, app.f.generalS);
     private double lastSeekerScrollPoint = -1;
@@ -60,7 +60,7 @@ public class UIAudioPlayer extends UIDynAppPrx {
         this.dataSupplier = dataSupplier;
         speed = spd;
         UIScrollLayout svl = new UIScrollLayout(false, app.f.mapToolbarS);
-        svl.panelsAdd(new UISymbolButton(Art.Symbol.Back, app.f.schemaFieldTH, new Runnable() {
+        svl.panelsAdd(new UIIconButton(Art.Symbol.Back, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
                 position = 0;

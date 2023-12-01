@@ -13,6 +13,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.*;
 import gabien.ui.elements.UIButton;
+import gabien.ui.elements.UIIconButton;
 import gabien.ui.elements.UITextButton;
 import gabien.uslx.append.*;
 import r48.App;
@@ -30,7 +31,7 @@ public class UIAppendButton extends UIElement.UIPanel {
     }
 
     public UIAppendButton(Art.Symbol s, UIElement holder, Runnable runnable, int h2) {
-        this(new UISymbolButton(s, h2, runnable), holder);
+        this(new UIIconButton(s, h2, runnable), holder);
     }
 
     public UIAppendButton(App app, String s, UIElement holder, Supplier<Boolean> continued, String[] text, Runnable[] runnables, int h2) {
