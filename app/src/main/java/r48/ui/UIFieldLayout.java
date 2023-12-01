@@ -34,6 +34,7 @@ public class UIFieldLayout extends UIElement.UIPanel {
         layoutAddElement(b);
         hasOverride = fieldWidthOverride;
         overrideValue = fieldWidth;
+        layoutRecalculateMetrics();
     }
 
     @Override

@@ -81,21 +81,15 @@ public class PagerArrayInterface implements IArrayInterface {
             UIScrollLayout barLayout = new UIScrollLayout(false, app.f.mapToolbarS);
             if (positions[i].execInsert != null) {
                 final Runnable r = positions[i].execInsert;
-                barLayout.panelsAdd(new UITextButton("+", app.f.schemaFieldTH, new Runnable() {
-                    @Override
-                    public void run() {
-                        r.run();
-                    }
+                barLayout.panelsAdd(new UITextButton("+", app.f.schemaFieldTH, () -> {
+                    r.run();
                 }));
             }
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsert != null) {
                     final Runnable r = positions[i + 1].execInsert;
-                    barLayout.panelsAdd(new UITextButton("+>", app.f.schemaFieldTH, new Runnable() {
-                        @Override
-                        public void run() {
-                            r.run();
-                        }
+                    barLayout.panelsAdd(new UITextButton("+>", app.f.schemaFieldTH, () -> {
+                        r.run();
                     }));
                 }
             }
@@ -110,27 +104,21 @@ public class PagerArrayInterface implements IArrayInterface {
             }
             final IRIO[] copyMe = positions[i].elements;
             if (copyMe != null) {
-                barLayout.panelsAdd(new UITextButton(T.g.bCopy, app.f.schemaFieldTH, new Runnable() {
-                    @Override
-                    public void run() {
-                        IRIOGeneric rio = new IRIOGeneric(app.encoding);
-                        rio.setArray(copyMe.length);
+                barLayout.panelsAdd(new UITextButton(T.g.bCopy, app.f.schemaFieldTH, () -> {
+                    IRIOGeneric rio = new IRIOGeneric(app.encoding);
+                    rio.setArray(copyMe.length);
 
-                        for (int j = 0; j < copyMe.length; j++)
-                            rio.getAElem(j).setDeepClone(copyMe[j]);
+                    for (int j = 0; j < copyMe.length; j++)
+                        rio.getAElem(j).setDeepClone(copyMe[j]);
 
-                        app.theClipboard = rio;
-                    }
+                    app.theClipboard = rio;
                 }));
             }
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsertCopiedArray != null) {
                     final Runnable r = positions[i + 1].execInsertCopiedArray;
-                    barLayout.panelsAdd(new UITextButton(T.g.bPaste, app.f.schemaFieldTH, new Runnable() {
-                        @Override
-                        public void run() {
-                            r.run();
-                        }
+                    barLayout.panelsAdd(new UITextButton(T.g.bPaste, app.f.schemaFieldTH, () -> {
+                        r.run();
                     }));
                 }
             }
