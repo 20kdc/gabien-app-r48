@@ -11,8 +11,8 @@ import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import gabien.wsi.IPeripherals;
 import gabien.ui.UIElement;
+import gabien.ui.elements.UIEmpty;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -36,16 +36,7 @@ public class HiddenSchemaElement extends SchemaElement implements IProxySchemaEl
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
         if (show.apply(target))
             return content.buildHoldingEditor(target, launcher, path);
-        return makeHiddenElement();
-    }
-
-    public static UIElement makeHiddenElement() {
-        return new UIElement(0, 0) {
-            @Override
-            public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
-
-            }
-        };
+        return new UIEmpty();
     }
 
     @Override

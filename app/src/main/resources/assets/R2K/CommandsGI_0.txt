@@ -133,7 +133,7 @@ X set_variables_parameters
 
 10230: "Timer Operation"
 C category 1
-d Alters the settings on either timer ID 0 (if unspecified) or a given timer. Can set the timer, change it's visibility + if it counts in bettle, or stop it.
+d Alters the settings on either timer ID 0 (if unspecified) or a given timer. Can set the timer, change its visibility + if it counts in battle, or stop it.
 p _ string
 X timer_operation_parameters
 
@@ -321,7 +321,7 @@ d Fades out the background music.
 p _ string
 p fadeTime int
 
- note: this, and it's schema, is shared between MC/35 and EC/11550
+ note: this, and its schema, is shared between MC/35 and EC/11550
 
 11550: "Play Sound" ($ " " ]0)
 d Plays a sound effect.

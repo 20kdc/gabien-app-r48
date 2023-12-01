@@ -18,6 +18,7 @@ import r48.schema.util.SchemaPath;
 import r48.search.CommandTag;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
+import r48.ui.dialog.UIEnumChoice;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -622,5 +623,23 @@ public class CMDB extends App.Svc {
     public RPGCommand entryOf(IRIO command) {
         int code = (int) command.getIVar("@code").getFX();
         return knownCommands.get(code);
+    }
+
+    /**
+     * Builds enum data for all the commands, yay!
+     */
+    public UIEnumChoice.Category[] buildEnum() {
+        UIEnumChoice.Category[] ecats = new UIEnumChoice.Category[categories.length];
+        for (int i = 0; i < ecats.length; i++) {
+            LinkedList<UIEnumChoice.Option> llo = new LinkedList<UIEnumChoice.Option>();
+            for (Integer key : knownCommandOrder) {
+                RPGCommand rc = knownCommands.get(key);
+                String text = key + ";" + rc.formatName(null);
+                if (rc.category == i)
+                    llo.add(new UIEnumChoice.Option(text, DMKey.of((long) (int) key)));
+            }
+            ecats[i] = new UIEnumChoice.Category(categories[i].r(), llo);
+        }
+        return ecats;
     }
 }

@@ -18,6 +18,7 @@ import r48.io.data.IRIOGeneric;
 import r48.minivm.fn.MVMFn;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;
@@ -32,6 +33,8 @@ import java.nio.charset.StandardCharsets;
 public class JSONImportExportSchemaElement extends SchemaElement.Leaf {
     public final FF0 importText, exportText;
     public final MVMFn importFn, exportFn;
+    public final EmbedDataKey<Boolean> buttonEDKey = new EmbedDataKey<>();
+
     public JSONImportExportSchemaElement(App app, FF0 iT, MVMFn iF, FF0 eT, MVMFn eF) {
         super(app);
         importText = iT;
@@ -70,7 +73,7 @@ public class JSONImportExportSchemaElement extends SchemaElement.Leaf {
             });
         });
 
-        AggregateSchemaElement.hookButtonForPressPreserve(launcher, this, target, importer, "import");
+        AggregateSchemaElement.hookButtonForPressPreserve(launcher, target, importer, buttonEDKey);
 
         return new UISplitterLayout(exporter, importer, false, 0.5d);
     }

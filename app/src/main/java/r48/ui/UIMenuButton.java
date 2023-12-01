@@ -39,19 +39,16 @@ public class UIMenuButton extends UITextButton {
     }
 
     public UIMenuButton(App app, String s, int h2, final Supplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
-        this(app, s, h2, new Supplier<UIElement>() {
-            @Override
-            public UIElement get() {
-                return new UIAutoclosingPopupMenu(text, runnables, app.f.menuTH, app.f.menuS, true) {
-                    @Override
-                    public void optionExecute(int b) {
-                        if (continued != null)
-                            if (!continued.get())
-                                return;
-                        super.optionExecute(b);
-                    }
-                };
-            }
+        this(app, s, h2, () -> {
+            return new UIAutoclosingPopupMenu(text, runnables, app.f.menuTH, app.f.menuS, true) {
+                @Override
+                public void optionExecute(int b) {
+                    if (continued != null)
+                        if (!continued.get())
+                            return;
+                    super.optionExecute(b);
+                }
+            };
         });
     }
 
@@ -60,19 +57,16 @@ public class UIMenuButton extends UITextButton {
     }
 
     public UIMenuButton(App app, String s, int h2, final Supplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
-        this(app, s, h2, new Supplier<UIElement>() {
-            @Override
-            public UIElement get() {
-                return new UIAutoclosingPopupMenu(runnables, app.f.menuTH, app.f.menuS, true) {
-                    @Override
-                    public void optionExecute(int b) {
-                        if (continued != null)
-                            if (!continued.get())
-                                return;
-                        super.optionExecute(b);
-                    }
-                };
-            }
+        this(app, s, h2, () -> {
+            return new UIAutoclosingPopupMenu(runnables, app.f.menuTH, app.f.menuS, true) {
+                @Override
+                public void optionExecute(int b) {
+                    if (continued != null)
+                        if (!continued.get())
+                            return;
+                    super.optionExecute(b);
+                }
+            };
         });
     }
 }

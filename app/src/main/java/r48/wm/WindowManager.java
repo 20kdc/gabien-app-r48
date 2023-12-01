@@ -349,7 +349,7 @@ public class WindowManager extends AppCore.Csv {
                             if (ipr == null) {
                                 screen.removeShell(this);
                                 uie.onWindowClose();
-                                return new IPointerReceiver.NopPointerReceiver();
+                                return IPointerReceiver.NopPointerReceiver.I;
                             }
                             return ipr;
                         }

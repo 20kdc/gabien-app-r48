@@ -19,7 +19,11 @@ import gabien.uslx.append.*;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
+import r48.schema.util.EmbedDataKey;
+import r48.schema.util.EmbedDataSlot;
+import r48.schema.util.IEmbedDataContext;
 import r48.tr.pages.TrRoot;
+import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 import r48.ui.UIMenuButton;
@@ -28,8 +32,8 @@ import r48.ui.spacing.UIIndentThingy;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -38,6 +42,7 @@ import java.util.function.Supplier;
  */
 public class StandardArrayInterface implements IArrayInterface {
     public boolean hasIndexLabels = true;
+    public EmbedDataKey<WeakHashMap<IRIO, Object>> indentTreeClosedKey = new EmbedDataKey<>();
 
     public StandardArrayInterface withoutIndexLabels() {
         hasIndexLabels = false;
@@ -45,7 +50,10 @@ public class StandardArrayInterface implements IArrayInterface {
     }
     
     @Override
-    public void provideInterfaceFrom(final Host uiSVL, final Supplier<Boolean> valid, final Function<String, IProperty> prop, final Supplier<ArrayPosition[]> getPositions) {
+    public void provideInterfaceFrom(final Host uiSVL, final Supplier<Boolean> valid, final IEmbedDataContext prop, final Supplier<ArrayPosition[]> getPositions) {
+        final EmbedDataSlot<WeakHashMap<IRIO, Object>> indentTreeClosedSlot = prop.embedSlot(indentTreeClosedKey, null);
+        if (indentTreeClosedSlot.value == null)
+            indentTreeClosedSlot.value = new WeakHashMap<>();
         final ArrayPosition[] positions = getPositions.get();
         final App app = uiSVL.getApp();
         final TrRoot T = app.t;
@@ -83,9 +91,25 @@ public class StandardArrayInterface implements IArrayInterface {
                             uiSVL.panelsAdd(button);
                     }
                 }
+                // for tree open/close logic: hide stuff until this indent arrives
+                // if -1, disabled
+                int hiddenUntilThisIndent = -1;
+                WeakHashMap<IRIO, Object> indentTreeClosed = indentTreeClosedSlot.value;
                 for (int i = 0; i < positions.length; i++) {
+                    // Positions
                     final int mi = i;
-                    UIElement uie = positions[mi].core;
+                    final ArrayPosition thisAPos = positions[mi];
+                    final ArrayPosition nextAPos = (i < positions.length - 1) ? positions[mi + 1] : null;
+                    // "Indent skip" (open/close tree) logic
+                    if (hiddenUntilThisIndent != -1) {
+                        if (thisAPos.coreIndent > hiddenUntilThisIndent) {
+                            continue;
+                        } else {
+                            hiddenUntilThisIndent = -1;
+                        }
+                    }
+                    // The guts
+                    UIElement uie = thisAPos.core;
                     boolean clarifyEmpty = false;
                     if (uie != null) {
                         // Changes dependent on behavior.
@@ -94,13 +118,10 @@ public class StandardArrayInterface implements IArrayInterface {
                         // NOTE: At the end of this code, editor can only be a pure UIAppendButton group.
                         // The reason for this is because it simplifies releasing it all later.
                         if (selectedStart == -1) {
-                            onClick = new Runnable() {
-                                @Override
-                                public void run() {
-                                    selectedStart = mi;
-                                    selectedEnd = mi;
-                                    containerRCL();
-                                }
+                            onClick = () -> {
+                                selectedStart = mi;
+                                selectedEnd = mi;
+                                containerRCL();
                             };
                         } else {
                             // Selection, but not confirming delete
@@ -109,60 +130,42 @@ public class StandardArrayInterface implements IArrayInterface {
                                 final int fixedEnd = selectedEnd;
                                 if (positions[fixedStart].execDelete != null) {
                                     uie = new UIAppendButton(app, "Delete", uie, valid, new String[] {T.g.bConfirm}, new Runnable[] {
-                                        new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                deleteRange(fixedStart, fixedEnd);
-                                            }
+                                        () -> {
+                                            deleteRange(fixedStart, fixedEnd);
                                         }
                                     }, app.f.schemaFieldTH);
                                 }
-                                onClick = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        int miL = tracePositionEnd(positions, mi);
-                                        if (selectedEnd >= miL) {
-                                            selectedStart = -1;
-                                        } else {
-                                            selectedStart = mi;
-                                            selectedEnd = miL;
-                                        }
-                                        containerRCL();
-                                    }
-                                };
-                                uie = new UIAppendButton(T.g.bCopy, uie, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        copyRange(fixedStart, fixedEnd);
+                                onClick = () -> {
+                                    int miL = tracePositionEnd(positions, mi);
+                                    if (selectedEnd >= miL) {
                                         selectedStart = -1;
-                                        containerRCL();
+                                    } else {
+                                        selectedStart = mi;
+                                        selectedEnd = miL;
                                     }
+                                    containerRCL();
+                                };
+                                uie = new UIAppendButton(T.g.bCopy, uie, () -> {
+                                    copyRange(fixedStart, fixedEnd);
+                                    selectedStart = -1;
+                                    containerRCL();
                                 }, app.f.schemaFieldTH);
-                                uie = new UIAppendButton(T.s.array_bCutArr, uie, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        copyRange(fixedStart, fixedEnd);
-                                        deleteRange(fixedStart, fixedEnd);
-                                    }
+                                uie = new UIAppendButton(T.s.array_bCutArr, uie, () -> {
+                                    copyRange(fixedStart, fixedEnd);
+                                    deleteRange(fixedStart, fixedEnd);
                                 }, app.f.schemaFieldTH);
                             } else if ((mi < selectedStart) || (mi > selectedEnd)) {
-                                onClick = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (mi < selectedStart)
-                                            selectedStart = mi;
-                                        if (mi > selectedEnd)
-                                            selectedEnd = mi;
-                                        containerRCL();
-                                    }
+                                onClick = () -> {
+                                    if (mi < selectedStart)
+                                        selectedStart = mi;
+                                    if (mi > selectedEnd)
+                                        selectedEnd = mi;
+                                    containerRCL();
                                 };
                             } else {
-                                onClick = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        selectedStart = -1;
-                                        containerRCL();
-                                    }
+                                onClick = () -> {
+                                    selectedStart = -1;
+                                    containerRCL();
                                 };
                             }
                         }
@@ -173,17 +176,14 @@ public class StandardArrayInterface implements IArrayInterface {
                             label = new UILabel(positions[mi].text, app.f.schemaFieldTH);
                             maxWidth.set(Math.max(label.getWantedSize().width, maxWidth.get()));
                         }
-                        releasers.add(new Runnable() {
-                            @Override
-                            public void run() {
-                                UIElement edit = editor;
-                                while (edit != originalUIE) {
-                                    if (edit instanceof UIAppendButton) {
-                                        ((UIAppendButton) edit).release();
-                                        edit = ((UIAppendButton) edit).getSubElement();
-                                    } else {
-                                        throw new RuntimeException("Append chain didn't lead to element, oh dear");
-                                    }
+                        releasers.add(() -> {
+                            UIElement edit = editor;
+                            while (edit != originalUIE) {
+                                if (edit instanceof UIAppendButton) {
+                                    ((UIAppendButton) edit).release();
+                                    edit = ((UIAppendButton) edit).getSubElement();
+                                } else {
+                                    throw new RuntimeException("Append chain didn't lead to element, oh dear");
                                 }
                             }
                         });
@@ -204,13 +204,30 @@ public class StandardArrayInterface implements IArrayInterface {
                         } else {
                             label = indentThingy;
                         }
+                        if (nextAPos != null && nextAPos.coreIndent > thisAPos.coreIndent) {
+                            // Needs tree thingy!
+                            IRIO treeCheckKey = thisAPos.elements[0];
+                            boolean inSet = indentTreeClosed.containsKey(treeCheckKey);
+                            Art.Symbol sym = inSet ? Art.Symbol.BarCornerUR : Art.Symbol.BarVBranchR;
+                            label = new UIAppendButton(sym, label, () -> {
+                                // Toggle
+                                WeakHashMap<IRIO, Object> itc2 = new WeakHashMap<IRIO, Object>(indentTreeClosed);
+                                if (inSet) {
+                                    itc2.remove(treeCheckKey);
+                                } else {
+                                    itc2.put(treeCheckKey, Boolean.TRUE);
+                                }
+                                indentTreeClosedSlot.value = itc2;
+                                containerRCL();
+                            }, app.f.schemaFieldTH);
+                            // And actually hide future nodes etc.
+                            if (inSet)
+                                hiddenUntilThisIndent = thisAPos.coreIndent;
+                        }
 
                         final UISplitterLayout outerSplit = new UISplitterLayout(label, editor, false, 0);
-                        releasers.add(new Runnable() {
-                            @Override
-                            public void run() {
-                                outerSplit.release();
-                            }
+                        releasers.add(() -> {
+                            outerSplit.release();
                         });
                         uie = outerSplit;
                     } else {
@@ -218,7 +235,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         uie = new UIEmpty();
                         clarifyEmpty = true;
                     }
-                    if (selectedStart == -1)
+                    if (selectedStart == -1 && hiddenUntilThisIndent == -1)
                         if (mi + 1 < positions.length)
                             uie = addAdditionButton(uie, clarifyEmpty, positions[mi + 1].execInsert, positions[mi + 1].execInsertCopiedArray);
                     uiSVL.panelsAdd(uie);

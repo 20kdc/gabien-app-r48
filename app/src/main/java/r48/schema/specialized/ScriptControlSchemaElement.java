@@ -18,6 +18,7 @@ import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -33,6 +34,8 @@ import java.util.zip.InflaterInputStream;
  * Created on January 28th, 2018.
  */
 public class ScriptControlSchemaElement extends SchemaElement.Leaf {
+    public final EmbedDataKey<Boolean> buttonEDKey = new EmbedDataKey<>();
+
     public ScriptControlSchemaElement(App app) {
         super(app);
     }
@@ -148,7 +151,7 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
             }
         });
 
-        AggregateSchemaElement.hookButtonForPressPreserve(launcher, this, target, importer, "import");
+        AggregateSchemaElement.hookButtonForPressPreserve(launcher, target, importer, buttonEDKey);
 
         UISplitterLayout impExp = new UISplitterLayout(exporter, importer, false, 0.5d);
 

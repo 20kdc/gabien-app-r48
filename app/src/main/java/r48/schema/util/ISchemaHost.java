@@ -14,7 +14,6 @@ import gabien.ui.UIElement;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
-import r48.schema.SchemaElement;
 
 /**
  * Used to make the Schema interface slightly saner to use
@@ -49,29 +48,24 @@ public interface ISchemaHost {
 
     String getContextGUM();
 
-    default double getEmbedDouble(SchemaElement source, IRIO target, String prop) {
-        return (Double) getEmbedObject(source, target, prop, 0.0d); 
+    default <T> EmbedDataSlot<T> embedSlot(IRIO target, EmbedDataKey<T> prop, T def) {
+        return embedSlot(getCurrentObject(), target, prop, def);
     }
 
-    default void setEmbedDouble(SchemaElement source, IRIO target, String prop, double dbl) {
-        setEmbedObject(source, target, prop, dbl);
+    <T> EmbedDataSlot<T> embedSlot(SchemaPath locale, IRIO target, EmbedDataKey<T> prop, T def);
+
+    default IEmbedDataContext embedContext(IRIO target) {
+        return embedContext(getCurrentObject(), target);
     }
 
-    default Object getEmbedObject(SchemaElement source, IRIO target, String prop) {
-        return getEmbedObject(source, target, prop, null);
+    default IEmbedDataContext embedContext(SchemaPath locale, IRIO target) {
+        return new IEmbedDataContext() {
+            @Override
+            public <T> EmbedDataSlot<T> embedSlot(EmbedDataKey<T> prop, T def) {
+                return ISchemaHost.this.embedSlot(locale, target, prop, def);
+            }
+        };
     }
-    
-    Object getEmbedObject(SchemaElement source, IRIO target, String prop, Object def);
-
-    default Object getEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop) {
-        return getEmbedObject(locale, source, target, prop, null);
-    }
-
-    Object getEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop, Object def);
-
-    void setEmbedObject(SchemaElement source, IRIO target, String prop, Object dbl);
-
-    void setEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop, Object dbl);
 
     Supplier<Boolean> getValidity();
 

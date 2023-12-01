@@ -8,50 +8,45 @@
 package r48.schema.util;
 
 import r48.io.data.IRIO;
-import r48.schema.SchemaElement;
 
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Stack;
 import java.util.WeakHashMap;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Tracks scroll values and such.
  * Created on October 09, 2018.
  */
 public class EmbedDataTracker {
-    public WeakHashMap<SchemaPath, HashMap<String, Object>> mapTree = new WeakHashMap<SchemaPath, HashMap<String, Object>>();
+    public WeakHashMap<SchemaPath, LinkedList<EmbedDataSlot<?>>> mapTree = new WeakHashMap<>();
 
     public EmbedDataTracker() {
     }
 
     public EmbedDataTracker(Stack<SchemaPath> paths, EmbedDataTracker other) {
         for (SchemaPath sp : paths) {
-            HashMap<String, Object> sph = other.mapTree.get(sp);
+            LinkedList<EmbedDataSlot<?>> sph = other.mapTree.get(sp);
             if (sph != null)
-                mapTree.put(sp, new HashMap<String, Object>(sph));
+                mapTree.put(sp, new LinkedList<EmbedDataSlot<?>>(sph));
         }
     }
 
-    public void setEmbed(SchemaPath current, SchemaElement source, IRIO target, String prop, Object val) {
-        String key = source.hashCode() + "/" + target.hashCode() + "/" + prop;
-        // System.out.println("set " + key + " " + val);
-        HashMap<String, Object> hm = mapTree.get(current);
-        if (hm == null) {
-            hm = new HashMap<String, Object>();
-            mapTree.put(current, hm);
+    @SuppressWarnings("unchecked")
+    public @NonNull <T> EmbedDataSlot<T> createSlot(SchemaPath current, IRIO target, EmbedDataKey<T> prop, T defVal) {
+        LinkedList<EmbedDataSlot<?>> localEDKs = mapTree.get(current);
+        if (localEDKs == null) {
+            localEDKs = new LinkedList<EmbedDataSlot<?>>();
+            mapTree.put(current, localEDKs);
         }
-        hm.put(key, val);
-    }
-
-    public Object getEmbed(SchemaPath current, SchemaElement source, IRIO target, String prop, Object def) {
-        String key = source.hashCode() + "/" + target.hashCode() + "/" + prop;
-        // System.out.println("get " + key);
-        HashMap<String, Object> hm = mapTree.get(current);
-        if (hm == null)
-            return def;
-        Object o = hm.get(key);
-        if (o == null)
-            return def;
-        return o;
+        for (EmbedDataSlot<?> edk : localEDKs)
+            if (edk.target.equals(target))
+                if (edk.prop.equals(prop))
+                    return (EmbedDataSlot<T>) edk;
+        EmbedDataSlot<T> newEDK = new EmbedDataSlot<T>(target, prop);
+        newEDK.value = defVal;
+        localEDKs.add(newEDK);
+        return newEDK;
     }
 }

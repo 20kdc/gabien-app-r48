@@ -10,9 +10,9 @@ package r48.schema.displays;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
+import gabien.ui.elements.UIEmpty;
 import r48.App;
 import r48.io.data.IRIO;
-import r48.schema.HiddenSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -31,7 +31,7 @@ public class WindowTitleAttachmentSchemaElement extends SchemaElement.Leaf {
 
     @Override
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
-        return HiddenSchemaElement.makeHiddenElement();
+        return new UIEmpty();
     }
 
     @Override

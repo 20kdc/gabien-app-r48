@@ -22,6 +22,8 @@ import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
+import r48.schema.util.EmbedDataKey;
+import r48.schema.util.EmbedDataSlot;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIGrid;
@@ -42,6 +44,9 @@ import r48.ui.UIGrid;
 public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaElement {
     public final PathSyntax widthVar, heightVar;
     public final ITableCellEditor tableCellEditor;
+    public final EmbedDataKey<Double> scrollPointKey = new EmbedDataKey<>();
+    public final EmbedDataKey<Integer> gridSelectionKey = new EmbedDataKey<>();
+    public final EmbedDataKey<Double> gridScrollKey = new EmbedDataKey<>();
 
     public boolean allowTextdraw = true;
     public boolean allowResize = true;
@@ -60,6 +65,9 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
         final RubyTable targ = new RubyTable(targV.getBuffer());
         final IRIO width = widthVar == null ? null : widthVar.get(target);
         final IRIO height = heightVar == null ? null : heightVar.get(target);
+
+        final EmbedDataSlot<Double> gridScrollSlot = launcher.embedSlot(target, gridScrollKey, 0.0d);
+        final EmbedDataSlot<Integer> gridSelectionSlot = launcher.embedSlot(target, gridSelectionKey, 0);
 
         final TileHelper initialTileHelper = baseInitializeHelper(target);
         Size gridSize = getGridSize(initialTileHelper);
@@ -83,18 +91,13 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
             @Override
             public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
                 // Lack of any better place.
-                double v = uivScrollbar.scrollPoint;
-                if (v <= 0)
-                    v = 0;
-                if (v >= 0.99)
-                    v = 0.99;
-                v += getSelected();
-                launcher.setEmbedDouble(RubyTableSchemaElement.this, target, "blackbox", v);
+                gridScrollSlot.value = uivScrollbar.scrollPoint;
+                gridSelectionSlot.value = getSelected();
                 super.update(deltaTime, selected, peripherals);
             }
         };
 
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
         final int[] planeValues = new int[targ.planeCount];
         final Runnable editorOnSelChange = tableCellEditor.createEditor(uiSVL, planeValues, new Runnable() {
             @Override
@@ -131,21 +134,8 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
             }
         };
 
-        // and now time for your daily dose of magic:
-        // the scroll value here holds both the selection & the scroll cache.
-        Double selVal = (Double) launcher.getEmbedObject(RubyTableSchemaElement.this, target, "blackbox");
-        if (selVal == null)
-            selVal = -1d;
-        // -1d + 0.99 = -0.01d
-        // Clarify this situation first. Note that Math.floor extends to negative infinity, which is perfect for this
-        int lastSelectionCache = (int) Math.floor(selVal);
-        double lastScrollCache = selVal - lastSelectionCache;
-        if (lastScrollCache <= 0)
-            lastScrollCache = 0;
-        if (lastScrollCache >= 0.985)
-            lastScrollCache = 1;
-        uig.setSelected(lastSelectionCache);
-        uig.uivScrollbar.scrollPoint = lastScrollCache;
+        uig.setSelected(gridSelectionSlot.value);
+        uig.uivScrollbar.scrollPoint = gridScrollSlot.value;
 
         if (allowResize) {
             final UINumberBox wNB = new UINumberBox(targ.width, app.f.tableSizeTH);

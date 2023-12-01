@@ -18,6 +18,7 @@ import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -28,6 +29,8 @@ import java.io.*;
  * Created on 2/16/17.
  */
 public class StringBlobSchemaElement extends SchemaElement.Leaf {
+    public final EmbedDataKey<Boolean> buttonEDKey = new EmbedDataKey<>();
+
     public StringBlobSchemaElement(App app) {
         super(app);
     }
@@ -51,7 +54,7 @@ public class StringBlobSchemaElement extends SchemaElement.Leaf {
                 }
             }
         });
-        AggregateSchemaElement.hookButtonForPressPreserve(launcher, this, target, importer, "import");
+        AggregateSchemaElement.hookButtonForPressPreserve(launcher, target, importer, buttonEDKey);
         UISplitterLayout usl = new UISplitterLayout(new UITextButton(T.s.bExportEdit, app.f.blobTH, new Runnable() {
             @Override
             public void run() {

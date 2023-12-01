@@ -21,6 +21,8 @@ import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.schema.specialized.OSStrHashMapSchemaElement;
+import r48.schema.util.EmbedDataKey;
+import r48.schema.util.EmbedDataSlot;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -35,6 +37,9 @@ import java.util.function.Function;
 public class HashSchemaElement extends SchemaElement {
     public SchemaElement keyElem, valElem;
     public boolean flexible;
+    public final EmbedDataKey<Double> scrollPointKey = new EmbedDataKey<>();
+    public final EmbedDataKey<IRIO> keyWorkspaceKey = new EmbedDataKey<>();
+    public final EmbedDataKey<String> searchTermKey = new EmbedDataKey<>();
 
     public HashSchemaElement(App app, SchemaElement keySE, SchemaElement opaqueSE, boolean flexible) {
         super(app);
@@ -45,8 +50,9 @@ public class HashSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
-        IRIO preWorkspace = (IRIO) launcher.getEmbedObject(this, target, "keyWorkspace");
+        final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
+        EmbedDataSlot<IRIO> keyWorkspaceSlot = launcher.embedSlot(target, keyWorkspaceKey, null);
+        IRIO preWorkspace = keyWorkspaceSlot.value;
         if (preWorkspace == null) {
             preWorkspace = new IRIOGeneric(app.encoding);
             SchemaPath.setDefaultValue(preWorkspace, keyElem, null);
@@ -55,14 +61,9 @@ public class HashSchemaElement extends SchemaElement {
         }
         final IRIO keyWorkspace = preWorkspace;
 
-        final SchemaPath setLocalePath = launcher.getCurrentObject();
-
-        final SchemaPath rioPath = new SchemaPath(keyElem, new IObjectBackend.MockLoadedObject(keyWorkspace), new Runnable() {
-            @Override
-            public void run() {
-                // This may occur from a different page (say, an enum selector), so the more complicated form must be used.
-                launcher.setEmbedObject(setLocalePath, HashSchemaElement.this, target, "keyWorkspace", new IRIOGeneric(app.encoding).setDeepClone(keyWorkspace));
-            }
+        final SchemaPath rioPath = new SchemaPath(keyElem, new IObjectBackend.MockLoadedObject(keyWorkspace), () -> {
+            // This may occur from a different page (say, an enum selector), so the more complicated form must be used.
+            keyWorkspaceSlot.value = new IRIOGeneric(app.encoding).setDeepClone(keyWorkspace);
         });
 
         if (keyWorkspace.getType() == 'i') {
@@ -77,6 +78,7 @@ public class HashSchemaElement extends SchemaElement {
                 }
             }
         }
+        EmbedDataSlot<String> searchTermSlot = launcher.embedSlot(target, searchTermKey, "");
         // similar to the array schema, this is a containing object with access to local information
         Runnable rebuildSection = new Runnable() {
             // "Here come the hax!"
@@ -87,16 +89,10 @@ public class HashSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 uiSV.panelsClear();
-                String oldSearchTerm = (String) launcher.getEmbedObject(HashSchemaElement.this, target, "searchTerm");
-                if (oldSearchTerm == null)
-                    oldSearchTerm = "";
-                final UITextBox searchBox = new UITextBox(oldSearchTerm, app.f.schemaFieldTH);
-                searchBox.onEdit = new Runnable() {
-                    @Override
-                    public void run() {
-                        launcher.setEmbedObject(HashSchemaElement.this, target, "searchTerm", searchBox.getText());
-                        trigger();
-                    }
+                final UITextBox searchBox = new UITextBox(searchTermSlot.value, app.f.schemaFieldTH);
+                searchBox.onEdit = () -> {
+                    searchTermSlot.value = searchBox.getText();
+                    trigger();
                 };
                 uiSV.panelsAdd(new UISplitterLayout(new UILabel(T.s.searchbar, app.f.schemaFieldTH), searchBox, false, 0d));
 

@@ -19,13 +19,12 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.arrays.IArrayInterface.Host;
-import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -41,11 +40,10 @@ public abstract class ArraySchemaElement extends SchemaElement {
     public SchemaElement possibleEnumElement;
 
     // Used for pager state
-    private IntegerSchemaElement myUniqueStateInstance;
+    public final EmbedDataKey<Double> scrollPointKey = new EmbedDataKey<>();
 
     public ArraySchemaElement(App app, int fixedSize, int al1, int ido, IArrayInterface uiHelp) {
         super(app);
-        myUniqueStateInstance = new IntegerSchemaElement(app, 0);
         sizeFixed = fixedSize;
         atLeast = al1;
         indexDisplayOffset = ido;
@@ -60,7 +58,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path2) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
         final App app = launcher.getApp();
 
         uiHelper.provideInterfaceFrom(new Host() {
@@ -78,27 +76,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
             public App getApp() {
                 return app;
             }
-        }, launcher.getValidity(), new Function<String, IArrayInterface.IProperty>() {
-            @Override
-            public IArrayInterface.IProperty apply(final String s) {
-                return new IArrayInterface.IProperty() {
-                    @Override
-                    public void accept(Double v) {
-                        launcher.setEmbedDouble(myUniqueStateInstance, target, s, v);
-                    }
-
-                    @Override
-                    public Double get() {
-                        return launcher.getEmbedDouble(myUniqueStateInstance, target, s);
-                    }
-                };
-            }
-        }, new Supplier<IArrayInterface.ArrayPosition[]>() {
-            @Override
-            public IArrayInterface.ArrayPosition[] get() {
-                return getPositions(target, launcher, path);
-            }
-        });
+        }, launcher.getValidity(), launcher.embedContext(target), () -> getPositions(target, launcher, path));
 
         return uiSVL;
     }

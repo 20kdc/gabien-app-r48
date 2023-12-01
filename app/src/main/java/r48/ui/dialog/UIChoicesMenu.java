@@ -33,12 +33,9 @@ public class UIChoicesMenu extends App.Prx {
         UIScrollLayout usl = new UIScrollLayout(false, app.f.menuS);
         for (int i = 0; i < strings.length; i++) {
             final int fi = i;
-            usl.panelsAdd(new UITextButton(strings[i], app.f.dialogWindowTH, new Runnable() {
-                @Override
-                public void run() {
-                    runnables[fi].run();
-                    selfClose = true;
-                }
+            usl.panelsAdd(new UITextButton(strings[i], app.f.dialogWindowTH, () -> {
+                runnables[fi].run();
+                selfClose = true;
             }));
         }
         proxySetElement(new UISplitterLayout(label, usl, true, 1d), true);

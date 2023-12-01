@@ -12,6 +12,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.GaBIEnUI;
 import gabien.ui.UIElement;
 import gabien.ui.elements.UIBorderedElement;
+import gabien.ui.elements.UIEmpty;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import r48.App;
@@ -51,7 +52,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         if (alias == null)
-            return HiddenSchemaElement.makeHiddenElement();
+            return new UIEmpty();
         final String name = alias.r();
         if (target.getALen() <= index) {
             String tx = T.s.aElmInv;

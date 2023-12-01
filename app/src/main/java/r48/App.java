@@ -36,6 +36,7 @@ import r48.minivm.fn.MVMR48AppLibraries;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
+import r48.search.ByCodeCommandClassifier;
 import r48.search.CommandTag;
 import r48.search.CompoundTextAnalyzer;
 import r48.search.ICommandClassifier;
@@ -121,6 +122,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
         for (ITextAnalyzer ita : textAnalyzers)
             if (ita instanceof ITextAnalyzer.Immutable)
                 cmdClassifiers.add(new ImmutableTextAnalyzerCommandClassifier((ITextAnalyzer.Immutable) ita));
+        cmdClassifiers.add(new ByCodeCommandClassifier());
         // do VM stuff
         vmCtx = new MVMEnvR48((str) -> {
             loadProgress.accept(t.g.loadingProgress.r(str));

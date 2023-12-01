@@ -17,10 +17,12 @@ import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
+import r48.schema.util.EmbedDataKey;
+import r48.schema.util.EmbedDataSlot;
+import r48.schema.util.IEmbedDataContext;
 import r48.tr.pages.TrRoot;
 
 import java.util.LinkedList;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -29,25 +31,21 @@ import java.util.function.Supplier;
  */
 public class PagerArrayInterface implements IArrayInterface {
     public StandardArrayInterface regularArrayInterface = new StandardArrayInterface();
+    public final EmbedDataKey<Boolean> regularArrayModeKey = new EmbedDataKey<>();
+    public final EmbedDataKey<Integer> pageKey = new EmbedDataKey<>();
+    public final EmbedDataKey<Double> pageTabScrollKey = new EmbedDataKey<>();
     @Override
-    public void provideInterfaceFrom(final Host svl, final Supplier<Boolean> valid, final Function<String, IProperty> prop, final Supplier<ArrayPosition[]> getPositions) {
+    public void provideInterfaceFrom(final Host svl, final Supplier<Boolean> valid, final IEmbedDataContext prop, final Supplier<ArrayPosition[]> getPositions) {
         final App app = svl.getApp();
         final TrRoot T = app.t;
         // work out if we want to be in regular array mode
-        final IProperty regularArrayMode = prop.apply("regularArrayMode");
-        final boolean regularArrayModeCurrent = ((int) ((double) regularArrayMode.get())) != 0;
-        Runnable swapModeAndReset = new Runnable() {
-            @Override
-            public void run() {
-                if (regularArrayModeCurrent) {
-                    regularArrayMode.accept(0d);
-                } else {
-                    regularArrayMode.accept(1d);
-                }
-                svl.panelsClear();
-                provideInterfaceFrom(svl, valid, prop, getPositions);
-            }
-        };
+        final EmbedDataSlot<Boolean> regularArrayMode = prop.embedSlot(regularArrayModeKey, false);
+        final boolean regularArrayModeCurrent = regularArrayMode.value;
+        Runnable swapModeAndReset = () -> {
+            regularArrayMode.value = !regularArrayModeCurrent;
+            svl.panelsClear();
+            provideInterfaceFrom(svl, valid, prop, getPositions);
+       };
         if (regularArrayModeCurrent) {
             // regular array mode
             final UITextButton swapModeButton = new UITextButton(T.s.array_bModeRegular, app.f.schemaFieldTH, swapModeAndReset);
@@ -81,21 +79,15 @@ public class PagerArrayInterface implements IArrayInterface {
             UIScrollLayout barLayout = new UIScrollLayout(false, app.f.mapToolbarS);
             if (positions[i].execInsert != null) {
                 final Runnable r = positions[i].execInsert;
-                barLayout.panelsAdd(new UITextButton("+", app.f.schemaFieldTH, new Runnable() {
-                    @Override
-                    public void run() {
-                        r.run();
-                    }
+                barLayout.panelsAdd(new UITextButton("+", app.f.schemaFieldTH, () -> {
+                    r.run();
                 }));
             }
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsert != null) {
                     final Runnable r = positions[i + 1].execInsert;
-                    barLayout.panelsAdd(new UITextButton("+>", app.f.schemaFieldTH, new Runnable() {
-                        @Override
-                        public void run() {
-                            r.run();
-                        }
+                    barLayout.panelsAdd(new UITextButton("+>", app.f.schemaFieldTH, () -> {
+                        r.run();
                     }));
                 }
             }
@@ -110,27 +102,21 @@ public class PagerArrayInterface implements IArrayInterface {
             }
             final IRIO[] copyMe = positions[i].elements;
             if (copyMe != null) {
-                barLayout.panelsAdd(new UITextButton(T.g.bCopy, app.f.schemaFieldTH, new Runnable() {
-                    @Override
-                    public void run() {
-                        IRIOGeneric rio = new IRIOGeneric(app.encoding);
-                        rio.setArray(copyMe.length);
+                barLayout.panelsAdd(new UITextButton(T.g.bCopy, app.f.schemaFieldTH, () -> {
+                    IRIOGeneric rio = new IRIOGeneric(app.encoding);
+                    rio.setArray(copyMe.length);
 
-                        for (int j = 0; j < copyMe.length; j++)
-                            rio.getAElem(j).setDeepClone(copyMe[j]);
+                    for (int j = 0; j < copyMe.length; j++)
+                        rio.getAElem(j).setDeepClone(copyMe[j]);
 
-                        app.theClipboard = rio;
-                    }
+                    app.theClipboard = rio;
                 }));
             }
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsertCopiedArray != null) {
                     final Runnable r = positions[i + 1].execInsertCopiedArray;
-                    barLayout.panelsAdd(new UITextButton(T.g.bPaste, app.f.schemaFieldTH, new Runnable() {
-                        @Override
-                        public void run() {
-                            r.run();
-                        }
+                    barLayout.panelsAdd(new UITextButton(T.g.bPaste, app.f.schemaFieldTH, () -> {
+                        r.run();
                     }));
                 }
             }
@@ -149,26 +135,26 @@ public class PagerArrayInterface implements IArrayInterface {
                 return;
             }
         }
-        final IProperty prop2 = prop.apply("page");
-        final IProperty scrollProp = prop.apply("pageTabScroll");
+        final EmbedDataSlot<Integer> prop2 = prop.embedSlot(pageKey, 0);
+        final EmbedDataSlot<Double> scrollProp = prop.embedSlot(pageTabScrollKey, 0.0d);
         UITabPane utp = new UITabPane(app.f.tabTH, false, false, app.f.schemaPagerTabS) {
             @Override
             public void selectTab(UIElement i) {
                 super.selectTab(i);
-                prop2.accept((double) getTabIndex());
+                prop2.value = getTabIndex();
             }
             @Override
             public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
                 super.update(deltaTime, selected, peripherals);
-                scrollProp.accept(getScrollPoint());
+                scrollProp.value = getScrollPoint();
             }
         };
-        utp.setScrollPoint(scrollProp.get());
+        utp.setScrollPoint(scrollProp.value);
 
         for (UIElement ue : uie)
             utp.addTab(new UITabBar.Tab(ue, new UITabBar.TabIcon[] {}));
         svl.panelsAdd(utp);
-        int state = (int) ((double) prop2.get());
+        int state = prop2.value;
         if (state < 0)
             state = 0;
         if (state >= uie.size())
