@@ -94,13 +94,10 @@ public class StandardArrayInterface implements IArrayInterface {
                         // NOTE: At the end of this code, editor can only be a pure UIAppendButton group.
                         // The reason for this is because it simplifies releasing it all later.
                         if (selectedStart == -1) {
-                            onClick = new Runnable() {
-                                @Override
-                                public void run() {
-                                    selectedStart = mi;
-                                    selectedEnd = mi;
-                                    containerRCL();
-                                }
+                            onClick = () -> {
+                                selectedStart = mi;
+                                selectedEnd = mi;
+                                containerRCL();
                             };
                         } else {
                             // Selection, but not confirming delete
@@ -109,60 +106,42 @@ public class StandardArrayInterface implements IArrayInterface {
                                 final int fixedEnd = selectedEnd;
                                 if (positions[fixedStart].execDelete != null) {
                                     uie = new UIAppendButton(app, "Delete", uie, valid, new String[] {T.g.bConfirm}, new Runnable[] {
-                                        new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                deleteRange(fixedStart, fixedEnd);
-                                            }
+                                        () -> {
+                                            deleteRange(fixedStart, fixedEnd);
                                         }
                                     }, app.f.schemaFieldTH);
                                 }
-                                onClick = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        int miL = tracePositionEnd(positions, mi);
-                                        if (selectedEnd >= miL) {
-                                            selectedStart = -1;
-                                        } else {
-                                            selectedStart = mi;
-                                            selectedEnd = miL;
-                                        }
-                                        containerRCL();
-                                    }
-                                };
-                                uie = new UIAppendButton(T.g.bCopy, uie, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        copyRange(fixedStart, fixedEnd);
+                                onClick = () -> {
+                                    int miL = tracePositionEnd(positions, mi);
+                                    if (selectedEnd >= miL) {
                                         selectedStart = -1;
-                                        containerRCL();
+                                    } else {
+                                        selectedStart = mi;
+                                        selectedEnd = miL;
                                     }
+                                    containerRCL();
+                                };
+                                uie = new UIAppendButton(T.g.bCopy, uie, () -> {
+                                    copyRange(fixedStart, fixedEnd);
+                                    selectedStart = -1;
+                                    containerRCL();
                                 }, app.f.schemaFieldTH);
-                                uie = new UIAppendButton(T.s.array_bCutArr, uie, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        copyRange(fixedStart, fixedEnd);
-                                        deleteRange(fixedStart, fixedEnd);
-                                    }
+                                uie = new UIAppendButton(T.s.array_bCutArr, uie, () -> {
+                                    copyRange(fixedStart, fixedEnd);
+                                    deleteRange(fixedStart, fixedEnd);
                                 }, app.f.schemaFieldTH);
                             } else if ((mi < selectedStart) || (mi > selectedEnd)) {
-                                onClick = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (mi < selectedStart)
-                                            selectedStart = mi;
-                                        if (mi > selectedEnd)
-                                            selectedEnd = mi;
-                                        containerRCL();
-                                    }
+                                onClick = () -> {
+                                    if (mi < selectedStart)
+                                        selectedStart = mi;
+                                    if (mi > selectedEnd)
+                                        selectedEnd = mi;
+                                    containerRCL();
                                 };
                             } else {
-                                onClick = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        selectedStart = -1;
-                                        containerRCL();
-                                    }
+                                onClick = () -> {
+                                    selectedStart = -1;
+                                    containerRCL();
                                 };
                             }
                         }
@@ -173,17 +152,14 @@ public class StandardArrayInterface implements IArrayInterface {
                             label = new UILabel(positions[mi].text, app.f.schemaFieldTH);
                             maxWidth.set(Math.max(label.getWantedSize().width, maxWidth.get()));
                         }
-                        releasers.add(new Runnable() {
-                            @Override
-                            public void run() {
-                                UIElement edit = editor;
-                                while (edit != originalUIE) {
-                                    if (edit instanceof UIAppendButton) {
-                                        ((UIAppendButton) edit).release();
-                                        edit = ((UIAppendButton) edit).getSubElement();
-                                    } else {
-                                        throw new RuntimeException("Append chain didn't lead to element, oh dear");
-                                    }
+                        releasers.add(() -> {
+                            UIElement edit = editor;
+                            while (edit != originalUIE) {
+                                if (edit instanceof UIAppendButton) {
+                                    ((UIAppendButton) edit).release();
+                                    edit = ((UIAppendButton) edit).getSubElement();
+                                } else {
+                                    throw new RuntimeException("Append chain didn't lead to element, oh dear");
                                 }
                             }
                         });
@@ -206,11 +182,8 @@ public class StandardArrayInterface implements IArrayInterface {
                         }
 
                         final UISplitterLayout outerSplit = new UISplitterLayout(label, editor, false, 0);
-                        releasers.add(new Runnable() {
-                            @Override
-                            public void run() {
-                                outerSplit.release();
-                            }
+                        releasers.add(() -> {
+                            outerSplit.release();
                         });
                         uie = outerSplit;
                     } else {

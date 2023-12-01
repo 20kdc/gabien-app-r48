@@ -72,12 +72,12 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
 
     @Override
     public Object getEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop, Object def) {
-        return embedData.getEmbed(locale, source, target, prop, def);
+        return embedData.createSlot(locale, source, target, prop, def).value;
     }
 
     @Override
     public void setEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop, Object dbl) {
-        embedData.setEmbed(locale, source, target, prop, dbl);
+        embedData.createSlot(locale, source, target, prop, dbl).value = dbl;
     }
 
     @Override
