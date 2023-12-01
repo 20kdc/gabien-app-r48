@@ -37,7 +37,6 @@ import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 import r48.ui.dialog.UIEnumChoice;
 
-import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -86,36 +85,27 @@ public class RPGCommandSchemaElement extends SchemaElement {
         final SchemaPath path = path2.tagSEMonitor(target, this, false);
 
         if (showHeader) {
-            UIElement chooseCode = new UIAppendButton(T.s.cmdHelp, new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTH, new Runnable() {
-                @Override
-                public void run() {
-                    launcher.pushObject(path2.newWindow(navigateToCode(launcher, target, new Consumer<int[]>() {
-                        @Override
-                        public void accept(int[] tmp) {
-                            // Templates don't work from here, but the path does
-                            path.changeOccurred(false);
-                        }
-                    }, path, database), target));
-                }
-            }), new Runnable() {
-                @Override
-                public void run() {
-                    int code = (int) target.getIVar("@code").getFX();
-                    RPGCommand rc = database.knownCommands.get(code);
-                    String title = code + " : ";
-                    String result = T.s.cmdUnk;
-                    if (rc != null) {
-                        title += rc.formatName(null);
-                        if (rc.description == null) {
-                            result = T.s.cmdNoDescription;
-                        } else {
-                            result = rc.description.r();
-                        }
+            UIElement chooseCode = new UIAppendButton(T.s.cmdHelp, new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTH, () -> {
+                launcher.pushObject(path2.newWindow(navigateToCode(launcher, target, (_tmp) -> {
+                    // Templates don't work from here, but the path does
+                    path.changeOccurred(false);
+                }, path, database), target));
+            }), () -> {
+                int code = (int) target.getIVar("@code").getFX();
+                RPGCommand rc = database.knownCommands.get(code);
+                String title = code + " : ";
+                String result = T.s.cmdUnk;
+                if (rc != null) {
+                    title += rc.formatName(null);
+                    if (rc.description == null) {
+                        result = T.s.cmdNoDescription;
                     } else {
-                        title += T.s.cmdUnkName;
+                        result = rc.description.r();
                     }
-                    app.ui.launchDialog(title + "\n" + result);
+                } else {
+                    title += T.s.cmdUnkName;
                 }
+                app.ui.launchDialog(title + "\n" + result);
             }, app.f.schemaFieldTH);
 
             return new UISplitterLayout(chooseCode, buildSubElem(target, launcher, path), true, 0);
@@ -166,17 +156,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
     // Used by EventCommandArray for edit-on-create.
     // NOTE: displayPath is the path of the command window
     protected static TempDialogSchemaChoice navigateToCode(final ISchemaHost launcher, final IRIO target, final Consumer<int[]> templateAndConfirm, final SchemaPath path, final CMDB database) {
-        UIEnumChoice.Category[] categories = new UIEnumChoice.Category[database.categories.length];
-        for (int i = 0; i < categories.length; i++) {
-            LinkedList<UIEnumChoice.Option> llo = new LinkedList<UIEnumChoice.Option>();
-            for (Integer key : database.knownCommandOrder) {
-                RPGCommand rc = database.knownCommands.get(key);
-                String text = key + ";" + rc.formatName(null);
-                if (rc.category == i)
-                    llo.add(new UIEnumChoice.Option(text, DMKey.of((long) (int) key)));
-            }
-            categories[i] = new UIEnumChoice.Category(database.categories[i].r(), llo);
-        }
+        UIEnumChoice.Category[] categories = database.buildEnum();
 
         final App app = launcher.getApp();
         final TrRoot T = app.t;

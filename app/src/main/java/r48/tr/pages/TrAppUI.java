@@ -138,4 +138,5 @@ public class TrAppUI extends TrPage {
     public String ccs_tContainsI;
     public String ccs_tEquals;
     public String ccs_tEqualsI;
+    public String ccs_byCode;
 }

@@ -206,5 +206,6 @@
 		tContainsI "Contains: "
 		tEquals "Equals (Exact): "
 		tEqualsI "Equals: "
+		byCode "Specific Command..."
 	)
 )

@@ -53,6 +53,7 @@ public class SDB extends App.Svc {
     private LinkedList<String> remainingExpected = new LinkedList<>();
 
     protected HashMap<String, CMDB> cmdbs = new HashMap<>();
+    private LinkedList<CMDB> cmdbEntries = new LinkedList<>();
     public final SDBHelpers helpers;
 
     public final StandardArrayInterface standardArrayUi = new StandardArrayInterface();
@@ -101,7 +102,9 @@ public class SDB extends App.Svc {
     public void newCMDB(String a0) {
         if (cmdbs.containsKey(a0))
             throw new RuntimeException("Attempted to overwrite CMDB: " + a0);
-        cmdbs.put(a0, new CMDB(this, a0));
+        CMDB cm = new CMDB(this, a0);
+        cmdbs.put(a0, cm);
+        cmdbEntries.add(cm);
     }
 
     public CMDB getCMDB(String arg) {
@@ -175,6 +178,13 @@ public class SDB extends App.Svc {
      */
     public HashSet<String> getAllCMDBIDs() {
         return new HashSet<>(cmdbs.keySet());
+    }
+
+    /**
+     * Gets all CMDBs in a consistent order.
+     */
+    public CMDB[] getAllCMDBs() {
+        return cmdbEntries.toArray(new CMDB[0]);
     }
 
     public LinkedList<ObjectInfo> listFileDefs() {
