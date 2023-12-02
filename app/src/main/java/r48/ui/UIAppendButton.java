@@ -15,6 +15,9 @@ import gabien.ui.*;
 import gabien.ui.elements.UIButton;
 import gabien.ui.elements.UIIconButton;
 import gabien.ui.elements.UITextButton;
+import gabien.ui.elements.UIThemeIconButton;
+import gabien.ui.theming.IIcon;
+import gabien.ui.theming.Theme;
 import gabien.uslx.append.*;
 import r48.App;
 
@@ -32,6 +35,10 @@ public class UIAppendButton extends UIElement.UIPanel {
 
     public UIAppendButton(Art.Symbol s, UIElement holder, Runnable runnable, int h2) {
         this(new UIIconButton(s, h2, runnable), holder);
+    }
+
+    public UIAppendButton(Theme.Attr<IIcon> s, UIElement holder, Runnable runnable, int h2) {
+        this(new UIThemeIconButton(s, h2, runnable), holder);
     }
 
     public UIAppendButton(App app, String s, UIElement holder, Supplier<Boolean> continued, String[] text, Runnable[] runnables, int h2) {
@@ -61,12 +68,13 @@ public class UIAppendButton extends UIElement.UIPanel {
 
     @Override
     public int layoutGetHForW(int width) {
+        // wanted size is used here for consistency
         Size bgb1 = subElement.getWantedSize();
         Size bgb2 = button.getWantedSize();
         if (bgb1.width + bgb2.width <= width) {
             return Math.max(bgb1.height, bgb2.height);
         } else {
-            return bgb1.height + bgb2.height;
+            return subElement.layoutGetHForW(width) + button.layoutGetHForW(width);
         }
     }
 
@@ -80,11 +88,9 @@ public class UIAppendButton extends UIElement.UIPanel {
             subElement.setForcedBounds(this, new Rect(0, 0, r.width - bgb2.width, r.height));
             button.setForcedBounds(this, new Rect(r.width - bgb2.width, 0, bgb2.width, r.height));
         } else {
-            subElement.setForcedBounds(this, new Rect(0, 0, r.width, r.height - bgb2.height));
-            button.setForcedBounds(this, new Rect(0, r.height - bgb2.height, r.width, bgb2.height));
-            // Not a typo! If the width constraint is loosened we could be forced into going back & forth between cases.
-            // This WILL cause an infinite loop in the layout code.
-            // See issue #38 for more details.
+            int b1h = button.layoutGetHForW(r.width);
+            subElement.setForcedBounds(this, new Rect(0, 0, r.width, r.height - b1h));
+            button.setForcedBounds(this, new Rect(0, r.height - b1h, r.width, b1h));
         }
     }
 

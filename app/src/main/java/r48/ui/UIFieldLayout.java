@@ -59,7 +59,7 @@ public class UIFieldLayout extends UIElement.UIPanel {
             a.setForcedBounds(this, new Rect(0, 0, qWidth, mySize.height));
             b.setForcedBounds(this, new Rect(qWidth, 0, mySize.width - qWidth, mySize.height));
         } else {
-            int split = aWanted.height;
+            int split = a.layoutGetHForW(mySize.width);
             a.setForcedBounds(this, new Rect(0, 0, mySize.width, split));
             b.setForcedBounds(this, new Rect(0, split, mySize.width, mySize.height - split));
         }
@@ -90,7 +90,7 @@ public class UIFieldLayout extends UIElement.UIPanel {
             int req2Width = qWidth + bWanted.width;
             // Cannot fit within constraints.
             if (width < req2Width)
-                reqHeight = aWanted.height + bWanted.height;
+                return a.layoutGetHForW(width) + b.layoutGetHForW(width);
         }
         return reqHeight;
     }
