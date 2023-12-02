@@ -45,7 +45,7 @@ public class PagerArrayInterface implements IArrayInterface {
             regularArrayMode.value = !regularArrayModeCurrent;
             svl.panelsClear();
             provideInterfaceFrom(svl, valid, prop, getPositions);
-       };
+        };
         if (regularArrayModeCurrent) {
             // regular array mode
             final UITextButton swapModeButton = new UITextButton(T.s.array_bModeRegular, app.f.schemaFieldTH, swapModeAndReset);
@@ -168,5 +168,6 @@ public class PagerArrayInterface implements IArrayInterface {
             state = uie.size() - 1;
         if (uie.size() > 0)
             utp.selectTab(uie.get(state));
+        svl.panelsFinished();
     }
 }
