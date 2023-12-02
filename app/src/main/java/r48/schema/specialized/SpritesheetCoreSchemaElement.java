@@ -29,9 +29,9 @@ public class SpritesheetCoreSchemaElement extends SchemaElement.Leaf {
     public int defaultVal;
 
     public Function<IRIO, IRIO> numberProvider;
-    public Function<IRIO, ISpritesheetProvider> provider;
+    public Function<RORIO, ISpritesheetProvider> provider;
 
-    public SpritesheetCoreSchemaElement(App app, Function<RORIO, String> propTranslated, int def, Function<IRIO, IRIO> nprov, Function<IRIO, ISpritesheetProvider> core) {
+    public SpritesheetCoreSchemaElement(App app, Function<RORIO, String> propTranslated, int def, Function<IRIO, IRIO> nprov, Function<RORIO, ISpritesheetProvider> core) {
         super(app);
         text = propTranslated;
         defaultVal = def;

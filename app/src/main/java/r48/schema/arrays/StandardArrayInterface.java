@@ -14,6 +14,7 @@ import gabien.ui.elements.UIEmpty;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
+import gabien.ui.theming.IIcon;
 import gabien.ui.theming.Theme;
 import gabien.uslx.append.*;
 import r48.App;
@@ -23,7 +24,6 @@ import r48.schema.util.EmbedDataKey;
 import r48.schema.util.EmbedDataSlot;
 import r48.schema.util.IEmbedDataContext;
 import r48.tr.pages.TrRoot;
-import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 import r48.ui.UIMenuButton;
@@ -208,7 +208,7 @@ public class StandardArrayInterface implements IArrayInterface {
                             // Needs tree thingy!
                             IRIO treeCheckKey = thisAPos.elements[0];
                             boolean inSet = indentTreeClosed.containsKey(treeCheckKey);
-                            Art.Symbol sym = inSet ? Art.Symbol.BarCornerUR : Art.Symbol.BarVBranchR;
+                            Theme.Attr<IIcon> sym = inSet ? Theme.IC_ARROW_RIGHT : Theme.IC_ARROW_DOWN;
                             label = new UIAppendButton(sym, label, () -> {
                                 // Toggle
                                 WeakHashMap<IRIO, Object> itc2 = new WeakHashMap<IRIO, Object>(indentTreeClosed);

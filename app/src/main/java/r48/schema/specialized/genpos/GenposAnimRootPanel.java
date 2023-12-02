@@ -17,8 +17,6 @@ import r48.ui.UIAppendButton;
 import r48.ui.UITimeframeControl;
 
 import java.util.HashMap;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Animation Software For Serious Animation Purposes.
@@ -68,56 +66,31 @@ public class GenposAnimRootPanel extends App.Prx {
                 tweening.disablePropertyKey(target.getFrameIdx(), framePanelController.cellSelection.cellNumber, prop, track);
             }
         }, launcher);
-        timeframe = new UITimeframeControl(app, new Supplier<Integer>() {
-            @Override
-            public Integer get() {
-                return target.getFrameIdx();
-            }
-        }, new Supplier<Integer>() {
-            @Override
-            public Integer get() {
-                return target.getFrameCount();
-            }
-        }, new Consumer<Integer>() {
-            @Override
-            public void accept(Integer integer) {
-                target.setFrameIdx(integer);
-                frameChanged();
-            }
+        timeframe = new UITimeframeControl(app, target::getFrameIdx, target::getFrameCount, (integer) -> {
+            target.setFrameIdx(integer);
+            frameChanged();
         }, recommendedFramerate);
 
         UIElement toolbar = timeframe;
 
-        toolbar = new UIAppendButton(T.g.bCopy, toolbar, new Runnable() {
-            @Override
-            public void run() {
-                app.theClipboard = new IRIOGeneric(app.encoding).setDeepClone(target.getFrame());
-            }
+        toolbar = new UIAppendButton(T.g.bCopy, toolbar, () -> {
+            app.theClipboard = new IRIOGeneric(app.encoding).setDeepClone(target.getFrame());
         }, app.f.rmaTimeframeTH);
-        toolbar = new UIAppendButton(T.g.bPaste, toolbar, new Runnable() {
-            @Override
-            public void run() {
-                RORIO ro = app.theClipboard;
-                if (target.acceptableForPaste(ro)) {
-                    target.getFrame().setDeepClone(ro);
-                    target.modifiedFrames();
-                    incomingModification();
-                }
-            }
-        }, app.f.rmaTimeframeTH);
-        toolbar = new UIAppendButton("+", toolbar, new Runnable() {
-            @Override
-            public void run() {
-                target.insertFrame(new IRIOGeneric(app.encoding).setDeepClone(target.getFrame()));
+        toolbar = new UIAppendButton(T.g.bPaste, toolbar, () -> {
+            RORIO ro = app.theClipboard;
+            if (target.acceptableForPaste(ro)) {
+                target.getFrame().setDeepClone(ro);
+                target.modifiedFrames();
                 incomingModification();
             }
         }, app.f.rmaTimeframeTH);
-        toolbar = new UIAppendButton("-", toolbar, new Runnable() {
-            @Override
-            public void run() {
-                target.deleteFrame();
-                incomingModification();
-            }
+        toolbar = new UIAppendButton("+", toolbar, () -> {
+            target.insertFrame(new IRIOGeneric(app.encoding).setDeepClone(target.getFrame()));
+            incomingModification();
+        }, app.f.rmaTimeframeTH);
+        toolbar = new UIAppendButton("-", toolbar, () -> {
+            target.deleteFrame();
+            incomingModification();
         }, app.f.rmaTimeframeTH);
 
         proxySetElement(new UISplitterLayout(toolbar, framePanelController.rootLayout, true, 0), true);

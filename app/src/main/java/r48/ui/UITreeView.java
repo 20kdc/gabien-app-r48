@@ -42,8 +42,14 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
         // This has to be done in advance, because if we do it later, the layout changes go weird.
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
-        for (TreeElement te : e)
+        TreeElement lastElement = null; // to set hasChildren
+        for (TreeElement te : e) {
+            if (lastElement != null)
+                if (te.indent > lastElement.indent)
+                    lastElement.hasChildren = true;
+            lastElement = te;
             layoutAddElement(te.innerElement);
+        }
         layoutRecalculateMetrics();
     }
 
@@ -70,21 +76,15 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
         // 'tis the cost of buttons that are allowed to specify new sizes.
         // Could easily override said buttons, but that would lose the point.
         // Keeping this in mind, nodeWidth is now final, and for most symbols direct w/h is used.
-        TreeElement lastElement = null; // to set hasChildren
         int invisibleAboveIndent = 0x7FFFFFFF; // to hide unexpanded nodes
         int width = 0;
         for (TreeElement te : elements) {
             te.visible = te.indent <= invisibleAboveIndent;
-            if (lastElement != null)
-                if (te.indent > lastElement.indent)
-                    lastElement.hasChildren = true;
             int h = te.innerElement.getWantedSize().height;
-            h = te.innerElement.getWantedSize().height;
             width = Math.max(width, te.innerElement.getWantedSize().width);
             if (!te.visible)
                 h = 0;
             y += h;
-            lastElement = te;
             // If we're visible, set invisibleAboveIndent.
             // If expanded, then set it to "infinite"
             // Otherwise, set it to current indent, so this code will only run again on a indent <= this one
@@ -92,6 +92,25 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
                 invisibleAboveIndent = te.expanded ? 0x7FFFFFFF : te.indent;
         }
         return new Size(width, y);
+    }
+
+    @Override
+    public int layoutGetHForW(int width) {
+        int y = 0;
+        int invisibleAboveIndent = 0x7FFFFFFF; // to hide unexpanded nodes
+        for (TreeElement te : elements) {
+            te.visible = te.indent <= invisibleAboveIndent;
+            int h = te.innerElement.layoutGetHForW(width);
+            if (!te.visible)
+                h = 0;
+            y += h;
+            // If we're visible, set invisibleAboveIndent.
+            // If expanded, then set it to "infinite"
+            // Otherwise, set it to current indent, so this code will only run again on a indent <= this one
+            if (te.visible)
+                invisibleAboveIndent = te.expanded ? 0x7FFFFFFF : te.indent;
+        }
+        return y;
     }
 
     @Override

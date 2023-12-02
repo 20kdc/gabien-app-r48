@@ -9,6 +9,7 @@ package r48.ui;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.Function;
 
 import gabien.GaBIEn;
 import gabien.GaBIEnUI;
@@ -263,7 +264,7 @@ public class Art {
         Art.drawSymbol(igd, Art.Symbol.Target, px + (tileSize / 4), py + (tileSize / 4), tileSize / 2, false, false);
     }
 
-    public enum Symbol implements IIcon {
+    public enum Symbol implements IIcon, Function<Boolean, IIcon> {
         // NOTE! If you can't tell the difference in grayscale, it's too alike.
         Map, BarV, BarVBranchR, BarCornerUR,
         Target, Area, Expandable, Play,
@@ -279,9 +280,18 @@ public class Art {
         // "Fill" is for a flood fill, so it's a bucket
         Line, Fill;
 
+        private final IIcon forLightTheme = (igd, x, y, size) -> {
+            drawSymbol(igd, this, x, y, size, false, true);
+        };
+
         @Override
         public void draw(IGrDriver igd, int x, int y, int size) {
             drawSymbol(igd, this, x, y, size, false, false);
+        }
+
+        @Override
+        public IIcon apply(Boolean t) {
+            return t ? forLightTheme : this;
         }
     }
 }
