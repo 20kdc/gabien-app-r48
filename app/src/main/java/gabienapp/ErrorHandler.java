@@ -121,13 +121,12 @@ public class ErrorHandler {
             } catch (UnsupportedEncodingException e1) {
                 throw new RuntimeException(e1);
             }
-            UIScrollLayout scroll = new UIScrollLayout(true, lun.c.f.generalS) {
+            UIScrollLayout scroll = new UIScrollLayout(true, lun.c.f.generalS, new UILabel(r, lun.c.f.helpTH)) {
                 @Override
                 public String toString() {
                     return "Error...";
                 }
             };
-            scroll.panelsAdd(new UILabel(r, lun.c.f.helpTH));
             scroll.setForcedBounds(null, new Rect(0, 0, lun.c.f.scaleGuess(640), lun.c.f.scaleGuess(480)));
             uiTicker.accept(scroll);
             failed = scroll;

@@ -6,11 +6,13 @@
  */
 package r48.search;
 
+import java.util.LinkedList;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
-import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
@@ -37,7 +39,7 @@ public class ByCodeCommandClassifier implements ICommandClassifier {
             // Uhhhh
             return new Instance() {
                 @Override
-                public void setupEditor(@NonNull UIScrollLayout usl, @NonNull Runnable onEdit) {
+                public void setupEditor(@NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit) {
                 }
 
                 @Override
@@ -50,7 +52,7 @@ public class ByCodeCommandClassifier implements ICommandClassifier {
             public @NonNull CMDB cmdb = cmdbs[0];
             public @Nullable RPGCommand rpgCommand;
             @Override
-            public void setupEditor(@NonNull UIScrollLayout usl, @NonNull Runnable onEdit) {
+            public void setupEditor(@NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit) {
                 UIChoiceButton<CMDB> whichDB = new UIChoiceButton<CMDB>(app, app.f.dialogWindowTH, cmdb, cmdbs) {
                     @Override
                     public String choiceToText(CMDB choice) {
@@ -64,7 +66,7 @@ public class ByCodeCommandClassifier implements ICommandClassifier {
                         onEdit.run();
                     }
                 };
-                usl.panelsAdd(whichDB);
+                usl.add(whichDB);
                 String buttonText = rpgCommand != null ? rpgCommand.formatName(null) : "";
                 UITextButton utb = new UITextButton(buttonText, app.f.dialogWindowTH, null);
                 utb.onClick = () -> {
@@ -73,7 +75,7 @@ public class ByCodeCommandClassifier implements ICommandClassifier {
                         onEdit.run();
                     }, cmdb.buildEnum(), buttonText, UIEnumChoice.EntryMode.INT));
                 };
-                usl.panelsAdd(utb);
+                usl.add(utb);
             }
 
             @Override

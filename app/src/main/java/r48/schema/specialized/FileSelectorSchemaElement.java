@@ -15,7 +15,6 @@ import gabien.ui.elements.UIEmpty;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.elements.UIThumbnail;
-import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.app.AppMain;
@@ -29,6 +28,7 @@ import r48.ui.spacing.UIBorderedSubpanel;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * Gives a list of items (removing the final extension).
@@ -50,13 +50,13 @@ public class FileSelectorSchemaElement extends SchemaElement.Leaf {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         app.ui.performFullImageFlush();
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
         String[] strs = GaBIEn.listEntries(AppMain.autoDetectWindows(app.rootPath + pathExtender));
         if (strs == null)
             return new UILabel("The folder does not exist or was not accessible.", app.f.schemaFieldTH);
         Arrays.sort(strs, (a, b) -> a.compareToIgnoreCase(b));
         HashSet<String> hitStrs = new HashSet<String>();
         UIElement waitingLeft = null;
+        LinkedList<UIElement> uiSVL = new LinkedList<>();
         for (String s : strs) {
             final String sStripped = stripExt(s);
             if (hitStrs.contains(sStripped))
@@ -82,16 +82,16 @@ public class FileSelectorSchemaElement extends SchemaElement.Leaf {
                 res = selectButton;
             }
             if (waitingLeft != null) {
-                uiSVL.panelsAdd(new UISplitterLayout(waitingLeft, res, false, 0.5d));
+                uiSVL.add(new UISplitterLayout(waitingLeft, res, false, 0.5d));
                 waitingLeft = null;
             } else {
                 waitingLeft = res;
             }
         }
         if (waitingLeft != null)
-            uiSVL.panelsAdd(new UISplitterLayout(waitingLeft, new UIEmpty(), false, 0.5d));
+            uiSVL.add(new UISplitterLayout(waitingLeft, new UIEmpty(), false, 0.5d));
         app.ui.performFullImageFlush();
-        return uiSVL;
+        return AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target, uiSVL);
     }
 
     private String stripExt(String s) {

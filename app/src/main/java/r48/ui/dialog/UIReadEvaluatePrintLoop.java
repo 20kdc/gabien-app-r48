@@ -6,6 +6,9 @@
  */
 package r48.ui.dialog;
 
+import java.util.LinkedList;
+
+import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIProxy;
 import gabien.ui.elements.UIChatBox;
 import gabien.ui.elements.UILabel;
@@ -24,6 +27,7 @@ import r48.minivm.MVMU;
 public class UIReadEvaluatePrintLoop extends UIProxy {
     public final Config c;
     public final UIScrollLayout view;
+    public final LinkedList<UIElement> viewList = new LinkedList<>();
     public final UIChatBox text;
     public final String title;
 
@@ -69,6 +73,7 @@ public class UIReadEvaluatePrintLoop extends UIProxy {
     public void write(String string) {
         // for ease of copying
         System.out.println(string);
-        view.panelsAdd(new UILabel(string, c.f.dialogWindowTH));
+        viewList.add(new UILabel(string, c.f.dialogWindowTH));
+        view.panelsSet(viewList);
     }
 }

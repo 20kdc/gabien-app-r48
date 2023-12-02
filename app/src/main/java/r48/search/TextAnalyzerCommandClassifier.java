@@ -7,10 +7,12 @@
 
 package r48.search;
 
+import java.util.LinkedList;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.UIElement;
 import r48.App;
 import r48.dbs.RPGCommand;
 import r48.io.data.RORIO;
@@ -37,7 +39,7 @@ public class TextAnalyzerCommandClassifier implements ICommandClassifier {
         final ITextAnalyzer.Instance instance = analyzer.instance(app);
         return new Instance() {
             @Override
-            public void setupEditor(@NonNull UIScrollLayout usl, @NonNull Runnable onEdit) {
+            public void setupEditor(@NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit) {
                 instance.setupEditor(usl, onEdit);
             }
 

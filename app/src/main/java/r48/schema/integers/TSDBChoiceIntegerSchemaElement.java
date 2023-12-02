@@ -7,8 +7,6 @@
 
 package r48.schema.integers;
 
-import java.util.function.Consumer;
-
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.layouts.UIScrollLayout;
@@ -35,7 +33,6 @@ public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
 
     @Override
     public ActiveInteger buildIntegerEditor(long oldVal, final IIntegerContext context) {
-        UIScrollLayout usl = context.newSVL();
         final ActiveInteger ai = super.buildIntegerEditor(oldVal, context);
         final int sprScale = app.f.getSpriteScale();
         final UIGrid uig = new UIGrid(app, tileSize * sprScale, (tileSize * sprScale) + app.f.gridTH + 1, maxCount) {
@@ -57,23 +54,17 @@ public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
             }
         };
         uig.setSelected((int) oldVal);
-        uig.onSelectionChange = new Runnable() {
-            @Override
-            public void run() {
-                context.update(uig.getSelected());
-            }
+        uig.onSelectionChange = () -> {
+            context.update(uig.getSelected());
         };
-        usl.panelsAdd(uig);
-        usl.panelsAdd(ai.uie);
-        return new ActiveInteger(usl, new Consumer<Long>() {
-            @Override
-            public void accept(Long aLong) {
-                Runnable osc = uig.onSelectionChange;
-                uig.onSelectionChange = null;
-                uig.setSelected((int) (long) aLong);
-                uig.onSelectionChange = osc;
-                ai.onValueChange.accept(aLong);
-            }
+        UIScrollLayout usl = context.newSVL();
+        usl.panelsSet(uig, ai.uie);
+        return new ActiveInteger(usl, (aLong) -> {
+            Runnable osc = uig.onSelectionChange;
+            uig.onSelectionChange = null;
+            uig.setSelected((int) (long) aLong);
+            uig.onSelectionChange = osc;
+            ai.onValueChange.accept(aLong);
         });
     }
 }

@@ -22,7 +22,6 @@ import r48.cfg.FontSizes.FontSizeField;
 import r48.tr.pages.TrRoot;
 
 import java.util.LinkedList;
-import java.util.function.Function;
 
 /**
  * Created on 1/29/17.
@@ -56,50 +55,35 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         lastFontSizerSize = c.f.fontSizerTH;
         lastSBSize = c.f.generalS;
 
-        outerLayout.panelsClear();
+        LinkedList<UIElement> elms = new LinkedList<>();
         outerLayout.scrollbar.scrollPoint = iniScroll;
         final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
         final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton("*2", c.f.fontSizerTH, new Runnable() {
-            @Override
-            public void run() {
-                for (Runnable r : doubleAll)
-                    r.run();
-                apply.run();
-                refreshLayout(false);
-            }
-        }), new UITextButton("/2", c.f.fontSizerTH, new Runnable() {
-            @Override
-            public void run() {
-                for (Runnable r : halfAll)
-                    r.run();
-                apply.run();
-                refreshLayout(false);
-            }
+        elms.add(new UISplitterLayout(new UITextButton("*2", c.f.fontSizerTH, () -> {
+            for (Runnable r : doubleAll)
+                r.run();
+            apply.run();
+            refreshLayout(false);
+        }), new UITextButton("/2", c.f.fontSizerTH, () -> {
+            for (Runnable r : halfAll)
+                r.run();
+            apply.run();
+            refreshLayout(false);
         }), false, 1, 2));
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(T.g.wordSave, c.f.fontSizerTH, new Runnable() {
-            @Override
-            public void run() {
-                ConfigIO.save(c);
-            }
-        }), new UITextButton(T.g.wordLoad, c.f.fontSizerTH, new Runnable() {
-            @Override
-            public void run() {
-                ConfigIO.load(false, c);
-                apply.run();
-                refreshLayout(true);
-            }
+        elms.add(new UISplitterLayout(new UITextButton(T.g.wordSave, c.f.fontSizerTH, () -> {
+            ConfigIO.save(c);
+        }), new UITextButton(T.g.wordLoad, c.f.fontSizerTH, () -> {
+            ConfigIO.load(false, c);
+            apply.run();
+            refreshLayout(true);
         }), false, 1, 2));
-        UITextButton fontButton = new UITextButton("", c.f.fontSizerTH, new Runnable() {
-            @Override
-            public void run() {
-                if (c.fontOverride != null) {
-                    c.fontOverride = null;
-                } else {
-                    c.fontOverride = GaBIEn.getFontOverrides()[0];
-                }
-                apply.run();
+        UITextButton fontButton = new UITextButton("", c.f.fontSizerTH, () -> {
+            if (c.fontOverride != null) {
+                c.fontOverride = null;
+            } else {
+                c.fontOverride = GaBIEn.getFontOverrides()[0];
             }
+            apply.run();
         }) {
             @Override
             public void updateContents(double deltaTime, boolean selected, IPeripherals peripherals) {
@@ -113,71 +97,51 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 super.updateContents(deltaTime, selected, peripherals);
             }
         };
-        final UITextButton fontButtonAppend = new UITextButton(T.g.fsc_fontEvenSmall, c.f.fontSizerTH, new Runnable() {
-            @Override
-            public void run() {
-            }
-        }).togglable(c.fontOverrideUE8);
-        fontButtonAppend.onClick = new Runnable() {
-            @Override
-            public void run() {
-                c.fontOverrideUE8 = fontButtonAppend.state;
-                apply.run();
-            }
+        final UITextButton fontButtonAppend = new UITextButton(T.g.fsc_fontEvenSmall, c.f.fontSizerTH, null)
+                .togglable(c.fontOverrideUE8);
+        fontButtonAppend.onClick = () -> {
+            c.fontOverrideUE8 = fontButtonAppend.state;
+            apply.run();
         };
-        outerLayout.panelsAdd(new UISplitterLayout(fontButton, fontButtonAppend, false, 0.5));
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton("", c.f.fontSizerTH, new Runnable() {
-            @Override
-            public void run() {
-                c.borderTheme++;
-                apply.run();
-            }
+        elms.add(new UISplitterLayout(fontButton, fontButtonAppend, false, 0.5));
+        elms.add(new UISplitterLayout(new UITextButton("", c.f.fontSizerTH, () -> {
+            c.borderTheme++;
+            apply.run();
         }) {
             @Override
             public void updateContents(double deltaTime, boolean selected, IPeripherals peripherals) {
                 setText(T.g.fsc_theme.r(c.borderTheme));
                 super.updateContents(deltaTime, selected, peripherals);
             }
-        }, new UITextButton(T.g.fsc_externalWindowing, c.f.fontSizerTH, new Runnable() {
-            @Override
-            public void run() {
-                c.windowingExternal = !c.windowingExternal;
-            }
+        }, new UITextButton(T.g.fsc_externalWindowing, c.f.fontSizerTH, () -> {
+            c.windowingExternal = !c.windowingExternal;
         }).togglable(c.windowingExternal), false, 0.5));
         for (final FontSizeField field : c.f.fields) {
-            doubleAll.add(new Runnable() {
-                @Override
-                public void run() {
-                    int v = field.get() * 2;
-                    if (v == 12)
-                        v = 8;
-                    field.accept(v);
-                }
+            doubleAll.add(() -> {
+                int v = field.get() * 2;
+                if (v == 12)
+                    v = 8;
+                field.accept(v);
             });
-            halfAll.add(new Runnable() {
-                @Override
-                public void run() {
-                    int v = field.get() / 2;
-                    if (v < field.minValue)
-                        v = field.minValue;
-                    field.accept(v);
-                }
+            halfAll.add(() -> {
+                int v = field.get() / 2;
+                if (v < field.minValue)
+                    v = field.minValue;
+                field.accept(v);
             });
-            UIAdjuster tb = new UIAdjuster(c.f.fontSizerTH, field.get(), new Function<Long, Long>() {
-                @Override
-                public Long apply(Long aLong) {
-                    int nv = (int) (long) aLong;
-                    if (nv < 1)
-                        nv = 1;
-                    field.accept(nv);
-                    apply.run();
-                    refreshLayout(false);
-                    return (long) nv;
-                }
+            UIAdjuster tb = new UIAdjuster(c.f.fontSizerTH, field.get(), (aLong) -> {
+                int nv = (int) (long) aLong;
+                if (nv < 1)
+                    nv = 1;
+                field.accept(nv);
+                apply.run();
+                refreshLayout(false);
+                return (long) nv;
             });
             tb.accept(Integer.toString(field.get()));
             // NOTE: This is correct behavior due to an 'agreement' in FontSizes that this should be correct
-            outerLayout.panelsAdd(new UISplitterLayout(new UILabel(field.trName(T.fontSizes), c.f.fontSizerTH), tb, false, 4, 5));
+            elms.add(new UISplitterLayout(new UILabel(field.trName(T.fontSizes), c.f.fontSizerTH), tb, false, 4, 5));
         }
+        outerLayout.panelsSet(elms);
     }
 }

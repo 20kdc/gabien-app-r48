@@ -7,10 +7,12 @@
 
 package r48.map.mapinfos;
 
+import java.util.LinkedList;
 import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
@@ -48,7 +50,7 @@ public class UISaveScanMapInfos extends App.Prx {
     }
 
     public void reload() {
-        mainLayout.panelsClear();
+        LinkedList<UIElement> elms = new LinkedList<>();
         for (int i = first; i <= last; i++) {
             final int fi = i;
             try {
@@ -56,31 +58,23 @@ public class UISaveScanMapInfos extends App.Prx {
                 final String gum = gumMapping.apply(i);
                 if (rio != null) {
                     String obj = app.format(rio.getObject());
-                    mainLayout.panelsAdd(new UITextButton(T.m.dSaveColon.r(gum, obj), app.f.mapInfosTH, new Runnable() {
-                        @Override
-                        public void run() {
-                            context.loadMap(gum);
-                        }
+                    elms.add(new UITextButton(T.m.dSaveColon.r(gum, obj), app.f.mapInfosTH, () -> {
+                        context.loadMap(gum);
                     }));
                 } else {
-                    mainLayout.panelsAdd(new UIAppendButton(T.m.bNew, new UILabel(T.m.unavailable.r(gum), app.f.mapInfosTH), new Runnable() {
-                        @Override
-                        public void run() {
-                            context.loadMap(gum);
-                            reload();
-                        }
+                    elms.add(new UIAppendButton(T.m.bNew, new UILabel(T.m.unavailable.r(gum), app.f.mapInfosTH), () -> {
+                        context.loadMap(gum);
+                        reload();
                     }, app.f.mapInfosTH));
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 UILabel warning = new UILabel(T.m.internalErr, app.f.mapInfosTH);
-                mainLayout.panelsAdd(new UIAppendButton(T.m.bAttemptLoadAnyway, warning, new Runnable() {
-                    @Override
-                    public void run() {
-                        context.loadMap(gumMapping.apply(fi));
-                    }
+                elms.add(new UIAppendButton(T.m.bAttemptLoadAnyway, warning, () -> {
+                    context.loadMap(gumMapping.apply(fi));
                 }, app.f.mapInfosTH));
             }
         }
+        mainLayout.panelsSet(elms);
     }
 }

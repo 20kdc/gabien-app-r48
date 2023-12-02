@@ -87,18 +87,12 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
             @Override
             public void run() {
                 clearTools(thisButton);
-                UIScrollLayout svl = new UIScrollLayout(true, app.f.generalS);
-                svl.panelsAdd(new UITextButton(T.u.disableMapRendering, app.f.mapLayertabTH, new Runnable() {
-                    @Override
-                    public void run() {
-                        viewGiver.setMasterRenderDisableSwitch(!viewGiver.getMasterRenderDisableSwitch());
-                    }
+                LinkedList<UIElement> svll = new LinkedList<>();
+                svll.add(new UITextButton(T.u.disableMapRendering, app.f.mapLayertabTH, () -> {
+                    viewGiver.setMasterRenderDisableSwitch(!viewGiver.getMasterRenderDisableSwitch());
                 }).togglable(viewGiver.getMasterRenderDisableSwitch()));
-                svl.panelsAdd(new UITextButton(T.u.disableMapAnimation, app.f.mapLayertabTH, new Runnable() {
-                    @Override
-                    public void run() {
-                        viewGiver.setMasterAnimDisableSwitch(!viewGiver.getMasterAnimDisableSwitch());
-                    }
+                svll.add(new UITextButton(T.u.disableMapAnimation, app.f.mapLayertabTH, () -> {
+                    viewGiver.setMasterAnimDisableSwitch(!viewGiver.getMasterAnimDisableSwitch());
                 }).togglable(viewGiver.getMasterAnimDisableSwitch()));
                 for (int i = 0; i < view.mapTable.renderer.layers.length; i++) {
                     final int fi = i;
@@ -108,8 +102,9 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
                             view.layerVis[fi] = !view.layerVis[fi];
                         }
                     }).togglable(view.layerVis[i]);
-                    svl.panelsAdd(layerVis);
+                    svll.add(layerVis);
                 }
+                UIScrollLayout svl = new UIScrollLayout(true, app.f.generalS, svll);
                 viewGiver.accept(UIMTBase.wrapUIMT(viewGiver, svl));
             }
         }).togglable(false));
@@ -171,12 +166,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
             }
         }).togglable(false));
 
-        // finish layout
-        int maxH = 1;
-        for (UITextButton utb : tools) {
-            rootLayout.panelsAdd(utb);
-            maxH = Math.max(maxH, utb.getWantedSize().height);
-        }
+        rootLayout.panelsSet(tools);
     }
 
     public void clearTools(int t) {

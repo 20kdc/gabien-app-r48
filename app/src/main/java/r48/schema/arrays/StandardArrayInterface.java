@@ -240,6 +240,7 @@ public class StandardArrayInterface implements IArrayInterface {
                             uie = addAdditionButton(uie, clarifyEmpty, positions[mi + 1].execInsert, positions[mi + 1].execInsertCopiedArray);
                     uiSVL.panelsAdd(uie);
                 }
+                uiSVL.panelsFinished();
             }
 
             private void copyRange(int fixedStart, int fixedEnd) {

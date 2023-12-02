@@ -297,8 +297,7 @@ public class AppUI extends App.Svc {
             }
             hsc.accept(linkId);
         };
-        final UIScrollLayout uus = new UIScrollLayout(true, app.f.generalS);
-        uus.panelsAdd(uis);
+        final UIScrollLayout uus = new UIScrollLayout(true, app.f.generalS, uis);
         Size rootSize = wm.getRootSize();
         final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(T.u.helpIndex, uil, () -> {
             hsc.loadPage(0);
@@ -357,14 +356,12 @@ public class AppUI extends App.Svc {
 
     public void launchDialog(String s, String title) {
         UILabel ul = new UILabel(s, app.f.textDialogDescTH);
-        UIScrollLayout svl = new UIScrollLayout(true, app.f.generalS) {
+        UIScrollLayout svl = new UIScrollLayout(true, app.f.generalS, ul) {
             @Override
             public String toString() {
                 return title;
             }
         };
-        svl.panelsAdd(ul);
-        svl.panelsFinished();
         wm.createWindowSH(svl);
     }
 

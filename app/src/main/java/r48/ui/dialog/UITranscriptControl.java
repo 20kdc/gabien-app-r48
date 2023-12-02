@@ -71,9 +71,7 @@ public class UITranscriptControl extends App.Prx {
     }
 
     private void refreshContents() {
-        layout.panelsClear();
-
-        layout.panelsAdd(new UITextButton(T.g.bConfirm, app.f.dialogWindowTH, new Runnable() {
+        layout.panelsSet(new UITextButton(T.g.bConfirm, app.f.dialogWindowTH, new Runnable() {
             @Override
             public void run() {
                 PrintStream ps = null;

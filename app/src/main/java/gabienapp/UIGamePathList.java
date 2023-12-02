@@ -6,8 +6,10 @@
  */
 package gabienapp;
 
+import java.util.LinkedList;
 import java.util.List;
 
+import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIProxy;
 import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
@@ -31,43 +33,35 @@ public class UIGamePathList extends UIProxy {
         if (val.size() > 0)
             initText = val.get(val.size() - 1);
         text = new UITextBox(initText, c.f.launcherTH);
-        appendButton = new UIAppendButton("+", text, new Runnable() {
-            @Override
-            public void run() {
-                String v = text.getText();
-                if (!values.contains(v)) {
-                    values.add(v);
-                    modified();
-                }
+        values = val;
+        appendButton = new UIAppendButton("+", text, () -> {
+            String v = text.getText();
+            if (!values.contains(v)) {
+                values.add(v);
+                modified();
             }
         }, c.f.launcherTH);
-        values = val;
         layout = new UIScrollLayout(true, c.f.generalS);
         refresh();
         proxySetElement(layout, true);
     }
 
     public void refresh() {
-        layout.panelsClear();
+        LinkedList<UIElement> uie = new LinkedList<>();
         for (final String v : values) {
-            UITextButton mainButton = new UITextButton(v, c.f.launcherTH, new Runnable() {
-                @Override
-                public void run() {
-                    text.setText(v);
-                    values.remove(v);
-                    values.add(v);
-                    modified();
-                }
+            UITextButton mainButton = new UITextButton(v, c.f.launcherTH, () -> {
+                text.setText(v);
+                values.remove(v);
+                values.add(v);
+                modified();
             });
-            layout.panelsAdd(new UIAppendButton(" - ", mainButton, new Runnable() {
-                @Override
-                public void run() {
-                    values.remove(v);
-                    modified();
-                }
+            uie.add(new UIAppendButton(" - ", mainButton, () -> {
+                values.remove(v);
+                modified();
             }, c.f.launcherTH));
         }
-        layout.panelsAdd(appendButton);
+        uie.add(appendButton);
+        layout.panelsSet(uie);
     }
 
     public void modified() {

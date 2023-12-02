@@ -7,7 +7,9 @@
 
 package r48.schema.specialized.tbleditors;
 
-import gabien.ui.layouts.UIScrollLayout;
+import java.util.LinkedList;
+
+import gabien.ui.UIElement;
 
 /**
  * Created on 2/18/17.
@@ -16,5 +18,5 @@ import gabien.ui.layouts.UIScrollLayout;
 public interface ITableCellEditor {
     // Appends the editing UI to a UIScrollLayout (assumed vertical).
     // Returns the handler for when the cell changes.
-    public Runnable createEditor(UIScrollLayout base, int[] planes, Runnable changeOccurred);
+    public Runnable createEditor(LinkedList<UIElement> base, int[] planes, Runnable changeOccurred);
 }

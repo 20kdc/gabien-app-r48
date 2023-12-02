@@ -10,7 +10,6 @@ package r48.schema.specialized;
 import gabien.ui.*;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UINumberBox;
-import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.RubyCT;
@@ -36,16 +35,17 @@ public class CTNativeSchemaElement extends SchemaElement.Leaf {
 
     @Override
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
         RubyCT rct = new RubyCT(target.getBuffer());
-        addField(uiSVL, T.s.toneR, 0, rct, path);
-        addField(uiSVL, T.s.toneG, 8, rct, path);
-        addField(uiSVL, T.s.toneB, 16, rct, path);
-        addField(uiSVL, T.s.toneAL, 24, rct, path);
-        return uiSVL;
+        UIElement[] uiSVLContents = {
+                addField(T.s.toneR, 0, rct, path),
+                addField(T.s.toneG, 8, rct, path),
+                addField(T.s.toneB, 16, rct, path),
+                addField(T.s.toneAL, 24, rct, path)
+        };
+        return AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target, uiSVLContents);
     }
 
-    private void addField(UIScrollLayout uiSVL, String r, final int i, final RubyCT targ, final SchemaPath sp) {
+    private UIElement addField(String r, final int i, final RubyCT targ, final SchemaPath sp) {
         final UINumberBox uinb = new UINumberBox((long) targ.innerTable.getDouble(i), app.f.schemaFieldTH);
         uinb.onEdit = () -> {
             if (cls.equals("Tone")) {
@@ -60,7 +60,7 @@ public class CTNativeSchemaElement extends SchemaElement.Leaf {
             targ.innerTable.putDouble(i, uinb.getNumber());
             sp.changeOccurred(false);
         };
-        uiSVL.panelsAdd(new UISplitterLayout(new UILabel(r, app.f.schemaFieldTH), uinb, false, 1, 3));
+        return new UISplitterLayout(new UILabel(r, app.f.schemaFieldTH), uinb, false, 1, 3);
     }
 
     @Override

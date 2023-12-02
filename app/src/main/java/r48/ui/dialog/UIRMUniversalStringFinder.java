@@ -7,8 +7,10 @@
 package r48.ui.dialog;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
@@ -45,17 +47,16 @@ public class UIRMUniversalStringFinder extends App.Prx {
     }
 
     private void refreshContents() {
-        layout.panelsClear();
+        LinkedList<UIElement> elms = new LinkedList<>();
+        elms.add(modeSelector);
 
-        layout.panelsAdd(modeSelector);
+        taInstance.setupEditor(elms, this::refreshContents);
 
-        taInstance.setupEditor(layout, this::refreshContents);
-
-        layout.panelsAdd(new UITextButton(T.u.usl_detailedInfo, app.f.dialogWindowTH, () -> {
+        elms.add(new UITextButton(T.u.usl_detailedInfo, app.f.dialogWindowTH, () -> {
             detailedInfo = !detailedInfo;
         }).togglable(detailedInfo));
 
-        layout.panelsAdd(new UITextButton(T.u.usl_find, app.f.dialogWindowTH, () -> {
+        elms.add(new UITextButton(T.u.usl_find, app.f.dialogWindowTH, () -> {
             // continue...
             int total = 0;
             int files = 0;
@@ -88,5 +89,6 @@ public class UIRMUniversalStringFinder extends App.Prx {
             }
             app.ui.launchDialog(T.u.usl_completeReportFind.r(total, files) + log);
         }));
+        layout.panelsSet(elms);
     }
 }

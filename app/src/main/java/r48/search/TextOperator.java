@@ -6,10 +6,12 @@
  */
 package r48.search;
 
+import java.util.LinkedList;
+
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.ui.UIElement;
 import gabien.ui.elements.UITextBox;
-import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 
 /**
@@ -48,13 +50,13 @@ public enum TextOperator implements ITextAnalyzer {
             String needleTLC = "";
 
             @Override
-            public void setupEditor(@NonNull UIScrollLayout usl, @NonNull Runnable onEdit) {
+            public void setupEditor(@NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit) {
                 UITextBox uil = new UITextBox(needle, app.f.dialogWindowTH);
                 uil.onEdit = () -> {
                     needle = uil.getText();
                     needleTLC = needle.toLowerCase();
                 };
-                usl.panelsAdd(uil);
+                usl.add(uil);
             }
 
             @Override

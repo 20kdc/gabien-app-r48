@@ -53,14 +53,14 @@ public class UILauncher extends UIProxy {
     private boolean gamepaksRequestClose = false;
     public final UIGamePathList rootBox, sillBox;
 
-    private final LinkedList<UIElement> basePanels = new LinkedList<UIElement>();
     private final UIScrollLayout gamepaks;
     private final Config c;
     private int counterForTree;
+    private final TrGlobal tr;
 
     public UILauncher(final LSMain ls) {
         final Launcher lun = ls.lun;
-        final TrGlobal tr = lun.ilg.t.g;
+        tr = lun.ilg.t.g;
         c = lun.c;
         final UITabPane tabPane = new UITabPane(c.f.tabTH, false, false);
 
@@ -104,14 +104,6 @@ public class UILauncher extends UIProxy {
         HelpSystemController hsc = new HelpSystemController(null, "Help/Launcher/Entry", uhs);
         hsc.loadPage(0);
 
-        configure.panelsAdd(new UIBorderedSubpanel(uhs, c.f.scaleGuess(8)));
-
-        configure.panelsAdd(figureOutTopBar(lun));
-
-        configure.panelsAdd(new UISplitterLayout(new UILabel(tr.lFrameMS, c.f.launcherTH), msAdjust, false, 3, 5));
-
-        configure.panelsAdd(new UILabel(tr.lGamePath, c.f.launcherTH));
-
         rootBox = new UIGamePathList(c, c.rootPathBackup) {
             @Override
             public void modified() {
@@ -119,9 +111,6 @@ public class UILauncher extends UIProxy {
                 ConfigIO.save(c);
             }
         };
-        configure.panelsAdd(rootBox);
-
-        configure.panelsAdd(new UILabel(tr.lSecondaryPath, c.f.launcherTH));
 
         sillBox = new UIGamePathList(c, c.secondaryImageLoadLocationBackup) {
             @Override
@@ -130,16 +119,18 @@ public class UILauncher extends UIProxy {
                 ConfigIO.save(c);
             }
         };
-        configure.panelsAdd(sillBox);
 
-        basePanels.add(new UILabel(tr.lChooseEngine, c.f.launcherTH));
-
-        configure.panelsAdd(new UISplitterLayout(new UIEmpty(), new UITextButton(tr.bContinue, c.f.launcherTH, new Runnable() {
-            @Override
-            public void run() {
-                tabPane.selectTab(gamepaks);
-            }
-        }), false, 1));
+        configure.panelsSet(
+                new UIBorderedSubpanel(uhs, c.f.scaleGuess(8)),
+                figureOutTopBar(lun),
+                new UISplitterLayout(new UILabel(tr.lFrameMS, c.f.launcherTH), msAdjust, false, 3, 5),
+                new UILabel(tr.lGamePath, c.f.launcherTH),
+                rootBox,
+                new UILabel(tr.lSecondaryPath, c.f.launcherTH),
+                sillBox,
+                new UISplitterLayout(new UIEmpty(), new UITextButton(tr.bContinue, c.f.launcherTH, () -> {
+                    tabPane.selectTab(gamepaks);
+                }), false, 1));
         // ...
 
         tabPane.setForcedBounds(null, new Rect(0, 0, c.f.scaleGuess(640), c.f.scaleGuess(480)));
@@ -164,15 +155,15 @@ public class UILauncher extends UIProxy {
     }
 
     public void setPanel(LinkedList<LauncherEntry> igpMenuPanel) {
-        gamepaks.panelsClear();
-        for (UIElement uie : basePanels)
-            gamepaks.panelsAdd(uie);
+        LinkedList<UIElement> elms = new LinkedList<>();
+        elms.add(new UILabel(tr.lChooseEngine, c.f.launcherTH));
         if (igpMenuPanel == null) {
             gamepaksRequestClose = true;
             return;
         }
         for (LauncherEntry panel : igpMenuPanel)
-            gamepaks.panelsAdd(new UITextButton(panel.name.r(), c.f.launcherTH, panel.runnable));
+            elms.add(new UITextButton(panel.name.r(), c.f.launcherTH, panel.runnable));
+        gamepaks.panelsSet(elms);
     }
 
     @Override
@@ -198,44 +189,35 @@ public class UILauncher extends UIProxy {
         final Config c = lun.c;
         final TrGlobal tr = lun.ilg.t.g;
         final WindowCreatingUIElementConsumer uiTicker = lun.uiTicker;
-        UIElement whatever = new UITextButton(tr.bQuit, c.f.launcherTH, new Runnable() {
-            @Override
-            public void run() {
-                GaBIEn.ensureQuit();
-            }
+        UIElement whatever = new UITextButton(tr.bQuit, c.f.launcherTH, () -> {
+            GaBIEn.ensureQuit();
         });
         if (!GaBIEn.singleWindowApp()) { // SWA means we can't create windows
-            whatever = new UISplitterLayout(whatever, new UITextButton(tr.bConfigN, c.f.launcherTH, new Runnable() {
-                @Override
-                public void run() {
-                    UIFontSizeConfigurator usc = new UIFontSizeConfigurator(c, lun.ilg.t, () -> {
-                        c.applyUIGlobals();
-                    });
-                    uiTicker.accept(usc);
-                    lun.currentState = new LSInApp(lun);
-                    gamepaksRequestClose = true;
-                }
+            whatever = new UISplitterLayout(whatever, new UITextButton(tr.bConfigN, c.f.launcherTH, () -> {
+                UIFontSizeConfigurator usc = new UIFontSizeConfigurator(c, lun.ilg.t, () -> {
+                    c.applyUIGlobals();
+                });
+                uiTicker.accept(usc);
+                lun.currentState = new LSInApp(lun);
+                gamepaksRequestClose = true;
             }), false, 1, 2);
         }
 
-        return new UIAppendButton(lun.c.language, whatever, new Runnable() {
-            @Override
-            public void run() {
-                // Unfortunately, if done quickly enough, the font will not load in time.
-                // (Java "lazily" loads fonts.
-                //  gabien-javase works around this bug - lazy loading appears to result in Java devs not caring about font load speed -
-                //  and by the time it matters it's usually loaded, but, well, suffice to say this hurts my translatability plans a little.
-                //  Not that it'll stop them, but it's annoying.)
-                // This associates a lag with switching language, when it's actually due to Java being slow at loading a font.
-                // (I'm slightly glad I'm not the only one this happens for, but unhappy that it's an issue.)
-                // Unfortunately, a warning message cannot be shown to the user, as the warning message would itself trigger lag-for-font-load.
-                c.language = LanguageList.getNextLanguage(c.language).id;
-                lun.ilg.updateLanguage((str) -> {
-                    // one can imagine the splash screen being used here, but not for now
-                });
-                lun.currentState = new LSMain(lun);
-                gamepaksRequestClose = true;
-            }
+        return new UIAppendButton(lun.c.language, whatever, () -> {
+            // Unfortunately, if done quickly enough, the font will not load in time.
+            // (Java "lazily" loads fonts.
+            //  gabien-javase works around this bug - lazy loading appears to result in Java devs not caring about font load speed -
+            //  and by the time it matters it's usually loaded, but, well, suffice to say this hurts my translatability plans a little.
+            //  Not that it'll stop them, but it's annoying.)
+            // This associates a lag with switching language, when it's actually due to Java being slow at loading a font.
+            // (I'm slightly glad I'm not the only one this happens for, but unhappy that it's an issue.)
+            // Unfortunately, a warning message cannot be shown to the user, as the warning message would itself trigger lag-for-font-load.
+            c.language = LanguageList.getNextLanguage(c.language).id;
+            lun.ilg.updateLanguage((str) -> {
+                // one can imagine the splash screen being used here, but not for now
+            });
+            lun.currentState = new LSMain(lun);
+            gamepaksRequestClose = true;
         }, c.f.launcherTH);
     }
 }

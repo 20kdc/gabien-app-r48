@@ -6,6 +6,8 @@
  */
 package r48.search;
 
+import java.util.LinkedList;
+
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
@@ -38,7 +40,7 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
 
     @SuppressWarnings("unchecked")
     @Override
-    public void setupEditor(UIScrollLayout usl, Runnable onEdit) {
+    public void setupEditor(LinkedList<UIElement> usl, Runnable onEdit) {
         final Entry[] currentEntriesArray = entries;
         for (int i = 0; i < entries.length; i++) {
             final Entry ent = entries[i];
@@ -59,9 +61,10 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
                     onEdit.run();
                 }
             };
-            UIScrollLayout interiorScrollLayout = new UIScrollLayout(true, app.f.generalS);
-            interiorScrollLayout.panelsAdd(ccs);
-            entries[i].cInstance.setupEditor(interiorScrollLayout, onEdit);
+            LinkedList<UIElement> interiorList = new LinkedList<>();
+            interiorList.add(ccs);
+            entries[i].cInstance.setupEditor(interiorList, onEdit);
+            UIScrollLayout interiorScrollLayout = new UIScrollLayout(true, app.f.generalS, interiorList);
             // wrapping & such
             UIChoiceButton<BooleanChainOperator> bco = new UIChoiceButton<BooleanChainOperator>(app, app.f.dialogWindowTH, ent.chain, BooleanChainOperator.values()) {
                 @Override
@@ -93,9 +96,9 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
                 entries = mod;
                 onEdit.run();
             }, app.f.dialogWindowTH);
-            usl.panelsAdd(hLine);
+            interiorList.add(hLine);
         }
-        usl.panelsAdd(new UITextButton(app.t.u.ccs_addCondition, app.f.dialogWindowTH, () -> {
+        usl.add(new UITextButton(app.t.u.ccs_addCondition, app.f.dialogWindowTH, () -> {
             if (entries != currentEntriesArray)
                 return;
             Entry[] entries2 = new Entry[entries.length + 1];

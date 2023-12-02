@@ -7,8 +7,11 @@
 
 package r48.ui.search;
 
+import java.util.LinkedList;
+
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIProxy;
 import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
@@ -27,8 +30,9 @@ public class UIClassifierishInstanceWidget<I extends IClassifierish.BaseInstance
         this.instance = inst;
         usl = new UIScrollLayout(true, app.f.generalS);
         onEdit = () -> {
-            usl.panelsClear();
-            instance.setupEditor(usl, onEdit);
+            LinkedList<UIElement> elms = new LinkedList<>();
+            instance.setupEditor(elms, onEdit);
+            usl.panelsSet(elms);
         };
         onEdit.run();
         proxySetElement(usl, true);

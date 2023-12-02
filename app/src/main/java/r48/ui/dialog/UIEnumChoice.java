@@ -45,95 +45,57 @@ public class UIEnumChoice extends App.Prx {
 
     public UIEnumChoice(App app, final Consumer<DMKey> result, final Category[] order, String entryText, EntryMode entryType) {
         super(app);
+
+        if (entryText == null)
+            entryText = T.u.bEnumManual;
+
         categoryPanels = new UIScrollLayout[order.length];
         for (int i = 0; i < categoryPanels.length; i++) {
             final String name = order[i].translatedName;
-            categoryPanels[i] = new UIScrollLayout(true, app.f.generalS) {
-                @Override
-                public String toString() {
-                    return name;
-                }
-            };
+            LinkedList<UIElement> catElms = new LinkedList<>();
             for (final Option o : order[i].options) {
-                final UITextButton button = new UITextButton(o.getTextMerged(), app.f.enumChoiceTH, new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!wantsSelfClose)
-                            result.accept(o.value);
-                        wantsSelfClose = true;
-                    }
+                final UITextButton button = new UITextButton(o.getTextMerged(), app.f.enumChoiceTH, () -> {
+                    if (!wantsSelfClose)
+                        result.accept(o.value);
+                    wantsSelfClose = true;
                 });
                 UIElement element = button;
                 if (o.editSuffix != null) {
                     final UIAppendButton switcheroo = new UIAppendButton(T.u.bEnumRename, element, null, app.f.enumChoiceTH);
                     final UITextBox textbox = new UITextBox(o.textSuffix.r(), app.f.enumChoiceTH);
                     final AtomicBoolean ab = new AtomicBoolean(false);
-                    switcheroo.button.onClick = new Runnable() {
-                        @Override
-                        public void run() {
-                            if (ab.get()) {
-                                ab.set(false);
-                                switcheroo.setSubElement(button);
-                            } else {
-                                ab.set(true);
-                                switcheroo.setSubElement(textbox);
-                            }
-                        }
-                    };
-                    textbox.onEdit = new Runnable() {
-                        @Override
-                        public void run() {
-                            String txt = textbox.getText();
-                            button.setText(o.textPrefix + txt);
-                            o.editSuffix.accept(txt);
+                    switcheroo.button.onClick = () -> {
+                        if (ab.get()) {
                             ab.set(false);
                             switcheroo.setSubElement(button);
+                        } else {
+                            ab.set(true);
+                            switcheroo.setSubElement(textbox);
                         }
+                    };
+                    textbox.onEdit = () -> {
+                        String txt = textbox.getText();
+                        button.setText(o.textPrefix + txt);
+                        o.editSuffix.accept(txt);
+                        ab.set(false);
+                        switcheroo.setSubElement(button);
                     };
                     element = switcheroo;
                 }
-                categoryPanels[i].panelsAdd(element);
+                catElms.add(element);
             }
+            if (i == categoryPanels.length - 1) {
+                UIElement finalSplit = createFinalSplit(entryText, entryType, result);
+                if (finalSplit != null)
+                    catElms.add(finalSplit);
+            }
+            categoryPanels[i] = new UIScrollLayout(true, app.f.generalS, catElms) {
+                @Override
+                public String toString() {
+                    return name;
+                }
+            };
         }
-
-        if (entryText == null)
-            entryText = T.u.bEnumManual;
-
-        UISplitterLayout finalSplit = null;
-        if (entryType == EntryMode.STR) {
-            final UITextBox nb = new UITextBox("", app.f.schemaFieldTH);
-            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTH, new Runnable() {
-                @Override
-                public void run() {
-                    if (!wantsSelfClose)
-                        result.accept(DMKey.ofStr(nb.getText()));
-                    wantsSelfClose = true;
-                }
-            }), false, 1, 3);
-        } else if (entryType == EntryMode.SYM) {
-            final UITextBox nb = new UITextBox("", app.f.schemaFieldTH);
-            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTH, new Runnable() {
-                @Override
-                public void run() {
-                    if (!wantsSelfClose) {
-                        result.accept(DMKey.ofSym(nb.getText()));
-                    }
-                    wantsSelfClose = true;
-                }
-            }), false, 1, 3);
-        } else if (entryType == EntryMode.INT) {
-            final UINumberBox nb = new UINumberBox(0, app.f.schemaFieldTH);
-            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTH, new Runnable() {
-                @Override
-                public void run() {
-                    if (!wantsSelfClose)
-                        result.accept(DMKey.of(nb.getNumber()));
-                    wantsSelfClose = true;
-                }
-            }), false, 1, 3);
-        }
-        if (finalSplit != null)
-            categoryPanels[categoryPanels.length - 1].panelsAdd(finalSplit);
 
         mainPanel = new UITabPane(app.f.tabTH, false, false);
         for (UIElement uie : categoryPanels)
@@ -141,6 +103,32 @@ public class UIEnumChoice extends App.Prx {
         mainPanel.handleIncoming();
 
         proxySetElement(mainPanel, false);
+    }
+
+    private UIElement createFinalSplit(String entryText, EntryMode entryType, Consumer<DMKey> result) {
+        if (entryType == EntryMode.STR) {
+            final UITextBox nb = new UITextBox("", app.f.schemaFieldTH);
+            return new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTH, () -> {
+                if (!wantsSelfClose)
+                    result.accept(DMKey.ofStr(nb.getText()));
+                wantsSelfClose = true;
+            }), false, 1, 3);
+        } else if (entryType == EntryMode.SYM) {
+            final UITextBox nb = new UITextBox("", app.f.schemaFieldTH);
+            return new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTH, () -> {
+                if (!wantsSelfClose)
+                    result.accept(DMKey.ofSym(nb.getText()));
+                wantsSelfClose = true;
+            }), false, 1, 3);
+        } else if (entryType == EntryMode.INT) {
+            final UINumberBox nb = new UINumberBox(0, app.f.schemaFieldTH);
+            return new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTH, () -> {
+                if (!wantsSelfClose)
+                    result.accept(DMKey.of(nb.getNumber()));
+                wantsSelfClose = true;
+            }), false, 1, 3);
+        }
+        return null;
     }
 
     @Override

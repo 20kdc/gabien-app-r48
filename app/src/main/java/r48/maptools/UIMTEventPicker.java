@@ -26,6 +26,7 @@ import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -40,7 +41,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public UIMTEventPicker(IMapToolContext mv) {
         super(mv);
         mapView = mv.getMapView();
-        svl.panelsAdd(new UILabel(T.m.tsClickToShowEv, app.f.eventPickerEntryTH));
+        svl.panelsSet(new UILabel(T.m.tsClickToShowEv, app.f.eventPickerEntryTH));
         svl.setWantedSizeOverride(new Size(app.f.eventPickerEntryTH * 12, app.f.eventPickerEntryTH * 8));
         changeInner(svl, true);
     }
@@ -70,7 +71,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public void confirmAt(final int x, final int y, int pixx, int pixy, final int layer, boolean first) {
-        svl.panelsClear();
+        LinkedList<UIElement> elms = new LinkedList<>();
         for (final DMKey evK : mapView.mapTable.eventAccess.getEventKeys()) {
             final long eventX = mapView.mapTable.eventAccess.getEventX(evK);
             final long eventY = mapView.mapTable.eventAccess.getEventY(evK);
@@ -84,50 +85,41 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                     Runnable r = mapView.mapTable.eventAccess.hasSync(evK);
                     if (r == null) {
                         // Note the checks in case of out of date panel.
-                        UIElement button = new UITextButton(nam, app.f.eventPickerEntryTH, new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
-                                    confirmAt(x, y, 123, 123, layer, true);
-                                    return;
-                                }
-                                IRIO evI = mapView.mapTable.eventAccess.getEvent(evK);
-                                if (evI == null) {
-                                    confirmAt(x, y, 123, 123, layer, true);
-                                    return;
-                                }
-                                showEvent(evK, mapView, evI);
+                        UIElement button = new UITextButton(nam, app.f.eventPickerEntryTH, () -> {
+                            if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
+                                confirmAt(x, y, 123, 123, layer, true);
+                                return;
                             }
+                            IRIO evI = mapView.mapTable.eventAccess.getEvent(evK);
+                            if (evI == null) {
+                                confirmAt(x, y, 123, 123, layer, true);
+                                return;
+                            }
+                            showEvent(evK, mapView, evI);
                         });
-                        button = new UIAppendButton(T.m.bMove, button, new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
-                                    confirmAt(x, y, 123, 123, layer, true);
-                                    return;
-                                }
-                                IRIO evI = mapView.mapTable.eventAccess.getEvent(evK);
-                                if (evI == null) {
-                                    confirmAt(x, y, 123, 123, layer, true);
-                                    return;
-                                }
-                                mapToolContext.accept(new UIMTEventMover(mapToolContext, evK));
+                        button = new UIAppendButton(T.m.bMove, button, () -> {
+                            if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
+                                confirmAt(x, y, 123, 123, layer, true);
+                                return;
                             }
+                            IRIO evI = mapView.mapTable.eventAccess.getEvent(evK);
+                            if (evI == null) {
+                                confirmAt(x, y, 123, 123, layer, true);
+                                return;
+                            }
+                            mapToolContext.accept(new UIMTEventMover(mapToolContext, evK));
                         }, app.f.eventPickerEntryTH);
-                        button = new UIAppendButton(T.g.bCopy, button, new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
-                                    confirmAt(x, y, 123, 123, layer, true);
-                                    return;
-                                }
-                                IRIO evI = mapView.mapTable.eventAccess.getEvent(evK);
-                                if (evI == null) {
-                                    confirmAt(x, y, 123, 123, layer, true);
-                                    return;
-                                }
-                                app.theClipboard = new IRIOGeneric(app.encoding).setDeepClone(evI);
+                        button = new UIAppendButton(T.g.bCopy, button, () -> {
+                            if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
+                                confirmAt(x, y, 123, 123, layer, true);
+                                return;
                             }
+                            IRIO evI = mapView.mapTable.eventAccess.getEvent(evK);
+                            if (evI == null) {
+                                confirmAt(x, y, 123, 123, layer, true);
+                                return;
+                            }
+                            app.theClipboard = new IRIOGeneric(app.encoding).setDeepClone(evI);
                         }, app.f.eventPickerEntryTH);
                         UIAppendButton delAppend = new UIAppendButton(T.m.bDel, button, null, app.f.eventPickerEntryTH);
                         delAppend.button.onClick = () -> {
@@ -146,21 +138,18 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                             });
                         };
                         button = delAppend;
-                        svl.panelsAdd(button);
+                        elms.add(button);
                     } else {
                         UIElement button = new UILabel(nam, app.f.eventPickerEntryTH);
-                        button = new UIAppendButton(T.m.bSync, button, new Runnable() {
-                            @Override
-                            public void run() {
-                                // It's possible (if unlikely) that this action actually became invalid.
-                                // Consider: confirmAt -> object change -> click Sync
-                                Runnable r = mapView.mapTable.eventAccess.hasSync(evK);
-                                if (r != null)
-                                    r.run();
-                                confirmAt(x, y, 123, 123, layer, true);
-                            }
+                        button = new UIAppendButton(T.m.bSync, button, () -> {
+                            // It's possible (if unlikely) that this action actually became invalid.
+                            // Consider: confirmAt -> object change -> click Sync
+                            Runnable syncCB = mapView.mapTable.eventAccess.hasSync(evK);
+                            if (syncCB != null)
+                                syncCB.run();
+                            confirmAt(x, y, 123, 123, layer, true);
                         }, app.f.eventPickerEntryTH);
-                        svl.panelsAdd(button);
+                        elms.add(button);
                     }
                 }
         }
@@ -193,8 +182,9 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                 mapView.mapTable.eventAccess.setEventXY(k, x, y);
                 mapToolContext.accept(new UIMTEventMover(mapToolContext, k));
             }, app.f.eventPickerEntryTH);
-            svl.panelsAdd(pan);
+            elms.add(pan);
         }
+        svl.panelsSet(elms);
     }
 
     @Override

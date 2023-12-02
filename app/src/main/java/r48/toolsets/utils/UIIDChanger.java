@@ -10,6 +10,7 @@ import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import gabien.ui.UIElement;
 import gabien.ui.dialogs.UIAutoclosingPopupMenu;
 import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UILabel;
@@ -49,16 +50,17 @@ public class UIIDChanger extends App.Prx {
         toButton = new UITextButton("", app.f.dialogWindowTH, this::toButton);
         confirmButton = new UITextButton(T.u.usl_confirmReplace, app.f.dialogWindowTH, this::fridge);
         swapModeButton = new UITextButton(T.u.idc_swapMode, app.f.dialogWindowTH, null).togglable(true);
-        UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
+        LinkedList<UIElement> layoutParts = new LinkedList<>();
         if (fixedPath != null)
-            layout.panelsAdd(new UILabel(T.u.idc_localTo.r(fixedPath.toString()), app.f.dialogWindowTH));
-        layout.panelsAdd(chooseButton);
-        layout.panelsAdd(new UILabel("", app.f.dialogWindowTH));
-        layout.panelsAdd(fromButton);
-        layout.panelsAdd(toButton);
-        layout.panelsAdd(swapModeButton);
-        layout.panelsAdd(new UILabel(T.u.idc_beware, app.f.dialogWindowTH));
-        layout.panelsAdd(confirmButton);
+            layoutParts.add(new UILabel(T.u.idc_localTo.r(fixedPath.toString()), app.f.dialogWindowTH));
+        layoutParts.add(chooseButton);
+        layoutParts.add(new UILabel("", app.f.dialogWindowTH));
+        layoutParts.add(fromButton);
+        layoutParts.add(toButton);
+        layoutParts.add(swapModeButton);
+        layoutParts.add(new UILabel(T.u.idc_beware, app.f.dialogWindowTH));
+        layoutParts.add(confirmButton);
+        UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS, layoutParts);
         updateText();
         proxySetElement(layout, true);
         setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(400), app.f.scaleGuess(300)));

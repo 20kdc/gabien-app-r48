@@ -34,12 +34,10 @@ public class UITextStuffMenu extends App.Prx {
         this.editor = editor;
         this.textRules = textRules;
         this.fieldWidth = fw;
-        UIScrollLayout usl = new UIScrollLayout(true, app.f.menuS);
         UIElement uie = new UITextButton(T.s.align_left, app.f.menuTH, () -> alignLeft());
         uie = new UIAppendButton(T.s.align_centre, uie, () -> alignCentre(), app.f.menuTH);
         uie = new UIAppendButton(T.s.align_right, uie, () -> alignRight(), app.f.menuTH);
-        usl.panelsAdd(uie);
-        usl.panelsAdd(new UITextButton(T.s.bCopyTextToClipboard, app.f.menuTH, () -> {
+        UITextButton tb2 = new UITextButton(T.s.bCopyTextToClipboard, app.f.menuTH, () -> {
             StringBuilder total = new StringBuilder();
             String[] contents = getter.get();
             for (int i = 0; i < contents.length; i++) {
@@ -47,8 +45,8 @@ public class UITextStuffMenu extends App.Prx {
                 total.append('\n');
             }
             GaBIEn.clipboard.copyText(total.toString());
-        }));
-        proxySetElement(usl, true);
+        });
+        proxySetElement(new UIScrollLayout(true, app.f.menuS, uie, tb2), true);
     }
 
     @Override

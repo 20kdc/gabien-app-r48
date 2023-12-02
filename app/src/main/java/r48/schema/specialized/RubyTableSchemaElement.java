@@ -7,6 +7,8 @@
 
 package r48.schema.specialized;
 
+import java.util.LinkedList;
+
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
@@ -98,17 +100,15 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
         };
 
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
+        LinkedList<UIElement> uiSVLList = new LinkedList<>();
         final int[] planeValues = new int[targ.planeCount];
-        final Runnable editorOnSelChange = tableCellEditor.createEditor(uiSVL, planeValues, new Runnable() {
-            @Override
-            public void run() {
-                int sel = uig.getSelected();
-                int tX = sel % targ.width;
-                int tY = sel / targ.width;
-                for (int i = 0; i < planeValues.length; i++)
-                    targ.setTiletype(tX, tY, i, (short) planeValues[i]);
-                path.changeOccurred(false);
-            }
+        final Runnable editorOnSelChange = tableCellEditor.createEditor(uiSVLList, planeValues, () -> {
+            int sel = uig.getSelected();
+            int tX = sel % targ.width;
+            int tY = sel / targ.width;
+            for (int i = 0; i < planeValues.length; i++)
+                targ.setTiletype(tX, tY, i, (short) planeValues[i]);
+            path.changeOccurred(false);
         });
         uig.onSelectionChange = new Runnable() {
             int selectionOnLastCall = -1;
@@ -149,8 +149,8 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
                     hNB.setNumber(0);
             };
             UIElement uie = new UISplitterLayout(wNB, hNB, false, 1, 2);
-            uiSVL.panelsAdd(uie);
-            uiSVL.panelsAdd(new UITextButton(T.g.bResize, app.f.tableResizeTH, new Runnable() {
+            uiSVLList.add(uie);
+            uiSVLList.add(new UITextButton(T.g.bResize, app.f.tableResizeTH, new Runnable() {
                 @Override
                 public void run() {
                     int w = (int) wNB.getNumber();
@@ -169,6 +169,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
                 }
             }));
         }
+        uiSVL.panelsSet(uiSVLList);
         return new UISplitterLayout(uig, uiSVL, false, 1);
     }
 

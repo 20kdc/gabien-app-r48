@@ -163,7 +163,6 @@ public class PasteImageEditorTool extends ImageEditorTool {
 
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
-        UIScrollLayout uie = RootImageEditorTool.createToolPalette(uiev, PasteImageEditorTool.class);
         UITextButton a = new UITextButton(T.ie.flipX, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
@@ -189,9 +188,8 @@ public class PasteImageEditorTool extends ImageEditorTool {
             }
         }).togglable(rawCopy);
         UISplitterLayout sl = new UISplitterLayout(a, b, false, 0.5d);
-        uie.panelsAdd(new UISplitterLayout(sl, c, false, 0.6666d));
-        uie.panelsAdd(d);
-        return uie;
+        UIElement toolPalette = RootImageEditorTool.createToolPalette(uiev, PasteImageEditorTool.class);
+        return new UIScrollLayout(true, app.f.mapToolbarS, toolPalette, new UISplitterLayout(sl, c, false, 0.6666d), d);
     }
 
     @Override

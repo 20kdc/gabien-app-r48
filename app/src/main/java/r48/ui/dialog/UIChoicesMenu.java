@@ -7,6 +7,9 @@
 
 package r48.ui.dialog;
 
+import java.util.LinkedList;
+
+import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
@@ -29,15 +32,16 @@ public class UIChoicesMenu extends App.Prx {
         super(app);
         UILabel topLabel = new UILabel(s, app.f.dialogWindowTH);
         UIScrollLayout label = new UIScrollLayout(true, app.f.menuS);
-        label.panelsAdd(topLabel);
-        UIScrollLayout usl = new UIScrollLayout(false, app.f.menuS);
+        LinkedList<UIElement> elms = new LinkedList<>();
+        elms.add(topLabel);
         for (int i = 0; i < strings.length; i++) {
             final int fi = i;
-            usl.panelsAdd(new UITextButton(strings[i], app.f.dialogWindowTH, () -> {
+            elms.add(new UITextButton(strings[i], app.f.dialogWindowTH, () -> {
                 runnables[fi].run();
                 selfClose = true;
             }));
         }
+        UIScrollLayout usl = new UIScrollLayout(false, app.f.menuS, elms);
         proxySetElement(new UISplitterLayout(label, usl, true, 1d), true);
     }
 

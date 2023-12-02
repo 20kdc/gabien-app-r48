@@ -7,6 +7,8 @@
 
 package r48.ui.utilitybelt;
 
+import java.util.LinkedList;
+
 import gabien.ui.*;
 import gabien.ui.elements.UIIconButton;
 import gabien.ui.layouts.UIScrollLayout;
@@ -25,7 +27,7 @@ public class RootImageEditorTool extends ImageEditorTool {
         super(app);
     }
 
-    public static UIScrollLayout createToolPalette(final UIImageEditView uiev, Class<?> oneTool) {
+    public static UIElement createToolPalette(final UIImageEditView uiev, Class<?> oneTool) {
         App app = uiev.app;
         @SuppressWarnings("rawtypes")
         final Class[] toolClasses = new Class[] {
@@ -48,32 +50,29 @@ public class RootImageEditorTool extends ImageEditorTool {
                 Symbol.Area,
                 Symbol.Eyedropper
         };
-        UIScrollLayout svl = new UIScrollLayout(true, app.f.mapToolbarS);
+        LinkedList<UIElement> svl = new LinkedList<>();
         UIElement left = null;
         for (int i = 0; i < toolClasses.length; i++) {
             final int ic = i;
-            UIElement nx = new UIIconButton(toolSymbol[i], app.f.schemaFieldTH, new Runnable() {
-                @SuppressWarnings("unchecked")
-                @Override
-                public void run() {
-                    try {
-                        uiev.currentTool = (ImageEditorTool) (toolClasses[ic].getConstructor(App.class).newInstance(app));
-                        uiev.newToolCallback.run();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            @SuppressWarnings("unchecked")
+            UIElement nx = new UIIconButton(toolSymbol[i], app.f.schemaFieldTH, () -> {
+                try {
+                    uiev.currentTool = (ImageEditorTool) (toolClasses[ic].getConstructor(App.class).newInstance(app));
+                    uiev.newToolCallback.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }).togglable(toolClasses[i] == oneTool);
             if (left == null) {
                 left = nx;
             } else {
-                svl.panelsAdd(new UISplitterLayout(left, nx, false, 0.5d));
+                svl.add(new UISplitterLayout(left, nx, false, 0.5d));
                 left = null;
             }
         }
         if (left != null)
-            svl.panelsAdd(left);
-        return svl;
+            svl.add(left);
+        return new UIScrollLayout(true, app.f.mapToolbarS, svl);
     }
 
     @Override
