@@ -92,49 +92,41 @@ public class R2kGenposFrame extends App.Svc implements IGenposFrame {
         if (i == 0)
             se = new BooleanSchemaElement(app, false);
         if (i == 1)
-            se = new SpritesheetCoreSchemaElement(app, (v) -> app.format(v), 0, new Function<IRIO, IRIO>() {
-                @Override
-                public IRIO apply(IRIO rubyIO) {
-                    return rubyIO;
-                }
-            }, new Function<IRIO, ISpritesheetProvider>() {
-                @Override
-                public ISpritesheetProvider apply(final IRIO rubyIO) {
-                    return new ISpritesheetProvider() {
-                        @Override
-                        public int itemWidth() {
-                            return cache.spriteSize;
-                        }
+            se = new SpritesheetCoreSchemaElement(app, (v) -> app.format(v), 0, Function.identity(), (rubyIO) -> {
+                return new ISpritesheetProvider() {
+                    @Override
+                    public int itemWidth() {
+                        return cache.spriteSize;
+                    }
 
-                        @Override
-                        public int itemHeight() {
-                            return cache.spriteSize;
-                        }
+                    @Override
+                    public int itemHeight() {
+                        return cache.spriteSize;
+                    }
 
-                        @Override
-                        public int itemCount() {
-                            return 5 * 5;
-                        }
+                    @Override
+                    public int itemCount() {
+                        return 5 * 5;
+                    }
 
-                        @Override
-                        public int mapValToIdx(long itemVal) {
-                            return (int) itemVal;
-                        }
+                    @Override
+                    public int mapValToIdx(long itemVal) {
+                        return (int) itemVal;
+                    }
 
-                        @Override
-                        public long mapIdxToVal(int idx) {
-                            return idx;
-                        }
+                    @Override
+                    public long mapIdxToVal(int idx) {
+                        return idx;
+                    }
 
-                        @Override
-                        public void drawItem(long t, int x, int y, int spriteScale, IGrDriver igd) {
-                            int tx = (int) t % 5;
-                            int ty = (int) t / 5;
-                            igd.clearRect(255, 0, 255, x, y, cache.spriteSize, cache.spriteSize);
-                            igd.blitScaledImage(tx * cache.spriteSize, ty * cache.spriteSize, cache.spriteSize, cache.spriteSize, x, y, cache.spriteSize * spriteScale, cache.spriteSize * spriteScale, cache.getFramesetCache(false, false, 255));
-                        }
-                    };
-                }
+                    @Override
+                    public void drawItem(long t, int x, int y, int spriteScale, IGrDriver igd) {
+                        int tx = (int) t % 5;
+                        int ty = (int) t / 5;
+                        igd.clearRect(255, 0, 255, x, y, cache.spriteSize, cache.spriteSize);
+                        igd.blitScaledImage(tx * cache.spriteSize, ty * cache.spriteSize, cache.spriteSize, cache.spriteSize, x, y, cache.spriteSize * spriteScale, cache.spriteSize * spriteScale, cache.getFramesetCache(false, false, 255));
+                    }
+                };
             });
         return memberPath.newWindow(se, member.getIVar(trueIVars[i]));
     }

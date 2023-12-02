@@ -95,11 +95,8 @@ class SDBHelpers extends App.Svc {
             public IRIO apply(IRIO rubyIO) {
                 return varPath.get(rubyIO);
             }
-        }, new Function<IRIO, ISpritesheetProvider>() {
-            @Override
-            public ISpritesheetProvider apply(IRIO rubyIO) {
-                return args2.apply(imgPath.get(rubyIO).decString());
-            }
+        }, (rubyIO) -> {
+            return args2.apply(imgPath.get(rubyIO).decString());
         });
     }
 

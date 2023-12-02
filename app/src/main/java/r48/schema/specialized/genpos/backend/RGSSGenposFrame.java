@@ -132,60 +132,52 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
 
     private SchemaElement[] getCellPropSchemas() {
         return new SchemaElement[] {
-                new SpritesheetCoreSchemaElement(app, (v) -> app.format(v), 0, new Function<IRIO, IRIO>() {
-                    @Override
-                    public IRIO apply(IRIO rubyIO) {
-                        return rubyIO;
-                    }
-                }, new Function<IRIO, ISpritesheetProvider>() {
-                    @Override
-                    public ISpritesheetProvider apply(final IRIO rubyIO) {
-                        return new ISpritesheetProvider() {
-                            @Override
-                            public int itemWidth() {
-                                return 96;
-                            }
+                new SpritesheetCoreSchemaElement(app, (v) -> app.format(v), 0, Function.identity(), (rubyIO) -> {
+                    return new ISpritesheetProvider() {
+                        @Override
+                        public int itemWidth() {
+                            return 96;
+                        }
 
-                            @Override
-                            public int itemHeight() {
-                                return 96;
-                            }
+                        @Override
+                        public int itemHeight() {
+                            return 96;
+                        }
 
-                            @Override
-                            public int itemCount() {
-                                if (vxaAnim)
-                                    return 5 * 6 * 2;
-                                return 5 * 6;
-                            }
+                        @Override
+                        public int itemCount() {
+                            if (vxaAnim)
+                                return 5 * 6 * 2;
+                            return 5 * 6;
+                        }
 
-                            @Override
-                            public int mapValToIdx(long itemVal) {
-                                if (itemVal >= 100)
-                                    return (int) ((itemVal - 100) + (5 * 6));
-                                return (int) itemVal;
-                            }
+                        @Override
+                        public int mapValToIdx(long itemVal) {
+                            if (itemVal >= 100)
+                                return (int) ((itemVal - 100) + (5 * 6));
+                            return (int) itemVal;
+                        }
 
-                            @Override
-                            public long mapIdxToVal(int idx) {
-                                if (idx >= (5 * 6))
-                                    return (idx - (5 * 6)) + 100;
-                                return idx;
-                            }
+                        @Override
+                        public long mapIdxToVal(int idx) {
+                            if (idx >= (5 * 6))
+                                return (idx - (5 * 6)) + 100;
+                            return idx;
+                        }
 
-                            @Override
-                            public void drawItem(long t, int x, int y, int spriteScale, IGrDriver igd) {
-                                boolean b = false;
-                                if (t >= 100) {
-                                    t -= 100;
-                                    b = true;
-                                }
-                                int tx = (int) t % 5;
-                                int ty = (int) t / 5;
-                                igd.clearRect(255, 0, 255, x, y, 96, 96);
-                                igd.blitScaledImage(tx * 192, ty * 192, 192, 192, x, y, 96 * spriteScale, 96 * spriteScale, spriteCache.getFramesetCache(b, false, 255));
+                        @Override
+                        public void drawItem(long t, int x, int y, int spriteScale, IGrDriver igd) {
+                            boolean b = false;
+                            if (t >= 100) {
+                                t -= 100;
+                                b = true;
                             }
-                        };
-                    }
+                            int tx = (int) t % 5;
+                            int ty = (int) t / 5;
+                            igd.clearRect(255, 0, 255, x, y, 96, 96);
+                            igd.blitScaledImage(tx * 192, ty * 192, 192, 192, x, y, 96 * spriteScale, 96 * spriteScale, spriteCache.getFramesetCache(b, false, 255));
+                        }
+                    };
                 }),
                 new IntegerSchemaElement(app, 0),
                 new IntegerSchemaElement(app, 0),
