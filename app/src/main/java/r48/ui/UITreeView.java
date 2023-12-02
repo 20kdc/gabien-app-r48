@@ -42,13 +42,20 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
         // This has to be done in advance, because if we do it later, the layout changes go weird.
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
+        int invisibleAboveIndent = 0x7FFFFFFF; // to hide unexpanded nodes
         TreeElement lastElement = null; // to set hasChildren
         for (TreeElement te : e) {
+            te.visible = te.indent <= invisibleAboveIndent;
             if (lastElement != null)
                 if (te.indent > lastElement.indent)
                     lastElement.hasChildren = true;
             lastElement = te;
             layoutAddElement(te.innerElement);
+            // If we're visible, set invisibleAboveIndent.
+            // If expanded, then set it to "infinite"
+            // Otherwise, set it to current indent, so this code will only run again on a indent <= this one
+            if (te.visible)
+                invisibleAboveIndent = te.expanded ? 0x7FFFFFFF : te.indent;
         }
         layoutRecalculateMetrics();
     }
@@ -58,14 +65,15 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
         Size r = getSize();
         int y = 0;
         for (TreeElement te : elements) {
+            if (!te.visible) {
+                layoutSetElementVis(te.innerElement, false);
+                continue;
+            }
             int x = nodeWidth * (te.indent + 1);
             int h = te.innerElement.layoutGetHForW(r.width - x);
             te.innerElement.setForcedBounds(this, new Rect(x, y, r.width - x, h));
-            if (!te.visible)
-                h = 0;
-            y += h;
-            te.h = h;
-            layoutSetElementVis(te.innerElement, te.visible);
+            y += te.h = h;
+            layoutSetElementVis(te.innerElement, true);
         }
     }
 
@@ -76,20 +84,13 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
         // 'tis the cost of buttons that are allowed to specify new sizes.
         // Could easily override said buttons, but that would lose the point.
         // Keeping this in mind, nodeWidth is now final, and for most symbols direct w/h is used.
-        int invisibleAboveIndent = 0x7FFFFFFF; // to hide unexpanded nodes
         int width = 0;
         for (TreeElement te : elements) {
-            te.visible = te.indent <= invisibleAboveIndent;
-            int h = te.innerElement.getWantedSize().height;
-            width = Math.max(width, te.innerElement.getWantedSize().width);
             if (!te.visible)
-                h = 0;
-            y += h;
-            // If we're visible, set invisibleAboveIndent.
-            // If expanded, then set it to "infinite"
-            // Otherwise, set it to current indent, so this code will only run again on a indent <= this one
-            if (te.visible)
-                invisibleAboveIndent = te.expanded ? 0x7FFFFFFF : te.indent;
+                continue;
+            Size wantedSize = te.innerElement.getWantedSize();
+            width = Math.max(width, wantedSize.width);
+            y += wantedSize.height;
         }
         return new Size(width, y);
     }
@@ -97,18 +98,11 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
     @Override
     public int layoutGetHForW(int width) {
         int y = 0;
-        int invisibleAboveIndent = 0x7FFFFFFF; // to hide unexpanded nodes
         for (TreeElement te : elements) {
-            te.visible = te.indent <= invisibleAboveIndent;
-            int h = te.innerElement.layoutGetHForW(width);
             if (!te.visible)
-                h = 0;
-            y += h;
-            // If we're visible, set invisibleAboveIndent.
-            // If expanded, then set it to "infinite"
-            // Otherwise, set it to current indent, so this code will only run again on a indent <= this one
-            if (te.visible)
-                invisibleAboveIndent = te.expanded ? 0x7FFFFFFF : te.indent;
+                continue;
+            int x = nodeWidth * (te.indent + 1);
+            y += te.innerElement.layoutGetHForW(width - x);
         }
         return y;
     }
