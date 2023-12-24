@@ -269,18 +269,16 @@ public class TestKickstart {
                     return new ITextEditingSession() {
                         boolean sessionDeadYet = false;
                         @Override
-                        public String maintain(int x, int y, int w, int h, String text) {
-                            boolean settingNew = true;
-                            if (internalMaintainText != null)
-                                if (internalMaintainText.equals(text))
-                                    settingNew = false;
-                            if (settingNew) {
-                                System.out.println("Maintain set= " + text);
-                                internalMaintainText = text;
-                                maintainText = text;
-                            }
+                        public String maintain(int x, int y, int w, int h) {
                             didMaintainThisFrame = true;
                             return maintainText;
+                        }
+
+                        @Override
+                        public void setText(String text) {
+                            System.out.println("Maintain set= " + text);
+                            internalMaintainText = text;
+                            maintainText = text;
                         }
 
                         @Override
@@ -301,8 +299,8 @@ public class TestKickstart {
                 }
 
                 @Override
-                public String aroundTheBorderworldMaintain(TextboxMaintainer tm, int x, int y, int w, int h, String text) {
-                    return text;
+                public String aroundTheBorderworldMaintain(TextboxMaintainer tm, int x, int y, int w, int h) {
+                    return "THIS SHOULD NOT BE CALLED";
                 }
 
                 @Override
