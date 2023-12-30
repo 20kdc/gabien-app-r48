@@ -120,8 +120,8 @@ public class LSSplashScreen extends State {
         UILabel.drawLabel(theme, bb, bb.getWidth(), 0, bb.getHeight() - goodSizeActual, waitingFor + movement + ch, Theme.B_TEXTBOX, goodSize, progressCache);
 
         // fade
-        int c = Math.max(0, Math.min(255, 25 * frames)) << 24;
-        bb.blitScaledImage(0, 0, 1, 1, 0, 0, bb.getWidth(), bb.getHeight(), GaBIEn.createImage(new int[] {c}, 1, 1));
+        int c = Math.max(0, Math.min(255, 25 * frames));
+        bb.fillRect(0, 0, 0, c, 0, 0, bb.getWidth(), bb.getHeight());
     }
 
 }
