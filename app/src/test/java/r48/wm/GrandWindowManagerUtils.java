@@ -11,10 +11,12 @@ import gabien.TestKickstart;
 import gabien.ui.*;
 import gabien.ui.elements.UIIconButton;
 import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UIScrollbar;
 import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UITabBar;
+import gabien.ui.layouts.UITabPane;
 import gabien.ui.layouts.UIWindowView;
 import gabien.uslx.append.Rect;
 import r48.App;
@@ -177,6 +179,10 @@ public class GrandWindowManagerUtils {
             return "label";
         if (uie instanceof UIScrollLayout)
             return "scroll";
+        if (uie instanceof UITabPane)
+            return "tabpane";
+        if (uie instanceof UIScrollbar)
+            return "scrollbar";
         return "?";
     }
 
@@ -191,6 +197,10 @@ public class GrandWindowManagerUtils {
             return "label:" + ((UILabel) uie).getText();
         if (uie instanceof UIScrollLayout)
             return "scroll:";
+        if (uie instanceof UITabPane)
+            return "tabpane:";
+        if (uie instanceof UIScrollbar)
+            return "scrollbar:";
         return "?:" + uie.toString();
     }
 
