@@ -59,15 +59,10 @@ public class UIAudioPlayer extends UIDynAppPrx {
         super(app);
         this.dataSupplier = dataSupplier;
         speed = spd;
-        UIScrollLayout svl = new UIScrollLayout(false, app.f.mapToolbarS);
-        svl.panelsAdd(new UIIconButton(Art.Symbol.Back, app.f.schemaFieldTH, new Runnable() {
-            @Override
-            public void run() {
-                position = 0;
-            }
-        }));
-        svl.panelsAdd(playButton);
-        svl.panelsAdd(loopButton);
+        UIIconButton toStart = new UIIconButton(Art.Symbol.Back, app.f.schemaFieldTH, () -> {
+            position = 0;
+        });
+        UIScrollLayout svl = new UIScrollLayout(false, app.f.mapToolbarS, toStart, playButton, loopButton);
         changeInner(new UISplitterLayout(svl, seeker, false, 0), true);
     }
 

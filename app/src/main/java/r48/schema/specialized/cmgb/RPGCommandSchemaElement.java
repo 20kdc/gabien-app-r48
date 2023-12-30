@@ -10,7 +10,6 @@ package r48.schema.specialized.cmgb;
 import gabien.ui.*;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
-import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.dbs.CMDB;
@@ -37,6 +36,7 @@ import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 import r48.ui.dialog.UIEnumChoice;
 
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -119,7 +119,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             if (rc.specialSchema != null)
                 return rc.specialSchema.buildHoldingEditor(target, launcher, path);
             IRIO param = target.getIVar("@parameters");
-            final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
+            LinkedList<UIElement> uiSVLList = new LinkedList<>();
 
             if (target.getIVar("@indent") != null) {
                 if (showHeader) {
@@ -127,7 +127,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     SchemaElement ise = new PathSchemaElement(indent, () -> T.s.theTrueNameOfAtIndent, new ROIntegerSchemaElement(app, 0), false);
                     if (!allowControlOfIndent)
                         ise = new PathSchemaElement(indent, () -> T.s.theTrueNameOfAtIndent, new IntegerSchemaElement(app, 0), false);
-                    uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
+                    uiSVLList.add(ise.buildHoldingEditor(target, launcher, path));
                 }
             }
             UILabel[] labels = new UILabel[param.getALen()];
@@ -143,12 +143,11 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 if (labels[i] != null) {
                     SchemaElement ise = rc.getParameterSchema(param, i);
                     UIElement uie = ise.buildHoldingEditor(param.getAElem(i), launcher, path.arrayHashIndex(DMKey.of(i), "[" + i + "]"));
-                    uiSVL.panelsAdd(new UIFieldLayout(labels[i], uie, labelWidth, true));
-                    rc.paramSpecialTags.get(i).applyTo(i, uiSVL, param, launcher, path);
+                    uiSVLList.add(new UIFieldLayout(labels[i], uie, labelWidth, true));
+                    rc.paramSpecialTags.get(i).applyTo(i, uiSVLList, param, launcher, path);
                 }
             }
-            uiSVL.forceToRecommended();
-            return uiSVL;
+            return AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target, uiSVLList);
         }
         return mostOfSchema.buildHoldingEditor(target, launcher, path);
     }

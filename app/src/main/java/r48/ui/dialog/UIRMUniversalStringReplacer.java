@@ -96,19 +96,19 @@ public class UIRMUniversalStringReplacer extends App.Prx {
     }
 
     private void refreshContents() {
-        layout.panelsClear();
+        LinkedList<UIElement> elms = new LinkedList<>();
 
         settingsFull.refreshContents();
         settingsPartial.refreshContents();
 
-        layout.panelsAdd(modeSelector);
+        elms.add(modeSelector);
 
         UITabPane utp = new UITabPane(app.f.finderTabS, false, false);
         utp.addTab(new Tab(settingsFull, new TabIcon[0]));
         utp.addTab(new Tab(settingsPartial, new TabIcon[0]));
-        layout.panelsAdd(utp);
+        elms.add(utp);
 
-        layout.panelsAdd(new UITextButton(T.g.wordSave, app.f.dialogWindowTH, new Runnable() {
+        elms.add(new UITextButton(T.g.wordSave, app.f.dialogWindowTH, new Runnable() {
             @Override
             public void run() {
                 IRIO rio = new IRIOGeneric(StandardCharsets.UTF_8);
@@ -123,7 +123,7 @@ public class UIRMUniversalStringReplacer extends App.Prx {
             }
         }));
 
-        layout.panelsAdd(new UITextButton(T.u.usl_confirmReplace, app.f.dialogWindowTH, new Runnable() {
+        elms.add(new UITextButton(T.u.usl_confirmReplace, app.f.dialogWindowTH, new Runnable() {
             @Override
             public void run() {
                 // full replacements
@@ -209,6 +209,7 @@ public class UIRMUniversalStringReplacer extends App.Prx {
                 app.ui.launchDialog(T.u.usl_completeReport.r(total, files) + log);
             }
         }));
+        layout.panelsSet(elms);
     }
 
     public static class RListPanel extends App.Prx {
@@ -272,7 +273,7 @@ public class UIRMUniversalStringReplacer extends App.Prx {
         }
 
         private void refreshContents() {
-            layout.panelsClear();
+            LinkedList<UIElement> elms = new LinkedList<>();
 
             for (final Replacement key : settings) {
                 UIElement keyLine = new UILabel(key.key + " -> " + key.value, app.f.dialogWindowTH);
@@ -283,11 +284,12 @@ public class UIRMUniversalStringReplacer extends App.Prx {
                         refreshContents();
                     }
                 }, app.f.dialogWindowTH);
-                layout.panelsAdd(keyLine);
+                elms.add(keyLine);
             }
-            layout.panelsAdd(adderA);
-            layout.panelsAdd(adderB);
-            layout.panelsAdd(adderC);
+            elms.add(adderA);
+            elms.add(adderB);
+            elms.add(adderC);
+            layout.panelsSet(elms);
         }
     }
 

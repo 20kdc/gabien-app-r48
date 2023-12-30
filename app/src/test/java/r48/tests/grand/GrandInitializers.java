@@ -41,8 +41,6 @@ public class GrandInitializers {
         gtb.thenClick("button:RXP");
         gtb.thenWaitWC(4);
         gtb.thenWaitFrame();
-        gtb.thenIcon("gabien.ui.UIAutoclosingPopupMenu", 1);
-        gtb.thenWaitFrame();
         gtb.thenClick("button:This appears to be newly created. Click to create directories.");
         gtb.thenWaitFrame();
         gtb.thenIcon("Information", 0);

@@ -45,22 +45,27 @@ public class PagerArrayInterface implements IArrayInterface {
             regularArrayMode.value = !regularArrayModeCurrent;
             svl.panelsClear();
             provideInterfaceFrom(svl, valid, prop, getPositions);
-       };
+        };
         if (regularArrayModeCurrent) {
             // regular array mode
             final UITextButton swapModeButton = new UITextButton(T.s.array_bModeRegular, app.f.schemaFieldTH, swapModeAndReset);
             svl.panelsAdd(swapModeButton);
             regularArrayInterface.provideInterfaceFrom(new Host() {
-                
+
                 @Override
                 public void panelsClear() {
                     svl.panelsClear();
                     svl.panelsAdd(swapModeButton);
                 }
-                
+
                 @Override
                 public void panelsAdd(UIElement element) {
                     svl.panelsAdd(element);
+                }
+
+                @Override
+                public void panelsFinished() {
+                    svl.panelsFinished();
                 }
 
                 @Override
@@ -76,17 +81,17 @@ public class PagerArrayInterface implements IArrayInterface {
         for (int i = 0; i < positions.length; i++) {
             final String i2 = Integer.toString(i + 1);
             // "+", "+>", "-", "Cp.", "Ps."
-            UIScrollLayout barLayout = new UIScrollLayout(false, app.f.mapToolbarS);
+            LinkedList<UIElement> barLayoutList = new LinkedList<>();
             if (positions[i].execInsert != null) {
                 final Runnable r = positions[i].execInsert;
-                barLayout.panelsAdd(new UITextButton("+", app.f.schemaFieldTH, () -> {
+                barLayoutList.add(new UITextButton("+", app.f.schemaFieldTH, () -> {
                     r.run();
                 }));
             }
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsert != null) {
                     final Runnable r = positions[i + 1].execInsert;
-                    barLayout.panelsAdd(new UITextButton("+>", app.f.schemaFieldTH, () -> {
+                    barLayoutList.add(new UITextButton("+>", app.f.schemaFieldTH, () -> {
                         r.run();
                     }));
                 }
@@ -98,11 +103,11 @@ public class PagerArrayInterface implements IArrayInterface {
                 button.onClick = () -> {
                     app.ui.confirmDeletion(false, posText, button, () -> r.get().run());
                 };
-                barLayout.panelsAdd(button);
+                barLayoutList.add(button);
             }
             final IRIO[] copyMe = positions[i].elements;
             if (copyMe != null) {
-                barLayout.panelsAdd(new UITextButton(T.g.bCopy, app.f.schemaFieldTH, () -> {
+                barLayoutList.add(new UITextButton(T.g.bCopy, app.f.schemaFieldTH, () -> {
                     IRIOGeneric rio = new IRIOGeneric(app.encoding);
                     rio.setArray(copyMe.length);
 
@@ -115,12 +120,14 @@ public class PagerArrayInterface implements IArrayInterface {
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsertCopiedArray != null) {
                     final Runnable r = positions[i + 1].execInsertCopiedArray;
-                    barLayout.panelsAdd(new UITextButton(T.g.bPaste, app.f.schemaFieldTH, () -> {
+                    barLayoutList.add(new UITextButton(T.g.bPaste, app.f.schemaFieldTH, () -> {
                         r.run();
                     }));
                 }
             }
-            barLayout.panelsAdd(new UITextButton(T.s.array_bModePager, app.f.schemaFieldTH, swapModeAndReset));
+            barLayoutList.add(new UITextButton(T.s.array_bModePager, app.f.schemaFieldTH, swapModeAndReset));
+            UIScrollLayout barLayout = new UIScrollLayout(false, app.f.mapToolbarS);
+            barLayout.panelsSet(barLayoutList);
             if (positions[i].core != null) {
                 uie.add(new UISplitterLayout(barLayout, positions[i].core, true, 0d) {
                     @Override
@@ -161,5 +168,6 @@ public class PagerArrayInterface implements IArrayInterface {
             state = uie.size() - 1;
         if (uie.size() > 0)
             utp.selectTab(uie.get(state));
+        svl.panelsFinished();
     }
 }

@@ -74,12 +74,10 @@ public class UIGRMMapInfos extends App.Prx {
     }
 
     private void rebuildList() {
-        uiSVL.panelsClear();
-
         HashMap<Long, Integer> indent = new HashMap<Long, Integer>();
         String errors = operators.calculateIndentsAndGetErrors(indent);
         if (errors != null) {
-            uiSVL.panelsAdd(new UILabel(errors, app.f.mapInfosTH));
+            uiSVL.panelsSet(new UILabel(errors, app.f.mapInfosTH));
             return;
         }
 
@@ -141,9 +139,8 @@ public class UIGRMMapInfos extends App.Prx {
             }));
         }
         utv.setElements(tree.toArray(new UITreeView.TreeElement[0]));
-        uiSVL.panelsAdd(searchBar);
-        uiSVL.panelsAdd(utv);
-        uiSVL.panelsAdd(new UITextButton(T.m.bNewMap, app.f.mapInfosTH, new Runnable() {
+
+        UIElement newMapButton = new UITextButton(T.m.bNewMap, app.f.mapInfosTH, new Runnable() {
             @Override
             public void run() {
                 final UINumberBox num = new UINumberBox(0, app.f.textDialogFieldTH);
@@ -186,7 +183,9 @@ public class UIGRMMapInfos extends App.Prx {
                 };
                 mapContext.getApp().ui.wm.createWindow(dialog);
             }
-        }));
+        });
+
+        uiSVL.panelsSet(searchBar, utv, newMapButton);
     }
 
     private UIElement extractedElement(final Long k, final IRIO map, final int order, final long parent, String name) {

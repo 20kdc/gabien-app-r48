@@ -7,6 +7,8 @@
 
 package r48.schema.specialized.genpos;
 
+import java.util.LinkedList;
+
 import gabien.ui.*;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
@@ -32,52 +34,44 @@ public class UICellSelectionPanel extends App.Prx {
     }
 
     private void rebuildSelectionPanel() {
-        selectionPanel.panelsClear();
+        LinkedList<UIElement> elms = new LinkedList<>();
         final int cellCount = root.getCellCount();
         for (int i = 0; i < cellCount; i++) {
             final int i2 = i;
-            addAdditionButton(i2);
+            addAdditionButton(elms, i2);
             String prefix = cellNumber == i2 ? ">" : " ";
-            UIElement button = new UITextButton(prefix + T.s.cellTitle.r(i), app.f.rmaCellTH, new Runnable() {
-                @Override
-                public void run() {
-                    cellNumber = i2;
-                    frameChanged();
-                }
+            UIElement button = new UITextButton(prefix + T.s.cellTitle.r(i), app.f.rmaCellTH, () -> {
+                cellNumber = i2;
+                frameChanged();
             });
             if (root.canAddRemoveCells()) {
-                selectionPanel.panelsAdd(new UIAppendButton("-", button, new Runnable() {
-                    @Override
-                    public void run() {
-                        if (i2 < root.getCellCount()) {
-                            // delete cell
-                            root.deleteCell(i2);
-                            cellNumber = -1;
-                            cellChangeNotificationNumber++;
-                        }
-                        frameChanged();
+                elms.add(new UIAppendButton("-", button, () -> {
+                    if (i2 < root.getCellCount()) {
+                        // delete cell
+                        root.deleteCell(i2);
+                        cellNumber = -1;
+                        cellChangeNotificationNumber++;
                     }
+                    frameChanged();
                 }, app.f.rmaCellTH));
             } else {
-                selectionPanel.panelsAdd(button);
+                elms.add(button);
             }
         }
-        addAdditionButton(cellCount);
+        addAdditionButton(elms, cellCount);
+        selectionPanel.panelsSet(elms);
     }
 
-    private void addAdditionButton(final int i2) {
+    private void addAdditionButton(LinkedList<UIElement> elms, final int i2) {
         if (!root.canAddRemoveCells())
             return;
-        selectionPanel.panelsAdd(new UITextButton(T.s.cellAdd, app.f.rmaCellTH, new Runnable() {
-            @Override
-            public void run() {
-                if (i2 <= root.getCellCount()) {
-                    root.addCell(i2);
-                    cellNumber = i2;
-                    cellChangeNotificationNumber++;
-                }
-                frameChanged();
+        elms.add(new UITextButton(T.s.cellAdd, app.f.rmaCellTH, () -> {
+            if (i2 <= root.getCellCount()) {
+                root.addCell(i2);
+                cellNumber = i2;
+                cellChangeNotificationNumber++;
             }
+            frameChanged();
         }));
     }
 

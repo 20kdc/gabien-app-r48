@@ -12,10 +12,12 @@ import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
+import gabien.uslx.append.EmptyLambdas;
 import r48.App;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.TSDBChoiceIntegerSchemaElement;
 
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -34,28 +36,20 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
     }
 
     @Override
-    public Runnable createEditor(final UIScrollLayout base, final int[] planes, final Runnable changeOccurred) {
-        final Consumer<Integer> editor1 = installEditor(app, flags, new Consumer<UIElement>() {
-            @Override
-            public void accept(UIElement element) {
-                base.panelsAdd(element);
-            }
-        }, new AtomicReference<Consumer<Integer>>(new Consumer<Integer>() {
-            @Override
-            public void accept(Integer t) {
-                planes[0] = t;
-                changeOccurred.run();
-            }
+    public Runnable createEditor(final LinkedList<UIElement> base, final int[] planes, final Runnable changeOccurred) {
+        final Consumer<Integer> editor1 = installEditor(app, flags, (element) -> {
+            base.add(element);
+        }, new AtomicReference<Consumer<Integer>>((t) -> {
+            planes[0] = t;
+            changeOccurred.run();
         }));
         editor1.accept(planes[0]);
-        base.panelsAdd(new UILabel(T.s.manualEdit, app.f.tableElementTH));
+        base.add(new UILabel(T.s.manualEdit, app.f.tableElementTH));
         final Runnable editor2 = new DefaultTableCellEditor(app).createEditor(base, planes, changeOccurred);
         
-        return new Runnable() {
-            public void run() {
-                editor1.accept(planes[0]);
-                editor2.run();
-            }
+        return () -> {
+            editor1.accept(planes[0]);
+            editor2.run();
         };
     }
 
@@ -102,51 +96,38 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
                     });
 
                     panelAdder.accept(new UISplitterLayout(new UILabel(name, app.f.tableElementTH), iai.uie, false, 1));
-                    flagStates[i] = new Runnable() {
-                        @Override
-                        public void run() {
-                            int v = currentState.get();
-                            iai.onValueChange.accept((long) ((v / thisBit) & (pwr - 1)));
-                        }
+                    flagStates[i] = () -> {
+                        int v = currentState.get();
+                        iai.onValueChange.accept((long) ((v / thisBit) & (pwr - 1)));
                     };
                     bit <<= len;
                 } else {
                     // Bool-field
                     final UITextButton flag = new UITextButton(Integer.toHexString(thisBit) + ": " + flags[i], app.f.tableElementTH, null).togglable(false);
                     panelAdder.accept(flag);
-                    flagStates[i] = new Runnable() {
-                        @Override
-                        public void run() {
-                            flag.state = ((currentState.get() & thisBit) != 0);
-                            flag.onClick = new Runnable() {
-                                @Override
-                                public void run() {
-                                    int v = currentState.get() ^ thisBit;
-                                    currentState.set(v);
-                                    set.get().accept(v);
-                                }
-                            };
-                        }
+                    flagStates[i] = () -> {
+                        flag.state = ((currentState.get() & thisBit) != 0);
+                        flag.onClick = new Runnable() {
+                            @Override
+                            public void run() {
+                                int v = currentState.get() ^ thisBit;
+                                currentState.set(v);
+                                set.get().accept(v);
+                            }
+                        };
                     };
                     bit <<= 1;
                 }
             } else {
                 // Do-nothing-this-just-uses-up-one-bit-without-bothering-the-user-field
-                flagStates[i] = new Runnable() {
-                    @Override
-                    public void run() {
-                    }
-                };
+                flagStates[i] = EmptyLambdas.emptyRunnable;
                 bit <<= 1;
             }
         }
-        return new Consumer<Integer>() {
-            @Override
-            public void accept(Integer i2) {
-                currentState.set(i2);
-                for (int i = 0; i < flagStates.length; i++)
-                    flagStates[i].run();
-            }
+        return (i2) -> {
+            currentState.set(i2);
+            for (int i = 0; i < flagStates.length; i++)
+                flagStates[i].run();
         };
     }
 }

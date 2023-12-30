@@ -28,6 +28,7 @@ import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -88,13 +89,13 @@ public class HashSchemaElement extends SchemaElement {
             }
             @Override
             public void run() {
-                uiSV.panelsClear();
+                LinkedList<UIElement> elms = new LinkedList<>();
                 final UITextBox searchBox = new UITextBox(searchTermSlot.value, app.f.schemaFieldTH);
                 searchBox.onEdit = () -> {
                     searchTermSlot.value = searchBox.getText();
                     trigger();
                 };
-                uiSV.panelsAdd(new UISplitterLayout(new UILabel(T.s.searchbar, app.f.schemaFieldTH), searchBox, false, 0d));
+                elms.add(new UISplitterLayout(new UILabel(T.s.searchbar, app.f.schemaFieldTH), searchBox, false, 0d));
 
                 AtomicInteger fw = new AtomicInteger(0);
 
@@ -134,7 +135,7 @@ public class HashSchemaElement extends SchemaElement {
                             path.changeOccurred(false);
                         });
                     };
-                    uiSV.panelsAdd(append);
+                    elms.add(append);
                 }
                 // Set up a key workspace.
                 UIElement workspace = keyElem.buildHoldingEditor(keyWorkspace, launcher, rioPath);
@@ -153,7 +154,8 @@ public class HashSchemaElement extends SchemaElement {
                         }
                     }
                 }), false, 2, 3);
-                uiSV.panelsAdd(workspaceHS);
+                elms.add(workspaceHS);
+                uiSV.panelsSet(elms);
             }
         };
         rebuildSection.run();

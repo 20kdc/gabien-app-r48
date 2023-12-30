@@ -53,7 +53,6 @@ public class CharacterGeneratorController extends App.Svc {
     public CharacterGeneratorController(App app) {
         super(app);
         modes = new UITabPane(app.f.tabTH, true, false);
-        final UIScrollLayout availableOpts = new UIScrollLayout(true, app.f.cellSelectS);
         DBLoader.readFile(app, "CharGen/Modes.txt", new IDatabase() {
             private UICharGenView view;
 
@@ -77,6 +76,7 @@ public class CharacterGeneratorController extends App.Svc {
                 }
             }
         });
+        LinkedList<UIElement> availableOpts = new LinkedList<>();
         DBLoader.readFile(app, "CharGen/Layers.txt", new IDatabase() {
             private Layer target;
             private String mode = "Default";
@@ -94,39 +94,30 @@ public class CharacterGeneratorController extends App.Svc {
 
                     final LinkedList<String> layerGroups = new LinkedList<String>();
 
-                    l.naming = new UITextButton(args[0], app.f.rmaCellTH, new Runnable() {
-                        @Override
-                        public void run() {
-                            if (!l.enabled) {
-                                // Being enabled...
-                                for (String s : layerGroups) {
-                                    for (Layer s2 : groupsToLayers.get(s)) {
-                                        s2.enabled = false;
-                                        s2.naming.state = false;
-                                    }
+                    l.naming = new UITextButton(args[0], app.f.rmaCellTH, () -> {
+                        if (!l.enabled) {
+                            // Being enabled...
+                            for (String s : layerGroups) {
+                                for (Layer s2 : groupsToLayers.get(s)) {
+                                    s2.enabled = false;
+                                    s2.naming.state = false;
                                 }
                             }
-                            l.enabled = !l.enabled;
-                            l.naming.state = l.enabled;
                         }
+                        l.enabled = !l.enabled;
+                        l.naming.state = l.enabled;
                     }).togglable(l.enabled);
                     l.swatch = new UIColourSwatchButton((int) Long.parseLong(args[1], 16), app.f.schemaFieldTH, null);
-                    l.swatch.onClick = new Runnable() {
-                        @Override
-                        public void run() {
-                            app.ui.wm.createMenu(l.swatch, new UIColourPicker(app, l.naming.getText(), l.swatch.col, new Consumer<Integer>() {
-                                @Override
-                                public void accept(Integer integer) {
-                                    if (integer != null)
-                                        l.swatch.col = integer;
-                                }
-                            }, true));
-                        }
+                    l.swatch.onClick = () -> {
+                        app.ui.wm.createMenu(l.swatch, new UIColourPicker(app, l.naming.getText(), l.swatch.col, (integer) -> {
+                            if (integer != null)
+                                l.swatch.col = integer;
+                        }, true));
                     };
                     if (c != 'x') {
-                        availableOpts.panelsAdd(new UISplitterLayout(l.naming, l.swatch, false, 1));
+                        availableOpts.add(new UISplitterLayout(l.naming, l.swatch, false, 1));
                     } else {
-                        availableOpts.panelsAdd(l.swatch);
+                        availableOpts.add(l.swatch);
                     }
                     charCfg.put(l.id, l);
                     for (int i = 2; i < args.length; i++) {
@@ -148,47 +139,42 @@ public class CharacterGeneratorController extends App.Svc {
                 }
             }
         });
-        UIElement modeBar = new UIAppendButton(T.u.cg_savePNG, new UITextButton(T.u.cg_copyR48, app.f.schemaFieldTH, new Runnable() {
-            @Override
-            public void run() {
-                WSIImage img = getCurrentModeImage();
-                int[] tx = img.getPixels();
-                int w = img.width;
-                int h = img.height;
-                int idx = 0;
-                byte[] buffer = BMPConnection.prepareBMP(w, h, 32, 0, true, false);
-                BMPConnection bc;
-                try {
-                    bc = new BMPConnection(buffer, BMPConnection.CMode.Normal, 0, false);
-                } catch (IOException ioe) {
-                    throw new RuntimeException(ioe);
-                }
-                for (int j = 0; j < h; j++)
-                    for (int i = 0; i < w; i++)
-                        bc.putPixel(i, j, tx[idx++]);
-                app.theClipboard = new IRIOGeneric(StandardCharsets.UTF_8).setUser("Image", buffer);
+        UIElement modeBar = new UIAppendButton(T.u.cg_savePNG, new UITextButton(T.u.cg_copyR48, app.f.schemaFieldTH, () -> {
+            WSIImage img = getCurrentModeImage();
+            int[] tx = img.getPixels();
+            int w = img.width;
+            int h = img.height;
+            int idx = 0;
+            byte[] buffer = BMPConnection.prepareBMP(w, h, 32, 0, true, false);
+            BMPConnection bc;
+            try {
+                bc = new BMPConnection(buffer, BMPConnection.CMode.Normal, 0, false);
+            } catch (IOException ioe) {
+                throw new RuntimeException(ioe);
             }
-        }), new Runnable() {
-            @Override
-            public void run() {
-                // We have a PNG, ask for a file to stuff it into
-                final byte[] b = createPNG();
-                GaBIEn.startFileBrowser(T.u.cg_savePNG, true, "", new Consumer<String>() {
-                    @Override
-                    public void accept(String s) {
-                        try {
-                            OutputStream os = GaBIEn.getOutFile(s);
-                            os.write(b);
-                            os.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            app.ui.launchDialog(e);
-                        }
+            for (int j = 0; j < h; j++)
+                for (int i = 0; i < w; i++)
+                    bc.putPixel(i, j, tx[idx++]);
+            app.theClipboard = new IRIOGeneric(StandardCharsets.UTF_8).setUser("Image", buffer);
+        }), () -> {
+            // We have a PNG, ask for a file to stuff it into
+            final byte[] b = createPNG();
+            GaBIEn.startFileBrowser(T.u.cg_savePNG, true, "", new Consumer<String>() {
+                @Override
+                public void accept(String s) {
+                    try {
+                        OutputStream os = GaBIEn.getOutFile(s);
+                        os.write(b);
+                        os.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        app.ui.launchDialog(e);
                     }
-                });
-            }
+                }
+            });
         }, app.f.schemaFieldTH);
-        rootView = new UISplitterLayout(new UISplitterLayout(modes, modeBar, true, 1), availableOpts, false, 1) {
+        final UIScrollLayout availableOptsSVL = new UIScrollLayout(true, app.f.cellSelectS, availableOpts);
+        rootView = new UISplitterLayout(new UISplitterLayout(modes, modeBar, true, 1), availableOptsSVL, false, 1) {
             @Override
             public String toString() {
                 return T.t.charGen;

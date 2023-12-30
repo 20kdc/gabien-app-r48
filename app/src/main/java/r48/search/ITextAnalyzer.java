@@ -7,7 +7,9 @@
 
 package r48.search;
 
-import gabien.ui.layouts.UIScrollLayout;
+import java.util.LinkedList;
+
+import gabien.ui.UIElement;
 import r48.App;
 
 /**
@@ -32,7 +34,7 @@ public interface ITextAnalyzer extends IClassifierish<ITextAnalyzer.Instance> {
      */
     interface Immutable extends ITextAnalyzer, Instance {
         @Override
-        default void setupEditor(UIScrollLayout usl, Runnable onEdit) {
+        default void setupEditor(LinkedList<UIElement> usl, Runnable onEdit) {
         }
 
         @Override

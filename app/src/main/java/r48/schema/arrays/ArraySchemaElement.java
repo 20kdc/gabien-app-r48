@@ -62,14 +62,22 @@ public abstract class ArraySchemaElement extends SchemaElement {
         final App app = launcher.getApp();
 
         uiHelper.provideInterfaceFrom(new Host() {
+            LinkedList<UIElement> uie = new LinkedList<>();
+
             @Override
             public void panelsClear() {
-                uiSVL.panelsClear();
+                uie.clear();
+                uiSVL.panelsSet();
             }
             
             @Override
             public void panelsAdd(UIElement element) {
-                uiSVL.panelsAdd(element);
+                uie.add(element);
+            }
+
+            @Override
+            public void panelsFinished() {
+                uiSVL.panelsSet(uie);
             }
 
             @Override

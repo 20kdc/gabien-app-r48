@@ -65,7 +65,12 @@ public class LocalTestExecutiveTest {
     }
 
     public static String findBasePath() {
-        return "/home/20kdc/R48LTE/assets/";
+        try {
+            String home = System.getenv("HOME");
+            return home + "/R48LTE/assets/";
+        } catch (Exception ex) {
+            return "/R48LTE/assets/";
+        }
     }
 
     private final String name;

@@ -26,6 +26,7 @@ public interface IArrayInterface {
         void panelsClear();
         void panelsAdd(UIElement element);
         App getApp();
+        void panelsFinished();
     }
 
     /*

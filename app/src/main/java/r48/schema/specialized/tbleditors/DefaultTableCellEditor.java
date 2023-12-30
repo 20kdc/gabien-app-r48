@@ -7,8 +7,10 @@
 
 package r48.schema.specialized.tbleditors;
 
+import java.util.LinkedList;
+
+import gabien.ui.UIElement;
 import gabien.ui.elements.UINumberBox;
-import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 
 /**
@@ -19,7 +21,7 @@ public class DefaultTableCellEditor extends App.Svc implements ITableCellEditor 
         super(app);
     }
     @Override
-    public Runnable createEditor(final UIScrollLayout base, final int[] planes, final Runnable changeOccurred) {
+    public Runnable createEditor(final LinkedList<UIElement> base, final int[] planes, final Runnable changeOccurred) {
         final UINumberBox[] numbers = new UINumberBox[planes.length];
         for (int i = 0; i < planes.length; i++) {
             final int index = i;
@@ -32,7 +34,7 @@ public class DefaultTableCellEditor extends App.Svc implements ITableCellEditor 
                     changeOccurred.run();
                 }
             };
-            base.panelsAdd(box);
+            base.add(box);
         }
         return new Runnable() {
             @Override

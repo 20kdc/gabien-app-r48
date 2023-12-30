@@ -7,9 +7,11 @@
 
 package r48.search;
 
+import java.util.LinkedList;
+
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.UIElement;
 import r48.App;
 import r48.dbs.RPGCommand;
 import r48.io.data.RORIO;
@@ -35,7 +37,7 @@ public interface ICommandClassifier extends IClassifierish<ICommandClassifier.In
      */
     interface Immutable extends ICommandClassifier, Instance {
         @Override
-        default void setupEditor(UIScrollLayout usl, Runnable onEdit) {
+        default void setupEditor(LinkedList<UIElement> usl, Runnable onEdit) {
         }
 
         @Override

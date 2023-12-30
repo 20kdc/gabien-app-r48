@@ -10,6 +10,7 @@ package r48.ui.search;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import gabien.ui.UIElement;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.Rect;
 import gabien.wsi.IPeripherals;
@@ -59,9 +60,10 @@ public class UICommandSites extends App.Prx {
 
     public void doRefresh() {
         CommandSite[] sites = refresh.get();
-        layout.panelsClear();
-        for (CommandSite cs : sites)
-            layout.panelsAdd(cs.element);
+        UIElement[] siteElements = new UIElement[sites.length];
+        for (int i = 0; i < sites.length; i++)
+            siteElements[i] = sites[i].element;
+        layout.panelsSet(siteElements);
     }
 
     @Override

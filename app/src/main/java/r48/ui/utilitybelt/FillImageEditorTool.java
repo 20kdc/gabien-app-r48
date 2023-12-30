@@ -112,25 +112,25 @@ public class FillImageEditorTool extends ImageEditorTool {
     public UIElement createToolPalette(UIImageEditView uiev) {
         App app = uiev.app;
         UIElement uie = RootImageEditorTool.createToolPalette(uiev, FillImageEditorTool.class);
-        UIScrollLayout usl = new UIScrollLayout(false, app.f.mapToolbarS);
-        usl.panelsAdd(new UITextButton(T.ie.autoshade, app.f.imageEditorTH, new Runnable() {
+        UIElement bAS = new UITextButton(T.ie.autoshade, app.f.imageEditorTH, new Runnable() {
             @Override
             public void run() {
                 autoshade = !autoshade;
             }
-        }).togglable(autoshade));
-        usl.panelsAdd(new UITextButton(T.ie.autoshadeLR, app.f.imageEditorTH, new Runnable() {
+        }).togglable(autoshade);
+        UIElement bAL = new UITextButton(T.ie.autoshadeLR, app.f.imageEditorTH, new Runnable() {
             @Override
             public void run() {
                 autoshadeLRX = !autoshadeLRX;
             }
-        }).togglable(autoshadeLRX));
-        usl.panelsAdd(new UITextButton(T.ie.autoshadeUD, app.f.imageEditorTH, new Runnable() {
+        }).togglable(autoshadeLRX);
+        UIElement bAU = new UITextButton(T.ie.autoshadeUD, app.f.imageEditorTH, new Runnable() {
             @Override
             public void run() {
                 autoshadeUDX = !autoshadeUDX;
             }
-        }).togglable(autoshadeUDX));
+        }).togglable(autoshadeUDX);
+        UIScrollLayout usl = new UIScrollLayout(false, app.f.mapToolbarS, bAS, bAL, bAU);
         return new UISplitterLayout(uie, usl, true, 1.0);
     }
 

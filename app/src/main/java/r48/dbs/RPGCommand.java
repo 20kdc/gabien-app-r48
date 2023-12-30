@@ -8,7 +8,7 @@
 package r48.dbs;
 
 import gabien.datum.DatumSrcLoc;
-import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.UIElement;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -131,15 +131,15 @@ public class RPGCommand extends App.Svc {
         public int spritesheetTargstr;
         public int tpBase;
 
-        public void applyTo(int idx, UIScrollLayout elementList, IRIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
+        public void applyTo(int idx, LinkedList<UIElement> elementList, IRIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
             App app = launcher.getApp();
             if (hasSpritesheet) {
                 SchemaElement scse = app.sdb.helpers.makeSpriteSelector(PathSyntax.compile(app, "]" + idx), PathSyntax.compile(app, "]" + spritesheetTargstr), spritesheetId);
-                elementList.panelsAdd(scse.buildHoldingEditor(targetParamArray, launcher, path));
+                elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
             if (hasTonepicker) {
                 SchemaElement scse = new TonePickerSchemaElement(launcher.getApp(), PathSyntax.compile(app, "]" + tpA), PathSyntax.compile(app, "]" + tpB), PathSyntax.compile(app, "]" + tpC), PathSyntax.compile(app, "]" + tpD), tpBase);
-                elementList.panelsAdd(scse.buildHoldingEditor(targetParamArray, launcher, path));
+                elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
         }
     }

@@ -7,9 +7,11 @@
 
 package r48.search;
 
+import java.util.LinkedList;
+
 import org.eclipse.jdt.annotation.NonNull;
 
-import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.UIElement;
 import r48.App;
 
 /**
@@ -35,6 +37,6 @@ public interface IClassifierish<T extends IClassifierish.BaseInstance> {
          * Installs an editor for this classifier instance, if possible.
          * Only one editor should be present at a given time for this instance.
          */
-        void setupEditor(@NonNull UIScrollLayout usl, @NonNull Runnable onEdit);
+        void setupEditor(@NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit);
     }
 }

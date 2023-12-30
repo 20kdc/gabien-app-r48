@@ -8,10 +8,12 @@ package r48.ui;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
 import gabien.GaBIEnUI;
+import gabien.ui.UIElement;
 import gabien.ui.elements.UIBorderedElement;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
@@ -31,40 +33,33 @@ public class UISetSelector<T> extends App.Prx {
     private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
     public UISetSelector(App app, final Iterable<T> entries) {
         super(app);
-        layout.panelsAdd(new UITextButton(T.u.set_selAll, app.f.dialogWindowTH, new Runnable() {
-            @Override
-            public void run() {
-                for (T x : entries)
-                    set.add(x);
-                refreshContents();
-            }
+        LinkedList<UIElement> elms = new LinkedList<>();
+        elms.add(new UITextButton(T.u.set_selAll, app.f.dialogWindowTH, () -> {
+            for (T x : entries)
+                set.add(x);
+            refreshContents();
         }));
-        layout.panelsAdd(new UITextButton(T.u.set_deSelAll, app.f.dialogWindowTH, new Runnable() {
-            @Override
-            public void run() {
-                set.clear();
-                refreshContents();
-            }
+        elms.add(new UITextButton(T.u.set_deSelAll, app.f.dialogWindowTH, () -> {
+            set.clear();
+            refreshContents();
         }));
         int labelHeight = UIBorderedElement.getBorderedTextHeight(GaBIEnUI.sysThemeRoot.getTheme(), app.f.dialogWindowTH);
         for (T o : entries) {
             final T fo = o;
             final UILabel ul = new UILabel(o.toString(), app.f.dialogWindowTH);
-            final UIIndentThingy utb = new UIIndentThingy(0, labelHeight, 0, 0, new Runnable() {
-                @Override
-                public void run() {
-                    if (set.contains(fo)) {
-                        set.remove(fo);
-                    } else {
-                        set.add(fo);
-                    }
-                    refreshContents();
+            final UIIndentThingy utb = new UIIndentThingy(0, labelHeight, 0, 0, () -> {
+                if (set.contains(fo)) {
+                    set.remove(fo);
+                } else {
+                    set.add(fo);
                 }
+                refreshContents();
             });
-            layout.panelsAdd(new UISplitterLayout(utb, ul, false, 0));
+            elms.add(new UISplitterLayout(utb, ul, false, 0));
             setButtons.put(o, utb);
             setLabels.put(o, ul);
         }
+        layout.panelsSet(elms);
         proxySetElement(layout, true);
         refreshContents();
     }

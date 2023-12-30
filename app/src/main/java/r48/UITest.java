@@ -45,10 +45,9 @@ public class UITest extends App.Prx {
     public RORIO[] objectList;
     int offset = 0;
     public LinkedList<RORIO> back = new LinkedList<RORIO>();
-    // the naming got screwed up with the Nth layout redesign.
     // UITest -> outerPanel -> Back/PRINT
-    //                      -> masterPanel
-    public UIScrollLayout masterPanel = new UIScrollLayout(true, app.f.generalS);
+    //                      -> innerPanel
+    public UIScrollLayout innerPanel = new UIScrollLayout(true, app.f.generalS);
 
     public static String getPrintPath(App app) {
         return AppMain.autoDetectWindows(app.rootPath + "PRINT.txt");
@@ -90,7 +89,7 @@ public class UITest extends App.Prx {
                 });
             }, app.f.inspectorBackTH);
         }
-        UINSVertLayout outerPanel = new UINSVertLayout(topBar, masterPanel);
+        UINSVertLayout outerPanel = new UINSVertLayout(topBar, innerPanel);
         proxySetElement(outerPanel, false);
         setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(320), app.f.scaleGuess(240)));
     }
@@ -122,7 +121,7 @@ public class UITest extends App.Prx {
         // --
         navigaList = strings.toArray(new String[0]);
         objectList = targs.toArray(new IRIO[0]);
-        masterPanel.panelsClear();
+        LinkedList<UIElement> elms = new LinkedList<>();
         for (int i = 0; i < navigaList.length; i++) {
             final int j = i;
             UIElement button = new UITextButton(navigaList[i], app.f.inspectorTH, () -> {
@@ -135,8 +134,9 @@ public class UITest extends App.Prx {
                     back.addLast(obj);
                     loadObject(MagicalBinders.toBoundWithCache(app, b, (IRIO) objectList[j]));
                 }, app.f.inspectorTH);
-            masterPanel.panelsAdd(button);
+            elms.add(button);
         }
+        innerPanel.panelsSet(elms);
     }
 
     public static int natStrComp(String s, String s1) {

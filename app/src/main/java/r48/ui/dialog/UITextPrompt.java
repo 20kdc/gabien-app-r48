@@ -9,6 +9,7 @@ package r48.ui.dialog;
 
 import java.util.function.Consumer;
 
+import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
@@ -22,17 +23,16 @@ import r48.App;
 public class UITextPrompt extends App.Prx {
 
     public UITextBox utb = new UITextBox("", app.f.textDialogFieldTH);
-    public UIScrollLayout uiSVL = new UIScrollLayout(true, app.f.generalS);
     public boolean wantClose = false;
 
     public UITextPrompt(App app, final String s, final Consumer<String> iConsumer) {
         super(app);
-        uiSVL.panelsAdd(new UILabel(s, app.f.textDialogDescTH));
-        uiSVL.panelsAdd(new UISplitterLayout(utb, new UITextButton(T.g.bOk, app.f.textDialogFieldTH, () -> {
+        UILabel label = new UILabel(s, app.f.textDialogDescTH);
+        UIElement mainLayout = new UISplitterLayout(utb, new UITextButton(T.g.bOk, app.f.textDialogFieldTH, () -> {
             iConsumer.accept(utb.getText());
             wantClose = true;
-        }), false, 4, 5));
-        proxySetElement(uiSVL, true);
+        }), false, 4, 5);
+        proxySetElement(new UIScrollLayout(true, app.f.generalS, label, mainLayout), true);
     }
 
     @Override

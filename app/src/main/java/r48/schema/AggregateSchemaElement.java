@@ -50,21 +50,20 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
 
     @Override
     public UIElement buildHoldingEditor(IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        // Possibly question if this aggregate is useless???
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
         // Assist with the layout of "property grids".
         if (!overrideSet)
             overrideFW = getDefaultFieldWidth(target);
+        LinkedList<UIElement> uiSVLList = new LinkedList<>();
         for (SchemaElement ise : aggregate) {
             SchemaElement possibleField = extractField(ise, target);
             if (possibleField instanceof IFieldSchemaElement)
                 ((IFieldSchemaElement) possibleField).setFieldWidthOverride(overrideFW);
             // still deal with ise because the proxies may have some function
-            uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
+            uiSVLList.add(ise.buildHoldingEditor(target, launcher, path));
         }
         overrideSet = false;
-        uiSVL.forceToRecommended();
-        return uiSVL;
+        // Possibly question if this aggregate is useless???
+        return AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target, uiSVLList);
     }
 
     public static SchemaElement extractField(SchemaElement ise, @Nullable RORIO rio) {
@@ -138,6 +137,18 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
         };
         uiSVL.scrollbar.scrollPoint = savedPoint.get();
         return uiSVL;
+    }
+    public static UIScrollLayout createScrollSavingSVL(final ISchemaHost host, final EmbedDataKey<Double> key, final IRIO target, UIElement... contents) {
+        UIScrollLayout usl = createScrollSavingSVL(host, key, target);
+        usl.panelsSet(contents);
+        usl.forceToRecommended();
+        return usl;
+    }
+    public static UIScrollLayout createScrollSavingSVL(final ISchemaHost host, final EmbedDataKey<Double> key, final IRIO target, Iterable<UIElement> contents) {
+        UIScrollLayout usl = createScrollSavingSVL(host, key, target);
+        usl.panelsSet(contents);
+        usl.forceToRecommended();
+        return usl;
     }
 
     // Only to be used if this button is known to cause changeOccurred.

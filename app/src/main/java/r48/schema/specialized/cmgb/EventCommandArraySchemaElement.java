@@ -247,25 +247,22 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         group[group.length - 1] = new SchemaElement.Leaf(app) {
             @Override
             public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
-                UIScrollLayout usl = new UIScrollLayout(true, app.f.generalS);
+                LinkedList<UIElement> addons = new LinkedList<>();
                 if (addRemoveF) {
-                    usl.panelsAdd(new UITextButton(addText, app.f.schemaFieldTH, new Runnable() {
-                        @Override
-                        public void run() {
-                            IRIO commandTarg = target.getAElem(start);
-                            int code = (int) commandTarg.getIVar("@code").getFX();
-                            RPGCommand rc = database.knownCommands.get(code);
-                            if (rc != null)
-                                for (IGroupBehavior groupBehavior : rc.groupBehaviors) {
-                                    if (groupBehavior.handlesAddition()) {
-                                        IRIO ne = target.addAElem(start + length);
-                                        SchemaPath.setDefaultValue(ne, baseElement, null);
-                                        ne.getIVar("@code").setFX(groupBehavior.getAdditionCode());
-                                        path.changeOccurred(false);
-                                        break;
-                                    }
+                    addons.add(new UITextButton(addText, app.f.schemaFieldTH, () -> {
+                        IRIO commandTarg = target.getAElem(start);
+                        int code = (int) commandTarg.getIVar("@code").getFX();
+                        RPGCommand rc = database.knownCommands.get(code);
+                        if (rc != null)
+                            for (IGroupBehavior groupBehavior : rc.groupBehaviors) {
+                                if (groupBehavior.handlesAddition()) {
+                                    IRIO ne = target.addAElem(start + length);
+                                    SchemaPath.setDefaultValue(ne, baseElement, null);
+                                    ne.getIVar("@code").setFX(groupBehavior.getAdditionCode());
+                                    path.changeOccurred(false);
+                                    break;
                                 }
-                        }
+                            }
                     }));
                 }
                 if (cctF) {
@@ -297,9 +294,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                         }, new R2kTextRules(), 50);
                         app.ui.wm.createMenu(alignMenuButton, tsm);
                     };
-                    usl.panelsAdd(alignMenuButton);
+                    addons.add(alignMenuButton);
                 }
-                return usl;
+                return new UIScrollLayout(true, app.f.generalS, addons);
             }
 
             @Override

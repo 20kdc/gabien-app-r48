@@ -129,12 +129,12 @@ public class GrandSynthesisTest {
         gtb.thenClick("button:Add Next..."); // Continued...
         gtb.thenWaitFrame();
 
-        gtb.thenScroll(ev0001Prefix + "?:gabien.ui.UITabPane¥scroll", "button:34;Set Graphic");
+        gtb.thenScroll(ev0001Prefix + "tabpane¥scroll", "button:34;Set Graphic");
         gtb.thenClick("button:34;Set Graphic"); // Set command type
         gtb.thenWaitFrame();
         gtb.thenClick("button:Select character index...");
         gtb.thenWaitFrame();
-        gtb.thenClick("?:r48.ui.dialog.UISpritesheetChoice¥?:gabien.ui.UIScrollbar¥..", 128, 0);
+        gtb.thenClick("?:r48.ui.dialog.UISpritesheetChoice¥scrollbar¥..", 128, 0);
         gtb.thenWaitFrame();
         gtb.thenClick(ev0001Back); // Back (to leave the command)
         gtb.thenClick(ev0001Back); // Back (to leave the command list)

@@ -30,7 +30,6 @@ import r48.ui.dmicg.CharacterGeneratorController;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Oh, this can't be good news.
@@ -160,7 +159,7 @@ public class ImageEditorController extends App.Svc {
     private void initPalette(int cause) {
         final Object currentPaletteThing = paletteThing = new Object();
 
-        paletteView.panelsClear();
+        LinkedList<UIElement> paletteViewList = new LinkedList<>();
         if (sanityButtonHolder != null) {
             sanityButtonHolder.release();
             sanityButtonHolder = null;
@@ -314,69 +313,54 @@ public class ImageEditorController extends App.Svc {
             }
         }));
         menuDetails.add(T.ie.charGen);
-        menuFuncs.add(new Runnable() {
-            @Override
-            public void run() {
-                app.ui.wm.createWindow(new CharacterGeneratorController(app).rootView);
-            }
+        menuFuncs.add(() -> {
+            app.ui.wm.createWindow(new CharacterGeneratorController(app).rootView);
         });
 
-        fileButtonMenuHook = new UIMenuButton(app, T.g.bFile, app.f.imageEditorTH, new Supplier<Boolean>() {
-            @Override
-            public Boolean get() {
-                return paletteThing == currentPaletteThing;
-            }
+        fileButtonMenuHook = new UIMenuButton(app, T.g.bFile, app.f.imageEditorTH, () -> {
+            return paletteThing == currentPaletteThing;
         }, menuDetails.toArray(new String[0]), menuFuncs.toArray(new Runnable[0]));
-        paletteView.panelsAdd(fileButtonMenuHook);
+        paletteViewList.add(fileButtonMenuHook);
 
-        paletteView.panelsAdd(new UIMenuButton(app, T.ie.grid, app.f.imageEditorTH, new Supplier<UIElement>() {
-            @Override
-            public UIElement get() {
-                // The grid changer used to be using the same XY changer as resizing, then that became impractical.
-                // Probably for the better, this may in some circumstances allow a runtime view...
-                UIScrollLayout verticalLayout = new UIScrollLayout(true, app.f.generalS);
-                final UINumberBox gridX, gridY, gridW, gridH;
-                gridX = new UINumberBox(imageEditView.grid.x, app.f.imageEditorTH);
-                gridY = new UINumberBox(imageEditView.grid.y, app.f.imageEditorTH);
-                gridW = new UINumberBox(imageEditView.grid.width, app.f.imageEditorTH);
-                gridH = new UINumberBox(imageEditView.grid.height, app.f.imageEditorTH);
-                Runnable sendUpdates = () -> {
-                    imageEditView.grid = new Rect((int) gridX.getNumber(), (int) gridY.getNumber(), (int) gridW.getNumber(), (int) gridH.getNumber());
-                };
-                gridX.onEdit = sendUpdates;
-                gridY.onEdit = sendUpdates;
-                gridW.onEdit = sendUpdates;
-                gridH.onEdit = sendUpdates;
-                verticalLayout.panelsAdd(new UILabel(T.ie.gridSize, app.f.imageEditorTH));
-                verticalLayout.panelsAdd(new UISplitterLayout(gridX, gridY, false, 0.5d));
-                verticalLayout.panelsAdd(new UILabel(T.ie.gridOffset, app.f.imageEditorTH));
-                verticalLayout.panelsAdd(new UISplitterLayout(gridW, gridH, false, 0.5d));
-                // This is the colour of the grid.
-                final UIColourSwatchButton uicsb = new UIColourSwatchButton(imageEditView.gridColour, app.f.imageEditorTH, null);
-                uicsb.onClick = new Runnable() {
-                    @Override
-                    public void run() {
-                        app.ui.wm.createMenu(uicsb, new UIColourPicker(app, T.ie.gridColour, imageEditView.gridColour, new Consumer<Integer>() {
-                            @Override
-                            public void accept(Integer t) {
-                                if (t != null)
-                                    imageEditView.gridColour = t & 0xFFFFFF;
-                            }
-                        }, false));
-                    }
-                };
-                verticalLayout.panelsAdd(uicsb);
-                // Finally, grid overlay control.
-                verticalLayout.panelsAdd(new UITextButton(T.ie.gridOverlay, app.f.imageEditorTH, new Runnable() {
-                    @Override
-                    public void run() {
+        paletteViewList.add(new UIMenuButton(app, T.ie.grid, app.f.imageEditorTH, () -> {
+            // The grid changer used to be using the same XY changer as resizing, then that became impractical.
+            // Probably for the better, this may in some circumstances allow a runtime view...
+            UIScrollLayout verticalLayout = new UIScrollLayout(true, app.f.generalS);
+            final UINumberBox gridX, gridY, gridW, gridH;
+            gridX = new UINumberBox(imageEditView.grid.x, app.f.imageEditorTH);
+            gridY = new UINumberBox(imageEditView.grid.y, app.f.imageEditorTH);
+            gridW = new UINumberBox(imageEditView.grid.width, app.f.imageEditorTH);
+            gridH = new UINumberBox(imageEditView.grid.height, app.f.imageEditorTH);
+            Runnable sendUpdates = () -> {
+                imageEditView.grid = new Rect((int) gridX.getNumber(), (int) gridY.getNumber(), (int) gridW.getNumber(), (int) gridH.getNumber());
+            };
+            gridX.onEdit = sendUpdates;
+            gridY.onEdit = sendUpdates;
+            gridW.onEdit = sendUpdates;
+            gridH.onEdit = sendUpdates;
+            // This is the colour of the grid.
+            final UIColourSwatchButton uicsb = new UIColourSwatchButton(imageEditView.gridColour, app.f.imageEditorTH, null);
+            uicsb.onClick = () -> {
+                app.ui.wm.createMenu(uicsb, new UIColourPicker(app, T.ie.gridColour, imageEditView.gridColour, (t) -> {
+                    if (t != null)
+                        imageEditView.gridColour = t & 0xFFFFFF;
+                }, false));
+            };
+            UIElement[] verticalLayoutContents = {
+                    new UILabel(T.ie.gridSize, app.f.imageEditorTH),
+                    new UISplitterLayout(gridX, gridY, false, 0.5d),
+                    new UILabel(T.ie.gridOffset, app.f.imageEditorTH),
+                    new UISplitterLayout(gridW, gridH, false, 0.5d),
+                    uicsb,
+                    // Finally, grid overlay control.
+                    new UITextButton(T.ie.gridOverlay, app.f.imageEditorTH, () -> {
                         imageEditView.gridST = !imageEditView.gridST;
-                    }
-                }).togglable(imageEditView.gridST));
-                // And finish.
-                verticalLayout.forceToRecommended();
-                return verticalLayout;
-            }
+                    }).togglable(imageEditView.gridST)
+            };
+            verticalLayout.panelsSet(verticalLayoutContents);
+            // And finish.
+            verticalLayout.forceToRecommended();
+            return verticalLayout;
         }));
 
         UIElement ul = new UIIconButton(Symbol.Target, app.f.imageEditorTH, new Runnable() {
@@ -412,101 +396,77 @@ public class ImageEditorController extends App.Svc {
             }
         }, app.f.imageEditorTH));
 
-        paletteView.panelsAdd(ul);
+        paletteViewList.add(ul);
 
-        paletteView.panelsAdd(imageEditView.currentTool.createToolPalette(imageEditView));
+        paletteViewList.add(imageEditView.currentTool.createToolPalette(imageEditView));
 
         // mode details
         if (imageEditView.image.usesPalette()) {
             UILabel cType = new UILabel(T.ie.pal, app.f.imageEditorTH);
-            paletteView.panelsAdd(sanityButtonHolder = new UISplitterLayout(cType, sanityButton, false, 1));
+            paletteViewList.add(sanityButtonHolder = new UISplitterLayout(cType, sanityButton, false, 1));
         }
 
-        paletteView.panelsAdd(new UISplitterLayout(new UIMenuButton(app, "+", app.f.imageEditorTH, new Supplier<UIElement>() {
-            @Override
-            public UIElement get() {
-                return new UIColourPicker(app, T.ie.palAdd, imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex) | 0xFF000000, new Consumer<Integer>() {
-                    @Override
-                    public void accept(Integer integer) {
-                        if (integer == null)
-                            return;
-                        imageEditView.eds.startSection();
-                        imageEditView.image.appendToPalette(integer);
-                        imageEditView.eds.endSection();
-                        initPalette(0);
-                    }
-                }, !imageEditView.image.t1Lock);
-            }
-        }), new UIIconButton(Symbol.Eyedropper, app.f.imageEditorTH, new Runnable() {
-            @Override
-            public void run() {
-                imageEditView.currentTool = new AddColourFromImageEditorTool(app, new Consumer<Integer>() {
-                    @Override
-                    public void accept(Integer integer) {
-                        imageEditView.eds.startSection();
-                        imageEditView.image.appendToPalette(integer);
-                        imageEditView.eds.endSection();
-                    }
-                });
-                imageEditView.newToolCallback.run();
-            }
+        paletteViewList.add(new UISplitterLayout(new UIMenuButton(app, "+", app.f.imageEditorTH, () -> {
+            return new UIColourPicker(app, T.ie.palAdd, imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex) | 0xFF000000, new Consumer<Integer>() {
+                @Override
+                public void accept(Integer integer) {
+                    if (integer == null)
+                        return;
+                    imageEditView.eds.startSection();
+                    imageEditView.image.appendToPalette(integer);
+                    imageEditView.eds.endSection();
+                    initPalette(0);
+                }
+            }, !imageEditView.image.t1Lock);
+        }), new UIIconButton(Symbol.Eyedropper, app.f.imageEditorTH, () -> {
+            imageEditView.currentTool = new AddColourFromImageEditorTool(app, (integer) -> {
+                imageEditView.eds.startSection();
+                imageEditView.image.appendToPalette(integer);
+                imageEditView.eds.endSection();
+            });
+            imageEditView.newToolCallback.run();
         }), false, 0.5d));
 
         for (int idx = 0; idx < imageEditView.image.paletteSize(); idx++) {
             final int fidx = idx;
-            UIElement cPanel = new UIColourSwatchButton(imageEditView.image.getPaletteRGB(idx), app.f.imageEditorTH, new Runnable() {
-                @Override
-                public void run() {
-                    imageEditView.selPaletteIndex = fidx;
-                    initPalette(0);
-                }
+            UIElement cPanel = new UIColourSwatchButton(imageEditView.image.getPaletteRGB(idx), app.f.imageEditorTH, () -> {
+                imageEditView.selPaletteIndex = fidx;
+                initPalette(0);
             }).togglable(imageEditView.selPaletteIndex == fidx);
             if (imageEditView.selPaletteIndex == fidx) {
-                cPanel = new UIAppendButton("X", cPanel, new Runnable() {
-                    @Override
-                    public void run() {
-                        if (imageEditView.image.paletteSize() > 1) {
-                            imageEditView.eds.startSection();
-                            imageEditView.selPaletteIndex--;
-                            if (imageEditView.selPaletteIndex == -1)
-                                imageEditView.selPaletteIndex++;
-                            imageEditView.image.removeFromPalette(fidx, sanityButton.state);
-                            imageEditView.eds.endSection();
-                            initPalette(0);
-                        }
-                    }
-                }, app.f.imageEditorTH);
-            } else {
-                cPanel = new UIAppendButton("~", cPanel, new Runnable() {
-                    @Override
-                    public void run() {
+                cPanel = new UIAppendButton("X", cPanel, () -> {
+                    if (imageEditView.image.paletteSize() > 1) {
                         imageEditView.eds.startSection();
-                        imageEditView.image.swapInPalette(imageEditView.selPaletteIndex, fidx, sanityButton.state);
+                        imageEditView.selPaletteIndex--;
+                        if (imageEditView.selPaletteIndex == -1)
+                            imageEditView.selPaletteIndex++;
+                        imageEditView.image.removeFromPalette(fidx, sanityButton.state);
                         imageEditView.eds.endSection();
                         initPalette(0);
                     }
                 }, app.f.imageEditorTH);
+            } else {
+                cPanel = new UIAppendButton("~", cPanel, () -> {
+                    imageEditView.eds.startSection();
+                    imageEditView.image.swapInPalette(imageEditView.selPaletteIndex, fidx, sanityButton.state);
+                    imageEditView.eds.endSection();
+                    initPalette(0);
+                }, app.f.imageEditorTH);
             }
-            cPanel = new UISplitterLayout(new UIMenuButton(app, "=", app.f.imageEditorTH, new Supplier<UIElement>() {
-                @Override
-                public UIElement get() {
-                    return new UIColourPicker(app, T.ie.palChg, imageEditView.image.getPaletteRGB(fidx), new Consumer<Integer>() {
-                        @Override
-                        public void accept(Integer integer) {
-                            if (integer == null)
-                                return;
-                            imageEditView.eds.startSection();
-                            if (fidx < imageEditView.image.paletteSize())
-                                imageEditView.image.changePalette(fidx, integer);
-                            imageEditView.eds.endSection();
-                            initPalette(0);
-                        }
-                    }, true);
-                }
+            cPanel = new UISplitterLayout(new UIMenuButton(app, "=", app.f.imageEditorTH, () -> {
+                return new UIColourPicker(app, T.ie.palChg, imageEditView.image.getPaletteRGB(fidx), (integer) -> {
+                    if (integer == null)
+                        return;
+                    imageEditView.eds.startSection();
+                    if (fidx < imageEditView.image.paletteSize())
+                        imageEditView.image.changePalette(fidx, integer);
+                    imageEditView.eds.endSection();
+                    initPalette(0);
+                }, true);
             }), cPanel, false, 0.0d);
-            paletteView.panelsAdd(cPanel);
+            paletteViewList.add(cPanel);
         }
-        paletteView.panelsFinished();
+        paletteView.panelsSet(paletteViewList);
     }
 
     private Runnable addPresaveWarningWrapper(final Runnable runnable) {
@@ -547,12 +507,9 @@ public class ImageEditorController extends App.Svc {
         hVal = new UINumberBox(targetVal.height, app.f.imageEditorTH);
         xVal = new UINumberBox(targetVal.x, app.f.imageEditorTH);
         yVal = new UINumberBox(targetVal.y, app.f.imageEditorTH);
-        hVal.onEdit = wVal.onEdit = new Runnable() {
-            @Override
-            public void run() {
-                wVal.setNumber(Math.max(1, wVal.getNumber()));
-                hVal.setNumber(Math.max(1, hVal.getNumber()));
-            }
+        hVal.onEdit = wVal.onEdit = () -> {
+            wVal.setNumber(Math.max(1, wVal.getNumber()));
+            hVal.setNumber(Math.max(1, hVal.getNumber()));
         };
 
         acceptButton = new UITextButton(T.g.bAccept, app.f.imageEditorTH, () -> {
@@ -560,17 +517,16 @@ public class ImageEditorController extends App.Svc {
             iConsumer.accept(r);
             res.selfClose = true;
         });
-        xyChanger.panelsAdd(new UILabel(T.g.bSize, app.f.imageEditorTH));
-        xyChanger.panelsAdd(new UISplitterLayout(wVal, hVal, false, 1, 2));
-        xyChanger.panelsAdd(new UILabel(T.g.bOffset, app.f.imageEditorTH));
-        xyChanger.panelsAdd(new UISplitterLayout(xVal, yVal, false, 1, 2));
-        xyChanger.panelsAdd(new UIAppendButton(T.m.tCancel, acceptButton, new Runnable() {
-            @Override
-            public void run() {
-                res.selfClose = true;
-            }
-        }, app.f.imageEditorTH));
-
+        UIElement[] xyChangerContents = {
+                new UILabel(T.g.bSize, app.f.imageEditorTH),
+                new UISplitterLayout(wVal, hVal, false, 1, 2),
+                new UILabel(T.g.bOffset, app.f.imageEditorTH),
+                new UISplitterLayout(xVal, yVal, false, 1, 2),
+                new UIAppendButton(T.m.tCancel, acceptButton, () -> {
+                    res.selfClose = true;
+                }, app.f.imageEditorTH)
+        };
+        xyChanger.panelsSet(xyChangerContents);
         res.forceToRecommended();
         Size tgtSize = res.getSize();
         res.setForcedBounds(null, new Rect(0, 0, tgtSize.width * 3, tgtSize.height));

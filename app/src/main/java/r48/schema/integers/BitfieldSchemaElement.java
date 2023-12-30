@@ -13,6 +13,7 @@ import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -30,28 +31,21 @@ public class BitfieldSchemaElement extends IntegerSchemaElement {
 
     @Override
     public ActiveInteger buildIntegerEditor(long oldVal, final IIntegerContext context) {
-        final UIScrollLayout uiSVL = context.newSVL();
-        final Consumer<Integer> refresh = BitfieldTableCellEditor.installEditor(app, flags, new Consumer<UIElement>() {
-            @Override
-            public void accept(UIElement element) {
-                uiSVL.panelsAdd(element);
-            }
-        }, new AtomicReference<Consumer<Integer>>(new Consumer<Integer>() {
-            @Override
-            public void accept(Integer integer) {
-                context.update((long) (int) integer);
-            }
+        LinkedList<UIElement> elms = new LinkedList<>();
+        final Consumer<Integer> refresh = BitfieldTableCellEditor.installEditor(app, flags, (element) -> {
+            elms.add(element);
+        }, new AtomicReference<Consumer<Integer>>((integer) -> {
+            context.update((long) (int) integer);
         }));
         refresh.accept((int) oldVal);
-        uiSVL.panelsAdd(new UILabel(T.s.manualEdit, app.f.tableElementTH));
+        elms.add(new UILabel(T.s.manualEdit, app.f.tableElementTH));
         final ActiveInteger ai = super.buildIntegerEditor(oldVal, context);
-        uiSVL.panelsAdd(ai.uie);
-        return new ActiveInteger(uiSVL, new Consumer<Long>() {
-            @Override
-            public void accept(Long aLong) {
-                refresh.accept((int) (long) aLong);
-                ai.onValueChange.accept(aLong);
-            }
+        elms.add(ai.uie);
+        final UIScrollLayout uiSVL = context.newSVL();
+        uiSVL.panelsSet(elms);
+        return new ActiveInteger(uiSVL, (aLong) -> {
+            refresh.accept((int) (long) aLong);
+            ai.onValueChange.accept(aLong);
         });
     }
 }

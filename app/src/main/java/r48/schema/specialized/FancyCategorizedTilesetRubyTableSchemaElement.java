@@ -7,6 +7,8 @@
 
 package r48.schema.specialized;
 
+import java.util.LinkedList;
+
 import gabien.ui.UIElement;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
@@ -61,9 +63,10 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
             final UITileGrid tileGrid = new UITileGrid(app, renderer, 0, 0, true, tab.visTilesNormal, tab.visTilesHover, " " + tab.localizedText + " ", spriteScale);
             
             UIScrollLayout fields = new UIScrollLayout(true, app.f.generalS);
+            LinkedList<UIElement> fieldsList = new LinkedList<>();
             final int[] values = new int[targ.planeCount];
-            
-            final Runnable onChange = editor.createEditor(fields, values, new Runnable() {
+
+            final Runnable onChange = editor.createEditor(fieldsList, values, new Runnable() {
                 @Override
                 public void run() {
                     // -- Backup scroll values --
@@ -98,7 +101,8 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
                         targ.setTiletype(tile, 0, p, (short) values[p]);
                 }
             });
-            
+            fields.panelsSet(fieldsList);
+
             tileGrid.onSelectionChange = () -> {
                 int tile = tab.actTiles[tileGrid.getSelected()];
                 if ((tile < 0) || (tile >= targ.width))
@@ -109,7 +113,7 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
             };
             // Done to initialize the values
             tileGrid.onSelectionChange.run();
-            
+
             UIElement uie = new UISplitterLayout(tileGrid, fields, false, 1) {
                 @Override
                 public String toString() {

@@ -158,12 +158,19 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDupl
     }
 
     @Override
+    public int layoutGetHForW(int width) {
+        if (innerElemEditor == null)
+            return toolbarRoot.layoutGetHForW(width);
+        return toolbarRoot.layoutGetHForW(width) + innerElemEditor.layoutGetHForW(width);
+    }
+
+    @Override
     protected void layoutRunImpl() {
-        Size tb = toolbarRoot.getWantedSize();
         Size r = getSize();
-        toolbarRoot.setForcedBounds(this, new Rect(0, 0, r.width, tb.height));
+        int tbHeight = toolbarRoot.layoutGetHForW(r.width);
+        toolbarRoot.setForcedBounds(this, new Rect(0, 0, r.width, tbHeight));
         if (innerElemEditor != null)
-            innerElemEditor.setForcedBounds(this, new Rect(0, tb.height, r.width, r.height - tb.height));
+            innerElemEditor.setForcedBounds(this, new Rect(0, tbHeight, r.width, r.height - tbHeight));
     }
 
     @Override
