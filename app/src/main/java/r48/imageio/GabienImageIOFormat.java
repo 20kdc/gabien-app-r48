@@ -10,7 +10,7 @@ import r48.app.AppCore;
 
 import java.io.IOException;
 
-import gabien.render.IImage;
+import gabien.render.WSIImage;
 
 /**
  * ImageIOFormat for the gabien system PNG writer (but not the loader, since this API uses byte[])
@@ -35,9 +35,9 @@ public class GabienImageIOFormat extends ImageIOFormat {
     }
 
     @Override
-    public ImageIOImage loadFile(byte[] s, IImage iImage) throws IOException {
+    public ImageIOImage loadFile(byte[] s, WSIImage iImage) throws IOException {
         if (iImage == null)
             throw new IOException("system image loader didn't understand it");
-        return new ImageIOImage(iImage.getWidth(), iImage.getHeight(), iImage.getPixels(), null);
+        return new ImageIOImage(iImage.width, iImage.height, iImage.getPixels(), null);
     }
 }

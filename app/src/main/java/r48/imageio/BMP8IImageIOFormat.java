@@ -12,7 +12,7 @@ import r48.io.BMPConnection;
 import java.io.IOException;
 import java.util.LinkedList;
 
-import gabien.render.IImage;
+import gabien.render.WSIImage;
 
 /**
  * It's that format we all know and love.
@@ -53,7 +53,7 @@ public class BMP8IImageIOFormat extends ImageIOFormat {
     }
 
     @Override
-    public ImageIOImage loadFile(byte[] s, IImage gInput) throws IOException {
+    public ImageIOImage loadFile(byte[] s, WSIImage gInput) throws IOException {
         BMPConnection eDreams = new BMPConnection(s, BMPConnection.CMode.Normal, 0, false);
         if (eDreams.ignoresPalette)
             throw new IOException("Shouldn't load image this way ; it's not paletted. Better to use native methods if possible.");

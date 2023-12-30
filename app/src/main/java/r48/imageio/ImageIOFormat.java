@@ -8,7 +8,7 @@
 package r48.imageio;
 
 import gabien.GaBIEn;
-import gabien.render.IImage;
+import gabien.render.WSIImage;
 import r48.app.AppCore;
 import r48.app.AppMain;
 
@@ -36,7 +36,7 @@ public abstract class ImageIOFormat extends AppCore.Csv {
 
     // Tries to load an image, or throws an exception otherwise.
     // gInput is null (rather than the error image reference) or the system image loader output.
-    public abstract ImageIOImage loadFile(byte[] s, IImage gInput) throws IOException;
+    public abstract ImageIOImage loadFile(byte[] s, WSIImage gInput) throws IOException;
 
     public static ImageIOFormat[] initializeFormats(AppCore app) {
         return new ImageIOFormat[] {
@@ -78,9 +78,7 @@ public abstract class ImageIOFormat extends AppCore.Csv {
         }
         byte[] data = dataHolder.toByteArray();
 
-        IImage im = GaBIEn.getImageEx(filename, true, false);
-        if (im == GaBIEn.getErrorImage())
-            im = null;
+        WSIImage im = GaBIEn.getWSIImage(filename, true, false);
 
         for (ImageIOFormat ief : formats) {
             ImageIOImage iei = null;
