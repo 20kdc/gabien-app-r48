@@ -4,7 +4,7 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-e mapinfo_musictype 0 inherit 1 event 2 specified
+e mapinfo_musictype 0 inherit 1 ignored 2 specified
 e mapinfo_backtype 0 inherit 1 terrainLDB 2 specified
 e mapinfo_inheritflag 0 inheritParent 1 true 2 false
 e mapinfo_type 1 map 2 area 0 root
@@ -24,6 +24,7 @@ C datum `
 @OFED_edit_pos_y int
 @OFED_expanded boolean
 @music_type mapinfo_musictype
++hwnd . R2K/H_MusicType
 @music RPG::Music
 @background_type mapinfo_backtype
 @background_name f_battleback_name

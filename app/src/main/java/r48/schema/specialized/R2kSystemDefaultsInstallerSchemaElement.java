@@ -41,49 +41,43 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         if (mode == 3) {
-            UITextButton utb1 = new UITextButton(T.s.svDoReset, app.f.schemaFieldTH, new Runnable() {
-                @Override
-                public void run() {
-                    // Before doing anything stupid...
-                    long mapId = target.getIVar("@party_pos").getIVar("@map").getFX();
-                    String mapName = R2kRMLikeMapInfoBackend.sNameFromInt((int) mapId);
-                    IObjectBackend.ILoadedObject map = app.odb.getObject(mapName, null);
-                    if (map == null) {
-                        app.ui.launchDialog(T.s.errInvalidMap);
-                        return;
-                    }
-                    IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");
-                    saveEvs.setHash();
-                    // Ghosts, become real!
-                    IRIO hmr = map.getObject().getIVar("@events");
-                    for (DMKey evs : hmr.getHashKeys())
-                        R2kSavefileEventAccess.eventAsSaveEvent(app, saveEvs, mapId, evs, hmr.getHashVal(evs));
-                    // @system save_count is in-game save count, not actual System @save_count
-                    target.getIVar("@party_pos").getIVar("@map_save_count").setDeepClone(getSaveCount(map.getObject()));
-
-                    IRIO ldbSys = app.odb.getObject("RPG_RT.ldb").getObject().getIVar("@system");
-                    RORIO saveCount = getSaveCount(ldbSys);
-
-                    target.getIVar("@party_pos").getIVar("@db_save_count").setDeepClone(saveCount);
-                    initTable(target.getIVar("@map_info").getIVar("@lower_tile_remap"));
-                    initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
-
-                    path.changeOccurred(false);
-                    app.ui.launchDialog(T.s.svDidTheReset);
+            UITextButton utb1 = new UITextButton(T.s.svDoReset, app.f.schemaFieldTH, () -> {
+                // Before doing anything stupid...
+                long mapId = target.getIVar("@party_pos").getIVar("@map").getFX();
+                String mapName = R2kRMLikeMapInfoBackend.sNameFromInt((int) mapId);
+                IObjectBackend.ILoadedObject map = app.odb.getObject(mapName, null);
+                if (map == null) {
+                    app.ui.launchDialog(T.s.errInvalidMap);
+                    return;
                 }
+                IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");
+                saveEvs.setHash();
+                // Ghosts, become real!
+                IRIO hmr = map.getObject().getIVar("@events");
+                for (DMKey evs : hmr.getHashKeys())
+                    R2kSavefileEventAccess.eventAsSaveEvent(app, saveEvs, mapId, evs, hmr.getHashVal(evs));
+                // @system save_count is in-game save count, not actual System @save_count
+                target.getIVar("@party_pos").getIVar("@map_save_count").setDeepClone(getSaveCount(map.getObject()));
+
+                IRIO ldbSys = app.odb.getObject("RPG_RT.ldb").getObject().getIVar("@system");
+                RORIO saveCount = getSaveCount(ldbSys);
+
+                target.getIVar("@party_pos").getIVar("@db_save_count").setDeepClone(saveCount);
+                initTable(target.getIVar("@map_info").getIVar("@lower_tile_remap"));
+                initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
+
+                path.changeOccurred(false);
+                app.ui.launchDialog(T.s.svDidTheReset);
             });
-            UITextButton utb2 = new UITextButton(T.s.svCauseReset, app.f.schemaFieldTH, new Runnable() {
-                @Override
-                public void run() {
-                    IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");
-                    saveEvs.setHash();
-                    target.getIVar("@party_pos").getIVar("@map_save_count").setFX(0);
-                    initTable(target.getIVar("@map_info").getIVar("@lower_tile_remap"));
-                    initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
+            UITextButton utb2 = new UITextButton(T.s.svCauseReset, app.f.schemaFieldTH, () -> {
+                IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");
+                saveEvs.setHash();
+                target.getIVar("@party_pos").getIVar("@map_save_count").setFX(0);
+                initTable(target.getIVar("@map_info").getIVar("@lower_tile_remap"));
+                initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
 
-                    path.changeOccurred(false);
-                    app.ui.launchDialog(T.s.svCausedTheReset);
-                }
+                path.changeOccurred(false);
+                app.ui.launchDialog(T.s.svCausedTheReset);
             });
             return new UISplitterLayout(utb1, utb2, true, 0.5d);
         } else {
@@ -147,12 +141,8 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
                     SchemaPath.setDefaultValue(sub.addAElem(1), app.sdb.getSDBEntry("RPG::Troop::Member"), DMKey.of(1));
 
                     // Prepare.
-                    app.uiPendingRunnables.add(new Runnable() {
-                        @Override
-                        public void run() {
-                            app.np.r2kProjectCreationHelperFunction();
-                        }
-                    });
+                    // This needs to be a bit indirect since app.np might not have inited yet
+                    app.uiPendingRunnables.add(() -> app.np.r2kProjectCreationHelperFunction());
                     break;
                 case 1:
                     // 1. Fix root

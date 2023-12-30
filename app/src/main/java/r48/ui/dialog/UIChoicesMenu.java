@@ -31,9 +31,8 @@ public class UIChoicesMenu extends App.Prx {
     public UIChoicesMenu(App app, String s, String[] strings, final Runnable[] runnables) {
         super(app);
         UILabel topLabel = new UILabel(s, app.f.dialogWindowTH);
-        UIScrollLayout label = new UIScrollLayout(true, app.f.menuS);
+        UIScrollLayout label = new UIScrollLayout(true, app.f.menuS, topLabel);
         LinkedList<UIElement> elms = new LinkedList<>();
-        elms.add(topLabel);
         for (int i = 0; i < strings.length; i++) {
             final int fi = i;
             elms.add(new UITextButton(strings[i], app.f.dialogWindowTH, () -> {
