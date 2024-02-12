@@ -74,19 +74,21 @@ public class UIMapView extends UIPlaneView {
     // Used to control shouldDrawAt visuals
     private boolean visCurrentlyDrawing = false;
 
+    // Set a string here to schedule a performRefresh for next update.
+    private @Nullable String scheduledRefresh;
+
     // Regarding how these now work:
     // Modification listeners have to be held by the things that need to be notified.
     // This way, they conveniently disappear when the notified things do.
-    private Consumer<SchemaPath> listener = new Consumer<SchemaPath>() {
-        @Override
-        public void accept(SchemaPath sp) {
-            performRefresh(app.odb.getIdByObject(sp.root));
-        }
+    private Consumer<SchemaPath> listener = (sp) -> {
+        // this must be deferred until after the actual changes are done to prevent a crash on adding a page to XP events
+        // also multiple modifications may happen at the same time, so that would be bad!
+        scheduledRefresh = app.odb.getIdByObject(sp.root);
     };
 
     private String[] listenAdditionals = new String[0];
 
-    public void performRefresh(String cause) {
+    private void performRefresh(String cause) {
         // Not an incredibly high-cost operation, thankfully,
         //  since it'll have to run on any edits.
         for (String s : listenAdditionals)
@@ -143,6 +145,11 @@ public class UIMapView extends UIPlaneView {
 
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+        if (scheduledRefresh != null) {
+            String cause = scheduledRefresh;
+            scheduledRefresh = null;
+            performRefresh(cause);
+        }
         shiftDown = false;
         ctrlDown = false;
         if (peripherals instanceof IDesktopPeripherals) {
