@@ -63,17 +63,17 @@ public interface IObjectBackend {
     }
 
     abstract class Factory {
-        public static IObjectBackend create(FSBackend fs, Charset encoding, String odbBackend, String rootPath, String dataPath, String dataExt) {
+        public static IObjectBackend create(FSBackend fs, Charset encoding, String odbBackend, String dataPath, String dataExt) {
             if (odbBackend.equals("r48")) {
-                return new R48ObjectBackend(fs, rootPath + dataPath, dataExt, encoding);
+                return new R48ObjectBackend(fs, dataPath, dataExt, encoding);
             } else if (odbBackend.equals("ika")) {
-                return new IkaObjectBackend(fs, rootPath + dataPath, encoding);
+                return new IkaObjectBackend(fs, dataPath, encoding);
             } else if (odbBackend.equals("lcf2000")) {
-                return new R2kObjectBackend(fs, rootPath + dataPath, encoding);
+                return new R2kObjectBackend(fs, dataPath, encoding);
             } else if (odbBackend.equals("json")) {
-                return new JsonObjectBackend(fs, rootPath + dataPath, dataExt);
+                return new JsonObjectBackend(fs, dataPath, dataExt);
             } else if (odbBackend.equals("cs")) {
-                return new CSObjectBackend(fs, rootPath + dataPath, encoding);
+                return new CSObjectBackend(fs, dataPath, encoding);
             } else {
                 throw new RuntimeException("Unknown ODB backend " + odbBackend);
             }

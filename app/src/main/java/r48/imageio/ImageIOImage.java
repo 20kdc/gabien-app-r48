@@ -39,26 +39,26 @@ public class ImageIOImage {
         palette = pal;
     }
 
-    public IImage rasterize() {
+    /**
+     * Translates colourData to ARGB, by-reference if possible.
+     */
+    private int[] colourDataToARGBByRef() {
         if (palette == null) {
-            return GaBIEn.createImage(colourData, width, height);
+            return colourData;
         } else {
             int[] data = new int[colourData.length];
             for (int i = 0; i < data.length; i++)
                 data[i] = translatePalette(colourData[i]);
-            return GaBIEn.createImage(data, width, height);
+            return data;
         }
     }
 
+    public IImage rasterize() {
+        return GaBIEn.createImage(colourDataToARGBByRef(), width, height);
+    }
+
     public WSIImage rasterizeToWSI() {
-        if (palette == null) {
-            return GaBIEn.createWSIImage(colourData, width, height);
-        } else {
-            int[] data = new int[colourData.length];
-            for (int i = 0; i < data.length; i++)
-                data[i] = translatePalette(colourData[i]);
-            return GaBIEn.createWSIImage(data, width, height);
-        }
+        return GaBIEn.createWSIImage(colourDataToARGBByRef(), width, height);
     }
 
     private int translatePalette(int c) {

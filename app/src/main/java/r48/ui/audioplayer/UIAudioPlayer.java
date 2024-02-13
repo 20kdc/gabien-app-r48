@@ -24,7 +24,6 @@ import gabien.wsi.IPeripherals;
 import gabien.media.audio.*;
 import gabien.media.audio.fileio.ReadAnySupportedAudioSource;
 import r48.App;
-import r48.app.AppMain;
 import r48.ui.Art;
 import r48.ui.UIDynAppPrx;
 
@@ -155,14 +154,15 @@ public class UIAudioPlayer extends UIDynAppPrx {
 
     public static UIElement create(App app, String filename, double speed) {
         InputStream theInputStream = null;
+        // try root first before we try resources
         for (String mnt : extensionsWeWillTry) {
-            theInputStream = GaBIEn.getInFile(AppMain.autoDetectWindows(app.rootPath + filename + mnt));
+            theInputStream = GaBIEn.getInFile(app.gameRoot.intoRelPath(filename + mnt));
             if (theInputStream != null)
                 break;
         }
-        if (theInputStream == null && (app.secondaryImagePath.length() > 0)) {
+        if (theInputStream == null) {
             for (String mnt : extensionsWeWillTry) {
-                theInputStream = GaBIEn.getInFile(AppMain.autoDetectWindows(app.secondaryImagePath + filename + mnt));
+                theInputStream = GaBIEn.getInFile(app.gameResources.intoRelPath(filename + mnt));
                 if (theInputStream != null)
                     break;
             }

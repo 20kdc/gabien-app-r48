@@ -43,8 +43,8 @@ import java.util.function.Supplier;
 public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSystem {
     public RXPSystem(App app) {
         super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "Graphics/", "", new ChainedImageLoader(new IImageLoader[] {
-                new GabienImageLoader(".png"),
-                new GabienImageLoader(".jpg"),
+                new GabienImageLoader(app, ".png"),
+                new GabienImageLoader(app, ".jpg"),
         }))), true);
     }
 

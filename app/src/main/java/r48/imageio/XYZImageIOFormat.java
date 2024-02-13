@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
-import gabien.render.IImage;
+import gabien.render.WSIImage;
 
 /**
  * Here goes nothing.
@@ -67,7 +67,7 @@ public class XYZImageIOFormat extends ImageIOFormat {
     }
 
     @Override
-    public ImageIOImage loadFile(byte[] s, IImage gInput) throws IOException {
+    public ImageIOImage loadFile(byte[] s, WSIImage gInput) throws IOException {
         ByteArrayInputStream fis = new ByteArrayInputStream(s);
         if (fis.read() != 'X')
             throw new IOException("Bad magic");

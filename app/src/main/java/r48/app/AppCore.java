@@ -18,6 +18,9 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
+import gabien.uslx.vfs.FSBackend;
+import gabien.uslx.vfs.impl.DodgyInputWorkaroundFSBackend;
+import gabien.uslx.vfs.impl.UnionFSBackend;
 import r48.cfg.Config;
 import r48.cfg.FontSizes;
 import r48.dbs.ATDB;
@@ -54,8 +57,18 @@ public class AppCore {
     public WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<IRIO>>> magicalBindingCache = new WeakHashMap<>();
 
     public ATDB[] autoTiles = new ATDB[0];
-    public final @NonNull String rootPath;
-    public final @Nullable String secondaryImagePath;
+
+    /**
+     * This is the root FS for the game being worked on.
+     * All game-related writing should go here!
+     * (This is important in case Android starts getting particularly aggressive.)
+     */
+    public final @NonNull FSBackend gameRoot;
+
+    /**
+     * UnionFS of all game resource directories.
+     */
+    public final @NonNull UnionFSBackend gameResources;
 
     public final @NonNull Consumer<String> loadProgress;
 
@@ -65,15 +78,19 @@ public class AppCore {
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public AppCore(@NonNull InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef engine, @NonNull String rp, @Nullable String sip, @NonNull Consumer<String> lp) {
+    public AppCore(@NonNull InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef engine, @NonNull FSBackend rp, @Nullable FSBackend sip, @NonNull Consumer<String> lp) {
         this.ilg = ilg;
         this.encoding = charset;
         c = ilg.c;
         f = c.f;
         t = ilg.t;
         this.engine = engine;
-        rootPath = rp;
-        secondaryImagePath = sip;
+        gameRoot = new DodgyInputWorkaroundFSBackend(rp);
+        if (sip != null) {
+            gameResources = new UnionFSBackend(gameRoot, new DodgyInputWorkaroundFSBackend(sip));
+        } else {
+            gameResources = new UnionFSBackend(gameRoot);
+        }
         loadProgress = lp;
         imageIOFormats = ImageIOFormat.initializeFormats(this);
         deletionButtonsNeedConfirmation = GaBIEn.singleWindowApp();

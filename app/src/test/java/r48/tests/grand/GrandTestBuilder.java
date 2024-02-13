@@ -12,6 +12,9 @@ import gabien.TestKickstart;
 import gabien.ui.*;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.*;
+import gabien.uslx.vfs.impl.RAMFSBackend.VFSDir;
+import gabien.uslx.vfs.impl.RAMFSBackend.VFSFile;
+import gabien.uslx.vfs.impl.RAMFSBackend.VFSNode;
 import gabienapp.GrandLauncherUtils;
 import gabienapp.Launcher;
 import r48.io.IntUtils;
@@ -22,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -248,14 +252,21 @@ public class GrandTestBuilder {
         }
     }
 
+    private void associateNodesToLumps(VFSNode n, String path, LinkedList<DumpedLump> res) {
+        if (n instanceof VFSFile) {
+            res.add(new DumpedLump(path, ((VFSFile) n).contents.toByteArray()));
+        } else if (n instanceof VFSDir) {
+            for (Map.Entry<String, VFSNode> kp : ((VFSDir) n).contents.entrySet()) {
+                associateNodesToLumps(kp.getValue(), path + "/" + kp.getKey(), res);
+            }
+        }
+    }
+
     private byte[] createDump() throws IOException {
         LinkedList<DumpedLump> l = new LinkedList<DumpedLump>();
 
-        LinkedList<String> lls = new LinkedList<String>(kick.mockFS.keySet());
-        Collections.sort(lls);
-
-        for (String s : lls)
-            l.add(new DumpedLump(s, kick.mockFS.get(s)));
+        associateNodesToLumps(kick.mockVFS, "", l);
+        Collections.sort(l);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -282,13 +293,18 @@ public class GrandTestBuilder {
         return baos.toByteArray();
     }
 
-    private static class DumpedLump {
+    private static class DumpedLump implements Comparable<DumpedLump> {
         String name;
         byte[] data;
 
         public DumpedLump(String file, byte[] bytes) {
             name = file;
             data = bytes;
+        }
+
+        @Override
+        public int compareTo(DumpedLump o) {
+            return name.compareTo(o.name);
         }
     }
 }

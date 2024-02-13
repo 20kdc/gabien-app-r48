@@ -8,7 +8,11 @@
 package gabien;
 
 import gabien.render.IImage;
-import gabien.uslx.vfs.FSBackend;
+import gabien.uslx.vfs.impl.AttachedFSBackend;
+import gabien.uslx.vfs.impl.JavaIOFSBackend;
+import gabien.uslx.vfs.impl.RAMFSBackend;
+import gabien.uslx.vfs.impl.RAMFSBackend.VFSDir;
+import gabien.uslx.vfs.impl.UnionFSBackend;
 import gabien.wsi.IGrInDriver;
 import gabien.wsi.IPointer;
 import gabien.wsi.ITextEditingSession;
@@ -28,7 +32,6 @@ import r48.wm.GrandWindowManagerUtils;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.function.Consumer;
@@ -48,9 +51,7 @@ public class TestKickstart {
     public LinkedList<Supplier<Boolean>> waitingTestEntries = new LinkedList<Supplier<Boolean>>();
     public Consumer<String> waitingFileDialog = null;
 
-    public HashMap<String, byte[]> mockFS = new HashMap<String, byte[]>();
-    public HashSet<String> mockDFS = new HashSet<String>();
-
+    public RAMFSBackend.VFSDir mockVFS;
 
     public LinkedList<TestGrInDriver> windows = new LinkedList<TestGrInDriver>();
     public MobilePeripherals.DummyPointer pointer;
@@ -80,7 +81,7 @@ public class TestKickstart {
         EngineDef engine = EnginesList.getEngines(null).get(engineDefId);
         if (engine == null)
             throw new RuntimeException("missing engine def: " + engineDefId);
-        return AppMain.initializeCore(ilg, charset, s2, "", engine, (s) -> {});
+        return AppMain.initializeCore(ilg, charset, GaBIEn.mutableDataFS.intoPath(s2), null, engine, (s) -> {});
     }
 
     public void kickstartRFS() {
@@ -88,8 +89,6 @@ public class TestKickstart {
         GaBIEnImpl.mobileEmulation = true;
         GaBIEnImpl.fontsAlwaysMeasure16 = true;
         windowCount = 0;
-        mockFS.clear();
-        mockDFS.clear();
         final GaBIEnImpl impl = new GaBIEnImpl() {
 
             @Override
@@ -118,104 +117,10 @@ public class TestKickstart {
             }
         };
         GaBIEn.internal = impl;
-        GaBIEn.mutableDataFS = new FSBackend() {
-            @Override
-            public XState getState(String fileName) {
-                String dirName = fileName;
-                if (!dirName.endsWith("/"))
-                    dirName += "/";
-                if (mockDFS.contains(dirName)) {
-                    File dirRepFile = new File(dirName);
-                    LinkedList<String> out = new LinkedList<String>();
-                    for (String v : mockFS.keySet())
-                        listEntry(v, out, dirRepFile);
-                    for (String v : mockDFS)
-                        listEntry(v, out, dirRepFile);
-                    return new DirectoryState(out.toArray(new String[0]));
-                } else if (mockFS.containsKey(fileName)) {
-                    return new FileState(mockFS.get(fileName).length);
-                }
-                return null;
-            }
-
-            @Override
-            public String nameOf(String fileName) {
-                return new File(fileName).getName();
-            }
-
-            @Override
-            public String parentOf(String fileName) {
-                return new File(fileName).getParent();
-            }
-
-            @Override
-            public String absolutePathOf(String fileName) {
-                return fileName;
-            }
-
-            private void listEntry(String st, LinkedList<String> str, File dirRepFile) {
-                if (dirRepFile.equals(new File(st).getParentFile()))
-                    str.add(nameOf(st));
-            }
-
-            @Override
-            public @NonNull InputStream openRead(String fileName) throws IOException {
-                // System.out.println("openRead: " + fileName);
-                byte[] data = mockFS.get(fileName);
-                if (data == null) {
-                    boolean relativeIntended = false;
-                    if (fileName.startsWith("./")) {
-                        fileName = fileName.substring(2);
-                        relativeIntended = true;
-                    }
-                    InputStream inp = impl.getResource(fileName);
-                    if (inp == null) {
-                        if (!relativeIntended)
-                            return new FileInputStream(fileName);
-                        throw new IOException("Unable to find " + fileName);
-                    }
-                    return inp;
-                }
-                return new ByteArrayInputStream(data);
-            }
-
-            @Override
-            public @NonNull OutputStream openWrite(final String fileName) throws IOException {
-                return new ByteArrayOutputStream() {
-                    @Override
-                    public void close() throws IOException {
-                        super.close();
-                        mockFS.put(fileName, toByteArray());
-                    }
-                };
-            }
-
-            @Override
-            public void changeTime(String fileName, long time) {
-            }
-
-            @Override
-            public void delete(String fileName) {
-                if (fileName.endsWith("/"))
-                    throw new RuntimeException("Not valid");
-                if (mockDFS.contains(fileName)) {
-                    for (String st : new HashSet<String>(mockDFS))
-                        if (st.startsWith(fileName + "/"))
-                            mockDFS.remove(st);
-                    mockDFS.remove(fileName);
-                } else {
-                    mockFS.remove(fileName);
-                }
-            }
-
-            @Override
-            public void mkdir(String fileName) {
-                if (fileName.endsWith("/"))
-                    throw new RuntimeException("Not valid");
-                mockDFS.add(fileName);
-            }
-            
-        };
+        RAMFSBackend ram = new RAMFSBackend();
+        ram.vfsRoot.contents.put("RAM", new VFSDir());
+        mockVFS = ram.vfsRoot;
+        GaBIEn.mutableDataFS = new UnionFSBackend(ram, new AttachedFSBackend(JavaIOFSBackend.ROOT, "real_fs", true));
         GaBIEn.internalFileBrowser = impl;
         GaBIEn.internalWindowing = impl;
         GaBIEn.setupNativesAndAssets(true, false);
@@ -225,7 +130,7 @@ public class TestKickstart {
     }
 
     public void resetODB(App app) {
-        IObjectBackend backend = IObjectBackend.Factory.create(GaBIEn.mutableDataFS, app.encoding, app.engine.odbBackend, app.rootPath, app.engine.dataPath, app.engine.dataExt);
+        IObjectBackend backend = IObjectBackend.Factory.create(app.gameRoot, app.encoding, app.engine.odbBackend, app.engine.dataPath, app.engine.dataExt);
         app.odb = new ObjectDB(app, backend, (s) -> {});
     }
 

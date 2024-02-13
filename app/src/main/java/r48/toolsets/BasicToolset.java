@@ -191,12 +191,12 @@ public class BasicToolset extends App.Svc implements IToolset {
                                 app.ui.launchDialog(T.u.dFileUnreadable);
                             } else {
                                 try {
-                                    OutputStream os = GaBIEn.getOutFile(AppMain.autoDetectWindows(app.rootPath + "objcompareAB.txt"));
+                                    OutputStream os = GaBIEn.getOutFile(app.gameRoot.into("objcompareAB.txt"));
                                     byte[] cid = IMIUtils.createIMIData(objA.getObject(), objB.getObject(), "");
                                     if (cid != null)
                                         os.write(cid);
                                     os.close();
-                                    os = GaBIEn.getOutFile(AppMain.autoDetectWindows(app.rootPath + "objcompareBA.txt"));
+                                    os = GaBIEn.getOutFile(app.gameRoot.into("objcompareBA.txt"));
                                     cid = IMIUtils.createIMIData(objB.getObject(), objA.getObject(), "");
                                     if (cid != null)
                                         os.write(cid);
@@ -212,7 +212,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 },
                 () -> {
                     try {
-                        OutputStream lm = GaBIEn.getOutFile(AppMain.autoDetectWindows(app.rootPath + "locmaps.txt"));
+                        OutputStream lm = GaBIEn.getOutFile(app.gameRoot.into("locmaps.txt"));
                         final DataOutputStream dos = new DataOutputStream(lm);
                         final HashSet<String> text = new HashSet<String>();
                         for (String s : app.getAllObjects()) {

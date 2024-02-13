@@ -9,7 +9,6 @@ package r48.io.cs;
 
 import r48.RubyTable;
 import r48.io.OldObjectBackend;
-import r48.io.PathUtils;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 
@@ -45,7 +44,7 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
     public IRIO loadObjectFromFile(String filename) {
         InputStream inp;
         try {
-            inp = fs.openRead(PathUtils.autoDetectWindows(fs, pfx + filename));
+            inp = fs.intoPath(pfx + filename).openRead();
         } catch (IOException e1) {
             // TODO Auto-generated catch block
             System.err.println("Couldn't load CS " + pfx + filename);
@@ -160,7 +159,7 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
         } else {
             throw new IOException("I don't know how to save that");
         }
-        try (OutputStream os = fs.openWrite(PathUtils.autoDetectWindows(fs, pfx + filename))) {
+        try (OutputStream os = fs.intoPath(pfx + filename).openWrite()) {
             baos.writeTo(os);
         }
     }

@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterOutputStream;
 
-import gabien.render.IImage;
+import gabien.render.WSIImage;
 
 /**
  * 8-bit indexed PNG loader.
@@ -145,7 +145,7 @@ public class PNG8IImageIOFormat extends ImageIOFormat {
     }
 
     @Override
-    public ImageIOImage loadFile(byte[] data, IImage im) throws IOException {
+    public ImageIOImage loadFile(byte[] data, WSIImage im) throws IOException {
         // PNG8I reader.
         if (data[0] != (byte) 0x89)
             throw new IOException("bad magic byte 0");

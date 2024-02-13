@@ -106,7 +106,7 @@ public class ImageEditorController extends App.Svc {
 
     private void load(String filename) {
         GaBIEn.hintFlushAllTheCaches();
-        ImageIOFormat.TryToLoadResult ioi = ImageIOFormat.tryToLoad(filename, app.imageIOFormats);
+        ImageIOFormat.TryToLoadResult ioi = ImageIOFormat.tryToLoad(GaBIEn.mutableDataFS.intoPath(filename), app.imageIOFormats);
         if (ioi == null) {
             app.ui.launchDialog(T.ie.loadFail.r(filename));
         } else {

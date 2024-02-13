@@ -27,6 +27,7 @@ import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
+import gabien.uslx.vfs.FSBackend;
 import r48.App;
 import r48.IMapContext;
 import r48.imagefx.ImageFXCache;
@@ -83,7 +84,7 @@ public class AppUI extends App.Svc {
     public void initialize(WindowCreatingUIElementConsumer uiTicker) {
         app.loadProgress.accept(T.u.init);
 
-        GaBIEn.setBrowserDirectory(app.rootPath);
+        GaBIEn.setBrowserDirectory(app.gameRoot.getAbsolutePath());
 
         // Initialize imageFX before doing anything graphical
         imageFXCache = new ImageFXCache();
@@ -114,10 +115,12 @@ public class AppUI extends App.Svc {
         app.loadProgress.accept(T.u.init2);
 
         // start possible recommended directory nagger
-        final LinkedList<String> createDirs = new LinkedList<String>();
-        for (String s : app.engine.mkdirs)
-            if (!GaBIEn.dirExists(AppMain.autoDetectWindows(app.rootPath + s)))
-                createDirs.add(s);
+        final LinkedList<FSBackend> createDirs = new LinkedList<FSBackend>();
+        for (String s : app.engine.mkdirs) {
+            FSBackend tgt = app.gameRoot.intoPath(s);
+            if (!tgt.isDirectory())
+                createDirs.add(tgt);
+        }
 
         // Only trigger create directories prompt if the database is *clearly* missing objects.
         // Do not do so otherwise (see: OneShot)
@@ -127,8 +130,8 @@ public class AppUI extends App.Svc {
                         T.u.newDirs
                 }, new Runnable[] {
                         () -> {
-                            for (String st : createDirs)
-                                GaBIEn.makeDirectories(AppMain.autoDetectWindows(app.rootPath + st));
+                            for (FSBackend st : createDirs)
+                                st.mkdirs();
                             launchDoneDialog();
                         }
                 }, app.f.menuTH, app.f.menuS, true));
