@@ -145,7 +145,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
 
     public IRIOGeneric loadObjectFromFile(IRIOGeneric rio, String filename) {
         try {
-            String fullPath = PathUtils.autoDetectWindows(fs, prefix + filename + postfix);
+            String fullPath = prefix + filename + postfix;
             InputStream inp;
             try {
                 inp = fs.intoPath(fullPath).openRead();
@@ -173,7 +173,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
 
     @Override
     public void saveObjectToFile(String filename, RORIO object) throws IOException {
-        OutputStream oup = fs.intoPath(PathUtils.autoDetectWindows(fs, prefix + filename + postfix)).openWrite();
+        OutputStream oup = fs.intoPath(prefix + filename + postfix).openWrite();
         DataOutputStream dis = new DataOutputStream(oup);
         // Marshal v4.8
         dis.write(new byte[] {4, 8});

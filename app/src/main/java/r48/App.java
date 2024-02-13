@@ -21,6 +21,7 @@ import gabien.datum.DatumSymbol;
 import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIPanel;
 import gabien.ui.UIElement.UIProxy;
+import gabien.uslx.vfs.FSBackend;
 import r48.app.AppCore;
 import r48.app.AppNewProject;
 import r48.app.AppUI;
@@ -97,8 +98,8 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, String rp, String sip, Consumer<String> loadProgress) {
-        super(ilg, charset, gp, GaBIEn.mutableDataFS.intoPath(rp), GaBIEn.mutableDataFS.intoPath(sip), loadProgress);
+    public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, @NonNull FSBackend rp, @Nullable FSBackend sip, Consumer<String> loadProgress) {
+        super(ilg, charset, gp, rp, sip, loadProgress);
         // setup command classifiers
         cmdClassifiers.add(new ICommandClassifier.Immutable() {
             @Override

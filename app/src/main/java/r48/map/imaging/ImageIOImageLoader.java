@@ -8,7 +8,6 @@ package r48.map.imaging;
 
 import gabien.render.IImage;
 import r48.app.AppCore;
-import r48.app.AppMain;
 import r48.imageio.ImageIOFormat;
 
 /**
@@ -29,7 +28,7 @@ public class ImageIOImageLoader extends AppCore.Csv implements IImageLoader {
 
     @Override
     public IImage getImage(String name, boolean panorama) {
-        ImageIOFormat.TryToLoadResult im = ImageIOFormat.tryToLoad(AppMain.autoDetectWindows(name + postfix), new ImageIOFormat[] {format});
+        ImageIOFormat.TryToLoadResult im = ImageIOFormat.tryToLoad(app.gameResources.intoPath(name + postfix), new ImageIOFormat[] {format});
         if (im != null) {
             if ((!panorama) && firstPalTransparency)
                 if (im.iei.palette != null)

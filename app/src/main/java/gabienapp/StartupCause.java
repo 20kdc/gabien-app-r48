@@ -9,12 +9,13 @@ package gabienapp;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
+import gabien.GaBIEn;
+import gabien.uslx.vfs.FSBackend;
 import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.App;
 import r48.app.AppMain;
 import r48.app.EngineDef;
-import r48.io.PathUtils;
 
 /**
  * Separated 5th April 2023.
@@ -39,8 +40,9 @@ public class StartupCause implements Runnable {
             } catch (UnsupportedCharsetException uce) {
                 throw new RuntimeException(uce);
             }
-            final String rootPath = PathUtils.fixRootPath(ls.uiLauncher.rootBox.text.getText());
-            final String silPath = PathUtils.fixRootPath(ls.uiLauncher.sillBox.text.getText());
+            final FSBackend rootPath = GaBIEn.mutableDataFS.intoPath(ls.uiLauncher.rootBox.text.getText());
+            String sil = ls.uiLauncher.sillBox.text.getText();
+            final FSBackend silPath = sil.equals("") ? null : GaBIEn.mutableDataFS.intoPath(sil);
 
             final LSInApp lia = new LSInApp(ls.lun);
             ls.lun.currentState = lia;

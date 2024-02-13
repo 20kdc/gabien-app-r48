@@ -59,8 +59,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     @Override
     public IRIO loadObjectFromFile(String filename) {
         filename = root + filename;
-        String str = PathUtils.autoDetectWindows(fs, filename);
-        try (InputStream fis = fs.intoPath(str).openRead()) {
+        try (InputStream fis = fs.intoPath(filename).openRead()) {
             try {
                 if (filename.endsWith(".lmu")) {
                     return R2kIO.readLmu(dm2c, fis);
@@ -84,7 +83,6 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     @Override
     public void saveObjectToFile(String filename, RORIO object) throws IOException {
         filename = root + filename;
-        String str = PathUtils.autoDetectWindows(fs, filename);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // Note the write occurs before the F.O.S is created for safety
         if (filename.endsWith(".lmu")) {
@@ -98,7 +96,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         } else {
             throw new IOException("Unknown how to save " + filename + " (lmu/lmt/ldb)");
         }
-        try (OutputStream fos = fs.intoPath(str).openWrite()) {
+        try (OutputStream fos = fs.intoPath(filename).openWrite()) {
             baos.writeTo(fos);
         }
     }

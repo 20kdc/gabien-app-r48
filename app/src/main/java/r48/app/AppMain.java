@@ -7,14 +7,13 @@
 
 package r48.app;
 
-import gabien.GaBIEn;
 import gabien.ui.*;
+import gabien.uslx.vfs.FSBackend;
 import r48.AdHocSaveLoad;
 import r48.App;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
 import r48.io.IObjectBackend;
-import r48.io.PathUtils;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
@@ -26,13 +25,16 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Used to contain static variables, now just initialization routines.
  * This is theoretically roughly one of the oldest classes in the project, but has been phased out.
  * Created on 12/27/16. Being phased out as of 26th February 2023, reduced to static methods as of the 28th.
  */
 public class AppMain {
-    public static App initializeCore(InterlaunchGlobals ilg, Charset charset, final String rp, final String sip, final EngineDef engine, final Consumer<String> progress) {
+    public static App initializeCore(InterlaunchGlobals ilg, Charset charset, final @NonNull FSBackend rp, final @Nullable FSBackend sip, final EngineDef engine, final Consumer<String> progress) {
         final App app = new App(ilg, charset, engine, rp, sip, progress);
 
         // initialize core resources
@@ -127,12 +129,5 @@ public class AppMain {
         } else {
             app.ui.launchDialog(app.t.g.dlgReloadPFD);
         }
-    }
-
-    /**
-     * Converts a path from Windows format to the local system.
-     */
-    public static String autoDetectWindows(String path) {
-        return PathUtils.autoDetectWindows(GaBIEn.mutableDataFS, path);
     }
 }

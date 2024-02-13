@@ -9,9 +9,10 @@ package r48.imageio;
 
 import gabien.GaBIEn;
 import gabien.render.WSIImage;
+import gabien.uslx.vfs.FSBackend;
 import r48.app.AppCore;
-import r48.app.AppMain;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,11 +50,9 @@ public abstract class ImageIOFormat extends AppCore.Csv {
         };
     }
 
-    public static TryToLoadResult tryToLoad(String filename, ImageIOFormat[] formats) {
-        filename = AppMain.autoDetectWindows(filename);
-
+    public static TryToLoadResult tryToLoad(FSBackend fs, ImageIOFormat[] formats) {
         ByteArrayOutputStream dataHolder = new ByteArrayOutputStream();
-        InputStream inp = GaBIEn.getInFile(filename);
+        InputStream inp = GaBIEn.getInFile(fs);
         if (inp != null) {
             try {
                 byte[] buffer = new byte[2048];
@@ -76,9 +75,11 @@ public abstract class ImageIOFormat extends AppCore.Csv {
             // No file data = This image clearly can't be loaded
             return null;
         }
-        byte[] data = dataHolder.toByteArray();
+        return tryToLoad(dataHolder.toByteArray(), formats);
+    }
 
-        WSIImage im = GaBIEn.getWSIImage(filename, true, false);
+    public static TryToLoadResult tryToLoad(byte[] data, ImageIOFormat[] formats) {
+        WSIImage im = GaBIEn.decodeWSIImage(new ByteArrayInputStream(data));
 
         for (ImageIOFormat ief : formats) {
             ImageIOImage iei = null;
