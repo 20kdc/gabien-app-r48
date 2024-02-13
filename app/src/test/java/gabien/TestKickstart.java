@@ -118,7 +118,7 @@ public class TestKickstart {
         RAMFSBackend ram = new RAMFSBackend();
         ram.vfsRoot.contents.put("RAM", new VFSDir());
         mockVFS = ram.vfsRoot;
-        GaBIEn.mutableDataFS = new UnionFSBackend(ram, new AttachedFSBackend(JavaIOFSBackend.ROOT, "real_fs"));
+        GaBIEn.mutableDataFS = new UnionFSBackend(ram, new AttachedFSBackend(JavaIOFSBackend.ROOT, "real_fs", true));
         GaBIEn.internalFileBrowser = impl;
         GaBIEn.internalWindowing = impl;
         GaBIEn.setupNativesAndAssets(true, false);
