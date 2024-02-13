@@ -88,7 +88,7 @@ public class LocalTestExecutiveTest {
 
     @Test
     public void test() {
-        App app = new TestKickstart().kickstart(name, charset, schema);
+        App app = new TestKickstart().kickstart("/real_fs" + name, charset, schema);
         for (ObjectInfo s : dynamic ? app.getObjectInfos() : app.sdb.listFileDefs())
             testObject(app, s.idName);
     }

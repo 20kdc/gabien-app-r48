@@ -44,12 +44,12 @@ public class PathUtils {
             if (!s.contains("/"))
                 if (s.contains(":"))
                     return s; // A: / B: / C:
-            XState sState = fs.getState(s);
+            XState sState = fs.intoPath(s).getState();
             if (sState != null)
                 return s;
             // Deal with earlier path components...
             // 'st' is the actual filename.
-            String st = fs.nameOf(s);
+            String st = fs.pathModel.nameOf(s);
             String parent;
             // Sanity check.
             if (s.contains("/")) {
@@ -60,7 +60,7 @@ public class PathUtils {
                 // Change things to make sense.
                 parent = ".";
             }
-            XState xs = fs.getState(parent);
+            XState xs = fs.intoPath(parent).getState();
             if (xs instanceof DirectoryState)
                 for (String s2 : ((DirectoryState) xs).entries)
                     if (s2.equalsIgnoreCase(st))

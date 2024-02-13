@@ -60,7 +60,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public IRIO loadObjectFromFile(String filename) {
         filename = root + filename;
         String str = PathUtils.autoDetectWindows(fs, filename);
-        try (InputStream fis = fs.openRead(str)) {
+        try (InputStream fis = fs.intoPath(str).openRead()) {
             try {
                 if (filename.endsWith(".lmu")) {
                     return R2kIO.readLmu(dm2c, fis);
@@ -98,7 +98,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         } else {
             throw new IOException("Unknown how to save " + filename + " (lmu/lmt/ldb)");
         }
-        try (OutputStream fos = fs.openWrite(str)) {
+        try (OutputStream fos = fs.intoPath(str).openWrite()) {
             baos.writeTo(fos);
         }
     }

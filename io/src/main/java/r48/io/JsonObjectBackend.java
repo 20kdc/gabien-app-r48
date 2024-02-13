@@ -38,7 +38,7 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
 
     @Override
     public IRIO loadObjectFromFile(String filename) {
-        try (InputStream inp = fs.openRead(PathUtils.autoDetectWindows(fs, root + filename + ext))) {
+        try (InputStream inp = fs.intoPath(PathUtils.autoDetectWindows(fs, root + filename + ext)).openRead()) {
             return loadJSONFromStream(inp);
         } catch (Exception e) {
             e.printStackTrace();
@@ -157,7 +157,7 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
 
     @Override
     public void saveObjectToFile(String filename, RORIO object) throws IOException {
-        try (OutputStream oup = fs.openWrite(PathUtils.autoDetectWindows(fs, root + filename + ext))) {
+        try (OutputStream oup = fs.intoPath(PathUtils.autoDetectWindows(fs, root + filename + ext)).openWrite()) {
             saveJSONToStream(oup, object);
         }
     }

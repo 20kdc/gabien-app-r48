@@ -45,7 +45,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
         if (filename.equals("Map")) {
             byte[] eDataBytes = BMPConnection.prepareBMP(160, 120, 8, 256, false, false);
             byte[] dataBytes = eDataBytes;
-            try (InputStream inp = fs.openRead(PathUtils.autoDetectWindows(fs, root + "Pbm/Map1.pbm"))) {
+            try (InputStream inp = fs.intoPath(PathUtils.autoDetectWindows(fs, root + "Pbm/Map1.pbm")).openRead()) {
                 dataBytes = new byte[inp.available()];
                 if (inp.read(dataBytes) != dataBytes.length)
                     throw new IOException("Available lied");
@@ -92,7 +92,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
             IRIOFixedHash<Integer, IkaEvent> evTbl = rio.events;
 
             NPChar np = new NPChar();
-            try (InputStream inp = fs.openRead(PathUtils.autoDetectWindows(fs, root + "NPChar.dat"))) {
+            try (InputStream inp = fs.intoPath(PathUtils.autoDetectWindows(fs, root + "NPChar.dat")).openRead()) {
                 np.load(inp);
             } catch (IOException ioe) {
                 // Oh well
@@ -144,7 +144,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
                 int b = rt2.getTiletype(i, 0, 3) & 0xFF;
                 bm8.putPalette(i, (a << 24) | (r << 16) | (g << 8) | b);
             }
-            try (OutputStream fio = fs.openWrite(PathUtils.autoDetectWindows(fs, root + "Pbm/Map1.pbm"))) {
+            try (OutputStream fio = fs.intoPath(PathUtils.autoDetectWindows(fs, root + "Pbm/Map1.pbm")).openWrite()) {
                 fio.write(dataBytes);
             }
 
@@ -164,7 +164,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
                     n.eventID = (int) r2.scriptId.val;
                 }
             }
-            try (OutputStream fio2 = fs.openWrite(PathUtils.autoDetectWindows(fs, root + "NPChar.dat"))) {
+            try (OutputStream fio2 = fs.intoPath(PathUtils.autoDetectWindows(fs, root + "NPChar.dat")).openWrite()) {
                 npc.save(fio2);
             }
             return;
