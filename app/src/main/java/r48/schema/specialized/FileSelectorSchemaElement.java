@@ -17,7 +17,6 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.elements.UIThumbnail;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
-import r48.app.AppMain;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
@@ -50,7 +49,7 @@ public class FileSelectorSchemaElement extends SchemaElement.Leaf {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         app.ui.performFullImageFlush();
-        String[] strs = GaBIEn.listEntries(AppMain.autoDetectWindows(app.rootPath + pathExtender));
+        String[] strs = GaBIEn.listEntries(app.gameResources.intoPath(pathExtender));
         if (strs == null)
             return new UILabel("The folder does not exist or was not accessible.", app.f.schemaFieldTH);
         Arrays.sort(strs, (a, b) -> a.compareToIgnoreCase(b));

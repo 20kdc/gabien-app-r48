@@ -76,7 +76,7 @@ public class UITranscriptControl extends App.Prx {
             public void run() {
                 PrintStream ps = null;
                 try {
-                    ps = new PrintStream(GaBIEn.getOutFile(app.rootPath + "transcript.html"), false, "UTF-8");
+                    ps = new PrintStream(GaBIEn.getOutFile(app.gameRoot.into("transcript.html")), false, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }

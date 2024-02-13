@@ -13,7 +13,7 @@ import gabien.ui.*;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.*;
-import r48.app.AppMain;
+import gabien.uslx.vfs.FSBackend;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -49,8 +49,8 @@ public class UITest extends App.Prx {
     //                      -> innerPanel
     public UIScrollLayout innerPanel = new UIScrollLayout(true, app.f.generalS);
 
-    public static String getPrintPath(App app) {
-        return AppMain.autoDetectWindows(app.rootPath + "PRINT.txt");
+    public static FSBackend getPrintPath(App app) {
+        return app.gameRoot.into("PRINT.txt");
     }
 
     public UITest(App app, RORIO obj, final @Nullable IObjectBackend.ILoadedObject rootObj) {

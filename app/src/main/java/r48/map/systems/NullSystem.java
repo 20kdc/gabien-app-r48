@@ -26,7 +26,7 @@ public class NullSystem extends MapSystem {
     public NullSystem(App app) {
         // Redundant cache as error safety net.
         // Having an explicit "ErrorSafetyNetImageLoader" would just complicate things.
-        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "", "", new GabienImageLoader(""))), false);
+        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "", "", new GabienImageLoader(app, ""))), false);
     }
 
     @Override

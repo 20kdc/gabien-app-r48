@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import gabien.GaBIEn;
+import gabien.uslx.vfs.FSBackend;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.schema.OpaqueSchemaElement;
@@ -29,14 +30,14 @@ public class AppNewProject extends App.Svc {
 
     private void fileCopier(String[] mkdirs, String[] fileCopies) {
         for (String s : mkdirs)
-            GaBIEn.makeDirectories(AppMain.autoDetectWindows(app.rootPath + s));
+            app.gameRoot.intoPath(s).mkdirs();
         for (int i = 0; i < fileCopies.length; i += 2) {
             String src = fileCopies[i];
             String dst = fileCopies[i + 1];
             InputStream inp = GaBIEn.getResource(src);
             if (inp != null) {
-                String tgt = AppMain.autoDetectWindows(app.rootPath + dst);
-                if (GaBIEn.fileOrDirExists(tgt)) {
+                FSBackend tgt = app.gameRoot.intoPath(dst);
+                if (tgt.exists()) {
                     System.err.println("Didn't write " + dst + " as it is already present as " + tgt + ".");
                     try {
                         inp.close();

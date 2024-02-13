@@ -98,7 +98,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
      * Warning: Occurs off main thread.
      */
     public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, String rp, String sip, Consumer<String> loadProgress) {
-        super(ilg, charset, gp, rp, sip, loadProgress);
+        super(ilg, charset, gp, GaBIEn.mutableDataFS.intoPath(rp), GaBIEn.mutableDataFS.intoPath(sip), loadProgress);
         // setup command classifiers
         cmdClassifiers.add(new ICommandClassifier.Immutable() {
             @Override

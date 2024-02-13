@@ -42,7 +42,7 @@ public class AppMain {
         app.vmCtx.include(engine.initDir + "init", false);
 
         // initialize everything else that needs initializing, starting with ObjectDB
-        IObjectBackend backend = IObjectBackend.Factory.create(GaBIEn.mutableDataFS, charset, engine.odbBackend, app.rootPath, engine.dataPath, engine.dataExt);
+        IObjectBackend backend = IObjectBackend.Factory.create(app.gameRoot, charset, engine.odbBackend, engine.dataPath, engine.dataExt);
         app.odb = new ObjectDB(app, backend, (s) -> {
             if (app.system != null)
                 app.system.saveHook(s);

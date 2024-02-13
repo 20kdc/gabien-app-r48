@@ -27,11 +27,7 @@ public class FixAndSecondaryImageLoader extends App.Svc implements IImageLoader 
 
     @Override
     public IImage getImage(String name, boolean panorama) {
-        IImage base = loader.getImage(app.rootPath + prefix + name + postfix, panorama);
-        if (base == null)
-            if (app.secondaryImagePath.length() > 0)
-                base = loader.getImage(app.secondaryImagePath + prefix + name + postfix, panorama);
-        return base;
+        return loader.getImage(prefix + name + postfix, panorama);
     }
 
     @Override

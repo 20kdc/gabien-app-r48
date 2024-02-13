@@ -29,7 +29,7 @@ import r48.map.tiles.IkaTileRenderer;
 public class IkaSystem extends MapSystem {
     public final IkaTileRenderer tileRenderer;
     public IkaSystem(App app) {
-        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "Pbm/", "", new GabienImageLoader(".pbm", 0, 0, 0))), true);
+        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "Pbm/", "", new GabienImageLoader(app, ".pbm", 0, 0, 0))), true);
         tileRenderer = new IkaTileRenderer(app, imageLoader);
     }
 

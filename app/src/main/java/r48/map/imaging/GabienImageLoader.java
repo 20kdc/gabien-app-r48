@@ -9,7 +9,7 @@ package r48.map.imaging;
 
 import gabien.GaBIEn;
 import gabien.render.IImage;
-import r48.app.AppMain;
+import r48.app.AppCore;
 
 /**
  * Does whatever the default can.
@@ -17,12 +17,13 @@ import r48.app.AppMain;
  * unless it's an obscure format (XYZ), then in which case do something else.
  * Created on 29/05/17.
  */
-public class GabienImageLoader implements IImageLoader {
+public class GabienImageLoader extends AppCore.Csv implements IImageLoader {
     public final String postfix;
     public final boolean ck;
     public final int r, g, b;
 
-    public GabienImageLoader(String pp, int cr, int cg, int cb) {
+    public GabienImageLoader(AppCore app, String pp, int cr, int cg, int cb) {
+        super(app);
         postfix = pp;
         ck = true;
         r = cr;
@@ -30,7 +31,8 @@ public class GabienImageLoader implements IImageLoader {
         b = cb;
     }
 
-    public GabienImageLoader(String pp) {
+    public GabienImageLoader(AppCore app, String pp) {
+        super(app);
         postfix = pp;
         ck = false;
         r = 0;
@@ -42,12 +44,12 @@ public class GabienImageLoader implements IImageLoader {
     public IImage getImage(String name, boolean panorama) {
         IImage error = GaBIEn.getErrorImage();
         if (ck) {
-            IImage core = GaBIEn.getImageCKEx(AppMain.autoDetectWindows(name + postfix), true, false, r, g, b);
+            IImage core = GaBIEn.getImageCKEx(app.gameResources.intoPath(name + postfix).getAbsolutePath(), true, false, r, g, b);
             if (core == error)
                 return null;
             return core;
         } else {
-            IImage core = GaBIEn.getImageEx(AppMain.autoDetectWindows(name + postfix), true, false);
+            IImage core = GaBIEn.getImageEx(app.gameResources.intoPath(name + postfix).getAbsolutePath(), true, false);
             if (core == error)
                 return null;
             return core;
