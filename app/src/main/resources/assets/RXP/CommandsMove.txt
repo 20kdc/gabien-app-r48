@@ -36,4 +36,4 @@ p blendType blend_type
 
 44: "Play SE" ($ " " ]0)
 d Plays a sound effect.
-p audio RPG::AudioFile
+p audio rpg_audiofile_se

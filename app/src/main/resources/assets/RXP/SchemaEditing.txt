@@ -90,8 +90,8 @@ C datum `
  Defining Map.
 
 : RPG::Map
-@bgm RPG::AudioFile
-@bgs RPG::AudioFile
+@bgm rpg_audiofile_bgm
+@bgs rpg_audiofile_bgs
 @width roint= 20
 @height roint= 15
 +tableD @data @width @height 3 20 15 3 48 0 0

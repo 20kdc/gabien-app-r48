@@ -138,3 +138,31 @@ C datum `
 @name string
 @pitch int= 100
 @volume int= 100
+
+.rpg_audiofile_bgm
++hide RPG::AudioFile
+@name { string fileSelector Audio/BGM/ }
++soundPlayerComplex Audio/BGM/ @name @volume @pitch .
+@pitch int= 100
+@volume int= 100
+
+.rpg_audiofile_bgs
++hide RPG::AudioFile
+@name { string fileSelector Audio/BGS/ }
++soundPlayerComplex Audio/BGS/ @name @volume @pitch .
+@pitch int= 100
+@volume int= 100
+
+.rpg_audiofile_me
++hide RPG::AudioFile
+@name { string fileSelector Audio/ME/ }
++soundPlayerComplex Audio/ME/ @name @volume @pitch .
+@pitch int= 100
+@volume int= 100
+
+.rpg_audiofile_se
++hide RPG::AudioFile
+@name { string fileSelector Audio/SE/ }
++soundPlayerComplex Audio/SE/ @name @volume @pitch .
+@pitch int= 100
+@volume int= 100

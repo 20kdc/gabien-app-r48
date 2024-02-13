@@ -47,7 +47,7 @@ e animation_timing_condition 0 always 1 whenHit 2 whenNotHit
 e animation_flashscope 0 none 1 target 2 screen 3 hideTarget
 : RPG::Animation::Timing
 @frame int
-@se RPG::AudioFile
+@se rpg_audiofile_se
 @flash_scope animation_flashscope
 @flash_color Color
 @flash_duration int
@@ -175,7 +175,7 @@ C datum `(rcom-idname RPG::Item "Item")`
 @occasion int
 @animation1_id animation_id
 @animation2_id animation_id
-@menu_se subwindow RPG::AudioFile
+@menu_se subwindow rpg_audiofile_se
 @common_event_id commonevent_id_or_none
 @price int
 @consumable boolean
@@ -228,7 +228,7 @@ C datum `(rcom-idname RPG::Skill "Skill")`
 @occasion int= 1
 @animation1_id animation_id
 @animation2_id animation_id
-@menu_se subwindow RPG::AudioFile
+@menu_se subwindow rpg_audiofile_se
 @common_event_id commonevent_id
 @sp_cost int
 @power int
@@ -322,26 +322,26 @@ C datum `(rcom-idname RPG::State "State")`
 
 
 @words subwindow RPG::System::Words
-@load_se RPG::AudioFile
-@save_se RPG::AudioFile
-@shop_se RPG::AudioFile
-@equip_se RPG::AudioFile
-@buzzer_se RPG::AudioFile
-@cancel_se RPG::AudioFile
-@cursor_se RPG::AudioFile
-@escape_se RPG::AudioFile
-@decision_se RPG::AudioFile
-@actor_collapse_se RPG::AudioFile
-@enemy_collapse_se RPG::AudioFile
-@battle_start_se RPG::AudioFile
-@battle_end_me RPG::AudioFile
-@battle_bgm RPG::AudioFile
+@load_se rpg_audiofile_se
+@save_se rpg_audiofile_se
+@shop_se rpg_audiofile_se
+@equip_se rpg_audiofile_se
+@buzzer_se rpg_audiofile_se
+@cancel_se rpg_audiofile_se
+@cursor_se rpg_audiofile_se
+@escape_se rpg_audiofile_se
+@decision_se rpg_audiofile_se
+@actor_collapse_se rpg_audiofile_se
+@enemy_collapse_se rpg_audiofile_se
+@battle_start_se rpg_audiofile_se
+@battle_end_me rpg_audiofile_me
+@battle_bgm rpg_audiofile_bgm
 @title_name f_title_name
-@title_bgm RPG::AudioFile
+@title_bgm rpg_audiofile_bgm
 @windowskin_name f_ws_name
 @battleback_name f_bb_name
 @gameover_name f_go_name
-@gameover_me RPG::AudioFile
+@gameover_me rpg_audiofile_me
 @battler_name f_battler_name
 @battler_hue hue
  Believe it or not, not AL1 (see OneShot remake, Melolune)

@@ -58,11 +58,11 @@ C category 5
 d Changes the battle BGM used by the game.
  May not actually work in middle of battle.
  Or the variable change is auto-detected...
-p audio RPG::AudioFile
+p audio rpg_audiofile_bgm
 
 133: "Change Battle End ME" ($ " to " ]0)
 C category 5
 d Changes the battle end musical-effect.
-p audio RPG::AudioFile
+p audio rpg_audiofile_me
 
  Enable/Disable 134/135/136 -> RCOM/CommonCommands
