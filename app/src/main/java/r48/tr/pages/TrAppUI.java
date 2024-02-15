@@ -25,7 +25,7 @@ public class TrAppUI extends TrPage {
     public String test_binding, test_prFail, test_prOk, test_PTS, test_PTF, test_back, test_toREPL, test_toREPLOk, test_withSchema;
     public String np_synthOk, np_synth2kQ, np_r2k0, np_r2k3, np_nothing;
     public String spr_num, spr_msgNoImage;
-    public String soundFail, soundFailFileNotFound;
+    public String soundFail, soundFailFileNotFound, soundMIDIWarning;
     public String cg_savePNG;
     public String cg_copyR48;
     public FF2 frameDisplay;

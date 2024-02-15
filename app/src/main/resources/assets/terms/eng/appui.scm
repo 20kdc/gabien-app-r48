@@ -57,6 +57,7 @@
 	)
 	soundFail "R48 can't load sound.\nIt may be a format R48 doesn't support, so the game may still play it."
 	soundFailFileNotFound "Unable to find sound.\nIt may be a format R48 doesn't support, so the game may still play it."
+	soundMIDIWarning "MIDIs will sound different between R48, EasyRPG Player, mkxp, original runtimes, etc.\nThis is not a bug. This is a fact of MIDI."
 	(cg_
 		savePNG "Save PNG..."
 		copyR48 "Copy to R48 Clipboard"

@@ -20,8 +20,11 @@ import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UIScrollbar;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
+import gabien.uslx.append.Rect;
+import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
 import gabien.media.audio.*;
+import gabien.media.audio.fileio.MIDISynthesizerSource;
 import gabien.media.audio.fileio.ReadAnySupportedAudioSource;
 import r48.App;
 import r48.ui.Art;
@@ -51,6 +54,10 @@ public class UIAudioPlayer extends UIDynAppPrx {
     private final UIIconButton loopButton = new UIIconButton(Art.Symbol.Loop, app.f.schemaFieldTH, null).togglable(false);
 
     private final UIScrollbar seeker = new UIScrollbar(false, app.f.generalS);
+    private final UIElement innerWithoutWarning;
+    private final UILabel warningLabel;
+    private boolean displayingWarning;
+
     private double lastSeekerScrollPoint = -1;
     private double speed;
 
@@ -62,7 +69,23 @@ public class UIAudioPlayer extends UIDynAppPrx {
             position = 0;
         });
         UIScrollLayout svl = new UIScrollLayout(false, app.f.mapToolbarS, toStart, playButton, loopButton);
-        changeInner(new UISplitterLayout(svl, seeker, false, 0), true);
+        warningLabel = new UILabel("", app.f.schemaFieldTH);
+        innerWithoutWarning = new UISplitterLayout(svl, seeker, false, 0);
+        changeInner(innerWithoutWarning, true);
+    }
+
+    private void displayWarning(String warning) {
+        warningLabel.setText(warning);
+        if (!displayingWarning) {
+            displayingWarning = true;
+            changeInner(null, false);
+            changeInner(new UISplitterLayout(innerWithoutWarning, warningLabel, true, 0), false);
+            if (getParent() == null) {
+                Rect orig = getParentRelativeBounds();
+                Size newSize = getWantedSize();
+                setForcedBounds(null, new Rect(orig.x, orig.y, newSize.width, newSize.height));
+            }
+        }
     }
 
     @Override
@@ -81,6 +104,8 @@ public class UIAudioPlayer extends UIDynAppPrx {
         dataSupplier = null;
         try {
             AudioIOSource data = dsrc.get();
+            if (data instanceof MIDISynthesizerSource)
+                displayWarning(T.u.soundMIDIWarning);
             source = new StreamingAudioDiscreteSample(data, (data.formatHint == null) ? AudioIOFormat.F_F32 : data.formatHint);
             audioThreadBuffer = new float[data.crSet.channels];
         } catch (Exception ex) {
