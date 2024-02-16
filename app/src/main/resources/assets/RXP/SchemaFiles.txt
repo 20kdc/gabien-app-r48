@@ -165,14 +165,18 @@ C datum `(rcom-idname RPG::Enemy "Enemy")`
 
 > File.Enemies arrayIx1 subwindow RPG::Enemy
 
+ aka parameter to set_target_battlers
+e rpg_item_skill_scope 0 none 1 singleEnemy 2 allEnemies 3 singleAlly 4 allAllies 5 singleDeadAlly 6 allDeadAllies 7 user
+e rpg_item_skill_occasion 0 alwaysUsable 1 inBattleOnly 2 outOfBattleOnly
+
 : RPG::Item
 C datum `(rcom-idname RPG::Item "Item")`
 @id index
 @name string
 @icon_name f_icon_name
 @description string
-@scope int
-@occasion int
+@scope rpg_item_skill_scope
+@occasion rpg_item_skill_occasion
 @animation1_id animation_id
 @animation2_id animation_id
 @menu_se subwindow rpg_audiofile_se
@@ -224,8 +228,8 @@ C datum `(rcom-idname RPG::Skill "Skill")`
 @name string
 @icon_name string
 @description string
-@scope int
-@occasion int= 1
+@scope rpg_item_skill_scope
+@occasion rpg_item_skill_occasion
 @animation1_id animation_id
 @animation2_id animation_id
 @menu_se subwindow rpg_audiofile_se
