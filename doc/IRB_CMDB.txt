@@ -71,6 +71,8 @@
     Attaches a graphical tone calibration (not actually a picker) view to the bottom of the next defined parameter.
     All 4 parameters are indexes, in the order: red, green, blue, saturation.
     This is for RPG Maker 2000/2003 tones - values may differ from other engines.
+   C xpMoveCommandSetGraphic
+    XP move command set graphic display to the bottom of the next defined parameter
    C groupBehavior <type> <...>
     This defines how this command acts in relation to others.
     This is solely a user aiding measure, mind, and theoretically optional.

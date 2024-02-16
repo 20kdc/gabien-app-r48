@@ -10,6 +10,9 @@ package r48.dbs;
 import gabien.datum.DatumSrcLoc;
 import r48.App;
 import r48.dbs.RPGCommand.PDyn;
+import r48.dbs.RPGCommand.SpritesheetSpecialTag;
+import r48.dbs.RPGCommand.TonepickerSpecialTag;
+import r48.dbs.RPGCommand.XPMoveCommandSetGraphicSpecialTag;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
@@ -54,7 +57,7 @@ public class CMDB extends App.Svc {
         DBLoader.readFile(app, readFile, new IDatabase() {
             RPGCommand rc;
             int workingCmdId = 0;
-            RPGCommand.SpecialTag nextTag = null;
+            LinkedList<RPGCommand.SpecialTag> nextTag = null;
             HashMap<String, SchemaElement> localAliasing = new HashMap<String, SchemaElement>();
 
             String currentPvHLocPrefix;
@@ -89,7 +92,7 @@ public class CMDB extends App.Svc {
                 knownCommands.put(objId, rc);
                 knownCommandOrder.add(objId);
                 workingCmdId = objId;
-                nextTag = new RPGCommand.SpecialTag();
+                nextTag = new LinkedList<RPGCommand.SpecialTag>();
             }
 
             int gbStatePosition;
@@ -490,25 +493,16 @@ public class CMDB extends App.Svc {
                         };
                     } else if (args[0].equals("spritesheet")) {
                         // C spritesheet 0 CharSet/
-                        nextTag.hasSpritesheet = true;
-                        nextTag.spritesheetTargstr = Integer.parseInt(args[1]);
-                        nextTag.spritesheetId = args[2];
+                        nextTag.add(new SpritesheetSpecialTag(Integer.parseInt(args[1]), args[2]));
                     } else if (args[0].equals("r2kTonePicker")) {
                         // C r2kTonePicker 0 1 2 3
-                        nextTag.hasTonepicker = true;
-                        nextTag.tpBase = 100;
-                        nextTag.tpA = Integer.parseInt(args[1]);
-                        nextTag.tpB = Integer.parseInt(args[2]);
-                        nextTag.tpC = Integer.parseInt(args[3]);
-                        nextTag.tpD = Integer.parseInt(args[4]);
+                        nextTag.add(new TonepickerSpecialTag(100, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4])));
                     } else if (args[0].equals("r2kFETonePicker")) {
                         // C r2kFETonePicker 0 1 2 3
-                        nextTag.hasTonepicker = true;
-                        nextTag.tpBase = 31;
-                        nextTag.tpA = Integer.parseInt(args[1]);
-                        nextTag.tpB = Integer.parseInt(args[2]);
-                        nextTag.tpC = Integer.parseInt(args[3]);
-                        nextTag.tpD = Integer.parseInt(args[4]);
+                        nextTag.add(new TonepickerSpecialTag(31, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4])));
+                    } else if (args[0].equals("xpMoveCommandSetGraphic")) {
+                        // C xpMoveCommandSetGraphic
+                        nextTag.add(new XPMoveCommandSetGraphicSpecialTag());
                     } else if (args[0].equals("groupBehavior")) {
                         gbStatePosition = 1;
                         gbStateArgs = args;
@@ -546,7 +540,7 @@ public class CMDB extends App.Svc {
 
             private void useTag() {
                 rc.paramSpecialTags.add(nextTag);
-                nextTag = new RPGCommand.SpecialTag();
+                nextTag = new LinkedList<RPGCommand.SpecialTag>();
             }
 
             private SchemaElement aliasingAwareSG(String s) {

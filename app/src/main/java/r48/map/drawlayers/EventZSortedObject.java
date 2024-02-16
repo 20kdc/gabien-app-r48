@@ -1,6 +1,7 @@
 package r48.map.drawlayers;
 
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.map.MapViewDrawContext;
 import r48.map.events.IEventGraphicRenderer;
 
@@ -41,7 +42,7 @@ public class EventZSortedObject implements ZSortingDrawLayer.IZSortedObject {
             return;
         int px = x * mvdc.tileSize;
         int py = y * mvdc.tileSize;
-        IRIO g = renderer.extractEventGraphic(evI);
+        RORIO g = renderer.extractEventGraphic(evI);
         if (g != null)
             renderer.drawEventGraphic(g, px, py, mvdc.igd, 1);
     }

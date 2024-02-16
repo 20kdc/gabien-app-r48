@@ -11,8 +11,10 @@ import gabien.datum.DatumSrcLoc;
 import gabien.ui.UIElement;
 import r48.App;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
+import r48.schema.displays.EPGDisplaySchemaElement;
 import r48.schema.displays.TonePickerSchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.ISchemaHost;
@@ -22,6 +24,7 @@ import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 import r48.tr.TrPage.FF1;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -47,7 +50,7 @@ public class RPGCommand extends App.Svc {
     public boolean specialSchemaEssential;
 
     // As the entire paramType cannot be replaced (paramType is relied upon for parameter names), this instead allows supplementing it.
-    public LinkedList<SpecialTag> paramSpecialTags = new LinkedList<SpecialTag>();
+    public LinkedList<LinkedList<SpecialTag>> paramSpecialTags = new LinkedList<LinkedList<SpecialTag>>();
     public LinkedList<Param> params = new LinkedList<Param>();
     public int indentPre;
     /**
@@ -123,24 +126,71 @@ public class RPGCommand extends App.Svc {
         return indentPre != 0 || (indentPost.apply(paramsObj) != 0);
     }
 
-    public static class SpecialTag {
-        public boolean hasTonepicker;
-        public int tpA, tpB, tpC, tpD;
-        public boolean hasSpritesheet;
+    public static abstract class SpecialTag {
+        public abstract void applyTo(int idx, LinkedList<UIElement> elementList, IRIO targetParamArray, ISchemaHost launcher, SchemaPath path);
+    }
+
+    public static class SpritesheetSpecialTag extends SpecialTag {
         public String spritesheetId;
         public int spritesheetTargstr;
-        public int tpBase;
 
+        public SpritesheetSpecialTag(int str, String id) {
+            spritesheetId = id;
+            spritesheetTargstr = str;
+        }
+
+        @Override
         public void applyTo(int idx, LinkedList<UIElement> elementList, IRIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
             App app = launcher.getApp();
-            if (hasSpritesheet) {
-                SchemaElement scse = app.sdb.helpers.makeSpriteSelector(PathSyntax.compile(app, "]" + idx), PathSyntax.compile(app, "]" + spritesheetTargstr), spritesheetId);
-                elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
+            SchemaElement scse = app.sdb.helpers.makeSpriteSelector(PathSyntax.compile(app, "]" + idx), PathSyntax.compile(app, "]" + spritesheetTargstr), spritesheetId);
+            elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
+        }
+    }
+
+    public static class TonepickerSpecialTag extends SpecialTag {
+        public int tpBase;
+        public int tpA, tpB, tpC, tpD;
+
+        public TonepickerSpecialTag(int base, int a, int b, int c, int d) {
+            tpBase = base;
+            tpA = a;
+            tpB = b;
+            tpC = c;
+            tpD = d;
+        }
+
+        @Override
+        public void applyTo(int idx, LinkedList<UIElement> elementList, IRIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
+            App app = launcher.getApp();
+            SchemaElement scse = new TonePickerSchemaElement(launcher.getApp(), PathSyntax.compile(app, "]" + tpA), PathSyntax.compile(app, "]" + tpB), PathSyntax.compile(app, "]" + tpC), PathSyntax.compile(app, "]" + tpD), tpBase);
+            elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
+        }
+    }
+
+    public static class XPMoveCommandSetGraphicSpecialTag extends SpecialTag {
+        public XPMoveCommandSetGraphicSpecialTag() {
+        }
+
+        @Override
+        public void applyTo(int idx, LinkedList<UIElement> elementList, IRIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
+            String cName;
+            int hue, dir, pat;
+            try {
+                cName = targetParamArray.getAElem(0).decString();
+                hue = (int) targetParamArray.getAElem(1).getFX();
+                dir = (int) targetParamArray.getAElem(2).getFX();
+                pat = (int) targetParamArray.getAElem(3).getFX();
+            } catch (Exception ex) {
+                // oops
+                ex.printStackTrace();
+                return;
             }
-            if (hasTonepicker) {
-                SchemaElement scse = new TonePickerSchemaElement(launcher.getApp(), PathSyntax.compile(app, "]" + tpA), PathSyntax.compile(app, "]" + tpB), PathSyntax.compile(app, "]" + tpC), PathSyntax.compile(app, "]" + tpD), tpBase);
-                elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
-            }
+            IRIOGeneric ig = new IRIOGeneric(StandardCharsets.UTF_8);
+            ig.addIVar("@character_name").setString(cName);
+            ig.addIVar("@character_hue").setFX(hue);
+            ig.addIVar("@direction").setFX(dir);
+            ig.addIVar("@pattern").setFX(pat);
+            elementList.add(EPGDisplaySchemaElement.buildEditorFromObject(launcher.getApp(), launcher.getContextRenderer(), ig));
         }
     }
 
