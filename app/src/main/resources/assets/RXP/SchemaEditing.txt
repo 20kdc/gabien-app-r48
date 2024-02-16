@@ -56,7 +56,7 @@ e rpg_event_page_graphic_pattern_ 0 Stand 1 "Walk A" 2 "Walk B" 3 "Walk C"
 @opacity opacity
 @pattern rpg_event_page_graphic_pattern
 @tile_id int
-+eventTileHelper @tile_id @character_name 0 RXP/TSTables.txt
++halfsplitPost eventTileHelper @tile_id @character_name 0 RXP/TSTables.txt valButton 0 Clear
 @direction direction
 @blend_type blend_type
 @character_name f_char_name

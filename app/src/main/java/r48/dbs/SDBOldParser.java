@@ -465,6 +465,16 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     SchemaElement b = get();
                     return new HalfsplitSchemaElement(a, b);
                 }
+                if (text.equals("halfsplitPost")) {
+                    SchemaElement a = get();
+                    SchemaElement b = get();
+                    return new HalfsplitSchemaElement(a, b, 1);
+                }
+                if (text.equals("halfsplitPre")) {
+                    SchemaElement a = get();
+                    SchemaElement b = get();
+                    return new HalfsplitSchemaElement(a, b, 0);
+                }
                 if (text.equals("spriteSelector")) {
                     // C spritesheet "Select face index..." FaceSets/ 48 48 4 0 0 48 48 0
                     // +spriteSelector @face_index @face_name FaceSets/
