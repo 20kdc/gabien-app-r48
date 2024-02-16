@@ -25,7 +25,7 @@ p name f_char_name
 p hue hue
 p dir direction
 C xpMoveCommandSetGraphic
-p pattern int
+p pattern rpg_event_page_graphic_pattern
 
 42: "Set opacity" ($ " to " ]0 opacity)
 d Changes the opacity of this event.

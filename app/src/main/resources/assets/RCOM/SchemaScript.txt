@@ -8,7 +8,8 @@
 > genericScriptParametersSW subwindow genericScriptParameters
 
  Common enums which are always the same
-e direction 2 down 4 left 6 right 8 up
+e direction_ 2 down 4 left 6 right 8 up
+> direction ui direction_ halfsplit halfsplit valButton 2 ⬇ valButton 4 ⬅ halfsplit valButton 6 ⮕ valButton 8 ⬆
 e direction_disable 0 noChange 2 down 4 left 6 right 8 up
 
  Note: The default code is 115 so that when created,
