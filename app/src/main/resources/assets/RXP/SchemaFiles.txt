@@ -376,6 +376,7 @@ C datum `(rcom-idname RPG::Tileset "Tileset")`
 +tableSTAF RXP/TSTablesPass.txt @passages . . 1 1632 1 1 blockDown blockLeft blockRight blockUp UNK. UNK. submerge 'counter'
 +tableSTA RXP/TSTables.txt @priorities . . 1 1632 1 1
 +tableSTA RXP/TSTables.txt @terrain_tags . . 1 1632 1 1
++hwnd . RXP/H_StuffAboutTiles
 @fog_name f_fog_name
 @fog_zoom int
 @fog_sx int
