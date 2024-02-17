@@ -58,8 +58,6 @@ public class LSSplashScreen extends State {
         txdbThread.start();
     }
 
-    private static final Rect r48Ver = new Rect(33, 48, 31, 16);
-
     @Override
     public void tick(double dT) {
         if (completed)
@@ -83,22 +81,13 @@ public class LSSplashScreen extends State {
         int sz = (Math.min(bb.getWidth(), bb.getHeight()) / 4) * 2;
 
         // note the swap on Y from - (sz / 2) because of the version
-        Rect pos = new Rect((bb.getWidth() / 2) - (sz / 2), (bb.getHeight() / 2) - ((sz * 3) / 4), sz, sz);
-        int fxRatio = r48Ver.width * r48Ver.height;
-        int aspectMul = (r48Ver.height * fxRatio) / r48Ver.width;
-        int szVHeight = (sz * aspectMul) / fxRatio;
+        Rect pos = new Rect((bb.getWidth() / 2) - (sz / 2), (bb.getHeight() / 2) - (sz / 2), sz, sz);
         // this is where the "big version number" maths get changed to "little version number" maths
-        Rect pos2 = new Rect(pos.x + (sz / 4), pos.y + (pos.height + (pos.height / 16)), sz / 2, szVHeight / 2);
         if (r48Logo != null) {
             PVAFile.FrameElm[] logoFrame = r48Logo.pvaFile.frames[r48Logo.pvaFile.frameOfClamped(logoAnimationTimer)];
             int logoExpand = ((sz * r48Logo.pvaFile.header.width) / r48Logo.pvaFile.header.height) - sz;
             r48Logo.renderInline(logoFrame, bb, pos.x - (logoExpand / 2), pos.y, pos.width + logoExpand, pos.height);
         }
-        int margin = sz / 124;
-        bb.clearRect(192, 192, 192, pos2.x - (margin * 3), pos2.y - (margin * 3), pos2.width + (margin * 6), pos2.height + (margin * 6));
-        bb.clearRect(128, 128, 128, pos2.x - (margin * 2), pos2.y - (margin * 2), pos2.width + (margin * 4), pos2.height + (margin * 4));
-        bb.clearRect(0, 0, 0, pos2.x - margin, pos2.y - margin, pos2.width + (margin * 2), pos2.height + (margin * 2));
-        bb.blitScaledImage(r48Ver.x, r48Ver.y, r48Ver.width, r48Ver.height, pos2.x, pos2.y, pos2.width, pos2.height, GaBIEn.getImageEx("layertab.png", false, true));
 
         if (donePrimaryTask.get()) {
             frames++;
