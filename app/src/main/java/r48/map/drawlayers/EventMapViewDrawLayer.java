@@ -10,6 +10,7 @@ package r48.map.drawlayers;
 import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.map.MapViewDrawContext;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
@@ -77,9 +78,9 @@ public class EventMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer 
             } else {
                 if (iegr.determineEventLayer(evI) != layer)
                     continue;
-                IRIO g = iegr.extractEventGraphic(evI);
+                RORIO g = iegr.extractEventGraphic(evI);
                 if (g != null)
-                    iegr.drawEventGraphic(g, px, py, mvdc.igd, 1);
+                    iegr.drawEventGraphic(g, px, py, mvdc.igd, 1, evI);
             }
         }
     }

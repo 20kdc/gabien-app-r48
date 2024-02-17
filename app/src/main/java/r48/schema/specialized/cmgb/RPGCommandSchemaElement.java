@@ -15,6 +15,7 @@ import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.PathSyntax;
 import r48.dbs.RPGCommand;
+import r48.dbs.RPGCommand.SpecialTag;
 import r48.io.IntUtils;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -144,7 +145,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     SchemaElement ise = rc.getParameterSchema(param, i);
                     UIElement uie = ise.buildHoldingEditor(param.getAElem(i), launcher, path.arrayHashIndex(DMKey.of(i), "[" + i + "]"));
                     uiSVLList.add(new UIFieldLayout(labels[i], uie, labelWidth, true));
-                    rc.paramSpecialTags.get(i).applyTo(i, uiSVLList, param, launcher, path);
+                    for (SpecialTag st : rc.paramSpecialTags.get(i))
+                        st.applyTo(i, uiSVLList, param, launcher, path);
                 }
             }
             return AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target, uiSVLList);

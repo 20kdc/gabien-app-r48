@@ -158,7 +158,7 @@ p fadeDuration int
 
 241: "Set BGM" ($ " to " ]0)
 C category 5
-p track RPG::AudioFile
+p track rpg_audiofile_bgm
 
 242: "Fade out BGM over" ($ " " ]0) " seconds"
 C category 5
@@ -168,7 +168,7 @@ p seconds int
 
 245: "Set BGS" ($ " to " ]0)
 C category 5
-p track RPG::AudioFile
+p track rpg_audiofile_bgs
 
 246: "Fade out BGS over" ($ " " ]0) " seconds"
 C category 5
@@ -182,11 +182,11 @@ C category 5
 
 249: "Play ME" ($ " " ]0)
 C category 5
-p track RPG::AudioFile
+p track rpg_audiofile_me
 
 250: "Play SE" ($ " " ]0)
 C category 5
-p track RPG::AudioFile
+p track rpg_audiofile_se
 
 251: "Stop Last SE"
 C category 5

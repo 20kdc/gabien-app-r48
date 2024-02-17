@@ -236,6 +236,11 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     SchemaElement hide = get();
                     return new PathSchemaElement(path, txt, hide, true);
                 }
+                if (text.equals("ui")) {
+                    SchemaElement data = get();
+                    SchemaElement ui = get();
+                    return new UIOverrideSchemaElement(data, ui);
+                }
 
                 // CS means "control indent if allowed"
                 // MS means "never control indent"
@@ -460,6 +465,16 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     SchemaElement b = get();
                     return new HalfsplitSchemaElement(a, b);
                 }
+                if (text.equals("halfsplitPost")) {
+                    SchemaElement a = get();
+                    SchemaElement b = get();
+                    return new HalfsplitSchemaElement(a, b, 1);
+                }
+                if (text.equals("halfsplitPre")) {
+                    SchemaElement a = get();
+                    SchemaElement b = get();
+                    return new HalfsplitSchemaElement(a, b, 0);
+                }
                 if (text.equals("spriteSelector")) {
                     // C spritesheet "Select face index..." FaceSets/ 48 48 4 0 0 48 48 0
                     // +spriteSelector @face_index @face_name FaceSets/
@@ -665,11 +680,11 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     return new MapPositionHelperSchemaElement(app, a, b, c);
                 }
                 if (text.equals("eventTileHelper")) {
-                    PathSyntax c = getPathSyntax();
-                    PathSyntax d = getPathSyntax();
-                    String a = args[point++];
-                    String b = args[point++];
-                    return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(app, b), Integer.parseInt(a), c, d), getFunctionToReturn(T.s.selectTileGraphic));
+                    PathSyntax idx = getPathSyntax();
+                    PathSyntax name = getPathSyntax();
+                    String layer = args[point++];
+                    String tsdb = args[point++];
+                    return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(app, tsdb), Integer.parseInt(layer), idx, name), getFunctionToReturn(T.s.selectTileGraphic));
                 }
                 if (text.equals("windowTitleAttachment")) {
                     FF2 txt = app.dTrFF2(srcLoc, TrNames.sdbWindowTitle(outerContext), args[point++]);
@@ -693,6 +708,11 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     FF0 eT = trAnon(args[point++]);
                     final MVMFn eF = (MVMFn) app.vmCtx.evalString(args[point++], srcLoc.toString());
                     return new JSONImportExportSchemaElement(app, iT, iF, eT, eF);
+                }
+                if (text.equals("valButton")) {
+                    DMKey val = ValueSyntax.decode(args[point++]);
+                    FF0 iT = trAnon(args[point++]);
+                    return new ValButtonSchemaElement(app, iT, val);
                 }
                 // -- If all else fails, it's an ID to be looked up. --
                 return getSDBEntry(text);
@@ -744,6 +764,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             setSDBEntry(args[0], handleChain(args, 1));
             outerContext = backup;
         } else if (c == 'e') {
+            // "e SDBNAME VALUE NAME..."
             HashMap<String, FF0> options = new HashMap<String, FF0>();
             int defVal = 0;
             for (int i = 1; i < args.length; i += 2) {

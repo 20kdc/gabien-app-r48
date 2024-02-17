@@ -7,10 +7,12 @@
 
 package r48.map.events;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import r48.App;
-import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
 
@@ -35,11 +37,11 @@ public class R2kEventGraphicRenderer extends App.Svc implements IEventGraphicRen
     }
 
     @Override
-    public int determineEventLayer(IRIO event) {
-        IRIO eventCore = extractEventGraphic(event);
+    public int determineEventLayer(RORIO event) {
+        RORIO eventCore = extractEventGraphic(event);
         if (eventCore == null)
             return -1;
-        IRIO active = eventCore.getIVar("@active");
+        RORIO active = eventCore.getIVar("@active");
         if (active != null)
             if (active.getType() == 'F')
                 return -1;
@@ -55,7 +57,7 @@ public class R2kEventGraphicRenderer extends App.Svc implements IEventGraphicRen
     }
 
     @Override
-    public IRIO extractEventGraphic(IRIO event) {
+    public RORIO extractEventGraphic(RORIO event) {
         if (event.getSymbol() == null)
             return null;
         // Savefile event classes
@@ -72,7 +74,7 @@ public class R2kEventGraphicRenderer extends App.Svc implements IEventGraphicRen
     }
 
     @Override
-    public void drawEventGraphic(IRIO target, int ox, int oy, IGrDriver igd, int sprScale) {
+    public void drawEventGraphic(RORIO target, int ox, int oy, IGrDriver igd, int sprScale, @Nullable RORIO originalEvent) {
         String cName = target.getIVar("@character_name").decString();
         if (!cName.equals("")) {
             IImage i = imageLoader.getImage("CharSet/" + cName, false);
@@ -90,11 +92,11 @@ public class R2kEventGraphicRenderer extends App.Svc implements IEventGraphicRen
             int idx = ((int) target.getIVar("@character_index").getFX());
             // Direction is apparently in a 0123 format???
             int dir = 2;
-            IRIO dirVal = target.getIVar("@character_direction");
+            RORIO dirVal = target.getIVar("@character_direction");
             if (dirVal != null)
                 dir = ((int) dirVal.getFX());
             int pat = 1;
-            IRIO patVal = target.getIVar("@character_pattern");
+            RORIO patVal = target.getIVar("@character_pattern");
             if (patVal != null)
                 pat = ((int) patVal.getFX());
             int px = ((idx % 4) * 3) + pat;

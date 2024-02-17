@@ -49,13 +49,18 @@ C datum `
 @self_switch_valid boolean
 @self_switch_ch selfswitch_id
 
+e rpg_event_page_graphic_pattern_ 0 Stand 1 "Walk A" 2 "Walk B" 3 "Walk C"
+> rpg_event_page_graphic_pattern ui rpg_event_page_graphic_pattern_ halfsplit halfsplit valButton 0 Stand valButton 1 "Walk A" halfsplit valButton 2 "B" valButton 3 "C"
+
 : RPG::Event::Page::Graphic
 @opacity opacity
-@pattern int
+@pattern rpg_event_page_graphic_pattern
+@character_name f_char_name
 @tile_id int
++halfsplitPost eventTileHelper @tile_id @character_name 0 RXP/TSTables.txt valButton 0 Clear
++hwnd . RXP/H_EventGraphics
 @direction direction
 @blend_type blend_type
-@character_name f_char_name
 @character_hue hue
 +internal_EPGD
 
@@ -90,8 +95,8 @@ C datum `
  Defining Map.
 
 : RPG::Map
-@bgm RPG::AudioFile
-@bgs RPG::AudioFile
+@bgm rpg_audiofile_bgm
+@bgs rpg_audiofile_bgs
 @width roint= 20
 @height roint= 15
 +tableD @data @width @height 3 20 15 3 48 0 0

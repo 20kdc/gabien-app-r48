@@ -7,11 +7,13 @@
 
 package r48.map.events;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import r48.App;
-import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.map.imaging.IImageLoader;
 
 /**
@@ -28,18 +30,18 @@ public class IkaEventGraphicRenderer extends App.Svc implements IEventGraphicRen
     }
 
     @Override
-    public int determineEventLayer(IRIO event) {
+    public int determineEventLayer(RORIO event) {
         return 0;
     }
 
 
     @Override
-    public IRIO extractEventGraphic(IRIO event) {
+    public RORIO extractEventGraphic(RORIO event) {
         return event;
     }
 
     @Override
-    public void drawEventGraphic(IRIO target, int ox, int oy, IGrDriver igd, int sprScale) {
+    public void drawEventGraphic(RORIO target, int ox, int oy, IGrDriver igd, int sprScale, @Nullable RORIO originalEvent) {
         String[] graphics = new String[] {"Hari", "Isogin", "Kani", "Sleep", "Chibi", "Hoshi", "Dum", "Carry", "Juel", "Ufo"};
         int dsX = 16;
         int dsY = 16;

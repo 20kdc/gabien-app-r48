@@ -36,6 +36,7 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
     // Note that this only covers rendering resources, not priorities
     private final DepsLocker depsLocker = new DepsLocker();
     private ITexRegion commonTiles;
+    private int commonTilesHeight;
     private ITexRegion[][][] atFields;
     private AtlasSet atlasSet;
 
@@ -84,8 +85,10 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
         if (!depsLocker.shouldUpdate((Object) tilesetMaps))
             return;
         SimpleAtlasBuilder sab = new SimpleAtlasBuilder(1024, 1024, BinaryTreeAtlasStrategy.INSTANCE);
-        if (tilesetMaps[0] != null)
+        if (tilesetMaps[0] != null) {
+            commonTilesHeight = tilesetMaps[0].height;
             sab.add((res) -> commonTiles = res, new ImageAtlasDrawable(tilesetMaps[0]));
+        }
         atFields = new ITexRegion[7][][];
         for (int i = 0; i < 7; i++) {
             IImage atf = tilesetMaps[i + 1];
@@ -107,10 +110,11 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
 
     @Override
     public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd) {
-        // The logic here is only documented in the mkxp repository, in tilemap.cpp.
-        // I really hope it doesn't count as stealing here,
-        //  if I would've had to have typed this code ANYWAY
-        //  after an age trying to figure it out.
+        /*
+         * First 48 tiles: Nothing ("AT 0")
+         * 7 sets of 48 tiles afterwards: Each of the 7 AT fields
+         * After this is the common tiles set
+         */
         if (tidx < (48 * 8)) {
             // Autotile
             int atMap = tidx / 48;
@@ -135,8 +139,12 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
         int tsh = 8;
         int tx = tidx % tsh;
         int ty = tidx / tsh;
-        if (commonTiles != null)
+        if (commonTiles != null) {
+            // Do not render out of range tiles
+            if (ty * tileSize >= commonTilesHeight)
+                return;
             igd.blitImage(tx * tileSize, ty * tileSize, tileSize, tileSize, px, py, commonTiles);
+        }
     }
 
     @Override

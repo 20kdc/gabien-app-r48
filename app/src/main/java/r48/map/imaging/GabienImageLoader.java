@@ -7,8 +7,11 @@
 
 package r48.map.imaging;
 
+import java.io.InputStream;
+
 import gabien.GaBIEn;
 import gabien.render.IImage;
+import gabien.render.WSIImage;
 import r48.app.AppCore;
 
 /**
@@ -42,17 +45,16 @@ public class GabienImageLoader extends AppCore.Csv implements IImageLoader {
 
     @Override
     public IImage getImage(String name, boolean panorama) {
-        IImage error = GaBIEn.getErrorImage();
-        if (ck) {
-            IImage core = GaBIEn.getImageCKEx(app.gameResources.intoPath(name + postfix).getAbsolutePath(), true, false, r, g, b);
-            if (core == error)
+        try (InputStream inp = app.gameResources.intoPath(name + postfix).openRead()) {
+            WSIImage wsi = GaBIEn.decodeWSIImage(inp);
+            if (wsi == null)
                 return null;
-            return core;
-        } else {
-            IImage core = GaBIEn.getImageEx(app.gameResources.intoPath(name + postfix).getAbsolutePath(), true, false);
-            if (core == error)
-                return null;
-            return core;
+            if (ck) {
+                return GaBIEn.wsiToCK("gameCK:" + name + postfix, wsi, r, g, b);
+            }
+            return wsi.upload("game:" + name + postfix);
+        } catch (Exception ex) {
+            return null;
         }
     }
 

@@ -15,10 +15,12 @@ import r48.App;
 import r48.IMapContext;
 import r48.RubyTable;
 import r48.dbs.ObjectInfo;
+import r48.imagefx.HueShiftImageEffect;
 import r48.io.IObjectBackend;
 import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.map.*;
 import r48.map.drawlayers.*;
 import r48.map.events.IEventAccess;
@@ -93,6 +95,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events, ITileRenderer tileRenderer) {
         RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, false);
         String pano = "";
+        int panoHue = 0;
         if (tileset != null) {
             IRIO rio = tileset.getIVar("@panorama_name");
             if (rio != null) {
@@ -100,6 +103,9 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 if (sv.length() > 0)
                     pano = "Panoramas/" + sv;
             }
+            RORIO hueRIO = tileset.getIVar("@panorama_hue");
+            if (hueRIO != null)
+                panoHue = (int) hueRIO.getFX();
         }
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
         if (map != null) {
@@ -107,6 +113,8 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             IImage panoImg = null;
             if (!pano.equals(""))
                 panoImg = imageLoader.getImage(pano, true);
+            if (panoImg != null && panoHue != 0)
+                panoImg = app.ui.imageFXCache.process(panoImg, new HueShiftImageEffect(panoHue));
             RXPAccurateDrawLayer accurate = new RXPAccurateDrawLayer(rt, events, (XPTileRenderer) tileRenderer, eventRenderer);
             layers = new IMapViewDrawLayer[] {
                     // works for green docks

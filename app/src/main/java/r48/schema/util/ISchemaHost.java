@@ -10,6 +10,8 @@ package r48.schema.util;
 import java.util.LinkedList;
 import java.util.function.Supplier;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.UIElement;
 import r48.App;
 import r48.io.data.IRIO;
@@ -37,8 +39,10 @@ public interface ISchemaHost {
 
     void launchOther(UIElement uiTest);
 
-    // The StuffRenderer applicable to this window.
-    StuffRenderer getContextRenderer();
+    /**
+     * The StuffRenderer applicable to this window.
+     */
+    @NonNull StuffRenderer getContextRenderer();
 
     ISchemaHost newBlank();
 

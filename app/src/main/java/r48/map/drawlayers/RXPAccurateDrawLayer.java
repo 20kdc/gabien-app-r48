@@ -11,6 +11,7 @@ import r48.App;
 import r48.RubyTable;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.map.events.IEventAccess;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.tiles.XPTileRenderer;
@@ -62,7 +63,7 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
                 // Note that while RQ should be a good stress test for this system,
                 //  some maps, such as Map055, appear on TID examination to be incomplete.
                 z = ((ed.getIVar("@y").getFX() + 1) * 2) + 1;
-                IRIO edG = events.extractEventGraphic(ed);
+                RORIO edG = events.extractEventGraphic(ed);
                 if (edG != null) {
                     long tid = edG.getIVar("@tile_id").getFX();
                     if (tid != 0) {

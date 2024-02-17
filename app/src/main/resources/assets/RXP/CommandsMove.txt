@@ -24,7 +24,8 @@ d Changes the graphics of this event.
 p name f_char_name
 p hue hue
 p dir direction
-p pattern int
+C xpMoveCommandSetGraphic
+p pattern rpg_event_page_graphic_pattern
 
 42: "Set opacity" ($ " to " ]0 opacity)
 d Changes the opacity of this event.
@@ -36,4 +37,4 @@ p blendType blend_type
 
 44: "Play SE" ($ " " ]0)
 d Plays a sound effect.
-p audio RPG::AudioFile
+p audio rpg_audiofile_se

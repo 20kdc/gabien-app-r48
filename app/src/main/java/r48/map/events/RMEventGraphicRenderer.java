@@ -10,15 +10,17 @@ package r48.map.events;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
+import gabien.uslx.append.MathsX;
 import r48.App;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
-import r48.imagefx.ToneImageEffect;
-import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
 
 import java.util.LinkedList;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Created on 1/27/17.
@@ -53,7 +55,7 @@ public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRend
     }
 
     @Override
-    public int determineEventLayer(IRIO event) {
+    public int determineEventLayer(RORIO event) {
         if (useVXAExtensionScheme)
             return (int) event.getIVar("@pages").getAElem(0).getIVar("@priority_type").getFX();
         // NOTE: This is actually used specially, by the RXPAccurateDrawLayer.
@@ -61,22 +63,33 @@ public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRend
     }
 
     @Override
-    public IRIO extractEventGraphic(IRIO evI) {
+    public RORIO extractEventGraphic(RORIO evI) {
         return evI.getIVar("@pages").getAElem(0).getIVar("@graphic");
     }
 
     @Override
-    public void drawEventGraphic(IRIO target, int ox, int oy, IGrDriver igd, int sprScale) {
-        int pat = (int) target.getIVar("@pattern").getFX();
-        int coreDir = (int) target.getIVar("@direction").getFX();
+    public void drawEventGraphic(RORIO target, int ox, int oy, IGrDriver igd, int sprScale, @Nullable RORIO originalEvent) {
+        RORIO patv = target.getIVar("@pattern");
+        RORIO dirv = target.getIVar("@direction");
+        int pat = patv != null ? (int) patv.getFX() : 0;
+        int coreDir = dirv != null ? (int) dirv.getFX() : 0;
         int dir = lookupDirection(coreDir);
         if (dir == -1) {
             dir = 0;
             GaBIEn.engineFonts.f8.drawLAB(igd, ox, oy, "D" + coreDir, false);
         }
-        IRIO cName = target.getIVar("@character_name");
-        String cNameS = cName.decString();
-        short tId = (short) target.getIVar("@tile_id").getFX();
+        // @step_anime
+        if (originalEvent != null) {
+            RORIO pages = originalEvent.getIVar("@pages");
+            RORIO page = pages != null ? pages.getAElem(0) : null;
+            RORIO stepAnime = page != null ? page.getIVar("@step_anime") : null;
+            if (stepAnime != null && stepAnime.getType() == 'T')
+                pat = MathsX.seqModulo(tileRenderer.getFrame(), 4);
+        }
+        RORIO cName = target.getIVar("@character_name");
+        String cNameS = cName == null ? "" : cName.decString();
+        RORIO tidv = target.getIVar("@tile_id");
+        short tId = (short) (tidv == null ? 0 : tidv.getFX());
         if (tId != 0) {
             tileRenderer.drawTile(0, tId, ox, oy, igd, sprScale);
         } else if (cNameS.length() > 0) {
@@ -97,7 +110,8 @@ public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRend
             if (useVXAExtensionScheme) {
                 sprW = i.getWidth() / 12;
                 sprH = i.getHeight() / 8;
-                int idx = (int) target.getIVar("@character_index").getFX();
+                RORIO cIdxV = target.getIVar("@character_index");
+                int idx = cIdxV != null ? (int) cIdxV.getFX() : 0;
                 if (cNameS.startsWith("!$") || cNameS.startsWith("$")) {
                     // Character index doesn't work on these
                     sprW = i.getWidth() / 3;
@@ -109,18 +123,16 @@ public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRend
             }
 
             int blendType = 0;
-            IRIO blendData = target.getIVar("@blend_type");
+            RORIO blendData = target.getIVar("@blend_type");
             if (blendData != null)
                 blendType = (int) blendData.getFX();
-            IRIO hueCtrl = target.getIVar("@character_hue");
+            RORIO hueCtrl = target.getIVar("@character_hue");
             LinkedList<IImageEffect> hsie = new LinkedList<IImageEffect>();
             if (hueCtrl != null) {
                 int hue = (int) (hueCtrl.getFX());
                 if (hue != 0)
                     hsie.add(new HueShiftImageEffect(hue));
             }
-            if (blendType != 0)
-                hsie.add(new ToneImageEffect(1, 1, 1, 2, 2));
             i = app.ui.imageFXCache.process(i, hsie);
             int blendMode = IGrDriver.BLEND_NORMAL;
             if (blendType == 1)

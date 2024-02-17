@@ -10,11 +10,14 @@ package r48.dbs;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
+import gabien.render.ITexRegion;
 import r48.App;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.function.Function;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Created on 04/06/17.
@@ -24,7 +27,8 @@ public class TSDB extends App.Svc {
     public int[] mapping;
     public int xorDoubleclick = 0;
     public boolean disableHex = false;
-    public int mulW = 1, mulH = 1;
+    public int tileW = 0, tileH = 0;
+    public boolean tileWHSet;
 
     public TSDB(App app, String arg) {
         super(app);
@@ -36,7 +40,11 @@ public class TSDB extends App.Svc {
                     return true;
                 }
             };
-            public String image = "layertab.png";
+
+            private IImage loadImg(String name) {
+                return GaBIEn.getImageCKEx(name, false, true, 255, 0, 255);
+            }
+            public IImage image = loadImg("layertab.png");
 
             @Override
             public void newObj(int objId, String objName) throws IOException {
@@ -46,9 +54,24 @@ public class TSDB extends App.Svc {
             @Override
             public void execCmd(char c, String[] args) throws IOException {
                 if (c == 'I')
-                    image = args[0];
-                if (c == 'p')
-                    pictures.add(new TSPicture(acceptable, compileData(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]), Integer.parseInt(args[7]), Integer.parseInt(args[8]), image));
+                    image = loadImg(args[0]);
+                if (c == '#')
+                    image = GaBIEn.getImage(args[0]);
+                if (c == 'p') {
+                    int w = Integer.parseInt(args[7]);
+                    int h = Integer.parseInt(args[8]);
+                    ITexRegion imgOff = image.subRegion(Integer.parseInt(args[1]), Integer.parseInt(args[2]), w, h);
+                    ITexRegion imgOn = image.subRegion(Integer.parseInt(args[3]), Integer.parseInt(args[4]), w, h);
+                    pictures.add(new TSPicture(acceptable, compileData(args[0]), imgOff, imgOn, Integer.parseInt(args[5]), Integer.parseInt(args[6]), w, h));
+                }
+                if (c == 'P') {
+                    int tileSize = image.height;
+                    int tidOff = Integer.parseInt(args[1]);
+                    int tidOn = Integer.parseInt(args[2]);
+                    ITexRegion imgOff = tidOff != -1 ? image.subRegion(tidOff * tileSize, 0, tileSize, tileSize) : null;
+                    ITexRegion imgOn = tidOn != -1 ? image.subRegion(tidOn * tileSize, 0, tileSize, tileSize) : null;
+                    pictures.add(new TSPicture(acceptable, compileData(args[0]), imgOff, imgOn, 0, 0, tileSize, tileSize));
+                }
                 if (c == 'x')
                     xorDoubleclick = Integer.parseInt(args[0]);
                 if (c == 'l') {
@@ -71,8 +94,9 @@ public class TSDB extends App.Svc {
                     }
                 }
                 if (c == 'X') {
-                    mulW = Integer.parseInt(args[0]);
-                    mulH = Integer.parseInt(args[1]);
+                    tileW = Integer.parseInt(args[0]);
+                    tileH = Integer.parseInt(args[1]);
+                    tileWHSet = true;
                 }
                 if (c == 'z')
                     disableHex = true;
@@ -113,14 +137,8 @@ public class TSDB extends App.Svc {
     }
 
     public void draw(int x, int y, int t, short tiletype, int sprScale, IGrDriver igd) {
-        for (TSDB.TSPicture tsp : pictures) {
-            if (!tsp.acceptable.apply(t))
-                continue;
-            boolean flagValid = tsp.testFlag(tiletype);
-            int rtX = flagValid ? tsp.layertabAX : tsp.layertabIX;
-            int rtY = flagValid ? tsp.layertabAY : tsp.layertabIY;
-            igd.blitScaledImage(rtX, rtY, tsp.w, tsp.h, x + (tsp.x * sprScale), y + (tsp.y * sprScale), tsp.w * sprScale, tsp.h * sprScale, GaBIEn.getImageCKEx(tsp.img, false, true, 255, 0, 255));
-        }
+        for (TSDB.TSPicture tsp : pictures)
+            tsp.draw(x, y, t, tiletype, sprScale, igd);
     }
 
     public IImage compileSheet(int count, int tileSize) {
@@ -133,23 +151,20 @@ public class TSDB extends App.Svc {
     }
 
     public class TSPicture {
-        public int layertabIX, layertabIY, layertabAX, layertabAY, x, y, w, h;
+        public @Nullable ITexRegion imgOff, imgOn;
+        public int x, y, w, h;
         public int[] flagData;
-        public String img;
         public Function<Integer, Boolean> acceptable;
 
-        public TSPicture(Function<Integer, Boolean> accept, int[] i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, String image) {
+        public TSPicture(Function<Integer, Boolean> accept, int[] i, ITexRegion imgOff, ITexRegion imgOn, int i5, int i6, int i7, int i8) {
             acceptable = accept;
             flagData = i;
-            layertabIX = i1;
-            layertabIY = i2;
-            layertabAX = i3;
-            layertabAY = i4;
             x = i5;
             y = i6;
             w = i7;
             h = i8;
-            img = image;
+            this.imgOff = imgOff;
+            this.imgOn = imgOn;
         }
 
         public boolean testFlag(short tiletype) {
@@ -168,6 +183,15 @@ public class TSDB extends App.Svc {
                 }
             }
             return true;
+        }
+
+        public void draw(int ox, int oy, int t, short tiletype, int sprScale, IGrDriver igd) {
+            if (!acceptable.apply(t))
+                return;
+            boolean flagValid = testFlag(tiletype);
+            ITexRegion img = flagValid ? imgOn : imgOff;
+            if (img != null)
+                igd.blitScaledImage(0, 0, w, h, ox + (x * sprScale), oy + (y * sprScale), w * sprScale, h * sprScale, img);
         }
     }
 }

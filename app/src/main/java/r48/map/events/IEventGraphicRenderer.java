@@ -7,8 +7,10 @@
 
 package r48.map.events;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.render.IGrDriver;
-import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 
 /**
  * Events need to have a @x, and a @y, (@name is optional) but anything else about them is determined by this and the Schema.
@@ -16,10 +18,11 @@ import r48.io.data.IRIO;
  */
 public interface IEventGraphicRenderer {
     // Only used for EventMapViewDrawLayer
-    int determineEventLayer(IRIO event);
+    int determineEventLayer(RORIO event);
 
-    IRIO extractEventGraphic(IRIO event);
+    RORIO extractEventGraphic(RORIO event);
 
     // while this handles event graphics
-    void drawEventGraphic(IRIO target, int ox, int oy, IGrDriver igd, int sprScale);
+    // original event is passed for features like @step_anime
+    void drawEventGraphic(RORIO target, int ox, int oy, IGrDriver igd, int sprScale, @Nullable RORIO originalEvent);
 }

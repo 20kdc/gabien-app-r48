@@ -15,6 +15,7 @@ import r48.map.UIMapView;
 
 import java.util.function.Supplier;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
@@ -46,7 +47,7 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
     }
 
     @Override
-    public StuffRenderer getContextRenderer() {
+    public @NonNull StuffRenderer getContextRenderer() {
         if (contextView != null)
             return contextView.mapTable.renderer;
         return app.stuffRendererIndependent;

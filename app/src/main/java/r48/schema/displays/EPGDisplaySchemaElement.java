@@ -14,6 +14,7 @@ import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.map.StuffRenderer;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -30,6 +31,14 @@ public class EPGDisplaySchemaElement extends SchemaElement.Leaf {
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, SchemaPath path) {
+        StuffRenderer r = launcher.getContextRenderer();
+        return buildEditorFromObject(app, r, target);
+    }
+
+    /**
+     * Used for simulated objects
+     */
+    public static UIElement buildEditorFromObject(App app, StuffRenderer r, RORIO target) {
         final int sprScale = app.f.getSpriteScale();
         UIElement display = new UIElement(64, 96 * sprScale) {
             @Override
@@ -43,9 +52,8 @@ public class EPGDisplaySchemaElement extends SchemaElement.Leaf {
                     return;
                 Size bounds = getSize();
                 igd.clearRect(255, 0, 255, 0, 0, bounds.width, bounds.height);
-                StuffRenderer r = launcher.getContextRenderer();
                 int ofs = r.tileRenderer.tileSize / 2;
-                r.eventRenderer.drawEventGraphic(target, (bounds.width / 2) - (ofs * sprScale), (bounds.height / 2) - (ofs * sprScale), igd, sprScale);
+                r.eventRenderer.drawEventGraphic(target, (bounds.width / 2) - (ofs * sprScale), (bounds.height / 2) - (ofs * sprScale), igd, sprScale, null);
             }
         };
         return display;

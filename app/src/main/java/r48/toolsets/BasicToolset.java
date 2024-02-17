@@ -373,6 +373,8 @@ public class BasicToolset extends App.Svc implements IToolset {
                 },
                 () -> {
                     GaBIEn.startFileBrowser(T.u.openAud, false, "", (res) -> {
+                        if (res == null)
+                            return;
                         app.ui.wm.createWindow(UIAudioPlayer.createAbsoluteName(app, res, 1));
                     });
                 },
