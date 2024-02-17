@@ -7,6 +7,8 @@
 
 package r48.map.events;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.render.IGrDriver;
 import r48.io.data.RORIO;
 
@@ -26,7 +28,7 @@ public class NullEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public void drawEventGraphic(RORIO target, int ox, int oy, IGrDriver igd, int ss) {
+    public void drawEventGraphic(RORIO target, int ox, int oy, IGrDriver igd, int ss, @Nullable RORIO originalEvent) {
 
     }
 }

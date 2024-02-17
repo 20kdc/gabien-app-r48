@@ -7,6 +7,8 @@
 
 package r48.map.events;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import r48.App;
@@ -72,7 +74,7 @@ public class R2kEventGraphicRenderer extends App.Svc implements IEventGraphicRen
     }
 
     @Override
-    public void drawEventGraphic(RORIO target, int ox, int oy, IGrDriver igd, int sprScale) {
+    public void drawEventGraphic(RORIO target, int ox, int oy, IGrDriver igd, int sprScale, @Nullable RORIO originalEvent) {
         String cName = target.getIVar("@character_name").decString();
         if (!cName.equals("")) {
             IImage i = imageLoader.getImage("CharSet/" + cName, false);

@@ -44,7 +44,7 @@ public class EventZSortedObject implements ZSortingDrawLayer.IZSortedObject {
         int py = y * mvdc.tileSize;
         RORIO g = renderer.extractEventGraphic(evI);
         if (g != null)
-            renderer.drawEventGraphic(g, px, py, mvdc.igd, 1);
+            renderer.drawEventGraphic(g, px, py, mvdc.igd, 1, evI);
     }
 
 }

@@ -80,7 +80,7 @@ public class EventMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer 
                     continue;
                 RORIO g = iegr.extractEventGraphic(evI);
                 if (g != null)
-                    iegr.drawEventGraphic(g, px, py, mvdc.igd, 1);
+                    iegr.drawEventGraphic(g, px, py, mvdc.igd, 1, evI);
             }
         }
     }

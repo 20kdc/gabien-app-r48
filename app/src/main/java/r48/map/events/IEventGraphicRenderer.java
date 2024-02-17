@@ -7,6 +7,8 @@
 
 package r48.map.events;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.render.IGrDriver;
 import r48.io.data.RORIO;
 
@@ -21,5 +23,6 @@ public interface IEventGraphicRenderer {
     RORIO extractEventGraphic(RORIO event);
 
     // while this handles event graphics
-    void drawEventGraphic(RORIO target, int ox, int oy, IGrDriver igd, int sprScale);
+    // original event is passed for features like @step_anime
+    void drawEventGraphic(RORIO target, int ox, int oy, IGrDriver igd, int sprScale, @Nullable RORIO originalEvent);
 }

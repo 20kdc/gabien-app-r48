@@ -10,6 +10,7 @@ package r48.map.events;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
+import gabien.uslx.append.MathsX;
 import r48.App;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
@@ -18,6 +19,8 @@ import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
 
 import java.util.LinkedList;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Created on 1/27/17.
@@ -65,7 +68,7 @@ public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRend
     }
 
     @Override
-    public void drawEventGraphic(RORIO target, int ox, int oy, IGrDriver igd, int sprScale) {
+    public void drawEventGraphic(RORIO target, int ox, int oy, IGrDriver igd, int sprScale, @Nullable RORIO originalEvent) {
         RORIO patv = target.getIVar("@pattern");
         RORIO dirv = target.getIVar("@direction");
         int pat = patv != null ? (int) patv.getFX() : 0;
@@ -74,6 +77,14 @@ public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRend
         if (dir == -1) {
             dir = 0;
             GaBIEn.engineFonts.f8.drawLAB(igd, ox, oy, "D" + coreDir, false);
+        }
+        // @step_anime
+        if (originalEvent != null) {
+            RORIO pages = originalEvent.getIVar("@pages");
+            RORIO page = pages != null ? pages.getAElem(0) : null;
+            RORIO stepAnime = page != null ? page.getIVar("@step_anime") : null;
+            if (stepAnime != null && stepAnime.getType() == 'T')
+                pat = MathsX.seqModulo(tileRenderer.getFrame(), 4);
         }
         RORIO cName = target.getIVar("@character_name");
         String cNameS = cName == null ? "" : cName.decString();

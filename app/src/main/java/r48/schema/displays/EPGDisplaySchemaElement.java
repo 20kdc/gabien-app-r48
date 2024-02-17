@@ -53,7 +53,7 @@ public class EPGDisplaySchemaElement extends SchemaElement.Leaf {
                 Size bounds = getSize();
                 igd.clearRect(255, 0, 255, 0, 0, bounds.width, bounds.height);
                 int ofs = r.tileRenderer.tileSize / 2;
-                r.eventRenderer.drawEventGraphic(target, (bounds.width / 2) - (ofs * sprScale), (bounds.height / 2) - (ofs * sprScale), igd, sprScale);
+                r.eventRenderer.drawEventGraphic(target, (bounds.width / 2) - (ofs * sprScale), (bounds.height / 2) - (ofs * sprScale), igd, sprScale, null);
             }
         };
         return display;
