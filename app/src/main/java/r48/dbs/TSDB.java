@@ -189,7 +189,7 @@ public class TSDB extends App.Svc {
             if (!acceptable.apply(t))
                 return;
             boolean flagValid = testFlag(tiletype);
-            ITexRegion img = flagValid ? imgOff : imgOn;
+            ITexRegion img = flagValid ? imgOn : imgOff;
             if (img != null)
                 igd.blitScaledImage(0, 0, w, h, ox + (x * sprScale), oy + (y * sprScale), w * sprScale, h * sprScale, img);
         }

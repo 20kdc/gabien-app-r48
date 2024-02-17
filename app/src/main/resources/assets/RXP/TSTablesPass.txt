@@ -10,20 +10,20 @@ X 48 48
 >RXP/TSTables.txt
 
   base
-  F-   I1 I0
+  F-   I0 I1
 P 0x00 0  0
 P 0x00 1  1
 
-  F-   I1 I0
-P 0x01 -1 6
-P 0x02 -1 7
-P 0x04 -1 9
-P 0x08 -1 8
+  F-   I0 I1
+P 0x01 6  -1
+P 0x02 7  -1
+P 0x04 9  -1
+P 0x08 8  -1
 
   additional
-  F-   I1 I0
-P 0x40 4  -1
-P 0x80 5  -1
+  F-   I0 I1
+P 0x40 -1 4
+P 0x80 -1 5
 
  No hex
 z
