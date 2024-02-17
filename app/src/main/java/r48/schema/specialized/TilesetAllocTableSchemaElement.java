@@ -35,8 +35,10 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
     public Size getGridSize(StuffRenderer sr) {
         int tw = sr.tileRenderer.tileSize;
         int th = tw;
-        tw *= allocSource.mulW;
-        th *= allocSource.mulH;
+        if (allocSource.tileWHSet) {
+            tw = allocSource.tileW;
+            th = allocSource.tileH;
+        }
         int ss = app.f.getSpriteScale();
         return new Size(tw * ss, th * ss);
     }

@@ -373,7 +373,7 @@ C datum `(rcom-idname RPG::Tileset "Tileset")`
 @autotile_names array 7 f_autotile_name
 @panorama_name f_pano_name
 @panorama_hue hue
-+tableSTAF RXP/TSTables.txt @passages . . 1 1632 1 1 blockDown blockLeft blockRight blockUp UNK. UNK. submerge 'counter'
++tableSTAF RXP/TSTablesPass.txt @passages . . 1 1632 1 1 blockDown blockLeft blockRight blockUp UNK. UNK. submerge 'counter'
 +tableSTA RXP/TSTables.txt @priorities . . 1 1632 1 1
 +tableSTA RXP/TSTables.txt @terrain_tags . . 1 1632 1 1
 @fog_name f_fog_name
