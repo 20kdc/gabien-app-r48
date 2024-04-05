@@ -96,7 +96,7 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
                 entries = mod;
                 onEdit.run();
             }, app.f.dialogWindowTH);
-            interiorList.add(hLine);
+            usl.add(hLine);
         }
         usl.add(new UITextButton(app.t.u.ccs_addCondition, app.f.dialogWindowTH, () -> {
             if (entries != currentEntriesArray)
