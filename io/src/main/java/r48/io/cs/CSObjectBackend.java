@@ -46,7 +46,6 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
         try {
             inp = fs.intoPath(pfx + filename).openRead();
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.err.println("Couldn't load CS " + pfx + filename);
             e1.printStackTrace();
             return null;

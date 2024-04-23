@@ -7,6 +7,7 @@
 
 package gabienapp;
 
+import gabien.GaBIEn;
 import gabien.uslx.licensing.LicenseComponent;
 import gabien.uslx.licensing.LicenseManager;
 
@@ -27,7 +28,11 @@ public class Application {
     }
 
     public static void gabienmain() {
-        Launcher lun = new Launcher();
-        lun.run();
+        if (!GaBIEn.hasStoragePermission()) {
+            Android23.run();
+        } else {
+            Launcher lun = new Launcher();
+            lun.run();
+        }
     }
 }
