@@ -10,7 +10,6 @@ package gabienapp;
 import java.io.IOException;
 
 import gabien.GaBIEn;
-import gabien.natives.BadGPU;
 import gabien.pva.PVARenderer;
 import gabien.render.IGrDriver;
 import gabien.wsi.IGrInDriver;
@@ -49,10 +48,10 @@ public class Android23 {
             float scaledH = pf.pvaFile.header.height * scale;
             // render
             pf.renderInline(pf.pvaFile.frames[pf.pvaFile.frameOfLooped(GaBIEn.getTime() * 1000)], backbufferA, (backbufferA.width - scaledW) / 2, (backbufferA.height - scaledH) / 2, scaledW, scaledH);
-            // mipmap and blit
-            backbufferA.generateMipmap();
-            int drawFlagsEx = BadGPU.DrawFlags.MinLinear | BadGPU.DrawFlags.MagLinear | BadGPU.DrawFlags.Mipmap;
-            backbufferB.drawScaledColoured(0, 0, backbufferA.width, backbufferA.height, 0, 0, backbufferB.width, backbufferB.height, backbufferA, IGrDriver.BLEND_NORMAL, drawFlagsEx, 1, 1, 1, 1);
+            backbufferB.drawScaledColoured(0, 0, backbufferA.width, backbufferA.height, 0, 0, backbufferB.width, backbufferB.height, backbufferA, IGrDriver.BLEND_NORMAL, 0, 0.25f, 0.25f, 0.25f, 1);
+            backbufferB.drawScaledColoured(1, 0, backbufferA.width, backbufferA.height, 0, 0, backbufferB.width, backbufferB.height, backbufferA, IGrDriver.BLEND_ADD, 0, 0.25f, 0.25f, 0.25f, 1);
+            backbufferB.drawScaledColoured(0, 1, backbufferA.width, backbufferA.height, 0, 0, backbufferB.width, backbufferB.height, backbufferA, IGrDriver.BLEND_ADD, 0, 0.25f, 0.25f, 0.25f, 1);
+            backbufferB.drawScaledColoured(1, 1, backbufferA.width, backbufferA.height, 0, 0, backbufferB.width, backbufferB.height, backbufferA, IGrDriver.BLEND_ADD, 0, 0.25f, 0.25f, 0.25f, 1);
             // swap
             window.flush(backbufferB);
         }
