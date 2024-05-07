@@ -19,8 +19,22 @@ public interface IDM3Context {
      * These references will need to be audited as things move further into DM3.
      * In practice MagicalBinders use this and that's not a great thing.
      * But it's also used by generics that are going to off-DB storage like clipboard or being deep-copied.
+     * The instances are separated by "cause".
      */
     public enum Null implements IDM3Context {
-        INSTANCE;
+        // something that is cloned from
+        DISPOSABLE,
+        // clipboard
+        CLIPBOARD,
+        // this needs to be addressed
+        DELETE_ME,
+        // AdHocSaveLoad & pals
+        ADHOC_IO,
+        // key workspace editor
+        WORKSPACE,
+        // DMKey embedded values
+        DMKEY_EMBEDDED,
+        // Tests use this
+        TESTS;
     }
 }

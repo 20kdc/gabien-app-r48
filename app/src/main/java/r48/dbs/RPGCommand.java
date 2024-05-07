@@ -186,7 +186,7 @@ public class RPGCommand extends App.Svc {
                 ex.printStackTrace();
                 return;
             }
-            IRIOGeneric ig = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
+            IRIOGeneric ig = new IRIOGeneric(IDM3Context.Null.DISPOSABLE, StandardCharsets.UTF_8);
             ig.addIVar("@character_name").setString(cName);
             ig.addIVar("@character_hue").setFX(hue);
             ig.addIVar("@direction").setFX(dir);

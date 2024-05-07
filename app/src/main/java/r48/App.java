@@ -141,7 +141,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
      * Sets the clipboard to a deep clone of a value.
      */
     public void setClipboardFrom(IRIO frame) {
-        theClipboard = new IRIOGeneric(IDM3Context.Null.INSTANCE, encoding).setDeepClone(frame);
+        theClipboard = new IRIOGeneric(IDM3Context.Null.CLIPBOARD, encoding).setDeepClone(frame);
     }
 
     @Override

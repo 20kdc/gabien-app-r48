@@ -604,7 +604,7 @@ public class IMIUtils {
                     }
                     break;
                 case '>':
-                    tmp2 = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
+                    tmp2 = new IRIOGeneric(IDM3Context.Null.DISPOSABLE, StandardCharsets.UTF_8);
                     runIMISegment(inp, tmp2);
                     if (obj.getType() == '[') {
                         if (tmp2.getType() != 'i')
@@ -628,7 +628,7 @@ public class IMIUtils {
                             }
                             break;
                         case '>':
-                            tmp2 = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
+                            tmp2 = new IRIOGeneric(IDM3Context.Null.DISPOSABLE, StandardCharsets.UTF_8);
                             runIMISegment(inp, tmp2);
                             if (obj.getType() == '[') {
                                 if (tmp2.getType() != 'i')

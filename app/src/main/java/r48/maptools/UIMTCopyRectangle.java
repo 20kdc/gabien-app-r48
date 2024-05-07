@@ -83,7 +83,7 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
                         for (int j = minY; j <= maxY; j++)
                             if (!map.mapTable.outOfBounds(i, j))
                                 rt.setTiletype(i - minX, j - minY, l, map.mapTable.getTiletype(i, j, l));
-                IRIOGeneric rb = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
+                IRIOGeneric rb = new IRIOGeneric(IDM3Context.Null.CLIPBOARD, StandardCharsets.UTF_8);
                 rb.setUser("Table", rt.innerBytes);
                 map.app.theClipboard = rb;
                 mapToolContext.accept(null);

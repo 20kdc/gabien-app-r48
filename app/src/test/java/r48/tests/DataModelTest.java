@@ -23,9 +23,9 @@ public class DataModelTest {
     @Test
     public void testStringEquality() {
         // This is really just to make sure unit tests work for now.
-        IRIO rioA = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8).setString("Hello");
-        IRIO rioB = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8).setString("Goodbye");
-        IRIO rioC = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8).setString("Hello");
+        IRIO rioA = new IRIOGeneric(IDM3Context.Null.TESTS, StandardCharsets.UTF_8).setString("Hello");
+        IRIO rioB = new IRIOGeneric(IDM3Context.Null.TESTS, StandardCharsets.UTF_8).setString("Goodbye");
+        IRIO rioC = new IRIOGeneric(IDM3Context.Null.TESTS, StandardCharsets.UTF_8).setString("Hello");
         Assert.assertFalse(IRIO.rubyEquals(rioA, rioB));
         Assert.assertTrue(IRIO.rubyEquals(rioA, rioA));
         Assert.assertTrue(IRIO.rubyEquals(rioA, rioC));

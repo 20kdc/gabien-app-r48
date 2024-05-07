@@ -31,12 +31,12 @@ public class IMIBasicTest {
     public void testEncode2kDatabase() {
         App app = new TestKickstart().kickstart("RAM/", "UTF-8", "r2k");
         // Use RubyIOs both in and out to deal with encoding oddities
-        IRIO newObj = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
+        IRIO newObj = new IRIOGeneric(IDM3Context.Null.TESTS, StandardCharsets.UTF_8);
         SchemaPath.setDefaultValue(newObj, app.sdb.getSDBEntry("RPG::Database"), null);
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             IMIUtils.createIMIDump(new DataOutputStream(baos), newObj, "");
-            IRIOGeneric test = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
+            IRIOGeneric test = new IRIOGeneric(IDM3Context.Null.TESTS, StandardCharsets.UTF_8);
             byte[] data = baos.toByteArray();
             IMIUtils.runIMISegment(new ByteArrayInputStream(data), test);
             byte[] diff = IMIUtils.createIMIData(newObj, test, "");

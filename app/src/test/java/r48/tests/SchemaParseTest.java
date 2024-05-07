@@ -60,7 +60,7 @@ public class SchemaParseTest {
         // ... Also does this.
         // Not really parsing, but a good safety measure none-the-less.
         for (EventCommandArraySchemaElement st : TestDBUtils.getLoadedCSLs(app)) {
-            final IRIOGeneric rio = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
+            final IRIOGeneric rio = new IRIOGeneric(IDM3Context.Null.TESTS, StandardCharsets.UTF_8);
             SchemaPath.setDefaultValue(rio, st, null);
             IRIO rio2 = rio.addAElem(0);
             SchemaPath.setDefaultValue(rio2, st.baseElement, DMKey.of(0));

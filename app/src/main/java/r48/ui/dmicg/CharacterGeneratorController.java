@@ -156,7 +156,7 @@ public class CharacterGeneratorController extends App.Svc {
             for (int j = 0; j < h; j++)
                 for (int i = 0; i < w; i++)
                     bc.putPixel(i, j, tx[idx++]);
-            app.theClipboard = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8).setUser("Image", buffer);
+            app.theClipboard = new IRIOGeneric(IDM3Context.Null.CLIPBOARD, StandardCharsets.UTF_8).setUser("Image", buffer);
         }), () -> {
             // We have a PNG, ask for a file to stuff it into
             final byte[] b = createPNG();

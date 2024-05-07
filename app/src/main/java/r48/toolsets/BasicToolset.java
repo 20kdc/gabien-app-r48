@@ -271,7 +271,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     });
                 },
                 () -> {
-                    IRIOGeneric tmp = new IRIOGeneric(IDM3Context.Null.INSTANCE, app.encoding);
+                    IRIOGeneric tmp = new IRIOGeneric(IDM3Context.Null.WORKSPACE, app.encoding);
                     final IObjectBackend.ILoadedObject rio = new IObjectBackend.MockLoadedObject(tmp);
                     app.ui.launchPrompt(T.u.prSchemaID, (s) -> {
                         SchemaElement se = app.sdb.getSDBEntry(s);

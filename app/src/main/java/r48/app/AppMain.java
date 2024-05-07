@@ -45,7 +45,7 @@ public class AppMain {
         app.vmCtx.include(engine.initDir + "init", false);
 
         // initialize everything else that needs initializing, starting with ObjectDB
-        IObjectBackend backend = IObjectBackend.Factory.create(IDM3Context.Null.INSTANCE, app.gameRoot, charset, engine.odbBackend, engine.dataPath, engine.dataExt);
+        IObjectBackend backend = IObjectBackend.Factory.create(IDM3Context.Null.DELETE_ME, app.gameRoot, charset, engine.odbBackend, engine.dataPath, engine.dataExt);
         app.odb = new ObjectDB(app, backend, (s) -> {
             if (app.system != null)
                 app.system.saveHook(s);
@@ -80,7 +80,7 @@ public class AppMain {
     // Is this messy? Yes. Is it required? After someone lost some work to R48? YES IT DEFINITELY IS.
     // Later: I've reduced the amount of backups performed because it appears spikes were occurring all the time.
     public static void performSystemDump(App app, boolean emergency, String addendumData) {
-        IRIO n = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
+        IRIO n = new IRIOGeneric(IDM3Context.Null.ADHOC_IO, StandardCharsets.UTF_8);
         n.setObject("R48::Backup");
         n.addIVar("@emergency").setBool(emergency);
         if (!emergency) {

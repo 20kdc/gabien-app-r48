@@ -35,7 +35,7 @@ public class AdHocSaveLoad {
     public static void save(String fonts, RORIO prepare) {
         prepare();
         // workaround because R48ObjectBackend still hasn't undergone some sort of reform
-        R48ObjectBackend rob = new R48ObjectBackend(IDM3Context.Null.INSTANCE, GaBIEn.mutableDataFS, PREFIX, ".r48", StandardCharsets.UTF_8);
+        R48ObjectBackend rob = new R48ObjectBackend(IDM3Context.Null.ADHOC_IO, GaBIEn.mutableDataFS, PREFIX, ".r48", StandardCharsets.UTF_8);
         try {
             rob.saveObjectToFile(fonts, prepare);
         } catch (IOException e) {
@@ -44,13 +44,13 @@ public class AdHocSaveLoad {
     }
 
     public static @Nullable IRIOGeneric load(String fonts) {
-        R48ObjectBackend rob = new R48ObjectBackend(IDM3Context.Null.INSTANCE, GaBIEn.mutableDataFS, PREFIX, ".r48", StandardCharsets.UTF_8);
+        R48ObjectBackend rob = new R48ObjectBackend(IDM3Context.Null.ADHOC_IO, GaBIEn.mutableDataFS, PREFIX, ".r48", StandardCharsets.UTF_8);
         return rob.loadObjectFromFile(fonts);
     }
 
     public static void saveJSON(String fonts, RORIO prepare) {
         prepare();
-        JsonObjectBackend rob = new JsonObjectBackend(IDM3Context.Null.INSTANCE, GaBIEn.mutableDataFS, PREFIX, ".json");
+        JsonObjectBackend rob = new JsonObjectBackend(IDM3Context.Null.ADHOC_IO, GaBIEn.mutableDataFS, PREFIX, ".json");
         try {
             rob.saveObjectToFile(fonts, prepare);
         } catch (IOException e) {

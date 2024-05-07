@@ -96,7 +96,7 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
             pokeHive();
         } else {
             // we don't trust this value at all, hold in an intermediary and bash it around a bit
-            IRIOGeneric ig = new IRIOGeneric(IDM3Context.Null.INSTANCE, app.encoding);
+            IRIOGeneric ig = new IRIOGeneric(IDM3Context.Null.DISPOSABLE, app.encoding);
             ig.setDeepClone(eve);
             new SchemaPath(eventSchema, new MockLoadedObject(ig)).changeOccurred(false);
             // now we're sure it's safe...

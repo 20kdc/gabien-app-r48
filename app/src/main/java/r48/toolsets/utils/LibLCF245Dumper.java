@@ -40,7 +40,7 @@ public class LibLCF245Dumper extends App.Svc {
     public final HashMap<SchemaElement, Integer> seGraph = new HashMap<>();
     public LibLCF245Dumper(App app) {
         super(app);
-        root = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8).setHash();
+        root = new IRIOGeneric(IDM3Context.Null.ADHOC_IO, StandardCharsets.UTF_8).setHash();
         sdbNodes = root.addHashVal(DMKey.ofStr("sdbNodes")).setArray();
     }
 

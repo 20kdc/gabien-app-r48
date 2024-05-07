@@ -25,7 +25,7 @@ public class ConfigIO {
     // This is on purpose.
 
     public static void save(Config c) {
-        IRIOGeneric prepare = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
+        IRIOGeneric prepare = new IRIOGeneric(IDM3Context.Null.ADHOC_IO, StandardCharsets.UTF_8);
         prepare.setObject("R48::FontConfig");
         for (FontSizeField fsf : c.f.fields)
             prepare.addIVar("@" + fsf.configID).setFX(fsf.get());

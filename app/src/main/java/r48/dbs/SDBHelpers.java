@@ -196,7 +196,7 @@ class SDBHelpers extends App.Svc {
                         type++;
                     }
                 }
-                IRIOGeneric base = new IRIOGeneric(IDM3Context.Null.INSTANCE, app.encoding);
+                IRIOGeneric base = new IRIOGeneric(IDM3Context.Null.DELETE_ME, app.encoding);
                 base.setArray(2);
                 base.getAElem(0).setFX(type);
                 base.getAElem(1).setFX(t);
@@ -251,7 +251,7 @@ class SDBHelpers extends App.Svc {
                     t -= 10000;
                     type++;
                 }
-                IRIOGeneric base = new IRIOGeneric(IDM3Context.Null.INSTANCE, app.encoding);
+                IRIOGeneric base = new IRIOGeneric(IDM3Context.Null.DELETE_ME, app.encoding);
                 base.setArray(2);
                 base.getAElem(0).setFX(type);
                 base.getAElem(1).setFX(t);

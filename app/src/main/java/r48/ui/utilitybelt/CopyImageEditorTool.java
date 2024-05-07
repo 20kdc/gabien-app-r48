@@ -59,7 +59,7 @@ public class CopyImageEditorTool extends RectangleImageEditorTool {
                 throw new RuntimeException(e);
             }
         }
-        view.app.theClipboard = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8).setUser("Image", data);
+        view.app.theClipboard = new IRIOGeneric(IDM3Context.Null.CLIPBOARD, StandardCharsets.UTF_8).setUser("Image", data);
     }
 
     @Override

@@ -110,7 +110,7 @@ public class UIRMUniversalStringReplacer extends App.Prx {
         elms.add(utp);
 
         elms.add(new UITextButton(T.g.wordSave, app.f.dialogWindowTH, () -> {
-            IRIO rio = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
+            IRIO rio = new IRIOGeneric(IDM3Context.Null.ADHOC_IO, StandardCharsets.UTF_8);
             rio.setObject("R48::UniversalStringLocatorSettings");
             settingsFull.saveTo(rio.addIVar("@replacements_full"));
             settingsPartial.saveTo(rio.addIVar("@replacements_partial"));

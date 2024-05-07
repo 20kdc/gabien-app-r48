@@ -109,7 +109,7 @@ public class PagerArrayInterface implements IArrayInterface {
             final IRIO[] copyMe = positions[i].elements;
             if (copyMe != null) {
                 barLayoutList.add(new UITextButton(T.g.bCopy, app.f.schemaFieldTH, () -> {
-                    IRIOGeneric rio = new IRIOGeneric(IDM3Context.Null.INSTANCE, app.encoding);
+                    IRIOGeneric rio = new IRIOGeneric(IDM3Context.Null.CLIPBOARD, app.encoding);
                     rio.setArray(copyMe.length);
 
                     for (int j = 0; j < copyMe.length; j++)

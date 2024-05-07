@@ -15,9 +15,7 @@ import gabien.uslx.append.Size;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
-import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOGeneric;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
@@ -120,7 +118,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 confirmAt(x, y, 123, 123, layer, true);
                                 return;
                             }
-                            app.theClipboard = new IRIOGeneric(IDM3Context.Null.INSTANCE, app.encoding).setDeepClone(evI);
+                            app.setClipboardFrom(evI);
                         }, app.f.eventPickerEntryTH);
                         UIAppendButton delAppend = new UIAppendButton(T.m.bDel, button, null, app.f.eventPickerEntryTH);
                         delAppend.button.onClick = () -> {
