@@ -30,8 +30,8 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public final Charset charset;
     public final FSBackend fs;
 
-    public R48ObjectBackend(@NonNull IDM3Context context, FSBackend fs, String s, String dataExt, Charset cs) {
-        super(context);
+    public R48ObjectBackend(FSBackend fs, String s, String dataExt, Charset cs) {
+        super();
         this.fs = fs;
         prefix = s;
         postfix = dataExt;
@@ -39,7 +39,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     }
 
     @Override
-    public IRIOGeneric newObjectO(String n) {
+    public IRIOGeneric newObjectO(String n, @NonNull IDM3Context context) {
         return new IRIOGeneric(context, charset);
     }
 
@@ -143,7 +143,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     }
 
     @Override
-    public IRIOGeneric loadObjectFromFile(String filename) {
+    public IRIOGeneric loadObjectFromFile(String filename, @NonNull IDM3Context context) {
         return loadObjectFromFile(new IRIOGeneric(context, charset), filename);
     }
 
@@ -309,7 +309,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         }
     }
 
-    private IRIOGeneric loadValue(DataInputStream dis, LinkedList<IRIO> objs, LinkedList<String> syms) throws IOException {
+    private IRIOGeneric loadValue(DataInputStream dis, LinkedList<IRIO> objs, LinkedList<String> syms, @NonNull IDM3Context context) throws IOException {
         IRIOGeneric rio = new IRIOGeneric(context, charset);
         loadValue(rio, dis, objs, syms);
         return rio;
@@ -328,7 +328,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         if (b == 'o') {
             // 1889 runs entry before iVars, nocareivar.
             objs.add(rio);
-            rio.setObject(loadValue(dis, objs, syms).getSymbol());
+            rio.setObject(loadValue(dis, objs, syms, rio.context).getSymbol());
             if (handlingInstVars)
                 throw new IOException("Can't stack instance variables");
             handlingInstVars = true;
@@ -351,7 +351,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             objs.add(rio);
             long vars = load32(dis);
             for (long i = 0; i < vars; i++) {
-                IRIOGeneric k = loadValue(dis, objs, syms);
+                IRIOGeneric k = loadValue(dis, objs, syms, rio.context);
                 loadValue(rio.addHashVal(DMKey.of(k)), dis, objs, syms);
             }
             if (b == '}')
@@ -406,7 +406,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         } else if (b == 'u') {
             // 1832, performs ivars before entry.
             shouldWriteObjCacheLate = true;
-            String str = loadValue(dis, objs, syms).getSymbol();
+            String str = loadValue(dis, objs, syms, rio.context).getSymbol();
             byte[] userData = new byte[(int) load32(dis)];
             dis.readFully(userData);
             rio.setUser(str, userData);
@@ -429,7 +429,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         if (handlingInstVars) {
             long vars = load32(dis);
             for (long i = 0; i < vars; i++) {
-                IRIOGeneric k = loadValue(dis, objs, syms);
+                IRIOGeneric k = loadValue(dis, objs, syms, rio.context);
                 loadValue(rio.addIVar(k.getSymbol()), dis, objs, syms);
             }
         }

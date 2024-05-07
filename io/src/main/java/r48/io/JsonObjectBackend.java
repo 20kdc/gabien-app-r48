@@ -28,20 +28,19 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public String root, ext;
     public final FSBackend fs;
 
-    public JsonObjectBackend(@NonNull IDM3Context context, FSBackend fs, String rootPath, String dataExt) {
-        super(context);
+    public JsonObjectBackend(FSBackend fs, String rootPath, String dataExt) {
         this.fs = fs;
         root = rootPath;
         ext = dataExt;
     }
 
     @Override
-    public IRIO newObjectO(String n) {
+    public IRIO newObjectO(String n, @NonNull IDM3Context context) {
         return new IRIOGeneric(context, StandardCharsets.UTF_8);
     }
 
     @Override
-    public IRIO loadObjectFromFile(String filename) {
+    public IRIO loadObjectFromFile(String filename, @NonNull IDM3Context context) {
         try (InputStream inp = fs.intoPath(root + filename + ext).openRead()) {
             return loadJSONFromStream(context, inp);
         } catch (Exception e) {

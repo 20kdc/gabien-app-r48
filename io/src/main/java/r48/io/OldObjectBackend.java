@@ -20,27 +20,22 @@ import org.eclipse.jdt.annotation.NonNull;
  * Created on November 21, 2018.
  */
 public abstract class OldObjectBackend<R extends RORIO, W extends IRIO> implements IObjectBackend {
-    public final @NonNull IDM3Context context;
-    public OldObjectBackend(@NonNull IDM3Context context) {
-        this.context = context;
-    }
-
     @Override
-    public ILoadedObject loadObject(String filename) {
-        W rio = loadObjectFromFile(filename);
+    public ILoadedObject loadObject(String filename, @NonNull IDM3Context context) {
+        W rio = loadObjectFromFile(filename, context);
         if (rio == null)
             return null;
         return new OldObjectBackendLoadedObject(rio, filename);
     }
 
     @Override
-    public ILoadedObject newObject(String filename) {
-        return new OldObjectBackendLoadedObject(newObjectO(filename), filename);
+    public ILoadedObject newObject(String filename, @NonNull IDM3Context context) {
+        return new OldObjectBackendLoadedObject(newObjectO(filename, context), filename);
     }
 
-    public abstract W newObjectO(String filename);
+    public abstract W newObjectO(String filename, @NonNull IDM3Context context);
 
-    public abstract W loadObjectFromFile(String filename);
+    public abstract W loadObjectFromFile(String filename, @NonNull IDM3Context context);
 
     public abstract void saveObjectToFile(String filename, R obj) throws IOException;
 
@@ -74,8 +69,10 @@ public abstract class OldObjectBackend<R extends RORIO, W extends IRIO> implemen
         public boolean overwriteWith(ILoadedObject other) {
             if (other.getClass() == getClass()) {
                 if (((OldObjectBackendLoadedObject) other).intern.getClass() == intern.getClass()) {
-                    intern = ((OldObjectBackendLoadedObject) other).intern;
-                    return true;
+                    if (intern.context == ((OldObjectBackendLoadedObject) other).intern.context) {
+                        intern = ((OldObjectBackendLoadedObject) other).intern;
+                        return true;
+                    }
                 }
             }
             return false;

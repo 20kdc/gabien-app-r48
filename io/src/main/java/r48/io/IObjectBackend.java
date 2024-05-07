@@ -26,10 +26,10 @@ import gabien.uslx.vfs.FSBackend;
  */
 public interface IObjectBackend {
     // Returns null on failure.
-    ILoadedObject loadObject(String filename);
+    ILoadedObject loadObject(String filename, @NonNull IDM3Context context);
 
     // Also returns null on failure.
-    ILoadedObject newObject(String filename);
+    ILoadedObject newObject(String filename, @NonNull IDM3Context context);
 
     // Does this backend use userspace binders, and if so, what's the usersym prefix? Can be null.
     String userspaceBindersPrefix();
@@ -66,17 +66,17 @@ public interface IObjectBackend {
     }
 
     abstract class Factory {
-        public static IObjectBackend create(@NonNull IDM3Context context, FSBackend fs, Charset encoding, String odbBackend, String dataPath, String dataExt) {
+        public static IObjectBackend create(FSBackend fs, Charset encoding, String odbBackend, String dataPath, String dataExt) {
             if (odbBackend.equals("r48")) {
-                return new R48ObjectBackend(context, fs, dataPath, dataExt, encoding);
+                return new R48ObjectBackend(fs, dataPath, dataExt, encoding);
             } else if (odbBackend.equals("ika")) {
-                return new IkaObjectBackend(context, fs, dataPath, encoding);
+                return new IkaObjectBackend(fs, dataPath, encoding);
             } else if (odbBackend.equals("lcf2000")) {
-                return new R2kObjectBackend(context, fs, dataPath, encoding);
+                return new R2kObjectBackend(fs, dataPath, encoding);
             } else if (odbBackend.equals("json")) {
-                return new JsonObjectBackend(context, fs, dataPath, dataExt);
+                return new JsonObjectBackend(fs, dataPath, dataExt);
             } else if (odbBackend.equals("cs")) {
-                return new CSObjectBackend(context, fs, dataPath, encoding);
+                return new CSObjectBackend(fs, dataPath, encoding);
             } else {
                 throw new RuntimeException("Unknown ODB backend " + odbBackend);
             }

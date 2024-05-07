@@ -29,23 +29,24 @@ import org.eclipse.jdt.annotation.NonNull;
 public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
 
     private String root;
-    private final DM2Context dm2c;
+    private final Charset charset;
     public final FSBackend fs;
 
-    public IkaObjectBackend(@NonNull IDM3Context context, FSBackend fs, String rootPath, Charset encoding) {
-        super(context);
+    public IkaObjectBackend(FSBackend fs, String rootPath, Charset encoding) {
         this.fs = fs;
         root = rootPath;
-        dm2c = new DM2Context(context, encoding);
+        this.charset = encoding;
     }
 
     @Override
-    public IkaMap newObjectO(String n) {
+    public IkaMap newObjectO(String n, @NonNull IDM3Context context) {
+        DM2Context dm2c = new DM2Context(context, charset);
         return new IkaMap(dm2c, 160, 120);
     }
 
     @Override
-    public IkaMap loadObjectFromFile(String filename) {
+    public IkaMap loadObjectFromFile(String filename, @NonNull IDM3Context context) {
+        DM2Context dm2c = new DM2Context(context, charset);
         if (filename.equals("Map")) {
             byte[] eDataBytes = BMPConnection.prepareBMP(160, 120, 8, 256, false, false);
             byte[] dataBytes = eDataBytes;
@@ -104,14 +105,14 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
             }
             for (int i = 0; i < np.npcTable.length; i++)
                 if (np.npcTable[i].exists)
-                    evTbl.hashVal.put(i, convertEventToRuby(np.npcTable[i]));
+                    evTbl.hashVal.put(i, convertEventToRuby(np.npcTable[i], dm2c));
 
             return rio;
         }
         return null;
     }
 
-    private IkaEvent convertEventToRuby(NPChar.NPCCharacter io) {
+    private IkaEvent convertEventToRuby(NPChar.NPCCharacter io, DM2Context dm2c) {
         IkaEvent res = new IkaEvent(dm2c);
         int px = rounder(io.posX);
         int py = rounder(io.posY);

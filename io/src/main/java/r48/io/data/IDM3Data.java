@@ -23,16 +23,7 @@ public interface IDM3Data {
     /**
      * This saves the state of the IDM3Data.
      * Running the Runnable will set the IDM3Data to this exact state.
-     * The following guarantees MUST be followed:
-     * 1. Saving states of all IDM3Datas in a context at a given time will create a total snapshot of the data in that context.
-     * 2. In practice, snapshots will only contain those IDM3Data objects that reported modifications. This must work.
-     * 3. All involved IRIO objects that were valid at the time the state was taken must be valid and point to the semantically same objects upon reversion to that state.
-     *    (This specifically includes if an IRIO becomes invalid via object deletion, but then the deletion is reverted.)
-     * 4. IRIOs that were "theoretically accessible" via read-only operations when the state was taken must remain valid even if they didn't exist.
-     *    This is to cover an edge case with DM2 unpacking; the user may have dialogs open to objects that still semantically exist.
-     * 5. Performing a savestate, reverting to an older savestate, then going to the later savestate, must work properly. (Redo.)
-     * 6. The golden rule: Code outside the datamodel should see the data in the IRIOs 'magically' change to pre-modification,
-     *     as if the code had been recording modifications and undoing them via the IRIO interface.
+     * See datamodel.md for specific requirements because this gets LONG.
      */
     @NonNull Runnable dm3SaveState();
 }

@@ -59,3 +59,36 @@ _aka R48 v2.0_
 * `IDM3Context` needs to be properly used throughout R48. The goal here is that for any data-carrying `IRIO` in `ObjectDB`, _any(!)_ modification to that object's data should cause a notification to `IDM3Context`. It will then associate the current state of the `IRIO` to.
 	* Freezable data is called `IDM3Data`. _Only `IDM3Data`s will carry the freeze/restore logic. All `IDM3Data`s will be required, one way or another, to report modifications to their context._
 	* 'Wrapper' `IRIO`s must be silent about modifications. This is the `IRIO`/`IDM3Data` distinction. _They should still carry their context, it may prove useful later. If it's a problem then an additional class may be needed between IRIO and data-carrying objects._
+
+## Requirements for `IDM3Data` implementors
+
+The following guarantees MUST be followed:
+
+1. Saving states of all `IDM3Data`s in a context at a given time will create a total snapshot of the data in that context.
+2. In practice, snapshots will only contain those `IDM3Data` objects that reported modifications. This must work.
+3. All involved `IRIO` objects that were valid at the time the state was taken must be valid and point to the semantically same objects upon reversion to that state.
+(This specifically includes if an `IRIO` becomes invalid via object deletion, but then the deletion is reverted.)
+4. IRIOs that were "theoretically accessible" via read-only operations when the state was taken must remain valid and point to the semantically same objects even if they didn't exist.
+	* This is to cover an edge case with DM2 unpacking; the user may have dialogs open to objects that still semantically exist.
+5. Performing a savestate, reverting to an older savestate, then going to the later savestate, must work properly. (Redo.)
+6. For a collection of IDM3Data objects, it must not matter which order their states are restored in.
+7. As long as all modified IDM3Data objects are restored to appropriate states, it must not be necessary to go "through" intermediate states.\
+For a requirement of intermediate states to exist, that implies that the state is not a total snapshot of the IDM3Data.
+8. The golden rule: Code outside the datamodel and undo/redo layer should see the data in the IRIOs 'magically' change to pre-modification, as if the code had been recording modifications and undoing them via the IRIO interface.
+
+Practical considerations as a result of these rules:
+1. The keyset of the latest save-point's map (`IDM3Data` to `Runnable`) is the exact inverse of the clean objects of the context's data.
+2. Earlier save-points will likely be missing states from later save-points that need to also be reverted for consistency.
+	These need to be managed somehow.
+	What will need to be done here is entirely dependent on the undo/redo model.
+	A key element is that you don't have a save-point for "right now", only "what the state was before the current batch of changes".
+	To make a "redo savepoint", you take the current states (pre-undo) of everything you'll change by undoing.
+3. To stop R48 from freeing an object with undo data (_THIS WOULD BE VERY, VERY BAD!!!_), use one context per loaded object.
+	* Why is this useful or beneficial or wanted at all?\
+	Well:
+		* The context can store a reference to the `ILoadedObject`.
+			* The reason the context is not the `ILoadedObject` itself is because the management of undo/redo is application-specific code and can't go in the IO library.
+		* The `IRIO`s store references to the context.
+		* The undo states store references to the `IRIO`s.
+		* Therefore, as long as the undo states exist, objects that they refer to will remain loaded and thus guarantees are assured. As a nice bonus this means that loose `IRIO`s count as references which keep the object loaded.
+		* In addition, this means that should the undo states be 'cropped' due to memory use concerns, this will cause object unloading.

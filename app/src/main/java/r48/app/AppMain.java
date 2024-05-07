@@ -45,14 +45,11 @@ public class AppMain {
         app.vmCtx.include(engine.initDir + "init", false);
 
         // initialize everything else that needs initializing, starting with ObjectDB
-        IObjectBackend backend = IObjectBackend.Factory.create(IDM3Context.Null.DELETE_ME, app.gameRoot, charset, engine.odbBackend, engine.dataPath, engine.dataExt);
+        IObjectBackend backend = IObjectBackend.Factory.create(app.gameRoot, charset, engine.odbBackend, engine.dataPath, engine.dataExt);
         app.odb = new ObjectDB(app, backend, (s) -> {
             if (app.system != null)
                 app.system.saveHook(s);
         });
-
-        if (app.odb == null)
-            throw new RuntimeException("The Object Database wasn't initialized.");
 
         app.system = MapSystem.create(app, engine.mapSystem);
 
