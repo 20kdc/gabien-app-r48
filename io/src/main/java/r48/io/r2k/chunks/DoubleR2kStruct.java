@@ -10,6 +10,7 @@ package r48.io.r2k.chunks;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
+import r48.io.data.obj.DM2Context;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -18,17 +19,17 @@ import java.nio.charset.StandardCharsets;
 public class DoubleR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public double v;
 
-    public DoubleR2kStruct() {
-        super('f');
+    public DoubleR2kStruct(DM2Context dm2) {
+        super(dm2.dm3, 'f');
     }
 
-    public DoubleR2kStruct(double v) {
-        this();
+    public DoubleR2kStruct(DM2Context dm2, double v) {
+        this(dm2);
         this.v = v;
     }
 
-    public DoubleR2kStruct(int v) {
-        this((double) v);
+    public DoubleR2kStruct(DM2Context dm2, int v) {
+        this(dm2, (double) v);
     }
 
     @Override

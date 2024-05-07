@@ -15,6 +15,7 @@ import gabien.render.IImage;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyTable;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.SchemaElement;
@@ -196,7 +197,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
             @Override
             public IRIO targetToBoundNCache(IRIO target) {
                 short val = new RubyTable(target.getBuffer()).getTiletype(ct, i, 0);
-                return new IRIOGeneric(app.encoding).setFX(val);
+                return new IRIOGeneric(IDM3Context.Null.INSTANCE, app.encoding).setFX(val);
             }
 
             @Override

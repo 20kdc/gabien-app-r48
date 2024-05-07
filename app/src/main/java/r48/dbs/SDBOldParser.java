@@ -207,11 +207,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (text.equals("condHide") || text.equals("condHide!")) {
                     final PathSyntax path = getPathSyntax();
                     SchemaElement hide = get();
-                    return new HiddenSchemaElement(hide, new Function<IRIO, Boolean>() {
-                        @Override
-                        public Boolean apply(IRIO rubyIO) {
-                            return path.get(rubyIO).getType() == (text.endsWith("!") ? 'F' : 'T');
-                        }
+                    return new HiddenSchemaElement(hide, (rubyIO) -> {
+                        return path.getRO(rubyIO).getType() == (text.endsWith("!") ? 'F' : 'T');
                     });
                 }
                 if (text.equals("path") || text.equals("pathN")) {
@@ -563,7 +560,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                                         // Default val doesn't get carried over since it gets specced here
                                         buttonText = baseEnum.buttonText;
                                     }
-                                    IRIO p = outer.get(host);
+                                    IRIO p = outer.getRW(host);
                                     if (p != null)
                                         DictionaryUpdaterRunnable.coreLogic(app, viewOptions, inner, null, null, p, hash, interpret);
                                     convertViewToLookup();

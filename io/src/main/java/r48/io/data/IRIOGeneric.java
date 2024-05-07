@@ -11,6 +11,8 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * So, this has been through a long history.
  * It used to be called RubyIO and was the central hub for everything IO-related.
@@ -53,7 +55,8 @@ public class IRIOGeneric extends IRIO {
     private long fixnumVal;
     public final Charset charset;
 
-    public IRIOGeneric(Charset cs) {
+    public IRIOGeneric(@NonNull IDM3Context context, Charset cs) {
+        super(context);
         charset = cs;
     }
 
@@ -154,7 +157,7 @@ public class IRIOGeneric extends IRIO {
         setNull();
         type = '}';
         hashVal = new HashMap<>();
-        hashDefVal = new IRIOGeneric(charset);
+        hashDefVal = new IRIOGeneric(context, charset);
         return this;
     }
 
@@ -172,7 +175,7 @@ public class IRIOGeneric extends IRIO {
         if (length != 0)
             arrVal = new IRIO[length];
         for (int i = 0; i < length; i++)
-            arrVal[i] = new IRIOGeneric(charset);
+            arrVal[i] = new IRIOGeneric(context, charset);
         return this;
     }
 
@@ -248,7 +251,7 @@ public class IRIOGeneric extends IRIO {
     @Override
     public IRIO addIVar(String sym) {
         rmIVar(sym);
-        IRIOGeneric rio = new IRIOGeneric(charset);
+        IRIOGeneric rio = new IRIOGeneric(context, charset);
         if (iVarKeys == null) {
             iVarKeys = new String[] {sym};
             iVarVals = new IRIO[] {rio};
@@ -315,7 +318,7 @@ public class IRIOGeneric extends IRIO {
 
     @Override
     public IRIO addAElem(int i) {
-        IRIO rio = new IRIOGeneric(charset);
+        IRIO rio = new IRIOGeneric(context, charset);
         IRIO[] old = arrVal;
         IRIO[] newArr = new IRIO[old.length + 1];
         System.arraycopy(old, 0, newArr, 0, i);
@@ -342,7 +345,7 @@ public class IRIOGeneric extends IRIO {
     @Override
     public IRIO addHashVal(DMKey key) {
         removeHashVal(key);
-        IRIO rt = new IRIOGeneric(charset);
+        IRIO rt = new IRIOGeneric(context, charset);
         hashVal.put(key, rt);
         return rt;
     }

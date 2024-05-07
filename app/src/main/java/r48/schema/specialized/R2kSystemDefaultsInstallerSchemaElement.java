@@ -16,8 +16,6 @@ import r48.RubyTable;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixnum;
-import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.map.events.R2kSavefileEventAccess;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
@@ -86,11 +84,11 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
     }
 
     public static RORIO getSaveCount(IRIO ldbSys) {
-        IRIO saveCount = ldbSys.getIVar("@save_count_2k3en");
+        RORIO saveCount = ldbSys.getIVar("@save_count_2k3en");
         if (saveCount == null)
             saveCount = ldbSys.getIVar("@save_count_other");
         if (saveCount == null)
-            saveCount = new IRIOFixnum(0);
+            saveCount = DMKey.of(0);
         return saveCount;
     }
 
@@ -220,8 +218,8 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
         target.getIVar("@party").getIVar("@party").setDeepClone(ldbSys.getIVar("@party"));
         savSys.getIVar("@font_id").setDeepClone(ldbSys.getIVar("@font_id"));
 
-        initializeArrayWithClones(savSys.getIVar("@switches"), ldb.getIVar("@switches"), new IRIOGeneric(app.encoding).setBool(false));
-        initializeArrayWithClones(savSys.getIVar("@variables"), ldb.getIVar("@variables"), new IRIOGeneric(app.encoding).setFX(0));
+        initializeArrayWithClones(savSys.getIVar("@switches"), ldb.getIVar("@switches"), DMKey.FALSE);
+        initializeArrayWithClones(savSys.getIVar("@variables"), ldb.getIVar("@variables"), DMKey.of(0));
 
         for (String iv : savSys.getIVars())
             if (iv.endsWith("_se") || iv.endsWith("_music") || iv.endsWith("_fadein") || iv.endsWith("_fadeout"))
@@ -238,7 +236,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
             rt.setTiletype(i, 0, 0, (short) i);
     }
 
-    private void initializeArrayWithClones(IRIO instVarBySymbol, IRIO length, IRIO rubyIO) {
+    private void initializeArrayWithClones(IRIO instVarBySymbol, IRIO length, RORIO rubyIO) {
         int maxVal = 0;
         for (DMKey rio : length.getHashKeys())
             maxVal = Math.max((int) rio.getFX(), maxVal);

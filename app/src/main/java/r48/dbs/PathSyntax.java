@@ -53,18 +53,31 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
 
     @Override
     public IRIO apply(IRIO a) {
-        return get(a);
+        return getRW(a);
     }
 
-    public final RORIO get(RORIO ro) {
-        return get((IRIO) ro);
+    /**
+     * Translates the input IRIO to the target RORIO, or null if an issue was encountered.
+     */
+    public final RORIO getRO(RORIO v) {
+        try {
+            return (RORIO) getProgram.exc(MVMScope.ROOT, v);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     /**
      * Translates the input IRIO to the target IRIO, or null if an issue was encountered.
      */
-    public final IRIO get(IRIO v) {
-        return (IRIO) getProgram.exc(MVMScope.ROOT, v);
+    public final IRIO getRW(IRIO v) {
+        try {
+            return (IRIO) getProgram.exc(MVMScope.ROOT, v);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -73,7 +86,12 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
      * Returns null if an issue was encountered.
      */
     public final IRIO add(IRIO v) {
-        return (IRIO) addProgram.exc(MVMScope.ROOT, v);
+        try {
+            return (IRIO) addProgram.exc(MVMScope.ROOT, v);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -82,7 +100,12 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
      * Returns null if an issue was encountered.
      */
     public final IRIO del(IRIO v) {
-        return (IRIO) delProgram.exc(MVMScope.ROOT, v);
+        try {
+            return (IRIO) delProgram.exc(MVMScope.ROOT, v);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     // break to next token.

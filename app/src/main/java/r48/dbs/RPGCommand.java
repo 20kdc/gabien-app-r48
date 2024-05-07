@@ -10,6 +10,7 @@ package r48.dbs;
 import gabien.datum.DatumSrcLoc;
 import gabien.ui.UIElement;
 import r48.App;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -185,7 +186,7 @@ public class RPGCommand extends App.Svc {
                 ex.printStackTrace();
                 return;
             }
-            IRIOGeneric ig = new IRIOGeneric(StandardCharsets.UTF_8);
+            IRIOGeneric ig = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
             ig.addIVar("@character_name").setString(cName);
             ig.addIVar("@character_hue").setFX(hue);
             ig.addIVar("@direction").setFX(dir);

@@ -65,7 +65,7 @@ public class MapInfo extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@encounters"))
-            return encounters = new DM2SparseArrayA<Encounter>(() -> new Encounter(context));
+            return encounters = new DM2SparseArrayA<Encounter>(dm2Ctx, () -> new Encounter(dm2Ctx));
         return super.dm2AddIVar(sym);
     }
 }

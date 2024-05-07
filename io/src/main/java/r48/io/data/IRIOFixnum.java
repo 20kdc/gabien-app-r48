@@ -7,6 +7,8 @@
 
 package r48.io.data;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Created on November 24, 2018.
  */
@@ -14,8 +16,8 @@ public class IRIOFixnum extends IRIOFixed {
 
     public long val;
 
-    public IRIOFixnum(long t) {
-        super('i');
+    public IRIOFixnum(@NonNull IDM3Context context, long t) {
+        super(context, 'i');
         val = t;
     }
 

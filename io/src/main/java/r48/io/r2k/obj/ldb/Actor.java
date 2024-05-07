@@ -68,10 +68,10 @@ public class Actor extends ActorClassBase {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@equipment"))
-            return equipment = new DM2Array<ShortR2kStruct>() {
+            return equipment = new DM2Array<ShortR2kStruct>(dm2Ctx) {
                 @Override
                 public ShortR2kStruct newValue() {
-                    return new ShortR2kStruct(0);
+                    return new ShortR2kStruct(dm2Ctx, 0);
                 }
             };
         return super.dm2AddIVar(sym);

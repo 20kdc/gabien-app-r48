@@ -27,12 +27,12 @@ public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public final Charset encoding;
 
     public StringR2kStruct(DM2Context ctx) {
-        super('"');
+        super(ctx.dm3, '"');
         encoding = ctx.encoding;
     }
 
     public StringR2kStruct(DM2Context ctx, byte[] dat) {
-        super('"');
+        super(ctx.dm3, '"');
         encoding = ctx.encoding;
         data = dat;
     }

@@ -48,27 +48,21 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
         UILabel uil = null;
         if (alias != null)
             uil = new UILabel(alias.r() + " ", app.f.schemaFieldTH);
-        IRIO tgo = pStr.get(target);
+        IRIO tgo = pStr.getRW(target);
         UIElement e2;
         if (tgo == null) {
             if (!optional)
                 throw new RuntimeException("Error: Made it to PathSchemaElement.buildHoldingEditor when target wasn't there: " + pStr);
-            e2 = new UITextButton(T.s.bOptAdd, app.f.schemaFieldTH, new Runnable() {
-                @Override
-                public void run() {
-                    IRIO rio = pStr.add(target);
-                    createIVar(rio, path, false);
-                }
+            e2 = new UITextButton(T.s.bOptAdd, app.f.schemaFieldTH, () -> {
+                IRIO rio = pStr.add(target);
+                createIVar(rio, path, false);
             });
         } else {
             e2 = subElem.buildHoldingEditor(tgo, launcher, path.otherIndex(alias.r()));
             if (optional)
-                e2 = new UIAppendButton("-", e2, new Runnable() {
-                    @Override
-                    public void run() {
-                        if (pStr.del(target) != null)
-                            path.changeOccurred(false);
-                    }
+                e2 = new UIAppendButton("-", e2, () -> {
+                    if (pStr.del(target) != null)
+                        path.changeOccurred(false);
                 }, app.f.schemaFieldTH);
         }
         if (uil != null) {
@@ -94,7 +88,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
 
     @Override
     public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        IRIO r = pStr.get(target);
+        IRIO r = pStr.getRW(target);
         if (r != null) {
             subElem.modifyVal(r, path.otherIndex(alias.r()), setDefault);
         } else {
@@ -109,7 +103,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
 
     @Override
     public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
-        IRIO r = pStr.get(target);
+        IRIO r = pStr.getRW(target);
         if (r != null)
             subElem.visit(r, detailedPaths ? path.otherIndex(alias.r()) : path, v, detailedPaths);
     }

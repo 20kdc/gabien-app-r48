@@ -76,17 +76,17 @@ public class Enemy extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@state_ranks"))
-            return stateRanks = new DM2ArraySet<ByteR2kStruct>() {
+            return stateRanks = new DM2ArraySet<ByteR2kStruct>(dm2Ctx) {
                 @Override
                 public ByteR2kStruct newValue() {
-                    return new ByteR2kStruct(2);
+                    return new ByteR2kStruct(dm2Ctx, 2);
                 }
             };
         if (sym.equals("@attr_ranks"))
-            return attrRanks = new DM2ArraySet<ByteR2kStruct>() {
+            return attrRanks = new DM2ArraySet<ByteR2kStruct>(dm2Ctx) {
                 @Override
                 public ByteR2kStruct newValue() {
-                    return new ByteR2kStruct(2);
+                    return new ByteR2kStruct(dm2Ctx, 2);
                 }
             };
         return super.dm2AddIVar(sym);

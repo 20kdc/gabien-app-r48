@@ -29,6 +29,9 @@ import r48.app.EngineDef;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
 import r48.dbs.RPGCommand;
+import r48.io.data.IDM3Context;
+import r48.io.data.IRIO;
+import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.map.StuffRenderer;
 import r48.minivm.MVMEnvR48;
@@ -132,6 +135,13 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
         MVMR48AppLibraries.add(vmCtx, this);
         vmCtx.include("vm/global", false);
         vmCtx.include("vm/app", false);
+    }
+
+    /**
+     * Sets the clipboard to a deep clone of a value.
+     */
+    public void setClipboardFrom(IRIO frame) {
+        theClipboard = new IRIOGeneric(IDM3Context.Null.INSTANCE, encoding).setDeepClone(frame);
     }
 
     @Override

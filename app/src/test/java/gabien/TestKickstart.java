@@ -25,6 +25,7 @@ import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
 import r48.dbs.ObjectDB;
 import r48.io.IObjectBackend;
+import r48.io.data.IDM3Context;
 import r48.tests.grand.GrandExecutionError;
 import r48.wm.GrandWindowManagerUtils;
 
@@ -128,7 +129,7 @@ public class TestKickstart {
     }
 
     public void resetODB(App app) {
-        IObjectBackend backend = IObjectBackend.Factory.create(app.gameRoot, app.encoding, app.engine.odbBackend, app.engine.dataPath, app.engine.dataExt);
+        IObjectBackend backend = IObjectBackend.Factory.create(IDM3Context.Null.INSTANCE, app.gameRoot, app.encoding, app.engine.odbBackend, app.engine.dataPath, app.engine.dataExt);
         app.odb = new ObjectDB(app, backend, (s) -> {});
     }
 

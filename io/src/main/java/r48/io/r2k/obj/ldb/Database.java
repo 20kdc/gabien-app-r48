@@ -97,10 +97,10 @@ public class Database extends DM2R2kObject {
     }
 
     private DM2Array<ByteR2kStruct> newDM2A() {
-        return new DM2Array<ByteR2kStruct>() {
+        return new DM2Array<ByteR2kStruct>(dm2Ctx) {
             @Override
             public ByteR2kStruct newValue() {
-                return new ByteR2kStruct(0);
+                return new ByteR2kStruct(dm2Ctx, 0);
             }
         };
     }

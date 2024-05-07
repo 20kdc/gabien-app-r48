@@ -44,16 +44,16 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
     @Override
     public IRIO addIVar(String sym) {
         if (sym.equals("@code"))
-            return code = new IRIOFixnum(0);
+            return code = new IRIOFixnum(context, 0);
         if (sym.equals("@indent"))
-            return indent = new IRIOFixnum(0);
+            return indent = new IRIOFixnum(context, 0);
         if (sym.equals("@parameters"))
-            return parameters = new ParameterArray(context);
+            return parameters = new ParameterArray(dm2Ctx);
         if (sym.equals("@move_commands"))
-            return moveCommands = new IRIOFixedArray<MoveCommand>() {
+            return moveCommands = new IRIOFixedArray<MoveCommand>(context) {
                 @Override
                 public MoveCommand newValue() {
-                    return new MoveCommand(context);
+                    return new MoveCommand(dm2Ctx);
                 }
             };
         return null;
@@ -68,7 +68,7 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
             moveCommands = null;
             parameters.arrVal = new IRIO[R2kUtil.readLcfVLI(bais)];
             for (int i = 0; i < parameters.arrVal.length; i++)
-                parameters.arrVal[i] = new IRIOFixnum(R2kUtil.readLcfVLI(bais));
+                parameters.arrVal[i] = new IRIOFixnum(context, R2kUtil.readLcfVLI(bais));
         } else {
             // SPECIAL CASE!!!
             // This does a bunch of scary stuff which doesn't work for fixed-format commands,
@@ -76,11 +76,11 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
             parameters.arrVal = new IRIO[4];
             int[] remainingStream = new int[R2kUtil.readLcfVLI(bais) - 4];
             for (int i = 0; i < parameters.arrVal.length; i++)
-                parameters.arrVal[i] = new IRIOFixnum(R2kUtil.readLcfVLI(bais));
+                parameters.arrVal[i] = new IRIOFixnum(context, R2kUtil.readLcfVLI(bais));
             for (int i = 0; i < remainingStream.length; i++)
                 remainingStream[i] = R2kUtil.readLcfVLI(bais);
             addIVar("@move_commands");
-            moveCommands.arrVal = MoveCommand.fromEmbeddedData(context, remainingStream);
+            moveCommands.arrVal = MoveCommand.fromEmbeddedData(dm2Ctx, remainingStream);
         }
     }
 

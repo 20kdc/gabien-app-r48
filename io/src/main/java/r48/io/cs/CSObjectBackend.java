@@ -9,6 +9,7 @@ package r48.io.cs;
 
 import r48.RubyTable;
 import r48.io.OldObjectBackend;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 
@@ -17,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.uslx.vfs.FSBackend;
 
@@ -29,7 +32,8 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
     public final Charset encoding;
     public final FSBackend fs;
 
-    public CSObjectBackend(FSBackend fs, String prefix, Charset cs) {
+    public CSObjectBackend(@NonNull IDM3Context context, FSBackend fs, String prefix, Charset cs) {
+        super(context);
         this.fs = fs;
         pfx = prefix;
         encoding = cs;
@@ -37,7 +41,7 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
 
     @Override
     public IRIOGeneric newObjectO(String nt) {
-        return new IRIOGeneric(encoding);
+        return new IRIOGeneric(context, encoding);
     }
 
     @Override

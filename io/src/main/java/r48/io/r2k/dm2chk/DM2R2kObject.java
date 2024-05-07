@@ -26,7 +26,7 @@ import java.util.Map;
 
 /**
  * How this works:
- * It's in two states (decided by unpackedDataValid)
+ * It's in two states (decided by if packedChunkData is null yet):
  * false: Packed. All fields are INVALID, apart from packedChunkData.
  * true: Unpacked. Fields become valid, packedChunkData nulled.
  * DM2LcfBinding must be present on all fields that act as serializable chunks.
@@ -55,7 +55,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
     }
 
     private void setUnknownChunks() {
-        unknownChunks = new IRIOFixedHash<Integer, IRIOFixedUser>() {
+        unknownChunks = new IRIOFixedHash<Integer, IRIOFixedUser>(dm2Ctx.dm3) {
             @Override
             public Integer convertIRIOtoKey(RORIO i) {
                 return (int) i.getFX();
@@ -68,7 +68,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
 
             @Override
             public IRIOFixedUser newValue() {
-                return new IRIOFixedUser("Blob", new byte[0]);
+                return new IRIOFixedUser(context, "Blob", new byte[0]);
             }
         };
     }
@@ -97,7 +97,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
             if (pcd.size() > 0) {
                 setUnknownChunks();
                 for (Map.Entry<Integer, byte[]> me : pcd.entrySet())
-                    unknownChunks.hashVal.put(me.getKey(), new IRIOFixedUser("Blob", me.getValue()));
+                    unknownChunks.hashVal.put(me.getKey(), new IRIOFixedUser(dm2Ctx.dm3, "Blob", me.getValue()));
             }
         }
     }
@@ -275,7 +275,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
     // Must not handle translation into dm2AddIVar due to the 2 callers.
     // This instead happens in addIVar and addField.
     protected Object dm2AddField(final Field f) {
-        Object obj = context.createObjectFor(f);
+        Object obj = dm2Ctx.createObjectFor(f);
         try {
             f.set(this, obj);
         } catch (Exception ex) {

@@ -49,7 +49,7 @@ public class EventPageCondition extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@valid"))
-            return bitfield = new BitfieldR2kStruct(new String[] {
+            return bitfield = new BitfieldR2kStruct(dm2Ctx, new String[] {
                     "@switch_a",
                     "@switch_b",
                     "@var_>=_or_2k3op",

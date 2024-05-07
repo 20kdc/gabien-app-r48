@@ -65,8 +65,8 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final IRIO targV = extractTarget(target);
         final RubyTable targ = new RubyTable(targV.getBuffer());
-        final IRIO width = widthVar == null ? null : widthVar.get(target);
-        final IRIO height = heightVar == null ? null : heightVar.get(target);
+        final IRIO width = widthVar == null ? null : widthVar.getRW(target);
+        final IRIO height = heightVar == null ? null : heightVar.getRW(target);
 
         final EmbedDataSlot<Double> gridScrollSlot = launcher.embedSlot(target, gridScrollKey, 0.0d);
         final EmbedDataSlot<Integer> gridSelectionSlot = launcher.embedSlot(target, gridSelectionKey, 0);

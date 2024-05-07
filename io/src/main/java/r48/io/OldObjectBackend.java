@@ -7,16 +7,24 @@
 
 package r48.io;
 
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 
 import java.io.IOException;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * A simpler object backend interface that's somewhat less typesafe (but oh well)
  * Created on November 21, 2018.
  */
 public abstract class OldObjectBackend<R extends RORIO, W extends IRIO> implements IObjectBackend {
+    public final @NonNull IDM3Context context;
+    public OldObjectBackend(@NonNull IDM3Context context) {
+        this.context = context;
+    }
+
     @Override
     public ILoadedObject loadObject(String filename) {
         W rio = loadObjectFromFile(filename);

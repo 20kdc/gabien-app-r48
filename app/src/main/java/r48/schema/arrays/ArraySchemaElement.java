@@ -13,7 +13,6 @@ import r48.App;
 import r48.io.IntUtils;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixnum;
 import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
@@ -128,7 +127,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
             String dispData = (i + indexDisplayOffset) + " ";
             if (possibleEnumElement != null) {
                 SchemaElement se = AggregateSchemaElement.extractField(possibleEnumElement, null);
-                dispData = ((EnumSchemaElement) se).viewValue(new IRIOFixnum(i + indexDisplayOffset), EnumSchemaElement.Prefix.Prefix) + " ";
+                dispData = ((EnumSchemaElement) se).viewValue(DMKey.of(i + indexDisplayOffset), EnumSchemaElement.Prefix.Prefix) + " ";
             }
 
             IRIO[] copyHelpElems = new IRIO[nextAdvance];

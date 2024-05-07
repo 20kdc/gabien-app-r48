@@ -38,11 +38,11 @@ public class IkaMap extends IRIOFixedObject {
     @Override
     public IRIO addIVar(String sym) {
         if (sym.equals("@data"))
-            return data = new IRIOFixedUser("Table", new RubyTable(3, defaultWidth, defaultHeight, 1, new int[1]).innerBytes);
+            return data = new IRIOFixedUser(dm2Ctx.dm3, "Table", new RubyTable(3, defaultWidth, defaultHeight, 1, new int[1]).innerBytes);
         if (sym.equals("@palette"))
-            return palette = new IRIOFixedUser("Table", new RubyTable(3, 256, 1, 4, new int[4]).innerBytes);
+            return palette = new IRIOFixedUser(dm2Ctx.dm3, "Table", new RubyTable(3, 256, 1, 4, new int[4]).innerBytes);
         if (sym.equals("@events"))
-            return events = new IRIOFixedHash<Integer, IkaEvent>() {
+            return events = new IRIOFixedHash<Integer, IkaEvent>(dm2Ctx.dm3) {
                 @Override
                 public Integer convertIRIOtoKey(RORIO i) {
                     return (int) i.getFX();
@@ -55,7 +55,7 @@ public class IkaMap extends IRIOFixedObject {
 
                 @Override
                 public IkaEvent newValue() {
-                    return new IkaEvent(context);
+                    return new IkaEvent(IkaMap.this.dm2Ctx);
                 }
             };
         return null;

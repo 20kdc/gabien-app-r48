@@ -8,6 +8,7 @@
 package r48.io;
 
 import gabien.uslx.vfs.FSBackend;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -35,11 +36,12 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public final DM2Context dm2c;
     public final FSBackend fs;
 
-    public R2kObjectBackend(FSBackend fs, String rootPath, Charset cs) {
+    public R2kObjectBackend(IDM3Context context, FSBackend fs, String rootPath, Charset cs) {
+        super(context);
         this.fs = fs;
         root = rootPath;
         charset = cs;
-        dm2c = new DM2Context(cs);
+        dm2c = new DM2Context(context, cs);
     }
 
     @Override
@@ -53,7 +55,7 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             return new Database(dm2c);
         if (fn.endsWith(".lsd"))
             return new Save(dm2c);
-        return new IRIOGeneric(charset);
+        return new IRIOGeneric(context, charset);
     }
 
     @Override

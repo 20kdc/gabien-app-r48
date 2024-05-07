@@ -10,6 +10,7 @@ package r48.io;
 import gabien.uslx.io.HexByteEncoding;
 import gabien.uslx.vfs.FSBackend;
 import r48.io.data.DMKey;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -19,6 +20,8 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Created on 1/27/17.
  */
@@ -27,7 +30,8 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public final Charset charset;
     public final FSBackend fs;
 
-    public R48ObjectBackend(FSBackend fs, String s, String dataExt, Charset cs) {
+    public R48ObjectBackend(@NonNull IDM3Context context, FSBackend fs, String s, String dataExt, Charset cs) {
+        super(context);
         this.fs = fs;
         prefix = s;
         postfix = dataExt;
@@ -36,7 +40,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
 
     @Override
     public IRIOGeneric newObjectO(String n) {
-        return new IRIOGeneric(charset);
+        return new IRIOGeneric(context, charset);
     }
 
     public static long load32(DataInputStream dis) throws IOException {
@@ -140,7 +144,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
 
     @Override
     public IRIOGeneric loadObjectFromFile(String filename) {
-        return loadObjectFromFile(new IRIOGeneric(charset), filename);
+        return loadObjectFromFile(new IRIOGeneric(context, charset), filename);
     }
 
     public IRIOGeneric loadObjectFromFile(IRIOGeneric rio, String filename) {
@@ -306,7 +310,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     }
 
     private IRIOGeneric loadValue(DataInputStream dis, LinkedList<IRIO> objs, LinkedList<String> syms) throws IOException {
-        IRIOGeneric rio = new IRIOGeneric(charset);
+        IRIOGeneric rio = new IRIOGeneric(context, charset);
         loadValue(rio, dis, objs, syms);
         return rio;
     }

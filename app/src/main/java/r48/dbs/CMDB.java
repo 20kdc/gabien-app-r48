@@ -15,6 +15,7 @@ import r48.dbs.RPGCommand.TonepickerSpecialTag;
 import r48.dbs.RPGCommand.XPMoveCommandSetGraphicSpecialTag;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.SchemaPath;
@@ -343,7 +344,7 @@ public class CMDB extends App.Svc {
                     final IGroupBehavior igb = getGroupBehavior();
                     return new IGroupBehavior() {
                         private boolean checkCondition(IRIO command) {
-                            IRIO p = idx.get(command);
+                            RORIO p = idx.getRO(command);
                             if (p == null)
                                 return false;
                             return inv ^ IRIO.rubyEquals(p, v);

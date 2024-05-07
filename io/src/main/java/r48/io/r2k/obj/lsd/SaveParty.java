@@ -88,29 +88,29 @@ public class SaveParty extends DM2R2kObject {
         if (f.getName().equals("inventoryUsage"))
             return inventoryUsage = newByteArray();
         if (f.getName().equals("inventoryView"))
-            return inventoryView = new IRIOFixedArray<SaveItem>() {
+            return inventoryView = new IRIOFixedArray<SaveItem>(context) {
                 @Override
                 public SaveItem newValue() {
-                    return new SaveItem(context);
+                    return new SaveItem(dm2Ctx);
                 }
             };
         return super.dm2AddField(f);
     }
 
     private DM2Array<ByteR2kStruct> newByteArray() {
-        return new DM2Array<ByteR2kStruct>() {
+        return new DM2Array<ByteR2kStruct>(dm2Ctx) {
             @Override
             public ByteR2kStruct newValue() {
-                return new ByteR2kStruct(0);
+                return new ByteR2kStruct(dm2Ctx, 0);
             }
         };
     }
 
     private DM2Array<ShortR2kStruct> newShortArray() {
-        return new DM2Array<ShortR2kStruct>(0, true, true) {
+        return new DM2Array<ShortR2kStruct>(dm2Ctx, 0, true, true) {
             @Override
             public ShortR2kStruct newValue() {
-                return new ShortR2kStruct(0);
+                return new ShortR2kStruct(dm2Ctx, 0);
             }
         };
     }
@@ -121,7 +121,7 @@ public class SaveParty extends DM2R2kObject {
         inventoryView.arrVal = new IRIO[inventorySize.i];
         // This uses the loaded IRIOs as-is to simplify things.
         for (int i = 0; i < inventoryView.arrVal.length; i++) {
-            SaveItem si = new SaveItem(context);
+            SaveItem si = new SaveItem(dm2Ctx);
             si.id = (ShortR2kStruct) inventoryIds.arrVal[i];
             si.count = (ByteR2kStruct) inventoryCounts.arrVal[i];
             si.usage = (ByteR2kStruct) inventoryUsage.arrVal[i];
@@ -136,7 +136,7 @@ public class SaveParty extends DM2R2kObject {
 
     @Override
     protected void dm2PackIntoMap(HashMap<Integer, byte[]> pcd) throws IOException {
-        inventorySize = new IntegerR2kStruct(0);
+        inventorySize = new IntegerR2kStruct(dm2Ctx, 0);
         inventoryIds = newShortArray();
         inventoryCounts = newByteArray();
         inventoryUsage = newByteArray();
@@ -164,11 +164,11 @@ public class SaveParty extends DM2R2kObject {
         @Override
         public IRIO addIVar(String sym) {
             if (sym.equals("@id"))
-                return id = new ShortR2kStruct(0);
+                return id = new ShortR2kStruct(dm2Ctx, 0);
             if (sym.equals("@count"))
-                return count = new ByteR2kStruct(0);
+                return count = new ByteR2kStruct(dm2Ctx, 0);
             if (sym.equals("@usage"))
-                return usage = new ByteR2kStruct(0);
+                return usage = new ByteR2kStruct(dm2Ctx, 0);
             return null;
         }
     }

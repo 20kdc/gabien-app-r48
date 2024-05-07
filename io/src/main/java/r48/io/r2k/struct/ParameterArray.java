@@ -20,6 +20,7 @@ public class ParameterArray extends IRIOFixedArray<IRIO> {
     public final StringR2kStruct text;
 
     public ParameterArray(DM2Context dm2c) {
+        super(dm2c.dm3);
         text = new StringR2kStruct(dm2c);
     }
 
@@ -61,6 +62,6 @@ public class ParameterArray extends IRIOFixedArray<IRIO> {
 
     @Override
     public IRIO newValue() {
-        return new IRIOFixnum(0);
+        return new IRIOFixnum(context, 0);
     }
 }

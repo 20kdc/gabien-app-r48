@@ -214,7 +214,7 @@ public abstract class MapSystem extends App.Svc {
 
         public static MapViewState fromRT(StuffRenderer stuffRenderer, String underscoreMapObjectId, String[] ex, final IRIO its, final String str, final boolean readOnly, IEventAccess iea) {
             // This happens once in a blue moon, it's fine
-            final IRIO sz = PathSyntax.compile(stuffRenderer.app, str).get(its);
+            final IRIO sz = PathSyntax.compile(stuffRenderer.app, str).getRW(its);
             final RubyTable rt = new RubyTable(sz.getBuffer());
             return new MapViewState(stuffRenderer, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, new Function<int[], Short>() {
                 @Override

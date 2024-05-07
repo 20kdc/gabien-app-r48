@@ -110,10 +110,10 @@ public class Skill extends DM2R2kObject {
     }
 
     private DM2ArraySet<BooleanR2kStruct> boolSet() {
-        return new DM2ArraySet<BooleanR2kStruct>() {
+        return new DM2ArraySet<BooleanR2kStruct>(dm2Ctx) {
             @Override
             public BooleanR2kStruct newValue() {
-                return new BooleanR2kStruct(false);
+                return new BooleanR2kStruct(dm2Ctx, false);
             }
         };
     }

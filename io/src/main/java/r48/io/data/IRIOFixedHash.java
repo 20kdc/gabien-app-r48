@@ -9,6 +9,8 @@ package r48.io.data;
 
 import java.util.HashMap;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * An IRIO object that's a hash with fixed key & value classes.
  * Uses hashmaps properly thanks to not using IRIOs for storage.
@@ -17,8 +19,8 @@ import java.util.HashMap;
 public abstract class IRIOFixedHash<K, V extends IRIO> extends IRIOFixed {
     public HashMap<K, V> hashVal = new HashMap<K, V>();
 
-    public IRIOFixedHash() {
-        super('{');
+    public IRIOFixedHash(@NonNull IDM3Context context) {
+        super(context, '{');
     }
 
     public abstract K convertIRIOtoKey(RORIO i);

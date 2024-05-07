@@ -43,10 +43,10 @@ public class TonePickerSchemaElement extends SchemaElement.Leaf {
 
     @Override
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
-        int nr = (int) rP.get(target).getFX();
-        int ng = (int) gP.get(target).getFX();
-        int nb = (int) bP.get(target).getFX();
-        int ns = (int) sP.get(target).getFX();
+        int nr = (int) rP.getRO(target).getFX();
+        int ng = (int) gP.getRO(target).getFX();
+        int nb = (int) bP.getRO(target).getFX();
+        int ns = (int) sP.getRO(target).getFX();
         return createTotem(target, new ToneImageEffect(nr, ng, nb, ns, base));
     }
 
@@ -100,7 +100,7 @@ public class TonePickerSchemaElement extends SchemaElement.Leaf {
 
         @Override
         public UIElement createTotem(IRIO target, IImageEffect cfg) {
-            String imagePath = iPrefix + iPath.get(target).decString();
+            String imagePath = iPrefix + iPath.getRO(target).decString();
             IImage totem = app.stuffRendererIndependent.imageLoader.getImage(imagePath, false);
             IImage img = compositeTotem(app, totem, cfg);
             UIThumbnail panel = new UIThumbnail(img);

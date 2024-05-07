@@ -92,31 +92,31 @@ public class SaveActor extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@skills"))
-            return skills = new DM2Array<ShortR2kStruct>(0, true, true) {
+            return skills = new DM2Array<ShortR2kStruct>(dm2Ctx, 0, true, true) {
                 @Override
                 public ShortR2kStruct newValue() {
-                    return new ShortR2kStruct(0);
+                    return new ShortR2kStruct(dm2Ctx, 0);
                 }
             };
         if (sym.equals("@equipment"))
-            return equipment = new DM2Array<ShortR2kStruct>(0, true, true, 5) {
+            return equipment = new DM2Array<ShortR2kStruct>(dm2Ctx, 0, true, true, 5) {
                 @Override
                 public ShortR2kStruct newValue() {
-                    return new ShortR2kStruct(0);
+                    return new ShortR2kStruct(dm2Ctx, 0);
                 }
             };
         if (sym.equals("@battle_commands_2k3"))
-            return battleCommands = new DM2Array<Int32R2kStruct>(0, true, false, 7) {
+            return battleCommands = new DM2Array<Int32R2kStruct>(dm2Ctx, 0, true, false, 7) {
                 @Override
                 public Int32R2kStruct newValue() {
-                    return new Int32R2kStruct(-1);
+                    return new Int32R2kStruct(dm2Ctx, -1);
                 }
             };
         if (sym.equals("@states"))
-            return states = new DM2Array<ShortR2kStruct>(0, true, true) {
+            return states = new DM2Array<ShortR2kStruct>(dm2Ctx, 0, true, true) {
                 @Override
                 public ShortR2kStruct newValue() {
-                    return new ShortR2kStruct(0);
+                    return new ShortR2kStruct(dm2Ctx, 0);
                 }
             };
         return super.dm2AddIVar(sym);

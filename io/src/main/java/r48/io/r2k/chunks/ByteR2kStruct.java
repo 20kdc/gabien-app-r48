@@ -10,10 +10,13 @@ package r48.io.r2k.chunks;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
+import r48.io.data.obj.DM2Context;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Created on 05/06/17.
@@ -22,13 +25,13 @@ public class ByteR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public byte value;
     public boolean signed = false;
 
-    public ByteR2kStruct(int v) {
-        super('i');
+    public ByteR2kStruct(@NonNull DM2Context context, int v) {
+        super(context.dm3, 'i');
         value = (byte) v;
     }
 
-    public ByteR2kStruct() {
-        this(0);
+    public ByteR2kStruct(@NonNull DM2Context context) {
+        this(context, 0);
     }
 
     @Override

@@ -8,8 +8,8 @@
 package r48.io;
 
 import r48.io.data.DMKey;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixnum;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 
@@ -225,7 +225,7 @@ public class IMIUtils {
                 while (mappingsTarget[i] != currentSourceIndex) {
                     mod = true;
                     dos.writeBytes(id2 + "->");
-                    createIMIDump(dos, new IRIOFixnum(i), id2);
+                    createIMIDump(dos, DMKey.of(i), id2);
                     currentSourceIndex++;
                 }
                 byte[] patch = createIMIData(source.getAElem(currentSourceIndex), target.getAElem(i), incrementIndent(id2));
@@ -238,7 +238,7 @@ public class IMIUtils {
             } else {
                 mod = true;
                 dos.writeBytes(id2 + ">");
-                createIMIDump(dos, new IRIOFixnum(i), id2);
+                createIMIDump(dos, DMKey.of(i), id2);
                 dos.writeBytes(id2);
                 createIMIDump(dos, target.getAElem(i), incrementIndent(id2));
             }
@@ -247,7 +247,7 @@ public class IMIUtils {
         while (currentSourceIndex < srcAVL) {
             mod = true;
             dos.writeBytes(id2 + "->");
-            createIMIDump(dos, new IRIOFixnum(tgtAVL), id2);
+            createIMIDump(dos, DMKey.of(tgtAVL), id2);
             dos.writeBytes("\n");
             currentSourceIndex++;
         }
@@ -604,7 +604,7 @@ public class IMIUtils {
                     }
                     break;
                 case '>':
-                    tmp2 = new IRIOGeneric(StandardCharsets.UTF_8);
+                    tmp2 = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
                     runIMISegment(inp, tmp2);
                     if (obj.getType() == '[') {
                         if (tmp2.getType() != 'i')
@@ -628,7 +628,7 @@ public class IMIUtils {
                             }
                             break;
                         case '>':
-                            tmp2 = new IRIOGeneric(StandardCharsets.UTF_8);
+                            tmp2 = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
                             runIMISegment(inp, tmp2);
                             if (obj.getType() == '[') {
                                 if (tmp2.getType() != 'i')

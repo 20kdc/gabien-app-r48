@@ -163,10 +163,10 @@ public class Item extends DM2R2kObject {
     }
 
     private DM2ArraySet<BooleanR2kStruct> newFlagSet(final boolean b) {
-        return new DM2ArraySet<BooleanR2kStruct>() {
+        return new DM2ArraySet<BooleanR2kStruct>(dm2Ctx) {
             @Override
             public BooleanR2kStruct newValue() {
-                return new BooleanR2kStruct(b);
+                return new BooleanR2kStruct(dm2Ctx, b);
             }
         };
     }

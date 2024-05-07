@@ -69,7 +69,7 @@ public class SaveMapInfo extends DM2R2kObject {
         byte[] blank = new byte[0x90];
         for (int i = 0; i < blank.length; i++)
             blank[i] = (byte) i;
-        return new BlobR2kStruct("Table", bToTable(blank));
+        return new BlobR2kStruct(dm2Ctx, "Table", bToTable(blank));
     }
 
     @Override

@@ -40,7 +40,7 @@ public abstract class BaseRubyTableSchemaElement extends SchemaElement.Leaf {
     }
     
     public IRIO extractTarget(IRIO target) {
-        return iVar == null ? target : iVar.get(target);
+        return iVar == null ? target : iVar.getRW(target);
     }
 
     @Override
@@ -48,7 +48,7 @@ public abstract class BaseRubyTableSchemaElement extends SchemaElement.Leaf {
         boolean needChange = setDefault;
     
         if (iVar != null) {
-            IRIO st = iVar.get(target);
+            IRIO st = iVar.getRW(target);
             if (st == null) {
                 st = iVar.add(target);
                 needChange = true;

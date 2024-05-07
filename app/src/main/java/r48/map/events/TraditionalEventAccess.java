@@ -12,6 +12,7 @@ import r48.dbs.PathSyntax;
 import r48.io.IObjectBackend;
 import r48.io.IObjectBackend.MockLoadedObject;
 import r48.io.data.DMKey;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -95,7 +96,7 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
             pokeHive();
         } else {
             // we don't trust this value at all, hold in an intermediary and bash it around a bit
-            IRIOGeneric ig = new IRIOGeneric(app.encoding);
+            IRIOGeneric ig = new IRIOGeneric(IDM3Context.Null.INSTANCE, app.encoding);
             ig.setDeepClone(eve);
             new SchemaPath(eventSchema, new MockLoadedObject(ig)).changeOccurred(false);
             // now we're sure it's safe...
@@ -128,12 +129,12 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
 
     @Override
     public long getEventX(DMKey a) {
-        return propPathX.get(getEvent(a)).getFX();
+        return propPathX.getRO(getEvent(a)).getFX();
     }
 
     @Override
     public long getEventY(DMKey a) {
-        return propPathY.get(getEvent(a)).getFX();
+        return propPathY.getRO(getEvent(a)).getFX();
     }
 
     @Override
@@ -141,14 +142,14 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
         IRIO ev = getEvent(a);
         if (ev == null)
             return;
-        propPathX.get(getEvent(a)).setFX(x);
-        propPathY.get(getEvent(a)).setFX(y);
+        propPathX.getRW(getEvent(a)).setFX(x);
+        propPathY.getRW(getEvent(a)).setFX(y);
         pokeHive();
     }
 
     @Override
     public String getEventName(DMKey a) {
-        IRIO iv = propPathName.get(getEvent(a));
+        RORIO iv = propPathName.getRO(getEvent(a));
         if (iv == null)
             return null;
         return iv.decString();
@@ -167,7 +168,7 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     public IRIO getMapEvents() {
-        return eventsPath.get(mapRoot.getObject());
+        return eventsPath.getRW(mapRoot.getObject());
     }
 
     private SchemaPath makeMapRootSchemaPath() {

@@ -56,7 +56,7 @@ public class DMKey extends RORIO {
         } else if (t == '0') {
             return NULL;
         } else {
-            IRIOGeneric refVal = new IRIOGeneric(StandardCharsets.UTF_8);
+            IRIOGeneric refVal = new IRIOGeneric(IDM3Context.Null.INSTANCE, StandardCharsets.UTF_8);
             refVal.setDeepClone(src);
             return new DMKey(Subtype.Reference, 0, null, null, refVal);
         }

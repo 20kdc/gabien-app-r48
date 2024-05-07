@@ -17,6 +17,7 @@ import r48.App;
 import r48.UITest;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -55,16 +56,16 @@ public class HashSchemaElement extends SchemaElement {
         EmbedDataSlot<IRIO> keyWorkspaceSlot = launcher.embedSlot(target, keyWorkspaceKey, null);
         IRIO preWorkspace = keyWorkspaceSlot.value;
         if (preWorkspace == null) {
-            preWorkspace = new IRIOGeneric(app.encoding);
+            preWorkspace = new IRIOGeneric(IDM3Context.Null.INSTANCE, app.encoding);
             SchemaPath.setDefaultValue(preWorkspace, keyElem, null);
         } else {
-            preWorkspace = new IRIOGeneric(app.encoding).setDeepClone(preWorkspace);
+            preWorkspace = new IRIOGeneric(IDM3Context.Null.INSTANCE, app.encoding).setDeepClone(preWorkspace);
         }
         final IRIO keyWorkspace = preWorkspace;
 
         final SchemaPath rioPath = new SchemaPath(keyElem, new IObjectBackend.MockLoadedObject(keyWorkspace), () -> {
             // This may occur from a different page (say, an enum selector), so the more complicated form must be used.
-            keyWorkspaceSlot.value = new IRIOGeneric(app.encoding).setDeepClone(keyWorkspace);
+            keyWorkspaceSlot.value = new IRIOGeneric(IDM3Context.Null.INSTANCE, app.encoding).setDeepClone(keyWorkspace);
         });
 
         if (keyWorkspace.getType() == 'i') {

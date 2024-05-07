@@ -9,6 +9,7 @@ package r48.io;
 
 import gabien.uslx.vfs.FSBackend;
 import r48.RubyTable;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIOFixedHash;
 import r48.io.data.obj.DM2Context;
 import r48.io.ika.IkaEvent;
@@ -20,6 +21,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Created on 1/27/17.
  */
@@ -29,10 +32,11 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
     private final DM2Context dm2c;
     public final FSBackend fs;
 
-    public IkaObjectBackend(FSBackend fs, String rootPath, Charset encoding) {
+    public IkaObjectBackend(@NonNull IDM3Context context, FSBackend fs, String rootPath, Charset encoding) {
+        super(context);
         this.fs = fs;
         root = rootPath;
-        dm2c = new DM2Context(encoding);
+        dm2c = new DM2Context(context, encoding);
     }
 
     @Override

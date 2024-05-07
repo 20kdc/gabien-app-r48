@@ -10,7 +10,6 @@ package r48.schema.specialized.genpos;
 import gabien.ui.UIElement;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
-import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.schema.util.ISchemaHost;
 import r48.ui.UIAppendButton;
@@ -74,7 +73,7 @@ public class GenposAnimRootPanel extends App.Prx {
         UIElement toolbar = timeframe;
 
         toolbar = new UIAppendButton(T.g.bCopy, toolbar, () -> {
-            app.theClipboard = new IRIOGeneric(app.encoding).setDeepClone(target.getFrame());
+            app.setClipboardFrom(target.getFrame());
         }, app.f.rmaTimeframeTH);
         toolbar = new UIAppendButton(T.g.bPaste, toolbar, () -> {
             RORIO ro = app.theClipboard;
@@ -85,7 +84,7 @@ public class GenposAnimRootPanel extends App.Prx {
             }
         }, app.f.rmaTimeframeTH);
         toolbar = new UIAppendButton("+", toolbar, () -> {
-            target.insertFrame(new IRIOGeneric(app.encoding).setDeepClone(target.getFrame()));
+            target.insertFrame(target.getFrame());
             incomingModification();
         }, app.f.rmaTimeframeTH);
         toolbar = new UIAppendButton("-", toolbar, () -> {

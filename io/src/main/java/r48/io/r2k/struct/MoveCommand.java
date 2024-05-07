@@ -98,9 +98,9 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
             MoveCommand mc = new MoveCommand(ctx);
             mc.code.val = code;
 
-            IRIOFixnum a = new IRIOFixnum(0);
-            IRIOFixnum b = new IRIOFixnum(0);
-            IRIOFixnum c = new IRIOFixnum(0);
+            IRIOFixnum a = new IRIOFixnum(ctx.dm3, 0);
+            IRIOFixnum b = new IRIOFixnum(ctx.dm3, 0);
+            IRIOFixnum c = new IRIOFixnum(ctx.dm3, 0);
 
             mc.parameters.arrVal = new IRIO[] {
                     a,
@@ -164,9 +164,9 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
     public void importData(InputStream bais) throws IOException {
         code.val = R2kUtil.readLcfVLI(bais);
         addIVar("@parameters");
-        IRIOFixnum a = new IRIOFixnum(0);
-        IRIOFixnum b = new IRIOFixnum(0);
-        IRIOFixnum c = new IRIOFixnum(0);
+        IRIOFixnum a = new IRIOFixnum(context, 0);
+        IRIOFixnum b = new IRIOFixnum(context, 0);
+        IRIOFixnum c = new IRIOFixnum(context, 0);
 
         parameters.arrVal = new IRIO[] {
                 a,
@@ -206,9 +206,9 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
     @Override
     public IRIO addIVar(String sym) {
         if (sym.equals("@code"))
-            return code = new IRIOFixnum(0);
+            return code = new IRIOFixnum(context, 0);
         if (sym.equals("@parameters"))
-            return parameters = new ParameterArray(context);
+            return parameters = new ParameterArray(dm2Ctx);
         return null;
     }
 }
