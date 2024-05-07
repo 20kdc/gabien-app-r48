@@ -28,7 +28,7 @@ public interface IGenposAnim {
     void modifiedFrames();
 
     // NOTE: You need to setFrameIdx(getFrameIdx()); after these. modifiedFrames() is implicitly called.
-    void insertFrame(IRIO rio);
+    void insertFrame(RORIO rio);
 
     void deleteFrame();
 

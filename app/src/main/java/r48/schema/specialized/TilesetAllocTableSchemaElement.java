@@ -54,7 +54,7 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
             if (t > allocSource.mapping.length)
                 return osr; // :(
 
-        final IRIO targV = iVar == null ? target : iVar.get(target);
+        final IRIO targV = iVar == null ? target : iVar.getRW(target);
         final RubyTable targ = new RubyTable(targV.getBuffer());
         int sprScale = app.f.getSpriteScale();
         int ts = osr.tileRenderer.tileSize * sprScale;

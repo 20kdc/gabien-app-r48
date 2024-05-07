@@ -9,6 +9,8 @@ package r48.io.data;
 
 import java.nio.charset.Charset;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * An IRIO with a fixed type.
  * The IRIO cannot be changed from this type.
@@ -19,7 +21,8 @@ import java.nio.charset.Charset;
 public abstract class IRIOFixed extends IRIO {
     protected int type;
 
-    public IRIOFixed(int t) {
+    public IRIOFixed(@NonNull IDM3Context context, int t) {
+        super(context);
         type = t;
     }
 

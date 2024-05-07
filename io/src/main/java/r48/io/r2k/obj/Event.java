@@ -38,10 +38,10 @@ public class Event extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@pages"))
-            return pages = new DM2SparseArrayA<EventPage>(new Supplier<EventPage>() {
+            return pages = new DM2SparseArrayA<EventPage>(dm2Ctx, new Supplier<EventPage>() {
                 @Override
                 public EventPage get() {
-                    return new EventPage(context);
+                    return new EventPage(dm2Ctx);
                 }
             });
         return super.dm2AddIVar(sym);

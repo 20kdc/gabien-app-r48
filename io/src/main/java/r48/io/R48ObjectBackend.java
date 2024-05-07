@@ -10,6 +10,7 @@ package r48.io;
 import gabien.uslx.io.HexByteEncoding;
 import gabien.uslx.vfs.FSBackend;
 import r48.io.data.DMKey;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -18,6 +19,8 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.LinkedList;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Created on 1/27/17.
@@ -28,6 +31,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public final FSBackend fs;
 
     public R48ObjectBackend(FSBackend fs, String s, String dataExt, Charset cs) {
+        super();
         this.fs = fs;
         prefix = s;
         postfix = dataExt;
@@ -35,8 +39,8 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     }
 
     @Override
-    public IRIOGeneric newObjectO(String n) {
-        return new IRIOGeneric(charset);
+    public IRIOGeneric newObjectO(String n, @NonNull IDM3Context context) {
+        return new IRIOGeneric(context, charset);
     }
 
     public static long load32(DataInputStream dis) throws IOException {
@@ -139,8 +143,8 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     }
 
     @Override
-    public IRIOGeneric loadObjectFromFile(String filename) {
-        return loadObjectFromFile(new IRIOGeneric(charset), filename);
+    public IRIOGeneric loadObjectFromFile(String filename, @NonNull IDM3Context context) {
+        return loadObjectFromFile(new IRIOGeneric(context, charset), filename);
     }
 
     public IRIOGeneric loadObjectFromFile(IRIOGeneric rio, String filename) {
@@ -305,8 +309,8 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         }
     }
 
-    private IRIOGeneric loadValue(DataInputStream dis, LinkedList<IRIO> objs, LinkedList<String> syms) throws IOException {
-        IRIOGeneric rio = new IRIOGeneric(charset);
+    private IRIOGeneric loadValue(DataInputStream dis, LinkedList<IRIO> objs, LinkedList<String> syms, @NonNull IDM3Context context) throws IOException {
+        IRIOGeneric rio = new IRIOGeneric(context, charset);
         loadValue(rio, dis, objs, syms);
         return rio;
     }
@@ -324,7 +328,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         if (b == 'o') {
             // 1889 runs entry before iVars, nocareivar.
             objs.add(rio);
-            rio.setObject(loadValue(dis, objs, syms).getSymbol());
+            rio.setObject(loadValue(dis, objs, syms, rio.context).getSymbol());
             if (handlingInstVars)
                 throw new IOException("Can't stack instance variables");
             handlingInstVars = true;
@@ -347,7 +351,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             objs.add(rio);
             long vars = load32(dis);
             for (long i = 0; i < vars; i++) {
-                IRIOGeneric k = loadValue(dis, objs, syms);
+                IRIOGeneric k = loadValue(dis, objs, syms, rio.context);
                 loadValue(rio.addHashVal(DMKey.of(k)), dis, objs, syms);
             }
             if (b == '}')
@@ -402,7 +406,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         } else if (b == 'u') {
             // 1832, performs ivars before entry.
             shouldWriteObjCacheLate = true;
-            String str = loadValue(dis, objs, syms).getSymbol();
+            String str = loadValue(dis, objs, syms, rio.context).getSymbol();
             byte[] userData = new byte[(int) load32(dis)];
             dis.readFully(userData);
             rio.setUser(str, userData);
@@ -425,7 +429,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         if (handlingInstVars) {
             long vars = load32(dis);
             for (long i = 0; i < vars; i++) {
-                IRIOGeneric k = loadValue(dis, objs, syms);
+                IRIOGeneric k = loadValue(dis, objs, syms, rio.context);
                 loadValue(rio.addIVar(k.getSymbol()), dis, objs, syms);
             }
         }

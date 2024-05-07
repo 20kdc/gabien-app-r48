@@ -8,10 +8,13 @@
 package r48.io;
 
 import r48.io.cs.CSObjectBackend;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.uslx.vfs.FSBackend;
 
@@ -23,10 +26,10 @@ import gabien.uslx.vfs.FSBackend;
  */
 public interface IObjectBackend {
     // Returns null on failure.
-    ILoadedObject loadObject(String filename);
+    ILoadedObject loadObject(String filename, @NonNull IDM3Context context);
 
     // Also returns null on failure.
-    ILoadedObject newObject(String filename);
+    ILoadedObject newObject(String filename, @NonNull IDM3Context context);
 
     // Does this backend use userspace binders, and if so, what's the usersym prefix? Can be null.
     String userspaceBindersPrefix();

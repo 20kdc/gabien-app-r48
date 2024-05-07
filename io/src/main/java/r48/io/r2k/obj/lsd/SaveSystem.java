@@ -148,17 +148,17 @@ public class SaveSystem extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@switches"))
-            return switches = new DM2Array<BooleanR2kStruct>() {
+            return switches = new DM2Array<BooleanR2kStruct>(dm2Ctx) {
                 @Override
                 public BooleanR2kStruct newValue() {
-                    return new BooleanR2kStruct(false);
+                    return new BooleanR2kStruct(dm2Ctx, false);
                 }
             };
         if (sym.equals("@variables"))
-            return variables = new DM2Array<Int32R2kStruct>() {
+            return variables = new DM2Array<Int32R2kStruct>(dm2Ctx) {
                 @Override
                 public Int32R2kStruct newValue() {
-                    return new Int32R2kStruct(0);
+                    return new Int32R2kStruct(dm2Ctx, 0);
                 }
             };
         if (sym.equals("@transition_fadeout"))
@@ -177,7 +177,7 @@ public class SaveSystem extends DM2R2kObject {
     }
 
     private ByteR2kStruct newSByte() {
-        return new ByteR2kStruct(1).signed();
+        return new ByteR2kStruct(dm2Ctx, 1).signed();
     }
 
     // 3D is an unknown integer. I'd play with it, but there's never the time!

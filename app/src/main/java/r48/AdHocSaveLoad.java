@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabienapp.Application;
 import r48.io.JsonObjectBackend;
 import r48.io.R48ObjectBackend;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 
@@ -44,7 +45,7 @@ public class AdHocSaveLoad {
 
     public static @Nullable IRIOGeneric load(String fonts) {
         R48ObjectBackend rob = new R48ObjectBackend(GaBIEn.mutableDataFS, PREFIX, ".r48", StandardCharsets.UTF_8);
-        return rob.loadObjectFromFile(fonts);
+        return rob.loadObjectFromFile(fonts, IDM3Context.Null.ADHOC_IO);
     }
 
     public static void saveJSON(String fonts, RORIO prepare) {

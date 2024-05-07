@@ -69,6 +69,8 @@ public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRend
 
     @Override
     public void drawEventGraphic(RORIO target, int ox, int oy, IGrDriver igd, int sprScale, @Nullable RORIO originalEvent) {
+        RORIO opav = target.getIVar("@opacity");
+        int opa = opav != null ? (int) opav.getFX() : 255;
         RORIO patv = target.getIVar("@pattern");
         RORIO dirv = target.getIVar("@direction");
         int pat = patv != null ? (int) patv.getFX() : 0;
@@ -139,7 +141,12 @@ public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRend
                 blendMode = IGrDriver.BLEND_ADD;
             if (blendType == 2)
                 blendMode = IGrDriver.BLEND_SUB;
-            igd.blitScaledImage(tx * sprW, ty * sprH, sprW, sprH, ox - ((sprW * sprScale) / 2), oy - (sprH * sprScale), sprW * sprScale, sprH * sprScale, i, blendMode, 0);
+            if (opa == 255) {
+                igd.blitScaledImage(tx * sprW, ty * sprH, sprW, sprH, ox - ((sprW * sprScale) / 2), oy - (sprH * sprScale), sprW * sprScale, sprH * sprScale, i, blendMode, 0);
+            } else {
+                float a = opa / 255.0f;
+                igd.drawScaledColoured(tx * sprW, ty * sprH, sprW, sprH, ox - ((sprW * sprScale) / 2), oy - (sprH * sprScale), sprW * sprScale, sprH * sprScale, i, blendMode, 0, a, a, a, a);
+            }
         }
     }
 }

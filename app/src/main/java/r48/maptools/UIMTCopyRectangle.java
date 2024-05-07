@@ -14,6 +14,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.GaBIEn;
 import gabien.ui.elements.UILabel;
 import r48.RubyTable;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIOGeneric;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
@@ -82,7 +83,7 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
                         for (int j = minY; j <= maxY; j++)
                             if (!map.mapTable.outOfBounds(i, j))
                                 rt.setTiletype(i - minX, j - minY, l, map.mapTable.getTiletype(i, j, l));
-                IRIOGeneric rb = new IRIOGeneric(StandardCharsets.UTF_8);
+                IRIOGeneric rb = new IRIOGeneric(IDM3Context.Null.CLIPBOARD, StandardCharsets.UTF_8);
                 rb.setUser("Table", rt.innerBytes);
                 map.app.theClipboard = rb;
                 mapToolContext.accept(null);

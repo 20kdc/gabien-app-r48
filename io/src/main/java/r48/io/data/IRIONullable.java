@@ -9,6 +9,8 @@ package r48.io.data;
 
 import java.nio.charset.Charset;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * An annoying but necessary wrapper for cases where an IRIO may be null.
  * Created on December 06, 2018.
@@ -17,7 +19,8 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     public final V target;
     public boolean nulled;
 
-    public IRIONullable(V other, boolean n) {
+    public IRIONullable(@NonNull V other, boolean n) {
+        super(other.context);
         target = other;
         nulled = n;
     }

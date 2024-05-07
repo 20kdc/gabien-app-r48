@@ -7,6 +7,8 @@
 
 package r48.io.data;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Created on November 24, 2018.
  */
@@ -14,8 +16,8 @@ public class IRIOFixedUser extends IRIOFixed {
     private final String objType;
     public byte[] userVal;
 
-    public IRIOFixedUser(String user, byte[] def) {
-        super('u');
+    public IRIOFixedUser(@NonNull IDM3Context context, String user, byte[] def) {
+        super(context, 'u');
         objType = user;
         userVal = def;
     }

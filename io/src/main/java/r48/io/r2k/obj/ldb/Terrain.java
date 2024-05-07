@@ -101,7 +101,7 @@ public class Terrain extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@special_flags_2k3"))
-            return specialFlags = new BitfieldR2kStruct(new String[] {
+            return specialFlags = new BitfieldR2kStruct(dm2Ctx, new String[] {
                     "@back_party",
                     "@back_enemies",
                     "@lat_party",

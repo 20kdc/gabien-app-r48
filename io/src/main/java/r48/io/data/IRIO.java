@@ -9,6 +9,8 @@ package r48.io.data;
 
 import java.nio.charset.Charset;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Ok, so here's the deal. Data Model 2 implementation attempt 1 *failed miserably*.
  * That doesn't mean Data Model 2 is completely unimplementable.
@@ -23,6 +25,14 @@ import java.nio.charset.Charset;
  * Created on November 19, 2018.
  */
 public abstract class IRIO extends RORIO {
+    /**
+     * DM3 Data context. This may one day handle undo/redo tracking.
+     */
+    public final @NonNull IDM3Context context;
+
+    public IRIO(@NonNull IDM3Context context) {
+        this.context = context;
+    }
 
     // Primitive Setters. These make copies of any buffers given, among other things.
     // They return self.

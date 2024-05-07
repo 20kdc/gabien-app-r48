@@ -12,6 +12,9 @@ import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.function.Supplier;
 
+import org.eclipse.jdt.annotation.NonNull;
+
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 
 /**
@@ -19,9 +22,11 @@ import r48.io.data.IRIO;
  * Created 5th April 2023 in response to needing to shuffle data around.
  */
 public class DM2Context {
+    public final @NonNull IDM3Context dm3;
     public final Charset encoding;
 
-    public DM2Context(Charset cs) {
+    public DM2Context(@NonNull IDM3Context dm3, Charset cs) {
+        this.dm3 = dm3;
         encoding = cs;
     }
 
@@ -32,7 +37,7 @@ public class DM2Context {
         try {
             final DM2CXSupplier fxd = f.getAnnotation(DM2CXSupplier.class);
             if (fxd != null) {
-                Object i = f.getType().getConstructor(Supplier.class).newInstance((Supplier<IRIO>) () -> {
+                Object i = f.getType().getConstructor(DM2Context.class, Supplier.class).newInstance(this, (Supplier<IRIO>) () -> {
                     try {
                         return (IRIO) createObjectOfClass(f, fxd.value());
                     } catch (Exception e) {
@@ -43,12 +48,12 @@ public class DM2Context {
             }
             DMCXInteger fxi = f.getAnnotation(DMCXInteger.class);
             if (fxi != null) {
-                Object i = f.getType().getConstructor(int.class).newInstance(fxi.value());
+                Object i = f.getType().getConstructor(DM2Context.class, int.class).newInstance(this, fxi.value());
                 return i;
             }
             DMCXBoolean fxb = f.getAnnotation(DMCXBoolean.class);
             if (fxb != null) {
-                Object i = f.getType().getConstructor(boolean.class).newInstance(fxb.value());
+                Object i = f.getType().getConstructor(DM2Context.class, boolean.class).newInstance(this, fxb.value());
                 return i;
             }
             if (f.isAnnotationPresent(DMCXObject.class)) {

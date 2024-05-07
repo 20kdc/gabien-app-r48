@@ -13,6 +13,7 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.io.JsonObjectBackend;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.minivm.fn.MVMFn;
@@ -50,7 +51,7 @@ public class JSONImportExportSchemaElement extends SchemaElement.Leaf {
             GaBIEn.startFileBrowser(importText.r(), false, "", (fn) -> {
                 if (fn != null) {
                     try (InputStream inp = GaBIEn.getInFile(fn)) {
-                        importFn.clDirect(target, JsonObjectBackend.loadJSONFromStream(inp));
+                        importFn.clDirect(target, JsonObjectBackend.loadJSONFromStream(IDM3Context.Null.ADHOC_IO, inp));
                         path.changeOccurred(false);
                     } catch (Exception ioe) {
                         app.ui.launchDialog(ioe);
@@ -63,7 +64,7 @@ public class JSONImportExportSchemaElement extends SchemaElement.Leaf {
             GaBIEn.startFileBrowser(exportText.r(), true, "", (fn) -> {
                 if (fn != null) {
                     try (OutputStream oup = GaBIEn.getOutFile(fn)) {
-                        IRIO tmp = new IRIOGeneric(StandardCharsets.UTF_8);
+                        IRIO tmp = new IRIOGeneric(IDM3Context.Null.ADHOC_IO, StandardCharsets.UTF_8);
                         exportFn.clDirect(target, tmp);
                         JsonObjectBackend.saveJSONToStream(oup, tmp);
                     } catch (Exception ioe) {

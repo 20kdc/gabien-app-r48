@@ -11,13 +11,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import r48.io.data.IRIO;
+import r48.io.data.obj.DM2Context;
 
 /**
  * Created on 02/06/17.
  */
 public class BooleanR2kStruct extends IntegerR2kStruct {
-    public BooleanR2kStruct(boolean i2) {
-        super(i2 ? 1 : 0);
+    public BooleanR2kStruct(DM2Context dm2, boolean i2) {
+        super(dm2, i2 ? 1 : 0);
         type = i2 ? 'T' : 'F';
     }
 

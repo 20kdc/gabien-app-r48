@@ -70,30 +70,30 @@ public class ActorClassBase extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@battle_parameters"))
-            return parameters = new BPB(context);
+            return parameters = new BPB(dm2Ctx);
         if (sym.equals("@learn_skills"))
-            return learnSkills = new DM2SparseArrayA<Learning>(() -> new Learning(context));
+            return learnSkills = new DM2SparseArrayA<Learning>(dm2Ctx, () -> new Learning(dm2Ctx));
         if (sym.equals("@state_ranks"))
             return stateRanks = byteSet();
         if (sym.equals("@attr_ranks"))
             return attrRanks = byteSet();
         if (sym.equals("@battle_commands_2k3"))
-            return battleCommands = new DM2Array<Int32R2kStruct>() {
+            return battleCommands = new DM2Array<Int32R2kStruct>(dm2Ctx) {
                 @Override
                 public Int32R2kStruct newValue() {
-                    return new Int32R2kStruct(0);
+                    return new Int32R2kStruct(dm2Ctx, 0);
                 }
             };
         if (sym.equals("@battler_anim_2k3"))
-            return battlerAnimation = new IntegerR2kStruct(battlerAnimationDefault);
+            return battlerAnimation = new IntegerR2kStruct(dm2Ctx, battlerAnimationDefault);
         return super.dm2AddIVar(sym);
     }
 
     private DM2ArraySet<ByteR2kStruct> byteSet() {
-        return new DM2ArraySet<ByteR2kStruct>() {
+        return new DM2ArraySet<ByteR2kStruct>(dm2Ctx) {
             @Override
             public ByteR2kStruct newValue() {
-                return new ByteR2kStruct(2);
+                return new ByteR2kStruct(dm2Ctx, 2);
             }
         };
     }

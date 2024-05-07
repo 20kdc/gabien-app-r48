@@ -11,6 +11,7 @@ import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedHash;
 import r48.io.data.RORIO;
+import r48.io.data.obj.DM2Context;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
 
@@ -26,7 +27,8 @@ import java.util.function.Supplier;
 public class DM2SparseArrayH<V extends IRIO> extends IRIOFixedHash<Integer, V> implements IR2kInterpretable {
     public final Supplier<V> constructor;
 
-    public DM2SparseArrayH(Supplier<V> cons) {
+    public DM2SparseArrayH(DM2Context dm2, Supplier<V> cons) {
+        super(dm2.dm3);
         constructor = cons;
     }
 

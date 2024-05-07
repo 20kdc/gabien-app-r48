@@ -15,6 +15,7 @@ import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.map.systems.MapSystem;
@@ -50,9 +51,6 @@ public class AppMain {
                 app.system.saveHook(s);
         });
 
-        if (app.odb == null)
-            throw new RuntimeException("The Object Database wasn't initialized.");
-
         app.system = MapSystem.create(app, engine.mapSystem);
 
         // Final internal consistency checks and reading in dictionaries from target
@@ -79,7 +77,7 @@ public class AppMain {
     // Is this messy? Yes. Is it required? After someone lost some work to R48? YES IT DEFINITELY IS.
     // Later: I've reduced the amount of backups performed because it appears spikes were occurring all the time.
     public static void performSystemDump(App app, boolean emergency, String addendumData) {
-        IRIO n = new IRIOGeneric(StandardCharsets.UTF_8);
+        IRIO n = new IRIOGeneric(IDM3Context.Null.ADHOC_IO, StandardCharsets.UTF_8);
         n.setObject("R48::Backup");
         n.addIVar("@emergency").setBool(emergency);
         if (!emergency) {

@@ -46,7 +46,7 @@ public class HWNDSchemaElement extends SchemaElement.Leaf {
             }
         };
         if (ivar != null) {
-            hsc.loadPage((int) ivar.get(target).getFX());
+            hsc.loadPage((int) ivar.getRO(target).getFX());
         } else {
             hsc.loadPage(0);
         }

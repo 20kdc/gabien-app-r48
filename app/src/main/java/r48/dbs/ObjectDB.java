@@ -9,6 +9,7 @@ package r48.dbs;
 
 import r48.App;
 import r48.io.IObjectBackend;
+import r48.io.data.IDM3Context;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -61,6 +62,10 @@ public class ObjectDB extends App.Svc {
         return id;
     }
 
+    private IDM3Context ensureDM3Context(@NonNull String id) {
+        return IDM3Context.Null.DELETE_ME;
+    }
+
     // NOTE: Preferably call the one-parameter version,
     //  since that tries to create a sensible default.
     public IObjectBackend.ILoadedObject getObject(String id, String backupSchema) {
@@ -70,7 +75,8 @@ public class ObjectDB extends App.Svc {
                 return r;
         }
         app.loadProgress.accept(T.u.odb_loadObj.r(id));
-        IObjectBackend.ILoadedObject rio = backend.loadObject(id);
+        IDM3Context context = ensureDM3Context(id);
+        IObjectBackend.ILoadedObject rio = backend.loadObject(id, context);
         if (rio == null) {
             if (backupSchema != null) {
                 if (!app.sdb.hasSDBEntry(backupSchema)) {
@@ -79,7 +85,7 @@ public class ObjectDB extends App.Svc {
                 }
                 SchemaElement ise = app.sdb.getSDBEntry(backupSchema);
                 if (ise != null) {
-                    rio = backend.newObject(id);
+                    rio = backend.newObject(id, context);
                     if (rio == null)
                         return null;
 
@@ -277,7 +283,7 @@ public class ObjectDB extends App.Svc {
         for (IObjectBackend.ILoadedObject lo : modifiedObjects) {
             String id = getIdByObject(lo);
             if (id != null) {
-                IObjectBackend.ILoadedObject newVal = backend.loadObject(id);
+                IObjectBackend.ILoadedObject newVal = backend.loadObject(id, ensureDM3Context(id));
                 if (newVal != null) {
                     // Try doing things just by overwriting the internals, otherwise deep-clone
                     if (!lo.overwriteWith(newVal))

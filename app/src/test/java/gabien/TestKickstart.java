@@ -77,7 +77,7 @@ public class TestKickstart {
         InterlaunchGlobals ilg = new InterlaunchGlobals(a, c, (vm) -> {}, (str) -> {}, (str) -> {
             // this is to catch any SDB tr conflicts
             throw new RuntimeException("TR issue during tests: " + str);
-        });
+        }, true);
         EngineDef engine = EnginesList.getEngines(null).get(engineDefId);
         if (engine == null)
             throw new RuntimeException("missing engine def: " + engineDefId);

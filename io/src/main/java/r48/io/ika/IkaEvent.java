@@ -42,21 +42,21 @@ public class IkaEvent extends IRIOFixedObject {
     @Override
     public IRIO addIVar(String sym) {
         if (sym.equals("@x"))
-            return x = new IRIOFixnum(0);
+            return x = new IRIOFixnum(dm2Ctx.dm3, 0);
         if (sym.equals("@y"))
-            return y = new IRIOFixnum(0);
+            return y = new IRIOFixnum(dm2Ctx.dm3, 0);
         if (sym.equals("@tOX"))
-            return tox = new IRIOFixnum(0);
+            return tox = new IRIOFixnum(dm2Ctx.dm3, 0);
         if (sym.equals("@tOY"))
-            return toy = new IRIOFixnum(0);
+            return toy = new IRIOFixnum(dm2Ctx.dm3, 0);
         if (sym.equals("@type"))
-            return type = new IRIOFixnum(0);
+            return type = new IRIOFixnum(dm2Ctx.dm3, 0);
         if (sym.equals("@status"))
-            return status = new IRIOFixnum(0);
+            return status = new IRIOFixnum(dm2Ctx.dm3, 0);
         if (sym.equals("@scriptId"))
-            return scriptId = new IRIOFixnum(0);
+            return scriptId = new IRIOFixnum(dm2Ctx.dm3, 0);
         if (sym.equals("@collisionType"))
-            return collisionType = new IRIOFixnum(0);
+            return collisionType = new IRIOFixnum(dm2Ctx.dm3, 0);
         return null;
     }
 }

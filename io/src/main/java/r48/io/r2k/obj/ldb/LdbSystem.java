@@ -153,17 +153,17 @@ public class LdbSystem extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@party"))
-            return party = new DM2Array<ShortR2kStruct>(0, true, true, 1) {
+            return party = new DM2Array<ShortR2kStruct>(dm2Ctx, 0, true, true, 1) {
                 @Override
                 public ShortR2kStruct newValue() {
-                    return new ShortR2kStruct(1);
+                    return new ShortR2kStruct(dm2Ctx, 1);
                 }
             };
         if (sym.equals("@menu_commands_2k3"))
-            return menuCommands = new DM2Array<ShortR2kStruct>(0, true, true) {
+            return menuCommands = new DM2Array<ShortR2kStruct>(dm2Ctx, 0, true, true) {
                 @Override
                 public ShortR2kStruct newValue() {
-                    return new ShortR2kStruct(0);
+                    return new ShortR2kStruct(dm2Ctx, 0);
                 }
             };
         return super.dm2AddIVar(sym);

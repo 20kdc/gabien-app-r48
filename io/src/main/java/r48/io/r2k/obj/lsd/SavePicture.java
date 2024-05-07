@@ -107,7 +107,7 @@ public class SavePicture extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@flags_112"))
-            return flags112 = new BitfieldR2kStruct(new String[] {
+            return flags112 = new BitfieldR2kStruct(dm2Ctx, new String[] {
                     "@erase_on_mapchange",
                     "@erase_on_battleend",
                     "@unused_1",

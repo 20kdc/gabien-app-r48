@@ -17,6 +17,7 @@ import r48.dbs.ObjectInfo;
 import r48.dbs.IDatabase;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
@@ -104,7 +105,7 @@ public class LocalTestExecutiveTest {
 
             // Create an internal copy, autocorrect it, save it, and then get rid of it.
             {
-                IObjectBackend.ILoadedObject objectInternalCopy = app.odb.backend.newObject(s);
+                IObjectBackend.ILoadedObject objectInternalCopy = app.odb.backend.newObject(s, IDM3Context.Null.TESTS);
 
                 objectInternalCopy.getObject().setDeepClone(objectUnderTest.getObject());
 
@@ -126,7 +127,7 @@ public class LocalTestExecutiveTest {
 
             // Load the autocorrected + saved object, and see if anything went bang.
             {
-                IObjectBackend.ILoadedObject objectSaveLoaded = app.odb.backend.loadObject(s);
+                IObjectBackend.ILoadedObject objectSaveLoaded = app.odb.backend.loadObject(s, IDM3Context.Null.TESTS);
                 byte[] bytes = IMIUtils.createIMIData(objectUnderTest.getObject(), objectSaveLoaded.getObject(), "");
                 if (bytes != null) {
                     System.out.write(bytes);

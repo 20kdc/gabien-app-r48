@@ -9,6 +9,7 @@ package r48.io.cs;
 
 import r48.RubyTable;
 import r48.io.OldObjectBackend;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 
@@ -17,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.uslx.vfs.FSBackend;
 
@@ -36,12 +39,12 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
     }
 
     @Override
-    public IRIOGeneric newObjectO(String nt) {
-        return new IRIOGeneric(encoding);
+    public IRIOGeneric newObjectO(String nt, @NonNull IDM3Context context) {
+        return new IRIOGeneric(context, encoding);
     }
 
     @Override
-    public IRIO loadObjectFromFile(String filename) {
+    public IRIO loadObjectFromFile(String filename, @NonNull IDM3Context context) {
         InputStream inp;
         try {
             inp = fs.intoPath(pfx + filename).openRead();
@@ -54,11 +57,11 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
             IRIO res = null;
             String fnl = filename.toLowerCase();
             if (fnl.endsWith("pxm")) {
-                res = loadPXM(inp);
+                res = loadPXM(inp, context);
             } else if (fnl.endsWith("pxa")) {
-                res = loadPXA(inp);
+                res = loadPXA(inp, context);
             } else if (fnl.endsWith("stage.tbl")) {
-                res = loadStageTBL(inp);
+                res = loadStageTBL(inp, context);
             }
             inp.close();
             return res;
@@ -72,22 +75,22 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
         return null;
     }
 
-    private IRIOGeneric loadStageTBL(InputStream inp) throws IOException {
+    private IRIOGeneric loadStageTBL(InputStream inp, @NonNull IDM3Context context) throws IOException {
         int stages = inp.available() / 200;
-        IRIOGeneric rio = newObjectO("");
+        IRIOGeneric rio = newObjectO("", context);
         rio.setArray(stages);
         for (int i = 0; i < stages; i++) {
-            IRIO tileset = loadFixedFormatString(inp, 0x20);
-            IRIO filename = loadFixedFormatString(inp, 0x20);
+            IRIO tileset = loadFixedFormatString(inp, 0x20, context);
+            IRIO filename = loadFixedFormatString(inp, 0x20, context);
             int backgroundScroll = inp.read();
             backgroundScroll |= inp.read() << 8;
             backgroundScroll |= inp.read() << 16;
             backgroundScroll |= inp.read() << 24;
-            IRIO bkg = loadFixedFormatString(inp, 0x20);
-            IRIO npc1 = loadFixedFormatString(inp, 0x20);
-            IRIO npc2 = loadFixedFormatString(inp, 0x20);
+            IRIO bkg = loadFixedFormatString(inp, 0x20, context);
+            IRIO npc1 = loadFixedFormatString(inp, 0x20, context);
+            IRIO npc2 = loadFixedFormatString(inp, 0x20, context);
             int boss = inp.read();
-            IRIO name = loadFixedFormatString(inp, 0x23);
+            IRIO name = loadFixedFormatString(inp, 0x23, context);
 
             IRIO rio2 = rio.getAElem(i).setObject("Stage");
             rio2.addIVar("@tileset").setDeepClone(tileset);
@@ -102,7 +105,7 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
         return rio;
     }
 
-    private IRIO loadFixedFormatString(InputStream inp, int i) throws IOException {
+    private IRIO loadFixedFormatString(InputStream inp, int i, @NonNull IDM3Context context) throws IOException {
         byte[] bt = new byte[i];
         if (inp.read(bt) != i)
             throw new IOException("Insufficient data");
@@ -114,14 +117,14 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
                 break;
             }
         }
-        return newObjectO("").setString(bt, encoding);
+        return newObjectO("", context).setString(bt, encoding);
     }
 
-    private IRIO loadPXA(InputStream inp) throws IOException {
-        return loadRT(inp, 16, 16);
+    private IRIO loadPXA(InputStream inp, @NonNull IDM3Context context) throws IOException {
+        return loadRT(inp, 16, 16, context);
     }
 
-    private IRIO loadPXM(InputStream inp) throws IOException {
+    private IRIO loadPXM(InputStream inp, @NonNull IDM3Context context) throws IOException {
         if (inp.read() != 'P')
             throw new IOException("Magic PXM 0x10 incorrect");
         if (inp.read() != 'X')
@@ -134,15 +137,15 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
         w |= inp.read() << 8;
         int h = inp.read();
         h |= inp.read() << 8;
-        return loadRT(inp, w, h);
+        return loadRT(inp, w, h, context);
     }
 
-    private IRIO loadRT(InputStream inp, int w, int h) throws IOException {
+    private IRIO loadRT(InputStream inp, int w, int h, @NonNull IDM3Context context) throws IOException {
         RubyTable rt = new RubyTable(2, w, h, 1, new int[] {0});
         for (int j = 0; j < h; j++)
             for (int i = 0; i < w; i++)
                 rt.setTiletype(i, j, 0, (short) inp.read());
-        return newObjectO("").setUser("Table", rt.innerBytes);
+        return newObjectO("", context).setUser("Table", rt.innerBytes);
     }
 
     @Override

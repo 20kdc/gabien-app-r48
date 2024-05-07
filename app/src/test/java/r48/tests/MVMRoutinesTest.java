@@ -22,7 +22,7 @@ public class MVMRoutinesTest {
     @Test
     public void testAnd() {
         new TestKickstart().kickstartRFS();
-        MVMEnvR48 env = new MVMEnvR48((s) -> {}, (s) -> {}, "tok");
+        MVMEnvR48 env = new MVMEnvR48((s) -> {}, (s) -> {}, "tok", true);
         MVMR48GlobalLibraries.add(env);
         env.include("vm/global", false);
 
@@ -35,7 +35,7 @@ public class MVMRoutinesTest {
     @Test
     public void testOr() {
         new TestKickstart().kickstartRFS();
-        MVMEnvR48 env = new MVMEnvR48((s) -> {}, (s) -> {}, "tok");
+        MVMEnvR48 env = new MVMEnvR48((s) -> {}, (s) -> {}, "tok", true);
         MVMR48GlobalLibraries.add(env);
         env.include("vm/global", false);
 
@@ -48,7 +48,7 @@ public class MVMRoutinesTest {
     @Test
     public void testCond() {
         new TestKickstart().kickstartRFS();
-        MVMEnvR48 env = new MVMEnvR48((s) -> {}, (s) -> {}, "tok");
+        MVMEnvR48 env = new MVMEnvR48((s) -> {}, (s) -> {}, "tok", true);
         MVMR48GlobalLibraries.add(env);
         env.include("vm/global", false);
 

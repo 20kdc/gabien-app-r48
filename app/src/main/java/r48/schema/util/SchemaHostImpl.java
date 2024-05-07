@@ -16,7 +16,6 @@ import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.UITest;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOGeneric;
 import r48.map.UIMapView;
 import r48.toolsets.utils.UIIDChanger;
 import r48.ui.Art;
@@ -46,7 +45,7 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDupl
     private UIAppendButton toolbarCp = new UIAppendButton(T.g.bCopy, toolbarP, new Runnable() {
         @Override
         public void run() {
-            app.theClipboard = new IRIOGeneric(app.encoding).setDeepClone(innerElem.targetElement);
+            app.setClipboardFrom(innerElem.targetElement);
         }
     }, app.f.schemaPathTH);
     private UIAppendButton toolbarPs = new UIAppendButton(T.g.bPaste, toolbarCp, new Runnable() {

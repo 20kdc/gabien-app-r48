@@ -54,10 +54,10 @@ public class Troop extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@terrain_set"))
-            return terrainSet = new DM2ArraySet<BooleanR2kStruct>() {
+            return terrainSet = new DM2ArraySet<BooleanR2kStruct>(dm2Ctx) {
                 @Override
                 public BooleanR2kStruct newValue() {
-                    return new BooleanR2kStruct(true);
+                    return new BooleanR2kStruct(dm2Ctx, true);
                 }
             };
         return super.dm2AddIVar(sym);
@@ -91,10 +91,10 @@ public class Troop extends DM2R2kObject {
         @Override
         protected IRIO dm2AddIVar(String sym) {
             if (sym.equals("@list"))
-                return list = new DM2Array<EventCommand>() {
+                return list = new DM2Array<EventCommand>(dm2Ctx) {
                     @Override
                     public EventCommand newValue() {
-                        return new EventCommand(context);
+                        return new EventCommand(dm2Ctx);
                     }
                 };
             return super.dm2AddIVar(sym);
@@ -183,9 +183,9 @@ public class Troop extends DM2R2kObject {
         @Override
         protected IRIO dm2AddIVar(String sym) {
             if (sym.equals("@flags_a"))
-                return flagsA = new BitfieldR2kStruct(new String[] {"@switch_a", "@switch_b", "@variable_>=_val", "@turn", "@fatigue", "@enemy_hp", "@actor_hp", "@turn_enemy_2k3"}, 0);
+                return flagsA = new BitfieldR2kStruct(dm2Ctx, new String[] {"@switch_a", "@switch_b", "@variable_>=_val", "@turn", "@fatigue", "@enemy_hp", "@actor_hp", "@turn_enemy_2k3"}, 0);
             if (sym.equals("@flags_b_2k3"))
-                return flagsB = new BitfieldR2kStruct(new String[] {"@turn_actor", "@command_actor"}, 0);
+                return flagsB = new BitfieldR2kStruct(dm2Ctx, new String[] {"@turn_actor", "@command_actor"}, 0);
             return super.dm2AddIVar(sym);
         }
     }

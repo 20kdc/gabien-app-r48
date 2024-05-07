@@ -36,10 +36,10 @@ public class MoveRoute extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@list"))
-            return list = new DM2Array<MoveCommand>(0, false, false) {
+            return list = new DM2Array<MoveCommand>(dm2Ctx, 0, false, false) {
                 @Override
                 public MoveCommand newValue() {
-                    return new MoveCommand(context);
+                    return new MoveCommand(MoveRoute.this.dm2Ctx);
                 }
             };
         return super.dm2AddIVar(sym);

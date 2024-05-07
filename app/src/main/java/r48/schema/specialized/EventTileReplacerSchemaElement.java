@@ -37,16 +37,13 @@ public class EventTileReplacerSchemaElement extends SchemaElement.Leaf {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UITileGrid r = new UITileGrid(app, launcher.getContextRenderer(), layer, displayMap.mapping, app.f.getSpriteScale());
-        if (charName.get(target).decString().length() == 0)
-            r.setSelected((int) charIdx.get(target).getFX());
-        r.onSelectionChange = new Runnable() {
-            @Override
-            public void run() {
-                charName.get(target).setString("");
-                charIdx.get(target).setFX(r.getSelected());
-                path.changeOccurred(false);
-                launcher.popObject();
-            }
+        if (charName.getRO(target).decString().length() == 0)
+            r.setSelected((int) charIdx.getRO(target).getFX());
+        r.onSelectionChange = () -> {
+            charName.getRW(target).setString("");
+            charIdx.getRW(target).setFX(r.getSelected());
+            path.changeOccurred(false);
+            launcher.popObject();
         };
         return r;
     }

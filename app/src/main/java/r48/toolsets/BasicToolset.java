@@ -21,6 +21,7 @@ import r48.dbs.ObjectInfo;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -270,7 +271,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     });
                 },
                 () -> {
-                    IRIOGeneric tmp = new IRIOGeneric(app.encoding);
+                    IRIOGeneric tmp = new IRIOGeneric(IDM3Context.Null.WORKSPACE, app.encoding);
                     final IObjectBackend.ILoadedObject rio = new IObjectBackend.MockLoadedObject(tmp);
                     app.ui.launchPrompt(T.u.prSchemaID, (s) -> {
                         SchemaElement se = app.sdb.getSDBEntry(s);
@@ -398,7 +399,7 @@ public class BasicToolset extends App.Svc implements IToolset {
             @Override
             public void run() {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
-                RORIO clipGet = (app.theClipboard == null) ? new IRIOGeneric(app.encoding) : app.theClipboard;
+                RORIO clipGet = (app.theClipboard == null) ? DMKey.NULL : app.theClipboard;
                 String clipText = app.format(clipGet);
                 uiStatusLabel.setText(T.u.statusLine.r(app.odb.modifiedObjects.size(), clipText));
                 app.uiPendingRunnables.add(this);

@@ -64,10 +64,10 @@ public class EventPage extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@list"))
-            return list = new DM2Array<EventCommand>() {
+            return list = new DM2Array<EventCommand>(dm2Ctx) {
                 @Override
                 public EventCommand newValue() {
-                    return new EventCommand(context);
+                    return new EventCommand(EventPage.this.dm2Ctx);
                 }
             };
         return super.dm2AddIVar(sym);

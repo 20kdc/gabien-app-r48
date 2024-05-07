@@ -61,13 +61,13 @@ public class TRect extends IRIOFixedObject implements IR2kInterpretable {
     @Override
     public IRIO addIVar(String sym) {
         if (sym.equals("@left"))
-            return l = new IRIOFixnum(0);
+            return l = new IRIOFixnum(context, 0);
         if (sym.equals("@up"))
-            return u = new IRIOFixnum(0);
+            return u = new IRIOFixnum(context, 0);
         if (sym.equals("@right"))
-            return r = new IRIOFixnum(0);
+            return r = new IRIOFixnum(context, 0);
         if (sym.equals("@down"))
-            return d = new IRIOFixnum(0);
+            return d = new IRIOFixnum(context, 0);
         return null;
     }
 }

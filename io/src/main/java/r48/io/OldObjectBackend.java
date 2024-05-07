@@ -7,10 +7,13 @@
 
 package r48.io;
 
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 
 import java.io.IOException;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * A simpler object backend interface that's somewhat less typesafe (but oh well)
@@ -18,21 +21,21 @@ import java.io.IOException;
  */
 public abstract class OldObjectBackend<R extends RORIO, W extends IRIO> implements IObjectBackend {
     @Override
-    public ILoadedObject loadObject(String filename) {
-        W rio = loadObjectFromFile(filename);
+    public ILoadedObject loadObject(String filename, @NonNull IDM3Context context) {
+        W rio = loadObjectFromFile(filename, context);
         if (rio == null)
             return null;
         return new OldObjectBackendLoadedObject(rio, filename);
     }
 
     @Override
-    public ILoadedObject newObject(String filename) {
-        return new OldObjectBackendLoadedObject(newObjectO(filename), filename);
+    public ILoadedObject newObject(String filename, @NonNull IDM3Context context) {
+        return new OldObjectBackendLoadedObject(newObjectO(filename, context), filename);
     }
 
-    public abstract W newObjectO(String filename);
+    public abstract W newObjectO(String filename, @NonNull IDM3Context context);
 
-    public abstract W loadObjectFromFile(String filename);
+    public abstract W loadObjectFromFile(String filename, @NonNull IDM3Context context);
 
     public abstract void saveObjectToFile(String filename, R obj) throws IOException;
 
@@ -66,8 +69,10 @@ public abstract class OldObjectBackend<R extends RORIO, W extends IRIO> implemen
         public boolean overwriteWith(ILoadedObject other) {
             if (other.getClass() == getClass()) {
                 if (((OldObjectBackendLoadedObject) other).intern.getClass() == intern.getClass()) {
-                    intern = ((OldObjectBackendLoadedObject) other).intern;
-                    return true;
+                    if (intern.context == ((OldObjectBackendLoadedObject) other).intern.context) {
+                        intern = ((OldObjectBackendLoadedObject) other).intern;
+                        return true;
+                    }
                 }
             }
             return false;

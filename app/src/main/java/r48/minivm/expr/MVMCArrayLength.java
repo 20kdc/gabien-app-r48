@@ -10,8 +10,8 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import static gabien.datum.DatumTreeUtils.*;
 
-import r48.io.data.IRIO;
-import r48.io.data.IRIOFixnum;
+import r48.io.data.DMKey;
+import r48.io.data.RORIO;
 import r48.minivm.MVMScope;
 import r48.minivm.MVMU;
 
@@ -28,13 +28,13 @@ public final class MVMCArrayLength extends MVMCExpr {
 
     @Override
     public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-        IRIO root = (IRIO) addBase.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+        RORIO root = (RORIO) addBase.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         if (root == null)
             return null;
         // This is used for length disambiguation.
         if (root.getType() != '[')
             return null;
-        return new IRIOFixnum(root.getALen());
+        return DMKey.of(root.getALen());
     }
 
     @Override

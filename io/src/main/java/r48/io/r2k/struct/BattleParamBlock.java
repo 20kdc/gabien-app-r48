@@ -11,6 +11,7 @@ import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
 import r48.io.data.IRIOFixnum;
+import r48.io.data.obj.DM2Context;
 import r48.io.r2k.chunks.IR2kInterpretable;
 
 import java.io.IOException;
@@ -22,23 +23,17 @@ import java.io.OutputStream;
  * Created on 06/06/17.
  */
 public class BattleParamBlock extends IRIOFixed implements IR2kInterpretable {
-    public IRIOFixnum[] array = new IRIOFixnum[] {
-            new IRIOFixnum(0),
-            new IRIOFixnum(0),
-            new IRIOFixnum(0),
-            new IRIOFixnum(0),
-            new IRIOFixnum(0),
-            new IRIOFixnum(0)
-    };
+    public final IRIOFixnum[] array = new IRIOFixnum[6];
 
-    public BattleParamBlock() {
-        super('[');
+    public BattleParamBlock(DM2Context ctx) {
+        super(ctx.dm3, '[');
+        setArray();
     }
 
     @Override
     public IRIO setArray() {
         for (int i = 0; i < array.length; i++)
-            array[i] = new IRIOFixnum(0);
+            array[i] = new IRIOFixnum(context, 0);
         return this;
     }
 

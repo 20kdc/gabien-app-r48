@@ -8,6 +8,7 @@
 package r48.io;
 
 import gabien.uslx.vfs.FSBackend;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -25,6 +26,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * A beginning?
  * Created on 30/05/17.
@@ -32,18 +35,17 @@ import java.nio.charset.Charset;
 public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public final String root;
     public final Charset charset;
-    public final DM2Context dm2c;
     public final FSBackend fs;
 
     public R2kObjectBackend(FSBackend fs, String rootPath, Charset cs) {
         this.fs = fs;
         root = rootPath;
         charset = cs;
-        dm2c = new DM2Context(cs);
     }
 
     @Override
-    public IRIO newObjectO(String fn) {
+    public IRIO newObjectO(String fn, @NonNull IDM3Context context) {
+        DM2Context dm2c = new DM2Context(context, charset);
         // Non-RubyIO things
         if (fn.endsWith(".lmt"))
             return new MapTree(dm2c);
@@ -53,11 +55,12 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             return new Database(dm2c);
         if (fn.endsWith(".lsd"))
             return new Save(dm2c);
-        return new IRIOGeneric(charset);
+        return new IRIOGeneric(context, charset);
     }
 
     @Override
-    public IRIO loadObjectFromFile(String filename) {
+    public IRIO loadObjectFromFile(String filename, @NonNull IDM3Context context) {
+        DM2Context dm2c = new DM2Context(context, charset);
         filename = root + filename;
         try (InputStream fis = fs.intoPath(filename).openRead()) {
             try {

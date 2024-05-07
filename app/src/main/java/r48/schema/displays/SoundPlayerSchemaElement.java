@@ -13,6 +13,7 @@ import gabien.ui.UIElement;
 import r48.App;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -40,8 +41,8 @@ public class SoundPlayerSchemaElement extends SchemaElement.Leaf {
 
     @Override
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
-        IRIO nameObj = namePath.get(target);
-        IRIO tempoObj = tempoPath == null ? null : tempoPath.get(target);
+        RORIO nameObj = namePath.getRO(target);
+        RORIO tempoObj = tempoPath == null ? null : tempoPath.getRO(target);
         double tempo = 1;
         if (tempoObj != null)
             tempo = tempoObj.getFX() / 100d;

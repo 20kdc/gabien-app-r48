@@ -88,18 +88,18 @@ public class MapUnit extends DM2R2kObject {
     @Override
     protected Object dm2AddField(Field f) {
         if (f.getName().equals("layer0"))
-            return layer0 = new BlobR2kStruct(R2kUtil.supplyBlank(20 * 15 * 2, (byte) 0));
+            return layer0 = new BlobR2kStruct(dm2Ctx, R2kUtil.supplyBlank(20 * 15 * 2, (byte) 0));
         if (f.getName().equals("layer1"))
-            return layer1 = new BlobR2kStruct(R2kUtil.supplyBlank(20 * 15 * 2, (byte) 0));
+            return layer1 = new BlobR2kStruct(dm2Ctx, R2kUtil.supplyBlank(20 * 15 * 2, (byte) 0));
         return super.dm2AddField(f);
     }
 
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@data"))
-            return map = new IRIOFixedUser("Table", new RubyTable(3, 20, 15, 2, new int[] {0, 0}).innerBytes);
+            return map = new IRIOFixedUser(dm2Ctx.dm3, "Table", new RubyTable(3, 20, 15, 2, new int[] {0, 0}).innerBytes);
         if (sym.equals("@events"))
-            return events = new DM2SparseArrayH<Event>(() -> new Event(context));
+            return events = new DM2SparseArrayH<Event>(dm2Ctx, () -> new Event(dm2Ctx));
         return super.dm2AddIVar(sym);
     }
 
@@ -123,8 +123,8 @@ public class MapUnit extends DM2R2kObject {
 
     private void decLmuData() {
         // Assuming all consistency is fine, width/height are fine too
-        layer0 = new BlobR2kStruct(new byte[width.i * height.i * 2]);
-        layer1 = new BlobR2kStruct(new byte[width.i * height.i * 2]);
+        layer0 = new BlobR2kStruct(dm2Ctx, new byte[width.i * height.i * 2]);
+        layer1 = new BlobR2kStruct(dm2Ctx, new byte[width.i * height.i * 2]);
         byte[] innerBytes = map.getBuffer();
         System.arraycopy(innerBytes, 20, layer0.userVal, 0, layer0.userVal.length);
         System.arraycopy(innerBytes, 20 + (width.i * height.i * 2), layer1.userVal, 0, layer1.userVal.length);
@@ -135,6 +135,6 @@ public class MapUnit extends DM2R2kObject {
         RubyTable rt = new RubyTable(3, width.i, height.i, 2, new int[] {0, 0});
         System.arraycopy(layer0.userVal, 0, rt.innerBytes, 20, layer0.userVal.length);
         System.arraycopy(layer1.userVal, 0, rt.innerBytes, 20 + (width.i * height.i * 2), layer1.userVal.length);
-        map = new IRIOFixedUser("Table", rt.innerBytes);
+        map = new IRIOFixedUser(dm2Ctx.dm3, "Table", rt.innerBytes);
     }
 }

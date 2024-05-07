@@ -12,6 +12,7 @@ import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import r48.App;
 import r48.io.data.DMKey;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.*;
@@ -90,13 +91,8 @@ class SDBHelpers extends App.Svc {
         return new SpritesheetCoreSchemaElement(app, (v) -> {
             // used to be a FormatSyntax step buried in SpritesheetCoreSchemaElement, but it never got used here
             return spritesheetN.get(imgPfx).r();
-        }, 0, new Function<IRIO, IRIO>() {
-            @Override
-            public IRIO apply(IRIO rubyIO) {
-                return varPath.get(rubyIO);
-            }
-        }, (rubyIO) -> {
-            return args2.apply(imgPath.get(rubyIO).decString());
+        }, 0, varPath, (rubyIO) -> {
+            return args2.apply(imgPath.getRO(rubyIO).decString());
         });
     }
 
@@ -200,7 +196,7 @@ class SDBHelpers extends App.Svc {
                         type++;
                     }
                 }
-                IRIOGeneric base = new IRIOGeneric(app.encoding);
+                IRIOGeneric base = new IRIOGeneric(IDM3Context.Null.DELETE_ME, app.encoding);
                 base.setArray(2);
                 base.getAElem(0).setFX(type);
                 base.getAElem(1).setFX(t);
@@ -255,7 +251,7 @@ class SDBHelpers extends App.Svc {
                     t -= 10000;
                     type++;
                 }
-                IRIOGeneric base = new IRIOGeneric(app.encoding);
+                IRIOGeneric base = new IRIOGeneric(IDM3Context.Null.DELETE_ME, app.encoding);
                 base.setArray(2);
                 base.getAElem(0).setFX(type);
                 base.getAElem(1).setFX(t);

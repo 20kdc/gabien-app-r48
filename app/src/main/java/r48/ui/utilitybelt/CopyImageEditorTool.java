@@ -9,6 +9,7 @@ package r48.ui.utilitybelt;
 
 import r48.App;
 import r48.io.BMPConnection;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIOGeneric;
 
 import java.io.IOException;
@@ -58,7 +59,7 @@ public class CopyImageEditorTool extends RectangleImageEditorTool {
                 throw new RuntimeException(e);
             }
         }
-        view.app.theClipboard = new IRIOGeneric(StandardCharsets.UTF_8).setUser("Image", data);
+        view.app.theClipboard = new IRIOGeneric(IDM3Context.Null.CLIPBOARD, StandardCharsets.UTF_8).setUser("Image", data);
     }
 
     @Override

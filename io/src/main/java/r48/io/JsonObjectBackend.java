@@ -9,6 +9,7 @@ package r48.io;
 
 import gabien.uslx.vfs.FSBackend;
 import r48.io.data.DMKey;
+import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -16,6 +17,8 @@ import r48.io.data.RORIO;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Because everybody needs (yet another) public domain JSON parser.
@@ -32,32 +35,32 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     }
 
     @Override
-    public IRIO newObjectO(String n) {
-        return new IRIOGeneric(StandardCharsets.UTF_8);
+    public IRIO newObjectO(String n, @NonNull IDM3Context context) {
+        return new IRIOGeneric(context, StandardCharsets.UTF_8);
     }
 
     @Override
-    public IRIO loadObjectFromFile(String filename) {
+    public IRIO loadObjectFromFile(String filename, @NonNull IDM3Context context) {
         try (InputStream inp = fs.intoPath(root + filename + ext).openRead()) {
-            return loadJSONFromStream(inp);
+            return loadJSONFromStream(context, inp);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
-    public static IRIO loadJSONFromStream(InputStream inp) throws IOException {
+    public static IRIO loadJSONFromStream(@NonNull IDM3Context context, InputStream inp) throws IOException {
         LinkedList<String> tokens = new LinkedList<String>();
         Reader r = new InputStreamReader(inp, StandardCharsets.UTF_8);
         tokenize(tokens, r);
-        return loadFromTokens(tokens);
+        return loadFromTokens(context, tokens);
     }
 
-    private static IRIO loadFromTokens(LinkedList<String> tokens) {
+    private static IRIO loadFromTokens(@NonNull IDM3Context context, LinkedList<String> tokens) {
         String n = tokens.removeFirst();
         if (n.startsWith("\""))
-            return new IRIOGeneric(StandardCharsets.UTF_8).setString(n.substring(1));
+            return new IRIOGeneric(context, StandardCharsets.UTF_8).setString(n.substring(1));
         if (n.equals("{")) {
-            IRIO hash = new IRIOGeneric(StandardCharsets.UTF_8).setHash();
+            IRIO hash = new IRIOGeneric(context, StandardCharsets.UTF_8).setHash();
             // comma policy is very liberal here since it's never ambiguous
             while (true) {
                 n = tokens.getFirst();
@@ -69,15 +72,15 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                     tokens.removeFirst();
                     return hash;
                 }
-                IRIO key = loadFromTokens(tokens);
+                IRIO key = loadFromTokens(context, tokens);
                 if (!tokens.removeFirst().equals(":"))
                     throw new RuntimeException("Couldn't find KV separator");
-                IRIO val = loadFromTokens(tokens);
+                IRIO val = loadFromTokens(context, tokens);
                 hash.addHashVal(DMKey.of(key)).setDeepClone(val);
             }
         }
         if (n.equals("[")) {
-            IRIO array = new IRIOGeneric(StandardCharsets.UTF_8).setArray();
+            IRIO array = new IRIOGeneric(context, StandardCharsets.UTF_8).setArray();
             // comma policy is very liberal here since it's never ambiguous
             while (true) {
                 n = tokens.getFirst();
@@ -89,21 +92,21 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                     tokens.removeFirst();
                     return array;
                 }
-                array.addAElem(array.getALen()).setDeepClone(loadFromTokens(tokens));
+                array.addAElem(array.getALen()).setDeepClone(loadFromTokens(context, tokens));
             }
         }
         if (n.equals("true"))
-            return new IRIOGeneric(StandardCharsets.UTF_8).setBool(true);
+            return new IRIOGeneric(context, StandardCharsets.UTF_8).setBool(true);
         if (n.equals("false"))
-            return new IRIOGeneric(StandardCharsets.UTF_8).setBool(false);
+            return new IRIOGeneric(context, StandardCharsets.UTF_8).setBool(false);
         if (n.equals("null"))
-            return new IRIOGeneric(StandardCharsets.UTF_8).setNull();
+            return new IRIOGeneric(context, StandardCharsets.UTF_8).setNull();
         // Number. Please see "3.10.2. Floating-Point Literals" for an explaination,
         //  and see the relevant notes on parseFloat for why spaces had to be removed during tokenization.
         float f = Float.parseFloat(n);
         if ((((long) f) == f) && (!n.contains(".")))
-            return new IRIOGeneric(StandardCharsets.UTF_8).setFX((long) f);
-        IRIOGeneric str = new IRIOGeneric(StandardCharsets.UTF_8);
+            return new IRIOGeneric(context, StandardCharsets.UTF_8).setFX((long) f);
+        IRIOGeneric str = new IRIOGeneric(context, StandardCharsets.UTF_8);
         str.setFloat(n.getBytes(StandardCharsets.UTF_8));
         return str;
     }

@@ -7,14 +7,16 @@
 
 package r48.io.data;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Created on December 04, 2018.
  */
 public abstract class IRIOFixedArray<T extends IRIO> extends IRIOFixed {
     public IRIO[] arrVal = new IRIO[0];
 
-    public IRIOFixedArray() {
-        super('[');
+    public IRIOFixedArray(@NonNull IDM3Context context) {
+        super(context, '[');
     }
 
     @Override

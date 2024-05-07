@@ -38,11 +38,11 @@ public class MapPositionHelperSchemaElement extends SchemaElement.Leaf {
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         IRIO pathARIO = null;
         if (pathA != null)
-            pathARIO = pathA.get(target);
+            pathARIO = pathA.getRW(target);
         final IRIO[] abc = {
                 pathARIO,
-                pathB.get(target),
-                pathC.get(target)
+                pathB.getRW(target),
+                pathC.getRW(target)
         };
         for (int i = (pathA == null ? 1 : 0); i < 3; i++)
             if (abc[i] == null)

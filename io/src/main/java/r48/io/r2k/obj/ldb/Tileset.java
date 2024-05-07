@@ -56,15 +56,15 @@ public class Tileset extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@terrain_id_data"))
-            return terrainTbl = new BlobR2kStruct("Table", new RubyTable(3, 162, 1, 1, new int[] {1}).innerBytes);
+            return terrainTbl = new BlobR2kStruct(dm2Ctx, "Table", new RubyTable(3, 162, 1, 1, new int[] {1}).innerBytes);
         if (sym.equals("@lowpass_data"))
-            return lowPassTbl = new BlobR2kStruct("Table", bitfieldsToTable(R2kUtil.supplyBlank(162, (byte) 15).get()));
+            return lowPassTbl = new BlobR2kStruct(dm2Ctx, "Table", bitfieldsToTable(R2kUtil.supplyBlank(162, (byte) 15).get()));
         if (sym.equals("@highpass_data")) {
             byte[] dat = new byte[144];
             for (int i = 0; i < dat.length; i++)
                 dat[i] = 15;
             dat[0] = 31;
-            return highPassTbl = new BlobR2kStruct("Table", bitfieldsToTable(dat));
+            return highPassTbl = new BlobR2kStruct(dm2Ctx, "Table", bitfieldsToTable(dat));
         }
         return super.dm2AddIVar(sym);
     }

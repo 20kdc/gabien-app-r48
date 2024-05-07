@@ -23,7 +23,7 @@ import r48.minivm.expr.MVMCExpr;
  * Created 8th March 2023.
  */
 public class MVMDMLibrary {
-    public static void add(MVMEnv ctx) {
+    public static void add(MVMEnv ctx, boolean strict) {
         // equality
         ctx.defLib("dm-eq?", (a, b) -> {
             if (a == null || b == null)
@@ -31,11 +31,11 @@ public class MVMDMLibrary {
             return RORIO.rubyEquals((RORIO) a, (RORIO) b);
         }).attachHelp("(dm-eq? A B) : Checks equality between two RORIOs (returning false if either are #nil)");
         // path
-        ctx.defineSlot(new DatumSymbol("dm-at")).v = new DMAt(0)
+        ctx.defineSlot(new DatumSymbol("dm-at")).v = new DMAt(0, strict)
             .attachHelp("(dm-at TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), #nil on failure");
-        ctx.defineSlot(new DatumSymbol("dm-add-at!")).v = new DMAt(1)
+        ctx.defineSlot(new DatumSymbol("dm-add-at!")).v = new DMAt(1, strict)
             .attachHelp("(dm-add-at! TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), adds entry if possible, #nil on failure");
-        ctx.defineSlot(new DatumSymbol("dm-del-at!")).v = new DMAt(2)
+        ctx.defineSlot(new DatumSymbol("dm-del-at!")).v = new DMAt(2, strict)
             .attachHelp("(dm-del-at! TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), deletes entry, #nil on failure");
         // array
         ctx.defLib("dm-a-init", (a) -> {
@@ -207,6 +207,7 @@ public class MVMDMLibrary {
     }
     public static final class DMAt extends MVMMacro {
         public final int mode;
+        public final boolean strict;
         private static String tName(int mode) {
             String name = "dm-at";
             if (mode == 1)
@@ -215,16 +216,17 @@ public class MVMDMLibrary {
                 name = "dm-del-at!";
             return name;
         }
-        public DMAt(int mode) {
+        public DMAt(int mode, boolean strict) {
             super(tName(mode));
             this.mode = mode;
+            this.strict = strict;
         }
 
         @Override
         public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
             if (call.length != 2)
                 throw new RuntimeException(nameHint + " expects exactly 2 args (target path)");
-            PathSyntax ps = PathSyntax.compile(cs.context, cs.compile(call[0]), MVMU.coerceToString(call[1]));
+            PathSyntax ps = PathSyntax.compile(cs.context, strict, cs.compile(call[0]), MVMU.coerceToString(call[1]));
             if (mode == 1)
                 return ps.addProgram;
             if (mode == 2)

@@ -52,7 +52,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     }
 
     private String getDisambigIndex(RORIO target) {
-        target = dIndex.get(target);
+        target = dIndex.getRO(target);
         if (target == null)
             return "";
         return ValueSyntax.encode(target);

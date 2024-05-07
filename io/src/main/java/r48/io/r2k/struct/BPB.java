@@ -64,22 +64,22 @@ public class BPB extends IRIOFixedObject implements IR2kInterpretable {
     @Override
     public IRIO addIVar(String sym) {
         if (sym.equals("@1to50")) {
-            parameters1 = new DM2Array<BattleParamBlock>() {
+            parameters1 = new DM2Array<BattleParamBlock>(dm2Ctx) {
                 @Override
                 public BattleParamBlock newValue() {
-                    return new BattleParamBlock();
+                    return new BattleParamBlock(dm2Ctx);
                 }
             };
             parameters1.arrVal = new IRIO[50];
             for (int i = 0; i < 50; i++)
-                parameters1.arrVal[i] = new BattleParamBlock();
+                parameters1.arrVal[i] = new BattleParamBlock(dm2Ctx);
             return parameters1;
         }
         if (sym.equals("@51to99_2k3"))
-            return parameters2 = new DM2Array<BattleParamBlock>() {
+            return parameters2 = new DM2Array<BattleParamBlock>(dm2Ctx) {
                 @Override
                 public BattleParamBlock newValue() {
-                    return new BattleParamBlock();
+                    return new BattleParamBlock(dm2Ctx);
                 }
             };
         return null;
