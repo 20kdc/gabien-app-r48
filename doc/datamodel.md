@@ -37,7 +37,7 @@ Data:
 * `RORIO`: All data types are based off of this.
 	* `DMKey`: Immutable `HashMap` key, etc.
 	* `IRIO`: The universal abstract datatype of most of R48. _This is what bridges Schema and underlying data, and allows shared code between engines._
-		- `IRIOGeneric`: Generic mutable container for any data.
+		* `IRIOGeneric`: Generic mutable container for any data.
 		* Engine-specific datatypes such as `r48.io.r2k.obj.EventPage` go here (backed by, you know, a lot of extra Stuff). In theory these types are private to the IO layer, outside of optimizations.
 	
 
@@ -57,5 +57,5 @@ _aka R48 v2.0_
 			* If it isn't done this way, the frozen state is only valid in isolation; it is not possible to apply further frozen states on sub-trees. (This is related to why the Revert button circa R48 v1.6 has to close all the Schema windows. _**All pointers become invalid.**_) In addition the memory usage and CPU requirements for storing complete clones for every modification are... prohibitive. Figuring out that this was what needed to be done is part of why a proposal for this took so long.
 	* Undo/Redo will work by backing up frozen states of any object just before it is modified. Having explicit start/end brackets for modifications was considered, but ultimately I decided this was a bad idea. But, you say, _how will we know when an object is modified?_ The answer...
 * `IDM3Context` needs to be properly used throughout R48. The goal here is that for any data-carrying `IRIO` in `ObjectDB`, _any(!)_ modification to that object's data should cause a notification to `IDM3Context`. It will then associate the current state of the `IRIO` to.
-	* Due to various concerns, it feels best that these are called `IRIOData`. _Only `IRIOData`s will carry the freeze/restore logic. All `IRIOData`s will be required, one way or another, to report modifications to their context._
-	* 'Wrapper' `IRIO`s must be silent about modifications. This will be enforced through the `IRIO`/`IRIOData` distinction. _They should still carry their context, it may prove useful later. If it's a problem then just push it down to `IRIOData`._
+	* Freezable data is called `IDM3Data`. _Only `IDM3Data`s will carry the freeze/restore logic. All `IDM3Data`s will be required, one way or another, to report modifications to their context._
+	* 'Wrapper' `IRIO`s must be silent about modifications. This is the `IRIO`/`IDM3Data` distinction. _They should still carry their context, it may prove useful later. If it's a problem then an additional class may be needed between IRIO and data-carrying objects._

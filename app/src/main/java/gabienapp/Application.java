@@ -31,7 +31,7 @@ public class Application {
         if (!GaBIEn.hasStoragePermission()) {
             Android23.run();
         } else {
-            Launcher lun = new Launcher();
+            Launcher lun = new Launcher(false);
             lun.run();
         }
     }

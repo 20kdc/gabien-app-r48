@@ -16,7 +16,7 @@ public class MVMR48GlobalLibraries {
     public static void add(MVMEnvR48 ctx) {
         MVMCoreLibraries.add(ctx);
         MVMIntegrationLibrary.add(ctx);
-        MVMDMLibrary.add(ctx);
+        MVMDMLibrary.add(ctx, ctx.strict);
         MVMTrLibrary.add(ctx);
     }
 }

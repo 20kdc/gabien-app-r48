@@ -229,7 +229,7 @@ public class GrandTestBuilder {
     public void execute(long expectedChecksum) {
         try {
             kick.kickstartRFS();
-            lUtils = new GrandLauncherUtils(new Launcher());
+            lUtils = new GrandLauncherUtils(new Launcher(true));
             wm = new GrandWindowManagerUtils(this);
             kick.gwmu = wm;
             lUtils.launcher.run();

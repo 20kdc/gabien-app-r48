@@ -130,7 +130,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
         // do VM stuff
         vmCtx = new MVMEnvR48((str) -> {
             loadProgress.accept(t.g.loadingProgress.r(str));
-        }, ilg.logTrIssues, ilg.c.language);
+        }, ilg.logTrIssues, ilg.c.language, ilg.strict);
         // needs to init after vmCtx to install system name routines
         MVMR48AppLibraries.add(vmCtx, this);
         vmCtx.include("vm/global", false);

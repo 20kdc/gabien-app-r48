@@ -7,12 +7,23 @@
 
 package r48.io.data;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Data context.
  * This is for future DM3 stuff but was introduced in dummy form in v1.6-X to make it easier to share code between the branches. 
  * Created 7th May, 2024.
  */
 public interface IDM3Context {
+    /**
+     * Reports that a data object is about to be modified.
+     * This should only fire once ever per IDM3Data unless markClean is called.
+     * However, IDM3Contexts should be ready to handle an IDM3Data which calls this function multiple times in a row.
+     * The idea here is that the IDM3Context records the state before the first modification.
+     * It then marks the undo point when it finds it convenient to do so.
+     */
+    void modifying(@NonNull IDM3Data modifiedData);
+
     /**
      * The "null context" is for cases where DM3 context tracking is not required.
      * USE WITH CARE.
@@ -36,5 +47,9 @@ public interface IDM3Context {
         DMKEY_EMBEDDED,
         // Tests use this
         TESTS;
+
+        @Override
+        public void modifying(IDM3Data modifiedData) {
+        }
     }
 }

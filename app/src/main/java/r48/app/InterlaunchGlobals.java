@@ -35,11 +35,17 @@ public class InterlaunchGlobals implements IDynTrProxy {
     private Consumer<MVMEnv> reportVMChanges;
     private HashMap<String, EngineDef> engineDefs;
     public final Consumer<String> logTrIssues;
+    /**
+     * PathSyntax will usually handle exceptions by logging and then failing (as if the target did not exist).
+     * However, in strict mode, PathSyntax instead will throw exceptions normally.
+     */
+    public final boolean strict;
 
-    public InterlaunchGlobals(Config c, Consumer<MVMEnv> report, Consumer<String> loadProgress, Consumer<String> trIssues) {
+    public InterlaunchGlobals(Config c, Consumer<MVMEnv> report, Consumer<String> loadProgress, Consumer<String> trIssues, boolean strict) {
         this.c = c;
         logTrIssues = trIssues;
         reportVMChanges = report;
+        this.strict = strict;
         updateLanguage(loadProgress);
         engineDefs = EnginesList.getEngines(loadProgress);
     }
@@ -71,7 +77,7 @@ public class InterlaunchGlobals implements IDynTrProxy {
             lang = LanguageList.defaultLang;
         c.language = lang;
         // ---
-        langVM = new MVMEnvR48(loadProgress, logTrIssues, lang);
+        langVM = new MVMEnvR48(loadProgress, logTrIssues, lang, strict);
         MVMR48GlobalLibraries.add(langVM);
         langVM.include("vm/global", false);
         // if the language author wants English fallback, they'll just (include "terms/eng/init")

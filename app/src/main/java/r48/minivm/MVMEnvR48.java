@@ -37,14 +37,16 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
     private final HashMap<String, DynTrSlot> dynMap;
     private final LinkedList<String> dynList;
     private final String langID;
+    public final boolean strict;
 
-    public MVMEnvR48(Consumer<String> loadProgress, Consumer<String> logTrIssues, String lid) {
+    public MVMEnvR48(Consumer<String> loadProgress, Consumer<String> logTrIssues, String lid, boolean strict) {
         super();
         this.loadProgress = loadProgress;
         this.logTrIssues = logTrIssues;
         dynMap = new HashMap<>();
         dynList = new LinkedList<>();
         langID = lid;
+        this.strict = strict;
     }
 
     protected MVMEnvR48(MVMEnvR48 p) {
@@ -54,6 +56,7 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
         dynMap = p.dynMap;
         dynList = p.dynList;
         langID = p.langID;
+        strict = p.strict;
     }
 
     /**

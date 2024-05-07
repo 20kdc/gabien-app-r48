@@ -41,7 +41,7 @@ public class Launcher {
     public int globalMS = 50;
     private double compensationDT;
 
-    public Launcher() {
+    public Launcher(boolean strict) {
         isMobile = GaBIEn.singleWindowApp();
         c = new Config(isMobile);
         final boolean fontsLoaded = ConfigIO.load(true, c);
@@ -51,7 +51,7 @@ public class Launcher {
         currentState = new LSSplashScreen(this, () -> {
             ilg = new InterlaunchGlobals(c, (vm) -> vmCtx = vm, (str) -> {
                 // this would presumably go to the splash screen
-            }, (str) -> System.err.println("TR: " + str));
+            }, (str) -> System.err.println("TR: " + str), strict);
             boolean canAvoidWait = c.fontOverride == null;
             // If we're setup correctly: English never needs the font-loading.
             // The reason it's important we use the correct language for this is because if font-loading is slow,
