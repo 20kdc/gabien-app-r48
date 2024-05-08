@@ -19,7 +19,7 @@ import org.eclipse.jdt.annotation.NonNull;
 public abstract class IRIOFixedHash<K, V extends IRIO> extends IRIOFixed {
     public HashMap<K, V> hashVal = new HashMap<K, V>();
 
-    public IRIOFixedHash(@NonNull IDM3Context context) {
+    public IRIOFixedHash(@NonNull DMContext context) {
         super(context, '{');
     }
 

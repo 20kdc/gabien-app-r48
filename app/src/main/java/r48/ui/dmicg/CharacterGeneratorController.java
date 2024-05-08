@@ -22,7 +22,6 @@ import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.imageio.PNG8IImageIOFormat;
 import r48.io.BMPConnection;
-import r48.io.data.IDM3Context;
 import r48.io.data.IRIOGeneric;
 import r48.ui.UIAppendButton;
 import r48.ui.UIColourSwatchButton;
@@ -31,7 +30,6 @@ import r48.ui.utilitybelt.ImageEditorImage;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -156,7 +154,7 @@ public class CharacterGeneratorController extends App.Svc {
             for (int j = 0; j < h; j++)
                 for (int i = 0; i < w; i++)
                     bc.putPixel(i, j, tx[idx++]);
-            app.theClipboard = new IRIOGeneric(IDM3Context.Null.CLIPBOARD, StandardCharsets.UTF_8).setUser("Image", buffer);
+            app.theClipboard = new IRIOGeneric(app.ctxClipboardUTF8Encoding).setUser("Image", buffer);
         }), () -> {
             // We have a PNG, ask for a file to stuff it into
             final byte[] b = createPNG();

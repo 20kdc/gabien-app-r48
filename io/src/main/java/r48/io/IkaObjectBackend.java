@@ -9,9 +9,8 @@ package r48.io;
 
 import gabien.uslx.vfs.FSBackend;
 import r48.RubyTable;
-import r48.io.data.IDM3Context;
+import r48.io.data.DMContext;
 import r48.io.data.IRIOFixedHash;
-import r48.io.data.obj.DM2Context;
 import r48.io.ika.IkaEvent;
 import r48.io.ika.IkaMap;
 import r48.io.ika.NPChar;
@@ -19,7 +18,6 @@ import r48.io.ika.NPChar;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -29,24 +27,20 @@ import org.eclipse.jdt.annotation.NonNull;
 public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
 
     private String root;
-    private final Charset charset;
     public final FSBackend fs;
 
-    public IkaObjectBackend(FSBackend fs, String rootPath, Charset encoding) {
+    public IkaObjectBackend(FSBackend fs, String rootPath) {
         this.fs = fs;
         root = rootPath;
-        this.charset = encoding;
     }
 
     @Override
-    public IkaMap newObjectO(String n, @NonNull IDM3Context context) {
-        DM2Context dm2c = new DM2Context(context, charset);
-        return new IkaMap(dm2c, 160, 120);
+    public IkaMap newObjectO(String n, @NonNull DMContext context) {
+        return new IkaMap(context, 160, 120);
     }
 
     @Override
-    public IkaMap loadObjectFromFile(String filename, @NonNull IDM3Context context) {
-        DM2Context dm2c = new DM2Context(context, charset);
+    public IkaMap loadObjectFromFile(String filename, @NonNull DMContext context) {
         if (filename.equals("Map")) {
             byte[] eDataBytes = BMPConnection.prepareBMP(160, 120, 8, 256, false, false);
             byte[] dataBytes = eDataBytes;
@@ -77,7 +71,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
 
             // This sets up the object by itself (DataModel2)
 
-            IkaMap rio = new IkaMap(dm2c, bm.width, bm.height);
+            IkaMap rio = new IkaMap(context, bm.width, bm.height);
 
             RubyTable pal = new RubyTable(rio.palette.userVal);
             for (int i = 0; i < bm.paletteCol; i++) {
@@ -105,14 +99,14 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
             }
             for (int i = 0; i < np.npcTable.length; i++)
                 if (np.npcTable[i].exists)
-                    evTbl.hashVal.put(i, convertEventToRuby(np.npcTable[i], dm2c));
+                    evTbl.hashVal.put(i, convertEventToRuby(np.npcTable[i], context));
 
             return rio;
         }
         return null;
     }
 
-    private IkaEvent convertEventToRuby(NPChar.NPCCharacter io, DM2Context dm2c) {
+    private IkaEvent convertEventToRuby(NPChar.NPCCharacter io, DMContext dm2c) {
         IkaEvent res = new IkaEvent(dm2c);
         int px = rounder(io.posX);
         int py = rounder(io.posY);

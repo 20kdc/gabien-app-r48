@@ -8,11 +8,10 @@
 package r48.io;
 
 import r48.io.cs.CSObjectBackend;
-import r48.io.data.IDM3Context;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -26,10 +25,10 @@ import gabien.uslx.vfs.FSBackend;
  */
 public interface IObjectBackend {
     // Returns null on failure.
-    ILoadedObject loadObject(String filename, @NonNull IDM3Context context);
+    ILoadedObject loadObject(String filename, @NonNull DMContext context);
 
     // Also returns null on failure.
-    ILoadedObject newObject(String filename, @NonNull IDM3Context context);
+    ILoadedObject newObject(String filename, @NonNull DMContext context);
 
     // Does this backend use userspace binders, and if so, what's the usersym prefix? Can be null.
     String userspaceBindersPrefix();
@@ -66,17 +65,17 @@ public interface IObjectBackend {
     }
 
     abstract class Factory {
-        public static IObjectBackend create(FSBackend fs, Charset encoding, String odbBackend, String dataPath, String dataExt) {
+        public static IObjectBackend create(FSBackend fs, String odbBackend, String dataPath, String dataExt) {
             if (odbBackend.equals("r48")) {
-                return new R48ObjectBackend(fs, dataPath, dataExt, encoding);
+                return new R48ObjectBackend(fs, dataPath, dataExt);
             } else if (odbBackend.equals("ika")) {
-                return new IkaObjectBackend(fs, dataPath, encoding);
+                return new IkaObjectBackend(fs, dataPath);
             } else if (odbBackend.equals("lcf2000")) {
-                return new R2kObjectBackend(fs, dataPath, encoding);
+                return new R2kObjectBackend(fs, dataPath);
             } else if (odbBackend.equals("json")) {
                 return new JsonObjectBackend(fs, dataPath, dataExt);
             } else if (odbBackend.equals("cs")) {
-                return new CSObjectBackend(fs, dataPath, encoding);
+                return new CSObjectBackend(fs, dataPath);
             } else {
                 throw new RuntimeException("Unknown ODB backend " + odbBackend);
             }

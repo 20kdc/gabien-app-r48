@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -47,7 +47,7 @@ public class EnemyAction extends DM2R2kObject {
     @DM2FXOBinding("@rating") @DM2LcfBinding(0x0D) @DMCXInteger(50)
     public IntegerR2kStruct rating;
 
-    public EnemyAction(DM2Context ctx) {
+    public EnemyAction(DMContext ctx) {
         super(ctx, "RPG::EnemyAction");
     }
 }

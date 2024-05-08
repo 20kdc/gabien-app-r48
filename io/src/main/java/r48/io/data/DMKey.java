@@ -18,6 +18,7 @@ public class DMKey extends RORIO {
     public static final DMKey NULL = new DMKey(Subtype.Null, 0, null, null, null);
     public static final DMKey TRUE = new DMKey(Subtype.True, 0, null, null, null);
     public static final DMKey FALSE = new DMKey(Subtype.False, 0, null, null, null);
+    private static final DMContext EMBEDDED_CONTEXT = new DMContext(IDMChangeTracker.Null.DMKEY_EMBEDDED, StandardCharsets.UTF_8);
 
     private final Subtype st;
     // i
@@ -56,7 +57,7 @@ public class DMKey extends RORIO {
         } else if (t == '0') {
             return NULL;
         } else {
-            IRIOGeneric refVal = new IRIOGeneric(IDM3Context.Null.DMKEY_EMBEDDED, StandardCharsets.UTF_8);
+            IRIOGeneric refVal = new IRIOGeneric(EMBEDDED_CONTEXT);
             refVal.setDeepClone(src);
             return new DMKey(Subtype.Reference, 0, null, null, refVal);
         }

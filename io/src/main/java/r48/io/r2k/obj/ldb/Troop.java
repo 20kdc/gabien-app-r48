@@ -7,9 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -47,7 +47,7 @@ public class Troop extends DM2R2kObject {
     @DM2FXOBinding("@pages") @DM2LcfBinding(11) @DM2CXSupplier(TroopPage.class)
     public DM2SparseArrayA<TroopPage> pages;
 
-    public Troop(DM2Context ctx) {
+    public Troop(DMContext ctx) {
         super(ctx, "RPG::Troop");
     }
 
@@ -73,7 +73,7 @@ public class Troop extends DM2R2kObject {
         @DM2FXOBinding("@invisible") @DM2LcfBinding(4) @DMCXBoolean(false)
         public BooleanR2kStruct invis;
 
-        public TroopMember(DM2Context ctx) {
+        public TroopMember(DMContext ctx) {
             super(ctx, "RPG::Troop::Member");
         }
     }
@@ -84,7 +84,7 @@ public class Troop extends DM2R2kObject {
         @DM2FXOBinding("@list") @DM2LcfSizeBinding(11) @DM2LcfBinding(12)
         public DM2Array<EventCommand> list;
 
-        public TroopPage(DM2Context ctx) {
+        public TroopPage(DMContext ctx) {
             super(ctx, "RPG::Troop::Page");
         }
 
@@ -151,7 +151,7 @@ public class Troop extends DM2R2kObject {
         @DM2FXOBinding("@command_id_2k3") @DM2LcfBinding(0x17) @DMCXInteger(0)
         public IntegerR2kStruct commandId;
 
-        public TroopPageCondition(DM2Context ctx) {
+        public TroopPageCondition(DMContext ctx) {
             super(ctx, "RPG::Troop::PageCondition");
         }
 

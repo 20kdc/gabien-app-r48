@@ -16,8 +16,9 @@ import r48.App;
 import r48.app.EnginesList;
 import r48.dbs.TestDBUtils;
 import r48.io.IObjectBackend;
+import r48.io.data.DMContext;
 import r48.io.data.DMKey;
-import r48.io.data.IDM3Context;
+import r48.io.data.IDMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
@@ -56,11 +57,12 @@ public class SchemaParseTest {
     @Test
     public void testParses() {
         System.out.println("SchemaParseTest START: " + gamepak);
+        DMContext tests = new DMContext(IDMChangeTracker.Null.TESTS, StandardCharsets.UTF_8);
         App app = new TestKickstart().kickstart("RAM/", "UTF-8", gamepak);
         // ... Also does this.
         // Not really parsing, but a good safety measure none-the-less.
         for (EventCommandArraySchemaElement st : TestDBUtils.getLoadedCSLs(app)) {
-            final IRIOGeneric rio = new IRIOGeneric(IDM3Context.Null.TESTS, StandardCharsets.UTF_8);
+            final IRIOGeneric rio = new IRIOGeneric(tests);
             SchemaPath.setDefaultValue(rio, st, null);
             IRIO rio2 = rio.addAElem(0);
             SchemaPath.setDefaultValue(rio2, st.baseElement, DMKey.of(0));

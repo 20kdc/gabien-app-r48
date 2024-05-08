@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.r2k.dm2chk.DM2LcfBinding;
 import r48.io.r2k.dm2chk.DM2R2kObject;
@@ -21,7 +21,7 @@ public class AnimationFrame extends DM2R2kObject {
     @DM2FXOBinding("@cells") @DM2LcfBinding(1)
     public DM2SparseArrayA<AnimationCell> cells;
 
-    public AnimationFrame(DM2Context ctx) {
+    public AnimationFrame(DMContext ctx) {
         super(ctx, "RPG::Animation::Frame");
     }
 

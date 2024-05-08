@@ -8,9 +8,9 @@
 package r48.io.r2k.chunks;
 
 import r48.io.IntUtils;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
-import r48.io.data.obj.DM2Context;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,8 +22,8 @@ import java.io.OutputStream;
 public class ShortR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public short value;
 
-    public ShortR2kStruct(DM2Context dm2, int v) {
-        super(dm2.dm3, 'i');
+    public ShortR2kStruct(DMContext dm2, int v) {
+        super(dm2, 'i');
         value = (short) v;
     }
 

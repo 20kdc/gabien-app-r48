@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DM2Optional;
 import r48.io.data.obj.DMCXBoolean;
@@ -61,7 +61,7 @@ public class Actor extends ActorClassBase {
     @DM2FXOBinding("@battle_skillspanel_name") @DM2LcfBinding(67) @DMCXObject
     public StringR2kStruct renameResult;
 
-    public Actor(DM2Context ctx) {
+    public Actor(DMContext ctx) {
         super(ctx, "RPG::Actor", 1);
     }
 

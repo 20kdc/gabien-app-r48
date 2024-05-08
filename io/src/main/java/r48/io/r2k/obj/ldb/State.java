@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -108,7 +108,7 @@ public class State extends DM2R2kObject {
     @DM2FXOBinding("@sp_change_map_val") @DM2LcfBinding(0x44) @DMCXInteger(0)
     public IntegerR2kStruct spChangeMapVal;
 
-    public State(DM2Context ctx) {
+    public State(DMContext ctx) {
         super(ctx, "RPG::State");
     }
 }

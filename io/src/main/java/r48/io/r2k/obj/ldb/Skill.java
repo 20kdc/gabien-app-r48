@@ -7,9 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DM2Optional;
 import r48.io.data.obj.DMCXBoolean;
@@ -96,7 +96,7 @@ public class Skill extends DM2R2kObject {
     @DM2Optional @DM2FXOBinding("@easyrpg_battle_message_2k3") @DM2LcfBinding(0xC9) @DMCXObject
     public StringR2kStruct easyrpgBattleMessage2k3;
 
-    public Skill(DM2Context ctx) {
+    public Skill(DMContext ctx) {
         super(ctx, "RPG::Skill");
     }
 

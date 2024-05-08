@@ -9,7 +9,7 @@ package r48.io.cs;
 
 import r48.RubyTable;
 import r48.io.OldObjectBackend;
-import r48.io.data.IDM3Context;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 
@@ -17,7 +17,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -29,22 +28,20 @@ import gabien.uslx.vfs.FSBackend;
  */
 public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
     public final String pfx;
-    public final Charset encoding;
     public final FSBackend fs;
 
-    public CSObjectBackend(FSBackend fs, String prefix, Charset cs) {
+    public CSObjectBackend(FSBackend fs, String prefix) {
         this.fs = fs;
         pfx = prefix;
-        encoding = cs;
     }
 
     @Override
-    public IRIOGeneric newObjectO(String nt, @NonNull IDM3Context context) {
-        return new IRIOGeneric(context, encoding);
+    public IRIOGeneric newObjectO(String nt, @NonNull DMContext context) {
+        return new IRIOGeneric(context);
     }
 
     @Override
-    public IRIO loadObjectFromFile(String filename, @NonNull IDM3Context context) {
+    public IRIO loadObjectFromFile(String filename, @NonNull DMContext context) {
         InputStream inp;
         try {
             inp = fs.intoPath(pfx + filename).openRead();
@@ -75,7 +72,7 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
         return null;
     }
 
-    private IRIOGeneric loadStageTBL(InputStream inp, @NonNull IDM3Context context) throws IOException {
+    private IRIOGeneric loadStageTBL(InputStream inp, @NonNull DMContext context) throws IOException {
         int stages = inp.available() / 200;
         IRIOGeneric rio = newObjectO("", context);
         rio.setArray(stages);
@@ -105,7 +102,7 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
         return rio;
     }
 
-    private IRIO loadFixedFormatString(InputStream inp, int i, @NonNull IDM3Context context) throws IOException {
+    private IRIO loadFixedFormatString(InputStream inp, int i, @NonNull DMContext context) throws IOException {
         byte[] bt = new byte[i];
         if (inp.read(bt) != i)
             throw new IOException("Insufficient data");
@@ -117,14 +114,14 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
                 break;
             }
         }
-        return newObjectO("", context).setString(bt, encoding);
+        return newObjectO("", context).setString(bt, context.encoding);
     }
 
-    private IRIO loadPXA(InputStream inp, @NonNull IDM3Context context) throws IOException {
+    private IRIO loadPXA(InputStream inp, @NonNull DMContext context) throws IOException {
         return loadRT(inp, 16, 16, context);
     }
 
-    private IRIO loadPXM(InputStream inp, @NonNull IDM3Context context) throws IOException {
+    private IRIO loadPXM(InputStream inp, @NonNull DMContext context) throws IOException {
         if (inp.read() != 'P')
             throw new IOException("Magic PXM 0x10 incorrect");
         if (inp.read() != 'X')
@@ -140,7 +137,7 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
         return loadRT(inp, w, h, context);
     }
 
-    private IRIO loadRT(InputStream inp, int w, int h, @NonNull IDM3Context context) throws IOException {
+    private IRIO loadRT(InputStream inp, int w, int h, @NonNull DMContext context) throws IOException {
         RubyTable rt = new RubyTable(2, w, h, 1, new int[] {0});
         for (int j = 0; j < h; j++)
             for (int i = 0; i < w; i++)
@@ -185,7 +182,7 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
 
     private void writeFixedFormatString(ByteArrayOutputStream baos, IRIO strsym, int i) throws IOException {
         byte[] bt = new byte[i];
-        byte[] nbt = strsym.getBufferInEncoding(encoding);
+        byte[] nbt = strsym.getBufferInEncoding(strsym.context.encoding);
         System.arraycopy(nbt, 0, bt, 0, Math.min(nbt.length, bt.length - 1));
         baos.write(bt);
     }

@@ -7,9 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -69,7 +69,7 @@ public class Enemy extends DM2R2kObject {
     @DM2FXOBinding("@actions") @DM2LcfBinding(0x2A) @DM2CXSupplier(EnemyAction.class)
     public DM2SparseArrayH<EnemyAction> enemyActions;
 
-    public Enemy(DM2Context ctx) {
+    public Enemy(DMContext ctx) {
         super(ctx, "RPG::Enemy");
     }
 

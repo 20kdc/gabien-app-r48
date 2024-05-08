@@ -8,7 +8,6 @@
 package r48.io.r2k.struct;
 
 import r48.io.data.*;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.R2kUtil;
@@ -36,7 +35,7 @@ public class MapTree extends IRIOFixedObject implements IR2kInterpretable {
     @DM2FXOBinding("@start")
     public MapTreeStart start;
 
-    public MapTree(DM2Context ctx) {
+    public MapTree(DMContext ctx) {
         super(ctx, "RPG::MapTree");
     }
 

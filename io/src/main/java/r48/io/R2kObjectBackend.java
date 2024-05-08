@@ -8,11 +8,10 @@
 package r48.io;
 
 import gabien.uslx.vfs.FSBackend;
-import r48.io.data.IDM3Context;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
-import r48.io.data.obj.DM2Context;
 import r48.io.r2k.R2kIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.obj.MapUnit;
@@ -24,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -34,44 +32,40 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     public final String root;
-    public final Charset charset;
     public final FSBackend fs;
 
-    public R2kObjectBackend(FSBackend fs, String rootPath, Charset cs) {
+    public R2kObjectBackend(FSBackend fs, String rootPath) {
         this.fs = fs;
         root = rootPath;
-        charset = cs;
     }
 
     @Override
-    public IRIO newObjectO(String fn, @NonNull IDM3Context context) {
-        DM2Context dm2c = new DM2Context(context, charset);
+    public IRIO newObjectO(String fn, @NonNull DMContext context) {
         // Non-RubyIO things
         if (fn.endsWith(".lmt"))
-            return new MapTree(dm2c);
+            return new MapTree(context);
         if (fn.endsWith(".lmu"))
-            return new MapUnit(dm2c);
+            return new MapUnit(context);
         if (fn.endsWith(".ldb"))
-            return new Database(dm2c);
+            return new Database(context);
         if (fn.endsWith(".lsd"))
-            return new Save(dm2c);
-        return new IRIOGeneric(context, charset);
+            return new Save(context);
+        return new IRIOGeneric(context);
     }
 
     @Override
-    public IRIO loadObjectFromFile(String filename, @NonNull IDM3Context context) {
-        DM2Context dm2c = new DM2Context(context, charset);
+    public IRIO loadObjectFromFile(String filename, @NonNull DMContext context) {
         filename = root + filename;
         try (InputStream fis = fs.intoPath(filename).openRead()) {
             try {
                 if (filename.endsWith(".lmu")) {
-                    return R2kIO.readLmu(dm2c, fis);
+                    return R2kIO.readLmu(context, fis);
                 } else if (filename.endsWith(".lmt")) {
-                    return R2kIO.readLmt(dm2c, fis);
+                    return R2kIO.readLmt(context, fis);
                 } else if (filename.endsWith(".ldb")) {
-                    return R2kIO.readLdb(dm2c, fis);
+                    return R2kIO.readLdb(context, fis);
                 } else if (filename.endsWith(".lsd")) {
-                    return R2kIO.readLsd(dm2c, fis);
+                    return R2kIO.readLsd(context, fis);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -8,9 +8,9 @@
 package r48.io.r2k.obj;
 
 import r48.RubyTable;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedUser;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DM2Optional;
 import r48.io.data.obj.DMCXBoolean;
@@ -81,7 +81,7 @@ public class MapUnit extends DM2R2kObject {
     public IntegerR2kStruct magicNumberB;
 
 
-    public MapUnit(DM2Context ctx) {
+    public MapUnit(DMContext ctx) {
         super(ctx, "RPG::Map");
     }
 
@@ -97,7 +97,7 @@ public class MapUnit extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@data"))
-            return map = new IRIOFixedUser(dm2Ctx.dm3, "Table", new RubyTable(3, 20, 15, 2, new int[] {0, 0}).innerBytes);
+            return map = new IRIOFixedUser(dm2Ctx, "Table", new RubyTable(3, 20, 15, 2, new int[] {0, 0}).innerBytes);
         if (sym.equals("@events"))
             return events = new DM2SparseArrayH<Event>(dm2Ctx, () -> new Event(dm2Ctx));
         return super.dm2AddIVar(sym);
@@ -135,6 +135,6 @@ public class MapUnit extends DM2R2kObject {
         RubyTable rt = new RubyTable(3, width.i, height.i, 2, new int[] {0, 0});
         System.arraycopy(layer0.userVal, 0, rt.innerBytes, 20, layer0.userVal.length);
         System.arraycopy(layer1.userVal, 0, rt.innerBytes, 20 + (width.i * height.i * 2), layer1.userVal.length);
-        map = new IRIOFixedUser(dm2Ctx.dm3, "Table", rt.innerBytes);
+        map = new IRIOFixedUser(dm2Ctx, "Table", rt.innerBytes);
     }
 }

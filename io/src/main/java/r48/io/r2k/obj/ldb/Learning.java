@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.r2k.chunks.IntegerR2kStruct;
@@ -23,7 +23,7 @@ public class Learning extends DM2R2kObject {
     @DM2FXOBinding("@skill") @DM2LcfBinding(2) @DMCXInteger(1)
     public IntegerR2kStruct skill;
 
-    public Learning(DM2Context ctx) {
+    public Learning(DMContext ctx) {
         super(ctx, "RPG::Learning");
     }
 

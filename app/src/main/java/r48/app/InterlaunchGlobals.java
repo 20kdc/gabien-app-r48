@@ -14,7 +14,9 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.GaBIEn;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
+import r48.AdHocSaveLoad;
 import r48.cfg.Config;
+import r48.io.data.DMContext;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMR48GlobalLibraries;
@@ -40,6 +42,7 @@ public class InterlaunchGlobals implements IDynTrProxy {
      * However, in strict mode, PathSyntax instead will throw exceptions normally.
      */
     public final boolean strict;
+    public final DMContext adhocIOContext = AdHocSaveLoad.newContext();
 
     public InterlaunchGlobals(Config c, Consumer<MVMEnv> report, Consumer<String> loadProgress, Consumer<String> trIssues, boolean strict) {
         this.c = c;

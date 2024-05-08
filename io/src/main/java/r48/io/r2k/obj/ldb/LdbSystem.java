@@ -7,9 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DM2Optional;
 import r48.io.data.obj.DMCXBoolean;
@@ -146,7 +146,7 @@ public class LdbSystem extends DM2R2kObject {
     @DM2FXOBinding("@show_title_2k3") @DM2LcfBinding(0x6F) @DMCXBoolean(true)
     public BooleanR2kStruct showTitle;
 
-    public LdbSystem(DM2Context ctx) {
+    public LdbSystem(DMContext ctx) {
         super(ctx, "RPG::System");
     }
 
@@ -185,7 +185,7 @@ public class LdbSystem extends DM2R2kObject {
         @DM2FXOBinding("@equip_accessory") @DM2LcfBinding(0x0F) @DMCXInteger(0)
         public IntegerR2kStruct accessoryId;
 
-        public TestBattler(DM2Context ctx) {
+        public TestBattler(DMContext ctx) {
             super(ctx, "RPG::System::TestBattler");
         }
     }

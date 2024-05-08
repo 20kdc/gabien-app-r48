@@ -7,7 +7,7 @@
 
 package r48.io.r2k.struct;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DM2Optional;
 import r48.io.data.obj.DMCXObject;
@@ -456,7 +456,7 @@ public class Terms extends DM2R2kObject {
   @DM2Optional @DM2FXOBinding("easyrpgAnnBattleItem2k3") @DM2LcfBinding(0xDB) @DMCXObject
   public StringR2kStruct easyrpgAnnBattleItem2k3;
 
-  public Terms(DM2Context ctx) {
+  public Terms(DMContext ctx) {
       super(ctx, "RPG::Terms");
   }
 }

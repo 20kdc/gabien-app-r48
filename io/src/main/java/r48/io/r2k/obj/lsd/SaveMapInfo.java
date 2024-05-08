@@ -8,9 +8,9 @@
 package r48.io.r2k.obj.lsd;
 
 import r48.RubyTable;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -61,7 +61,7 @@ public class SaveMapInfo extends DM2R2kObject {
     @DM2FXOBinding("@parallax_sy") @DM2LcfBinding(0x26) @DMCXInteger(0)
     public IntegerR2kStruct parallaxLoopYSpeed;
 
-    public SaveMapInfo(DM2Context ctx) {
+    public SaveMapInfo(DMContext ctx) {
         super(ctx, "RPG::SaveMapInfo");
     }
 

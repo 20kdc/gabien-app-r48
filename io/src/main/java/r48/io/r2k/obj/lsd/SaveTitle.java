@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj.lsd;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
@@ -45,7 +45,7 @@ public class SaveTitle extends DM2R2kObject {
     @DM2FXOBinding("@face4_index") @DM2LcfBinding(28) @DMCXInteger(0)
     public IntegerR2kStruct face4Idx;
 
-    public SaveTitle(DM2Context ctx) {
+    public SaveTitle(DMContext ctx) {
         super(ctx, "RPG::SaveTitle");
     }
 }

@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj.lsd;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -87,7 +87,7 @@ public class SaveScreen extends DM2R2kObject {
     @DM2FXOBinding("@weather_strength") @DM2LcfBinding(0x31) @DMCXInteger(0)
     public IntegerR2kStruct weatherStrength;
 
-    public SaveScreen(DM2Context ctx) {
+    public SaveScreen(DMContext ctx) {
         super(ctx, "RPG::SaveScreen");
     }
 }

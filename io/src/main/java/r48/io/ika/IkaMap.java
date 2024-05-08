@@ -9,7 +9,6 @@ package r48.io.ika;
 
 import r48.RubyTable;
 import r48.io.data.*;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.IRIOFixedObject;
 
@@ -28,7 +27,7 @@ public class IkaMap extends IRIOFixedObject {
     public final int defaultWidth;
     public final int defaultHeight;
 
-    public IkaMap(DM2Context ctx, int w, int h) {
+    public IkaMap(DMContext ctx, int w, int h) {
         super(ctx, "IkachanMap");
         defaultWidth = w;
         defaultHeight = h;
@@ -38,11 +37,11 @@ public class IkaMap extends IRIOFixedObject {
     @Override
     public IRIO addIVar(String sym) {
         if (sym.equals("@data"))
-            return data = new IRIOFixedUser(dm2Ctx.dm3, "Table", new RubyTable(3, defaultWidth, defaultHeight, 1, new int[1]).innerBytes);
+            return data = new IRIOFixedUser(dm2Ctx, "Table", new RubyTable(3, defaultWidth, defaultHeight, 1, new int[1]).innerBytes);
         if (sym.equals("@palette"))
-            return palette = new IRIOFixedUser(dm2Ctx.dm3, "Table", new RubyTable(3, 256, 1, 4, new int[4]).innerBytes);
+            return palette = new IRIOFixedUser(dm2Ctx, "Table", new RubyTable(3, 256, 1, 4, new int[4]).innerBytes);
         if (sym.equals("@events"))
-            return events = new IRIOFixedHash<Integer, IkaEvent>(dm2Ctx.dm3) {
+            return events = new IRIOFixedHash<Integer, IkaEvent>(dm2Ctx) {
                 @Override
                 public Integer convertIRIOtoKey(RORIO i) {
                     return (int) i.getFX();

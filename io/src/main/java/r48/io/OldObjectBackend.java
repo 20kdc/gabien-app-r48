@@ -7,7 +7,7 @@
 
 package r48.io;
 
-import r48.io.data.IDM3Context;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 
@@ -21,7 +21,7 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public abstract class OldObjectBackend<R extends RORIO, W extends IRIO> implements IObjectBackend {
     @Override
-    public ILoadedObject loadObject(String filename, @NonNull IDM3Context context) {
+    public ILoadedObject loadObject(String filename, @NonNull DMContext context) {
         W rio = loadObjectFromFile(filename, context);
         if (rio == null)
             return null;
@@ -29,13 +29,13 @@ public abstract class OldObjectBackend<R extends RORIO, W extends IRIO> implemen
     }
 
     @Override
-    public ILoadedObject newObject(String filename, @NonNull IDM3Context context) {
+    public ILoadedObject newObject(String filename, @NonNull DMContext context) {
         return new OldObjectBackendLoadedObject(newObjectO(filename, context), filename);
     }
 
-    public abstract W newObjectO(String filename, @NonNull IDM3Context context);
+    public abstract W newObjectO(String filename, @NonNull DMContext context);
 
-    public abstract W loadObjectFromFile(String filename, @NonNull IDM3Context context);
+    public abstract W loadObjectFromFile(String filename, @NonNull DMContext context);
 
     public abstract void saveObjectToFile(String filename, R obj) throws IOException;
 

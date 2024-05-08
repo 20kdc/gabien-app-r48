@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DM2Optional;
 import r48.io.data.obj.DMCXBoolean;
@@ -62,7 +62,7 @@ public class ActorClassBase extends DM2R2kObject {
 
     private final int battlerAnimationDefault;
 
-    public ActorClassBase(DM2Context ctx, String sym, int bad1) {
+    public ActorClassBase(DMContext ctx, String sym, int bad1) {
         super(ctx, sym);
         battlerAnimationDefault = bad1;
     }

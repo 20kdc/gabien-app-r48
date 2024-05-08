@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj.lsd;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
@@ -33,7 +33,7 @@ public class SaveVehicleLocation extends SaveCharacter {
     @DM2FXOBinding("@sprite2_index") @DM2LcfBinding(112) @DMCXInteger(0)
     public IntegerR2kStruct sprite2Index;
 
-    public SaveVehicleLocation(DM2Context ctx) {
+    public SaveVehicleLocation(DMContext ctx) {
         super(ctx, "RPG::SaveVehicleLocation");
     }
 }

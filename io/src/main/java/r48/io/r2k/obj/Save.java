@@ -7,9 +7,9 @@
 
 package r48.io.r2k.obj;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DM2Optional;
 import r48.io.data.obj.DMCXInteger;
@@ -58,7 +58,7 @@ public class Save extends DM2R2kObject {
     @DM2FXOBinding("@easyrpg_player_version_EPL") @DM2LcfBinding(200) @DMCXInteger(600) @DM2Optional
     public IntegerR2kStruct easyrpgPlayerVersion;
 
-    public Save(DM2Context ctx) {
+    public Save(DMContext ctx) {
         super(ctx, "RPG::Save");
     }
 
@@ -87,7 +87,7 @@ public class Save extends DM2R2kObject {
         @DM2FXOBinding("@i") @DM2LcfBinding(1) @DMCXObject
         public Interpreter interp;
 
-        public SaveCommonEvent(DM2Context ctx) {
+        public SaveCommonEvent(DMContext ctx) {
             super(ctx, "RPG::SaveCommonEvent");
         }
     }

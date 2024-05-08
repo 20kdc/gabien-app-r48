@@ -6,7 +6,6 @@
  */
 package r48.ui.dialog;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -28,7 +27,6 @@ import r48.AdHocSaveLoad;
 import r48.App;
 import r48.dbs.ObjectInfo;
 import r48.io.data.DMKey;
-import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.util.SchemaPath;
@@ -110,7 +108,7 @@ public class UIRMUniversalStringReplacer extends App.Prx {
         elms.add(utp);
 
         elms.add(new UITextButton(T.g.wordSave, app.f.dialogWindowTH, () -> {
-            IRIO rio = new IRIOGeneric(IDM3Context.Null.ADHOC_IO, StandardCharsets.UTF_8);
+            IRIO rio = new IRIOGeneric(app.ilg.adhocIOContext);
             rio.setObject("R48::UniversalStringLocatorSettings");
             settingsFull.saveTo(rio.addIVar("@replacements_full"));
             settingsPartial.saveTo(rio.addIVar("@replacements_partial"));

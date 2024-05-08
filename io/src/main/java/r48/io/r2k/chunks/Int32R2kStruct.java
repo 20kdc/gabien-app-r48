@@ -8,8 +8,8 @@
 package r48.io.r2k.chunks;
 
 import r48.io.IntUtils;
+import r48.io.data.DMContext;
 import r48.io.data.IRIOFixnum;
-import r48.io.data.obj.DM2Context;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,8 +19,8 @@ import java.io.OutputStream;
  * Created on 05/06/17.
  */
 public class Int32R2kStruct extends IRIOFixnum implements IR2kInterpretable {
-    public Int32R2kStruct(DM2Context dm2, int v) {
-        super(dm2.dm3, v);
+    public Int32R2kStruct(DMContext dm2, int v) {
+        super(dm2, v);
     }
 
     @Override

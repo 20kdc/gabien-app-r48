@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj.lsd;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -107,7 +107,7 @@ public abstract class SaveCharacter extends DM2R2kObject {
     @DM2FXOBinding("@flash_frames_left") @DM2LcfBinding(83) @DMCXInteger(0)
     public IntegerR2kStruct flashTimeLeft;
 
-    public SaveCharacter(DM2Context ctx, String s) {
+    public SaveCharacter(DMContext ctx, String s) {
         super(ctx, s);
     }
 }

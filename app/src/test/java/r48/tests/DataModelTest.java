@@ -12,7 +12,8 @@ import java.nio.charset.StandardCharsets;
 import org.junit.Assert;
 import org.junit.Test;
 
-import r48.io.data.IDM3Context;
+import r48.io.data.DMContext;
+import r48.io.data.IDMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 
@@ -22,10 +23,11 @@ import r48.io.data.IRIOGeneric;
 public class DataModelTest {
     @Test
     public void testStringEquality() {
+        DMContext tests = new DMContext(IDMChangeTracker.Null.TESTS, StandardCharsets.UTF_8);
         // This is really just to make sure unit tests work for now.
-        IRIO rioA = new IRIOGeneric(IDM3Context.Null.TESTS, StandardCharsets.UTF_8).setString("Hello");
-        IRIO rioB = new IRIOGeneric(IDM3Context.Null.TESTS, StandardCharsets.UTF_8).setString("Goodbye");
-        IRIO rioC = new IRIOGeneric(IDM3Context.Null.TESTS, StandardCharsets.UTF_8).setString("Hello");
+        IRIO rioA = new IRIOGeneric(tests).setString("Hello");
+        IRIO rioB = new IRIOGeneric(tests).setString("Goodbye");
+        IRIO rioC = new IRIOGeneric(tests).setString("Hello");
         Assert.assertFalse(IRIO.rubyEquals(rioA, rioB));
         Assert.assertTrue(IRIO.rubyEquals(rioA, rioA));
         Assert.assertTrue(IRIO.rubyEquals(rioA, rioC));

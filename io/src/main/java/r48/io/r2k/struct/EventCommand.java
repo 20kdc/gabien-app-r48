@@ -9,7 +9,6 @@ package r48.io.r2k.struct;
 
 import r48.io.IntUtils;
 import r48.io.data.*;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DM2Optional;
 import r48.io.data.obj.IRIOFixedObject;
@@ -37,7 +36,7 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
     @DM2Optional @DM2FXOBinding("@move_commands")
     public IRIOFixedArray<MoveCommand> moveCommands;
 
-    public EventCommand(DM2Context ctx) {
+    public EventCommand(DMContext ctx) {
         super(ctx, "RPG::EventCommand");
     }
 

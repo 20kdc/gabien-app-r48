@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -58,7 +58,7 @@ public class MapInfo extends DM2R2kObject {
     @DM2FXOBinding("@area_rect") @DM2LcfBinding(51) @DMCXObject
     public TRect areaRect;
 
-    public MapInfo(DM2Context ctx) {
+    public MapInfo(DMContext ctx) {
         super(ctx, "RPG::MapInfo");
     }
 

@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj.lsd;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -55,7 +55,7 @@ public class SavePartyLocation extends SaveCharacter {
     @DM2FXOBinding("@db_save_count") @DM2LcfBinding(132) @DMCXInteger(0)
     public IntegerR2kStruct dbSaveCount;
 
-    public SavePartyLocation(DM2Context ctx) {
+    public SavePartyLocation(DMContext ctx) {
         super(ctx, "RPG::SavePartyLocation");
     }
 }

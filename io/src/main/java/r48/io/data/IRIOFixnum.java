@@ -16,7 +16,7 @@ public class IRIOFixnum extends IRIOFixed {
 
     public long val;
 
-    public IRIOFixnum(@NonNull IDM3Context context, long t) {
+    public IRIOFixnum(@NonNull DMContext context, long t) {
         super(context, 'i');
         val = t;
     }

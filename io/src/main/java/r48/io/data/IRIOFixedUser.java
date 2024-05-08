@@ -16,7 +16,7 @@ public class IRIOFixedUser extends IRIOFixed {
     private final String objType;
     public byte[] userVal;
 
-    public IRIOFixedUser(@NonNull IDM3Context context, String user, byte[] def) {
+    public IRIOFixedUser(@NonNull DMContext context, String user, byte[] def) {
         super(context, 'u');
         objType = user;
         userVal = def;

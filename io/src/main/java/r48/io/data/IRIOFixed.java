@@ -21,7 +21,7 @@ import org.eclipse.jdt.annotation.NonNull;
 public abstract class IRIOFixed extends IRIO {
     protected int type;
 
-    public IRIOFixed(@NonNull IDM3Context context, int t) {
+    public IRIOFixed(@NonNull DMContext context, int t) {
         super(context);
         type = t;
     }

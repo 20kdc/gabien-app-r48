@@ -9,7 +9,8 @@ package r48.dbs;
 
 import r48.App;
 import r48.io.IObjectBackend;
-import r48.io.data.IDM3Context;
+import r48.io.data.DMContext;
+import r48.io.data.IDMChangeTracker;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -62,8 +63,8 @@ public class ObjectDB extends App.Svc {
         return id;
     }
 
-    private IDM3Context ensureDM3Context(@NonNull String id) {
-        return IDM3Context.Null.DELETE_ME;
+    private DMContext ensureDM3Context(@NonNull String id) {
+        return new DMContext(IDMChangeTracker.Null.DELETE_ME, app.encoding);
     }
 
     // NOTE: Preferably call the one-parameter version,
@@ -75,7 +76,7 @@ public class ObjectDB extends App.Svc {
                 return r;
         }
         app.loadProgress.accept(T.u.odb_loadObj.r(id));
-        IDM3Context context = ensureDM3Context(id);
+        DMContext context = ensureDM3Context(id);
         IObjectBackend.ILoadedObject rio = backend.loadObject(id, context);
         if (rio == null) {
             if (backupSchema != null) {

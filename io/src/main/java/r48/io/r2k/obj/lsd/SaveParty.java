@@ -7,9 +7,9 @@
 
 package r48.io.r2k.obj.lsd;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedArray;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -73,7 +73,7 @@ public class SaveParty extends DM2R2kObject {
     @DM2FXOBinding("@stats_steps") @DM2LcfBinding(0x2A) @DMCXInteger(0)
     public IntegerR2kStruct steps;
 
-    public SaveParty(DM2Context ctx) {
+    public SaveParty(DMContext ctx) {
         super(ctx, "RPG::SaveParty");
     }
 
@@ -157,7 +157,7 @@ public class SaveParty extends DM2R2kObject {
         @DM2FXOBinding("@usage")
         public ByteR2kStruct usage;
 
-        public SaveItem(DM2Context ctx) {
+        public SaveItem(DMContext ctx) {
             super(ctx, "RPG::SaveItem");
         }
 

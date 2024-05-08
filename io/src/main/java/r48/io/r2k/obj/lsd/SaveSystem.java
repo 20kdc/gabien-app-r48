@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj.lsd;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DM2Optional;
 import r48.io.data.obj.DMCXBoolean;
@@ -141,7 +141,7 @@ public class SaveSystem extends DM2R2kObject {
     @DM2FXOBinding("@atb_wait_mode_2k3") @DM2LcfBinding(0x8C) @DMCXInteger(0)
     public IntegerR2kStruct atbMode2k3;
 
-    public SaveSystem(DM2Context ctx) {
+    public SaveSystem(DMContext ctx) {
         super(ctx, "RPG::SaveSystem");
     }
 

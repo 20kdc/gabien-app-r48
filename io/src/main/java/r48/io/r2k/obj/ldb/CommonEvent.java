@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -35,7 +35,7 @@ public class CommonEvent extends DM2R2kObject {
     @DM2FXOBinding("@list") @DM2LcfSizeBinding(21) @DM2LcfBinding(22)
     public DM2Array<EventCommand> list;
 
-    public CommonEvent(DM2Context ctx) {
+    public CommonEvent(DMContext ctx) {
         super(ctx, "RPG::CommonEvent");
     }
 

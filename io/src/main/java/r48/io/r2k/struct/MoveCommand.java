@@ -10,7 +10,6 @@ package r48.io.r2k.struct;
 import r48.io.IntArrayIterable;
 import r48.io.IntUtils;
 import r48.io.data.*;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.R2kUtil;
@@ -33,7 +32,7 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
     @DM2FXOBinding("@parameters")
     public ParameterArray parameters;
 
-    public MoveCommand(DM2Context ctx) {
+    public MoveCommand(DMContext ctx) {
         super(ctx, "RPG::MoveCommand");
     }
 
@@ -50,7 +49,7 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         return para;
     }
 
-    public static MoveCommand[] fromEmbeddedData(DM2Context ctx, int[] remainingStream) {
+    public static MoveCommand[] fromEmbeddedData(DMContext ctx, int[] remainingStream) {
         try {
             return fromEmbeddedDataInside(ctx, remainingStream);
         } catch (Exception ex) {
@@ -90,7 +89,7 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         si.add(val);
     }
 
-    private static MoveCommand[] fromEmbeddedDataInside(DM2Context ctx, int[] remainingStream) {
+    private static MoveCommand[] fromEmbeddedDataInside(DMContext ctx, int[] remainingStream) {
         Iterator<Integer> si = new IntArrayIterable.ArrayIterator(remainingStream);
         LinkedList<MoveCommand> mcs = new LinkedList<MoveCommand>();
         while (si.hasNext()) {
@@ -98,9 +97,9 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
             MoveCommand mc = new MoveCommand(ctx);
             mc.code.val = code;
 
-            IRIOFixnum a = new IRIOFixnum(ctx.dm3, 0);
-            IRIOFixnum b = new IRIOFixnum(ctx.dm3, 0);
-            IRIOFixnum c = new IRIOFixnum(ctx.dm3, 0);
+            IRIOFixnum a = new IRIOFixnum(ctx, 0);
+            IRIOFixnum b = new IRIOFixnum(ctx, 0);
+            IRIOFixnum c = new IRIOFixnum(ctx, 0);
 
             mc.parameters.arrVal = new IRIO[] {
                     a,

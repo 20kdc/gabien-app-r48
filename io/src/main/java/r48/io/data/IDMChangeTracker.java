@@ -14,7 +14,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * This is for future DM3 stuff but was introduced in dummy form in v1.6-X to make it easier to share code between the branches. 
  * Created 7th May, 2024.
  */
-public interface IDM3Context {
+public interface IDMChangeTracker {
     /**
      * Reports that a data object is about to be modified.
      * This should only fire once ever per IDM3Data unless markClean is called.
@@ -32,7 +32,7 @@ public interface IDM3Context {
      * But it's also used by generics that are going to off-DB storage like clipboard or being deep-copied.
      * The instances are separated by "cause".
      */
-    public enum Null implements IDM3Context {
+    public enum Null implements IDMChangeTracker {
         // something that is cloned from
         DISPOSABLE,
         // clipboard

@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -51,7 +51,7 @@ public class BattleCommands extends DM2R2kObject {
     @DM2FXOBinding("@death_teleport_dir") @DM2LcfBinding(29) @DMCXInteger(0)
     public IntegerR2kStruct teleportFace;
 
-    public BattleCommands(DM2Context ctx) {
+    public BattleCommands(DMContext ctx) {
         super(ctx, "RPG::BattleCommands");
     }
 
@@ -61,7 +61,7 @@ public class BattleCommands extends DM2R2kObject {
         @DM2FXOBinding("@type") @DM2LcfBinding(2) @DMCXInteger(0)
         public IntegerR2kStruct type;
 
-        public BattleCommand(DM2Context ctx) {
+        public BattleCommand(DMContext ctx) {
             super(ctx, "RPG::BattleCommand");
         }
     }

@@ -8,10 +8,9 @@
 package r48.io.r2k.chunks;
 
 import r48.io.IntUtils;
-import r48.io.data.IDM3Context;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
-import r48.io.data.obj.DM2Context;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,12 +27,12 @@ public class BitfieldR2kStruct extends IRIOFixed implements IR2kInterpretable {
     private final String[] flags;
     private final BitfieldElement[] flagData;
 
-    public BitfieldR2kStruct(@NonNull DM2Context context, String[] f, int def) {
-        super(context.dm3, 'o');
+    public BitfieldR2kStruct(@NonNull DMContext context, String[] f, int def) {
+        super(context, 'o');
         flags = f;
         flagData = new BitfieldElement[8];
         for (int i = 0; i < 8; i++)
-            flagData[i] = new BitfieldElement(context.dm3, (def & (1 << i)) != 0);
+            flagData[i] = new BitfieldElement(context, (def & (1 << i)) != 0);
     }
 
     @Override
@@ -102,7 +101,7 @@ public class BitfieldR2kStruct extends IRIOFixed implements IR2kInterpretable {
     }
 
     private static class BitfieldElement extends IRIOFixed {
-        public BitfieldElement(@NonNull IDM3Context context, boolean v) {
+        public BitfieldElement(@NonNull DMContext context, boolean v) {
             super(context, v ? 'T' : 'F');
         }
 

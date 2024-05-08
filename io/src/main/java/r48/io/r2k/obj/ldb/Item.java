@@ -7,9 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DM2Optional;
 import r48.io.data.obj.DMCXBoolean;
@@ -145,7 +145,7 @@ public class Item extends DM2R2kObject {
     @DM2FXOBinding("@class_set_2k3") @DM2LcfSizeBinding(0x48) @DM2LcfBinding(0x49)
     public DM2ArraySet<BooleanR2kStruct> cEfx;
 
-    public Item(DM2Context ctx) {
+    public Item(DMContext ctx) {
         super(ctx, "RPG::Item");
     }
 

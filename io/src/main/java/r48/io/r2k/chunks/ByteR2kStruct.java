@@ -8,9 +8,9 @@
 package r48.io.r2k.chunks;
 
 import r48.io.IntUtils;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
-import r48.io.data.obj.DM2Context;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,12 +25,12 @@ public class ByteR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public byte value;
     public boolean signed = false;
 
-    public ByteR2kStruct(@NonNull DM2Context context, int v) {
-        super(context.dm3, 'i');
+    public ByteR2kStruct(@NonNull DMContext context, int v) {
+        super(context, 'i');
         value = (byte) v;
     }
 
-    public ByteR2kStruct(@NonNull DM2Context context) {
+    public ByteR2kStruct(@NonNull DMContext context) {
         this(context, 0);
     }
 

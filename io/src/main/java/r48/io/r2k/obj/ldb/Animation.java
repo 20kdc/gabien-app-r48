@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -38,7 +38,7 @@ public class Animation extends DM2R2kObject {
     @DM2FXOBinding("@frames") @DM2LcfBinding(12) @DM2CXSupplier(AnimationFrame.class)
     public DM2SparseArrayA<AnimationFrame> frames;
 
-    public Animation(DM2Context ctx) {
+    public Animation(DMContext ctx) {
         super(ctx, "RPG::Animation");
     }
 }

@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.r2k.chunks.BitfieldR2kStruct;
@@ -42,7 +42,7 @@ public class EventPageCondition extends DM2R2kObject {
     @DM2FXOBinding("@var_compare_op_2k3") @DM2LcfBinding(10) @DMCXInteger(1)
     public IntegerR2kStruct compareOp;
 
-    public EventPageCondition(DM2Context ctx) {
+    public EventPageCondition(DMContext ctx) {
         super(ctx, "RPG::EventPage::Condition");
     }
 

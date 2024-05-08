@@ -5,7 +5,7 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.io.data.obj;
+package r48.io.data;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -14,20 +14,26 @@ import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import r48.io.data.IDM3Context;
-import r48.io.data.IRIO;
+import gabien.uslx.append.Entity;
+import r48.io.data.obj.DM2CXSupplier;
+import r48.io.data.obj.DMCXBoolean;
+import r48.io.data.obj.DMCXInteger;
+import r48.io.data.obj.DMCXObject;
 
 /**
  * Responsible for setting up initialization of DM2 fields.
  * Created 5th April 2023 in response to needing to shuffle data around.
+ * Moved to EntityType and renamed DMContext 8th May 2024.
  */
-public class DM2Context {
-    public final @NonNull IDM3Context dm3;
+public final class DMContext extends Entity<DMContext> {
+    public static final Entity.Registrar<DMContext> I = newRegistrar();
+
+    public final @NonNull IDMChangeTracker changes;
     public final Charset encoding;
 
-    public DM2Context(@NonNull IDM3Context dm3, Charset cs) {
-        this.dm3 = dm3;
-        encoding = cs;
+    public DMContext(@NonNull IDMChangeTracker changes, @NonNull Charset encoding) {
+        this.changes = changes;
+        this.encoding = encoding;
     }
 
     /**
@@ -37,9 +43,9 @@ public class DM2Context {
         try {
             final DM2CXSupplier fxd = f.getAnnotation(DM2CXSupplier.class);
             if (fxd != null) {
-                Object i = f.getType().getConstructor(DM2Context.class, Supplier.class).newInstance(this, (Supplier<IRIO>) () -> {
+                Object i = f.getType().getConstructor(DMContext.class, Supplier.class).newInstance(this, (Supplier<IRIO>) () -> {
                     try {
-                        return (IRIO) createObjectOfClass(f, fxd.value());
+                        return (IRIO) createFactoryForClass(f, fxd.value()).get();
                     } catch (Exception e) {
                         throw new RuntimeException("At field: " + f, e);
                     }
@@ -48,16 +54,17 @@ public class DM2Context {
             }
             DMCXInteger fxi = f.getAnnotation(DMCXInteger.class);
             if (fxi != null) {
-                Object i = f.getType().getConstructor(DM2Context.class, int.class).newInstance(this, fxi.value());
+                Object i = f.getType().getConstructor(DMContext.class, int.class).newInstance(this, fxi.value());
                 return i;
             }
             DMCXBoolean fxb = f.getAnnotation(DMCXBoolean.class);
             if (fxb != null) {
-                Object i = f.getType().getConstructor(DM2Context.class, boolean.class).newInstance(this, fxb.value());
+                Object i = f.getType().getConstructor(DMContext.class, boolean.class).newInstance(this, fxb.value());
                 return i;
             }
             if (f.isAnnotationPresent(DMCXObject.class)) {
-                return createObjectOfClass(f, f.getType());
+                Object i = f.getType().getConstructor(DMContext.class).newInstance(this);
+                return i;
             }
             return null;
         } catch (Exception e) {
@@ -76,14 +83,35 @@ public class DM2Context {
     /**
      * Create an object by class without further parameterization. Field is kept solely for reference.
      */
-    public Object createObjectOfClass(final Field f, Class<?> c) {
-        Constructor<?> ctx = gcon(c, DM2Context.class);
+    public Supplier<?> createFactoryForClass(final Object at, Class<?> c) {
         try {
+            final Constructor<?> ctx = gcon(c, DMContext.class);
             if (ctx != null)
-                return ctx.newInstance(this);
-            return c.newInstance();
+                return () -> {
+                    try {
+                        return ctx.newInstance(DMContext.this);
+                    } catch (Exception e) {
+                        throw new RuntimeException("At factory: " + at, e);
+                    }
+                };
+            final Constructor<?> nv = gcon(c);
+            if (nv != null)
+                return () -> {
+                    try {
+                        return nv.newInstance();
+                    } catch (Exception e) {
+                        throw new RuntimeException("At factory: " + at, e);
+                    }
+                };
+                throw new Exception("Unable to find a suitable factory constructor");
         } catch (Exception e) {
-            throw new RuntimeException("At field: " + f, e);
+            throw new RuntimeException("While preparing factory: " + at, e);
+        }
+    }
+
+    public static final class Key<T> extends Entity.Key<DMContext, T> {
+        public Key() {
+            super(I);
         }
     }
 }

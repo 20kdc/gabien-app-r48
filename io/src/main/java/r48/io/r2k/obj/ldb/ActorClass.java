@@ -7,13 +7,13 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 
 /**
  * Migrated to ActorClassBase on December 7th 2018
  */
 public class ActorClass extends ActorClassBase {
-    public ActorClass(DM2Context ctx) {
+    public ActorClass(DMContext ctx) {
         super(ctx, "RPG::Class", 0);
     }
 }

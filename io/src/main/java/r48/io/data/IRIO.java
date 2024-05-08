@@ -26,11 +26,11 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public abstract class IRIO extends RORIO {
     /**
-     * DM3 Data context. This may one day handle undo/redo tracking.
+     * Data context. Change tracker may one day handle undo/redo tracking.
      */
-    public final @NonNull IDM3Context context;
+    public final @NonNull DMContext context;
 
-    public IRIO(@NonNull IDM3Context context) {
+    public IRIO(@NonNull DMContext context) {
         this.context = context;
     }
 

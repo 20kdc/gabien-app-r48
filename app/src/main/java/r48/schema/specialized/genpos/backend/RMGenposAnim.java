@@ -8,7 +8,6 @@
 package r48.schema.specialized.genpos.backend;
 
 import r48.App;
-import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -67,7 +66,7 @@ public class RMGenposAnim extends App.Svc implements IGenposAnim {
             while (target.getALen() < min)
                 target.addAElem(0);
             // Create a frame from scratch to avoid crashing
-            IRIO copy = new IRIOGeneric(IDM3Context.Null.DISPOSABLE, app.encoding).setNull();
+            IRIO copy = new IRIOGeneric(app.ctxDisposableAppEncoding).setNull();
             SchemaPath.setDefaultValue(copy, app.sdb.getSDBEntry("RPG::Animation::Frame"), null);
             frameIdx = min - 1;
             insertFrame(copy);

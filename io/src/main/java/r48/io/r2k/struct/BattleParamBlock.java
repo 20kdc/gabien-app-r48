@@ -8,10 +8,10 @@
 package r48.io.r2k.struct;
 
 import r48.io.IntUtils;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
 import r48.io.data.IRIOFixnum;
-import r48.io.data.obj.DM2Context;
 import r48.io.r2k.chunks.IR2kInterpretable;
 
 import java.io.IOException;
@@ -25,8 +25,8 @@ import java.io.OutputStream;
 public class BattleParamBlock extends IRIOFixed implements IR2kInterpretable {
     public final IRIOFixnum[] array = new IRIOFixnum[6];
 
-    public BattleParamBlock(DM2Context ctx) {
-        super(ctx.dm3, '[');
+    public BattleParamBlock(DMContext ctx) {
+        super(ctx, '[');
         setArray();
     }
 

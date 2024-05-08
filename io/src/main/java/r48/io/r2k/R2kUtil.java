@@ -8,9 +8,9 @@
 package r48.io.r2k;
 
 import r48.io.IntUtils;
+import r48.io.data.DMContext;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2Context;
 import r48.io.r2k.chunks.IR2kInterpretable;
 
 import java.io.*;
@@ -90,12 +90,12 @@ public class R2kUtil {
     // Note that this is just for the xIO classes to decode magics.
     // You should NEVER, EVER, *EVER* be decoding these otherwise,
     //  instead passing the binary data directly to RIO
-    public static String decodeLcfString(DM2Context dm2c, byte[] data) {
+    public static String decodeLcfString(DMContext dm2c, byte[] data) {
         return new String(data, dm2c.encoding);
     }
 
     // See above for when to use this
-    public static byte[] encodeLcfString(DM2Context dm2c, String text) {
+    public static byte[] encodeLcfString(DMContext dm2c, String text) {
         return text.getBytes(dm2c.encoding);
     }
 

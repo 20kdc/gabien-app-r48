@@ -9,8 +9,8 @@ package r48.io;
 
 import gabien.uslx.io.HexByteEncoding;
 import gabien.uslx.vfs.FSBackend;
+import r48.io.data.DMContext;
 import r48.io.data.DMKey;
-import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -27,20 +27,18 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     private final String prefix, postfix;
-    public final Charset charset;
     public final FSBackend fs;
 
-    public R48ObjectBackend(FSBackend fs, String s, String dataExt, Charset cs) {
+    public R48ObjectBackend(FSBackend fs, String s, String dataExt) {
         super();
         this.fs = fs;
         prefix = s;
         postfix = dataExt;
-        charset = cs;
     }
 
     @Override
-    public IRIOGeneric newObjectO(String n, @NonNull IDM3Context context) {
-        return new IRIOGeneric(context, charset);
+    public IRIOGeneric newObjectO(String n, @NonNull DMContext context) {
+        return new IRIOGeneric(context);
     }
 
     public static long load32(DataInputStream dis) throws IOException {
@@ -143,8 +141,8 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     }
 
     @Override
-    public IRIOGeneric loadObjectFromFile(String filename, @NonNull IDM3Context context) {
-        return loadObjectFromFile(new IRIOGeneric(context, charset), filename);
+    public IRIOGeneric loadObjectFromFile(String filename, @NonNull DMContext context) {
+        return loadObjectFromFile(new IRIOGeneric(context), filename);
     }
 
     public IRIOGeneric loadObjectFromFile(IRIOGeneric rio, String filename) {
@@ -309,8 +307,8 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         }
     }
 
-    private IRIOGeneric loadValue(DataInputStream dis, LinkedList<IRIO> objs, LinkedList<String> syms, @NonNull IDM3Context context) throws IOException {
-        IRIOGeneric rio = new IRIOGeneric(context, charset);
+    private IRIOGeneric loadValue(DataInputStream dis, LinkedList<IRIO> objs, LinkedList<String> syms, @NonNull DMContext context) throws IOException {
+        IRIOGeneric rio = new IRIOGeneric(context);
         loadValue(rio, dis, objs, syms);
         return rio;
     }

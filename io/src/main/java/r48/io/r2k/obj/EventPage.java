@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -57,7 +57,7 @@ public class EventPage extends DM2R2kObject {
     @DM2FXOBinding("@list") @DM2LcfSizeBinding(51) @DM2LcfBinding(52)
     public DM2Array<EventCommand> list;
 
-    public EventPage(DM2Context ctx) {
+    public EventPage(DMContext ctx) {
         super(ctx, "RPG::EventPage");
     }
 

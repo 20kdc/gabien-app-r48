@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.r2k.chunks.IntegerR2kStruct;
@@ -26,7 +26,7 @@ public class BAD extends DM2R2kObject {
     @DM2FXOBinding("@pose") @DM2LcfBinding(14) @DMCXInteger(-1)
     public IntegerR2kStruct pose;
 
-    public BAD(DM2Context ctx) {
+    public BAD(DMContext ctx) {
         super(ctx, "RPG::BattlerAnimationData");
     }
 }

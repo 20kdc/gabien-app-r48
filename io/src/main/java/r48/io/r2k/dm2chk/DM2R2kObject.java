@@ -9,7 +9,6 @@ package r48.io.r2k.dm2chk;
 
 import r48.io.IntUtils;
 import r48.io.data.*;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DM2Optional;
 import r48.io.data.obj.IRIOFixedObject;
@@ -45,7 +44,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
     // A note here:
     private HashMap<Integer, byte[]> packedChunkData = new HashMap<Integer, byte[]>();
 
-    public DM2R2kObject(DM2Context ctx, String sym) {
+    public DM2R2kObject(DMContext ctx, String sym) {
         super(ctx, sym);
     }
 
@@ -55,7 +54,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
     }
 
     private void setUnknownChunks() {
-        unknownChunks = new IRIOFixedHash<Integer, IRIOFixedUser>(dm2Ctx.dm3) {
+        unknownChunks = new IRIOFixedHash<Integer, IRIOFixedUser>(dm2Ctx) {
             @Override
             public Integer convertIRIOtoKey(RORIO i) {
                 return (int) i.getFX();
@@ -97,13 +96,13 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
             if (pcd.size() > 0) {
                 setUnknownChunks();
                 for (Map.Entry<Integer, byte[]> me : pcd.entrySet())
-                    unknownChunks.hashVal.put(me.getKey(), new IRIOFixedUser(dm2Ctx.dm3, "Blob", me.getValue()));
+                    unknownChunks.hashVal.put(me.getKey(), new IRIOFixedUser(dm2Ctx, "Blob", me.getValue()));
             }
         }
     }
 
     protected void dm2PackIntoMap(HashMap<Integer, byte[]> pcd) throws IOException {
-        for (Field f : cachedFields) {
+        for (Field f : cachedFields.fieldsArray) {
             DM2LcfBinding dlb = f.getAnnotation(DM2LcfBinding.class);
             if (dlb != null) {
                 IR2kInterpretable iri;
@@ -139,7 +138,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
 
     protected void dm2UnpackFromMapDestructively(HashMap<Integer, byte[]> pcd) {
         // Perform initialization & size chunk removal
-        for (Field f : cachedFields) {
+        for (Field f : cachedFields.fieldsArray) {
             DM2FXOBinding dlbx = f.getAnnotation(DM2FXOBinding.class);
             DM2LcfBinding dlb = f.getAnnotation(DM2LcfBinding.class);
 
@@ -169,7 +168,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
             }
         }
         // Now actually unpack
-        for (Field f : cachedFields) {
+        for (Field f : cachedFields.fieldsArray) {
             DM2LcfBinding dlb = f.getAnnotation(DM2LcfBinding.class);
             if (dlb != null) {
                 byte[] relevantChunk = pcd.remove(dlb.value());
@@ -226,7 +225,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
             setUnknownChunks();
             return unknownChunks;
         }
-        for (Field f : cachedFields) {
+        for (Field f : cachedFields.fieldsArray) {
             DM2FXOBinding fxo = f.getAnnotation(DM2FXOBinding.class);
             if (fxo != null) {
                 if (sym.equals(fxo.value())) {

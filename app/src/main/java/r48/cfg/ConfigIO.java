@@ -6,13 +6,11 @@
  */
 package r48.cfg;
 
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 import gabien.GaBIEn;
 import r48.AdHocSaveLoad;
 import r48.cfg.FontSizes.FontSizeField;
-import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 
@@ -25,7 +23,7 @@ public class ConfigIO {
     // This is on purpose.
 
     public static void save(Config c) {
-        IRIOGeneric prepare = new IRIOGeneric(IDM3Context.Null.ADHOC_IO, StandardCharsets.UTF_8);
+        IRIOGeneric prepare = new IRIOGeneric(AdHocSaveLoad.newContext());
         prepare.setObject("R48::FontConfig");
         for (FontSizeField fsf : c.f.fields)
             prepare.addIVar("@" + fsf.configID).setFX(fsf.get());

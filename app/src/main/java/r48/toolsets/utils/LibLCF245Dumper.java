@@ -7,7 +7,6 @@
 
 package r48.toolsets.utils;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ import r48.dbs.RPGCommand;
 import r48.dbs.RPGCommand.Param;
 import r48.dbs.SDB;
 import r48.io.data.DMKey;
-import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -40,7 +38,7 @@ public class LibLCF245Dumper extends App.Svc {
     public final HashMap<SchemaElement, Integer> seGraph = new HashMap<>();
     public LibLCF245Dumper(App app) {
         super(app);
-        root = new IRIOGeneric(IDM3Context.Null.ADHOC_IO, StandardCharsets.UTF_8).setHash();
+        root = new IRIOGeneric(app.ilg.adhocIOContext).setHash();
         sdbNodes = root.addHashVal(DMKey.ofStr("sdbNodes")).setArray();
     }
 

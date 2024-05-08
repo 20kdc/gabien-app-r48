@@ -7,12 +7,12 @@
 
 package r48.io.data.obj;
 
-import java.lang.reflect.Field;
 import java.util.LinkedList;
-import java.util.concurrent.ConcurrentHashMap;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
+import r48.io.data.obj.FixedObjectProps.FXOBinding;
 
 /**
  * An IRIO describing a fixed-layout object.
@@ -20,22 +20,15 @@ import r48.io.data.IRIOFixed;
  */
 public abstract class IRIOFixedObject extends IRIOFixed {
     private final String objType;
-    private final static ConcurrentHashMap<Class<?>, Field[]> classFields = new ConcurrentHashMap<>();
-    protected final Field[] cachedFields;
-    public final DM2Context dm2Ctx;
+    protected final FixedObjectProps cachedFields;
+    public final DMContext dm2Ctx;
 
-    public IRIOFixedObject(DM2Context ctx, String sym) {
-        super(ctx.dm3, 'o');
+    public IRIOFixedObject(DMContext ctx, String sym) {
+        super(ctx, 'o');
         dm2Ctx = ctx;
         objType = sym;
         Class<?> c = getClass();
-        Field[] data = classFields.get(c);
-        if (data != null) {
-            cachedFields = data;
-        } else {
-            cachedFields = c.getFields();
-            classFields.put(c, cachedFields);
-        }
+        cachedFields = FixedObjectProps.forClass(c);
         initialize();
     }
 
@@ -49,14 +42,11 @@ public abstract class IRIOFixedObject extends IRIOFixed {
 
     protected void initialize() {
         try {
-            for (Field f : cachedFields) {
-                DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
-                if (dmx != null) {
-                    if (!f.isAnnotationPresent(DM2Optional.class)) {
-                        addIVar(dmx.value());
-                    } else {
-                        f.set(this, null);
-                    }
+            for (FXOBinding f : cachedFields.fxoBindingsArray) {
+                if (!f.optional) {
+                    addIVar(f.iVar);
+                } else {
+                    f.field.set(this, null);
                 }
             }
         } catch (Exception e) {
@@ -72,35 +62,28 @@ public abstract class IRIOFixedObject extends IRIOFixed {
     @Override
     public String[] getIVars() {
         LinkedList<String> s = new LinkedList<String>();
-        for (Field f : cachedFields) {
-            DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
-            if (dmx != null) {
-                if (f.isAnnotationPresent(DM2Optional.class)) {
-                    try {
-                        if (f.get(this) == null)
-                            continue;
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
+        for (FXOBinding f : cachedFields.fxoBindingsArray) {
+            if (f.optional) {
+                try {
+                    if (f.field.get(this) == null)
+                        continue;
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
                 }
-                s.add(dmx.value());
             }
+            s.add(f.iVar);
         }
         return s.toArray(new String[0]);
     }
 
     @Override
     public IRIO getIVar(String sym) {
-        for (Field f : cachedFields) {
-            DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
-            if (dmx != null) {
-                if (dmx.value().equals(sym)) {
-                    try {
-                        return (IRIO) f.get(this);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+        FXOBinding f = cachedFields.byIVar(sym);
+        if (f != null) {
+            try {
+                return (IRIO) f.field.get(this);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
             }
         }
         return null;
@@ -108,16 +91,14 @@ public abstract class IRIOFixedObject extends IRIOFixed {
 
     @Override
     public void rmIVar(String sym) {
-        for (Field f : cachedFields) {
-            DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
-            if (dmx != null) {
-                if (dmx.value().equals(sym) && f.isAnnotationPresent(DM2Optional.class)) {
-                    try {
-                        f.set(this, null);
-                        return;
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
+        FXOBinding f = cachedFields.byIVar(sym);
+        if (f != null) {
+            if (f.optional) {
+                try {
+                    f.field.set(this, null);
+                    return;
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }

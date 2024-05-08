@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -36,7 +36,7 @@ public class Attribute extends DM2R2kObject {
     @DM2FXOBinding("@e_rate") @DM2LcfBinding(15) @DMCXInteger(0)
     public IntegerR2kStruct eRate;
 
-    public Attribute(DM2Context ctx) {
+    public Attribute(DMContext ctx) {
         super(ctx, "RPG::Attribute");
     }
 }

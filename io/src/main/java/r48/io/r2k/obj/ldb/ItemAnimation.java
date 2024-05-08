@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -39,7 +39,7 @@ public class ItemAnimation extends DM2R2kObject {
     @DM2FXOBinding("@battle_anim") @DM2LcfBinding(0x0D) @DMCXInteger(0)
     public IntegerR2kStruct battleAnim;
 
-    public ItemAnimation(DM2Context ctx) {
+    public ItemAnimation(DMContext ctx) {
         super(ctx, "RPG::ItemAnimation");
     }
 }

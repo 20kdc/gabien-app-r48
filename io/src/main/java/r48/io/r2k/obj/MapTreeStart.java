@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.r2k.chunks.IntegerR2kStruct;
@@ -47,7 +47,7 @@ public class MapTreeStart extends DM2R2kObject {
     @DM2FXOBinding("@airship_y") @DM2LcfBinding(33) @DMCXInteger(0)
     public IntegerR2kStruct airshipY;
 
-    public MapTreeStart(DM2Context ctx) {
+    public MapTreeStart(DMContext ctx) {
         super(ctx, "RPG::Start");
     }
 }

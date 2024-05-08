@@ -15,7 +15,7 @@ import org.eclipse.jdt.annotation.NonNull;
 public abstract class IRIOFixedArray<T extends IRIO> extends IRIOFixed {
     public IRIO[] arrVal = new IRIO[0];
 
-    public IRIOFixedArray(@NonNull IDM3Context context) {
+    public IRIOFixedArray(@NonNull DMContext context) {
         super(context, '[');
     }
 

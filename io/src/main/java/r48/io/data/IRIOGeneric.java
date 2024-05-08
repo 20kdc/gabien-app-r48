@@ -53,11 +53,11 @@ public class IRIOGeneric extends IRIO {
     // For string-likes (f, "): Should be treated as immutable - replace strVal on change
     private byte[] userVal;
     private long fixnumVal;
-    public final Charset charset;
+    public final @NonNull Charset charset;
 
-    public IRIOGeneric(@NonNull IDM3Context context, Charset cs) {
+    public IRIOGeneric(@NonNull DMContext context) {
         super(context);
-        charset = cs;
+        charset = context.encoding;
     }
 
     // ---- Value creators ----
@@ -157,7 +157,7 @@ public class IRIOGeneric extends IRIO {
         setNull();
         type = '}';
         hashVal = new HashMap<>();
-        hashDefVal = new IRIOGeneric(context, charset);
+        hashDefVal = new IRIOGeneric(context);
         return this;
     }
 
@@ -175,7 +175,7 @@ public class IRIOGeneric extends IRIO {
         if (length != 0)
             arrVal = new IRIO[length];
         for (int i = 0; i < length; i++)
-            arrVal[i] = new IRIOGeneric(context, charset);
+            arrVal[i] = new IRIOGeneric(context);
         return this;
     }
 
@@ -251,7 +251,7 @@ public class IRIOGeneric extends IRIO {
     @Override
     public IRIO addIVar(String sym) {
         rmIVar(sym);
-        IRIOGeneric rio = new IRIOGeneric(context, charset);
+        IRIOGeneric rio = new IRIOGeneric(context);
         if (iVarKeys == null) {
             iVarKeys = new String[] {sym};
             iVarVals = new IRIO[] {rio};
@@ -318,7 +318,7 @@ public class IRIOGeneric extends IRIO {
 
     @Override
     public IRIO addAElem(int i) {
-        IRIO rio = new IRIOGeneric(context, charset);
+        IRIO rio = new IRIOGeneric(context);
         IRIO[] old = arrVal;
         IRIO[] newArr = new IRIO[old.length + 1];
         System.arraycopy(old, 0, newArr, 0, i);
@@ -345,7 +345,7 @@ public class IRIOGeneric extends IRIO {
     @Override
     public IRIO addHashVal(DMKey key) {
         removeHashVal(key);
-        IRIO rt = new IRIOGeneric(context, charset);
+        IRIO rt = new IRIOGeneric(context);
         hashVal.put(key, rt);
         return rt;
     }

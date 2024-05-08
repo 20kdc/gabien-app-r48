@@ -7,9 +7,9 @@
 
 package r48.io.r2k.obj.lsd;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -68,7 +68,7 @@ public class Interpreter extends DM2R2kObject {
     @DM2FXOBinding("@waiting_for_sleep_alt") @DM2LcfBinding(0x2A) @DMCXInteger(0)
     public IntegerR2kStruct waitingSlp2;
 
-    public Interpreter(DM2Context ctx) {
+    public Interpreter(DMContext ctx) {
         super(ctx, "RPG::Interpreter");
     }
 
@@ -84,7 +84,7 @@ public class Interpreter extends DM2R2kObject {
         @DM2FXOBinding("@branches") @DM2LcfSizeBinding(0x15) @DM2LcfBinding(0x16)
         public DM2Array<ByteR2kStruct> branches;
 
-        public InterpreterStackLevel(DM2Context ctx) {
+        public InterpreterStackLevel(DMContext ctx) {
             super(ctx, "RPG::InterpreterStackLevel");
         }
 

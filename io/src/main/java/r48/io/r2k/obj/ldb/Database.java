@@ -7,9 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2Context;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DM2Optional;
 import r48.io.data.obj.DMCXObject;
@@ -25,7 +25,7 @@ import r48.io.r2k.struct.Terms;
  */
 public class Database extends DM2R2kObject {
 
-    public Database(DM2Context ctx) {
+    public Database(DMContext ctx) {
         super(ctx, "RPG::Database");
     }
 

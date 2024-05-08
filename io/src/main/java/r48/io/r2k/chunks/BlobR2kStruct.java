@@ -8,8 +8,8 @@
 package r48.io.r2k.chunks;
 
 import r48.io.IntUtils;
+import r48.io.data.DMContext;
 import r48.io.data.IRIOFixedUser;
-import r48.io.data.obj.DM2Context;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,18 +23,18 @@ import org.eclipse.jdt.annotation.NonNull;
  * Created on 31/05/17.
  */
 public class BlobR2kStruct extends IRIOFixedUser implements IR2kInterpretable {
-    public BlobR2kStruct(@NonNull DM2Context context, byte[] mkDef) {
-        super(context.dm3, "Blob", mkDef);
+    public BlobR2kStruct(@NonNull DMContext context, byte[] mkDef) {
+        super(context, "Blob", mkDef);
     }
-    public BlobR2kStruct(@NonNull DM2Context context, Supplier<byte[]> mkDef) {
-        super(context.dm3, "Blob", mkDef.get());
+    public BlobR2kStruct(@NonNull DMContext context, Supplier<byte[]> mkDef) {
+        super(context, "Blob", mkDef.get());
     }
 
-    public BlobR2kStruct(@NonNull DM2Context context, String c, byte[] mkDef) {
-        super(context.dm3, c, mkDef);
+    public BlobR2kStruct(@NonNull DMContext context, String c, byte[] mkDef) {
+        super(context, c, mkDef);
     }
-    public BlobR2kStruct(@NonNull DM2Context context, String c, Supplier<byte[]> mkDef) {
-        super(context.dm3, c, mkDef.get());
+    public BlobR2kStruct(@NonNull DMContext context, String c, Supplier<byte[]> mkDef) {
+        super(context, c, mkDef.get());
     }
 
     @Override

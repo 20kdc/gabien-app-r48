@@ -7,10 +7,10 @@
 
 package r48.io.r2k.struct;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedArray;
 import r48.io.data.IRIOFixnum;
-import r48.io.data.obj.DM2Context;
 import r48.io.r2k.chunks.StringR2kStruct;
 
 /**
@@ -19,8 +19,8 @@ import r48.io.r2k.chunks.StringR2kStruct;
 public class ParameterArray extends IRIOFixedArray<IRIO> {
     public final StringR2kStruct text;
 
-    public ParameterArray(DM2Context dm2c) {
-        super(dm2c.dm3);
+    public ParameterArray(DMContext dm2c) {
+        super(dm2c);
         text = new StringR2kStruct(dm2c);
     }
 

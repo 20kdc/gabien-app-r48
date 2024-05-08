@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj;
 
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.data.obj.DM2FXOBinding;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.r2k.chunks.IntegerR2kStruct;
@@ -21,7 +21,7 @@ public class Music extends Sound {
     @DM2FXOBinding("@fadeTime") @DM2LcfBinding(2) @DMCXInteger(0)
     public IntegerR2kStruct fadeTime;
 
-    public Music(DM2Context ctx) {
+    public Music(DMContext ctx) {
         super(ctx, "RPG::Music");
     }
 }
