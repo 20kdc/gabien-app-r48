@@ -8,8 +8,8 @@
 package r48.io.r2k.obj.ldb;
 
 import r48.io.data.DMContext;
-import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMCXSupplier;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
@@ -22,20 +22,20 @@ import r48.io.r2k.dm2chk.*;
  * COPY jun6-2017
  */
 public class Animation extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
+    @DMFXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
     public StringR2kStruct name;
-    @DM2FXOBinding("@animation_name") @DM2LcfBinding(2) @DMCXObject
+    @DMFXOBinding("@animation_name") @DM2LcfBinding(2) @DMCXObject
     public StringR2kStruct animationName;
-    @DM2FXOBinding("@battle2_2k3") @DM2LcfBinding(3) @DMCXBoolean(false)
+    @DMFXOBinding("@battle2_2k3") @DM2LcfBinding(3) @DMCXBoolean(false)
     public BooleanR2kStruct unknown3;
-    @DM2FXOBinding("@timings") @DM2LcfBinding(6) @DM2CXSupplier(AnimationTiming.class)
+    @DMFXOBinding("@timings") @DM2LcfBinding(6) @DMCXSupplier(AnimationTiming.class)
     public DM2SparseArrayA<AnimationTiming> timings;
-    @DM2FXOBinding("@scope") @DM2LcfBinding(9) @DMCXInteger(0)
+    @DMFXOBinding("@scope") @DM2LcfBinding(9) @DMCXInteger(0)
     public IntegerR2kStruct scope;
-    @DM2FXOBinding("@position") @DM2LcfBinding(10) @DMCXInteger(2)
+    @DMFXOBinding("@position") @DM2LcfBinding(10) @DMCXInteger(2)
     public IntegerR2kStruct position;
     // Actually a SparseArrayA<AnimationFrame>, but thanks to Final Tear 3, has to be deferred.
-    @DM2FXOBinding("@frames") @DM2LcfBinding(12) @DM2CXSupplier(AnimationFrame.class)
+    @DMFXOBinding("@frames") @DM2LcfBinding(12) @DMCXSupplier(AnimationFrame.class)
     public DM2SparseArrayA<AnimationFrame> frames;
 
     public Animation(DMContext ctx) {

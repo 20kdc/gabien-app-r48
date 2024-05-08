@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
 import r48.io.r2k.chunks.IntegerR2kStruct;
@@ -22,13 +22,13 @@ import r48.io.r2k.dm2chk.*;
  * Created on 31/05/17.
  */
 public class Event extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
+    @DMFXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
     public StringR2kStruct name;
-    @DM2FXOBinding("@x") @DM2LcfBinding(2) @DMCXInteger(0)
+    @DMFXOBinding("@x") @DM2LcfBinding(2) @DMCXInteger(0)
     public IntegerR2kStruct x;
-    @DM2FXOBinding("@y") @DM2LcfBinding(3) @DMCXInteger(0)
+    @DMFXOBinding("@y") @DM2LcfBinding(3) @DMCXInteger(0)
     public IntegerR2kStruct y;
-    @DM2FXOBinding("@pages") @DM2LcfBinding(5)
+    @DMFXOBinding("@pages") @DM2LcfBinding(5)
     public DM2SparseArrayA<EventPage> pages;
 
     public Event(DMContext ctx) {
@@ -38,10 +38,10 @@ public class Event extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@pages"))
-            return pages = new DM2SparseArrayA<EventPage>(dm2Ctx, new Supplier<EventPage>() {
+            return pages = new DM2SparseArrayA<EventPage>(context, new Supplier<EventPage>() {
                 @Override
                 public EventPage get() {
-                    return new EventPage(dm2Ctx);
+                    return new EventPage(context);
                 }
             });
         return super.dm2AddIVar(sym);

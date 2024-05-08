@@ -37,7 +37,7 @@ public class R2kIO {
     }
 
     public static void writeLsd(OutputStream fos, Save rio) throws IOException {
-        byte[] d = R2kUtil.encodeLcfString(rio.dm2Ctx, "LcfSaveData");
+        byte[] d = R2kUtil.encodeLcfString(rio.context, "LcfSaveData");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
         rio.exportData(fos);
@@ -54,7 +54,7 @@ public class R2kIO {
     }
 
     public static void writeLdb(OutputStream fos, Database db) throws IOException {
-        byte[] d = R2kUtil.encodeLcfString(db.dm2Ctx, "LcfDataBase");
+        byte[] d = R2kUtil.encodeLcfString(db.context, "LcfDataBase");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
         db.exportData(fos);
@@ -71,7 +71,7 @@ public class R2kIO {
     }
 
     public static void writeLmu(OutputStream fos, MapUnit rio) throws IOException {
-        byte[] d = R2kUtil.encodeLcfString(rio.dm2Ctx, "LcfMapUnit");
+        byte[] d = R2kUtil.encodeLcfString(rio.context, "LcfMapUnit");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
         rio.exportData(fos);
@@ -88,7 +88,7 @@ public class R2kIO {
     }
 
     public static void writeLmt(OutputStream fos, MapTree db) throws IOException {
-        byte[] d = R2kUtil.encodeLcfString(db.dm2Ctx, "LcfMapTree");
+        byte[] d = R2kUtil.encodeLcfString(db.context, "LcfMapTree");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
         db.exportData(fos);

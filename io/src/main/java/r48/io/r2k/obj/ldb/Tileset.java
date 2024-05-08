@@ -10,7 +10,7 @@ package r48.io.r2k.obj.ldb;
 import r48.RubyTable;
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
@@ -29,24 +29,24 @@ import java.util.HashMap;
  * Created on 01/06/17.
  */
 public class Tileset extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(0x01) @DMCXObject
+    @DMFXOBinding("@name") @DM2LcfBinding(0x01) @DMCXObject
     public StringR2kStruct name;
-    @DM2FXOBinding("@tileset_name") @DM2LcfBinding(0x02) @DMCXObject
+    @DMFXOBinding("@tileset_name") @DM2LcfBinding(0x02) @DMCXObject
     public StringR2kStruct tilesetName;
     // Tables? Tables. Don't need to put these as optional explicitly because not Index-based.
     // ...and anyway, I get the feeling they aren't actually SUPPOSED to be optional.
     // excuse me while I go mess around with the schema.
     // -- AS OF DM2, some blob transformation occurs similar to SaveMapInfo.
-    @DM2FXOBinding("@terrain_id_data") @DM2LcfBinding(3)
+    @DMFXOBinding("@terrain_id_data") @DM2LcfBinding(3)
     public BlobR2kStruct terrainTbl;
-    @DM2FXOBinding("@lowpass_data") @DM2LcfBinding(4)
+    @DMFXOBinding("@lowpass_data") @DM2LcfBinding(4)
     public BlobR2kStruct lowPassTbl;
-    @DM2FXOBinding("@highpass_data") @DM2LcfBinding(5)
+    @DMFXOBinding("@highpass_data") @DM2LcfBinding(5)
     public BlobR2kStruct highPassTbl;
 
-    @DM2FXOBinding("@anim_cyclic") @DM2LcfBinding(0x0B) @DMCXBoolean(false)
+    @DMFXOBinding("@anim_cyclic") @DM2LcfBinding(0x0B) @DMCXBoolean(false)
     public BooleanR2kStruct animCyclic;
-    @DM2FXOBinding("@anim_speed") @DM2LcfBinding(0x0C) @DMCXInteger(0)
+    @DMFXOBinding("@anim_speed") @DM2LcfBinding(0x0C) @DMCXInteger(0)
     public IntegerR2kStruct animSpeed;
 
     public Tileset(DMContext ctx) {
@@ -56,15 +56,15 @@ public class Tileset extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@terrain_id_data"))
-            return terrainTbl = new BlobR2kStruct(dm2Ctx, "Table", new RubyTable(3, 162, 1, 1, new int[] {1}).innerBytes);
+            return terrainTbl = new BlobR2kStruct(context, "Table", new RubyTable(3, 162, 1, 1, new int[] {1}).innerBytes);
         if (sym.equals("@lowpass_data"))
-            return lowPassTbl = new BlobR2kStruct(dm2Ctx, "Table", bitfieldsToTable(R2kUtil.supplyBlank(162, (byte) 15).get()));
+            return lowPassTbl = new BlobR2kStruct(context, "Table", bitfieldsToTable(R2kUtil.supplyBlank(162, (byte) 15).get()));
         if (sym.equals("@highpass_data")) {
             byte[] dat = new byte[144];
             for (int i = 0; i < dat.length; i++)
                 dat[i] = 15;
             dat[0] = 31;
-            return highPassTbl = new BlobR2kStruct(dm2Ctx, "Table", bitfieldsToTable(dat));
+            return highPassTbl = new BlobR2kStruct(context, "Table", bitfieldsToTable(dat));
         }
         return super.dm2AddIVar(sym);
     }

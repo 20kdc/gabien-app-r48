@@ -10,8 +10,8 @@ package r48.io.r2k.obj.lsd;
 import r48.RubyTable;
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMCXSupplier;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
@@ -28,37 +28,37 @@ import java.util.HashMap;
  * Created on December 13th, 2017
  */
 public class SaveMapInfo extends DM2R2kObject {
-    @DM2FXOBinding("@x") @DM2LcfBinding(0x01) @DMCXInteger(0)
+    @DMFXOBinding("@x") @DM2LcfBinding(0x01) @DMCXInteger(0)
     public IntegerR2kStruct x;
-    @DM2FXOBinding("@y") @DM2LcfBinding(0x02) @DMCXInteger(0)
+    @DMFXOBinding("@y") @DM2LcfBinding(0x02) @DMCXInteger(0)
     public IntegerR2kStruct y;
     // I seriously hope this is correct...
-    @DM2FXOBinding("@encounter_rate") @DM2LcfBinding(0x03) @DMCXInteger(-1)
+    @DMFXOBinding("@encounter_rate") @DM2LcfBinding(0x03) @DMCXInteger(-1)
     public IntegerR2kStruct encounterRate;
-    @DM2FXOBinding("@tileset_id") @DM2LcfBinding(0x05) @DMCXInteger(-1)
+    @DMFXOBinding("@tileset_id") @DM2LcfBinding(0x05) @DMCXInteger(-1)
     public IntegerR2kStruct chipsetId;
-    @DM2FXOBinding("@events") @DM2LcfBinding(0x0B) @DM2CXSupplier(SaveMapEvent.class)
+    @DMFXOBinding("@events") @DM2LcfBinding(0x0B) @DMCXSupplier(SaveMapEvent.class)
     public DM2SparseArrayH<SaveMapEvent> events;
 
     // Transforms are performed on the LCF data before unpack.
-    @DM2FXOBinding("@lower_tile_remap") @DM2LcfBinding(0x15)
+    @DMFXOBinding("@lower_tile_remap") @DM2LcfBinding(0x15)
     public BlobR2kStruct lowerTileRemap;
-    @DM2FXOBinding("@upper_tile_remap") @DM2LcfBinding(0x16)
+    @DMFXOBinding("@upper_tile_remap") @DM2LcfBinding(0x16)
     public BlobR2kStruct upperTileRemap;
 
-    @DM2FXOBinding("@parallax_name") @DM2LcfBinding(0x20) @DMCXObject
+    @DMFXOBinding("@parallax_name") @DM2LcfBinding(0x20) @DMCXObject
     public StringR2kStruct parallaxName;
-    @DM2FXOBinding("@parallax_loop_x") @DM2LcfBinding(0x21) @DMCXBoolean(false)
+    @DMFXOBinding("@parallax_loop_x") @DM2LcfBinding(0x21) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopX;
-    @DM2FXOBinding("@parallax_loop_y") @DM2LcfBinding(0x22) @DMCXBoolean(false)
+    @DMFXOBinding("@parallax_loop_y") @DM2LcfBinding(0x22) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopY;
-    @DM2FXOBinding("@parallax_autoloop_x") @DM2LcfBinding(0x23) @DMCXBoolean(false)
+    @DMFXOBinding("@parallax_autoloop_x") @DM2LcfBinding(0x23) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopXAuto;
-    @DM2FXOBinding("@parallax_sx") @DM2LcfBinding(0x24) @DMCXInteger(0)
+    @DMFXOBinding("@parallax_sx") @DM2LcfBinding(0x24) @DMCXInteger(0)
     public IntegerR2kStruct parallaxLoopXSpeed;
-    @DM2FXOBinding("@parallax_autoloop_y") @DM2LcfBinding(0x25) @DMCXBoolean(false)
+    @DMFXOBinding("@parallax_autoloop_y") @DM2LcfBinding(0x25) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopYAuto;
-    @DM2FXOBinding("@parallax_sy") @DM2LcfBinding(0x26) @DMCXInteger(0)
+    @DMFXOBinding("@parallax_sy") @DM2LcfBinding(0x26) @DMCXInteger(0)
     public IntegerR2kStruct parallaxLoopYSpeed;
 
     public SaveMapInfo(DMContext ctx) {
@@ -69,7 +69,7 @@ public class SaveMapInfo extends DM2R2kObject {
         byte[] blank = new byte[0x90];
         for (int i = 0; i < blank.length; i++)
             blank[i] = (byte) i;
-        return new BlobR2kStruct(dm2Ctx, "Table", bToTable(blank));
+        return new BlobR2kStruct(context, "Table", bToTable(blank));
     }
 
     @Override

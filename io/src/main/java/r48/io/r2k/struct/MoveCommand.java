@@ -10,7 +10,7 @@ package r48.io.r2k.struct;
 import r48.io.IntArrayIterable;
 import r48.io.IntUtils;
 import r48.io.data.*;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
@@ -27,9 +27,9 @@ import java.util.List;
  * Created on 02/06/17.
  */
 public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
-    @DM2FXOBinding("@code")
+    @DMFXOBinding("@code")
     public IRIOFixnum code;
-    @DM2FXOBinding("@parameters")
+    @DMFXOBinding("@parameters")
     public ParameterArray parameters;
 
     public MoveCommand(DMContext ctx) {
@@ -207,7 +207,7 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         if (sym.equals("@code"))
             return code = new IRIOFixnum(context, 0);
         if (sym.equals("@parameters"))
-            return parameters = new ParameterArray(dm2Ctx);
+            return parameters = new ParameterArray(context);
         return null;
     }
 }

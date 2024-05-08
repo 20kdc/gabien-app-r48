@@ -9,8 +9,8 @@ package r48.io.r2k.struct;
 
 import r48.io.IntUtils;
 import r48.io.data.*;
-import r48.io.data.obj.DM2FXOBinding;
-import r48.io.data.obj.DM2Optional;
+import r48.io.data.obj.DMFXOBinding;
+import r48.io.data.obj.DMOptional;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
@@ -24,16 +24,16 @@ import java.io.OutputStream;
  * Created on 31/05/17.
  */
 public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
-    @DM2FXOBinding("@code")
+    @DMFXOBinding("@code")
     public IRIOFixnum code;
 
-    @DM2FXOBinding("@indent")
+    @DMFXOBinding("@indent")
     public IRIOFixnum indent;
 
-    @DM2FXOBinding("@parameters")
+    @DMFXOBinding("@parameters")
     public ParameterArray parameters;
 
-    @DM2Optional @DM2FXOBinding("@move_commands")
+    @DMOptional @DMFXOBinding("@move_commands")
     public IRIOFixedArray<MoveCommand> moveCommands;
 
     public EventCommand(DMContext ctx) {
@@ -47,12 +47,12 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
         if (sym.equals("@indent"))
             return indent = new IRIOFixnum(context, 0);
         if (sym.equals("@parameters"))
-            return parameters = new ParameterArray(dm2Ctx);
+            return parameters = new ParameterArray(context);
         if (sym.equals("@move_commands"))
             return moveCommands = new IRIOFixedArray<MoveCommand>(context) {
                 @Override
                 public MoveCommand newValue() {
-                    return new MoveCommand(dm2Ctx);
+                    return new MoveCommand(context);
                 }
             };
         return null;
@@ -79,7 +79,7 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
             for (int i = 0; i < remainingStream.length; i++)
                 remainingStream[i] = R2kUtil.readLcfVLI(bais);
             addIVar("@move_commands");
-            moveCommands.arrVal = MoveCommand.fromEmbeddedData(dm2Ctx, remainingStream);
+            moveCommands.arrVal = MoveCommand.fromEmbeddedData(context, remainingStream);
         }
     }
 

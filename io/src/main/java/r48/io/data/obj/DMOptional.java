@@ -11,9 +11,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ * Indicates that the field may not be present.
  * Created on December 06, 2018.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DM2CXSupplier {
-    Class<?> value();
+public @interface DMOptional {
 }

@@ -8,7 +8,7 @@
 package r48.io.r2k.obj.ldb;
 
 import r48.io.data.DMContext;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.r2k.chunks.BooleanR2kStruct;
@@ -20,23 +20,23 @@ import r48.io.r2k.dm2chk.DM2R2kObject;
  * Created on 06/06/17.
  */
 public class ItemAnimation extends DM2R2kObject {
-    @DM2FXOBinding("@type") @DM2LcfBinding(0x03) @DMCXInteger(0)
+    @DMFXOBinding("@type") @DM2LcfBinding(0x03) @DMCXInteger(0)
     public IntegerR2kStruct type;
-    @DM2FXOBinding("@weapon_batanim_idx") @DM2LcfBinding(0x04) @DMCXInteger(0)
+    @DMFXOBinding("@weapon_batanim_idx") @DM2LcfBinding(0x04) @DMCXInteger(0)
     public IntegerR2kStruct weaponAnim;
-    @DM2FXOBinding("@movement") @DM2LcfBinding(0x05) @DMCXInteger(0)
+    @DMFXOBinding("@movement") @DM2LcfBinding(0x05) @DMCXInteger(0)
     public IntegerR2kStruct movement;
-    @DM2FXOBinding("@has_afterimage") @DM2LcfBinding(0x06) @DMCXInteger(0)
+    @DMFXOBinding("@has_afterimage") @DM2LcfBinding(0x06) @DMCXInteger(0)
     public IntegerR2kStruct afterImage;
-    @DM2FXOBinding("@loop_count") @DM2LcfBinding(0x07) @DMCXInteger(0)
+    @DMFXOBinding("@loop_count") @DM2LcfBinding(0x07) @DMCXInteger(0)
     public IntegerR2kStruct attacks;
-    @DM2FXOBinding("@ranged") @DM2LcfBinding(0x08) @DMCXBoolean(false)
+    @DMFXOBinding("@ranged") @DM2LcfBinding(0x08) @DMCXBoolean(false)
     public BooleanR2kStruct ranged;
-    @DM2FXOBinding("@ranged_batanim_idx") @DM2LcfBinding(0x09) @DMCXInteger(0)
+    @DMFXOBinding("@ranged_batanim_idx") @DM2LcfBinding(0x09) @DMCXInteger(0)
     public IntegerR2kStruct rangedAnim;
-    @DM2FXOBinding("@ranged_speed") @DM2LcfBinding(0x0C) @DMCXInteger(0)
+    @DMFXOBinding("@ranged_speed") @DM2LcfBinding(0x0C) @DMCXInteger(0)
     public IntegerR2kStruct rangedSpeed;
-    @DM2FXOBinding("@battle_anim") @DM2LcfBinding(0x0D) @DMCXInteger(0)
+    @DMFXOBinding("@battle_anim") @DM2LcfBinding(0x0D) @DMCXInteger(0)
     public IntegerR2kStruct battleAnim;
 
     public ItemAnimation(DMContext ctx) {

@@ -21,11 +21,9 @@ import r48.io.data.obj.FixedObjectProps.FXOBinding;
 public abstract class IRIOFixedObject extends IRIOFixed {
     private final String objType;
     protected final FixedObjectProps cachedFields;
-    public final DMContext dm2Ctx;
 
     public IRIOFixedObject(DMContext ctx, String sym) {
         super(ctx, 'o');
-        dm2Ctx = ctx;
         objType = sym;
         Class<?> c = getClass();
         cachedFields = FixedObjectProps.forClass(c);

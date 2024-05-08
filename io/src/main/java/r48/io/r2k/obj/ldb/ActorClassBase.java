@@ -9,8 +9,8 @@ package r48.io.r2k.obj.ldb;
 
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2FXOBinding;
-import r48.io.data.obj.DM2Optional;
+import r48.io.data.obj.DMFXOBinding;
+import r48.io.data.obj.DMOptional;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
@@ -24,40 +24,40 @@ import r48.io.r2k.struct.BPB;
  */
 public class ActorClassBase extends DM2R2kObject {
 
-    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
+    @DMFXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
     public StringR2kStruct name;
-    @DM2FXOBinding("@dual_wield") @DM2LcfBinding(21) @DMCXBoolean(false)
+    @DMFXOBinding("@dual_wield") @DM2LcfBinding(21) @DMCXBoolean(false)
     public BooleanR2kStruct dualWield;
-    @DM2FXOBinding("@lock_equipment") @DM2LcfBinding(22) @DMCXBoolean(false)
+    @DMFXOBinding("@lock_equipment") @DM2LcfBinding(22) @DMCXBoolean(false)
     public BooleanR2kStruct lockEquipment;
-    @DM2FXOBinding("@battle_auto") @DM2LcfBinding(23) @DMCXBoolean(false)
+    @DMFXOBinding("@battle_auto") @DM2LcfBinding(23) @DMCXBoolean(false)
     public BooleanR2kStruct autoBattle;
-    @DM2FXOBinding("@battle_super_guard") @DM2LcfBinding(24) @DMCXBoolean(false)
+    @DMFXOBinding("@battle_super_guard") @DM2LcfBinding(24) @DMCXBoolean(false)
     public BooleanR2kStruct superGuard;
 
-    @DM2FXOBinding("@battle_parameters") @DM2LcfBinding(31)
+    @DMFXOBinding("@battle_parameters") @DM2LcfBinding(31)
     public BPB parameters;
 
-    @DM2Optional @DM2FXOBinding("@init_level_exp") @DM2LcfBinding(41) @DMCXInteger(0)
+    @DMOptional @DMFXOBinding("@init_level_exp") @DM2LcfBinding(41) @DMCXInteger(0)
     public IntegerR2kStruct initLevelExp;
-    @DM2Optional @DM2FXOBinding("@each_level_exp_mul") @DM2LcfBinding(42) @DMCXInteger(0)
+    @DMOptional @DMFXOBinding("@each_level_exp_mul") @DM2LcfBinding(42) @DMCXInteger(0)
     public IntegerR2kStruct eachLevelExpP;
-    @DM2FXOBinding("@each_level_exp_add") @DM2LcfBinding(43) @DMCXInteger(0)
+    @DMFXOBinding("@each_level_exp_add") @DM2LcfBinding(43) @DMCXInteger(0)
     public IntegerR2kStruct eachLevelExpModC;
 
     // 1 or 0...? Different in each.
-    @DM2FXOBinding("@battler_anim_2k3") @DM2LcfBinding(62)
+    @DMFXOBinding("@battler_anim_2k3") @DM2LcfBinding(62)
     public IntegerR2kStruct battlerAnimation;
 
-    @DM2FXOBinding("@learn_skills") @DM2LcfBinding(63)
+    @DMFXOBinding("@learn_skills") @DM2LcfBinding(63)
     public DM2SparseArrayA<Learning> learnSkills;
 
-    @DM2FXOBinding("@state_ranks") @DM2LcfSizeBinding(71) @DM2LcfBinding(72)
+    @DMFXOBinding("@state_ranks") @DM2LcfSizeBinding(71) @DM2LcfBinding(72)
     public DM2ArraySet<ByteR2kStruct> stateRanks;
-    @DM2FXOBinding("@attr_ranks") @DM2LcfSizeBinding(73) @DM2LcfBinding(74)
+    @DMFXOBinding("@attr_ranks") @DM2LcfSizeBinding(73) @DM2LcfBinding(74)
     public DM2ArraySet<ByteR2kStruct> attrRanks;
 
-    @DM2FXOBinding("@battle_commands_2k3") @DM2LcfBinding(80)
+    @DMFXOBinding("@battle_commands_2k3") @DM2LcfBinding(80)
     public DM2Array<Int32R2kStruct> battleCommands;
 
     private final int battlerAnimationDefault;
@@ -70,30 +70,30 @@ public class ActorClassBase extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@battle_parameters"))
-            return parameters = new BPB(dm2Ctx);
+            return parameters = new BPB(context);
         if (sym.equals("@learn_skills"))
-            return learnSkills = new DM2SparseArrayA<Learning>(dm2Ctx, () -> new Learning(dm2Ctx));
+            return learnSkills = new DM2SparseArrayA<Learning>(context, () -> new Learning(context));
         if (sym.equals("@state_ranks"))
             return stateRanks = byteSet();
         if (sym.equals("@attr_ranks"))
             return attrRanks = byteSet();
         if (sym.equals("@battle_commands_2k3"))
-            return battleCommands = new DM2Array<Int32R2kStruct>(dm2Ctx) {
+            return battleCommands = new DM2Array<Int32R2kStruct>(context) {
                 @Override
                 public Int32R2kStruct newValue() {
-                    return new Int32R2kStruct(dm2Ctx, 0);
+                    return new Int32R2kStruct(context, 0);
                 }
             };
         if (sym.equals("@battler_anim_2k3"))
-            return battlerAnimation = new IntegerR2kStruct(dm2Ctx, battlerAnimationDefault);
+            return battlerAnimation = new IntegerR2kStruct(context, battlerAnimationDefault);
         return super.dm2AddIVar(sym);
     }
 
     private DM2ArraySet<ByteR2kStruct> byteSet() {
-        return new DM2ArraySet<ByteR2kStruct>(dm2Ctx) {
+        return new DM2ArraySet<ByteR2kStruct>(context) {
             @Override
             public ByteR2kStruct newValue() {
-                return new ByteR2kStruct(dm2Ctx, 2);
+                return new ByteR2kStruct(context, 2);
             }
         };
     }

@@ -9,8 +9,8 @@ package r48.io.r2k.struct;
 
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2FXOBinding;
-import r48.io.data.obj.DM2Optional;
+import r48.io.data.obj.DMFXOBinding;
+import r48.io.data.obj.DMOptional;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.chunks.IR2kInterpretable;
 import r48.io.r2k.dm2chk.DM2Array;
@@ -25,9 +25,9 @@ import java.io.OutputStream;
  * Created on August 31st 2017
  */
 public class BPB extends IRIOFixedObject implements IR2kInterpretable {
-    @DM2FXOBinding("@1to50")
+    @DMFXOBinding("@1to50")
     public DM2Array<BattleParamBlock> parameters1;
-    @DM2Optional @DM2FXOBinding("@51to99_2k3")
+    @DMOptional @DMFXOBinding("@51to99_2k3")
     public DM2Array<BattleParamBlock> parameters2;
 
     public BPB(DMContext ctx) {
@@ -64,22 +64,22 @@ public class BPB extends IRIOFixedObject implements IR2kInterpretable {
     @Override
     public IRIO addIVar(String sym) {
         if (sym.equals("@1to50")) {
-            parameters1 = new DM2Array<BattleParamBlock>(dm2Ctx) {
+            parameters1 = new DM2Array<BattleParamBlock>(context) {
                 @Override
                 public BattleParamBlock newValue() {
-                    return new BattleParamBlock(dm2Ctx);
+                    return new BattleParamBlock(context);
                 }
             };
             parameters1.arrVal = new IRIO[50];
             for (int i = 0; i < 50; i++)
-                parameters1.arrVal[i] = new BattleParamBlock(dm2Ctx);
+                parameters1.arrVal[i] = new BattleParamBlock(context);
             return parameters1;
         }
         if (sym.equals("@51to99_2k3"))
-            return parameters2 = new DM2Array<BattleParamBlock>(dm2Ctx) {
+            return parameters2 = new DM2Array<BattleParamBlock>(context) {
                 @Override
                 public BattleParamBlock newValue() {
-                    return new BattleParamBlock(dm2Ctx);
+                    return new BattleParamBlock(context);
                 }
             };
         return null;

@@ -9,8 +9,8 @@ package r48.io.r2k.obj.ldb;
 
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2FXOBinding;
-import r48.io.data.obj.DM2Optional;
+import r48.io.data.obj.DMFXOBinding;
+import r48.io.data.obj.DMOptional;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
@@ -24,41 +24,41 @@ import r48.io.r2k.dm2chk.*;
  * Created on 05/06/17.
  */
 public class Actor extends ActorClassBase {
-    @DM2FXOBinding("@title") @DM2LcfBinding(2) @DMCXObject
+    @DMFXOBinding("@title") @DM2LcfBinding(2) @DMCXObject
     public StringR2kStruct title;
-    @DM2FXOBinding("@character_name") @DM2LcfBinding(3) @DMCXObject
+    @DMFXOBinding("@character_name") @DM2LcfBinding(3) @DMCXObject
     public StringR2kStruct charName;
-    @DM2FXOBinding("@character_index") @DM2LcfBinding(4) @DMCXInteger(0)
+    @DMFXOBinding("@character_index") @DM2LcfBinding(4) @DMCXInteger(0)
     public IntegerR2kStruct charIdx;
-    @DM2FXOBinding("@character_blend_mode") @DM2LcfBinding(5) @DMCXBoolean(false)
+    @DMFXOBinding("@character_blend_mode") @DM2LcfBinding(5) @DMCXBoolean(false)
     public BooleanR2kStruct transparent;
-    @DM2FXOBinding("@init_level") @DM2LcfBinding(7) @DMCXInteger(1)
+    @DMFXOBinding("@init_level") @DM2LcfBinding(7) @DMCXInteger(1)
     public IntegerR2kStruct initLevel;
     // Marked as "50|99" in liblcf docs - version differences.
     // OptionalR2kStruct can at least translate this into something usable.
-    @DM2Optional @DM2FXOBinding("@final_level") @DM2LcfBinding(8) @DMCXInteger(99)
+    @DMOptional @DMFXOBinding("@final_level") @DM2LcfBinding(8) @DMCXInteger(99)
     public IntegerR2kStruct finalLevel;
-    @DM2FXOBinding("@can_crit") @DM2LcfBinding(9) @DMCXBoolean(true)
+    @DMFXOBinding("@can_crit") @DM2LcfBinding(9) @DMCXBoolean(true)
     public BooleanR2kStruct canCrit;
-    @DM2FXOBinding("@crit_percent") @DM2LcfBinding(10) @DMCXInteger(30)
+    @DMFXOBinding("@crit_percent") @DM2LcfBinding(10) @DMCXInteger(30)
     public IntegerR2kStruct critPercent;
-    @DM2FXOBinding("@face_name") @DM2LcfBinding(15) @DMCXObject
+    @DMFXOBinding("@face_name") @DM2LcfBinding(15) @DMCXObject
     public StringR2kStruct faceName;
-    @DM2FXOBinding("@face_index") @DM2LcfBinding(16) @DMCXInteger(0)
+    @DMFXOBinding("@face_index") @DM2LcfBinding(16) @DMCXInteger(0)
     public IntegerR2kStruct faceIdx;
-    @DM2FXOBinding("@equipment") @DM2LcfBinding(51)
+    @DMFXOBinding("@equipment") @DM2LcfBinding(51)
     public DM2Array<ShortR2kStruct> equipment;
-    @DM2FXOBinding("@no_weapon_attack_anim") @DM2LcfBinding(40) @DMCXInteger(1)
+    @DMFXOBinding("@no_weapon_attack_anim") @DM2LcfBinding(40) @DMCXInteger(1)
     public IntegerR2kStruct noWeaponAttackAnim;
-    @DM2FXOBinding("@class_2k3") @DM2LcfBinding(57) @DMCXInteger(0)
+    @DMFXOBinding("@class_2k3") @DM2LcfBinding(57) @DMCXInteger(0)
     public IntegerR2kStruct aClass;
-    @DM2FXOBinding("@battle_posx_2k3") @DM2LcfBinding(59) @DMCXInteger(220)
+    @DMFXOBinding("@battle_posx_2k3") @DM2LcfBinding(59) @DMCXInteger(220)
     public IntegerR2kStruct batPosX;
-    @DM2FXOBinding("@battle_posy_2k3") @DM2LcfBinding(60) @DMCXInteger(120)
+    @DMFXOBinding("@battle_posy_2k3") @DM2LcfBinding(60) @DMCXInteger(120)
     public IntegerR2kStruct batPosY;
-    @DM2FXOBinding("@editor_use_skillspanel_name") @DM2LcfBinding(66) @DMCXBoolean(false)
+    @DMFXOBinding("@editor_use_skillspanel_name") @DM2LcfBinding(66) @DMCXBoolean(false)
     public BooleanR2kStruct canRename;
-    @DM2FXOBinding("@battle_skillspanel_name") @DM2LcfBinding(67) @DMCXObject
+    @DMFXOBinding("@battle_skillspanel_name") @DM2LcfBinding(67) @DMCXObject
     public StringR2kStruct renameResult;
 
     public Actor(DMContext ctx) {
@@ -68,10 +68,10 @@ public class Actor extends ActorClassBase {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@equipment"))
-            return equipment = new DM2Array<ShortR2kStruct>(dm2Ctx) {
+            return equipment = new DM2Array<ShortR2kStruct>(context) {
                 @Override
                 public ShortR2kStruct newValue() {
-                    return new ShortR2kStruct(dm2Ctx, 0);
+                    return new ShortR2kStruct(context, 0);
                 }
             };
         return super.dm2AddIVar(sym);

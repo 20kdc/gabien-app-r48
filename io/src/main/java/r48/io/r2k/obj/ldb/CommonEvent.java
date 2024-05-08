@@ -9,7 +9,7 @@ package r48.io.r2k.obj.ldb;
 
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
@@ -24,15 +24,15 @@ import r48.io.r2k.struct.EventCommand;
  * fixed up later that day along with part of Item and all of Skill.
  */
 public class CommonEvent extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
+    @DMFXOBinding("@name") @DM2LcfBinding(1) @DMCXObject
     public StringR2kStruct name;
-    @DM2FXOBinding("@trigger") @DM2LcfBinding(11) @DMCXInteger(0)
+    @DMFXOBinding("@trigger") @DM2LcfBinding(11) @DMCXInteger(0)
     public IntegerR2kStruct trigger;
-    @DM2FXOBinding("@condition_switch") @DM2LcfBinding(12) @DMCXBoolean(false)
+    @DMFXOBinding("@condition_switch") @DM2LcfBinding(12) @DMCXBoolean(false)
     public BooleanR2kStruct conditionSwitch;
-    @DM2FXOBinding("@condition_switch_id") @DM2LcfBinding(13) @DMCXInteger(1)
+    @DMFXOBinding("@condition_switch_id") @DM2LcfBinding(13) @DMCXInteger(1)
     public IntegerR2kStruct switchId;
-    @DM2FXOBinding("@list") @DM2LcfSizeBinding(21) @DM2LcfBinding(22)
+    @DMFXOBinding("@list") @DM2LcfSizeBinding(21) @DM2LcfBinding(22)
     public DM2Array<EventCommand> list;
 
     public CommonEvent(DMContext ctx) {
@@ -42,10 +42,10 @@ public class CommonEvent extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@list"))
-            return list = new DM2Array<EventCommand>(dm2Ctx) {
+            return list = new DM2Array<EventCommand>(context) {
                 @Override
                 public EventCommand newValue() {
-                    return new EventCommand(dm2Ctx);
+                    return new EventCommand(context);
                 }
             };
         return super.dm2AddIVar(sym);

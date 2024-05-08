@@ -8,7 +8,7 @@
 package r48.io.r2k.obj.lsd;
 
 import r48.io.data.DMContext;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
@@ -21,13 +21,13 @@ import r48.io.r2k.dm2chk.DM2LcfBinding;
  * Created on December 13th, 2017
  */
 public class SaveMapEvent extends SaveCharacter {
-    @DM2FXOBinding("@running") @DM2LcfBinding(101) @DMCXBoolean(false)
+    @DMFXOBinding("@running") @DM2LcfBinding(101) @DMCXBoolean(false)
     public BooleanR2kStruct running;
-    @DM2FXOBinding("@original_moveroute_index") @DM2LcfBinding(102) @DMCXInteger(0)
+    @DMFXOBinding("@original_moveroute_index") @DM2LcfBinding(102) @DMCXInteger(0)
     public IntegerR2kStruct originalMoveRouteIndex;
-    @DM2FXOBinding("@pending") @DM2LcfBinding(103) @DMCXBoolean(false)
+    @DMFXOBinding("@pending") @DM2LcfBinding(103) @DMCXBoolean(false)
     public BooleanR2kStruct pending;
-    @DM2FXOBinding("@interpreter") @DM2LcfBinding(108) @DMCXObject
+    @DMFXOBinding("@interpreter") @DM2LcfBinding(108) @DMCXObject
     public Interpreter interpreter;
 
     public SaveMapEvent(DMContext ctx) {

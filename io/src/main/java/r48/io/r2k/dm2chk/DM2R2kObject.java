@@ -9,8 +9,8 @@ package r48.io.r2k.dm2chk;
 
 import r48.io.IntUtils;
 import r48.io.data.*;
-import r48.io.data.obj.DM2FXOBinding;
-import r48.io.data.obj.DM2Optional;
+import r48.io.data.obj.DMFXOBinding;
+import r48.io.data.obj.DMOptional;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * How this works:
@@ -35,7 +36,7 @@ import java.util.Map;
  * Modified from R2kObject on December 4th 2018.
  */
 public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
-    @DM2Optional @DM2FXOBinding("@__LCF__unknown")
+    @DMOptional @DMFXOBinding("@__LCF__unknown")
     public IRIOFixedHash<Integer, IRIOFixedUser> unknownChunks;
 
     // --
@@ -54,7 +55,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
     }
 
     private void setUnknownChunks() {
-        unknownChunks = new IRIOFixedHash<Integer, IRIOFixedUser>(dm2Ctx) {
+        unknownChunks = new IRIOFixedHash<Integer, IRIOFixedUser>(context) {
             @Override
             public Integer convertIRIOtoKey(RORIO i) {
                 return (int) i.getFX();
@@ -96,7 +97,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
             if (pcd.size() > 0) {
                 setUnknownChunks();
                 for (Map.Entry<Integer, byte[]> me : pcd.entrySet())
-                    unknownChunks.hashVal.put(me.getKey(), new IRIOFixedUser(dm2Ctx, "Blob", me.getValue()));
+                    unknownChunks.hashVal.put(me.getKey(), new IRIOFixedUser(context, "Blob", me.getValue()));
             }
         }
     }
@@ -139,7 +140,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
     protected void dm2UnpackFromMapDestructively(HashMap<Integer, byte[]> pcd) {
         // Perform initialization & size chunk removal
         for (Field f : cachedFields.fieldsArray) {
-            DM2FXOBinding dlbx = f.getAnnotation(DM2FXOBinding.class);
+            DMFXOBinding dlbx = f.getAnnotation(DMFXOBinding.class);
             DM2LcfBinding dlb = f.getAnnotation(DM2LcfBinding.class);
 
             // Only target fields that are definitely relevant
@@ -152,7 +153,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
                     throw new RuntimeException(e);
                 }
 
-                boolean needsInitialize = !f.isAnnotationPresent(DM2Optional.class);
+                boolean needsInitialize = !f.isAnnotationPresent(DMOptional.class);
                 if (dlb != null)
                     if (pcd.containsKey(dlb.value()))
                         needsInitialize = true;
@@ -226,7 +227,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
             return unknownChunks;
         }
         for (Field f : cachedFields.fieldsArray) {
-            DM2FXOBinding fxo = f.getAnnotation(DM2FXOBinding.class);
+            DMFXOBinding fxo = f.getAnnotation(DMFXOBinding.class);
             if (fxo != null) {
                 if (sym.equals(fxo.value())) {
                     IRIO r = (IRIO) dm2AddField(f);
@@ -241,7 +242,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
 
     // This function tries to add a field.
     public final Object addField(Field f) {
-        DM2FXOBinding fxo = f.getAnnotation(DM2FXOBinding.class);
+        DMFXOBinding fxo = f.getAnnotation(DMFXOBinding.class);
         if (fxo != null) {
             IRIO t = dm2AddIVar(fxo.value());
             if (t != null)
@@ -274,7 +275,8 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
     // Must not handle translation into dm2AddIVar due to the 2 callers.
     // This instead happens in addIVar and addField.
     protected Object dm2AddField(final Field f) {
-        Object obj = dm2Ctx.createObjectFor(f);
+        Function<DMContext, Object> factory = cachedFields.factoryByFieldName(f.getName());
+        Object obj = factory != null ? factory.apply(context) : null;
         try {
             f.set(this, obj);
         } catch (Exception ex) {

@@ -11,7 +11,7 @@ import r48.io.IntUtils;
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.chunks.IR2kInterpretable;
 
@@ -24,13 +24,13 @@ import java.io.OutputStream;
  * Created on 31/05/17.
  */
 public class TRect extends IRIOFixedObject implements IR2kInterpretable {
-    @DM2FXOBinding("@left")
+    @DMFXOBinding("@left")
     public IRIOFixnum l;
-    @DM2FXOBinding("@up")
+    @DMFXOBinding("@up")
     public IRIOFixnum u;
-    @DM2FXOBinding("@right")
+    @DMFXOBinding("@right")
     public IRIOFixnum r;
-    @DM2FXOBinding("@down")
+    @DMFXOBinding("@down")
     public IRIOFixnum d;
 
     public TRect(DMContext dm2c) {

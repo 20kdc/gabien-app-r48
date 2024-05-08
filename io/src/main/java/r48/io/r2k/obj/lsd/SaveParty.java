@@ -10,7 +10,7 @@ package r48.io.r2k.obj.lsd;
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedArray;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.IRIOFixedObject;
@@ -25,7 +25,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 
 public class SaveParty extends DM2R2kObject {
-    @DM2FXOBinding("@party") @DM2LcfSizeBinding(1) @DM2LcfBinding(0x02)
+    @DMFXOBinding("@party") @DM2LcfSizeBinding(1) @DM2LcfBinding(0x02)
     public DM2Array<ShortR2kStruct> party;
     // NOTE: These *don't* get put in directly.
     @DM2LcfBinding(0x0B) @DMCXInteger(0)
@@ -37,40 +37,40 @@ public class SaveParty extends DM2R2kObject {
     @DM2LcfBinding(0x0E)
     public DM2Array<ByteR2kStruct> inventoryUsage;
 
-    @DM2FXOBinding("@inventory")
+    @DMFXOBinding("@inventory")
     public IRIOFixedArray<SaveItem> inventoryView;
 
-    @DM2FXOBinding("@party_gold") @DM2LcfBinding(0x15) @DMCXInteger(0)
+    @DMFXOBinding("@party_gold") @DM2LcfBinding(0x15) @DMCXInteger(0)
     public IntegerR2kStruct partyGold;
-    @DM2FXOBinding("@timer1_seconds") @DM2LcfBinding(0x17) @DMCXInteger(0)
+    @DMFXOBinding("@timer1_seconds") @DM2LcfBinding(0x17) @DMCXInteger(0)
     public IntegerR2kStruct timer1Seconds;
-    @DM2FXOBinding("@timer1_on") @DM2LcfBinding(0x18) @DMCXBoolean(false)
+    @DMFXOBinding("@timer1_on") @DM2LcfBinding(0x18) @DMCXBoolean(false)
     public BooleanR2kStruct timer1Active;
-    @DM2FXOBinding("@timer1_visible") @DM2LcfBinding(0x19) @DMCXBoolean(false)
+    @DMFXOBinding("@timer1_visible") @DM2LcfBinding(0x19) @DMCXBoolean(false)
     public BooleanR2kStruct timer1Visible;
-    @DM2FXOBinding("@timer1_on_battle") @DM2LcfBinding(0x1A) @DMCXBoolean(false)
+    @DMFXOBinding("@timer1_on_battle") @DM2LcfBinding(0x1A) @DMCXBoolean(false)
     public BooleanR2kStruct timer1ActiveDuringBattle;
-    @DM2FXOBinding("@timer2_seconds") @DM2LcfBinding(0x1B) @DMCXInteger(0)
+    @DMFXOBinding("@timer2_seconds") @DM2LcfBinding(0x1B) @DMCXInteger(0)
     public IntegerR2kStruct timer2Seconds;
-    @DM2FXOBinding("@timer2_on") @DM2LcfBinding(0x1C) @DMCXBoolean(false)
+    @DMFXOBinding("@timer2_on") @DM2LcfBinding(0x1C) @DMCXBoolean(false)
     public BooleanR2kStruct timer2Active;
-    @DM2FXOBinding("@timer2_visible") @DM2LcfBinding(0x1D) @DMCXBoolean(false)
+    @DMFXOBinding("@timer2_visible") @DM2LcfBinding(0x1D) @DMCXBoolean(false)
     public BooleanR2kStruct timer2Visible;
-    @DM2FXOBinding("@timer2_on_battle") @DM2LcfBinding(0x1E) @DMCXBoolean(false)
+    @DMFXOBinding("@timer2_on_battle") @DM2LcfBinding(0x1E) @DMCXBoolean(false)
     public BooleanR2kStruct timer2ActiveDuringBattle;
 
-    @DM2FXOBinding("@stats_battles") @DM2LcfBinding(0x20) @DMCXInteger(0)
+    @DMFXOBinding("@stats_battles") @DM2LcfBinding(0x20) @DMCXInteger(0)
     public IntegerR2kStruct battles;
-    @DM2FXOBinding("@stats_defeats") @DM2LcfBinding(0x21) @DMCXInteger(0)
+    @DMFXOBinding("@stats_defeats") @DM2LcfBinding(0x21) @DMCXInteger(0)
     public IntegerR2kStruct defeats;
-    @DM2FXOBinding("@stats_escapes") @DM2LcfBinding(0x22) @DMCXInteger(0)
+    @DMFXOBinding("@stats_escapes") @DM2LcfBinding(0x22) @DMCXInteger(0)
     public IntegerR2kStruct escapes;
-    @DM2FXOBinding("@stats_victories") @DM2LcfBinding(0x23) @DMCXInteger(0)
+    @DMFXOBinding("@stats_victories") @DM2LcfBinding(0x23) @DMCXInteger(0)
     public IntegerR2kStruct victories;
 
-    @DM2FXOBinding("@stats_turns") @DM2LcfBinding(0x29) @DMCXInteger(0)
+    @DMFXOBinding("@stats_turns") @DM2LcfBinding(0x29) @DMCXInteger(0)
     public IntegerR2kStruct turns;
-    @DM2FXOBinding("@stats_steps") @DM2LcfBinding(0x2A) @DMCXInteger(0)
+    @DMFXOBinding("@stats_steps") @DM2LcfBinding(0x2A) @DMCXInteger(0)
     public IntegerR2kStruct steps;
 
     public SaveParty(DMContext ctx) {
@@ -91,26 +91,26 @@ public class SaveParty extends DM2R2kObject {
             return inventoryView = new IRIOFixedArray<SaveItem>(context) {
                 @Override
                 public SaveItem newValue() {
-                    return new SaveItem(dm2Ctx);
+                    return new SaveItem(context);
                 }
             };
         return super.dm2AddField(f);
     }
 
     private DM2Array<ByteR2kStruct> newByteArray() {
-        return new DM2Array<ByteR2kStruct>(dm2Ctx) {
+        return new DM2Array<ByteR2kStruct>(context) {
             @Override
             public ByteR2kStruct newValue() {
-                return new ByteR2kStruct(dm2Ctx, 0);
+                return new ByteR2kStruct(context, 0);
             }
         };
     }
 
     private DM2Array<ShortR2kStruct> newShortArray() {
-        return new DM2Array<ShortR2kStruct>(dm2Ctx, 0, true, true) {
+        return new DM2Array<ShortR2kStruct>(context, 0, true, true) {
             @Override
             public ShortR2kStruct newValue() {
-                return new ShortR2kStruct(dm2Ctx, 0);
+                return new ShortR2kStruct(context, 0);
             }
         };
     }
@@ -121,7 +121,7 @@ public class SaveParty extends DM2R2kObject {
         inventoryView.arrVal = new IRIO[inventorySize.i];
         // This uses the loaded IRIOs as-is to simplify things.
         for (int i = 0; i < inventoryView.arrVal.length; i++) {
-            SaveItem si = new SaveItem(dm2Ctx);
+            SaveItem si = new SaveItem(context);
             si.id = (ShortR2kStruct) inventoryIds.arrVal[i];
             si.count = (ByteR2kStruct) inventoryCounts.arrVal[i];
             si.usage = (ByteR2kStruct) inventoryUsage.arrVal[i];
@@ -136,7 +136,7 @@ public class SaveParty extends DM2R2kObject {
 
     @Override
     protected void dm2PackIntoMap(HashMap<Integer, byte[]> pcd) throws IOException {
-        inventorySize = new IntegerR2kStruct(dm2Ctx, 0);
+        inventorySize = new IntegerR2kStruct(context, 0);
         inventoryIds = newShortArray();
         inventoryCounts = newByteArray();
         inventoryUsage = newByteArray();
@@ -148,13 +148,13 @@ public class SaveParty extends DM2R2kObject {
     }
 
     public static class SaveItem extends IRIOFixedObject {
-        @DM2FXOBinding("@id")
+        @DMFXOBinding("@id")
         public ShortR2kStruct id;
 
-        @DM2FXOBinding("@count")
+        @DMFXOBinding("@count")
         public ByteR2kStruct count;
 
-        @DM2FXOBinding("@usage")
+        @DMFXOBinding("@usage")
         public ByteR2kStruct usage;
 
         public SaveItem(DMContext ctx) {
@@ -164,11 +164,11 @@ public class SaveParty extends DM2R2kObject {
         @Override
         public IRIO addIVar(String sym) {
             if (sym.equals("@id"))
-                return id = new ShortR2kStruct(dm2Ctx, 0);
+                return id = new ShortR2kStruct(context, 0);
             if (sym.equals("@count"))
-                return count = new ByteR2kStruct(dm2Ctx, 0);
+                return count = new ByteR2kStruct(context, 0);
             if (sym.equals("@usage"))
-                return usage = new ByteR2kStruct(dm2Ctx, 0);
+                return usage = new ByteR2kStruct(context, 0);
             return null;
         }
     }

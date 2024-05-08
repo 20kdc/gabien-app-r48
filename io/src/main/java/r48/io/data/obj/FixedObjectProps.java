@@ -10,8 +10,11 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.Nullable;
+
+import r48.io.data.DMContext;
 
 /**
  * Contains reflected property data.
@@ -20,6 +23,7 @@ import org.eclipse.jdt.annotation.Nullable;
 public final class FixedObjectProps {
     private final static ConcurrentHashMap<Class<?>, FixedObjectProps> cache = new ConcurrentHashMap<>();
     private final HashMap<String, FXOBinding> fxoBindings = new HashMap<>();
+    private final HashMap<String, Function<DMContext, Object>> fieldNameToFactory = new HashMap<>();
     public final FXOBinding[] fxoBindingsArray;
     public final Field[] fieldsArray;
 
@@ -27,12 +31,17 @@ public final class FixedObjectProps {
         fieldsArray = clazz.getFields();
         LinkedList<FXOBinding> bindings = new LinkedList<>();
         for (Field f : fieldsArray) {
-            DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
+            // fxo
+            DMFXOBinding dmx = f.getAnnotation(DMFXOBinding.class);
             if (dmx != null) {
                 FXOBinding res = new FXOBinding(f, dmx.value());
                 bindings.add(res);
                 fxoBindings.put(res.iVar, res);
             }
+            // factories
+            Function<DMContext, Object> factory = DMFactory.createFactoryFor(f);
+            if (factory != null)
+                fieldNameToFactory.put(f.getName(), factory);
         }
         fxoBindingsArray = bindings.toArray(new FXOBinding[0]);
     }
@@ -42,6 +51,10 @@ public final class FixedObjectProps {
      */
     public @Nullable FXOBinding byIVar(String iVar) {
         return fxoBindings.get(iVar);
+    }
+
+    public @Nullable Function<DMContext, Object> factoryByFieldName(String field) {
+        return fieldNameToFactory.get(field);
     }
 
     public static FixedObjectProps forClass(Class<?> clazz) {
@@ -72,7 +85,7 @@ public final class FixedObjectProps {
         public FXOBinding(Field field, String prop) {
             this.field = field;
             this.iVar = prop;
-            this.optional = field.isAnnotationPresent(DM2Optional.class);
+            optional = field.isAnnotationPresent(DMOptional.class);
         }
     }
 }
