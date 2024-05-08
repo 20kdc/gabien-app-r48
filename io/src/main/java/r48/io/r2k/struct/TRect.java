@@ -9,8 +9,8 @@ package r48.io.r2k.struct;
 
 import r48.io.IntUtils;
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
+import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.chunks.IR2kInterpretable;
@@ -24,13 +24,13 @@ import java.io.OutputStream;
  * Created on 31/05/17.
  */
 public class TRect extends IRIOFixedObject implements IR2kInterpretable {
-    @DMFXOBinding("@left")
+    @DMFXOBinding("@left") @DMCXInteger(0)
     public IRIOFixnum l;
-    @DMFXOBinding("@up")
+    @DMFXOBinding("@up") @DMCXInteger(0)
     public IRIOFixnum u;
-    @DMFXOBinding("@right")
+    @DMFXOBinding("@right") @DMCXInteger(0)
     public IRIOFixnum r;
-    @DMFXOBinding("@down")
+    @DMFXOBinding("@down") @DMCXInteger(0)
     public IRIOFixnum d;
 
     public TRect(DMContext dm2c) {
@@ -56,18 +56,5 @@ public class TRect extends IRIOFixedObject implements IR2kInterpretable {
         IntUtils.writeS32(baos, (int) u.val);
         IntUtils.writeS32(baos, (int) r.val);
         IntUtils.writeS32(baos, (int) d.val);
-    }
-
-    @Override
-    public IRIO addIVar(String sym) {
-        if (sym.equals("@left"))
-            return l = new IRIOFixnum(context, 0);
-        if (sym.equals("@up"))
-            return u = new IRIOFixnum(context, 0);
-        if (sym.equals("@right"))
-            return r = new IRIOFixnum(context, 0);
-        if (sym.equals("@down"))
-            return d = new IRIOFixnum(context, 0);
-        return null;
     }
 }

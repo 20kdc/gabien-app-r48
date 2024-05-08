@@ -21,6 +21,13 @@ public class IRIOFixnum extends IRIOFixed {
         val = t;
     }
 
+    /**
+     * This is just so DMCX works properly...
+     */
+    public IRIOFixnum(@NonNull DMContext context, int t) {
+        this(context, (long) t);
+    }
+
     @Override
     public String[] getIVars() {
         return new String[0];

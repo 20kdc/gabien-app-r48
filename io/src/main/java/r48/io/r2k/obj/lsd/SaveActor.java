@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj.lsd;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -53,9 +54,21 @@ public class SaveActor extends DM2R2kObject {
 
     @DMFXOBinding("@skills") @DM2LcfSizeBinding(0x33) @DM2LcfBinding(0x34)
     public DM2Array<ShortR2kStruct> skills;
+    public static Consumer<SaveActor> skills_add = (v) -> v.skills = new DM2Array<ShortR2kStruct>(v.context, 0, true, true) {
+        @Override
+        public ShortR2kStruct newValue() {
+            return new ShortR2kStruct(v.context, 0);
+        }
+    };
 
     @DMFXOBinding("@equipment") @DM2LcfBinding(0x3D)
     public DM2Array<ShortR2kStruct> equipment;
+    public static Consumer<SaveActor> equipment_add = (v) -> v.equipment = new DM2Array<ShortR2kStruct>(v.context, 0, true, true, 5) {
+        @Override
+        public ShortR2kStruct newValue() {
+            return new ShortR2kStruct(v.context, 0);
+        }
+    };
 
     @DMFXOBinding("@current_hp") @DM2LcfBinding(0x47) @DMCXInteger(-1)
     public IntegerR2kStruct currentHp;
@@ -64,9 +77,21 @@ public class SaveActor extends DM2R2kObject {
 
     @DMFXOBinding("@battle_commands_2k3") @DM2LcfBinding(0x50)
     public DM2Array<Int32R2kStruct> battleCommands;
+    public static Consumer<SaveActor> battleCommands_add = (v) -> v.battleCommands = new DM2Array<Int32R2kStruct>(v.context, 0, true, false, 7) {
+        @Override
+        public Int32R2kStruct newValue() {
+            return new Int32R2kStruct(v.context, -1);
+        }
+    };
 
     @DMFXOBinding("@states") @DM2LcfSizeBinding(0x51) @DM2LcfBinding(0x52)
     public DM2Array<ShortR2kStruct> states;
+    public static Consumer<SaveActor> states_add = (v) -> v.states = new DM2Array<ShortR2kStruct>(v.context, 0, true, true) {
+        @Override
+        public ShortR2kStruct newValue() {
+            return new ShortR2kStruct(v.context, 0);
+        }
+    };
 
     @DMFXOBinding("@changed_battle_commands_2k3") @DM2LcfBinding(0x53) @DMCXBoolean(false)
     public BooleanR2kStruct changedBattleCommands;
@@ -87,38 +112,5 @@ public class SaveActor extends DM2R2kObject {
 
     public SaveActor(DMContext ctx) {
         super(ctx, "RPG::SaveActor");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@skills"))
-            return skills = new DM2Array<ShortR2kStruct>(context, 0, true, true) {
-                @Override
-                public ShortR2kStruct newValue() {
-                    return new ShortR2kStruct(context, 0);
-                }
-            };
-        if (sym.equals("@equipment"))
-            return equipment = new DM2Array<ShortR2kStruct>(context, 0, true, true, 5) {
-                @Override
-                public ShortR2kStruct newValue() {
-                    return new ShortR2kStruct(context, 0);
-                }
-            };
-        if (sym.equals("@battle_commands_2k3"))
-            return battleCommands = new DM2Array<Int32R2kStruct>(context, 0, true, false, 7) {
-                @Override
-                public Int32R2kStruct newValue() {
-                    return new Int32R2kStruct(context, -1);
-                }
-            };
-        if (sym.equals("@states"))
-            return states = new DM2Array<ShortR2kStruct>(context, 0, true, true) {
-                @Override
-                public ShortR2kStruct newValue() {
-                    return new ShortR2kStruct(context, 0);
-                }
-            };
-        return super.dm2AddIVar(sym);
     }
 }

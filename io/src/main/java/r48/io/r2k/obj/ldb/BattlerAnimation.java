@@ -8,11 +8,10 @@
 package r48.io.r2k.obj.ldb;
 
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
-import r48.io.data.obj.DMCXSupplier;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
+import r48.io.data.obj.DMCXSupplier;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.chunks.StringR2kStruct;
 import r48.io.r2k.dm2chk.*;
@@ -32,23 +31,6 @@ public class BattlerAnimation extends DM2R2kObject {
 
     public BattlerAnimation(DMContext ctx) {
         super(ctx, "RPG::BattlerAnimationSet");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@base_data"))
-            return baseData = genDefault();
-        if (sym.equals("@weapon_data"))
-            return weaponData = genDefault();
-        return super.dm2AddIVar(sym);
-    }
-
-    private DM2SparseArrayA<BAE> genDefault() {
-        DM2SparseArrayA<BAE> b = new DM2SparseArrayA<BAE>(context, () -> new BAE(context));
-        b.arrVal = new IRIO[33];
-        for (int i = 0; i < b.arrVal.length; i++)
-            b.arrVal[i] = new BAE(context);
-        return b;
     }
 
     public static class BAE extends DM2R2kObject {

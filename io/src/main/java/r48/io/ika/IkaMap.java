@@ -34,29 +34,30 @@ public class IkaMap extends IRIOFixedObject {
         initialize();
     }
 
-    @Override
-    public IRIO addIVar(String sym) {
-        if (sym.equals("@data"))
-            return data = new IRIOFixedUser(context, "Table", new RubyTable(3, defaultWidth, defaultHeight, 1, new int[1]).innerBytes);
-        if (sym.equals("@palette"))
-            return palette = new IRIOFixedUser(context, "Table", new RubyTable(3, 256, 1, 4, new int[4]).innerBytes);
-        if (sym.equals("@events"))
-            return events = new IRIOFixedHash<Integer, IkaEvent>(context) {
-                @Override
-                public Integer convertIRIOtoKey(RORIO i) {
-                    return (int) i.getFX();
-                }
+    public void data_add() {
+        data = new IRIOFixedUser(context, "Table", new RubyTable(3, defaultWidth, defaultHeight, 1, new int[1]).innerBytes);
+    }
 
-                @Override
-                public DMKey convertKeyToIRIO(Integer i) {
-                    return DMKey.of(i);
-                }
+    public void palette_add() {
+        palette = new IRIOFixedUser(context, "Table", new RubyTable(3, 256, 1, 4, new int[4]).innerBytes);
+    }
 
-                @Override
-                public IkaEvent newValue() {
-                    return new IkaEvent(IkaMap.this.context);
-                }
-            };
-        return null;
+    public void events_add() {
+        events = new IRIOFixedHash<Integer, IkaEvent>(context) {
+            @Override
+            public Integer convertIRIOtoKey(RORIO i) {
+                return (int) i.getFX();
+            }
+
+            @Override
+            public DMKey convertKeyToIRIO(Integer i) {
+                return DMKey.of(i);
+            }
+
+            @Override
+            public IkaEvent newValue() {
+                return new IkaEvent(IkaMap.this.context);
+            }
+        };
     }
 }

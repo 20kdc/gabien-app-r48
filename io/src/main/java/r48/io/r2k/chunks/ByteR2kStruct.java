@@ -23,7 +23,6 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public class ByteR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public byte value;
-    public boolean signed = false;
 
     public ByteR2kStruct(@NonNull DMContext context, int v) {
         super(context, 'i');
@@ -42,14 +41,7 @@ public class ByteR2kStruct extends IRIOFixed implements IR2kInterpretable {
 
     @Override
     public long getFX() {
-        if (!signed)
-            return value & 0xFF;
-        return value;
-    }
-
-    public ByteR2kStruct signed() {
-        signed = true;
-        return this;
+        return value & 0xFF;
     }
 
     @Override
@@ -80,5 +72,23 @@ public class ByteR2kStruct extends IRIOFixed implements IR2kInterpretable {
     @Override
     public IRIO getIVar(String sym) {
         return null;
+    }
+
+    /**
+     * Created to enable the signed option without custom factories...
+     */
+    public static class Signed extends ByteR2kStruct {
+        public Signed(@NonNull DMContext context, int v) {
+            super(context, v);
+        }
+
+        public Signed(@NonNull DMContext context) {
+            super(context);
+        }
+
+        @Override
+        public long getFX() {
+            return value;
+        }
     }
 }

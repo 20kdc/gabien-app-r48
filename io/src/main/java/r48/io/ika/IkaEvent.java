@@ -8,8 +8,8 @@
 package r48.io.ika;
 
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
+import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.IRIOFixedObject;
 
@@ -17,46 +17,25 @@ import r48.io.data.obj.IRIOFixedObject;
  * Created on November 24, 2018.
  */
 public class IkaEvent extends IRIOFixedObject {
-    @DMFXOBinding("@x")
+    @DMFXOBinding("@x") @DMCXInteger(0)
     public IRIOFixnum x;
-    @DMFXOBinding("@y")
+    @DMFXOBinding("@y") @DMCXInteger(0)
     public IRIOFixnum y;
-    @DMFXOBinding("@tOX")
+    @DMFXOBinding("@tOX") @DMCXInteger(0)
     public IRIOFixnum tox;
-    @DMFXOBinding("@tOY")
+    @DMFXOBinding("@tOY") @DMCXInteger(0)
     public IRIOFixnum toy;
-    @DMFXOBinding("@type")
+    @DMFXOBinding("@type") @DMCXInteger(0)
     public IRIOFixnum type;
-    @DMFXOBinding("@status")
+    @DMFXOBinding("@status") @DMCXInteger(0)
     public IRIOFixnum status;
-    @DMFXOBinding("@scriptId")
+    @DMFXOBinding("@scriptId") @DMCXInteger(0)
     public IRIOFixnum scriptId;
-    @DMFXOBinding("@collisionType")
+    @DMFXOBinding("@collisionType") @DMCXInteger(0)
     public IRIOFixnum collisionType;
 
     public IkaEvent(DMContext ctx) {
         super(ctx, "IkachanEvent");
         initialize();
-    }
-
-    @Override
-    public IRIO addIVar(String sym) {
-        if (sym.equals("@x"))
-            return x = new IRIOFixnum(context, 0);
-        if (sym.equals("@y"))
-            return y = new IRIOFixnum(context, 0);
-        if (sym.equals("@tOX"))
-            return tox = new IRIOFixnum(context, 0);
-        if (sym.equals("@tOY"))
-            return toy = new IRIOFixnum(context, 0);
-        if (sym.equals("@type"))
-            return type = new IRIOFixnum(context, 0);
-        if (sym.equals("@status"))
-            return status = new IRIOFixnum(context, 0);
-        if (sym.equals("@scriptId"))
-            return scriptId = new IRIOFixnum(context, 0);
-        if (sym.equals("@collisionType"))
-            return collisionType = new IRIOFixnum(context, 0);
-        return null;
     }
 }

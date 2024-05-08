@@ -8,11 +8,11 @@
 package r48.io.r2k.obj;
 
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
+import r48.io.data.obj.DMCXSupplier;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.chunks.StringR2kStruct;
@@ -51,7 +51,7 @@ public class MapInfo extends DM2R2kObject {
     public IntegerR2kStruct escapeState;
     @DMFXOBinding("@save_state") @DM2LcfBinding(33) @DMCXInteger(0)
     public IntegerR2kStruct saveState;
-    @DMFXOBinding("@encounters") @DM2LcfBinding(41)
+    @DMFXOBinding("@encounters") @DM2LcfBinding(41) @DMCXSupplier(Encounter.class)
     public DM2SparseArrayA<Encounter> encounters;
     @DMFXOBinding("@encounter_steps") @DM2LcfBinding(44) @DMCXInteger(25)
     public IntegerR2kStruct encounterSteps;
@@ -60,12 +60,5 @@ public class MapInfo extends DM2R2kObject {
 
     public MapInfo(DMContext ctx) {
         super(ctx, "RPG::MapInfo");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@encounters"))
-            return encounters = new DM2SparseArrayA<Encounter>(context, () -> new Encounter(context));
-        return super.dm2AddIVar(sym);
     }
 }

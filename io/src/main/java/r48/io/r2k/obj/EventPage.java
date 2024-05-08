@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -56,20 +57,14 @@ public class EventPage extends DM2R2kObject {
 
     @DMFXOBinding("@list") @DM2LcfSizeBinding(51) @DM2LcfBinding(52)
     public DM2Array<EventCommand> list;
+    public static Consumer<EventPage> list_add = (v) -> v.list = new DM2Array<EventCommand>(v.context) {
+        @Override
+        public EventCommand newValue() {
+            return new EventCommand(v.context);
+        }
+    }; 
 
     public EventPage(DMContext ctx) {
         super(ctx, "RPG::EventPage");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@list"))
-            return list = new DM2Array<EventCommand>(context) {
-                @Override
-                public EventCommand newValue() {
-                    return new EventCommand(EventPage.this.context);
-                }
-            };
-        return super.dm2AddIVar(sym);
     }
 }

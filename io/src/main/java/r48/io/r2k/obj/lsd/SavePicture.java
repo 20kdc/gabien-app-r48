@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj.lsd;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -73,6 +74,15 @@ public class SavePicture extends DM2R2kObject {
     public IntegerR2kStruct battleLayer112;
     @DMFXOBinding("@flags_112") @DM2LcfBinding(0x1B)
     public BitfieldR2kStruct flags112;
+    public Consumer<SavePicture> flags112_add = (v) -> v.flags112 = new BitfieldR2kStruct(v.context, new String[] {
+            "@erase_on_mapchange",
+            "@erase_on_battleend",
+            "@unused_1",
+            "@unused_2",
+            "@mod_tint",
+            "@mod_flash",
+            "@mod_shake",
+    }, 0x61); // 0b01100001
     @DMFXOBinding("@target_x") @DM2LcfBinding(0x1F) @DMCXInteger(0)
     public DoubleR2kStruct targetX;
     @DMFXOBinding("@target_y") @DM2LcfBinding(0x20) @DMCXInteger(0)
@@ -102,20 +112,5 @@ public class SavePicture extends DM2R2kObject {
 
     public SavePicture(DMContext ctx) {
         super(ctx, "RPG::SavePicture");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@flags_112"))
-            return flags112 = new BitfieldR2kStruct(context, new String[] {
-                    "@erase_on_mapchange",
-                    "@erase_on_battleend",
-                    "@unused_1",
-                    "@unused_2",
-                    "@mod_tint",
-                    "@mod_flash",
-                    "@mod_shake",
-            }, 0x61); // 0b01100001
-        return super.dm2AddIVar(sym);
     }
 }

@@ -130,25 +130,6 @@ public class R2kUtil {
         };
     }
 
-    public static Index[] mergeIndices(Index[] a, Index[] b) {
-        LinkedList<Index> lli = new LinkedList<Index>();
-        for (int i = 0; i < a.length; i++)
-            lli.add(a[i]);
-        for (int i = 0; i < b.length; i++)
-            lli.add(b[i]);
-        Collections.sort(lli, new Comparator<Index>() {
-            @Override
-            public int compare(Index index, Index t1) {
-                if (index.index < t1.index)
-                    return -1;
-                if (index.index > t1.index)
-                    return 1;
-                return 0;
-            }
-        });
-        return lli.toArray(new Index[0]);
-    }
-
     public static <T> void importSparse(HashMap<Integer, T> map, Supplier<T> constructor, InputStream bais) throws IOException {
         map.clear();
         int entries = readLcfVLI(bais);

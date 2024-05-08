@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.r2k.chunks.BooleanR2kStruct;
@@ -23,6 +24,12 @@ import r48.io.r2k.struct.MoveCommand;
 public class MoveRoute extends DM2R2kObject {
     @DMFXOBinding("@list") @DM2LcfSizeBinding(11) @DM2LcfBinding(12)
     public DM2Array<MoveCommand> list;
+    public static Consumer<MoveRoute> list_add = (v) -> v.list = new DM2Array<MoveCommand>(v.context, 0, false, false) {
+        @Override
+        public MoveCommand newValue() {
+            return new MoveCommand(v.context);
+        }
+    };
 
     @DMFXOBinding("@repeat") @DM2LcfBinding(21) @DMCXBoolean(true)
     public BooleanR2kStruct repeat;
@@ -31,17 +38,5 @@ public class MoveRoute extends DM2R2kObject {
 
     public MoveRoute(DMContext ctx) {
         super(ctx, "RPG::MoveRoute");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@list"))
-            return list = new DM2Array<MoveCommand>(context, 0, false, false) {
-                @Override
-                public MoveCommand newValue() {
-                    return new MoveCommand(MoveRoute.this.context);
-                }
-            };
-        return super.dm2AddIVar(sym);
     }
 }

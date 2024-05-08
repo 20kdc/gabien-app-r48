@@ -7,10 +7,9 @@
 
 package r48.io.r2k.obj;
 
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
@@ -30,20 +29,9 @@ public class Event extends DM2R2kObject {
     public IntegerR2kStruct y;
     @DMFXOBinding("@pages") @DM2LcfBinding(5)
     public DM2SparseArrayA<EventPage> pages;
+    public static Consumer<Event> pages_add = (v) -> v.pages = new DM2SparseArrayA<EventPage>(v.context, () -> new EventPage(v.context));
 
     public Event(DMContext ctx) {
         super(ctx, "RPG::Event");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@pages"))
-            return pages = new DM2SparseArrayA<EventPage>(context, new Supplier<EventPage>() {
-                @Override
-                public EventPage get() {
-                    return new EventPage(context);
-                }
-            });
-        return super.dm2AddIVar(sym);
     }
 }

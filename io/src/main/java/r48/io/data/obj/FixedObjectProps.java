@@ -10,11 +10,12 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import r48.io.data.DMContext;
+import r48.io.data.IRIO;
 
 /**
  * Contains reflected property data.
@@ -23,7 +24,7 @@ import r48.io.data.DMContext;
 public final class FixedObjectProps {
     private final static ConcurrentHashMap<Class<?>, FixedObjectProps> cache = new ConcurrentHashMap<>();
     private final HashMap<String, FXOBinding> fxoBindings = new HashMap<>();
-    private final HashMap<String, Function<DMContext, Object>> fieldNameToFactory = new HashMap<>();
+    private final HashMap<String, Consumer<IRIO>> fieldNameToIVarAdd = new HashMap<>();
     public final FXOBinding[] fxoBindingsArray;
     public final Field[] fieldsArray;
 
@@ -31,17 +32,20 @@ public final class FixedObjectProps {
         fieldsArray = clazz.getFields();
         LinkedList<FXOBinding> bindings = new LinkedList<>();
         for (Field f : fieldsArray) {
+            // factory
+            Consumer<IRIO> factory = ReflectiveIRIOFactoryScanner.createIVarAddFor(f);
+            if (factory != null)
+                fieldNameToIVarAdd.put(f.getName(), factory);
             // fxo
             DMFXOBinding dmx = f.getAnnotation(DMFXOBinding.class);
             if (dmx != null) {
-                FXOBinding res = new FXOBinding(f, dmx.value());
+                // by keeping this 'use-case' invalid it should simplify things down the line
+                if (factory == null)
+                    throw new RuntimeException("Property " + dmx.value() + " of " + clazz + " has an FXO binding without a factory.");
+                FXOBinding res = new FXOBinding(f, dmx.value(), factory);
                 bindings.add(res);
                 fxoBindings.put(res.iVar, res);
             }
-            // factories
-            Function<DMContext, Object> factory = DMFactory.createFactoryFor(f);
-            if (factory != null)
-                fieldNameToFactory.put(f.getName(), factory);
         }
         fxoBindingsArray = bindings.toArray(new FXOBinding[0]);
     }
@@ -53,8 +57,8 @@ public final class FixedObjectProps {
         return fxoBindings.get(iVar);
     }
 
-    public @Nullable Function<DMContext, Object> factoryByFieldName(String field) {
-        return fieldNameToFactory.get(field);
+    public @Nullable Consumer<IRIO> iVarAddByFieldName(String field) {
+        return fieldNameToIVarAdd.get(field);
     }
 
     public static FixedObjectProps forClass(Class<?> clazz) {
@@ -70,21 +74,27 @@ public final class FixedObjectProps {
         /**
          * instance variable for this binding
          */
-        public final String iVar;
+        public final @NonNull String iVar;
 
         /**
          * field it is bound to
          */
-        public final Field field;
+        public final @NonNull Field field;
+
+        /**
+         * addIVar handler for this FXO, assuming all wrapping has been dealt with
+         */
+        public final @Nullable Consumer<IRIO> iVarAdd;
 
         /**
          * if the instance variable is optional
          */
         public final boolean optional;
 
-        public FXOBinding(Field field, String prop) {
+        public FXOBinding(@NonNull Field field, @NonNull String prop, @Nullable Consumer<IRIO> iva) {
             this.field = field;
             this.iVar = prop;
+            this.iVarAdd = iva;
             optional = field.isAnnotationPresent(DMOptional.class);
         }
     }

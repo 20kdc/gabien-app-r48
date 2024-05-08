@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMCXSupplier;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
@@ -63,8 +64,10 @@ public class Enemy extends DM2R2kObject {
 
     @DMFXOBinding("@state_ranks") @DM2LcfSizeBinding(0x1F) @DM2LcfBinding(0x20)
     public DM2ArraySet<ByteR2kStruct> stateRanks;
+    public static Consumer<Enemy> stateRanks_add = (v) -> v.stateRanks = v.byteSet();
     @DMFXOBinding("@attr_ranks") @DM2LcfSizeBinding(0x21) @DM2LcfBinding(0x22)
     public DM2ArraySet<ByteR2kStruct> attrRanks;
+    public static Consumer<Enemy> attrRanks_add = (v) -> v.attrRanks = v.byteSet();
 
     @DMFXOBinding("@actions") @DM2LcfBinding(0x2A) @DMCXSupplier(EnemyAction.class)
     public DM2SparseArrayH<EnemyAction> enemyActions;
@@ -73,22 +76,12 @@ public class Enemy extends DM2R2kObject {
         super(ctx, "RPG::Enemy");
     }
 
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@state_ranks"))
-            return stateRanks = new DM2ArraySet<ByteR2kStruct>(context) {
-                @Override
-                public ByteR2kStruct newValue() {
-                    return new ByteR2kStruct(context, 2);
-                }
-            };
-        if (sym.equals("@attr_ranks"))
-            return attrRanks = new DM2ArraySet<ByteR2kStruct>(context) {
-                @Override
-                public ByteR2kStruct newValue() {
-                    return new ByteR2kStruct(context, 2);
-                }
-            };
-        return super.dm2AddIVar(sym);
+    private DM2ArraySet<ByteR2kStruct> byteSet() {
+        return new DM2ArraySet<ByteR2kStruct>(context) {
+            @Override
+            public ByteR2kStruct newValue() {
+                return new ByteR2kStruct(context, 2);
+            }
+        };
     }
 }

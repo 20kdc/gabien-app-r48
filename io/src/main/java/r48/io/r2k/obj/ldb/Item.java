@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMCXSupplier;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMOptional;
@@ -112,12 +113,15 @@ public class Item extends DM2R2kObject {
     // And now the arrays start
     @DMFXOBinding("@actor_set") @DM2LcfSizeBinding(0x3D) @DM2LcfBinding(0x3E)
     public DM2ArraySet<BooleanR2kStruct> aEfx;
+    public static Consumer<Item> aEfx_add = (v) -> v.aEfx = v.newFlagSet(false);
 
     @DMFXOBinding("@state_set") @DM2LcfSizeBinding(0x3F) @DM2LcfBinding(0x40)
     public DM2ArraySet<BooleanR2kStruct> sEfx;
+    public static Consumer<Item> sEfx_add = (v) -> v.sEfx = v.newFlagSet(false);
 
     @DMFXOBinding("@attr_set") @DM2LcfSizeBinding(0x41) @DM2LcfBinding(0x42)
     public DM2ArraySet<BooleanR2kStruct> atEfx;
+    public static Consumer<Item> atEfx_add = (v) -> v.atEfx = v.newFlagSet(true);
 
     // --
 
@@ -144,22 +148,10 @@ public class Item extends DM2R2kObject {
 
     @DMFXOBinding("@class_set_2k3") @DM2LcfSizeBinding(0x48) @DM2LcfBinding(0x49)
     public DM2ArraySet<BooleanR2kStruct> cEfx;
+    public static Consumer<Item> cEfx_add = (v) -> v.cEfx = v.newFlagSet(true);
 
     public Item(DMContext ctx) {
         super(ctx, "RPG::Item");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@actor_set"))
-            return aEfx = newFlagSet(false);
-        if (sym.equals("@state_set"))
-            return sEfx = newFlagSet(false);
-        if (sym.equals("@attr_set"))
-            return atEfx = newFlagSet(true);
-        if (sym.equals("@class_set_2k3"))
-            return cEfx = newFlagSet(true);
-        return super.dm2AddIVar(sym);
     }
 
     private DM2ArraySet<BooleanR2kStruct> newFlagSet(final boolean b) {

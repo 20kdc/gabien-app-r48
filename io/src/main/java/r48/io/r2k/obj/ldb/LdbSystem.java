@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMCXSupplier;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMOptional;
@@ -52,11 +53,23 @@ public class LdbSystem extends DM2R2kObject {
 
     @DMFXOBinding("@party") @DM2LcfSizeBinding(0x15) @DM2LcfBinding(0x16)
     public DM2Array<ShortR2kStruct> party;
+    public static Consumer<LdbSystem> party_add = (v) -> v.party = new DM2Array<ShortR2kStruct>(v.context, 0, true, true, 1) {
+        @Override
+        public ShortR2kStruct newValue() {
+            return new ShortR2kStruct(v.context, 1);
+        }
+    };
 
     // The menuCommandsSize -> menuCommands link is broken here, so it's fixed in the constructor.
     // Really not sure about this, it fixes v0.8 for release I think but I want to have a better look at it later
     @DMOptional @DMFXOBinding("@menu_commands_2k3") @DM2LcfSizeBinding(0x1A) @DM2LcfBinding(0x1B)
     public DM2Array<ShortR2kStruct> menuCommands;
+    public static Consumer<LdbSystem> menuCommands_add = (v) -> v.menuCommands = new DM2Array<ShortR2kStruct>(v.context, 0, true, true) {
+        @Override
+        public ShortR2kStruct newValue() {
+            return new ShortR2kStruct(v.context, 0);
+        }
+    };
 
     @DMFXOBinding("@title_music") @DM2LcfBinding(0x1F) @DMCXObject
     public Music titleMusic;
@@ -148,25 +161,6 @@ public class LdbSystem extends DM2R2kObject {
 
     public LdbSystem(DMContext ctx) {
         super(ctx, "RPG::System");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@party"))
-            return party = new DM2Array<ShortR2kStruct>(context, 0, true, true, 1) {
-                @Override
-                public ShortR2kStruct newValue() {
-                    return new ShortR2kStruct(context, 1);
-                }
-            };
-        if (sym.equals("@menu_commands_2k3"))
-            return menuCommands = new DM2Array<ShortR2kStruct>(context, 0, true, true) {
-                @Override
-                public ShortR2kStruct newValue() {
-                    return new ShortR2kStruct(context, 0);
-                }
-            };
-        return super.dm2AddIVar(sym);
     }
 
     public static class TestBattler extends DM2R2kObject {

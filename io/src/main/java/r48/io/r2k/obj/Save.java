@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMCXSupplier;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMOptional;
@@ -49,6 +50,7 @@ public class Save extends DM2R2kObject {
     public SaveMapInfo mapInfo;
     @DMOptional @DMFXOBinding("@unused_panorama") @DM2LcfBinding(112)
     public DM2Array<ByteR2kStruct> unusedPanorama;
+    public static Consumer<Save> unusedPanorama_add = (v) -> v.unusedPanorama = v.newDM2A();
     @DMFXOBinding("@main_interpreter") @DM2LcfBinding(113) @DMCXObject
     public Interpreter mainInterpreter;
     @DMFXOBinding("@common_events") @DM2LcfBinding(114) @DMCXSupplier(SaveCommonEvent.class)
@@ -69,13 +71,6 @@ public class Save extends DM2R2kObject {
                 return new ByteR2kStruct(context, 0);
             }
         };
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@unused_panorama"))
-            return unusedPanorama = newDM2A();
-        return super.dm2AddIVar(sym);
     }
 
     @Override

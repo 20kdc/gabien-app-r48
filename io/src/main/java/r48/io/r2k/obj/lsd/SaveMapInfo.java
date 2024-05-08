@@ -9,7 +9,6 @@ package r48.io.r2k.obj.lsd;
 
 import r48.RubyTable;
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMCXSupplier;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
@@ -23,6 +22,7 @@ import r48.io.r2k.dm2chk.*;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 /**
  * Created on December 13th, 2017
@@ -43,8 +43,10 @@ public class SaveMapInfo extends DM2R2kObject {
     // Transforms are performed on the LCF data before unpack.
     @DMFXOBinding("@lower_tile_remap") @DM2LcfBinding(0x15)
     public BlobR2kStruct lowerTileRemap;
+    public static Consumer<SaveMapInfo> lowerTileRemap_add = (v) -> v.lowerTileRemap = v.newBlankRemap();
     @DMFXOBinding("@upper_tile_remap") @DM2LcfBinding(0x16)
     public BlobR2kStruct upperTileRemap;
+    public static Consumer<SaveMapInfo> upperTileRemap_add = (v) -> v.upperTileRemap = v.newBlankRemap();
 
     @DMFXOBinding("@parallax_name") @DM2LcfBinding(0x20) @DMCXObject
     public StringR2kStruct parallaxName;
@@ -70,15 +72,6 @@ public class SaveMapInfo extends DM2R2kObject {
         for (int i = 0; i < blank.length; i++)
             blank[i] = (byte) i;
         return new BlobR2kStruct(context, "Table", bToTable(blank));
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@lower_tile_remap"))
-            return lowerTileRemap = newBlankRemap();
-        if (sym.equals("@upper_tile_remap"))
-            return upperTileRemap = newBlankRemap();
-        return super.dm2AddIVar(sym);
     }
 
     @Override

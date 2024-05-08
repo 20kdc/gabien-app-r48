@@ -9,6 +9,8 @@ package r48.io.r2k.struct;
 
 import r48.io.IntUtils;
 import r48.io.data.*;
+import r48.io.data.obj.DMCXInteger;
+import r48.io.data.obj.DMCXObject;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMOptional;
 import r48.io.data.obj.IRIOFixedObject;
@@ -24,13 +26,13 @@ import java.io.OutputStream;
  * Created on 31/05/17.
  */
 public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
-    @DMFXOBinding("@code")
+    @DMFXOBinding("@code") @DMCXInteger(0)
     public IRIOFixnum code;
 
-    @DMFXOBinding("@indent")
+    @DMFXOBinding("@indent") @DMCXInteger(0)
     public IRIOFixnum indent;
 
-    @DMFXOBinding("@parameters")
+    @DMFXOBinding("@parameters") @DMCXObject
     public ParameterArray parameters;
 
     @DMOptional @DMFXOBinding("@move_commands")
@@ -40,22 +42,13 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
         super(ctx, "RPG::EventCommand");
     }
 
-    @Override
-    public IRIO addIVar(String sym) {
-        if (sym.equals("@code"))
-            return code = new IRIOFixnum(context, 0);
-        if (sym.equals("@indent"))
-            return indent = new IRIOFixnum(context, 0);
-        if (sym.equals("@parameters"))
-            return parameters = new ParameterArray(context);
-        if (sym.equals("@move_commands"))
-            return moveCommands = new IRIOFixedArray<MoveCommand>(context) {
-                @Override
-                public MoveCommand newValue() {
-                    return new MoveCommand(context);
-                }
-            };
-        return null;
+    public void moveCommands_add() {
+        moveCommands = new IRIOFixedArray<MoveCommand>(context) {
+            @Override
+            public MoveCommand newValue() {
+                return new MoveCommand(context);
+            }
+        };
     }
 
     @Override

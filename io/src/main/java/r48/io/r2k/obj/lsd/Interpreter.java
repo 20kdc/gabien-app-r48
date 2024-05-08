@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj.lsd;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMCXSupplier;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
@@ -75,6 +76,12 @@ public class Interpreter extends DM2R2kObject {
     public static class InterpreterStackLevel extends DM2R2kObject {
         @DMFXOBinding("@list") @DM2LcfSizeBinding(0x1) @DM2LcfBinding(0x02) @DMCXBoolean(false)
         public DM2Array<EventCommand> list;
+        public static Consumer<InterpreterStackLevel> list_add = (v) -> v.list = new DM2Array<EventCommand>(v.context) {
+            @Override
+            public EventCommand newValue() {
+                return new EventCommand(v.context);
+            }
+        };
         @DMFXOBinding("@index") @DM2LcfBinding(0x0B) @DMCXInteger(0)
         public IntegerR2kStruct index;
         @DMFXOBinding("@event_id") @DM2LcfBinding(0x0C) @DMCXInteger(0)
@@ -83,28 +90,15 @@ public class Interpreter extends DM2R2kObject {
         public BooleanR2kStruct actioned;
         @DMFXOBinding("@branches") @DM2LcfSizeBinding(0x15) @DM2LcfBinding(0x16)
         public DM2Array<ByteR2kStruct> branches;
+        public static Consumer<InterpreterStackLevel> branches_add = (v) -> v.branches = new DM2Array<ByteR2kStruct>(v.context) {
+            @Override
+            public ByteR2kStruct newValue() {
+                return new ByteR2kStruct(v.context);
+            }
+        };
 
         public InterpreterStackLevel(DMContext ctx) {
             super(ctx, "RPG::InterpreterStackLevel");
-        }
-
-        @Override
-        protected IRIO dm2AddIVar(String sym) {
-            if (sym.equals("@list"))
-                return list = new DM2Array<EventCommand>(context) {
-                    @Override
-                    public EventCommand newValue() {
-                        return new EventCommand(context);
-                    }
-                };
-            if (sym.equals("@branches"))
-                return branches = new DM2Array<ByteR2kStruct>(context) {
-                    @Override
-                    public ByteR2kStruct newValue() {
-                        return new ByteR2kStruct(context);
-                    }
-                };
-            return super.dm2AddIVar(sym);
         }
     }
 }

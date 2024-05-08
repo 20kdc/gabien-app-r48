@@ -9,7 +9,6 @@ package r48.io.r2k.obj.ldb;
 
 import r48.RubyTable;
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -23,6 +22,7 @@ import r48.io.r2k.dm2chk.*;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 /**
  * Another bare-minimum for now
@@ -39,10 +39,19 @@ public class Tileset extends DM2R2kObject {
     // -- AS OF DM2, some blob transformation occurs similar to SaveMapInfo.
     @DMFXOBinding("@terrain_id_data") @DM2LcfBinding(3)
     public BlobR2kStruct terrainTbl;
+    public static Consumer<Tileset> terrainTbl_add = (v) -> v.terrainTbl = new BlobR2kStruct(v.context, "Table", new RubyTable(3, 162, 1, 1, new int[] {1}).innerBytes);
     @DMFXOBinding("@lowpass_data") @DM2LcfBinding(4)
     public BlobR2kStruct lowPassTbl;
+    public static Consumer<Tileset> lowPassTbl_add = (v) -> v.lowPassTbl = new BlobR2kStruct(v.context, "Table", v.bitfieldsToTable(R2kUtil.supplyBlank(162, (byte) 15).get()));
     @DMFXOBinding("@highpass_data") @DM2LcfBinding(5)
     public BlobR2kStruct highPassTbl;
+    public static Consumer<Tileset> highPassTbl_add = (v) -> {
+        byte[] dat = new byte[144];
+        for (int i = 0; i < dat.length; i++)
+            dat[i] = 15;
+        dat[0] = 31;
+        v.highPassTbl = new BlobR2kStruct(v.context, "Table", v.bitfieldsToTable(dat));
+    };
 
     @DMFXOBinding("@anim_cyclic") @DM2LcfBinding(0x0B) @DMCXBoolean(false)
     public BooleanR2kStruct animCyclic;
@@ -51,22 +60,6 @@ public class Tileset extends DM2R2kObject {
 
     public Tileset(DMContext ctx) {
         super(ctx, "RPG::Tileset");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@terrain_id_data"))
-            return terrainTbl = new BlobR2kStruct(context, "Table", new RubyTable(3, 162, 1, 1, new int[] {1}).innerBytes);
-        if (sym.equals("@lowpass_data"))
-            return lowPassTbl = new BlobR2kStruct(context, "Table", bitfieldsToTable(R2kUtil.supplyBlank(162, (byte) 15).get()));
-        if (sym.equals("@highpass_data")) {
-            byte[] dat = new byte[144];
-            for (int i = 0; i < dat.length; i++)
-                dat[i] = 15;
-            dat[0] = 31;
-            return highPassTbl = new BlobR2kStruct(context, "Table", bitfieldsToTable(dat));
-        }
-        return super.dm2AddIVar(sym);
     }
 
     @Override

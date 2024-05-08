@@ -10,6 +10,8 @@ package r48.io.r2k.struct;
 import r48.io.IntArrayIterable;
 import r48.io.IntUtils;
 import r48.io.data.*;
+import r48.io.data.obj.DMCXInteger;
+import r48.io.data.obj.DMCXObject;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.R2kUtil;
@@ -27,9 +29,9 @@ import java.util.List;
  * Created on 02/06/17.
  */
 public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
-    @DMFXOBinding("@code")
+    @DMFXOBinding("@code") @DMCXInteger(0)
     public IRIOFixnum code;
-    @DMFXOBinding("@parameters")
+    @DMFXOBinding("@parameters") @DMCXObject
     public ParameterArray parameters;
 
     public MoveCommand(DMContext ctx) {
@@ -200,14 +202,5 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         }
         for (int i = 0; i < (mcc & 0xFF); i++)
             R2kUtil.writeLcfVLI(baos, (int) parameters.arrVal[i].getFX());
-    }
-
-    @Override
-    public IRIO addIVar(String sym) {
-        if (sym.equals("@code"))
-            return code = new IRIOFixnum(context, 0);
-        if (sym.equals("@parameters"))
-            return parameters = new ParameterArray(context);
-        return null;
     }
 }

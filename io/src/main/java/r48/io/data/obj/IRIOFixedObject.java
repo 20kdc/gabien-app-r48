@@ -7,7 +7,9 @@
 
 package r48.io.data.obj;
 
+import java.lang.reflect.Field;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
@@ -19,7 +21,7 @@ import r48.io.data.obj.FixedObjectProps.FXOBinding;
  * Created on November 22, 2018.
  */
 public abstract class IRIOFixedObject extends IRIOFixed {
-    private final String objType;
+    public final String objType;
     protected final FixedObjectProps cachedFields;
 
     public IRIOFixedObject(DMContext ctx, String sym) {
@@ -34,11 +36,14 @@ public abstract class IRIOFixedObject extends IRIOFixed {
     public IRIO setObject(String symbol) {
         if (!symbol.equals(objType))
             return super.setObject(symbol);
-        initialize();
+        reAddAllIVars();
         return this;
     }
 
-    protected void initialize() {
+    /**
+     * This resets the contents of all FXO bindings.
+     */
+    protected final void reAddAllIVars() {
         try {
             for (FXOBinding f : cachedFields.fxoBindingsArray) {
                 if (!f.optional) {
@@ -50,6 +55,10 @@ public abstract class IRIOFixedObject extends IRIOFixed {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected void initialize() {
+        reAddAllIVars();
     }
 
     @Override
@@ -85,6 +94,39 @@ public abstract class IRIOFixedObject extends IRIOFixed {
             }
         }
         return null;
+    }
+
+    @Override
+    public IRIO addIVar(String sym) {
+        FXOBinding f = cachedFields.byIVar(sym);
+        if (f != null)
+            return (IRIO) addFieldImpl(f.field, f.iVarAdd);
+        return null;
+    }
+
+    /**
+     * This function is like addIVar, but it works by Field.
+     */
+    public Object addField(Field f) {
+        DMFXOBinding fxo = f.getAnnotation(DMFXOBinding.class);
+        if (fxo != null)
+            return addIVar(fxo.value());
+        return addFieldImpl(f, cachedFields.iVarAddByFieldName(f.getName()));
+    }
+
+    // Must not handle translation into addIVar because it's called from there.
+    private Object addFieldImpl(Field f, Consumer<IRIO> factory) {
+        if (factory == null)
+            return null;
+        factory.accept(this);
+        try {
+            Object res = f.get(this);
+            if (res == null)
+                throw new RuntimeException("Factory did not actually set a non-null value");
+            return res;
+        } catch (Exception ex) {
+            throw new RuntimeException("At field: " + f, ex);
+        }
     }
 
     @Override

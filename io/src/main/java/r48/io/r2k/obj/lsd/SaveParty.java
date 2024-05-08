@@ -21,24 +21,34 @@ import r48.io.r2k.chunks.ShortR2kStruct;
 import r48.io.r2k.dm2chk.*;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 public class SaveParty extends DM2R2kObject {
     @DMFXOBinding("@party") @DM2LcfSizeBinding(1) @DM2LcfBinding(0x02)
     public DM2Array<ShortR2kStruct> party;
+    public static Consumer<SaveParty> party_add = (v) -> v.party = v.newShortArray();
     // NOTE: These *don't* get put in directly.
     @DM2LcfBinding(0x0B) @DMCXInteger(0)
     public IntegerR2kStruct inventorySize;
     @DM2LcfBinding(0x0C)
     public DM2Array<ShortR2kStruct> inventoryIds;
+    public static Consumer<SaveParty> inventoryIds_add = (v) -> v.inventoryIds = v.newShortArray();
     @DM2LcfBinding(0x0D)
     public DM2Array<ByteR2kStruct> inventoryCounts;
+    public static Consumer<SaveParty> inventoryCounts_add = (v) -> v.inventoryCounts = v.newByteArray();
     @DM2LcfBinding(0x0E)
     public DM2Array<ByteR2kStruct> inventoryUsage;
+    public static Consumer<SaveParty> inventoryUsage_add = (v) -> v.inventoryUsage = v.newByteArray();
 
     @DMFXOBinding("@inventory")
     public IRIOFixedArray<SaveItem> inventoryView;
+    public static Consumer<SaveParty> inventoryView_add = (v) -> v.inventoryView = new IRIOFixedArray<SaveItem>(v.context) {
+        @Override
+        public SaveItem newValue() {
+            return new SaveItem(context);
+        }
+    };
 
     @DMFXOBinding("@party_gold") @DM2LcfBinding(0x15) @DMCXInteger(0)
     public IntegerR2kStruct partyGold;
@@ -75,26 +85,6 @@ public class SaveParty extends DM2R2kObject {
 
     public SaveParty(DMContext ctx) {
         super(ctx, "RPG::SaveParty");
-    }
-
-    @Override
-    protected Object dm2AddField(Field f) {
-        if (f.getName().equals("party"))
-            return party = newShortArray();
-        if (f.getName().equals("inventoryIds"))
-            return inventoryIds = newShortArray();
-        if (f.getName().equals("inventoryCounts"))
-            return inventoryCounts = newByteArray();
-        if (f.getName().equals("inventoryUsage"))
-            return inventoryUsage = newByteArray();
-        if (f.getName().equals("inventoryView"))
-            return inventoryView = new IRIOFixedArray<SaveItem>(context) {
-                @Override
-                public SaveItem newValue() {
-                    return new SaveItem(context);
-                }
-            };
-        return super.dm2AddField(f);
     }
 
     private DM2Array<ByteR2kStruct> newByteArray() {
@@ -148,28 +138,17 @@ public class SaveParty extends DM2R2kObject {
     }
 
     public static class SaveItem extends IRIOFixedObject {
-        @DMFXOBinding("@id")
+        @DMFXOBinding("@id") @DMCXInteger(0)
         public ShortR2kStruct id;
 
-        @DMFXOBinding("@count")
+        @DMFXOBinding("@count") @DMCXInteger(0)
         public ByteR2kStruct count;
 
-        @DMFXOBinding("@usage")
+        @DMFXOBinding("@usage") @DMCXInteger(0)
         public ByteR2kStruct usage;
 
         public SaveItem(DMContext ctx) {
             super(ctx, "RPG::SaveItem");
-        }
-
-        @Override
-        public IRIO addIVar(String sym) {
-            if (sym.equals("@id"))
-                return id = new ShortR2kStruct(context, 0);
-            if (sym.equals("@count"))
-                return count = new ByteR2kStruct(context, 0);
-            if (sym.equals("@usage"))
-                return usage = new ByteR2kStruct(context, 0);
-            return null;
         }
     }
 }

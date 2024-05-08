@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
@@ -75,6 +76,12 @@ public class Terrain extends DM2R2kObject {
 
     @DMFXOBinding("@special_flags_2k3") @DM2LcfBinding(0x28)
     public BitfieldR2kStruct specialFlags;
+    public static Consumer<Terrain> specialFlags_add = (v) -> v.specialFlags = new BitfieldR2kStruct(v.context, new String[] {
+            "@back_party",
+            "@back_enemies",
+            "@lat_party",
+            "@lat_enemies",
+    }, 0); // Default left unspecified, assumed 0.
 
     @DMFXOBinding("@special_back_party_2k3") @DM2LcfBinding(0x29) @DMCXInteger(15)
     public IntegerR2kStruct specialBackParty;
@@ -96,17 +103,5 @@ public class Terrain extends DM2R2kObject {
 
     public Terrain(DMContext ctx) {
         super(ctx, "RPG::Terrain");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@special_flags_2k3"))
-            return specialFlags = new BitfieldR2kStruct(context, new String[] {
-                    "@back_party",
-                    "@back_enemies",
-                    "@lat_party",
-                    "@lat_enemies",
-            }, 0); // Default left unspecified, assumed 0.
-        return super.dm2AddIVar(sym);
     }
 }

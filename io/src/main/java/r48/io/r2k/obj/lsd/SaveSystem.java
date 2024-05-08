@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj.lsd;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMOptional;
 import r48.io.data.obj.DMCXBoolean;
@@ -32,8 +33,20 @@ public class SaveSystem extends DM2R2kObject {
     public IntegerR2kStruct fontId;
     @DMFXOBinding("@switches") @DM2LcfSizeBinding(0x1F) @DM2LcfBinding(0x20)
     public DM2Array<BooleanR2kStruct> switches;
+    public static Consumer<SaveSystem> switches_add = (v) -> v.switches = new DM2Array<BooleanR2kStruct>(v.context) {
+        @Override
+        public BooleanR2kStruct newValue() {
+            return new BooleanR2kStruct(v.context, false);
+        }
+    };
     @DMFXOBinding("@variables") @DM2LcfSizeBinding(0x21) @DM2LcfBinding(0x22)
     public DM2Array<Int32R2kStruct> variables;
+    public static Consumer<SaveSystem> variables_add = (v) -> v.variables = new DM2Array<Int32R2kStruct>(v.context) {
+        @Override
+        public Int32R2kStruct newValue() {
+            return new Int32R2kStruct(v.context, 0);
+        }
+    };
     @DMFXOBinding("@message_transparent") @DM2LcfBinding(0x29) @DMCXInteger(0)
     public IntegerR2kStruct messageTransparent;
     @DMFXOBinding("@message_position") @DM2LcfBinding(0x2A) @DMCXInteger(2)
@@ -110,18 +123,18 @@ public class SaveSystem extends DM2R2kObject {
     //  but now I'll never know what it means. My guess is:
     // 1. there's an enum value that depends on this being signed.
     // 2. EasyRPG had it marked as Uint8 but fixed it, so these notes don't make sense (a good thing)
-    @DMFXOBinding("@transition_fadeout") @DM2LcfBinding(0x6F)
-    public ByteR2kStruct transitionOut;
-    @DMFXOBinding("@transition_fadein") @DM2LcfBinding(0x70)
-    public ByteR2kStruct transitionIn;
-    @DMFXOBinding("@battle_start_fadeout") @DM2LcfBinding(0x71)
-    public ByteR2kStruct battleStartFadeout;
-    @DMFXOBinding("@battle_start_fadein") @DM2LcfBinding(0x72)
-    public ByteR2kStruct battleStartFadein;
-    @DMFXOBinding("@battle_end_fadeout") @DM2LcfBinding(0x73)
-    public ByteR2kStruct battleEndFadeout;
-    @DMFXOBinding("@battle_end_fadein") @DM2LcfBinding(0x74)
-    public ByteR2kStruct battleEndFadein;
+    @DMFXOBinding("@transition_fadeout") @DM2LcfBinding(0x6F) @DMCXInteger(1)
+    public ByteR2kStruct.Signed transitionOut;
+    @DMFXOBinding("@transition_fadein") @DM2LcfBinding(0x70) @DMCXInteger(1)
+    public ByteR2kStruct.Signed transitionIn;
+    @DMFXOBinding("@battle_start_fadeout") @DM2LcfBinding(0x71) @DMCXInteger(1)
+    public ByteR2kStruct.Signed battleStartFadeout;
+    @DMFXOBinding("@battle_start_fadein") @DM2LcfBinding(0x72) @DMCXInteger(1)
+    public ByteR2kStruct.Signed battleStartFadein;
+    @DMFXOBinding("@battle_end_fadeout") @DM2LcfBinding(0x73) @DMCXInteger(1)
+    public ByteR2kStruct.Signed battleEndFadeout;
+    @DMFXOBinding("@battle_end_fadein") @DM2LcfBinding(0x74) @DMCXInteger(1)
+    public ByteR2kStruct.Signed battleEndFadein;
 
     @DMFXOBinding("@can_teleport") @DM2LcfBinding(0x79) @DMCXBoolean(true)
     public BooleanR2kStruct canTeleport;
@@ -143,41 +156,6 @@ public class SaveSystem extends DM2R2kObject {
 
     public SaveSystem(DMContext ctx) {
         super(ctx, "RPG::SaveSystem");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@switches"))
-            return switches = new DM2Array<BooleanR2kStruct>(context) {
-                @Override
-                public BooleanR2kStruct newValue() {
-                    return new BooleanR2kStruct(context, false);
-                }
-            };
-        if (sym.equals("@variables"))
-            return variables = new DM2Array<Int32R2kStruct>(context) {
-                @Override
-                public Int32R2kStruct newValue() {
-                    return new Int32R2kStruct(context, 0);
-                }
-            };
-        if (sym.equals("@transition_fadeout"))
-            return transitionOut = newSByte();
-        if (sym.equals("@transition_fadein"))
-            return transitionIn = newSByte();
-        if (sym.equals("@battle_start_fadeout"))
-            return battleStartFadeout = newSByte();
-        if (sym.equals("@battle_start_fadein"))
-            return battleStartFadein = newSByte();
-        if (sym.equals("@battle_end_fadeout"))
-            return battleEndFadeout = newSByte();
-        if (sym.equals("@battle_end_fadein"))
-            return battleEndFadein = newSByte();
-        return super.dm2AddIVar(sym);
-    }
-
-    private ByteR2kStruct newSByte() {
-        return new ByteR2kStruct(context, 1).signed();
     }
 
     // 3D is an unknown integer. I'd play with it, but there's never the time!

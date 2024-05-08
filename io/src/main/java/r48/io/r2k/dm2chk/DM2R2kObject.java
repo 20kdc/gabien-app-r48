@@ -11,7 +11,7 @@ import r48.io.IntUtils;
 import r48.io.data.*;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMOptional;
-import r48.io.data.obj.IRIOFixedObject;
+import r48.io.data.obj.IRIOFixedObjectPacked;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
 import r48.io.r2k.chunks.IR2kSizable;
@@ -22,22 +22,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 /**
- * How this works:
- * It's in two states (decided by if packedChunkData is null yet):
- * false: Packed. All fields are INVALID, apart from packedChunkData.
- * true: Unpacked. Fields become valid, packedChunkData nulled.
  * DM2LcfBinding must be present on all fields that act as serializable chunks.
  *
- * NOTE: IRIO Fixed
- *
  * Modified from R2kObject on December 4th 2018.
+ * Packing structure split into IRIOFixedObjectPacked on May 8th 2024.
  */
-public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
+public class DM2R2kObject extends IRIOFixedObjectPacked implements IR2kInterpretable {
     @DMOptional @DMFXOBinding("@__LCF__unknown")
     public IRIOFixedHash<Integer, IRIOFixedUser> unknownChunks;
+    public static Consumer<DM2R2kObject> unknownChunks_add = (v) -> v.setUnknownChunks(); 
 
     // --
 
@@ -47,11 +43,6 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
 
     public DM2R2kObject(DMContext ctx, String sym) {
         super(ctx, sym);
-    }
-
-    @Override
-    protected final void initialize() {
-        // Disable automatic initialization, permanently
     }
 
     private void setUnknownChunks() {
@@ -87,19 +78,23 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
         return ws;
     }
 
-    protected final void dm2Unpack() {
-        if (packedChunkData != null) {
-            HashMap<Integer, byte[]> pcd = packedChunkData;
-            packedChunkData = null;
-            unknownChunks = null;
-            // Removes chunks as they are found so that unknown chunks can eat the rest
-            dm2UnpackFromMapDestructively(pcd);
-            if (pcd.size() > 0) {
-                setUnknownChunks();
-                for (Map.Entry<Integer, byte[]> me : pcd.entrySet())
-                    unknownChunks.hashVal.put(me.getKey(), new IRIOFixedUser(context, "Blob", me.getValue()));
-            }
+    @Override
+    protected void unpackImpl() {
+        HashMap<Integer, byte[]> pcd = packedChunkData;
+        packedChunkData = null;
+        unknownChunks = null;
+        // Removes chunks as they are found so that unknown chunks can eat the rest
+        dm2UnpackFromMapDestructively(pcd);
+        if (pcd.size() > 0) {
+            setUnknownChunks();
+            for (Map.Entry<Integer, byte[]> me : pcd.entrySet())
+                unknownChunks.hashVal.put(me.getKey(), new IRIOFixedUser(context, "Blob", me.getValue()));
         }
+    }
+
+    @Override
+    protected void erasePackedDataImpl() {
+        packedChunkData = null;
     }
 
     protected void dm2PackIntoMap(HashMap<Integer, byte[]> pcd) throws IOException {
@@ -192,101 +187,6 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
                 }
             }
         }
-    }
-
-    // --- Actual IRIO impl.
-
-    @Override
-    public IRIO setObject(String symbol) {
-        super.setObject(symbol);
-        // Switch this into unpacked by force. Deletion of all data is totally okay here.
-        packedChunkData = null;
-        // unknownChunks & main members (since normal initialize() disabled)
-        // Any remaining stuff 'should be fine'
-        super.initialize();
-        return this;
-    }
-
-    @Override
-    public final String[] getIVars() {
-        dm2Unpack();
-        return dm2GetIVars();
-    }
-
-    @Override
-    public final IRIO getIVar(String sym) {
-        dm2Unpack();
-        return dm2GetIVar(sym);
-    }
-
-    @Override
-    public final IRIO addIVar(String sym) {
-        dm2Unpack();
-        if (sym.equals("@__LCF__unknown")) {
-            setUnknownChunks();
-            return unknownChunks;
-        }
-        for (Field f : cachedFields.fieldsArray) {
-            DMFXOBinding fxo = f.getAnnotation(DMFXOBinding.class);
-            if (fxo != null) {
-                if (sym.equals(fxo.value())) {
-                    IRIO r = (IRIO) dm2AddField(f);
-                    if (r != null)
-                        return r;
-                    break;
-                }
-            }
-        }
-        return dm2AddIVar(sym);
-    }
-
-    // This function tries to add a field.
-    public final Object addField(Field f) {
-        DMFXOBinding fxo = f.getAnnotation(DMFXOBinding.class);
-        if (fxo != null) {
-            IRIO t = dm2AddIVar(fxo.value());
-            if (t != null)
-                return t;
-        }
-        return dm2AddField(f);
-    }
-
-    @Override
-    public final void rmIVar(String sym) {
-        dm2Unpack();
-        dm2RmIVar(sym);
-    }
-
-    // --- Override These w/ super calls
-
-    protected String[] dm2GetIVars() {
-        return super.getIVars();
-    }
-
-    protected IRIO dm2GetIVar(String sym) {
-        return super.getIVar(sym);
-    }
-
-    // NOTE: THE ONLY CALLER FOR EITHER OF THESE SHOULD BE addIVar and addField!
-    protected IRIO dm2AddIVar(String sym) {
-        return null;
-    }
-
-    // Must not handle translation into dm2AddIVar due to the 2 callers.
-    // This instead happens in addIVar and addField.
-    protected Object dm2AddField(final Field f) {
-        Function<DMContext, Object> factory = cachedFields.factoryByFieldName(f.getName());
-        Object obj = factory != null ? factory.apply(context) : null;
-        try {
-            f.set(this, obj);
-        } catch (Exception ex) {
-            throw new RuntimeException("At field: " + f, ex);
-        }
-        return obj;
-    }
-
-    protected void dm2RmIVar(String sym) {
-        super.rmIVar(sym);
     }
 
     // ---

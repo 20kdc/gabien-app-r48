@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMCXSupplier;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMOptional;
@@ -67,6 +68,7 @@ public class Database extends DM2R2kObject {
 
     @DMFXOBinding("@db_version") @DM2LcfBinding(26)
     public DM2Array<ByteR2kStruct> dbVersion;
+    public static Consumer<Database> dbVersion_add = (v) -> v.dbVersion = v.newDM2A();
 
     @DMFXOBinding("@battle_commands_2k3") @DM2LcfBinding(29) @DMCXObject
     public BattleCommands battleCommands2k3;
@@ -78,23 +80,13 @@ public class Database extends DM2R2kObject {
 
     @DMOptional @DMFXOBinding("@unused_27") @DM2LcfBinding(27)
     public DM2Array<ByteR2kStruct> unused27;
+    public static Consumer<Database> unused27_add = (v) -> v.unused27 = v.newDM2A();
     @DMOptional @DMFXOBinding("@unused_28") @DM2LcfBinding(28)
     public DM2Array<ByteR2kStruct> unused28;
+    public static Consumer<Database> unused28_add = (v) -> v.unused28 = v.newDM2A();
     @DMOptional @DMFXOBinding("@unused_31") @DM2LcfBinding(31)
     public DM2Array<ByteR2kStruct> unused31;
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@unused_27"))
-            return unused27 = newDM2A();
-        if (sym.equals("@unused_28"))
-            return unused28 = newDM2A();
-        if (sym.equals("@unused_31"))
-            return unused31 = newDM2A();
-        if (sym.equals("@db_version"))
-            return dbVersion = newDM2A();
-        return super.dm2AddIVar(sym);
-    }
+    public static Consumer<Database> unused31_add = (v) -> v.unused31 = v.newDM2A();
 
     private DM2Array<ByteR2kStruct> newDM2A() {
         return new DM2Array<ByteR2kStruct>(context) {

@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMOptional;
 import r48.io.data.obj.DMCXBoolean;
@@ -48,6 +49,12 @@ public class Actor extends ActorClassBase {
     public IntegerR2kStruct faceIdx;
     @DMFXOBinding("@equipment") @DM2LcfBinding(51)
     public DM2Array<ShortR2kStruct> equipment;
+    public static Consumer<Actor> equipment_add = (v) -> v.equipment = new DM2Array<ShortR2kStruct>(v.context) {
+        @Override
+        public ShortR2kStruct newValue() {
+            return new ShortR2kStruct(v.context, 0);
+        }
+    };
     @DMFXOBinding("@no_weapon_attack_anim") @DM2LcfBinding(40) @DMCXInteger(1)
     public IntegerR2kStruct noWeaponAttackAnim;
     @DMFXOBinding("@class_2k3") @DM2LcfBinding(57) @DMCXInteger(0)
@@ -63,17 +70,5 @@ public class Actor extends ActorClassBase {
 
     public Actor(DMContext ctx) {
         super(ctx, "RPG::Actor", 1);
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@equipment"))
-            return equipment = new DM2Array<ShortR2kStruct>(context) {
-                @Override
-                public ShortR2kStruct newValue() {
-                    return new ShortR2kStruct(context, 0);
-                }
-            };
-        return super.dm2AddIVar(sym);
     }
 }

@@ -8,6 +8,9 @@
 package r48.io.r2k.struct;
 
 import r48.io.data.*;
+import r48.io.data.obj.DMCXInteger;
+import r48.io.data.obj.DMCXObject;
+import r48.io.data.obj.DMCXSupplier;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.R2kUtil;
@@ -20,41 +23,30 @@ import r48.io.r2k.obj.MapTreeStart;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.function.Consumer;
 
 /**
  * This isn't even standard LCF madness. This is something *else*.
  * Created on 31/05/17.
  */
 public class MapTree extends IRIOFixedObject implements IR2kInterpretable {
-    @DMFXOBinding("@map_infos")
+    @DMFXOBinding("@map_infos") @DMCXSupplier(MapInfo.class)
     public DM2SparseArrayH<MapInfo> mapInfos;
     @DMFXOBinding("@map_order")
     public IRIOFixedArray<IRIOFixnum> mapOrder;
-    @DMFXOBinding("@active_node")
+    public static Consumer<MapTree> mapOrder_add = (v) -> v.mapOrder = new IRIOFixedArray<IRIOFixnum>(v.context) {
+        @Override
+        public IRIOFixnum newValue() {
+            return new IRIOFixnum(v.context, 0);
+        }
+    };
+    @DMFXOBinding("@active_node") @DMCXInteger(0)
     public IntegerR2kStruct activeNode;
-    @DMFXOBinding("@start")
+    @DMFXOBinding("@start") @DMCXObject
     public MapTreeStart start;
 
     public MapTree(DMContext ctx) {
         super(ctx, "RPG::MapTree");
-    }
-
-    @Override
-    public IRIO addIVar(String sym) {
-        if (sym.equals("@map_infos"))
-            return mapInfos = new DM2SparseArrayH<MapInfo>(context, () -> new MapInfo(context));
-        if (sym.equals("@map_order"))
-            return mapOrder = new IRIOFixedArray<IRIOFixnum>(context) {
-                @Override
-                public IRIOFixnum newValue() {
-                    return new IRIOFixnum(context, 0);
-                }
-            };
-        if (sym.equals("@active_node"))
-            return activeNode = new IntegerR2kStruct(context, 0);
-        if (sym.equals("@start"))
-            return start = new MapTreeStart(context);
-        return null;
     }
 
     @Override

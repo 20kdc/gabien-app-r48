@@ -7,13 +7,15 @@
 
 package r48.io.r2k.obj.ldb;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMOptional;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
+import r48.io.data.obj.DMCXSupplier;
 import r48.io.r2k.chunks.*;
 import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.struct.BPB;
@@ -35,7 +37,7 @@ public class ActorClassBase extends DM2R2kObject {
     @DMFXOBinding("@battle_super_guard") @DM2LcfBinding(24) @DMCXBoolean(false)
     public BooleanR2kStruct superGuard;
 
-    @DMFXOBinding("@battle_parameters") @DM2LcfBinding(31)
+    @DMFXOBinding("@battle_parameters") @DM2LcfBinding(31) @DMCXObject
     public BPB parameters;
 
     @DMOptional @DMFXOBinding("@init_level_exp") @DM2LcfBinding(41) @DMCXInteger(0)
@@ -48,45 +50,32 @@ public class ActorClassBase extends DM2R2kObject {
     // 1 or 0...? Different in each.
     @DMFXOBinding("@battler_anim_2k3") @DM2LcfBinding(62)
     public IntegerR2kStruct battlerAnimation;
+    public static Consumer<ActorClassBase> battlerAnimation_add = (v) -> v.battlerAnimation = new IntegerR2kStruct(v.context, v.battlerAnimationDefault);
 
-    @DMFXOBinding("@learn_skills") @DM2LcfBinding(63)
+    @DMFXOBinding("@learn_skills") @DM2LcfBinding(63) @DMCXSupplier(Learning.class)
     public DM2SparseArrayA<Learning> learnSkills;
 
     @DMFXOBinding("@state_ranks") @DM2LcfSizeBinding(71) @DM2LcfBinding(72)
     public DM2ArraySet<ByteR2kStruct> stateRanks;
+    public static Consumer<ActorClassBase> stateRanks_add = (v) -> v.stateRanks = v.byteSet();
     @DMFXOBinding("@attr_ranks") @DM2LcfSizeBinding(73) @DM2LcfBinding(74)
     public DM2ArraySet<ByteR2kStruct> attrRanks;
+    public static Consumer<ActorClassBase> attrRanks_add = (v) -> v.attrRanks = v.byteSet();
 
     @DMFXOBinding("@battle_commands_2k3") @DM2LcfBinding(80)
     public DM2Array<Int32R2kStruct> battleCommands;
+    public static Consumer<ActorClassBase> battleCommands_add = (v) -> v.battleCommands = new DM2Array<Int32R2kStruct>(v.context) {
+        @Override
+        public Int32R2kStruct newValue() {
+            return new Int32R2kStruct(v.context, 0);
+        }
+    };
 
     private final int battlerAnimationDefault;
 
     public ActorClassBase(DMContext ctx, String sym, int bad1) {
         super(ctx, sym);
         battlerAnimationDefault = bad1;
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@battle_parameters"))
-            return parameters = new BPB(context);
-        if (sym.equals("@learn_skills"))
-            return learnSkills = new DM2SparseArrayA<Learning>(context, () -> new Learning(context));
-        if (sym.equals("@state_ranks"))
-            return stateRanks = byteSet();
-        if (sym.equals("@attr_ranks"))
-            return attrRanks = byteSet();
-        if (sym.equals("@battle_commands_2k3"))
-            return battleCommands = new DM2Array<Int32R2kStruct>(context) {
-                @Override
-                public Int32R2kStruct newValue() {
-                    return new Int32R2kStruct(context, 0);
-                }
-            };
-        if (sym.equals("@battler_anim_2k3"))
-            return battlerAnimation = new IntegerR2kStruct(context, battlerAnimationDefault);
-        return super.dm2AddIVar(sym);
     }
 
     private DM2ArraySet<ByteR2kStruct> byteSet() {

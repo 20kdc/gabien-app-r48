@@ -7,8 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
+import java.util.function.Consumer;
+
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMCXSupplier;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMOptional;
@@ -85,8 +86,10 @@ public class Skill extends DM2R2kObject {
     public BooleanR2kStruct igDef;
     @DMFXOBinding("@mod_states") @DM2LcfSizeBinding(41) @DM2LcfBinding(42)
     public DM2ArraySet<BooleanR2kStruct> sEfx;
+    public static Consumer<Skill> sEfx_add = (v) -> v.sEfx = v.boolSet();
     @DMFXOBinding("@mod_by_attributes") @DM2LcfSizeBinding(43) @DM2LcfBinding(44)
     public DM2ArraySet<BooleanR2kStruct> aEfx;
+    public static Consumer<Skill> aEfx_add = (v) -> v.aEfx = v.boolSet();
     @DMFXOBinding("@affect_target_attr_defence") @DM2LcfBinding(45) @DMCXBoolean(false)
     public BooleanR2kStruct afAtDef;
     @DMFXOBinding("@OFED_battler_anim_display_actor") @DM2LcfBinding(49) @DMCXInteger(1)
@@ -98,15 +101,6 @@ public class Skill extends DM2R2kObject {
 
     public Skill(DMContext ctx) {
         super(ctx, "RPG::Skill");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@mod_states"))
-            return sEfx = boolSet();
-        if (sym.equals("@mod_by_attributes"))
-            return aEfx = boolSet();
-        return super.dm2AddIVar(sym);
     }
 
     private DM2ArraySet<BooleanR2kStruct> boolSet() {

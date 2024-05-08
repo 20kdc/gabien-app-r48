@@ -8,7 +8,6 @@
 package r48.io.r2k.obj.ldb;
 
 import r48.io.data.DMContext;
-import r48.io.data.IRIO;
 import r48.io.data.obj.DMCXSupplier;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
@@ -24,6 +23,7 @@ import r48.io.r2k.struct.EventCommand;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 /**
  * COPY jun6-2017
@@ -38,6 +38,12 @@ public class Troop extends DM2R2kObject {
 
     @DMFXOBinding("@terrain_set") @DM2LcfSizeBinding(4) @DM2LcfBinding(5)
     public DM2ArraySet<BooleanR2kStruct> terrainSet;
+    public static Consumer<Troop> terrainSet_add = (v) -> v.terrainSet = new DM2ArraySet<BooleanR2kStruct>(v.context) {
+        @Override
+        public BooleanR2kStruct newValue() {
+            return new BooleanR2kStruct(v.context, true);
+        }
+    };
 
     @DMFXOBinding("@randomized_memberset_2k3") @DM2LcfBinding(6) @DMCXBoolean(false)
     public BooleanR2kStruct appearRandomly;
@@ -49,18 +55,6 @@ public class Troop extends DM2R2kObject {
 
     public Troop(DMContext ctx) {
         super(ctx, "RPG::Troop");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@terrain_set"))
-            return terrainSet = new DM2ArraySet<BooleanR2kStruct>(context) {
-                @Override
-                public BooleanR2kStruct newValue() {
-                    return new BooleanR2kStruct(context, true);
-                }
-            };
-        return super.dm2AddIVar(sym);
     }
 
     public static class TroopMember extends DM2R2kObject {
@@ -83,29 +77,25 @@ public class Troop extends DM2R2kObject {
         public TroopPageCondition condition;
         @DMFXOBinding("@list") @DM2LcfSizeBinding(11) @DM2LcfBinding(12)
         public DM2Array<EventCommand> list;
+        public static Consumer<TroopPage> list_add = (v) -> v.list = new DM2Array<EventCommand>(v.context) {
+            @Override
+            public EventCommand newValue() {
+                return new EventCommand(v.context);
+            }
+        };
 
         public TroopPage(DMContext ctx) {
             super(ctx, "RPG::Troop::Page");
-        }
-
-        @Override
-        protected IRIO dm2AddIVar(String sym) {
-            if (sym.equals("@list"))
-                return list = new DM2Array<EventCommand>(context) {
-                    @Override
-                    public EventCommand newValue() {
-                        return new EventCommand(context);
-                    }
-                };
-            return super.dm2AddIVar(sym);
         }
     }
 
     public static class TroopPageCondition extends DM2R2kObject {
         @DMFXOBinding("@flags_a")
         public BitfieldR2kStruct flagsA;
+        public static Consumer<TroopPageCondition> flagsA_add = (v) -> v.flagsA = new BitfieldR2kStruct(v.context, new String[] {"@switch_a", "@switch_b", "@variable_>=_val", "@turn", "@fatigue", "@enemy_hp", "@actor_hp", "@turn_enemy_2k3"}, 0);
         @DMFXOBinding("@flags_b_2k3")
         public BitfieldR2kStruct flagsB;
+        public static Consumer<TroopPageCondition> flagsB_add = (v) -> v.flagsB = new BitfieldR2kStruct(v.context, new String[] {"@turn_actor", "@command_actor"}, 0);
         @DMFXOBinding("@switch_a_id") @DM2LcfBinding(0x02) @DMCXInteger(1)
         public IntegerR2kStruct switchAId;
         @DMFXOBinding("@switch_b_id") @DM2LcfBinding(0x03) @DMCXInteger(1)
@@ -178,15 +168,6 @@ public class Troop extends DM2R2kObject {
             flagsB.exportData(baos);
             pcd.put(1, baos.toByteArray());
             super.dm2PackIntoMap(pcd);
-        }
-
-        @Override
-        protected IRIO dm2AddIVar(String sym) {
-            if (sym.equals("@flags_a"))
-                return flagsA = new BitfieldR2kStruct(context, new String[] {"@switch_a", "@switch_b", "@variable_>=_val", "@turn", "@fatigue", "@enemy_hp", "@actor_hp", "@turn_enemy_2k3"}, 0);
-            if (sym.equals("@flags_b_2k3"))
-                return flagsB = new BitfieldR2kStruct(context, new String[] {"@turn_actor", "@command_actor"}, 0);
-            return super.dm2AddIVar(sym);
         }
     }
 }
