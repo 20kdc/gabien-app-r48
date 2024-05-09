@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import gabien.render.WSIImage;
+import gabien.uslx.io.ByteArrayMemoryish;
 
 /**
  * It's that format we all know and love.
@@ -43,7 +44,7 @@ public class BMP8IImageIOFormat extends ImageIOFormat {
         if (saveName(img) == null)
             throw new IOException("Not supposed to be here, are we?");
         byte[] base = BMPConnection.prepareBMP(img.width, img.height, actuallyBits, img.palette.size(), false, false);
-        BMPConnection bc = new BMPConnection(base, BMPConnection.CMode.Normal, 0, false);
+        BMPConnection bc = new BMPConnection(new ByteArrayMemoryish(base), BMPConnection.CMode.Normal, 0, false);
         for (int i = 0; i < img.palette.size(); i++)
             bc.putPalette(i, img.palette.get(i));
         for (int i = 0; i < img.width; i++)
@@ -54,7 +55,7 @@ public class BMP8IImageIOFormat extends ImageIOFormat {
 
     @Override
     public ImageIOImage loadFile(byte[] s, WSIImage gInput) throws IOException {
-        BMPConnection eDreams = new BMPConnection(s, BMPConnection.CMode.Normal, 0, false);
+        BMPConnection eDreams = new BMPConnection(new ByteArrayMemoryish(s), BMPConnection.CMode.Normal, 0, false);
         if (eDreams.ignoresPalette)
             throw new IOException("Shouldn't load image this way ; it's not paletted. Better to use native methods if possible.");
         if (actuallyBits != eDreams.bpp)

@@ -17,6 +17,8 @@ import r48.io.data.RORIO;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+import gabien.uslx.io.MemoryishR;
+
 /**
  * Support for the mostly ASCII 'IMI' format
  * Note that this does NOT, as a rule, use UTF-anything.
@@ -99,12 +101,12 @@ public class IMIUtils {
                 } else {
                     // check data
                     boolean dataEq = true;
-                    byte[] suv = source.getBuffer();
-                    byte[] duv = target.getBuffer();
+                    MemoryishR suv = source.getBuffer();
+                    MemoryishR duv = target.getBuffer();
                     if (suv.length == duv.length) {
                         for (int i = 0; i < suv.length; i++) {
-                            if (suv[i] != duv[i]) {
-                                dataEq = true;
+                            if (suv.getS8(i) != duv.getS8(i)) {
+                                dataEq = false;
                                 break;
                             }
                         }
@@ -350,6 +352,33 @@ public class IMIUtils {
                 dos.writeBytes(b);
             } else {
                 dos.writeByte(data[i]);
+            }
+        }
+        dos.writeByte('\"');
+    }
+
+    public static void writeIMIStringBody(DataOutputStream dos, MemoryishR data, boolean binary) throws IOException {
+        //dos.writeByte('\"'); // This is added by the caller.
+        for (int i = 0; i < data.length; i++) {
+            boolean escape = binary;
+            byte b = data.getS8(i);
+            if (b < 32) {
+                escape = true;
+            } else if (b == '\"') {
+                escape = true;
+            } else if (b == '\\') {
+                escape = true;
+            }
+            if (escape) {
+                String bx = Integer.toHexString(b & 0xFF);
+                if (bx.length() == 1) {
+                    bx = "\\0" + bx;
+                } else {
+                    bx = "\\" + bx;
+                }
+                dos.writeBytes(bx);
+            } else {
+                dos.writeByte(b);
             }
         }
         dos.writeByte('\"');

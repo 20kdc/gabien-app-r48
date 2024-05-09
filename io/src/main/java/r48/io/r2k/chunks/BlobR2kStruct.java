@@ -39,7 +39,7 @@ public class BlobR2kStruct extends IRIOFixedUser implements IR2kInterpretable {
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        userVal = IntUtils.readBytes(bais, bais.available());
+        putBuffer(IntUtils.readBytes(bais, bais.available()));
     }
 
     @Override
@@ -49,6 +49,6 @@ public class BlobR2kStruct extends IRIOFixedUser implements IR2kInterpretable {
 
     @Override
     public void exportData(OutputStream baos) throws IOException {
-        baos.write(userVal);
+        getBuffer().getBulk(baos);
     }
 }

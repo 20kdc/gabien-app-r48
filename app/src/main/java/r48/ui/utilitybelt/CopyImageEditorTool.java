@@ -13,6 +13,8 @@ import r48.io.data.IRIOGeneric;
 
 import java.io.IOException;
 
+import gabien.uslx.io.ByteArrayMemoryish;
+
 /**
  * ...Yes, it uses BMPs. (Using the full ImageIO stack seemed like overcomplicating things a little.)
  * Created on December 15, 2018.
@@ -29,7 +31,7 @@ public class CopyImageEditorTool extends RectangleImageEditorTool {
         if (view.image.usesPalette() && (palSize <= 256)) {
             data = BMPConnection.prepareBMP(bW, bH, 8, view.image.paletteSize(), true, false);
             try {
-                BMPConnection bc = new BMPConnection(data, BMPConnection.CMode.Normal, 0, false);
+                BMPConnection bc = new BMPConnection(new ByteArrayMemoryish(data), BMPConnection.CMode.Normal, 0, false);
                 for (int i = 0; i < palSize; i++)
                     bc.putPalette(i, view.image.getPaletteRGB(i));
                 for (int j = 0; j < bH; j++) {
@@ -45,7 +47,7 @@ public class CopyImageEditorTool extends RectangleImageEditorTool {
         } else {
             data = BMPConnection.prepareBMP(bW, bH, 32, 0, true, false);
             try {
-                BMPConnection bc = new BMPConnection(data, BMPConnection.CMode.Normal, 0, false);
+                BMPConnection bc = new BMPConnection(new ByteArrayMemoryish(data), BMPConnection.CMode.Normal, 0, false);
                 for (int j = 0; j < bH; j++) {
                     for (int i = 0; i < bW; i++) {
                         FillAlgorithm.Point p = view.correctPoint(aX + i, aY + j);

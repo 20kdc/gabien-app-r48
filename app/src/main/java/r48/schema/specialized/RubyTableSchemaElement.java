@@ -17,6 +17,7 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Size;
+import gabien.uslx.io.ByteArrayMemoryish;
 import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.RubyTable;
@@ -64,7 +65,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final IRIO targV = extractTarget(target);
-        final RubyTable targ = new RubyTable(targV.getBuffer());
+        final RubyTable targ = new RubyTable(targV.getBufferRW());
         final IRIO width = widthVar == null ? null : widthVar.getRW(target);
         final IRIO height = heightVar == null ? null : heightVar.getRW(target);
 
@@ -150,23 +151,20 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
             };
             UIElement uie = new UISplitterLayout(wNB, hNB, false, 1, 2);
             uiSVLList.add(uie);
-            uiSVLList.add(new UITextButton(T.g.bResize, app.f.tableResizeTH, new Runnable() {
-                @Override
-                public void run() {
-                    int w = (int) wNB.getNumber();
-                    if (w < 0)
-                        w = 0;
-                    int h = (int) hNB.getNumber();
-                    if (h < 0)
-                        h = 0;
-                    RubyTable r2 = targ.resize(w, h, defVals);
-                    if (width != null)
-                        width.setFX(w);
-                    if (height != null)
-                        height.setFX(h);
-                    targV.putBuffer(r2.innerBytes);
-                    path.changeOccurred(false);
-                }
+            uiSVLList.add(new UITextButton(T.g.bResize, app.f.tableResizeTH, () -> {
+                int w = (int) wNB.getNumber();
+                if (w < 0)
+                    w = 0;
+                int h = (int) hNB.getNumber();
+                if (h < 0)
+                    h = 0;
+                ByteArrayMemoryish r2 = targ.resize(w, h, defVals);
+                if (width != null)
+                    width.setFX(w);
+                if (height != null)
+                    height.setFX(h);
+                targV.putBuffer(r2.data);
+                path.changeOccurred(false);
             }));
         }
         uiSVL.panelsSet(uiSVLList);

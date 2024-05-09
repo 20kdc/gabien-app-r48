@@ -74,7 +74,7 @@ public class DM2R2kObject extends IRIOFixedObjectPacked implements IR2kInterpret
         dm2PackIntoMap(ws);
         if (unknownChunks != null)
             for (Map.Entry<Integer, IRIOFixedUser> uv : unknownChunks.hashVal.entrySet())
-                ws.put(uv.getKey(), uv.getValue().userVal);
+                ws.put(uv.getKey(), uv.getValue().getBufferCopy());
         return ws;
     }
 

@@ -13,6 +13,9 @@ import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.uslx.io.MemoryishR;
+import gabien.uslx.io.MemoryishRW;
+
 /**
  * So, this has been through a long history.
  * It used to be called RubyIO and was the central hub for everything IO-related.
@@ -51,7 +54,7 @@ public class IRIOGeneric extends IRIOData {
     private IRIO[] arrVal;
     // actual meaning depends on iVars.
     // For string-likes (f, "): Should be treated as immutable - replace strVal on change
-    private byte[] userVal;
+    private DMBlob userVal;
     private long fixnumVal;
     public final @NonNull Charset charset;
 
@@ -72,7 +75,7 @@ public class IRIOGeneric extends IRIOData {
         final HashMap<DMKey, IRIO> hashValC = (hashVal != null) ? (HashMap<DMKey, IRIO>) hashVal.clone() : null;
         final IRIO hashDefValC = hashDefVal;
         final IRIO[] arrValC = (arrVal != null) ? arrVal.clone() : null;
-        final byte[] userValC = (userVal != null) ? userVal.clone() : null;
+        final DMBlob userValC = (userVal != null) ? userVal : null;
         final long fixnumValC = fixnumVal;
         return () -> {
             type = typeC;
@@ -82,7 +85,7 @@ public class IRIOGeneric extends IRIOData {
             hashVal = (hashValC != null) ? (HashMap<DMKey, IRIO>) hashValC.clone() : null;
             hashDefVal = hashDefValC;
             arrVal = (arrValC != null) ? arrValC.clone() : null;
-            userVal = (userValC != null) ? userValC.clone() : null;
+            userVal = (userValC != null) ? userValC : null;
             fixnumVal = fixnumValC;
         };
     }
@@ -132,11 +135,14 @@ public class IRIOGeneric extends IRIOData {
 
     @Override
     public IRIO setString(byte[] s, Charset srcCharset) {
-        if (!charset.equals(srcCharset))
+        if (!charset.equals(srcCharset)) {
             s = new String(s, srcCharset).getBytes(charset);
+        } else {
+            s = s.clone();
+        }
         setNull();
         type = '"';
-        userVal = s;
+        userVal = new DMBlob(context, s);
         return this;
     }
 
@@ -149,7 +155,7 @@ public class IRIOGeneric extends IRIOData {
     public IRIO setFloat(byte[] s) {
         setNull();
         type = 'f';
-        userVal = s;
+        userVal = new DMBlob(context, s.clone());
         return this;
     }
 
@@ -165,7 +171,7 @@ public class IRIOGeneric extends IRIOData {
         setNull();
         type = 'u';
         symVal = s;
-        userVal = data;
+        userVal = new DMBlob(context, data.clone());
         return this;
     }
 
@@ -213,7 +219,7 @@ public class IRIOGeneric extends IRIOData {
     public IRIO setBignum(byte[] data) {
         setNull();
         type = 'l';
-        userVal = data;
+        userVal = new DMBlob(context, data.clone());
         return this;
     }
 
@@ -326,14 +332,24 @@ public class IRIOGeneric extends IRIOData {
     }
 
     @Override
-    public byte[] getBuffer() {
+    public MemoryishR getBuffer() {
+        return userVal;
+    }
+
+    @Override
+    public byte[] getBufferCopy() {
+        return userVal.data.clone();
+    }
+
+    @Override
+    public MemoryishRW getBufferRW() {
         return userVal;
     }
 
     @Override
     public void putBuffer(byte[] data) {
         trackingWillChange();
-        userVal = data;
+        userVal = new DMBlob(context, data.clone());
     }
 
     @Override

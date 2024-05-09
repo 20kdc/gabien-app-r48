@@ -46,7 +46,7 @@ public class DoubleR2kStruct extends IRIOFixedData implements IR2kInterpretable 
     }
 
     @Override
-    public byte[] getBuffer() {
+    public byte[] getBufferCopy() {
         try {
             return Double.toString(v).getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {

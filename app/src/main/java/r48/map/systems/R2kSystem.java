@@ -14,7 +14,7 @@ import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import r48.App;
 import r48.IMapContext;
-import r48.RubyTable;
+import r48.RubyTableR;
 import r48.dbs.ObjectInfo;
 import r48.imageio.BMP8IImageIOFormat;
 import r48.imageio.PNG8IImageIOFormat;
@@ -108,7 +108,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         // Cannot get enough information without map & tileset
         if ((map != null) && (tileset != null)) {
             long scrollFlags = map.getIVar("@scroll_type").getFX();
-            RubyTable tbl = new RubyTable(map.getIVar("@data").getBuffer());
+            RubyTableR tbl = new RubyTableR(map.getIVar("@data").getBuffer());
             String vxaPano = map.getIVar("@parallax_name").decString();
             boolean loopX = false;
             boolean loopY = false;

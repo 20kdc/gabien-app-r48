@@ -17,36 +17,54 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import gabien.uslx.io.ByteArrayMemoryish;
+import gabien.uslx.io.MemoryishR;
+
 /**
  * the difficulty is getting this stuff into memory...
  * (later) and out again.
  * Created on 31/05/17.
  */
 public class StringR2kStruct extends IRIOFixedData implements IR2kInterpretable {
-    public byte[] data = new byte[0];
-    public final Charset encoding;
+    private byte[] data;
+    private ByteArrayMemoryish dataBAM;
+    private String dataDecoded;
+    private final Charset encoding;
 
     public StringR2kStruct(DMContext ctx) {
         super(ctx, '"');
         encoding = ctx.encoding;
+        data = new byte[0];
+        dataBAM = new ByteArrayMemoryish(data);
+        dataDecoded = "";
     }
 
     public StringR2kStruct(DMContext ctx, byte[] dat) {
         super(ctx, '"');
         encoding = ctx.encoding;
         data = dat;
+        dataBAM = new ByteArrayMemoryish(data);
+        dataDecoded = new String(data, encoding);
     }
 
     @Override
     public Runnable saveState() {
-        final byte[] saved = data.clone();
-        return () -> data = saved;
+        final byte[] saved = data;
+        final ByteArrayMemoryish savedBAM = dataBAM;
+        final String savedDecoded = dataDecoded;
+        return () -> {
+            data = saved;
+            dataBAM = savedBAM;
+            dataDecoded = savedDecoded;
+        };
     }
 
     @Override
     public IRIO setString(String s) {
         trackingWillChange();
         data = s.getBytes(encoding);
+        dataBAM = new ByteArrayMemoryish(data);
+        dataDecoded = s;
         return this;
     }
 
@@ -76,8 +94,18 @@ public class StringR2kStruct extends IRIOFixedData implements IR2kInterpretable 
     }
 
     @Override
-    public byte[] getBuffer() {
-        return data;
+    public MemoryishR getBuffer() {
+        return dataBAM;
+    }
+
+    @Override
+    public String decString() {
+        return dataDecoded;
+    }
+
+    @Override
+    public byte[] getBufferCopy() {
+        return data.clone();
     }
 
     @Override

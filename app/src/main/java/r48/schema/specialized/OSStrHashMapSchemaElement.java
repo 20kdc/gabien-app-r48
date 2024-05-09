@@ -123,7 +123,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement.Leaf {
             // crc32: 468dce18
             // byte order:
             //        18CE8D46
-            byte[] buf = v.getBuffer();
+            byte[] buf = v.getBufferCopy();
             for (int i = buf.length - 1; i > 0; i--) {
                 p <<= 8;
                 p |= buf[i] & 0xFF;

@@ -30,7 +30,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The Local Test Executive (LTE) is responsible for executing tests containing copyrighted data

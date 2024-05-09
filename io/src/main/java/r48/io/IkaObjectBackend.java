@@ -7,8 +7,10 @@
 
 package r48.io;
 
+import gabien.uslx.io.ByteArrayMemoryish;
 import gabien.uslx.vfs.FSBackend;
 import r48.RubyTable;
+import r48.RubyTableR;
 import r48.io.data.DMContext;
 import r48.io.data.IRIOFixedHash;
 import r48.io.ika.IkaEvent;
@@ -55,12 +57,12 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
 
             BMPConnection bm;
             try {
-                bm = new BMPConnection(eDataBytes, BMPConnection.CMode.Normal, 0, false);
+                bm = new BMPConnection(new ByteArrayMemoryish(eDataBytes), BMPConnection.CMode.Normal, 0, false);
             } catch (IOException ioe) {
                 throw new RuntimeException(ioe);
             }
             try {
-                bm = new BMPConnection(dataBytes, BMPConnection.CMode.Normal, 0, false);
+                bm = new BMPConnection(new ByteArrayMemoryish(dataBytes), BMPConnection.CMode.Normal, 0, false);
                 if (bm.ignoresPalette)
                     throw new IOException("Must have a palette to do this");
                 if (bm.bpp > 8)
@@ -73,7 +75,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
 
             IkaMap rio = new IkaMap(context, bm.width, bm.height);
 
-            RubyTable pal = new RubyTable(rio.palette.userVal);
+            RubyTable pal = new RubyTable(rio.palette.getBufferRW());
             for (int i = 0; i < bm.paletteCol; i++) {
                 int rgba = bm.getPalette(i);
                 pal.setTiletype(i, 0, 0, (short) ((rgba >> 24) & 0xFF));
@@ -82,7 +84,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
                 pal.setTiletype(i, 0, 3, (short) (rgba & 0xFF));
             }
 
-            RubyTable tbl = new RubyTable(rio.data.userVal);
+            RubyTable tbl = new RubyTable(rio.data.getBufferRW());
 
             for (int i = 0; i < bm.width; i++)
                 for (int j = 0; j < bm.height; j++)
@@ -129,13 +131,13 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
     public void saveObjectToFile(String filename, IkaMap object) throws IOException {
         if (filename.equals("Map")) {
             // allow saving
-            RubyTable rt = new RubyTable(object.data.userVal);
+            RubyTableR rt = new RubyTableR(object.data.getBuffer());
             byte[] dataBytes = BMPConnection.prepareBMP(rt.width, rt.height, 8, 256, false, false);
-            BMPConnection bm8 = new BMPConnection(dataBytes, BMPConnection.CMode.Normal, 0, false);
+            BMPConnection bm8 = new BMPConnection(new ByteArrayMemoryish(dataBytes), BMPConnection.CMode.Normal, 0, false);
             for (int i = 0; i < rt.width; i++)
                 for (int j = 0; j < rt.height; j++)
                     bm8.putPixel(i, j, rt.getTiletype(i, j, 0) & 0xFFFF);
-            RubyTable rt2 = new RubyTable(object.palette.userVal);
+            RubyTableR rt2 = new RubyTableR(object.palette.getBuffer());
             for (int i = 0; i < 256; i++) {
                 int a = rt2.getTiletype(i, 0, 0) & 0xFF;
                 int r = rt2.getTiletype(i, 0, 1) & 0xFF;

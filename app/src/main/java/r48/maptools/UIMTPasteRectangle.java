@@ -12,7 +12,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
-import r48.RubyTable;
+import r48.RubyTableR;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
@@ -26,7 +26,7 @@ import r48.ui.UIAppendButton;
  */
 public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
 
-    private final RubyTable table;
+    private final RubyTableR table;
     private UILabel innerLabel = new UILabel(T.m.tsClickTarget, app.f.dialogWindowTH);
 
     private int confirmX, confirmY;
@@ -46,7 +46,7 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
     }, app.f.dialogWindowTH);
     private boolean confirming = false;
 
-    public UIMTPasteRectangle(IMapToolContext par, RubyTable clipboard) {
+    public UIMTPasteRectangle(IMapToolContext par, RubyTableR clipboard) {
         super(par);
         changeInner(innerLabel, true);
         table = clipboard;

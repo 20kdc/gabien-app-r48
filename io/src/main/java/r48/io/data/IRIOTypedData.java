@@ -11,6 +11,9 @@ import java.nio.charset.Charset;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.uslx.io.MemoryishR;
+import gabien.uslx.io.MemoryishRW;
+
 /**
  * All methods apart from IVars (left unimplemented except for rmIVar, which is not supported) are implemented as 'not supported' by default.
  * The setter methods for your specific types should be reimplemented.
@@ -107,7 +110,12 @@ public abstract class IRIOTypedData extends IRIOData {
     }
 
     @Override
-    public byte[] getBuffer() {
+    public MemoryishR getBuffer() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public MemoryishRW getBufferRW() {
         throw new UnsupportedOperationException();
     }
 

@@ -11,6 +11,9 @@ import java.nio.charset.Charset;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.uslx.io.MemoryishR;
+import gabien.uslx.io.MemoryishRW;
+
 /**
  * An annoying but necessary wrapper for cases where an IRIO may be null.
  * Created on December 06, 2018.
@@ -201,10 +204,24 @@ public class IRIONullable<V extends IRIO> extends IRIOData {
     }
 
     @Override
-    public byte[] getBuffer() {
+    public MemoryishR getBuffer() {
         if (nulled)
             throw new UnsupportedOperationException();
         return target.getBuffer();
+    }
+
+    @Override
+    public MemoryishRW getBufferRW() {
+        if (nulled)
+            throw new UnsupportedOperationException();
+        return target.getBufferRW();
+    }
+
+    @Override
+    public byte[] getBufferCopy() {
+        if (nulled)
+            throw new UnsupportedOperationException();
+        return target.getBufferCopy();
     }
 
     @Override

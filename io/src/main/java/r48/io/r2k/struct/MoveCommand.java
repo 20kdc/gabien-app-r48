@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import gabien.uslx.io.MemoryishR;
+
 /**
  * A MoveCommand! It lets stuff move.
  * Created on 02/06/17.
@@ -112,9 +114,10 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
             int mcc = moveCommandClassifier(code);
 
             if ((mcc & 0x100) != 0) {
-                mc.parameters.text.data = new byte[popMetaInteger(si)];
-                for (int i = 0; i < mc.parameters.text.data.length; i++)
-                    mc.parameters.text.data[i] = (byte) (int) si.next();
+                byte[] newText = new byte[popMetaInteger(si)];
+                for (int i = 0; i < newText.length; i++)
+                    newText[i] = (byte) (int) si.next();
+                mc.parameters.text.putBuffer(newText);
             }
 
             if ((mcc & 0xFF) > 0)
@@ -140,10 +143,10 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
             int mcc = moveCommandClassifier(codeVal);
 
             if ((mcc & 0x100) != 0) {
-                byte[] text = mc.parameters.text.data;
-                addMetaInteger(res, text.length);
-                for (byte b : text)
-                    res.add(((int) b) & 0xFF);
+                MemoryishR text = mc.parameters.text.getBuffer();
+                addMetaInteger(res, (int) text.length);
+                for (int i = 0; i < text.length; i++)
+                    res.add(text.getU8(i));
             }
 
             if ((mcc & 0xFF) > 0)
@@ -180,7 +183,7 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         int mcc = moveCommandClassifier(codeVal);
 
         if ((mcc & 0x100) != 0)
-            parameters.text.data = IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais));
+            parameters.text.putBuffer(IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais)));
 
         for (int i = 0; i < (mcc & 0xFF); i++)
             parameters.arrVal[i].setFX(R2kUtil.readLcfVLI(bais));
@@ -199,9 +202,9 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         int mcc = moveCommandClassifier(codeVal);
 
         if ((mcc & 0x100) != 0) {
-            byte[] data = parameters.text.data;
-            R2kUtil.writeLcfVLI(baos, data.length);
-            baos.write(data);
+            MemoryishR data = parameters.text.getBuffer();
+            R2kUtil.writeLcfVLI(baos, (int) data.length);
+            data.getBulk(baos);
         }
         for (int i = 0; i < (mcc & 0xFF); i++)
             R2kUtil.writeLcfVLI(baos, (int) parameters.arrVal[i].getFX());

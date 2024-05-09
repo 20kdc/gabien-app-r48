@@ -7,6 +7,8 @@
 
 package r48;
 
+import gabien.uslx.io.MemoryishR;
+
 /**
  * Do you really want to know why this class exists?
  * ... didn't think so.
@@ -35,6 +37,20 @@ public class RubyBigNum {
             this.data[0] = 0;
             System.arraycopy(data, 1, this.data, 1, data.length - 1);
             if (data[0] == '-') {
+                // Luckily, the input given was in positive format, which means it's easy enough to negate.
+                negateCore(this.data);
+            }
+        }
+    }
+
+    public RubyBigNum(MemoryishR data, boolean raw) {
+        this.data = new byte[(int) data.length];
+        if (raw) {
+            data.getBulk(0, this.data, 0, this.data.length);
+        } else {
+            this.data[0] = 0;
+            data.getBulk(1, this.data, 1, this.data.length - 1);
+            if (data.getU8(0) == '-') {
                 // Luckily, the input given was in positive format, which means it's easy enough to negate.
                 negateCore(this.data);
             }

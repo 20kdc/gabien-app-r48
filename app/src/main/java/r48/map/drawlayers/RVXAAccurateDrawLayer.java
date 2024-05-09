@@ -8,7 +8,7 @@
 package r48.map.drawlayers;
 
 import r48.App;
-import r48.RubyTable;
+import r48.RubyTableR;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.events.IEventAccess;
@@ -28,7 +28,7 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
 
     private static final int[] layerPreference = new int[] {0, 1, 3, 2};
 
-    public RVXAAccurateDrawLayer(RubyTable tbl, IEventAccess eventList, VXATileRenderer tils, RMEventGraphicRenderer ev) {
+    public RVXAAccurateDrawLayer(RubyTableR tbl, IEventAccess eventList, VXATileRenderer tils, RMEventGraphicRenderer ev) {
         super(tils.app, tbl, 4);
         tiles = tils;
         events = ev;

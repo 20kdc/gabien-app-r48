@@ -35,11 +35,11 @@ public class IkaMap extends IRIOFixedObject {
     }
 
     public void data_add() {
-        data = new IRIOFixedUser(context, "Table", new RubyTable(3, defaultWidth, defaultHeight, 1, new int[1]).innerBytes);
+        data = new IRIOFixedUser(context, "Table", RubyTable.initNewTable(3, defaultWidth, defaultHeight, 1, new int[1]).data);
     }
 
     public void palette_add() {
-        palette = new IRIOFixedUser(context, "Table", new RubyTable(3, 256, 1, 4, new int[4]).innerBytes);
+        palette = new IRIOFixedUser(context, "Table", RubyTable.initNewTable(3, 256, 1, 4, new int[4]).data);
     }
 
     public void events_add() {

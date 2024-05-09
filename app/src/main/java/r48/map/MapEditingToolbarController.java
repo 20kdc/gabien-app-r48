@@ -11,7 +11,7 @@ import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
-import r48.RubyTable;
+import r48.RubyTableR;
 import r48.io.data.RORIO;
 import r48.maptools.*;
 
@@ -145,7 +145,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
                         app.ui.launchDialog(T.m.mp_notTable);
                         return;
                     }
-                    RubyTable rt = new RubyTable(ro.getBuffer());
+                    RubyTableR rt = new RubyTableR(ro.getBuffer());
                     if (rt.planeCount != viewGiver.getMapView().mapTable.planeCount) {
                         app.ui.launchDialog(T.m.mp_layersMismatch);
                         return;

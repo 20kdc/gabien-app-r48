@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import gabien.uslx.io.MemoryishR;
+
 /**
  * Created on 05/06/17.
  */
@@ -33,7 +35,7 @@ public class SVStore extends StringR2kStruct {
             int len = R2kUtil.readLcfVLI(bais);
             byte[] data = IntUtils.readBytes(bais, len);
             if (idx == 1) {
-                this.data = data;
+                this.putBuffer(data);
             } else {
                 System.err.println("UNKNOWN SVStore CHUNK: " + idx);
             }
@@ -48,8 +50,9 @@ public class SVStore extends StringR2kStruct {
     @Override
     public void exportData(OutputStream baos) throws IOException {
         R2kUtil.writeLcfVLI(baos, 1);
-        R2kUtil.writeLcfVLI(baos, data.length);
-        baos.write(data);
+        MemoryishR data = getBuffer();
+        R2kUtil.writeLcfVLI(baos, (int) data.length);
+        data.getBulk(baos);
         baos.write(0);
     }
 }

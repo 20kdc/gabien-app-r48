@@ -17,6 +17,7 @@ import gabien.ui.layouts.UISplitterLayout;
 import gabien.ui.layouts.UITabBar;
 import gabien.ui.layouts.UITabPane;
 import gabien.uslx.append.*;
+import gabien.uslx.io.ByteArrayMemoryish;
 import r48.App;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
@@ -147,7 +148,7 @@ public class CharacterGeneratorController extends App.Svc {
             byte[] buffer = BMPConnection.prepareBMP(w, h, 32, 0, true, false);
             BMPConnection bc;
             try {
-                bc = new BMPConnection(buffer, BMPConnection.CMode.Normal, 0, false);
+                bc = new BMPConnection(new ByteArrayMemoryish(buffer), BMPConnection.CMode.Normal, 0, false);
             } catch (IOException ioe) {
                 throw new RuntimeException(ioe);
             }

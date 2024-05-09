@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import gabien.uslx.io.MemoryishR;
+
 /**
  * What is this again?
  * Created on 31/05/17.
@@ -56,7 +58,7 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
         int codeVal = R2kUtil.readLcfVLI(bais);
         code.setFX(codeVal);
         indent.setFX(R2kUtil.readLcfVLI(bais));
-        parameters.text.data = IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais));
+        parameters.text.putBuffer(IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais)));
         if (codeVal != 11330) {
             moveCommands = null;
             parameters.arrVal = new IRIO[R2kUtil.readLcfVLI(bais)];
@@ -87,8 +89,9 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
         int codeVal = (int) code.getFX();
         R2kUtil.writeLcfVLI(baos, (int) codeVal);
         R2kUtil.writeLcfVLI(baos, (int) indent.getFX());
-        R2kUtil.writeLcfVLI(baos, parameters.text.data.length);
-        baos.write(parameters.text.data);
+        MemoryishR buf = parameters.text.getBuffer();
+        R2kUtil.writeLcfVLI(baos, (int) buf.length);
+        buf.getBulk(baos);
         if (codeVal != 11330) {
             R2kUtil.writeLcfVLI(baos, parameters.arrVal.length);
             for (int i = 0; i < parameters.arrVal.length; i++)

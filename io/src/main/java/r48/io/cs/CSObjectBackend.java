@@ -8,6 +8,7 @@
 package r48.io.cs;
 
 import r48.RubyTable;
+import r48.RubyTableR;
 import r48.io.OldObjectBackend;
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
@@ -20,6 +21,7 @@ import java.io.OutputStream;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.uslx.io.ByteArrayMemoryish;
 import gabien.uslx.vfs.FSBackend;
 
 /**
@@ -138,11 +140,12 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
     }
 
     private IRIO loadRT(InputStream inp, int w, int h, @NonNull DMContext context) throws IOException {
-        RubyTable rt = new RubyTable(2, w, h, 1, new int[] {0});
+        ByteArrayMemoryish bam = RubyTable.initNewTable(2, w, h, 1, new int[] {0});
+        RubyTable rt = new RubyTable(bam);
         for (int j = 0; j < h; j++)
             for (int i = 0; i < w; i++)
                 rt.setTiletype(i, j, 0, (short) inp.read());
-        return newObjectO("", context).setUser("Table", rt.innerBytes);
+        return newObjectO("", context).setUser("Table", bam.data);
     }
 
     @Override
@@ -188,7 +191,7 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
     }
 
     private void savePXA(ByteArrayOutputStream baos, IRIO o) throws IOException {
-        RubyTable rt = new RubyTable(o.getBuffer());
+        RubyTableR rt = new RubyTableR(o.getBuffer());
         for (int j = 0; j < 16; j++)
             for (int i = 0; i < 16; i++)
                 baos.write(rt.getTiletype(i, j, 0));
@@ -199,7 +202,7 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
         baos.write('X');
         baos.write('M');
         baos.write(0x10);
-        RubyTable rt = new RubyTable(o.getBuffer());
+        RubyTableR rt = new RubyTableR(o.getBuffer());
         if (rt.width > 0xFFFF)
             throw new RuntimeException("Width > 0xFFFF!");
         if (rt.height > 0xFFFF)

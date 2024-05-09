@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
+import gabien.uslx.io.ByteArrayMemoryish;
+import gabien.uslx.io.MemoryishR;
+
 /**
  * First test of the new system for figuring out what the hell to do with this alien format
  * Writing this here for lack of a better place:
@@ -65,7 +68,7 @@ public class MapUnit extends DM2R2kObject {
     // And this is the actual FXO side.
     @DMFXOBinding("@data")
     public IRIOFixedUser map;
-    public static Consumer<MapUnit> map_add = (v) -> v.map = new IRIOFixedUser(v.context, "Table", new RubyTable(3, 20, 15, 2, new int[] {0, 0}).innerBytes);
+    public static Consumer<MapUnit> map_add = (v) -> v.map = new IRIOFixedUser(v.context, "Table", RubyTable.initNewTable(3, 20, 15, 2, new int[] {0, 0}).data);
 
     // Remaining things are back to normal.
     @DMFXOBinding("@events") @DM2LcfBinding(81) @DMCXSupplier(Event.class)
@@ -93,10 +96,10 @@ public class MapUnit extends DM2R2kObject {
         // -- transform the lower-layer and upper-layer data...
         int w = (int) width.getFX();
         int h = (int) height.getFX();
-        RubyTable rt = new RubyTable(3, w, h, 2, new int[] {0, 0});
-        System.arraycopy(layer0, 0, rt.innerBytes, 20, layer0.length);
-        System.arraycopy(layer1, 0, rt.innerBytes, 20 + (w * h * 2), layer1.length);
-        map = new IRIOFixedUser(context, "Table", rt.innerBytes);
+        ByteArrayMemoryish bam = RubyTable.initNewTable(3, w, h, 2, new int[] {0, 0});
+        System.arraycopy(layer0, 0, bam.data, 20, layer0.length);
+        System.arraycopy(layer1, 0, bam.data, 20 + (w * h * 2), layer1.length);
+        map = new IRIOFixedUser(context, "Table", bam.data);
     }
 
     @Override
@@ -107,9 +110,9 @@ public class MapUnit extends DM2R2kObject {
         int h = (int) height.getFX();
         byte[] layer0 = new byte[w * h * 2];
         byte[] layer1 = new byte[w * h * 2];
-        byte[] innerBytes = map.getBuffer();
-        System.arraycopy(innerBytes, 20, layer0, 0, layer0.length);
-        System.arraycopy(innerBytes, 20 + (w * h * 2), layer1, 0, layer1.length);
+        MemoryishR innerBytes = map.getBuffer();
+        innerBytes.getBulk(20, layer0, 0, layer0.length);
+        innerBytes.getBulk(20 + (w * h * 2), layer1, 0, layer1.length);
         pcd.put(71, layer0);
         pcd.put(72, layer1);
     }

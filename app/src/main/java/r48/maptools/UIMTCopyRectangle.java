@@ -11,6 +11,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.GaBIEn;
 import gabien.ui.elements.UILabel;
+import gabien.uslx.io.ByteArrayMemoryish;
 import r48.RubyTable;
 import r48.io.data.IRIOGeneric;
 import r48.map.IMapToolContext;
@@ -74,14 +75,15 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
                 int maxX = Math.max(startX, x);
                 int minY = Math.min(startY, y);
                 int maxY = Math.max(startY, y);
-                RubyTable rt = new RubyTable(3, (maxX - minX) + 1, (maxY - minY) + 1, map.mapTable.planeCount, new int[map.mapTable.planeCount]);
+                ByteArrayMemoryish bam = RubyTable.initNewTable(3, (maxX - minX) + 1, (maxY - minY) + 1, map.mapTable.planeCount, new int[map.mapTable.planeCount]);
+                RubyTable rt = new RubyTable(bam);
                 for (int l = 0; l < map.mapTable.planeCount; l++)
                     for (int i = minX; i <= maxX; i++)
                         for (int j = minY; j <= maxY; j++)
                             if (!map.mapTable.outOfBounds(i, j))
                                 rt.setTiletype(i - minX, j - minY, l, map.mapTable.getTiletype(i, j, l));
                 IRIOGeneric rb = new IRIOGeneric(app.ctxClipboardUTF8Encoding);
-                rb.setUser("Table", rt.innerBytes);
+                rb.setUser("Table", bam.data);
                 map.app.theClipboard = rb;
                 mapToolContext.accept(null);
             }

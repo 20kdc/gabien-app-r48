@@ -8,6 +8,7 @@
 package r48.io.r2k.obj.lsd;
 
 import r48.RubyTable;
+import r48.RubyTableR;
 import r48.io.data.DMContext;
 import r48.io.data.obj.DMCXSupplier;
 import r48.io.data.obj.DMFXOBinding;
@@ -23,6 +24,9 @@ import r48.io.r2k.dm2chk.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.function.Consumer;
+
+import gabien.uslx.io.ByteArrayMemoryish;
+import gabien.uslx.io.MemoryishR;
 
 /**
  * Created on December 13th, 2017
@@ -90,19 +94,20 @@ public class SaveMapInfo extends DM2R2kObject {
         // This stores the wrong data for the blobs...
         super.dm2PackIntoMap(pcd);
         // This stores the correct data for the blobs.
-        pcd.put(0x15, bFromTable(lowerTileRemap.userVal));
-        pcd.put(0x16, bFromTable(upperTileRemap.userVal));
+        pcd.put(0x15, bFromTable(lowerTileRemap.getBuffer()));
+        pcd.put(0x16, bFromTable(upperTileRemap.getBuffer()));
     }
 
     private byte[] bToTable(byte[] dat) {
-        RubyTable rt = new RubyTable(3, dat.length, 1, 1, new int[] {0});
+        ByteArrayMemoryish bam = RubyTable.initNewTable(3, dat.length, 1, 1, new int[] {0});
+        RubyTable rt = new RubyTable(bam);
         for (int i = 0; i < dat.length; i++)
             rt.setTiletype(i, 0, 0, (short) (dat[i] & 0xFF));
-        return rt.innerBytes;
+        return bam.data;
     }
 
-    private byte[] bFromTable(byte[] instVarBySymbol) {
-        RubyTable rt = new RubyTable(instVarBySymbol);
+    private byte[] bFromTable(MemoryishR instVarBySymbol) {
+        RubyTableR rt = new RubyTableR(instVarBySymbol);
         byte[] data = new byte[rt.width];
         for (int i = 0; i < data.length; i++)
             data[i] = (byte) rt.getTiletype(i, 0, 0);

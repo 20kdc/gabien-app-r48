@@ -10,52 +10,50 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import gabien.uslx.io.MemoryishRW;
+
 /**
  * Ported from the OC-KittenOS code.
  * Way I see it, if I'm doing this I'm making sure it's reusable for a "later" if ever there is one.
  * Created on June 13th 2018.
  */
 public class BMPConnection {
-    public final byte[] targetBuffer;
-    // All public functions should set endianness
-    private final ByteBuffer data;
+    public final MemoryishRW data;
     public final int bmpFieldOffset;
     public final int paletteZoneBase, dataZoneBase, scanStride;
     public final int paletteCol;
     public final int width, height, bpp;
     public final boolean upDown, ignoresPalette;
 
-    public BMPConnection(byte[] buffer, CMode mode, int bfo, boolean packed) throws IOException {
-        data = ByteBuffer.wrap(buffer);
-        data.order(ByteOrder.LITTLE_ENDIAN);
-        targetBuffer = buffer;
+    public BMPConnection(MemoryishRW buffer, CMode mode, int bfo, boolean packed) throws IOException {
+        this.data = buffer;
         bmpFieldOffset = bfo;
         if (!packed) {
-            if (data.get(bmpFieldOffset) != 'B')
+            if (data.getU8(bmpFieldOffset) != 'B')
                 throw new IOException("Bad 'B'");
-            if (data.get(bmpFieldOffset + 1) != 'M')
+            if (data.getU8(bmpFieldOffset + 1) != 'M')
                 throw new IOException("Bad 'M'");
         }
-        int hdrSize = data.getInt(0x0E + bmpFieldOffset);
+        int hdrSize = data.getS32LE(0x0E + bmpFieldOffset);
         if (hdrSize < 0x28)
             throw new IOException("OS/2 Bitmaps Incompatible");
-        int compression = data.getInt(0x1E + bmpFieldOffset);
-        int epc = data.getInt(0x2E + bmpFieldOffset);
-        width = data.getInt(0x12 + bmpFieldOffset);
-        int h = data.getInt(0x16 + bmpFieldOffset);
+        int compression = data.getS32LE(0x1E + bmpFieldOffset);
+        int epc = data.getS32LE(0x2E + bmpFieldOffset);
+        width = data.getS32LE(0x12 + bmpFieldOffset);
+        int h = data.getS32LE(0x16 + bmpFieldOffset);
         upDown = h >= 0;
         if (!upDown)
             h = -h;
-        if (data.getShort(0x1A + bmpFieldOffset) > 1)
+        if (data.getS16LE(0x1A + bmpFieldOffset) > 1)
             throw new IOException("Nope, we're pretending planes don't exist, none of that nonsense here.");
 
-        int ebpp = data.getShort(0x1C + bmpFieldOffset);
+        int ebpp = data.getS16LE(0x1C + bmpFieldOffset);
         // Read out the various bits and pieces, but now for the mportant stuff.
         int basePtr;
         if (packed) {
             basePtr = 0x0E + hdrSize + (epc * 4) + bmpFieldOffset;
         } else {
-            basePtr = data.getInt(0x0A + bmpFieldOffset) + bmpFieldOffset;
+            basePtr = data.getS32LE(0x0A + bmpFieldOffset) + bmpFieldOffset;
         }
 
         int scanWB = (((ebpp * width) + 31) / 32) * 4;
@@ -98,28 +96,25 @@ public class BMPConnection {
     }
 
     private long getAreaAt(int base, int lenBytes) {
-        data.order(ByteOrder.BIG_ENDIAN);
         long v = 0;
         long vBase = (lenBytes - 1) * 8;
         for (int i = 0; i < lenBytes; i++) {
-            v |= (data.get(base + i) & 0xFF) << vBase;
+            v |= data.getU8(base + i) << vBase;
             vBase -= 8;
         }
         return v;
     }
 
     private long putAreaAt(int base, int lenBytes, long v) {
-        data.order(ByteOrder.BIG_ENDIAN);
         long vBase = (lenBytes - 1) * 8;
         for (int i = 0; i < lenBytes; i++) {
-            data.put(base + i, (byte) ((v >> vBase) & 0xFF));
+            data.set8(base + i, (byte) ((v >> vBase) & 0xFF));
             vBase -= 8;
         }
         return v;
     }
 
     private int getAt(int base, int bitNumber, int len) {
-        data.order(ByteOrder.BIG_ENDIAN);
         int adv = bitNumber / 8;
         base += adv;
         bitNumber -= adv * 8;
@@ -134,7 +129,6 @@ public class BMPConnection {
     }
 
     private void putAt(int base, int bitNumber, int len, int val) {
-        data.order(ByteOrder.BIG_ENDIAN);
         int adv = bitNumber / 8;
         base += adv;
         bitNumber -= adv * 8;
@@ -164,13 +158,11 @@ public class BMPConnection {
 
     // NOTE: "Alpha" here may not be accurate.
     public int getPalette(int col) {
-        data.order(ByteOrder.LITTLE_ENDIAN);
-        return data.getInt(paletteZoneBase + (col * 4));
+        return data.getS32LE(paletteZoneBase + (col * 4));
     }
 
     public void putPalette(int col, int v) {
-        data.order(ByteOrder.LITTLE_ENDIAN);
-        data.putInt(paletteZoneBase + (col * 4), v);
+        data.set32LE(paletteZoneBase + (col * 4), v);
     }
 
     // cMode is icon/cursor mode. In this case, you should throw away the BMP header. It's not really valid.

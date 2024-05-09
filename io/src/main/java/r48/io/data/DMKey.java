@@ -9,6 +9,9 @@ package r48.io.data;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import gabien.uslx.io.ByteArrayMemoryish;
+import gabien.uslx.io.MemoryishR;
+
 /**
  * Represents a hash key.
  * Note that this particular RORIO variant actually works as a hash key.
@@ -43,7 +46,7 @@ public class DMKey extends RORIO {
         if (t == 'i') {
             return of(src.getFX());
         } else if (t == 'l') {
-            return new DMKey(Subtype.Bignum, 0, src.getBuffer().clone(), null, null);
+            return new DMKey(Subtype.Bignum, 0, src.getBufferCopy(), null, null);
         } else if (t == '"') {
             return ofStr(src.decString());
         } else if (t == 'f') {
@@ -180,12 +183,21 @@ public class DMKey extends RORIO {
     }
 
     @Override
-    public byte[] getBuffer() {
+    public MemoryishR getBuffer() {
+        if (st == Subtype.String || st == Subtype.Float)
+            return new ByteArrayMemoryish(strVal.getBytes(StandardCharsets.UTF_8));
+        if (st == Subtype.Bignum)
+            return new ByteArrayMemoryish(flVal);
+        return refVal.getBuffer();
+    }
+
+    @Override
+    public byte[] getBufferCopy() {
         if (st == Subtype.String || st == Subtype.Float)
             return strVal.getBytes(StandardCharsets.UTF_8);
         if (st == Subtype.Bignum)
-            return flVal;
-        return refVal.getBuffer();
+            return flVal.clone();
+        return refVal.getBufferCopy();
     }
 
     @Override

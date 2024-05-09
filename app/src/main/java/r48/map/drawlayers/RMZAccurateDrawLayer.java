@@ -7,17 +7,19 @@
 package r48.map.drawlayers;
 
 import r48.App;
-import r48.RubyTable;
+import r48.RubyTableR;
+
 import java.util.Collections;
 
 /**
+ * for the record this is 'RM Z Accurate', not 'RM MZ Accurate'
  * Copied from RXPAccurateDrawLayer on November 28th 2019.
  */
 public class RMZAccurateDrawLayer extends ZSortingDrawLayer {
-    public final RubyTable mapTable;
+    public final RubyTableR mapTable;
     public SignalMapViewLayer[] tileSignalLayers;
 
-    public RMZAccurateDrawLayer(App app, RubyTable tbl, int layers) {
+    public RMZAccurateDrawLayer(App app, RubyTableR tbl, int layers) {
         super(app);
         mapTable = tbl;
         tileSignalLayers = new SignalMapViewLayer[layers];

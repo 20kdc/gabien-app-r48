@@ -115,7 +115,7 @@ public class R2kUtil {
         mt = mt.getIVar("@__LCF__unknown");
         if (mt != null)
             for (DMKey k : mt.getHashKeys())
-                unknownChunks.put((int) k.getFX(), mt.getHashVal(k).getBuffer());
+                unknownChunks.put((int) k.getFX(), mt.getHashVal(k).getBufferCopy());
     }
 
     public static Supplier<byte[]> supplyBlank(final int i, final byte i1) {

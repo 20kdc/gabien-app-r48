@@ -253,11 +253,11 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         } else if (b == 'i') {
             save32(dis, rio.getFX());
         } else if ((b == '"') || (b == 'f')) {
-            byte[] data = rio.getBuffer();
+            byte[] data = rio.getBufferCopy();
             save32(dis, data.length);
             dis.write(data);
         } else if (b == 'l') {
-            byte[] dat = rio.getBuffer();
+            byte[] dat = rio.getBufferCopy();
             dis.write(dat[0]);
             // the + 1 is implied thanks to the extra sign byte
             save32(dis, dat.length / 2);
@@ -267,8 +267,9 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                 dis.write(0);
         } else if (b == 'u') {
             saveSymbol(dis, rio.getSymbol(), caches);
-            save32(dis, rio.getBuffer().length);
-            dis.write(rio.getBuffer());
+            byte[] data = rio.getBufferCopy();
+            save32(dis, data.length);
+            dis.write(data);
         } else if ((b != 'T') && (b != 'F') && (b != '0')) {
             throw new IOException("Cannot save " + rio.getType() + " : " + ((char) rio.getType()));
         }

@@ -8,6 +8,7 @@
 package r48.io.r2k.obj.ldb;
 
 import r48.RubyTable;
+import r48.RubyTableR;
 import r48.io.data.DMContext;
 import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
@@ -24,6 +25,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
+import gabien.uslx.io.ByteArrayMemoryish;
+import gabien.uslx.io.MemoryishR;
+
 /**
  * Another bare-minimum for now
  * Created on 01/06/17.
@@ -39,7 +43,7 @@ public class Tileset extends DM2R2kObject {
     // -- AS OF DM2, some blob transformation occurs similar to SaveMapInfo.
     @DMFXOBinding("@terrain_id_data") @DM2LcfBinding(3)
     public BlobR2kStruct terrainTbl;
-    public static Consumer<Tileset> terrainTbl_add = (v) -> v.terrainTbl = new BlobR2kStruct(v.context, "Table", new RubyTable(3, 162, 1, 1, new int[] {1}).innerBytes);
+    public static Consumer<Tileset> terrainTbl_add = (v) -> v.terrainTbl = new BlobR2kStruct(v.context, "Table", RubyTable.initNewTable(3, 162, 1, 1, new int[] {1}).data);
     @DMFXOBinding("@lowpass_data") @DM2LcfBinding(4)
     public BlobR2kStruct lowPassTbl;
     public static Consumer<Tileset> lowPassTbl_add = (v) -> v.lowPassTbl = new BlobR2kStruct(v.context, "Table", v.bitfieldsToTable(R2kUtil.supplyBlank(162, (byte) 15).get()));
@@ -67,10 +71,10 @@ public class Tileset extends DM2R2kObject {
         byte[] uv = pcd.get(3);
         if (uv != null) {
             // 162 = 144 (selective) + 18 (AT Field????)
-            RubyTable rt = new RubyTable(3, 162, 1, 1, new int[] {0});
+            ByteArrayMemoryish rt = RubyTable.initNewTable(3, 162, 1, 1, new int[] {0});
             // This relies on RubyTable layout to skip some relayout
-            System.arraycopy(uv, 0, rt.innerBytes, 20, Math.min(uv.length, rt.innerBytes.length - 20));
-            pcd.put(3, rt.innerBytes);
+            System.arraycopy(uv, 0, rt.data, 20, Math.min(uv.length, rt.data.length - 20));
+            pcd.put(3, rt.data);
         }
         uv = pcd.get(4);
         if (uv != null)
@@ -86,21 +90,22 @@ public class Tileset extends DM2R2kObject {
         super.dm2PackIntoMap(pcd);
         byte[] uv = new byte[324];
         // This relies on RubyTable layout to skip some relayout
-        System.arraycopy(terrainTbl.userVal, 20, uv, 0, Math.min(uv.length, terrainTbl.userVal.length - 20));
+        MemoryishR terrainBuf = terrainTbl.getBuffer();
+        terrainBuf.getBulk(20, uv, 0, Math.min(uv.length, (int) terrainBuf.length - 20));
         pcd.put(3, uv);
-        pcd.put(4, tableToBitfields(lowPassTbl.userVal));
-        pcd.put(5, tableToBitfields(highPassTbl.userVal));
+        pcd.put(4, tableToBitfields(lowPassTbl.getBufferCopy()));
+        pcd.put(5, tableToBitfields(highPassTbl.getBufferCopy()));
     }
 
     private byte[] bitfieldsToTable(byte[] dat) {
-        RubyTable rt = new RubyTable(3, dat.length, 1, 1, new int[] {0});
+        ByteArrayMemoryish rt = RubyTable.initNewTable(3, dat.length, 1, 1, new int[] {0});
         for (int i = 0; i < dat.length; i++)
-            rt.innerBytes[20 + (i * 2)] = dat[i];
-        return rt.innerBytes;
+            rt.data[20 + (i * 2)] = dat[i];
+        return rt.data;
     }
 
     private byte[] tableToBitfields(byte[] src) {
-        RubyTable rt = new RubyTable(src);
+        RubyTableR rt = new RubyTableR(src);
         byte[] r = new byte[rt.width];
         for (int i = 0; i < r.length; i++)
             r[i] = (byte) rt.getTiletype(i, 0, 0);

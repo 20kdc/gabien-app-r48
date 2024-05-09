@@ -72,7 +72,7 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
                     int alen = target.getALen();
                     for (int i = 0; i < alen; i++) {
                         // need to inflate
-                        byte[] inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.getAElem(i).getAElem(2).getBuffer())));
+                        byte[] inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.getAElem(i).getAElem(2).getBufferCopy())));
                         // target.arrVal[i].arrVal[2];
 
                         boolean disable = false;
@@ -170,7 +170,7 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
                     // need to inflate
                     byte[] inflated = null;
                     try {
-                        inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.getAElem(i).getAElem(2).getBuffer())));
+                        inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.getAElem(i).getAElem(2).getBufferCopy())));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

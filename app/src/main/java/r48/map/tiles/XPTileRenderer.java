@@ -19,7 +19,7 @@ import gabien.render.IImage;
 import gabien.render.ITexRegion;
 import gabien.uslx.append.DepsLocker;
 import r48.App;
-import r48.RubyTable;
+import r48.RubyTableR;
 import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;
 import r48.map.tileedit.AutoTileTypeField;
@@ -31,7 +31,7 @@ import r48.map.tileedit.TileEditingTab;
 public class XPTileRenderer extends TSOAwareTileRenderer {
     public final IImageLoader imageLoader;
 
-    public RubyTable priorities;
+    public RubyTableR priorities;
 
     // Note that this only covers rendering resources, not priorities
     private final DepsLocker depsLocker = new DepsLocker();
@@ -49,7 +49,7 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
     public void checkReloadTSO(@Nullable IRIO tileset) {
         if (tileset != null) {
             // Always reload priorities immediately.
-            priorities = new RubyTable(tileset.getIVar("@priorities").getBuffer());
+            priorities = new RubyTableR(tileset.getIVar("@priorities").getBuffer());
             IRIO tn = tileset.getIVar("@tileset_name");
             IImage[] tilesetMaps = new IImage[8];
             if (tn != null) {
