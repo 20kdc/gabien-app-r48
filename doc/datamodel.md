@@ -37,11 +37,14 @@ Data:
 * `RORIO`: All data types are based off of this.
 	* `DMKey`: Immutable `HashMap` key, etc.
 	* `IRIO`: The universal abstract datatype of most of R48. _This is what bridges Schema and underlying data, and allows shared code between engines._
-		* `IRIOGeneric`: Generic mutable container for any data.
-		* Engine-specific datatypes go somewhere in here, depending on what they are. In theory these types are private to the IO layer, outside of optimizations.
-		* `IRIOFixedObject`: This is the core object that 'in-field' data access is based around. As of the early DM3 work, `FixedObjectProps` stores 'scanned templates' via reflection. These templates contain factories for filling fields marked with the 'construction annotations' (`DMCX`) and information about fields marked with the 'binding annotations' `DMFXOBinding` and `DMOptional`.
-			* `IRIOFixedObjectPacked`: Implements the core of on-demand unpack.
-				* `DM2R2kObject`: Implements the R2K object IO logic. _Not all R2K structures subclass this, only ones that use the Lcf chunk container format._
+		* `IRIOData`: Contains `IRIO`-side change tracking logic (debounce) and forces savestates to be implemented.
+			* `IRIOGeneric`: Generic mutable container for any data.
+			* Engine-specific datatypes go somewhere in here, depending on what they are. In theory these types are private to the IO layer, outside of optimizations.
+			* `IRIOTypedData`: Implements all the functions to throw, except for IVar functions and `getType`.
+				* `IRIOFixedData`: Implements `getType` via final field.
+					* `IRIOFixedObject`: This is the core object that 'in-field' data access is based around. As of the early DM3 work, `FixedObjectProps` stores 'scanned templates' via reflection. These templates contain factories for filling fields marked with the 'construction annotations' (`DMCX`) and information about fields marked with the 'binding annotations' `DMFXOBinding` and `DMOptional`.
+						* `IRIOFixedObjectPacked`: Implements the core of on-demand unpack.
+							* `DM2R2kObject`: Implements the R2K object IO logic. _Not all R2K structures subclass this, only ones that use the Lcf chunk container format._
 
 Stuff that needs removing:
 

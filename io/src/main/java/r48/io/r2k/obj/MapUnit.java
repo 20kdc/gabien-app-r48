@@ -91,9 +91,11 @@ public class MapUnit extends DM2R2kObject {
         if (layer1 == null)
             layer1 = new byte[20 * 15 * 2];
         // -- transform the lower-layer and upper-layer data...
-        RubyTable rt = new RubyTable(3, width.i, height.i, 2, new int[] {0, 0});
+        int w = (int) width.getFX();
+        int h = (int) height.getFX();
+        RubyTable rt = new RubyTable(3, w, h, 2, new int[] {0, 0});
         System.arraycopy(layer0, 0, rt.innerBytes, 20, layer0.length);
-        System.arraycopy(layer1, 0, rt.innerBytes, 20 + (width.i * height.i * 2), layer1.length);
+        System.arraycopy(layer1, 0, rt.innerBytes, 20 + (w * h * 2), layer1.length);
         map = new IRIOFixedUser(context, "Table", rt.innerBytes);
     }
 
@@ -101,11 +103,13 @@ public class MapUnit extends DM2R2kObject {
     protected void dm2PackIntoMap(HashMap<Integer, byte[]> pcd) throws IOException {
         super.dm2PackIntoMap(pcd);
         // Assuming all consistency is fine, width/height are fine too
-        byte[] layer0 = new byte[width.i * height.i * 2];
-        byte[] layer1 = new byte[width.i * height.i * 2];
+        int w = (int) width.getFX();
+        int h = (int) height.getFX();
+        byte[] layer0 = new byte[w * h * 2];
+        byte[] layer1 = new byte[w * h * 2];
         byte[] innerBytes = map.getBuffer();
         System.arraycopy(innerBytes, 20, layer0, 0, layer0.length);
-        System.arraycopy(innerBytes, 20 + (width.i * height.i * 2), layer1, 0, layer1.length);
+        System.arraycopy(innerBytes, 20 + (w * h * 2), layer1, 0, layer1.length);
         pcd.put(71, layer0);
         pcd.put(72, layer1);
     }

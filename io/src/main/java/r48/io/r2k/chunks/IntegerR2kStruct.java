@@ -9,7 +9,7 @@ package r48.io.r2k.chunks;
 
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixed;
+import r48.io.data.IRIOFixedData;
 import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
@@ -21,13 +21,18 @@ import java.io.OutputStream;
  * NOTE: The default values have to be exact due to RMW
  * Created on 31/05/17.
  */
-public class IntegerR2kStruct extends IRIOFixed implements IR2kInterpretable {
-    public final int di;
-    public int i;
+public class IntegerR2kStruct extends IRIOFixedData implements IR2kInterpretable {
+    private int i;
 
     public IntegerR2kStruct(DMContext dm2, int i2) {
         super(dm2, 'i');
-        i = di = i2;
+        i = i2;
+    }
+
+    @Override
+    public Runnable saveState() {
+        final int saved = i;
+        return () -> i = saved;
     }
 
     @Override
@@ -54,6 +59,7 @@ public class IntegerR2kStruct extends IRIOFixed implements IR2kInterpretable {
 
     @Override
     public IRIO setFX(long iv) {
+        trackingWillChange();
         i = (int) iv;
         return this;
     }

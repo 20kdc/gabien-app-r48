@@ -13,7 +13,7 @@ import org.junit.Test;
 import r48.App;
 import r48.io.IMIUtils;
 import r48.io.data.DMContext;
-import r48.io.data.IDMChangeTracker;
+import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.util.SchemaPath;
@@ -30,7 +30,7 @@ import java.nio.charset.StandardCharsets;
 public class IMIBasicTest {
     @Test
     public void testEncode2kDatabase() {
-        DMContext tests = new DMContext(IDMChangeTracker.Null.TESTS, StandardCharsets.UTF_8);
+        DMContext tests = new DMContext(DMChangeTracker.Null.TESTS, StandardCharsets.UTF_8);
         App app = new TestKickstart().kickstart("RAM/", "UTF-8", "r2k");
         // Use RubyIOs both in and out to deal with encoding oddities
         IRIO newObj = new IRIOGeneric(tests);

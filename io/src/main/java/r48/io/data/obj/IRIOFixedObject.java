@@ -8,19 +8,20 @@
 package r48.io.data.obj;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.LinkedList;
 import java.util.function.Consumer;
 
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixed;
+import r48.io.data.IRIOFixedData;
 import r48.io.data.obj.FixedObjectProps.FXOBinding;
 
 /**
  * An IRIO describing a fixed-layout object.
  * Created on November 22, 2018.
  */
-public abstract class IRIOFixedObject extends IRIOFixed {
+public abstract class IRIOFixedObject extends IRIOFixedData {
     public final String objType;
     protected final FixedObjectProps cachedFields;
 
@@ -30,6 +31,28 @@ public abstract class IRIOFixedObject extends IRIOFixed {
         Class<?> c = getClass();
         cachedFields = FixedObjectProps.forClass(c);
         initialize();
+    }
+
+    @Override
+    public Runnable saveState() {
+        final Object myClone;
+        try {
+            myClone = clone();
+        } catch (Exception ex) {
+            // impossible as Cloneable is implemented here, right?
+            throw new RuntimeException(ex);
+        }
+        return () -> {
+            try {
+                for (Field f : FixedObjectProps.forClass(IRIOFixedObject.this.getClass()).fieldsArray) {
+                    if ((f.getModifiers() & Modifier.FINAL) != 0)
+                        continue;
+                    f.set(IRIOFixedObject.this, f.get(myClone));
+                }
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        };
     }
 
     @Override
@@ -49,6 +72,7 @@ public abstract class IRIOFixedObject extends IRIOFixed {
                 if (!f.optional) {
                     addIVar(f.iVar);
                 } else {
+                    trackingWillChange();
                     f.field.set(this, null);
                 }
             }
@@ -96,6 +120,10 @@ public abstract class IRIOFixedObject extends IRIOFixed {
         return null;
     }
 
+    /**
+     * This should only be overridden by IRIOFixedObjectPacked, or if it is overridden otherwise, with great care.
+     * Mainly because trackingWillChange() will need to be called when relevant.
+     */
     @Override
     public IRIO addIVar(String sym) {
         FXOBinding f = cachedFields.byIVar(sym);
@@ -106,11 +134,10 @@ public abstract class IRIOFixedObject extends IRIOFixed {
 
     /**
      * This function is like addIVar, but it works by Field.
+     * This should only be overridden by IRIOFixedObjectPacked, or if it is overridden otherwise, with great care.
+     * Mainly because trackingWillChange() will need to be called when relevant.
      */
     public Object addField(Field f) {
-        DMFXOBinding fxo = f.getAnnotation(DMFXOBinding.class);
-        if (fxo != null)
-            return addIVar(fxo.value());
         return addFieldImpl(f, cachedFields.iVarAddByFieldName(f.getName()));
     }
 
@@ -118,6 +145,7 @@ public abstract class IRIOFixedObject extends IRIOFixed {
     private Object addFieldImpl(Field f, Consumer<IRIO> factory) {
         if (factory == null)
             return null;
+        trackingWillChange();
         factory.accept(this);
         try {
             Object res = f.get(this);
@@ -134,6 +162,7 @@ public abstract class IRIOFixedObject extends IRIOFixed {
         FXOBinding f = cachedFields.byIVar(sym);
         if (f != null) {
             if (f.optional) {
+                trackingWillChange();
                 try {
                     f.field.set(this, null);
                     return;

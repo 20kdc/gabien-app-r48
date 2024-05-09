@@ -10,7 +10,7 @@ package r48.io.r2k.struct;
 import r48.io.IntUtils;
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixed;
+import r48.io.data.IRIOFixedData;
 import r48.io.data.IRIOFixnum;
 import r48.io.r2k.chunks.IR2kInterpretable;
 
@@ -22,8 +22,8 @@ import java.io.OutputStream;
  * BPB
  * Created on 06/06/17.
  */
-public class BattleParamBlock extends IRIOFixed implements IR2kInterpretable {
-    public final IRIOFixnum[] array = new IRIOFixnum[6];
+public class BattleParamBlock extends IRIOFixedData implements IR2kInterpretable {
+    private final IRIOFixnum[] array = new IRIOFixnum[6];
 
     public BattleParamBlock(DMContext ctx) {
         super(ctx, '[');
@@ -31,7 +31,14 @@ public class BattleParamBlock extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
+    public Runnable saveState() {
+        IRIOFixnum[] storedArray = array.clone();
+        return () -> System.arraycopy(storedArray, 0, array, 0, array.length);
+    }
+
+    @Override
     public IRIO setArray() {
+        trackingWillChange();
         for (int i = 0; i < array.length; i++)
             array[i] = new IRIOFixnum(context, 0);
         return this;
@@ -47,7 +54,7 @@ public class BattleParamBlock extends IRIOFixed implements IR2kInterpretable {
     @Override
     public void importData(InputStream bais) throws IOException {
         for (int i = 0; i < array.length; i++)
-            array[i].val = IntUtils.readU16(bais);
+            array[i].setFX(IntUtils.readU16(bais));
     }
 
     @Override
@@ -58,7 +65,7 @@ public class BattleParamBlock extends IRIOFixed implements IR2kInterpretable {
     @Override
     public void exportData(OutputStream baos) throws IOException {
         for (int i = 0; i < array.length; i++)
-            IntUtils.writeU16(baos, (int) array[i].val);
+            IntUtils.writeU16(baos, (int) array[i].getFX());
     }
 
     @Override

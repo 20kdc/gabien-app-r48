@@ -18,12 +18,12 @@ public interface IDM3Data {
      * This indicates that the IDM3Context would like to be notified about the next update to this object.
      * All IDM3Data objects start clean by default.
      */
-    void dm3MarkClean();
+    void trackingMarkClean();
 
     /**
      * This saves the state of the IDM3Data.
      * Running the Runnable will set the IDM3Data to this exact state.
      * See datamodel.md for specific requirements because this gets LONG.
      */
-    @NonNull Runnable dm3SaveState();
+    @NonNull Runnable saveState();
 }

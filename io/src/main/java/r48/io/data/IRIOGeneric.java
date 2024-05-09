@@ -22,7 +22,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * Then finally a big revision has come along, which I'm going to call DM2.5, March 25th 2023.
  * Created December 27th, 2016.
  */
-public class IRIOGeneric extends IRIO {
+public class IRIOGeneric extends IRIOData {
 
     private static IRIO[] globalZero = new IRIO[0];
 
@@ -60,10 +60,39 @@ public class IRIOGeneric extends IRIO {
         charset = context.encoding;
     }
 
+    // ---- Save States ----
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Runnable saveState() {
+        final int typeC = type;
+        final String symValC = symVal;
+        final String[] iVarKeysC = (iVarKeys != null) ? iVarKeys.clone() : null;
+        final IRIO[] iVarValsC = (iVarVals != null) ? iVarVals.clone() : null;
+        final HashMap<DMKey, IRIO> hashValC = (hashVal != null) ? (HashMap<DMKey, IRIO>) hashVal.clone() : null;
+        final IRIO hashDefValC = hashDefVal;
+        final IRIO[] arrValC = (arrVal != null) ? arrVal.clone() : null;
+        final byte[] userValC = (userVal != null) ? userVal.clone() : null;
+        final long fixnumValC = fixnumVal;
+        return () -> {
+            type = typeC;
+            symVal = symValC;
+            iVarKeys = (iVarKeysC != null) ? iVarKeysC.clone() : null;
+            iVarVals = (iVarValsC != null) ? iVarValsC.clone() : null;
+            hashVal = (hashValC != null) ? (HashMap<DMKey, IRIO>) hashValC.clone() : null;
+            hashDefVal = hashDefValC;
+            arrVal = (arrValC != null) ? arrValC.clone() : null;
+            userVal = (userValC != null) ? userValC.clone() : null;
+            fixnumVal = fixnumValC;
+        };
+    }
+
     // ---- Value creators ----
 
     @Override
     public IRIO setNull() {
+        // all other set functions call this
+        trackingWillChange();
         type = '0';
         symVal = null;
         iVarKeys = null;
@@ -107,10 +136,6 @@ public class IRIOGeneric extends IRIO {
             s = new String(s, srcCharset).getBytes(charset);
         setNull();
         type = '"';
-        userVal = s;
-        rmIVar("jEncoding");
-        rmIVar("encoding");
-        rmIVar("E");
         userVal = s;
         return this;
     }
@@ -213,6 +238,7 @@ public class IRIOGeneric extends IRIO {
             return;
         for (int i = 0; i < iVarKeys.length; i++) {
             if (iVarKeys[i].equals(s)) {
+                trackingWillChange();
                 String[] oldKeys = iVarKeys;
                 IRIO[] oldVals = iVarVals;
                 iVarKeys = new String[oldKeys.length - 1];
@@ -236,6 +262,8 @@ public class IRIOGeneric extends IRIO {
 
     @Override
     public void removeHashVal(DMKey rubyIO) {
+        // addHashVal expects this unconditional call
+        trackingWillChange();
         hashVal.remove(rubyIO);
     }
 
@@ -251,6 +279,7 @@ public class IRIOGeneric extends IRIO {
     @Override
     public IRIO addIVar(String sym) {
         rmIVar(sym);
+        trackingWillChange();
         IRIOGeneric rio = new IRIOGeneric(context);
         if (iVarKeys == null) {
             iVarKeys = new String[] {sym};
@@ -303,6 +332,7 @@ public class IRIOGeneric extends IRIO {
 
     @Override
     public void putBuffer(byte[] data) {
+        trackingWillChange();
         userVal = data;
     }
 
@@ -318,6 +348,7 @@ public class IRIOGeneric extends IRIO {
 
     @Override
     public IRIO addAElem(int i) {
+        trackingWillChange();
         IRIO rio = new IRIOGeneric(context);
         IRIO[] old = arrVal;
         IRIO[] newArr = new IRIO[old.length + 1];
@@ -330,6 +361,7 @@ public class IRIOGeneric extends IRIO {
 
     @Override
     public void rmAElem(int i) {
+        trackingWillChange();
         IRIO[] old = arrVal;
         IRIO[] newArr = new IRIO[old.length - 1];
         System.arraycopy(old, 0, newArr, 0, i);
@@ -344,6 +376,7 @@ public class IRIOGeneric extends IRIO {
 
     @Override
     public IRIO addHashVal(DMKey key) {
+        // already calls trackingWillChange
         removeHashVal(key);
         IRIO rt = new IRIOGeneric(context);
         hashVal.put(key, rt);

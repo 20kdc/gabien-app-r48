@@ -39,10 +39,10 @@ public class TRect extends IRIOFixedObject implements IR2kInterpretable {
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        l.val = IntUtils.readS32(bais);
-        u.val = IntUtils.readS32(bais);
-        r.val = IntUtils.readS32(bais);
-        d.val = IntUtils.readS32(bais);
+        l.setFX(IntUtils.readS32(bais));
+        u.setFX(IntUtils.readS32(bais));
+        r.setFX(IntUtils.readS32(bais));
+        d.setFX(IntUtils.readS32(bais));
     }
 
     @Override
@@ -52,9 +52,9 @@ public class TRect extends IRIOFixedObject implements IR2kInterpretable {
 
     @Override
     public void exportData(OutputStream baos) throws IOException {
-        IntUtils.writeS32(baos, (int) l.val);
-        IntUtils.writeS32(baos, (int) u.val);
-        IntUtils.writeS32(baos, (int) r.val);
-        IntUtils.writeS32(baos, (int) d.val);
+        IntUtils.writeS32(baos, (int) l.getFX());
+        IntUtils.writeS32(baos, (int) u.getFX());
+        IntUtils.writeS32(baos, (int) r.getFX());
+        IntUtils.writeS32(baos, (int) d.getFX());
     }
 }

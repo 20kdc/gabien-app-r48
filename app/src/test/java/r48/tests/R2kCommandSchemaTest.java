@@ -18,7 +18,7 @@ import r48.dbs.CMDB;
 import r48.io.IObjectBackend;
 import r48.io.data.DMContext;
 import r48.io.data.DMKey;
-import r48.io.data.IDMChangeTracker;
+import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.r2k.obj.Event;
 import r48.schema.SchemaElement;
@@ -64,7 +64,7 @@ public class R2kCommandSchemaTest {
 
     private App beginCommandProcedure() {
         App app = new TestKickstart().kickstart("RAM/", "UTF-8", "r2k");
-        rpgEvInst = new Event(new DMContext(IDMChangeTracker.Null.TESTS, StandardCharsets.UTF_8));
+        rpgEvInst = new Event(new DMContext(DMChangeTracker.Null.TESTS, StandardCharsets.UTF_8));
         rpgEv = app.sdb.getSDBEntry("RPG::Event");
         rpgEvP = new SchemaPath(rpgEv, new IObjectBackend.MockLoadedObject(rpgEvInst));
         rpgEv.modifyVal(rpgEvInst, rpgEvP, true);

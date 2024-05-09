@@ -12,7 +12,7 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Created on November 24, 2018.
  */
-public class IRIOFixedUser extends IRIOFixed {
+public class IRIOFixedUser extends IRIOFixedData {
     private final String objType;
     public byte[] userVal;
 
@@ -20,6 +20,12 @@ public class IRIOFixedUser extends IRIOFixed {
         super(context, 'u');
         objType = user;
         userVal = def;
+    }
+
+    @Override
+    public Runnable saveState() {
+        final byte[] saved = userVal.clone();
+        return () -> userVal = saved.clone();
     }
 
     @Override
@@ -49,6 +55,7 @@ public class IRIOFixedUser extends IRIOFixed {
 
     @Override
     public void putBuffer(byte[] data) {
+        trackingWillChange();
         userVal = data;
     }
 
@@ -56,6 +63,7 @@ public class IRIOFixedUser extends IRIOFixed {
     public IRIO setUser(String symbol, byte[] data) {
         if (!symbol.equals(objType))
             return super.setUser(symbol, data);
+        trackingWillChange();
         userVal = data;
         return this;
     }

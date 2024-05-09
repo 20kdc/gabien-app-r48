@@ -97,7 +97,7 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         while (si.hasNext()) {
             int code = si.next();
             MoveCommand mc = new MoveCommand(ctx);
-            mc.code.val = code;
+            mc.code.setFX(code);
 
             IRIOFixnum a = new IRIOFixnum(ctx, 0);
             IRIOFixnum b = new IRIOFixnum(ctx, 0);
@@ -118,11 +118,11 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
             }
 
             if ((mcc & 0xFF) > 0)
-                a.val = popMetaInteger(si);
+                a.setFX(popMetaInteger(si));
             if ((mcc & 0xFF) > 1)
-                b.val = popMetaInteger(si);
+                b.setFX(popMetaInteger(si));
             if ((mcc & 0xFF) > 2)
-                c.val = popMetaInteger(si);
+                c.setFX(popMetaInteger(si));
             if ((mcc & 0xFF) > 3)
                 throw new RuntimeException("invalid MCC");
             mcs.add(mc);
@@ -134,9 +134,10 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         LinkedList<Integer> res = new LinkedList<Integer>();
         for (IRIO mci : moveCommands.arrVal) {
             MoveCommand mc = (MoveCommand) mci;
-            res.add((int) mc.code.val);
+            int codeVal = (int) mc.code.getFX();
+            res.add(codeVal);
 
-            int mcc = moveCommandClassifier((int) mc.code.val);
+            int mcc = moveCommandClassifier(codeVal);
 
             if ((mcc & 0x100) != 0) {
                 byte[] text = mc.parameters.text.data;
@@ -163,7 +164,8 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        code.val = R2kUtil.readLcfVLI(bais);
+        int codeVal = R2kUtil.readLcfVLI(bais);
+        code.setFX(codeVal);
         addIVar("@parameters");
         IRIOFixnum a = new IRIOFixnum(context, 0);
         IRIOFixnum b = new IRIOFixnum(context, 0);
@@ -175,7 +177,7 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
                 c
         };
 
-        int mcc = moveCommandClassifier((int) code.val);
+        int mcc = moveCommandClassifier(codeVal);
 
         if ((mcc & 0x100) != 0)
             parameters.text.data = IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais));
@@ -191,9 +193,10 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
 
     @Override
     public void exportData(OutputStream baos) throws IOException {
-        R2kUtil.writeLcfVLI(baos, (int) code.val);
+        int codeVal = (int) code.getFX();
+        R2kUtil.writeLcfVLI(baos, codeVal);
 
-        int mcc = moveCommandClassifier((int) code.val);
+        int mcc = moveCommandClassifier(codeVal);
 
         if ((mcc & 0x100) != 0) {
             byte[] data = parameters.text.data;

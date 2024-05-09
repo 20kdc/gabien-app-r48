@@ -10,7 +10,7 @@ package r48.io.r2k.chunks;
 import r48.io.IntUtils;
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixed;
+import r48.io.data.IRIOFixedData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +21,8 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Created on 05/06/17.
  */
-public class ByteR2kStruct extends IRIOFixed implements IR2kInterpretable {
-    public byte value;
+public class ByteR2kStruct extends IRIOFixedData implements IR2kInterpretable {
+    protected byte value;
 
     public ByteR2kStruct(@NonNull DMContext context, int v) {
         super(context, 'i');
@@ -34,7 +34,14 @@ public class ByteR2kStruct extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
+    public Runnable saveState() {
+        final byte saved = value;
+        return () -> value = saved;
+    }
+
+    @Override
     public IRIO setFX(long fx) {
+        trackingWillChange();
         value = (byte) fx;
         return this;
     }

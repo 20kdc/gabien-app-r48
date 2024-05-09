@@ -21,10 +21,10 @@ import gabien.uslx.append.Entity;
 public final class DMContext extends Entity<DMContext> {
     public static final Entity.Registrar<DMContext> I = newRegistrar();
 
-    public final @NonNull IDMChangeTracker changes;
+    public final @NonNull DMChangeTracker changes;
     public final Charset encoding;
 
-    public DMContext(@NonNull IDMChangeTracker changes, @NonNull Charset encoding) {
+    public DMContext(@NonNull DMChangeTracker changes, @NonNull Charset encoding) {
         this.changes = changes;
         this.encoding = encoding;
     }

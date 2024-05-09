@@ -110,14 +110,14 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
         IkaEvent res = new IkaEvent(dm2c);
         int px = rounder(io.posX);
         int py = rounder(io.posY);
-        res.x.val = px;
-        res.y.val = py;
-        res.tox.val = rounder(io.ofsX) - px;
-        res.toy.val = rounder(io.ofsY) - py;
-        res.type.val = io.entityType;
-        res.status.val = io.entityStatus;
-        res.scriptId.val = io.eventID;
-        res.collisionType.val = io.collisionType;
+        res.x.setFX(px);
+        res.y.setFX(py);
+        res.tox.setFX(rounder(io.ofsX) - px);
+        res.toy.setFX(rounder(io.ofsY) - py);
+        res.type.setFX(io.entityType);
+        res.status.setFX(io.entityStatus);
+        res.scriptId.setFX(io.eventID);
+        res.collisionType.setFX(io.collisionType);
         return res;
     }
 
@@ -153,14 +153,14 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
                 if (r2 != null) {
                     NPChar.NPCCharacter n = npc.npcTable[i];
                     n.exists = true;
-                    n.posX = r2.x.val;
-                    n.posY = r2.y.val;
-                    n.ofsX = n.posX + r2.tox.val;
-                    n.ofsY = n.posY + r2.toy.val;
-                    n.collisionType = (int) r2.collisionType.val;
-                    n.entityStatus = (int) r2.status.val;
-                    n.entityType = (int) r2.type.val;
-                    n.eventID = (int) r2.scriptId.val;
+                    n.posX = r2.x.getFX();
+                    n.posY = r2.y.getFX();
+                    n.ofsX = n.posX + r2.tox.getFX();
+                    n.ofsY = n.posY + r2.toy.getFX();
+                    n.collisionType = (int) r2.collisionType.getFX();
+                    n.entityStatus = (int) r2.status.getFX();
+                    n.entityType = (int) r2.type.getFX();
+                    n.eventID = (int) r2.scriptId.getFX();
                 }
             }
             try (OutputStream fio2 = fs.intoPath(root + "NPChar.dat").openWrite()) {

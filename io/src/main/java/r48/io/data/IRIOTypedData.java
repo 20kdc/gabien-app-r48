@@ -12,23 +12,13 @@ import java.nio.charset.Charset;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
- * An IRIO with a fixed type.
- * The IRIO cannot be changed from this type.
  * All methods apart from IVars (left unimplemented except for rmIVar, which is not supported) are implemented as 'not supported' by default.
- * The setter method for your specific type should be reimplemented.
- * Created on November 22, 2018.
+ * The setter methods for your specific types should be reimplemented.
+ * Split from IRIOFixedData (formerly IRIOFixed) May 9, 2024.
  */
-public abstract class IRIOFixed extends IRIO {
-    protected int type;
-
-    public IRIOFixed(@NonNull DMContext context, int t) {
+public abstract class IRIOTypedData extends IRIOData {
+    public IRIOTypedData(@NonNull DMContext context) {
         super(context);
-        type = t;
-    }
-
-    @Override
-    public int getType() {
-        return type;
     }
 
     @Override

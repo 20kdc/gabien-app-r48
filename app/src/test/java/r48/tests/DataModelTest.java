@@ -13,7 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import r48.io.data.DMContext;
-import r48.io.data.IDMChangeTracker;
+import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 
@@ -23,7 +23,7 @@ import r48.io.data.IRIOGeneric;
 public class DataModelTest {
     @Test
     public void testStringEquality() {
-        DMContext tests = new DMContext(IDMChangeTracker.Null.TESTS, StandardCharsets.UTF_8);
+        DMContext tests = new DMContext(DMChangeTracker.Null.TESTS, StandardCharsets.UTF_8);
         // This is really just to make sure unit tests work for now.
         IRIO rioA = new IRIOGeneric(tests).setString("Hello");
         IRIO rioB = new IRIOGeneric(tests).setString("Goodbye");

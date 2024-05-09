@@ -31,7 +31,7 @@ import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
 import r48.dbs.RPGCommand;
 import r48.io.data.DMContext;
-import r48.io.data.IDMChangeTracker;
+import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -102,32 +102,32 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     /**
      * Clipboard context in app encoding
      */
-    public final DMContext ctxClipboardAppEncoding = new DMContext(IDMChangeTracker.Null.CLIPBOARD, encoding);
+    public final DMContext ctxClipboardAppEncoding = new DMContext(DMChangeTracker.Null.CLIPBOARD, encoding);
 
     /**
      * Clipboard context in UTF-8
      */
-    public final DMContext ctxClipboardUTF8Encoding = new DMContext(IDMChangeTracker.Null.CLIPBOARD, StandardCharsets.UTF_8);
+    public final DMContext ctxClipboardUTF8Encoding = new DMContext(DMChangeTracker.Null.CLIPBOARD, StandardCharsets.UTF_8);
 
     /**
      * Workspace context in app encoding
      */
-    public final DMContext ctxWorkspaceAppEncoding = new DMContext(IDMChangeTracker.Null.WORKSPACE, encoding);
+    public final DMContext ctxWorkspaceAppEncoding = new DMContext(DMChangeTracker.Null.WORKSPACE, encoding);
 
     /**
      * Disposable context in UTF-8
      */
-    public final DMContext ctxDisposableUTF8Encoding = new DMContext(IDMChangeTracker.Null.DISPOSABLE, StandardCharsets.UTF_8);
+    public final DMContext ctxDisposableUTF8Encoding = new DMContext(DMChangeTracker.Null.DISPOSABLE, StandardCharsets.UTF_8);
 
     /**
      * Disposable context in app encoding
      */
-    public final DMContext ctxDisposableAppEncoding = new DMContext(IDMChangeTracker.Null.DISPOSABLE, encoding);
+    public final DMContext ctxDisposableAppEncoding = new DMContext(DMChangeTracker.Null.DISPOSABLE, encoding);
 
     /**
      * Delme context in UTF-8
      */
-    public final DMContext ctxDelmeAppEncoding = new DMContext(IDMChangeTracker.Null.DELETE_ME, encoding);
+    public final DMContext ctxDelmeAppEncoding = new DMContext(DMChangeTracker.Null.DELETE_ME, encoding);
 
     /**
      * Initialize App.

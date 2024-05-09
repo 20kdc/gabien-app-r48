@@ -108,7 +108,7 @@ public class SaveParty extends DM2R2kObject {
     @Override
     protected void dm2UnpackFromMapDestructively(HashMap<Integer, byte[]> pcd) {
         super.dm2UnpackFromMapDestructively(pcd);
-        inventoryView.arrVal = new IRIO[inventorySize.i];
+        inventoryView.arrVal = new IRIO[(int) inventorySize.getFX()];
         // This uses the loaded IRIOs as-is to simplify things.
         for (int i = 0; i < inventoryView.arrVal.length; i++) {
             SaveItem si = new SaveItem(context);

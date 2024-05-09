@@ -8,6 +8,7 @@ package r48.io.data.obj;
 
 import java.lang.reflect.Field;
 
+import gabien.uslx.append.Block;
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 
@@ -32,7 +33,9 @@ public abstract class IRIOFixedObjectPacked extends IRIOFixedObject {
     protected final void unpack() {
         if (!hasUnpackedYet) {
             hasUnpackedYet = true;
-            unpackImpl();
+            try (Block license = context.changes.openUnpackLicense()) {
+                unpackImpl();
+            }
         }
     }
 
@@ -86,7 +89,7 @@ public abstract class IRIOFixedObjectPacked extends IRIOFixedObject {
     }
 
     @Override
-    public final Object addField(Field f) {
+    public Object addField(Field f) {
         unpack();
         return super.addField(f);
     }

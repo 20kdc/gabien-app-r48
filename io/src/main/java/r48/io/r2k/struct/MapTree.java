@@ -73,7 +73,7 @@ public class MapTree extends IRIOFixedObject implements IR2kInterpretable {
         // the rest of it
         R2kUtil.writeLcfVLI(baos, mapOrder.arrVal.length);
         for (int i = 0; i < mapOrder.arrVal.length; i++)
-            R2kUtil.writeLcfVLI(baos, (int) ((IRIOFixnum) mapOrder.arrVal[i]).val);
+            R2kUtil.writeLcfVLI(baos, (int) ((IRIOFixnum) mapOrder.arrVal[i]).getFX());
         activeNode.exportData(baos);
         start.exportData(baos);
     }

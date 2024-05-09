@@ -12,7 +12,7 @@ import gabienapp.Application;
 import r48.io.JsonObjectBackend;
 import r48.io.R48ObjectBackend;
 import r48.io.data.DMContext;
-import r48.io.data.IDMChangeTracker;
+import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 
@@ -64,6 +64,6 @@ public class AdHocSaveLoad {
     }
 
     public static DMContext newContext() {
-        return new DMContext(IDMChangeTracker.Null.ADHOC_IO, StandardCharsets.UTF_8);
+        return new DMContext(DMChangeTracker.Null.ADHOC_IO, StandardCharsets.UTF_8);
     }
 }

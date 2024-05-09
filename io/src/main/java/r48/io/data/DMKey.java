@@ -18,7 +18,7 @@ public class DMKey extends RORIO {
     public static final DMKey NULL = new DMKey(Subtype.Null, 0, null, null, null);
     public static final DMKey TRUE = new DMKey(Subtype.True, 0, null, null, null);
     public static final DMKey FALSE = new DMKey(Subtype.False, 0, null, null, null);
-    private static final DMContext EMBEDDED_CONTEXT = new DMContext(IDMChangeTracker.Null.DMKEY_EMBEDDED, StandardCharsets.UTF_8);
+    private static final DMContext EMBEDDED_CONTEXT = new DMContext(DMChangeTracker.Null.DMKEY_EMBEDDED, StandardCharsets.UTF_8);
 
     private final Subtype st;
     // i

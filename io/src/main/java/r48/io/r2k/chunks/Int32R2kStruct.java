@@ -25,7 +25,7 @@ public class Int32R2kStruct extends IRIOFixnum implements IR2kInterpretable {
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        val = IntUtils.readS32(bais);
+        setFX(IntUtils.readS32(bais));
     }
 
     @Override
@@ -35,6 +35,6 @@ public class Int32R2kStruct extends IRIOFixnum implements IR2kInterpretable {
 
     @Override
     public void exportData(OutputStream baos) throws IOException {
-        IntUtils.writeS32(baos, (int) val);
+        IntUtils.writeS32(baos, (int) getFX());
     }
 }

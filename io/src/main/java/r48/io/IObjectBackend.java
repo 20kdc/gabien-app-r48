@@ -24,10 +24,16 @@ import gabien.uslx.vfs.FSBackend;
  * Created on 1/27/17.
  */
 public interface IObjectBackend {
-    // Returns null on failure.
+    /**
+     * Returns null on failure.
+     * The caller is assumed to be holding a License To Unpack Data.
+     */
     ILoadedObject loadObject(String filename, @NonNull DMContext context);
 
-    // Also returns null on failure.
+    /**
+     * Also returns null on failure.
+     * The caller is assumed to be holding a License To Unpack Data.
+     */
     ILoadedObject newObject(String filename, @NonNull DMContext context);
 
     // Does this backend use userspace binders, and if so, what's the usersym prefix? Can be null.

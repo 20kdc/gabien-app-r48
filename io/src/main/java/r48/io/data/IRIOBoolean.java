@@ -7,30 +7,39 @@
 
 package r48.io.data;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 /**
- * Created on November 24, 2018.
+ * Extracted from BooleanR2kStruct 9th May, 2024.
  */
-public class IRIOFixnum extends IRIOFixedData {
-    private long val;
+public class IRIOBoolean extends IRIOTypedData {
+    private boolean value;
 
-    public IRIOFixnum(@NonNull DMContext context, long t) {
-        super(context, 'i');
-        val = t;
+    public IRIOBoolean(DMContext dm2, boolean i2) {
+        super(dm2);
+        value = i2;
     }
 
-    /**
-     * This is just so DMCX works properly...
-     */
-    public IRIOFixnum(@NonNull DMContext context, int t) {
-        this(context, (long) t);
+    @Override
+    public int getType() {
+        return value ? 'T' : 'F';
     }
 
     @Override
     public Runnable saveState() {
-        final long saved = val;
-        return () -> val = saved;
+        return value ? () -> { value = true; } : () -> { value = false; };
+    }
+
+    @Override
+    public IRIO setBool(boolean b) {
+        trackingWillChange();
+        value = b;
+        return this;
+    }
+
+    /**
+     * Convenience for subclasses/etc.
+     */
+    public boolean getBool() {
+        return value;
     }
 
     @Override
@@ -46,17 +55,5 @@ public class IRIOFixnum extends IRIOFixedData {
     @Override
     public IRIO getIVar(String sym) {
         return null;
-    }
-
-    @Override
-    public long getFX() {
-        return val;
-    }
-
-    @Override
-    public IRIO setFX(long fx) {
-        trackingWillChange();
-        val = fx;
-        return this;
     }
 }

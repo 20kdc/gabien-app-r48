@@ -15,7 +15,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * An annoying but necessary wrapper for cases where an IRIO may be null.
  * Created on December 06, 2018.
  */
-public class IRIONullable<V extends IRIO> extends IRIO {
+public class IRIONullable<V extends IRIO> extends IRIOData {
     public final V target;
     public boolean nulled;
 
@@ -31,7 +31,16 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     }
 
     @Override
+    public Runnable saveState() {
+        final boolean currentNullness = nulled;
+        return () -> {
+            nulled = currentNullness;
+        };
+    }
+
+    @Override
     public IRIO setNull() {
+        trackingWillChange();
         nulled = true;
         return this;
     }
@@ -39,6 +48,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     @Override
     public IRIO setFX(long fx) {
         target.setFX(fx);
+        trackingWillChange();
         nulled = false;
         return this;
     }
@@ -46,6 +56,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     @Override
     public IRIO setBool(boolean b) {
         target.setBool(b);
+        trackingWillChange();
         nulled = false;
         return this;
     }
@@ -53,6 +64,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     @Override
     public IRIO setSymbol(String s) {
         target.setSymbol(s);
+        trackingWillChange();
         nulled = false;
         return this;
     }
@@ -60,6 +72,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     @Override
     public IRIO setString(String s) {
         target.setString(s);
+        trackingWillChange();
         nulled = false;
         return this;
     }
@@ -67,6 +80,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     @Override
     public IRIO setString(byte[] s, Charset jenc) {
         target.setString(s, jenc);
+        trackingWillChange();
         nulled = false;
         return this;
     }
@@ -74,6 +88,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     @Override
     public IRIO setFloat(byte[] s) {
         target.setFloat(s);
+        trackingWillChange();
         nulled = false;
         return this;
     }
@@ -81,6 +96,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     @Override
     public IRIO setHash() {
         target.setHash();
+        trackingWillChange();
         nulled = false;
         return this;
     }
@@ -88,6 +104,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     @Override
     public IRIO setHashWithDef() {
         target.setHashWithDef();
+        trackingWillChange();
         nulled = false;
         return this;
     }
@@ -95,6 +112,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     @Override
     public IRIO setArray() {
         target.setArray();
+        trackingWillChange();
         nulled = false;
         return this;
     }
@@ -102,6 +120,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     @Override
     public IRIO setArray(int length) {
         target.setArray(length);
+        trackingWillChange();
         nulled = false;
         return this;
     }
@@ -109,6 +128,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     @Override
     public IRIO setObject(String symbol) {
         target.setObject(symbol);
+        trackingWillChange();
         nulled = false;
         return this;
     }
@@ -116,6 +136,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     @Override
     public IRIO setUser(String symbol, byte[] data) {
         target.setUser(symbol, data);
+        trackingWillChange();
         nulled = false;
         return this;
     }
@@ -123,6 +144,7 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     @Override
     public IRIO setBignum(byte[] data) {
         target.setBignum(data);
+        trackingWillChange();
         nulled = false;
         return this;
     }

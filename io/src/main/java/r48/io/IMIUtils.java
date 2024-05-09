@@ -9,7 +9,7 @@ package r48.io;
 
 import r48.io.data.DMContext;
 import r48.io.data.DMKey;
-import r48.io.data.IDMChangeTracker;
+import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -605,7 +605,7 @@ public class IMIUtils {
                     }
                     break;
                 case '>':
-                    tmp2 = new IRIOGeneric(new DMContext(IDMChangeTracker.Null.DISPOSABLE, StandardCharsets.UTF_8));
+                    tmp2 = new IRIOGeneric(new DMContext(DMChangeTracker.Null.DISPOSABLE, StandardCharsets.UTF_8));
                     runIMISegment(inp, tmp2);
                     if (obj.getType() == '[') {
                         if (tmp2.getType() != 'i')
@@ -629,7 +629,7 @@ public class IMIUtils {
                             }
                             break;
                         case '>':
-                            tmp2 = new IRIOGeneric(new DMContext(IDMChangeTracker.Null.DISPOSABLE, StandardCharsets.UTF_8));
+                            tmp2 = new IRIOGeneric(new DMContext(DMChangeTracker.Null.DISPOSABLE, StandardCharsets.UTF_8));
                             runIMISegment(inp, tmp2);
                             if (obj.getType() == '[') {
                                 if (tmp2.getType() != 'i')

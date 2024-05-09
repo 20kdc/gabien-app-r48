@@ -12,7 +12,7 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Created on December 04, 2018.
  */
-public abstract class IRIOFixedArray<T extends IRIO> extends IRIOFixed {
+public abstract class IRIOFixedArray<T extends IRIO> extends IRIOFixedData {
     public IRIO[] arrVal = new IRIO[0];
 
     public IRIOFixedArray(@NonNull DMContext context) {
@@ -20,13 +20,21 @@ public abstract class IRIOFixedArray<T extends IRIO> extends IRIOFixed {
     }
 
     @Override
+    public Runnable saveState() {
+        final IRIO[] saved = arrVal.clone();
+        return () -> arrVal = saved.clone();
+    }
+
+    @Override
     public IRIO setArray() {
+        trackingWillChange();
         arrVal = new IRIO[0];
         return this;
     }
 
     @Override
     public IRIO setArray(int length) {
+        trackingWillChange();
         arrVal = new IRIO[length];
         for (int i = 0; i < length; i++)
             arrVal[i] = newValue();
@@ -48,6 +56,7 @@ public abstract class IRIOFixedArray<T extends IRIO> extends IRIOFixed {
 
     @Override
     public T addAElem(int i) {
+        trackingWillChange();
         T rio = newValue();
         IRIO[] old = arrVal;
         IRIO[] newArr = new IRIO[old.length + 1];
@@ -60,6 +69,7 @@ public abstract class IRIOFixedArray<T extends IRIO> extends IRIOFixed {
 
     @Override
     public void rmAElem(int i) {
+        trackingWillChange();
         IRIO[] old = arrVal;
         IRIO[] newArr = new IRIO[old.length - 1];
         System.arraycopy(old, 0, newArr, 0, i);

@@ -10,7 +10,7 @@ package r48.io.r2k.chunks;
 import r48.io.IntUtils;
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixed;
+import r48.io.data.IRIOFixedData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,7 @@ import java.nio.charset.Charset;
  * (later) and out again.
  * Created on 31/05/17.
  */
-public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
+public class StringR2kStruct extends IRIOFixedData implements IR2kInterpretable {
     public byte[] data = new byte[0];
     public final Charset encoding;
 
@@ -38,7 +38,14 @@ public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
+    public Runnable saveState() {
+        final byte[] saved = data.clone();
+        return () -> data = saved;
+    }
+
+    @Override
     public IRIO setString(String s) {
+        trackingWillChange();
         data = s.getBytes(encoding);
         return this;
     }
@@ -46,6 +53,7 @@ public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
     @Override
     public IRIO setString(byte[] s, Charset jenc) {
         if (jenc.equals(encoding)) {
+            trackingWillChange();
             data = s;
             return this;
         }
@@ -74,6 +82,7 @@ public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
 
     @Override
     public void putBuffer(byte[] dat) {
+        trackingWillChange();
         data = dat;
     }
 
