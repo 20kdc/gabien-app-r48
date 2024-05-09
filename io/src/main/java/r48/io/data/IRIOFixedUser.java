@@ -57,7 +57,7 @@ public class IRIOFixedUser extends IRIOFixedData {
     }
 
     @Override
-    public MemoryishRW getBufferRW() {
+    public MemoryishRW editUser() {
         return userVal;
     }
 

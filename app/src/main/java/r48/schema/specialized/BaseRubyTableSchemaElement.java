@@ -72,7 +72,7 @@ public abstract class BaseRubyTableSchemaElement extends SchemaElement.Leaf {
         }
     
         // Fix up pre v1.0-2 tables (would have existed from the start if I knew about it, but...)
-        RubyTable rt = new RubyTable(target.getBufferRW());
+        RubyTable rt = new RubyTable(target.editUser());
         if (rt.dimensionCount != dimensions) {
             rt.innerTableW.set32LE(0, dimensions);
             changeOccurred = true;

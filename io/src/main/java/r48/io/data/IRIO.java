@@ -93,7 +93,12 @@ public abstract class IRIO extends RORIO {
     public abstract void putBuffer(byte[] data);
 
     // 'u'
-    public abstract MemoryishRW getBufferRW();
+    /**
+     * Accesses the current state of the userval for editing.
+     * This accessor becomes useless if putBuffer is called or such.
+     * Modifications via this accessor are still properly tracked for DMChangeTracker.
+     */
+    public abstract MemoryishRW editUser();
 
     // '['
     @Override

@@ -75,7 +75,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
 
             IkaMap rio = new IkaMap(context, bm.width, bm.height);
 
-            RubyTable pal = new RubyTable(rio.palette.getBufferRW());
+            RubyTable pal = new RubyTable(rio.palette.editUser());
             for (int i = 0; i < bm.paletteCol; i++) {
                 int rgba = bm.getPalette(i);
                 pal.setTiletype(i, 0, 0, (short) ((rgba >> 24) & 0xFF));
@@ -84,7 +84,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
                 pal.setTiletype(i, 0, 3, (short) (rgba & 0xFF));
             }
 
-            RubyTable tbl = new RubyTable(rio.data.getBufferRW());
+            RubyTable tbl = new RubyTable(rio.data.editUser());
 
             for (int i = 0; i < bm.width; i++)
                 for (int j = 0; j < bm.height; j++)

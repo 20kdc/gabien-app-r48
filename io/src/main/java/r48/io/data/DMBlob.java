@@ -17,6 +17,9 @@ public final class DMBlob extends ByteArrayMemoryish implements IDM3Data {
     private boolean clean = true;
     public final DMContext context;
 
+    /**
+     * Beware that the array is donated to the DMBlob.
+     */
     public DMBlob(DMContext context, byte[] data) {
         super(data);
         this.context = context;

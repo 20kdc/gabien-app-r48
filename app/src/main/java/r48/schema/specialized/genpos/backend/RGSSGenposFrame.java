@@ -93,7 +93,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
     public void deleteCell(int i2) {
         IRIO frame = getFrame();
         IRIO frameData = frame.getIVar("@cell_data");
-        RubyTable table = new RubyTable(frameData.getBufferRW());
+        RubyTable table = new RubyTable(frameData.editUser());
         frame.getIVar("@cell_max").setFX(table.width - 1);
         ByteArrayMemoryish newTableBAM = RubyTable.initNewTable(3, table.width - 1, 8, 1, new int[1]);
         RubyTable newTable = new RubyTable(newTableBAM);
@@ -116,7 +116,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
     public void addCell(int i2) {
         IRIO frame = getFrame();
         IRIO frameData = frame.getIVar("@cell_data");
-        RubyTable table = new RubyTable(frameData.getBufferRW());
+        RubyTable table = new RubyTable(frameData.editUser());
         frame.getIVar("@cell_max").setFX(table.width + 1);
         ByteArrayMemoryish newTableBAM = RubyTable.initNewTable(3, table.width + 1, 8, 1, new int[1]);
         RubyTable newTable = new RubyTable(newTableBAM);
@@ -205,7 +205,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
 
             @Override
             public boolean applyBoundToTarget(IRIO bound, IRIO target) {
-                RubyTable rt = new RubyTable(target.getBufferRW());
+                RubyTable rt = new RubyTable(target.editUser());
                 short s = rt.getTiletype(ct, i, 0);
                 short s2 = (short) bound.getFX();
                 if (s != s2) {
@@ -230,13 +230,13 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
     @Override
     public IGenposTweeningProp getCellPropTweening(int ct, int i) {
         if (i < 7)
-            return new TableGenposTweeningProp(new RubyTable(getFrame().getIVar("@cell_data").getBufferRW()), ct, i, 0);
+            return new TableGenposTweeningProp(new RubyTable(getFrame().getIVar("@cell_data").editUser()), ct, i, 0);
         return null;
     }
 
     @Override
     public void moveCell(int ct, Function<Integer, Integer> x, Function<Integer, Integer> y) {
-        RubyTable rt = new RubyTable(getFrame().getIVar("@cell_data").getBufferRW());
+        RubyTable rt = new RubyTable(getFrame().getIVar("@cell_data").editUser());
         rt.setTiletype(ct, 1, 0, (short) ((int) x.apply((int) rt.getTiletype(ct, 1, 0))));
         rt.setTiletype(ct, 2, 0, (short) ((int) y.apply((int) rt.getTiletype(ct, 2, 0))));
         updateNotify.run();

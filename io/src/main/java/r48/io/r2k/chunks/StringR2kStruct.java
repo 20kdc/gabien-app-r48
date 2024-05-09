@@ -61,21 +61,25 @@ public class StringR2kStruct extends IRIOFixedData implements IR2kInterpretable 
 
     @Override
     public IRIO setString(String s) {
-        trackingWillChange();
-        data = s.getBytes(encoding);
-        dataBAM = new ByteArrayMemoryish(data);
-        dataDecoded = s;
+        putBuffer(s.getBytes(encoding));
         return this;
     }
 
     @Override
     public IRIO setString(byte[] s, Charset jenc) {
         if (jenc.equals(encoding)) {
-            trackingWillChange();
-            data = s;
+            putBuffer(s);
             return this;
         }
         return super.setString(s, jenc);
+    }
+
+    @Override
+    public void putBuffer(byte[] dat) {
+        trackingWillChange();
+        data = dat;
+        dataBAM = new ByteArrayMemoryish(data);
+        dataDecoded = new String(dat, encoding);
     }
 
     @Override
@@ -109,19 +113,13 @@ public class StringR2kStruct extends IRIOFixedData implements IR2kInterpretable 
     }
 
     @Override
-    public void putBuffer(byte[] dat) {
-        trackingWillChange();
-        data = dat;
-    }
-
-    @Override
     public Charset getBufferEnc() {
         return encoding;
     }
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        data = IntUtils.readBytes(bais, bais.available());
+        putBuffer(IntUtils.readBytes(bais, bais.available()));
     }
 
     @Override

@@ -16,6 +16,9 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import gabien.uslx.io.ByteArrayMemoryish;
+import gabien.uslx.io.MemoryishR;
+
 public class DoubleR2kStruct extends IRIOFixedData implements IR2kInterpretable {
     private double v;
 
@@ -46,12 +49,22 @@ public class DoubleR2kStruct extends IRIOFixedData implements IR2kInterpretable 
     }
 
     @Override
+    public MemoryishR getBuffer() {
+        return new ByteArrayMemoryish(getBufferCopy());
+    }
+
+    @Override
     public byte[] getBufferCopy() {
         try {
             return Double.toString(v).getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String decString() {
+        return Double.toString(v);
     }
 
     @Override

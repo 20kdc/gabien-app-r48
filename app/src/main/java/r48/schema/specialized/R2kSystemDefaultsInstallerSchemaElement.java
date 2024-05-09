@@ -169,7 +169,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
                     // Nobody expects tilesets to act the way they do on defaults, FIX IT.
                     // I was informed to set upper to false by default, and though I have done that for most tiles,
                     //  my having to do this is a natural consequence.
-                    RubyTable rt = new RubyTable(target.getIVar("@highpass_data").getBufferRW());
+                    RubyTable rt = new RubyTable(target.getIVar("@highpass_data").editUser());
                     rt.setTiletype(0, 0, 0, (short) 0x1F);
                     break;
                 case 3:
@@ -231,7 +231,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
     }
 
     private void initTable(IRIO instVarBySymbol) {
-        RubyTable rt = new RubyTable(instVarBySymbol.getBufferRW());
+        RubyTable rt = new RubyTable(instVarBySymbol.editUser());
         for (int i = 0; i < 0x90; i++)
             rt.setTiletype(i, 0, 0, (short) i);
     }

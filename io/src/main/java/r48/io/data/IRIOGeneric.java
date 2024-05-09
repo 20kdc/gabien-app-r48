@@ -55,6 +55,7 @@ public class IRIOGeneric extends IRIOData {
     // actual meaning depends on iVars.
     // For string-likes (f, "): Should be treated as immutable - replace strVal on change
     private DMBlob userVal;
+    private String strVal;
     private long fixnumVal;
     public final @NonNull Charset charset;
 
@@ -75,7 +76,8 @@ public class IRIOGeneric extends IRIOData {
         final HashMap<DMKey, IRIO> hashValC = (hashVal != null) ? (HashMap<DMKey, IRIO>) hashVal.clone() : null;
         final IRIO hashDefValC = hashDefVal;
         final IRIO[] arrValC = (arrVal != null) ? arrVal.clone() : null;
-        final DMBlob userValC = (userVal != null) ? userVal : null;
+        final DMBlob userValC = userVal;
+        final String strValC = strVal;
         final long fixnumValC = fixnumVal;
         return () -> {
             type = typeC;
@@ -85,7 +87,8 @@ public class IRIOGeneric extends IRIOData {
             hashVal = (hashValC != null) ? (HashMap<DMKey, IRIO>) hashValC.clone() : null;
             hashDefVal = hashDefValC;
             arrVal = (arrValC != null) ? arrValC.clone() : null;
-            userVal = (userValC != null) ? userValC : null;
+            userVal = userValC;
+            strVal = strValC;
             fixnumVal = fixnumValC;
         };
     }
@@ -104,6 +107,7 @@ public class IRIOGeneric extends IRIOData {
         hashDefVal = null;
         arrVal = null;
         userVal = null;
+        strVal = null;
         fixnumVal = 0;
         return this;
     }
@@ -130,19 +134,25 @@ public class IRIOGeneric extends IRIOData {
 
     @Override
     public IRIO setString(String s) {
-        return setString(s.getBytes(charset), charset);
+        setNull();
+        type = '"';
+        byte[] bytes = s.getBytes(charset);
+        userVal = new DMBlob(context, bytes);
+        strVal = new String(bytes, charset);
+        return this;
     }
 
     @Override
     public IRIO setString(byte[] s, Charset srcCharset) {
         if (!charset.equals(srcCharset)) {
-            s = new String(s, srcCharset).getBytes(charset);
+            return setString(new String(s, srcCharset));
         } else {
             s = s.clone();
         }
         setNull();
         type = '"';
         userVal = new DMBlob(context, s);
+        strVal = new String(s, charset);
         return this;
     }
 
@@ -156,6 +166,7 @@ public class IRIOGeneric extends IRIOData {
         setNull();
         type = 'f';
         userVal = new DMBlob(context, s.clone());
+        strVal = new String(s, charset);
         return this;
     }
 
@@ -332,6 +343,11 @@ public class IRIOGeneric extends IRIOData {
     }
 
     @Override
+    public String decString() {
+        return strVal;
+    }
+
+    @Override
     public MemoryishR getBuffer() {
         return userVal;
     }
@@ -342,7 +358,7 @@ public class IRIOGeneric extends IRIOData {
     }
 
     @Override
-    public MemoryishRW getBufferRW() {
+    public MemoryishRW editUser() {
         return userVal;
     }
 
@@ -350,6 +366,8 @@ public class IRIOGeneric extends IRIOData {
     public void putBuffer(byte[] data) {
         trackingWillChange();
         userVal = new DMBlob(context, data.clone());
+        if (type == '"' || type == 'f')
+            strVal = new String(data, charset);
     }
 
     @Override

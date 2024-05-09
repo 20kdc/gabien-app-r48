@@ -211,10 +211,10 @@ public class IRIONullable<V extends IRIO> extends IRIOData {
     }
 
     @Override
-    public MemoryishRW getBufferRW() {
+    public MemoryishRW editUser() {
         if (nulled)
             throw new UnsupportedOperationException();
-        return target.getBufferRW();
+        return target.editUser();
     }
 
     @Override

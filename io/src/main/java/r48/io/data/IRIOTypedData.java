@@ -115,7 +115,7 @@ public abstract class IRIOTypedData extends IRIOData {
     }
 
     @Override
-    public MemoryishRW getBufferRW() {
+    public MemoryishRW editUser() {
         throw new UnsupportedOperationException();
     }
 

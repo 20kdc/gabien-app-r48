@@ -27,7 +27,7 @@ public abstract class RORIO {
 
     public abstract RORIO getIVar(String sym);
 
-    // '"'
+    // '"', 'f'
     public abstract Charset getBufferEnc();
 
     // ':', 'o'
@@ -48,9 +48,10 @@ public abstract class RORIO {
 
     // '"', 'f', 'u', 'l'
 
-    // For 'u', the buffer must be mutable ; for others it is variable.
+    // Gets the buffer.
     public abstract MemoryishR getBuffer();
-    // can be fast-path'd
+
+    // can be fast-path'd depending on what the "primary" storage is
     public byte[] getBufferCopy() {
         MemoryishR mr = getBuffer();
         return mr.getBulk(0, (int) mr.length);

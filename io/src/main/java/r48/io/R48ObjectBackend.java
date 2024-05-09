@@ -8,6 +8,7 @@
 package r48.io;
 
 import gabien.uslx.io.HexByteEncoding;
+import gabien.uslx.io.MemoryishR;
 import gabien.uslx.vfs.FSBackend;
 import r48.io.data.DMContext;
 import r48.io.data.DMKey;
@@ -253,9 +254,9 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         } else if (b == 'i') {
             save32(dis, rio.getFX());
         } else if ((b == '"') || (b == 'f')) {
-            byte[] data = rio.getBufferCopy();
+            MemoryishR data = rio.getBuffer();
             save32(dis, data.length);
-            dis.write(data);
+            data.getBulk(dis);
         } else if (b == 'l') {
             byte[] dat = rio.getBufferCopy();
             dis.write(dat[0]);
@@ -267,9 +268,9 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                 dis.write(0);
         } else if (b == 'u') {
             saveSymbol(dis, rio.getSymbol(), caches);
-            byte[] data = rio.getBufferCopy();
+            MemoryishR data = rio.getBuffer();
             save32(dis, data.length);
-            dis.write(data);
+            data.getBulk(dis);
         } else if ((b != 'T') && (b != 'F') && (b != '0')) {
             throw new IOException("Cannot save " + rio.getType() + " : " + ((char) rio.getType()));
         }
