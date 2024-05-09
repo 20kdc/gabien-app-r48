@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.io.data.obj.DM2Context;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.DMContext;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.dm2chk.DM2LcfBinding;
@@ -19,14 +19,14 @@ import r48.io.r2k.dm2chk.DM2R2kObject;
  * Created on 06/06/17.
  */
 public class BAD extends DM2R2kObject {
-    @DM2FXOBinding("@move_type") @DM2LcfBinding(5) @DMCXInteger(0)
+    @DMFXOBinding("@move_type") @DM2LcfBinding(5) @DMCXInteger(0)
     public IntegerR2kStruct moveType;
-    @DM2FXOBinding("@has_afterimage") @DM2LcfBinding(6) @DMCXInteger(0)
+    @DMFXOBinding("@has_afterimage") @DM2LcfBinding(6) @DMCXInteger(0)
     public IntegerR2kStruct aiType;
-    @DM2FXOBinding("@pose") @DM2LcfBinding(14) @DMCXInteger(-1)
+    @DMFXOBinding("@pose") @DM2LcfBinding(14) @DMCXInteger(-1)
     public IntegerR2kStruct pose;
 
-    public BAD(DM2Context ctx) {
+    public BAD(DMContext ctx) {
         super(ctx, "RPG::BattlerAnimationData");
     }
 }

@@ -13,6 +13,9 @@ import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.uslx.io.MemoryishR;
+import gabien.uslx.io.MemoryishRW;
+
 /**
  * So, this has been through a long history.
  * It used to be called RubyIO and was the central hub for everything IO-related.
@@ -22,7 +25,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * Then finally a big revision has come along, which I'm going to call DM2.5, March 25th 2023.
  * Created December 27th, 2016.
  */
-public class IRIOGeneric extends IRIO {
+public class IRIOGeneric extends IRIOData {
 
     private static IRIO[] globalZero = new IRIO[0];
 
@@ -51,19 +54,51 @@ public class IRIOGeneric extends IRIO {
     private IRIO[] arrVal;
     // actual meaning depends on iVars.
     // For string-likes (f, "): Should be treated as immutable - replace strVal on change
-    private byte[] userVal;
+    private DMBlob userVal;
+    private String strVal;
     private long fixnumVal;
-    public final Charset charset;
+    public final @NonNull Charset charset;
 
-    public IRIOGeneric(@NonNull IDM3Context context, Charset cs) {
+    public IRIOGeneric(@NonNull DMContext context) {
         super(context);
-        charset = cs;
+        charset = context.encoding;
+    }
+
+    // ---- Save States ----
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Runnable saveState() {
+        final int typeC = type;
+        final String symValC = symVal;
+        final String[] iVarKeysC = (iVarKeys != null) ? iVarKeys.clone() : null;
+        final IRIO[] iVarValsC = (iVarVals != null) ? iVarVals.clone() : null;
+        final HashMap<DMKey, IRIO> hashValC = (hashVal != null) ? (HashMap<DMKey, IRIO>) hashVal.clone() : null;
+        final IRIO hashDefValC = hashDefVal;
+        final IRIO[] arrValC = (arrVal != null) ? arrVal.clone() : null;
+        final DMBlob userValC = userVal;
+        final String strValC = strVal;
+        final long fixnumValC = fixnumVal;
+        return () -> {
+            type = typeC;
+            symVal = symValC;
+            iVarKeys = (iVarKeysC != null) ? iVarKeysC.clone() : null;
+            iVarVals = (iVarValsC != null) ? iVarValsC.clone() : null;
+            hashVal = (hashValC != null) ? (HashMap<DMKey, IRIO>) hashValC.clone() : null;
+            hashDefVal = hashDefValC;
+            arrVal = (arrValC != null) ? arrValC.clone() : null;
+            userVal = userValC;
+            strVal = strValC;
+            fixnumVal = fixnumValC;
+        };
     }
 
     // ---- Value creators ----
 
     @Override
     public IRIO setNull() {
+        // all other set functions call this
+        trackingWillChange();
         type = '0';
         symVal = null;
         iVarKeys = null;
@@ -72,6 +107,7 @@ public class IRIOGeneric extends IRIO {
         hashDefVal = null;
         arrVal = null;
         userVal = null;
+        strVal = null;
         fixnumVal = 0;
         return this;
     }
@@ -98,20 +134,25 @@ public class IRIOGeneric extends IRIO {
 
     @Override
     public IRIO setString(String s) {
-        return setString(s.getBytes(charset), charset);
+        setNull();
+        type = '"';
+        byte[] bytes = s.getBytes(charset);
+        userVal = new DMBlob(context, bytes);
+        strVal = new String(bytes, charset);
+        return this;
     }
 
     @Override
     public IRIO setString(byte[] s, Charset srcCharset) {
-        if (!charset.equals(srcCharset))
-            s = new String(s, srcCharset).getBytes(charset);
+        if (!charset.equals(srcCharset)) {
+            return setString(new String(s, srcCharset));
+        } else {
+            s = s.clone();
+        }
         setNull();
         type = '"';
-        userVal = s;
-        rmIVar("jEncoding");
-        rmIVar("encoding");
-        rmIVar("E");
-        userVal = s;
+        userVal = new DMBlob(context, s);
+        strVal = new String(s, charset);
         return this;
     }
 
@@ -124,7 +165,8 @@ public class IRIOGeneric extends IRIO {
     public IRIO setFloat(byte[] s) {
         setNull();
         type = 'f';
-        userVal = s;
+        userVal = new DMBlob(context, s.clone());
+        strVal = new String(s, charset);
         return this;
     }
 
@@ -140,7 +182,7 @@ public class IRIOGeneric extends IRIO {
         setNull();
         type = 'u';
         symVal = s;
-        userVal = data;
+        userVal = new DMBlob(context, data.clone());
         return this;
     }
 
@@ -157,7 +199,7 @@ public class IRIOGeneric extends IRIO {
         setNull();
         type = '}';
         hashVal = new HashMap<>();
-        hashDefVal = new IRIOGeneric(context, charset);
+        hashDefVal = new IRIOGeneric(context);
         return this;
     }
 
@@ -175,7 +217,7 @@ public class IRIOGeneric extends IRIO {
         if (length != 0)
             arrVal = new IRIO[length];
         for (int i = 0; i < length; i++)
-            arrVal[i] = new IRIOGeneric(context, charset);
+            arrVal[i] = new IRIOGeneric(context);
         return this;
     }
 
@@ -188,7 +230,7 @@ public class IRIOGeneric extends IRIO {
     public IRIO setBignum(byte[] data) {
         setNull();
         type = 'l';
-        userVal = data;
+        userVal = new DMBlob(context, data.clone());
         return this;
     }
 
@@ -213,6 +255,7 @@ public class IRIOGeneric extends IRIO {
             return;
         for (int i = 0; i < iVarKeys.length; i++) {
             if (iVarKeys[i].equals(s)) {
+                trackingWillChange();
                 String[] oldKeys = iVarKeys;
                 IRIO[] oldVals = iVarVals;
                 iVarKeys = new String[oldKeys.length - 1];
@@ -236,6 +279,8 @@ public class IRIOGeneric extends IRIO {
 
     @Override
     public void removeHashVal(DMKey rubyIO) {
+        // addHashVal expects this unconditional call
+        trackingWillChange();
         hashVal.remove(rubyIO);
     }
 
@@ -251,7 +296,8 @@ public class IRIOGeneric extends IRIO {
     @Override
     public IRIO addIVar(String sym) {
         rmIVar(sym);
-        IRIOGeneric rio = new IRIOGeneric(context, charset);
+        trackingWillChange();
+        IRIOGeneric rio = new IRIOGeneric(context);
         if (iVarKeys == null) {
             iVarKeys = new String[] {sym};
             iVarVals = new IRIO[] {rio};
@@ -297,13 +343,31 @@ public class IRIOGeneric extends IRIO {
     }
 
     @Override
-    public byte[] getBuffer() {
+    public String decString() {
+        return strVal;
+    }
+
+    @Override
+    public MemoryishR getBuffer() {
+        return userVal;
+    }
+
+    @Override
+    public byte[] getBufferCopy() {
+        return userVal.data.clone();
+    }
+
+    @Override
+    public MemoryishRW editUser() {
         return userVal;
     }
 
     @Override
     public void putBuffer(byte[] data) {
-        userVal = data;
+        trackingWillChange();
+        userVal = new DMBlob(context, data.clone());
+        if (type == '"' || type == 'f')
+            strVal = new String(data, charset);
     }
 
     @Override
@@ -318,7 +382,8 @@ public class IRIOGeneric extends IRIO {
 
     @Override
     public IRIO addAElem(int i) {
-        IRIO rio = new IRIOGeneric(context, charset);
+        trackingWillChange();
+        IRIO rio = new IRIOGeneric(context);
         IRIO[] old = arrVal;
         IRIO[] newArr = new IRIO[old.length + 1];
         System.arraycopy(old, 0, newArr, 0, i);
@@ -330,6 +395,7 @@ public class IRIOGeneric extends IRIO {
 
     @Override
     public void rmAElem(int i) {
+        trackingWillChange();
         IRIO[] old = arrVal;
         IRIO[] newArr = new IRIO[old.length - 1];
         System.arraycopy(old, 0, newArr, 0, i);
@@ -344,8 +410,9 @@ public class IRIOGeneric extends IRIO {
 
     @Override
     public IRIO addHashVal(DMKey key) {
+        // already calls trackingWillChange
         removeHashVal(key);
-        IRIO rt = new IRIOGeneric(context, charset);
+        IRIO rt = new IRIOGeneric(context);
         hashVal.put(key, rt);
         return rt;
     }

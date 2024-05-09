@@ -215,33 +215,24 @@ public abstract class MapSystem extends App.Svc {
         public static MapViewState fromRT(StuffRenderer stuffRenderer, String underscoreMapObjectId, String[] ex, final IRIO its, final String str, final boolean readOnly, IEventAccess iea) {
             // This happens once in a blue moon, it's fine
             final IRIO sz = PathSyntax.compile(stuffRenderer.app, str).getRW(its);
-            final RubyTable rt = new RubyTable(sz.getBuffer());
-            return new MapViewState(stuffRenderer, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, new Function<int[], Short>() {
-                @Override
-                public Short apply(int[] ints) {
-                    return rt.getTiletype(ints[0], ints[1], ints[2]);
-                }
-            }, new Consumer<int[]>() {
-                @Override
-                public void accept(int[] ints) {
-                    if (readOnly)
-                        return;
-                    rt.setTiletype(ints[0], ints[1], ints[2], (short) ints[3]);
-                }
-            }, new Consumer<int[]>() {
-                @Override
-                public void accept(int[] ints) {
-                    if (readOnly)
-                        return;
-                    int[] defs = new int[ints.length - 2];
-                    for (int i = 0; i < defs.length; i++)
-                        defs[i] = ints[i + 2];
-                    if (its.getIVar("@width") != null)
-                        its.getIVar("@width").setFX(ints[0]);
-                    if (its.getIVar("@height") != null)
-                        its.getIVar("@height").setFX(ints[1]);
-                    sz.putBuffer(rt.resize(ints[0], ints[1], defs).innerBytes);
-                }
+            final RubyTable rt = new RubyTable(sz.editUser());
+            return new MapViewState(stuffRenderer, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, (ints) -> {
+                return rt.getTiletype(ints[0], ints[1], ints[2]);
+            }, (ints) -> {
+                if (readOnly)
+                    return;
+                rt.setTiletype(ints[0], ints[1], ints[2], (short) ints[3]);
+            }, (ints) -> {
+                if (readOnly)
+                    return;
+                int[] defs = new int[ints.length - 2];
+                for (int i = 0; i < defs.length; i++)
+                    defs[i] = ints[i + 2];
+                if (its.getIVar("@width") != null)
+                    its.getIVar("@width").setFX(ints[0]);
+                if (its.getIVar("@height") != null)
+                    its.getIVar("@height").setFX(ints[1]);
+                sz.putBuffer(rt.resize(ints[0], ints[1], defs).data);
             }, iea);
         }
 

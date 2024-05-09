@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj;
 
-import r48.io.data.obj.DM2Context;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.DMContext;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.dm2chk.DM2LcfBinding;
@@ -18,10 +18,10 @@ import r48.io.r2k.dm2chk.DM2LcfBinding;
  * Created on 31/05/17, based on Sound on December 6th 2018 (see Sound)
  */
 public class Music extends Sound {
-    @DM2FXOBinding("@fadeTime") @DM2LcfBinding(2) @DMCXInteger(0)
+    @DMFXOBinding("@fadeTime") @DM2LcfBinding(2) @DMCXInteger(0)
     public IntegerR2kStruct fadeTime;
 
-    public Music(DM2Context ctx) {
+    public Music(DMContext ctx) {
         super(ctx, "RPG::Music");
     }
 }

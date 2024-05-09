@@ -5,22 +5,15 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map;
+package r48.io.data.obj;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Responsible for making UIMapView update less.
- * Created on 04/06/17.
+ * Created on December 04, 2018.
  */
-public class MapViewUpdateScheduler {
-    public boolean forceNextUpdate = true;
-    public String lastConfig = "";
-
-    public boolean needsUpdate(String config) {
-        if (forceNextUpdate || (!lastConfig.equals(config))) {
-            lastConfig = config;
-            forceNextUpdate = false;
-            return true;
-        }
-        return false;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+public @interface DMFXOBinding {
+    String value();
 }

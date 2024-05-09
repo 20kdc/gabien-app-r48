@@ -12,13 +12,25 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Created on November 24, 2018.
  */
-public class IRIOFixnum extends IRIOFixed {
+public class IRIOFixnum extends IRIOFixedData {
+    private long val;
 
-    public long val;
-
-    public IRIOFixnum(@NonNull IDM3Context context, long t) {
+    public IRIOFixnum(@NonNull DMContext context, long t) {
         super(context, 'i');
         val = t;
+    }
+
+    /**
+     * This is just so DMCX works properly...
+     */
+    public IRIOFixnum(@NonNull DMContext context, int t) {
+        this(context, (long) t);
+    }
+
+    @Override
+    public Runnable saveState() {
+        final long saved = val;
+        return () -> val = saved;
     }
 
     @Override
@@ -43,6 +55,7 @@ public class IRIOFixnum extends IRIOFixed {
 
     @Override
     public IRIO setFX(long fx) {
+        trackingWillChange();
         val = fx;
         return this;
     }

@@ -52,6 +52,10 @@ public class GrandWindowManagerUtils {
     public UIElement[] getAllWindows() {
         App app = getApp();
         LinkedList<UIElement> ll = new LinkedList<UIElement>();
+        if (app == null)
+            throw new GrandExecutionError("No App");
+        if (app.ui == null)
+            throw new GrandExecutionError("No AppUI");
         if (app.ui.wm == null)
             throw new GrandExecutionError("No window manager");
         for (UITabBar.Tab uww : app.ui.wm.tabPane.getTabs())

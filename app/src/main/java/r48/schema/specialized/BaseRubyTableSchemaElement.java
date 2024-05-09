@@ -67,14 +67,14 @@ public abstract class BaseRubyTableSchemaElement extends SchemaElement.Leaf {
     
         boolean changeOccurred = false;
         if (needChange) {
-            target.setUser("Table", new RubyTable(dimensions, defW, defH, planes, defVals).innerBytes);
+            target.setUser("Table", RubyTable.initNewTable(dimensions, defW, defH, planes, defVals).data);
             changeOccurred = true;
         }
     
         // Fix up pre v1.0-2 tables (would have existed from the start if I knew about it, but...)
-        RubyTable rt = new RubyTable(target.getBuffer());
+        RubyTable rt = new RubyTable(target.editUser());
         if (rt.dimensionCount != dimensions) {
-            rt.innerTable.putInt(0, dimensions);
+            rt.innerTableW.set32LE(0, dimensions);
             changeOccurred = true;
         }
         if (changeOccurred)

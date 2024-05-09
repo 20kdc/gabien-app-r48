@@ -7,14 +7,17 @@
 
 package r48.io;
 
+import r48.io.data.DMContext;
 import r48.io.data.DMKey;
-import r48.io.data.IDM3Context;
+import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+
+import gabien.uslx.io.MemoryishR;
 
 /**
  * Support for the mostly ASCII 'IMI' format
@@ -98,12 +101,12 @@ public class IMIUtils {
                 } else {
                     // check data
                     boolean dataEq = true;
-                    byte[] suv = source.getBuffer();
-                    byte[] duv = target.getBuffer();
+                    MemoryishR suv = source.getBuffer();
+                    MemoryishR duv = target.getBuffer();
                     if (suv.length == duv.length) {
                         for (int i = 0; i < suv.length; i++) {
-                            if (suv[i] != duv[i]) {
-                                dataEq = true;
+                            if (suv.getS8(i) != duv.getS8(i)) {
+                                dataEq = false;
                                 break;
                             }
                         }
@@ -349,6 +352,33 @@ public class IMIUtils {
                 dos.writeBytes(b);
             } else {
                 dos.writeByte(data[i]);
+            }
+        }
+        dos.writeByte('\"');
+    }
+
+    public static void writeIMIStringBody(DataOutputStream dos, MemoryishR data, boolean binary) throws IOException {
+        //dos.writeByte('\"'); // This is added by the caller.
+        for (int i = 0; i < data.length; i++) {
+            boolean escape = binary;
+            byte b = data.getS8(i);
+            if (b < 32) {
+                escape = true;
+            } else if (b == '\"') {
+                escape = true;
+            } else if (b == '\\') {
+                escape = true;
+            }
+            if (escape) {
+                String bx = Integer.toHexString(b & 0xFF);
+                if (bx.length() == 1) {
+                    bx = "\\0" + bx;
+                } else {
+                    bx = "\\" + bx;
+                }
+                dos.writeBytes(bx);
+            } else {
+                dos.writeByte(b);
             }
         }
         dos.writeByte('\"');
@@ -604,7 +634,7 @@ public class IMIUtils {
                     }
                     break;
                 case '>':
-                    tmp2 = new IRIOGeneric(IDM3Context.Null.DISPOSABLE, StandardCharsets.UTF_8);
+                    tmp2 = new IRIOGeneric(new DMContext(DMChangeTracker.Null.DISPOSABLE, StandardCharsets.UTF_8));
                     runIMISegment(inp, tmp2);
                     if (obj.getType() == '[') {
                         if (tmp2.getType() != 'i')
@@ -628,7 +658,7 @@ public class IMIUtils {
                             }
                             break;
                         case '>':
-                            tmp2 = new IRIOGeneric(IDM3Context.Null.DISPOSABLE, StandardCharsets.UTF_8);
+                            tmp2 = new IRIOGeneric(new DMContext(DMChangeTracker.Null.DISPOSABLE, StandardCharsets.UTF_8));
                             runIMISegment(inp, tmp2);
                             if (obj.getType() == '[') {
                                 if (tmp2.getType() != 'i')

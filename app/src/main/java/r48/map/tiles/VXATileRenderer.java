@@ -21,6 +21,7 @@ import gabien.uslx.append.DepsLocker;
 import gabien.uslx.append.Rect;
 import r48.App;
 import r48.RubyTable;
+import r48.RubyTableR;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;
@@ -36,7 +37,7 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
 
     private IRIO tileset;
 
-    public RubyTable flags;
+    public RubyTableR flags;
 
     private final DepsLocker depsLocker = new DepsLocker();
     private ITexRegion[] tilesetReg;
@@ -59,7 +60,7 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
         // If the tileset's null, then just give up.
         // The tileset being/not being null is an implementation detail anyway.
         if (tileset != null) {
-            flags = new RubyTable(tileset.getIVar("@flags").getBuffer());
+            flags = new RubyTableR(tileset.getIVar("@flags").getBuffer());
             IRIO amNames = tileset.getIVar("@tileset_names");
             IImage[] tilesetMaps = new IImage[9];
             for (int i = 0; i < tilesetMaps.length; i++) {

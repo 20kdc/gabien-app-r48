@@ -8,7 +8,7 @@
 package r48.map.drawlayers;
 
 import r48.App;
-import r48.RubyTable;
+import r48.RubyTableR;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -37,7 +37,7 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
 
     private static final int[] layerPreference = new int[] {0, 1, 2};
 
-    public RXPAccurateDrawLayer(RubyTable tbl, IEventAccess eventList, XPTileRenderer tils, RMEventGraphicRenderer ev) {
+    public RXPAccurateDrawLayer(RubyTableR tbl, IEventAccess eventList, XPTileRenderer tils, RMEventGraphicRenderer ev) {
         super(tils.app, tbl, tbl.planeCount);
         tiles = tils;
         events = ev;
@@ -86,7 +86,7 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
 
     // MKXP bounds between 0 and 5, this is used for optimisation but is otherwise not relied upon by this code.
     private int getTIDPriority(short tid) {
-        RubyTable rts = tiles.priorities;
+        RubyTableR rts = tiles.priorities;
         if (rts == null)
             return 0;
         if (tid < 0)

@@ -10,8 +10,9 @@ package r48.io.r2k.struct;
 import r48.io.IntArrayIterable;
 import r48.io.IntUtils;
 import r48.io.data.*;
-import r48.io.data.obj.DM2Context;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMCXInteger;
+import r48.io.data.obj.DMCXObject;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
@@ -23,17 +24,19 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import gabien.uslx.io.MemoryishR;
+
 /**
  * A MoveCommand! It lets stuff move.
  * Created on 02/06/17.
  */
 public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
-    @DM2FXOBinding("@code")
+    @DMFXOBinding("@code") @DMCXInteger(0)
     public IRIOFixnum code;
-    @DM2FXOBinding("@parameters")
+    @DMFXOBinding("@parameters") @DMCXObject
     public ParameterArray parameters;
 
-    public MoveCommand(DM2Context ctx) {
+    public MoveCommand(DMContext ctx) {
         super(ctx, "RPG::MoveCommand");
     }
 
@@ -50,7 +53,7 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         return para;
     }
 
-    public static MoveCommand[] fromEmbeddedData(DM2Context ctx, int[] remainingStream) {
+    public static MoveCommand[] fromEmbeddedData(DMContext ctx, int[] remainingStream) {
         try {
             return fromEmbeddedDataInside(ctx, remainingStream);
         } catch (Exception ex) {
@@ -90,17 +93,17 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         si.add(val);
     }
 
-    private static MoveCommand[] fromEmbeddedDataInside(DM2Context ctx, int[] remainingStream) {
+    private static MoveCommand[] fromEmbeddedDataInside(DMContext ctx, int[] remainingStream) {
         Iterator<Integer> si = new IntArrayIterable.ArrayIterator(remainingStream);
         LinkedList<MoveCommand> mcs = new LinkedList<MoveCommand>();
         while (si.hasNext()) {
             int code = si.next();
             MoveCommand mc = new MoveCommand(ctx);
-            mc.code.val = code;
+            mc.code.setFX(code);
 
-            IRIOFixnum a = new IRIOFixnum(ctx.dm3, 0);
-            IRIOFixnum b = new IRIOFixnum(ctx.dm3, 0);
-            IRIOFixnum c = new IRIOFixnum(ctx.dm3, 0);
+            IRIOFixnum a = new IRIOFixnum(ctx, 0);
+            IRIOFixnum b = new IRIOFixnum(ctx, 0);
+            IRIOFixnum c = new IRIOFixnum(ctx, 0);
 
             mc.parameters.arrVal = new IRIO[] {
                     a,
@@ -111,17 +114,18 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
             int mcc = moveCommandClassifier(code);
 
             if ((mcc & 0x100) != 0) {
-                mc.parameters.text.data = new byte[popMetaInteger(si)];
-                for (int i = 0; i < mc.parameters.text.data.length; i++)
-                    mc.parameters.text.data[i] = (byte) (int) si.next();
+                byte[] newText = new byte[popMetaInteger(si)];
+                for (int i = 0; i < newText.length; i++)
+                    newText[i] = (byte) (int) si.next();
+                mc.parameters.text.putBuffer(newText);
             }
 
             if ((mcc & 0xFF) > 0)
-                a.val = popMetaInteger(si);
+                a.setFX(popMetaInteger(si));
             if ((mcc & 0xFF) > 1)
-                b.val = popMetaInteger(si);
+                b.setFX(popMetaInteger(si));
             if ((mcc & 0xFF) > 2)
-                c.val = popMetaInteger(si);
+                c.setFX(popMetaInteger(si));
             if ((mcc & 0xFF) > 3)
                 throw new RuntimeException("invalid MCC");
             mcs.add(mc);
@@ -133,15 +137,16 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         LinkedList<Integer> res = new LinkedList<Integer>();
         for (IRIO mci : moveCommands.arrVal) {
             MoveCommand mc = (MoveCommand) mci;
-            res.add((int) mc.code.val);
+            int codeVal = (int) mc.code.getFX();
+            res.add(codeVal);
 
-            int mcc = moveCommandClassifier((int) mc.code.val);
+            int mcc = moveCommandClassifier(codeVal);
 
             if ((mcc & 0x100) != 0) {
-                byte[] text = mc.parameters.text.data;
-                addMetaInteger(res, text.length);
-                for (byte b : text)
-                    res.add(((int) b) & 0xFF);
+                MemoryishR text = mc.parameters.text.getBuffer();
+                addMetaInteger(res, (int) text.length);
+                for (int i = 0; i < text.length; i++)
+                    res.add(text.getU8(i));
             }
 
             if ((mcc & 0xFF) > 0)
@@ -162,7 +167,8 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        code.val = R2kUtil.readLcfVLI(bais);
+        int codeVal = R2kUtil.readLcfVLI(bais);
+        code.setFX(codeVal);
         addIVar("@parameters");
         IRIOFixnum a = new IRIOFixnum(context, 0);
         IRIOFixnum b = new IRIOFixnum(context, 0);
@@ -174,10 +180,10 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
                 c
         };
 
-        int mcc = moveCommandClassifier((int) code.val);
+        int mcc = moveCommandClassifier(codeVal);
 
         if ((mcc & 0x100) != 0)
-            parameters.text.data = IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais));
+            parameters.text.putBuffer(IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais)));
 
         for (int i = 0; i < (mcc & 0xFF); i++)
             parameters.arrVal[i].setFX(R2kUtil.readLcfVLI(bais));
@@ -190,25 +196,17 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
 
     @Override
     public void exportData(OutputStream baos) throws IOException {
-        R2kUtil.writeLcfVLI(baos, (int) code.val);
+        int codeVal = (int) code.getFX();
+        R2kUtil.writeLcfVLI(baos, codeVal);
 
-        int mcc = moveCommandClassifier((int) code.val);
+        int mcc = moveCommandClassifier(codeVal);
 
         if ((mcc & 0x100) != 0) {
-            byte[] data = parameters.text.data;
-            R2kUtil.writeLcfVLI(baos, data.length);
-            baos.write(data);
+            MemoryishR data = parameters.text.getBuffer();
+            R2kUtil.writeLcfVLI(baos, (int) data.length);
+            data.getBulk(baos);
         }
         for (int i = 0; i < (mcc & 0xFF); i++)
             R2kUtil.writeLcfVLI(baos, (int) parameters.arrVal[i].getFX());
-    }
-
-    @Override
-    public IRIO addIVar(String sym) {
-        if (sym.equals("@code"))
-            return code = new IRIOFixnum(context, 0);
-        if (sym.equals("@parameters"))
-            return parameters = new ParameterArray(dm2Ctx);
-        return null;
     }
 }

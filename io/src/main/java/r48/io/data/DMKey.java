@@ -9,6 +9,9 @@ package r48.io.data;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import gabien.uslx.io.ByteArrayMemoryish;
+import gabien.uslx.io.MemoryishR;
+
 /**
  * Represents a hash key.
  * Note that this particular RORIO variant actually works as a hash key.
@@ -18,6 +21,7 @@ public class DMKey extends RORIO {
     public static final DMKey NULL = new DMKey(Subtype.Null, 0, null, null, null);
     public static final DMKey TRUE = new DMKey(Subtype.True, 0, null, null, null);
     public static final DMKey FALSE = new DMKey(Subtype.False, 0, null, null, null);
+    private static final DMContext EMBEDDED_CONTEXT = new DMContext(DMChangeTracker.Null.DMKEY_EMBEDDED, StandardCharsets.UTF_8);
 
     private final Subtype st;
     // i
@@ -42,7 +46,7 @@ public class DMKey extends RORIO {
         if (t == 'i') {
             return of(src.getFX());
         } else if (t == 'l') {
-            return new DMKey(Subtype.Bignum, 0, src.getBuffer().clone(), null, null);
+            return new DMKey(Subtype.Bignum, 0, src.getBufferCopy(), null, null);
         } else if (t == '"') {
             return ofStr(src.decString());
         } else if (t == 'f') {
@@ -56,7 +60,7 @@ public class DMKey extends RORIO {
         } else if (t == '0') {
             return NULL;
         } else {
-            IRIOGeneric refVal = new IRIOGeneric(IDM3Context.Null.DMKEY_EMBEDDED, StandardCharsets.UTF_8);
+            IRIOGeneric refVal = new IRIOGeneric(EMBEDDED_CONTEXT);
             refVal.setDeepClone(src);
             return new DMKey(Subtype.Reference, 0, null, null, refVal);
         }
@@ -179,12 +183,21 @@ public class DMKey extends RORIO {
     }
 
     @Override
-    public byte[] getBuffer() {
+    public MemoryishR getBuffer() {
+        if (st == Subtype.String || st == Subtype.Float)
+            return new ByteArrayMemoryish(strVal.getBytes(StandardCharsets.UTF_8));
+        if (st == Subtype.Bignum)
+            return new ByteArrayMemoryish(flVal);
+        return refVal.getBuffer();
+    }
+
+    @Override
+    public byte[] getBufferCopy() {
         if (st == Subtype.String || st == Subtype.Float)
             return strVal.getBytes(StandardCharsets.UTF_8);
         if (st == Subtype.Bignum)
-            return flVal;
-        return refVal.getBuffer();
+            return flVal.clone();
+        return refVal.getBufferCopy();
     }
 
     @Override

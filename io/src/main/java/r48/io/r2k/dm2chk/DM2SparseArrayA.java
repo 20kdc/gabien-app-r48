@@ -7,10 +7,10 @@
 
 package r48.io.r2k.dm2chk;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedArray;
 import r48.io.data.IRIONullable;
-import r48.io.data.obj.DM2Context;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
 
@@ -29,8 +29,8 @@ import java.util.function.Supplier;
 public class DM2SparseArrayA<V extends IRIO> extends IRIOFixedArray<IRIONullable<V>> implements IR2kInterpretable {
     public final Supplier<V> constructor;
 
-    public DM2SparseArrayA(DM2Context dm2, Supplier<V> cons) {
-        super(dm2.dm3);
+    public DM2SparseArrayA(DMContext dm2, Supplier<V> cons) {
+        super(dm2);
         constructor = cons;
     }
 

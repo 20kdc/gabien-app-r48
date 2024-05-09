@@ -13,9 +13,10 @@ import java.util.function.Supplier;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.*;
+import gabien.uslx.io.ByteArrayMemoryish;
 import r48.App;
 import r48.RubyTable;
-import r48.io.data.IDM3Context;
+import r48.RubyTableR;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.SchemaElement;
@@ -59,9 +60,9 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
         return frameSource.get();
     }
 
-    private RubyTable getTable() {
+    private RubyTableR getTable() {
         IRIO frameData = getFrame().getIVar("@cell_data");
-        return new RubyTable(frameData.getBuffer());
+        return new RubyTableR(frameData.getBuffer());
     }
 
     @Override
@@ -92,16 +93,17 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
     public void deleteCell(int i2) {
         IRIO frame = getFrame();
         IRIO frameData = frame.getIVar("@cell_data");
-        RubyTable table = new RubyTable(frameData.getBuffer());
+        RubyTable table = new RubyTable(frameData.editUser());
         frame.getIVar("@cell_max").setFX(table.width - 1);
-        RubyTable newTable = new RubyTable(3, table.width - 1, 8, 1, new int[1]);
+        ByteArrayMemoryish newTableBAM = RubyTable.initNewTable(3, table.width - 1, 8, 1, new int[1]);
+        RubyTable newTable = new RubyTable(newTableBAM);
         for (int p = 0; p < 8; p++) {
             for (int j = 0; j < i2; j++)
                 newTable.setTiletype(j, p, 0, table.getTiletype(j, p, 0));
             for (int j = i2 + 1; j < table.width; j++)
                 newTable.setTiletype(j - 1, p, 0, table.getTiletype(j, p, 0));
         }
-        frameData.putBuffer(newTable.innerBytes);
+        frameData.putBuffer(newTableBAM.data);
         updateNotify.run();
     }
 
@@ -114,9 +116,10 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
     public void addCell(int i2) {
         IRIO frame = getFrame();
         IRIO frameData = frame.getIVar("@cell_data");
-        RubyTable table = new RubyTable(frameData.getBuffer());
+        RubyTable table = new RubyTable(frameData.editUser());
         frame.getIVar("@cell_max").setFX(table.width + 1);
-        RubyTable newTable = new RubyTable(3, table.width + 1, 8, 1, new int[1]);
+        ByteArrayMemoryish newTableBAM = RubyTable.initNewTable(3, table.width + 1, 8, 1, new int[1]);
+        RubyTable newTable = new RubyTable(newTableBAM);
         short[] initValues = new short[] {
                 1, 0, 0, 100, 0, 0, 255, 1
         };
@@ -127,7 +130,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
                 newTable.setTiletype(j + 1, p, 0, table.getTiletype(j, p, 0));
             newTable.setTiletype(i2, p, 0, initValues[p]);
         }
-        frameData.putBuffer(newTable.innerBytes);
+        frameData.putBuffer(newTableBAM.data);
         updateNotify.run();
     }
 
@@ -196,16 +199,17 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
         SchemaElement se = new MagicalBindingSchemaElement(app, new IMagicalBinder() {
             @Override
             public IRIO targetToBoundNCache(IRIO target) {
-                short val = new RubyTable(target.getBuffer()).getTiletype(ct, i, 0);
-                return new IRIOGeneric(IDM3Context.Null.DELETE_ME, app.encoding).setFX(val);
+                short val = new RubyTableR(target.getBuffer()).getTiletype(ct, i, 0);
+                return new IRIOGeneric(app.ctxDelmeAppEncoding).setFX(val);
             }
 
             @Override
             public boolean applyBoundToTarget(IRIO bound, IRIO target) {
-                short s = new RubyTable(target.getBuffer()).getTiletype(ct, i, 0);
+                RubyTable rt = new RubyTable(target.editUser());
+                short s = rt.getTiletype(ct, i, 0);
                 short s2 = (short) bound.getFX();
                 if (s != s2) {
-                    new RubyTable(target.getBuffer()).setTiletype(ct, i, 0, s2);
+                    rt.setTiletype(ct, i, 0, s2);
                     return true;
                 }
                 return false;
@@ -226,13 +230,13 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
     @Override
     public IGenposTweeningProp getCellPropTweening(int ct, int i) {
         if (i < 7)
-            return new TableGenposTweeningProp(new RubyTable(getFrame().getIVar("@cell_data").getBuffer()), ct, i, 0);
+            return new TableGenposTweeningProp(new RubyTable(getFrame().getIVar("@cell_data").editUser()), ct, i, 0);
         return null;
     }
 
     @Override
     public void moveCell(int ct, Function<Integer, Integer> x, Function<Integer, Integer> y) {
-        RubyTable rt = new RubyTable(getFrame().getIVar("@cell_data").getBuffer());
+        RubyTable rt = new RubyTable(getFrame().getIVar("@cell_data").editUser());
         rt.setTiletype(ct, 1, 0, (short) ((int) x.apply((int) rt.getTiletype(ct, 1, 0))));
         rt.setTiletype(ct, 2, 0, (short) ((int) y.apply((int) rt.getTiletype(ct, 2, 0))));
         updateNotify.run();
@@ -254,7 +258,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
 
     @Override
     public Rect getCellSelectionIndicator(int i) {
-        RubyTable rt = getTable();
+        RubyTableR rt = getTable();
         int x = (int) rt.getTiletype(i, 1, 0);
         int y = (int) rt.getTiletype(i, 2, 0);
         int scale = rt.getTiletype(i, 3, 0);
@@ -264,7 +268,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
 
     @Override
     public void drawCell(int i, int opx, int opy, IGrDriver igd) {
-        RubyTable rt = getTable();
+        RubyTableR rt = getTable();
         // Slightly less unfinished.
 
         // In the target versions, 7 is blend_type, 6 is opacity (0-255), 5 is mirror (int_boolean),

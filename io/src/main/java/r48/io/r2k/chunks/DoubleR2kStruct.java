@@ -8,43 +8,63 @@
 package r48.io.r2k.chunks;
 
 import r48.io.IntUtils;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixed;
-import r48.io.data.obj.DM2Context;
+import r48.io.data.IRIOFixedData;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-public class DoubleR2kStruct extends IRIOFixed implements IR2kInterpretable {
-    public double v;
+import gabien.uslx.io.ByteArrayMemoryish;
+import gabien.uslx.io.MemoryishR;
 
-    public DoubleR2kStruct(DM2Context dm2) {
-        super(dm2.dm3, 'f');
+public class DoubleR2kStruct extends IRIOFixedData implements IR2kInterpretable {
+    private double v;
+
+    public DoubleR2kStruct(DMContext dm2) {
+        super(dm2, 'f');
     }
 
-    public DoubleR2kStruct(DM2Context dm2, double v) {
+    public DoubleR2kStruct(DMContext dm2, double v) {
         this(dm2);
         this.v = v;
     }
 
-    public DoubleR2kStruct(DM2Context dm2, int v) {
+    public DoubleR2kStruct(DMContext dm2, int v) {
         this(dm2, (double) v);
     }
 
     @Override
+    public Runnable saveState() {
+        final double saved = v;
+        return () -> v = saved;
+    }
+
+    @Override
     public IRIO setFloat(byte[] s) {
+        trackingWillChange();
         v = Double.parseDouble(IntUtils.decodeRbFloat(s));
         return this;
     }
 
     @Override
-    public byte[] getBuffer() {
+    public MemoryishR getBuffer() {
+        return new ByteArrayMemoryish(getBufferCopy());
+    }
+
+    @Override
+    public byte[] getBufferCopy() {
         try {
             return Double.toString(v).getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String decString() {
+        return Double.toString(v);
     }
 
     @Override
@@ -54,12 +74,8 @@ public class DoubleR2kStruct extends IRIOFixed implements IR2kInterpretable {
 
     @Override
     public void putBuffer(byte[] data) {
+        trackingWillChange();
         v = Double.parseDouble(IntUtils.decodeRbFloat(data));
-    }
-
-    @Override
-    public String decString() {
-        return super.decString();
     }
 
     @Override

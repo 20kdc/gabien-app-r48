@@ -8,9 +8,9 @@
 package r48.io.r2k;
 
 import r48.io.IntUtils;
+import r48.io.data.DMContext;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.obj.DM2Context;
 import r48.io.r2k.chunks.IR2kInterpretable;
 
 import java.io.*;
@@ -90,12 +90,12 @@ public class R2kUtil {
     // Note that this is just for the xIO classes to decode magics.
     // You should NEVER, EVER, *EVER* be decoding these otherwise,
     //  instead passing the binary data directly to RIO
-    public static String decodeLcfString(DM2Context dm2c, byte[] data) {
+    public static String decodeLcfString(DMContext dm2c, byte[] data) {
         return new String(data, dm2c.encoding);
     }
 
     // See above for when to use this
-    public static byte[] encodeLcfString(DM2Context dm2c, String text) {
+    public static byte[] encodeLcfString(DMContext dm2c, String text) {
         return text.getBytes(dm2c.encoding);
     }
 
@@ -115,7 +115,7 @@ public class R2kUtil {
         mt = mt.getIVar("@__LCF__unknown");
         if (mt != null)
             for (DMKey k : mt.getHashKeys())
-                unknownChunks.put((int) k.getFX(), mt.getHashVal(k).getBuffer());
+                unknownChunks.put((int) k.getFX(), mt.getHashVal(k).getBufferCopy());
     }
 
     public static Supplier<byte[]> supplyBlank(final int i, final byte i1) {
@@ -128,25 +128,6 @@ public class R2kUtil {
                 return data;
             }
         };
-    }
-
-    public static Index[] mergeIndices(Index[] a, Index[] b) {
-        LinkedList<Index> lli = new LinkedList<Index>();
-        for (int i = 0; i < a.length; i++)
-            lli.add(a[i]);
-        for (int i = 0; i < b.length; i++)
-            lli.add(b[i]);
-        Collections.sort(lli, new Comparator<Index>() {
-            @Override
-            public int compare(Index index, Index t1) {
-                if (index.index < t1.index)
-                    return -1;
-                if (index.index > t1.index)
-                    return 1;
-                return 0;
-            }
-        });
-        return lli.toArray(new Index[0]);
     }
 
     public static <T> void importSparse(HashMap<Integer, T> map, Supplier<T> constructor, InputStream bais) throws IOException {

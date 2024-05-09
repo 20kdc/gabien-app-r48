@@ -9,9 +9,10 @@ package r48.io.r2k.struct;
 
 import r48.io.IntUtils;
 import r48.io.data.*;
-import r48.io.data.obj.DM2Context;
-import r48.io.data.obj.DM2FXOBinding;
-import r48.io.data.obj.DM2Optional;
+import r48.io.data.obj.DMCXInteger;
+import r48.io.data.obj.DMCXObject;
+import r48.io.data.obj.DMFXOBinding;
+import r48.io.data.obj.DMOptional;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
@@ -20,51 +21,45 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import gabien.uslx.io.MemoryishR;
+
 /**
  * What is this again?
  * Created on 31/05/17.
  */
 public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
-    @DM2FXOBinding("@code")
+    @DMFXOBinding("@code") @DMCXInteger(0)
     public IRIOFixnum code;
 
-    @DM2FXOBinding("@indent")
+    @DMFXOBinding("@indent") @DMCXInteger(0)
     public IRIOFixnum indent;
 
-    @DM2FXOBinding("@parameters")
+    @DMFXOBinding("@parameters") @DMCXObject
     public ParameterArray parameters;
 
-    @DM2Optional @DM2FXOBinding("@move_commands")
+    @DMOptional @DMFXOBinding("@move_commands")
     public IRIOFixedArray<MoveCommand> moveCommands;
 
-    public EventCommand(DM2Context ctx) {
+    public EventCommand(DMContext ctx) {
         super(ctx, "RPG::EventCommand");
     }
 
-    @Override
-    public IRIO addIVar(String sym) {
-        if (sym.equals("@code"))
-            return code = new IRIOFixnum(context, 0);
-        if (sym.equals("@indent"))
-            return indent = new IRIOFixnum(context, 0);
-        if (sym.equals("@parameters"))
-            return parameters = new ParameterArray(dm2Ctx);
-        if (sym.equals("@move_commands"))
-            return moveCommands = new IRIOFixedArray<MoveCommand>(context) {
-                @Override
-                public MoveCommand newValue() {
-                    return new MoveCommand(dm2Ctx);
-                }
-            };
-        return null;
+    public void moveCommands_add() {
+        moveCommands = new IRIOFixedArray<MoveCommand>(context) {
+            @Override
+            public MoveCommand newValue() {
+                return new MoveCommand(context);
+            }
+        };
     }
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        code.val = R2kUtil.readLcfVLI(bais);
-        indent.val = R2kUtil.readLcfVLI(bais);
-        parameters.text.data = IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais));
-        if (code.val != 11330) {
+        int codeVal = R2kUtil.readLcfVLI(bais);
+        code.setFX(codeVal);
+        indent.setFX(R2kUtil.readLcfVLI(bais));
+        parameters.text.putBuffer(IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais)));
+        if (codeVal != 11330) {
             moveCommands = null;
             parameters.arrVal = new IRIO[R2kUtil.readLcfVLI(bais)];
             for (int i = 0; i < parameters.arrVal.length; i++)
@@ -80,7 +75,7 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
             for (int i = 0; i < remainingStream.length; i++)
                 remainingStream[i] = R2kUtil.readLcfVLI(bais);
             addIVar("@move_commands");
-            moveCommands.arrVal = MoveCommand.fromEmbeddedData(dm2Ctx, remainingStream);
+            moveCommands.arrVal = MoveCommand.fromEmbeddedData(context, remainingStream);
         }
     }
 
@@ -91,11 +86,13 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
 
     @Override
     public void exportData(OutputStream baos) throws IOException {
-        R2kUtil.writeLcfVLI(baos, (int) code.val);
-        R2kUtil.writeLcfVLI(baos, (int) indent.val);
-        R2kUtil.writeLcfVLI(baos, parameters.text.data.length);
-        baos.write(parameters.text.data);
-        if (code.val != 11330) {
+        int codeVal = (int) code.getFX();
+        R2kUtil.writeLcfVLI(baos, (int) codeVal);
+        R2kUtil.writeLcfVLI(baos, (int) indent.getFX());
+        MemoryishR buf = parameters.text.getBuffer();
+        R2kUtil.writeLcfVLI(baos, (int) buf.length);
+        buf.getBulk(baos);
+        if (codeVal != 11330) {
             R2kUtil.writeLcfVLI(baos, parameters.arrVal.length);
             for (int i = 0; i < parameters.arrVal.length; i++)
                 R2kUtil.writeLcfVLI(baos, (int) parameters.arrVal[i].getFX());

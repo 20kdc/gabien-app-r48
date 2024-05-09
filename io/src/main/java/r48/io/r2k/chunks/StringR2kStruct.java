@@ -8,48 +8,78 @@
 package r48.io.r2k.chunks;
 
 import r48.io.IntUtils;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixed;
-import r48.io.data.obj.DM2Context;
+import r48.io.data.IRIOFixedData;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import gabien.uslx.io.ByteArrayMemoryish;
+import gabien.uslx.io.MemoryishR;
+
 /**
  * the difficulty is getting this stuff into memory...
  * (later) and out again.
  * Created on 31/05/17.
  */
-public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
-    public byte[] data = new byte[0];
-    public final Charset encoding;
+public class StringR2kStruct extends IRIOFixedData implements IR2kInterpretable {
+    private byte[] data;
+    private ByteArrayMemoryish dataBAM;
+    private String dataDecoded;
+    private final Charset encoding;
 
-    public StringR2kStruct(DM2Context ctx) {
-        super(ctx.dm3, '"');
+    public StringR2kStruct(DMContext ctx) {
+        super(ctx, '"');
         encoding = ctx.encoding;
+        data = new byte[0];
+        dataBAM = new ByteArrayMemoryish(data);
+        dataDecoded = "";
     }
 
-    public StringR2kStruct(DM2Context ctx, byte[] dat) {
-        super(ctx.dm3, '"');
+    public StringR2kStruct(DMContext ctx, byte[] dat) {
+        super(ctx, '"');
         encoding = ctx.encoding;
         data = dat;
+        dataBAM = new ByteArrayMemoryish(data);
+        dataDecoded = new String(data, encoding);
+    }
+
+    @Override
+    public Runnable saveState() {
+        final byte[] saved = data;
+        final ByteArrayMemoryish savedBAM = dataBAM;
+        final String savedDecoded = dataDecoded;
+        return () -> {
+            data = saved;
+            dataBAM = savedBAM;
+            dataDecoded = savedDecoded;
+        };
     }
 
     @Override
     public IRIO setString(String s) {
-        data = s.getBytes(encoding);
+        putBuffer(s.getBytes(encoding));
         return this;
     }
 
     @Override
     public IRIO setString(byte[] s, Charset jenc) {
         if (jenc.equals(encoding)) {
-            data = s;
+            putBuffer(s);
             return this;
         }
         return super.setString(s, jenc);
+    }
+
+    @Override
+    public void putBuffer(byte[] dat) {
+        trackingWillChange();
+        data = dat;
+        dataBAM = new ByteArrayMemoryish(data);
+        dataDecoded = new String(dat, encoding);
     }
 
     @Override
@@ -68,13 +98,18 @@ public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
-    public byte[] getBuffer() {
-        return data;
+    public MemoryishR getBuffer() {
+        return dataBAM;
     }
 
     @Override
-    public void putBuffer(byte[] dat) {
-        data = dat;
+    public String decString() {
+        return dataDecoded;
+    }
+
+    @Override
+    public byte[] getBufferCopy() {
+        return data.clone();
     }
 
     @Override
@@ -84,7 +119,7 @@ public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        data = IntUtils.readBytes(bais, bais.available());
+        putBuffer(IntUtils.readBytes(bais, bais.available()));
     }
 
     @Override

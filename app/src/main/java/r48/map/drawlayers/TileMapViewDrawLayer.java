@@ -10,7 +10,7 @@ package r48.map.drawlayers;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import r48.App;
-import r48.RubyTable;
+import r48.RubyTableR;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
 import r48.map.tiles.ITileRenderer;
@@ -19,16 +19,16 @@ import r48.map.tiles.ITileRenderer;
  * Created on 08/06/17.
  */
 public class TileMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
-    public final RubyTable targetTable;
+    public final RubyTableR targetTable;
     public final int[] tileLayers;
     public final ITileRenderer tr;
     public final String name;
 
-    public TileMapViewDrawLayer(App app, RubyTable table, int i, ITileRenderer itr) {
+    public TileMapViewDrawLayer(App app, RubyTableR table, int i, ITileRenderer itr) {
         this(app, table, new int[] {i}, itr, app.t.m.l_tile.r(i));
     }
 
-    public TileMapViewDrawLayer(App app, RubyTable table, int[] i, ITileRenderer itr, String post) {
+    public TileMapViewDrawLayer(App app, RubyTableR table, int[] i, ITileRenderer itr, String post) {
         super(app);
         targetTable = table;
         tileLayers = i;

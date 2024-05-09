@@ -17,6 +17,8 @@ import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import gabien.uslx.io.MemoryishR;
+
 /**
  * Various functions moved here because IMI automatic cleanup may/will target the r2k package.
  * Handles little-endian values.
@@ -82,6 +84,18 @@ public class IntUtils {
         byte[] text = new byte[firstNull];
         System.arraycopy(strVal, 0, text, 0, text.length);
         return new String(text, Charset.forName("UTF-8"));
+    }
+
+    public static String decodeRbFloat(MemoryishR strVal) {
+        // Stop at the first null byte.
+        int firstNull = (int) strVal.length;
+        for (int i = 0; i < strVal.length; i++) {
+            if (strVal.getU8(i) == 0) {
+                firstNull = i;
+                break;
+            }
+        }
+        return new String(strVal.getBulk(0, firstNull), Charset.forName("UTF-8"));
     }
 
     public static boolean encodeRbFloat(IRIO target, String text, boolean jsonCoerce) {

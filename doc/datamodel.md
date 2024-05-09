@@ -37,13 +37,35 @@ Data:
 * `RORIO`: All data types are based off of this.
 	* `DMKey`: Immutable `HashMap` key, etc.
 	* `IRIO`: The universal abstract datatype of most of R48. _This is what bridges Schema and underlying data, and allows shared code between engines._
-		* `IRIOGeneric`: Generic mutable container for any data.
-		* Engine-specific datatypes such as `r48.io.r2k.obj.EventPage` go here (backed by, you know, a lot of extra Stuff). In theory these types are private to the IO layer, outside of optimizations.
-	
+		* `IRIOData`: Contains `IRIO`-side change tracking logic (debounce) and forces savestates to be implemented.
+			* `IRIOGeneric`: Generic mutable container for any data.
+			* Engine-specific datatypes go somewhere in here, depending on what they are. In theory these types are private to the IO layer, outside of optimizations.
+			* `IRIOTypedData`: Implements all the functions to throw, except for IVar functions and `getType`.
+				* `IRIOFixedData`: Implements `getType` via final field.
+					* `IRIOFixedObject`: This is the core object that 'in-field' data access is based around. As of the early DM3 work, `FixedObjectProps` stores 'scanned templates' via reflection. These templates contain factories for filling fields marked with the 'construction annotations' (`DMCX`) and information about fields marked with the 'binding annotations' `DMFXOBinding` and `DMOptional`.
+						* `IRIOFixedObjectPacked`: Implements the core of on-demand unpack.
+							* `DM2R2kObject`: Implements the R2K object IO logic. _Not all R2K structures subclass this, only ones that use the Lcf chunk container format._
 
 Stuff that needs removing:
 
 `IMagicalBinder`: Best described as 'just plain evil,' it was outdated as far back as _`IRIO`s._ (To put that into perspective, it has been outdated longer than it has existed.) It clings to life by legacy code like the PicPointerPatch handlers. It works, to this very day, by using the schema system to mirror changes forwards and backwards between a shadow copy of the target in a different format.
+
+## Fixed Objects, automatic construction, etc.
+
+`IRIOFixedObject` expects every IVar to be accessible via reflection on fields and constructed either by annotations (as a shorthand), a `public static Consumer<Subclass> exampleField_add = (v) -> v.exampleField = ...;` lambda, or a `public void exampleField_add() {` method. Using this, it automatically handles `getIVar`, `addIVar`, and `rmIVar`, while also constructing the contents of IVars for you (`initialize()` is a separate function to allow controlling this behaviour).
+
+Beware: `IRIOFixedObjectPacked` gets particularly strict by denying overrides, because the code for unpacking is already kind of inherently messy and doing basically anything _before_ the unpack has run is a recipe for disaster. In particular, `initialize()` is now an empty final function. The entire basis of `IRIOFixedObjectPacked` is that an invalid state isn't invalid so long as it becomes valid before anyone notices.
+
+Both pay very close attention to reflection in the following aspects:
+
+* The annotations `DMFXOBinding` and `DMOptional` are of importance to the 'FXO binding layer' which maps instance variables.
+	* The default implementations of the IVar manipulation functions use these annotations.
+* There is also `addField`. This is conceptually `addIVar`, but it works using the Java reflection `Field`, and attempts to hunt for an implementation of `addIVar` using several strategies. (See `ReflectiveIRIOFactoryScanner`.)
+	* If a second static field with the suffix `_add` exists (i.e. `myField_add`, this must be a `Consumer<WhateverTypeThisIsAnyway>` which receives the object to perform the `addIVar` on. This is a hopefully-somewhat-higher-performance alternative to the string comparison mechanism.
+	* If an instance `void()` method with the same naming convention exists, that is called.
+	* `DMCX` annotations specify a particular constructor call to make.
+
+R2K unpacking uses `DM2LcfBinding`. Notably, a field does not need an FXO binding to be Lcf-bound, which is why `addField` exists as a distinct entity.
 
 ## Plans For DM3
 

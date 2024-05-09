@@ -7,11 +7,12 @@
 
 package r48.io;
 
+import gabien.uslx.io.ByteArrayMemoryish;
 import gabien.uslx.vfs.FSBackend;
 import r48.RubyTable;
-import r48.io.data.IDM3Context;
+import r48.RubyTableR;
+import r48.io.data.DMContext;
 import r48.io.data.IRIOFixedHash;
-import r48.io.data.obj.DM2Context;
 import r48.io.ika.IkaEvent;
 import r48.io.ika.IkaMap;
 import r48.io.ika.NPChar;
@@ -19,7 +20,6 @@ import r48.io.ika.NPChar;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -29,24 +29,20 @@ import org.eclipse.jdt.annotation.NonNull;
 public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
 
     private String root;
-    private final Charset charset;
     public final FSBackend fs;
 
-    public IkaObjectBackend(FSBackend fs, String rootPath, Charset encoding) {
+    public IkaObjectBackend(FSBackend fs, String rootPath) {
         this.fs = fs;
         root = rootPath;
-        this.charset = encoding;
     }
 
     @Override
-    public IkaMap newObjectO(String n, @NonNull IDM3Context context) {
-        DM2Context dm2c = new DM2Context(context, charset);
-        return new IkaMap(dm2c, 160, 120);
+    public IkaMap newObjectO(String n, @NonNull DMContext context) {
+        return new IkaMap(context, 160, 120);
     }
 
     @Override
-    public IkaMap loadObjectFromFile(String filename, @NonNull IDM3Context context) {
-        DM2Context dm2c = new DM2Context(context, charset);
+    public IkaMap loadObjectFromFile(String filename, @NonNull DMContext context) {
         if (filename.equals("Map")) {
             byte[] eDataBytes = BMPConnection.prepareBMP(160, 120, 8, 256, false, false);
             byte[] dataBytes = eDataBytes;
@@ -61,12 +57,12 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
 
             BMPConnection bm;
             try {
-                bm = new BMPConnection(eDataBytes, BMPConnection.CMode.Normal, 0, false);
+                bm = new BMPConnection(new ByteArrayMemoryish(eDataBytes), BMPConnection.CMode.Normal, 0, false);
             } catch (IOException ioe) {
                 throw new RuntimeException(ioe);
             }
             try {
-                bm = new BMPConnection(dataBytes, BMPConnection.CMode.Normal, 0, false);
+                bm = new BMPConnection(new ByteArrayMemoryish(dataBytes), BMPConnection.CMode.Normal, 0, false);
                 if (bm.ignoresPalette)
                     throw new IOException("Must have a palette to do this");
                 if (bm.bpp > 8)
@@ -77,9 +73,9 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
 
             // This sets up the object by itself (DataModel2)
 
-            IkaMap rio = new IkaMap(dm2c, bm.width, bm.height);
+            IkaMap rio = new IkaMap(context, bm.width, bm.height);
 
-            RubyTable pal = new RubyTable(rio.palette.userVal);
+            RubyTable pal = new RubyTable(rio.palette.editUser());
             for (int i = 0; i < bm.paletteCol; i++) {
                 int rgba = bm.getPalette(i);
                 pal.setTiletype(i, 0, 0, (short) ((rgba >> 24) & 0xFF));
@@ -88,7 +84,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
                 pal.setTiletype(i, 0, 3, (short) (rgba & 0xFF));
             }
 
-            RubyTable tbl = new RubyTable(rio.data.userVal);
+            RubyTable tbl = new RubyTable(rio.data.editUser());
 
             for (int i = 0; i < bm.width; i++)
                 for (int j = 0; j < bm.height; j++)
@@ -105,25 +101,25 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
             }
             for (int i = 0; i < np.npcTable.length; i++)
                 if (np.npcTable[i].exists)
-                    evTbl.hashVal.put(i, convertEventToRuby(np.npcTable[i], dm2c));
+                    evTbl.hashVal.put(i, convertEventToRuby(np.npcTable[i], context));
 
             return rio;
         }
         return null;
     }
 
-    private IkaEvent convertEventToRuby(NPChar.NPCCharacter io, DM2Context dm2c) {
+    private IkaEvent convertEventToRuby(NPChar.NPCCharacter io, DMContext dm2c) {
         IkaEvent res = new IkaEvent(dm2c);
         int px = rounder(io.posX);
         int py = rounder(io.posY);
-        res.x.val = px;
-        res.y.val = py;
-        res.tox.val = rounder(io.ofsX) - px;
-        res.toy.val = rounder(io.ofsY) - py;
-        res.type.val = io.entityType;
-        res.status.val = io.entityStatus;
-        res.scriptId.val = io.eventID;
-        res.collisionType.val = io.collisionType;
+        res.x.setFX(px);
+        res.y.setFX(py);
+        res.tox.setFX(rounder(io.ofsX) - px);
+        res.toy.setFX(rounder(io.ofsY) - py);
+        res.type.setFX(io.entityType);
+        res.status.setFX(io.entityStatus);
+        res.scriptId.setFX(io.eventID);
+        res.collisionType.setFX(io.collisionType);
         return res;
     }
 
@@ -135,13 +131,13 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
     public void saveObjectToFile(String filename, IkaMap object) throws IOException {
         if (filename.equals("Map")) {
             // allow saving
-            RubyTable rt = new RubyTable(object.data.userVal);
+            RubyTableR rt = new RubyTableR(object.data.getBuffer());
             byte[] dataBytes = BMPConnection.prepareBMP(rt.width, rt.height, 8, 256, false, false);
-            BMPConnection bm8 = new BMPConnection(dataBytes, BMPConnection.CMode.Normal, 0, false);
+            BMPConnection bm8 = new BMPConnection(new ByteArrayMemoryish(dataBytes), BMPConnection.CMode.Normal, 0, false);
             for (int i = 0; i < rt.width; i++)
                 for (int j = 0; j < rt.height; j++)
                     bm8.putPixel(i, j, rt.getTiletype(i, j, 0) & 0xFFFF);
-            RubyTable rt2 = new RubyTable(object.palette.userVal);
+            RubyTableR rt2 = new RubyTableR(object.palette.getBuffer());
             for (int i = 0; i < 256; i++) {
                 int a = rt2.getTiletype(i, 0, 0) & 0xFF;
                 int r = rt2.getTiletype(i, 0, 1) & 0xFF;
@@ -159,14 +155,14 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
                 if (r2 != null) {
                     NPChar.NPCCharacter n = npc.npcTable[i];
                     n.exists = true;
-                    n.posX = r2.x.val;
-                    n.posY = r2.y.val;
-                    n.ofsX = n.posX + r2.tox.val;
-                    n.ofsY = n.posY + r2.toy.val;
-                    n.collisionType = (int) r2.collisionType.val;
-                    n.entityStatus = (int) r2.status.val;
-                    n.entityType = (int) r2.type.val;
-                    n.eventID = (int) r2.scriptId.val;
+                    n.posX = r2.x.getFX();
+                    n.posY = r2.y.getFX();
+                    n.ofsX = n.posX + r2.tox.getFX();
+                    n.ofsY = n.posY + r2.toy.getFX();
+                    n.collisionType = (int) r2.collisionType.getFX();
+                    n.entityStatus = (int) r2.status.getFX();
+                    n.entityType = (int) r2.type.getFX();
+                    n.eventID = (int) r2.scriptId.getFX();
                 }
             }
             try (OutputStream fio2 = fs.intoPath(root + "NPChar.dat").openWrite()) {

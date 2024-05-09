@@ -16,6 +16,10 @@ import java.io.OutputStream;
  * Created on 01/06/17.
  */
 public interface IR2kInterpretable {
+    /**
+     * Imports data.
+     * BE CAREFUL: These functions may not trigger change notification!
+     */
     void importData(InputStream bais) throws IOException;
 
     /**
@@ -23,5 +27,8 @@ public interface IR2kInterpretable {
      */
     boolean canOmitChunk();
 
+    /**
+     * Exports data.
+     */
     void exportData(OutputStream baos) throws IOException;
 }

@@ -11,7 +11,7 @@ import gabien.render.IImage;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import r48.App;
-import r48.RubyTable;
+import r48.RubyTableR;
 import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
@@ -59,7 +59,7 @@ public class RVXASystem extends RXPSystem {
             IImage panoImg = null;
             if (!vxaPano.equals(""))
                 panoImg = imageLoader.getImage("Parallaxes/" + vxaPano, true);
-            RubyTable rt = new RubyTable(map.getIVar("@data").getBuffer());
+            RubyTableR rt = new RubyTableR(map.getIVar("@data").getBuffer());
             RVXAAccurateDrawLayer accurate = new RVXAAccurateDrawLayer(rt, events, (VXATileRenderer) tileRenderer, eventRenderer);
             layers = new IMapViewDrawLayer[] {
                     // works for green docks

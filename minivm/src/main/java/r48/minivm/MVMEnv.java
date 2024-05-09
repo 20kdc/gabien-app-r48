@@ -7,7 +7,7 @@
 package r48.minivm;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -32,7 +32,7 @@ import static gabien.datum.DatumTreeUtils.decVisitor;
  */
 public class MVMEnv {
     private final @Nullable MVMEnv parent;
-    private final HashMap<DatumSymbol, MVMSlot> values = new HashMap<>();
+    private final ConcurrentHashMap<DatumSymbol, MVMSlot> values = new ConcurrentHashMap<>();
     private final AtomicLong gensymCounter;
 
     public MVMEnv() {

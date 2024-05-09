@@ -7,11 +7,11 @@
 
 package r48.io.r2k.dm2chk;
 
+import r48.io.data.DMContext;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedHash;
 import r48.io.data.RORIO;
-import r48.io.data.obj.DM2Context;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
 import r48.io.r2k.chunks.IR2kSizable;
@@ -28,14 +28,14 @@ public abstract class DM2ArraySet<V extends IRIO> extends IRIOFixedHash<Integer,
     public final int sizeMode;
     public final boolean sizeUnit, trustData;
 
-    public DM2ArraySet(DM2Context dm2, int smode, boolean sunit, boolean trust) {
-        super(dm2.dm3);
+    public DM2ArraySet(DMContext dm2, int smode, boolean sunit, boolean trust) {
+        super(dm2);
         sizeMode = smode;
         sizeUnit = sunit;
         trustData = trust;
     }
 
-    public DM2ArraySet(DM2Context dm2) {
+    public DM2ArraySet(DMContext dm2) {
         this(dm2, 0, false, true);
     }
 

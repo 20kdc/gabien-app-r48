@@ -11,8 +11,9 @@ import gabien.ui.*;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UINumberBox;
 import gabien.ui.layouts.UISplitterLayout;
+import gabien.uslx.io.ByteArrayMemoryish;
+import gabien.uslx.io.MemoryishRW;
 import r48.App;
-import r48.RubyCT;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
@@ -35,7 +36,7 @@ public class CTNativeSchemaElement extends SchemaElement.Leaf {
 
     @Override
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
-        RubyCT rct = new RubyCT(target.getBuffer());
+        MemoryishRW rct = target.editUser();
         UIElement[] uiSVLContents = {
                 addField(T.s.toneR, 0, rct, path),
                 addField(T.s.toneG, 8, rct, path),
@@ -45,8 +46,8 @@ public class CTNativeSchemaElement extends SchemaElement.Leaf {
         return AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target, uiSVLContents);
     }
 
-    private UIElement addField(String r, final int i, final RubyCT targ, final SchemaPath sp) {
-        final UINumberBox uinb = new UINumberBox((long) targ.innerTable.getDouble(i), app.f.schemaFieldTH);
+    private UIElement addField(String r, final int i, final MemoryishRW targ, final SchemaPath sp) {
+        final UINumberBox uinb = new UINumberBox((long) targ.getF64LE(i), app.f.schemaFieldTH);
         uinb.onEdit = () -> {
             if (cls.equals("Tone")) {
                 if (uinb.getNumber() < -255)
@@ -57,7 +58,7 @@ public class CTNativeSchemaElement extends SchemaElement.Leaf {
             }
             if (uinb.getNumber() > 255)
                 uinb.setNumber(255);;
-            targ.innerTable.putDouble(i, uinb.getNumber());
+            targ.setF64LE(i, uinb.getNumber());
             sp.changeOccurred(false);
         };
         return new UISplitterLayout(new UILabel(r, app.f.schemaFieldTH), uinb, false, 1, 3);
@@ -66,13 +67,12 @@ public class CTNativeSchemaElement extends SchemaElement.Leaf {
     @Override
     public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         if (checkType(target, 'u', cls, setDefault)) {
-            byte[] buf = new byte[32];
-            target.setUser(cls, buf);
-            RubyCT rct = new RubyCT(buf);
-            rct.innerTable.putDouble(0, 0);
-            rct.innerTable.putDouble(8, 0);
-            rct.innerTable.putDouble(16, 0);
-            rct.innerTable.putDouble(24, 255);
+            ByteArrayMemoryish bam = new ByteArrayMemoryish(new byte[32]);
+            bam.setF64LE(0, 0);
+            bam.setF64LE(8, 0);
+            bam.setF64LE(16, 0);
+            bam.setF64LE(24, 255);
+            target.setUser(cls, bam.data);
             path.changeOccurred(true);
         }
     }

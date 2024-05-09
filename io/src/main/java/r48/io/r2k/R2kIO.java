@@ -8,7 +8,7 @@
 package r48.io.r2k;
 
 import r48.io.IntUtils;
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
 import r48.io.r2k.obj.MapUnit;
 import r48.io.r2k.obj.Save;
 import r48.io.r2k.obj.ldb.Database;
@@ -27,7 +27,7 @@ import java.io.OutputStream;
  *  MapTreeIO (Created on 31/05/17)
  */
 public class R2kIO {
-    public static Save readLsd(DM2Context dm2c, InputStream fis) throws IOException {
+    public static Save readLsd(DMContext dm2c, InputStream fis) throws IOException {
         String magic = R2kUtil.decodeLcfString(dm2c, IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfSaveData"))
             System.err.println("Loading a file which pretends to be an LCF save file but says " + magic);
@@ -37,13 +37,13 @@ public class R2kIO {
     }
 
     public static void writeLsd(OutputStream fos, Save rio) throws IOException {
-        byte[] d = R2kUtil.encodeLcfString(rio.dm2Ctx, "LcfSaveData");
+        byte[] d = R2kUtil.encodeLcfString(rio.context, "LcfSaveData");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
         rio.exportData(fos);
     }
 
-    public static Database readLdb(DM2Context context, InputStream fis) throws IOException {
+    public static Database readLdb(DMContext context, InputStream fis) throws IOException {
         String magic = R2kUtil.decodeLcfString(context, IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfDataBase"))
             System.err.println("Loading a file which pretends to be an LCF database but says " + magic);
@@ -54,13 +54,13 @@ public class R2kIO {
     }
 
     public static void writeLdb(OutputStream fos, Database db) throws IOException {
-        byte[] d = R2kUtil.encodeLcfString(db.dm2Ctx, "LcfDataBase");
+        byte[] d = R2kUtil.encodeLcfString(db.context, "LcfDataBase");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
         db.exportData(fos);
     }
 
-    public static MapUnit readLmu(DM2Context dm2c, InputStream fis) throws IOException {
+    public static MapUnit readLmu(DMContext dm2c, InputStream fis) throws IOException {
         String magic = R2kUtil.decodeLcfString(dm2c, IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfMapUnit"))
             System.err.println("Loading a file which pretends to be an LCF map but says " + magic);
@@ -71,13 +71,13 @@ public class R2kIO {
     }
 
     public static void writeLmu(OutputStream fos, MapUnit rio) throws IOException {
-        byte[] d = R2kUtil.encodeLcfString(rio.dm2Ctx, "LcfMapUnit");
+        byte[] d = R2kUtil.encodeLcfString(rio.context, "LcfMapUnit");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
         rio.exportData(fos);
     }
 
-    public static MapTree readLmt(DM2Context dm2c, InputStream fis) throws IOException {
+    public static MapTree readLmt(DMContext dm2c, InputStream fis) throws IOException {
         String magic = R2kUtil.decodeLcfString(dm2c, IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfMapTree"))
             System.err.println("Loading a file which pretends to be an LCF map tree but says " + magic);
@@ -88,7 +88,7 @@ public class R2kIO {
     }
 
     public static void writeLmt(OutputStream fos, MapTree db) throws IOException {
-        byte[] d = R2kUtil.encodeLcfString(db.dm2Ctx, "LcfMapTree");
+        byte[] d = R2kUtil.encodeLcfString(db.context, "LcfMapTree");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
         db.exportData(fos);

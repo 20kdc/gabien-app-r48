@@ -7,9 +7,9 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.io.data.IRIO;
-import r48.io.data.obj.DM2Context;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.DMContext;
+import r48.io.data.obj.DMCXSupplier;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.r2k.dm2chk.DM2LcfBinding;
 import r48.io.r2k.dm2chk.DM2R2kObject;
 import r48.io.r2k.dm2chk.DM2SparseArrayA;
@@ -18,17 +18,10 @@ import r48.io.r2k.dm2chk.DM2SparseArrayA;
  * Created on 07/06/17.
  */
 public class AnimationFrame extends DM2R2kObject {
-    @DM2FXOBinding("@cells") @DM2LcfBinding(1)
+    @DMFXOBinding("@cells") @DM2LcfBinding(1) @DMCXSupplier(AnimationCell.class)
     public DM2SparseArrayA<AnimationCell> cells;
 
-    public AnimationFrame(DM2Context ctx) {
+    public AnimationFrame(DMContext ctx) {
         super(ctx, "RPG::Animation::Frame");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@cells"))
-            return cells = new DM2SparseArrayA<AnimationCell>(dm2Ctx, () -> new AnimationCell(dm2Ctx));
-        return super.dm2AddIVar(sym);
     }
 }

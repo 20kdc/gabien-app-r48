@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.io.data.obj.DM2Context;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.DMContext;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.r2k.chunks.BooleanR2kStruct;
@@ -20,28 +20,28 @@ import r48.io.r2k.dm2chk.DM2R2kObject;
  * Created on 07/06/17.
  */
 public class AnimationCell extends DM2R2kObject {
-    @DM2FXOBinding("@visible") @DM2LcfBinding(1) @DMCXBoolean(true)
+    @DMFXOBinding("@visible") @DM2LcfBinding(1) @DMCXBoolean(true)
     public BooleanR2kStruct visible;
-    @DM2FXOBinding("@cell_id") @DM2LcfBinding(2) @DMCXInteger(0)
+    @DMFXOBinding("@cell_id") @DM2LcfBinding(2) @DMCXInteger(0)
     public IntegerR2kStruct cellId;
-    @DM2FXOBinding("@x") @DM2LcfBinding(3) @DMCXInteger(0)
+    @DMFXOBinding("@x") @DM2LcfBinding(3) @DMCXInteger(0)
     public IntegerR2kStruct x;
-    @DM2FXOBinding("@y") @DM2LcfBinding(4) @DMCXInteger(0)
+    @DMFXOBinding("@y") @DM2LcfBinding(4) @DMCXInteger(0)
     public IntegerR2kStruct y;
-    @DM2FXOBinding("@scale") @DM2LcfBinding(5) @DMCXInteger(100)
+    @DMFXOBinding("@scale") @DM2LcfBinding(5) @DMCXInteger(100)
     public IntegerR2kStruct scale;
-    @DM2FXOBinding("@tone_r") @DM2LcfBinding(6) @DMCXInteger(100)
+    @DMFXOBinding("@tone_r") @DM2LcfBinding(6) @DMCXInteger(100)
     public IntegerR2kStruct toneR;
-    @DM2FXOBinding("@tone_g") @DM2LcfBinding(7) @DMCXInteger(100)
+    @DMFXOBinding("@tone_g") @DM2LcfBinding(7) @DMCXInteger(100)
     public IntegerR2kStruct toneG;
-    @DM2FXOBinding("@tone_b") @DM2LcfBinding(8) @DMCXInteger(100)
+    @DMFXOBinding("@tone_b") @DM2LcfBinding(8) @DMCXInteger(100)
     public IntegerR2kStruct toneB;
-    @DM2FXOBinding("@tone_grey") @DM2LcfBinding(9) @DMCXInteger(100)
+    @DMFXOBinding("@tone_grey") @DM2LcfBinding(9) @DMCXInteger(100)
     public IntegerR2kStruct toneG2;
-    @DM2FXOBinding("@transparency") @DM2LcfBinding(10) @DMCXInteger(0)
+    @DMFXOBinding("@transparency") @DM2LcfBinding(10) @DMCXInteger(0)
     public IntegerR2kStruct transparency;
 
-    public AnimationCell(DM2Context ctx) {
+    public AnimationCell(DMContext ctx) {
         super(ctx, "RPG::Animation::Cell");
     }
 }

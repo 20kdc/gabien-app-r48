@@ -11,6 +11,8 @@ import java.nio.charset.Charset;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.uslx.io.MemoryishRW;
+
 /**
  * Ok, so here's the deal. Data Model 2 implementation attempt 1 *failed miserably*.
  * That doesn't mean Data Model 2 is completely unimplementable.
@@ -26,11 +28,11 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public abstract class IRIO extends RORIO {
     /**
-     * DM3 Data context. This may one day handle undo/redo tracking.
+     * Data context. Change tracker may one day handle undo/redo tracking.
      */
-    public final @NonNull IDM3Context context;
+    public final @NonNull DMContext context;
 
-    public IRIO(@NonNull IDM3Context context) {
+    public IRIO(@NonNull DMContext context) {
         this.context = context;
     }
 
@@ -88,8 +90,15 @@ public abstract class IRIO extends RORIO {
 
     // '"', 'f', 'u', 'l'
 
-    // For 'u', the buffer must be mutable ; for others it is variable.
     public abstract void putBuffer(byte[] data);
+
+    // 'u'
+    /**
+     * Accesses the current state of the userval for editing.
+     * This accessor becomes useless if putBuffer is called or such.
+     * Modifications via this accessor are still properly tracked for DMChangeTracker.
+     */
+    public abstract MemoryishRW editUser();
 
     // '['
     @Override
@@ -147,20 +156,20 @@ public abstract class IRIO extends RORIO {
         } else if (type == 'i') {
             setFX(clone.getFX());
         } else if (type == '"') {
-            setString(copyByteArray(clone.getBuffer()), clone.getBufferEnc());
+            setString(clone.getBufferCopy(), clone.getBufferEnc());
             // Due to Ruby using encoding IVars, but encoding IVars being an inherent property in other cases,
             //  *DO NOT* support cross-backend IVar retention on strings.
             return this;
         } else if (type == 'f') {
-            setFloat(copyByteArray(clone.getBuffer()));
+            setFloat(clone.getBufferCopy());
         } else if (type == 'o') {
             setObject(clone.getSymbol());
         } else if (type == ':') {
             setSymbol(clone.getSymbol());
         } else if (type == 'u') {
-            setUser(clone.getSymbol(), copyByteArray(clone.getBuffer()));
+            setUser(clone.getSymbol(), clone.getBufferCopy());
         } else if (type == 'l') {
-            setBignum(copyByteArray(clone.getBuffer()));
+            setBignum(clone.getBufferCopy());
         } else if (type == '[') {
             int ai = clone.getALen();
             setArray(ai);
@@ -188,12 +197,6 @@ public abstract class IRIO extends RORIO {
             }
         }
         return this;
-    }
-
-    public static byte[] copyByteArray(byte[] buffer) {
-        byte[] buffer2 = new byte[buffer.length];
-        System.arraycopy(buffer, 0, buffer2, 0, buffer2.length);
-        return buffer2;
     }
 
     public static String[] copyStringArray(String[] iVarKeys) {

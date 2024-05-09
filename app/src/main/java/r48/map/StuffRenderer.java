@@ -9,7 +9,7 @@ package r48.map;
 
 import gabien.render.IImage;
 import r48.App;
-import r48.RubyTable;
+import r48.RubyTableR;
 import r48.io.data.IRIO;
 import r48.map.drawlayers.*;
 import r48.map.events.IEventAccess;
@@ -58,7 +58,7 @@ public class StuffRenderer {
         if (map == null)
             return new IMapViewDrawLayer[0];
         final TrRoot T = app.t;
-        RubyTable rt = new RubyTable(map.getIVar("@data").getBuffer());
+        RubyTableR rt = new RubyTableR(map.getIVar("@data").getBuffer());
         // 0: P
         // 1: E-1
         // 2, 3, [4, 5, [[6, 7]...]]]: Ti, Ei

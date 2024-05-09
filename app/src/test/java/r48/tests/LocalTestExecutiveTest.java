@@ -7,6 +7,8 @@
 package r48.tests;
 
 import gabien.TestKickstart;
+import gabien.uslx.append.Block;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -17,7 +19,9 @@ import r48.dbs.ObjectInfo;
 import r48.dbs.IDatabase;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
-import r48.io.data.IDM3Context;
+import r48.io.data.DMContext;
+import r48.io.data.IDM3Data;
+import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
@@ -26,7 +30,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.function.Consumer;
 
 /**
  * The Local Test Executive (LTE) is responsible for executing tests containing copyrighted data
@@ -50,10 +53,10 @@ public class LocalTestExecutiveTest {
                 @Override
                 public void execCmd(char c, String[] args) {
                     if (c == '.') {
-                        Object[] whiteLight = new Object[args.length];
-                        for (int i = 0; i < whiteLight.length; i++)
-                            whiteLight[i] = args[i];
-                        tests.add(whiteLight);
+                        Object[] cmdLine = new Object[args.length];
+                        for (int i = 0; i < cmdLine.length; i++)
+                            cmdLine[i] = args[i];
+                        tests.add(cmdLine);
                     }
                 }
             });
@@ -96,38 +99,58 @@ public class LocalTestExecutiveTest {
 
     private void testObject(App app, String s) {
         try {
-            System.out.println(s);
+            System.out.print(s);
 
             // 'objectUnderTest' is the reference copy. DO NOT ALTER IT UNTIL THE END.
             IObjectBackend.ILoadedObject objectUnderTest = app.odb.getObject(s, null);
             if (objectUnderTest == null)
                 throw new RuntimeException("Object get failure: " + s);
 
+            DMContext tests = new DMContext(DMChangeTracker.Null.TESTS, app.encoding);
             // Create an internal copy, autocorrect it, save it, and then get rid of it.
             {
-                IObjectBackend.ILoadedObject objectInternalCopy = app.odb.backend.newObject(s, IDM3Context.Null.TESTS);
+                // in theory, we don't need an unpack license for tests, nor do we care
+                // **HOWEVER:** since we're doing a deep clone, we 'might as well' test state copies!
+                final LinkedList<Runnable> states = new LinkedList<>();
+                DMContext monitor = new DMContext(new DMChangeTracker() {
+                    @Override
+                    public void modifying(IDM3Data modifiedData) {
+                        states.add(modifiedData.saveState());
+                    }
+                }, app.encoding);
+                IObjectBackend.ILoadedObject objectInternalCopy;
+                try (Block license = monitor.changes.openUnpackLicense()) {
+                    objectInternalCopy = app.odb.backend.newObject(s, monitor);
+                }
 
+                // should trigger lots of savestates which will help debug if there are any exceptions lurking
                 objectInternalCopy.getObject().setDeepClone(objectUnderTest.getObject());
+                int firstStates = states.size();
+                System.out.println(" " + firstStates + " savestates");
 
                 SchemaElement wse = findSchemaFor(app, s, objectUnderTest.getObject());
-                app.odb.registerModificationHandler(objectInternalCopy, new Consumer<SchemaPath>() {
-                    @Override
-                    public void accept(SchemaPath schemaPath) {
-                        throw new RuntimeException("A modification occurred on LTE data. This shouldn't happen: " + schemaPath.toString());
-                    }
+                app.odb.registerModificationHandler(objectInternalCopy, (schemaPath) -> {
+                    throw new RuntimeException("A modification occurred on LTE data. This shouldn't happen: " + schemaPath.toString());
                 });
                 wse.modifyVal(objectInternalCopy.getObject(), new SchemaPath(wse, objectInternalCopy), false);
 
                 objectInternalCopy.save();
 
-                // This is to TRY to get 'objectInternalCopy' out of memory.
-                objectInternalCopy = null;
-                System.gc();
+                // now test the states
+                for (Runnable r : states) {
+                    r.run();
+                }
+                int secondStates = states.size();
+                if (firstStates != secondStates)
+                    throw new RuntimeException("a modification happened during schema AC and snuck past the handler");
             }
+            // This is to TRY to get 'objectInternalCopy' out of memory.
+            System.gc();
 
             // Load the autocorrected + saved object, and see if anything went bang.
             {
-                IObjectBackend.ILoadedObject objectSaveLoaded = app.odb.backend.loadObject(s, IDM3Context.Null.TESTS);
+                // we don't need an unpack license for tests
+                IObjectBackend.ILoadedObject objectSaveLoaded = app.odb.backend.loadObject(s, tests);
                 byte[] bytes = IMIUtils.createIMIData(objectUnderTest.getObject(), objectSaveLoaded.getObject(), "");
                 if (bytes != null) {
                     System.out.write(bytes);

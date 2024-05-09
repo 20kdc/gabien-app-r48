@@ -8,10 +8,10 @@
 package r48.io.r2k.chunks;
 
 import r48.io.IntUtils;
-import r48.io.data.IDM3Context;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixed;
-import r48.io.data.obj.DM2Context;
+import r48.io.data.IRIOBoolean;
+import r48.io.data.IRIOFixedData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,18 +22,24 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Created on 02/06/17.
  */
-public class BitfieldR2kStruct extends IRIOFixed implements IR2kInterpretable {
+public class BitfieldR2kStruct extends IRIOFixedData implements IR2kInterpretable {
 
     // Ascending
     private final String[] flags;
-    private final BitfieldElement[] flagData;
+    private final IRIOBoolean[] flagData;
 
-    public BitfieldR2kStruct(@NonNull DM2Context context, String[] f, int def) {
-        super(context.dm3, 'o');
+    public BitfieldR2kStruct(@NonNull DMContext context, String[] f, int def) {
+        super(context, 'o');
         flags = f;
-        flagData = new BitfieldElement[8];
+        flagData = new IRIOBoolean[8];
         for (int i = 0; i < 8; i++)
-            flagData[i] = new BitfieldElement(context.dm3, (def & (1 << i)) != 0);
+            flagData[i] = new IRIOBoolean(context, (def & (1 << i)) != 0);
+    }
+
+    @Override
+    public Runnable saveState() {
+        IRIOBoolean[] storedArray = flagData.clone();
+        return () -> System.arraycopy(storedArray, 0, flagData, 0, flagData.length);
     }
 
     @Override
@@ -41,7 +47,6 @@ public class BitfieldR2kStruct extends IRIOFixed implements IR2kInterpretable {
         int value = IntUtils.readU8(bais);
         importData(value);
     }
-
 
     public void importData(int flag) {
         for (int i = 0; i < 8; i++)
@@ -66,8 +71,9 @@ public class BitfieldR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public IRIO setObject(String symbol) {
         if (!symbol.equals("__bitfield__"))
             return super.setObject(symbol);
+        trackingWillChange();
         for (int i = 0; i < 8; i++)
-            flagData[i].setBool(false);
+            flagData[i] = new IRIOBoolean(context, false);
         return this;
     }
 
@@ -85,8 +91,10 @@ public class BitfieldR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public IRIO addIVar(String sym) {
         for (int i = 0; i < flags.length; i++) {
             String s = flags[i];
-            if (s.equals(sym))
-                return flagData[i] = new BitfieldElement(context, false);
+            if (s.equals(sym)) {
+                trackingWillChange();
+                return flagData[i] = new IRIOBoolean(context, false);
+            }
         }
         return null;
     }
@@ -99,32 +107,5 @@ public class BitfieldR2kStruct extends IRIOFixed implements IR2kInterpretable {
                 return flagData[i];
         }
         return null;
-    }
-
-    private static class BitfieldElement extends IRIOFixed {
-        public BitfieldElement(@NonNull IDM3Context context, boolean v) {
-            super(context, v ? 'T' : 'F');
-        }
-
-        @Override
-        public IRIO setBool(boolean b) {
-            type = b ? 'T' : 'F';
-            return this;
-        }
-
-        @Override
-        public String[] getIVars() {
-            return new String[0];
-        }
-
-        @Override
-        public IRIO addIVar(String sym) {
-            return null;
-        }
-
-        @Override
-        public IRIO getIVar(String sym) {
-            return null;
-        }
     }
 }

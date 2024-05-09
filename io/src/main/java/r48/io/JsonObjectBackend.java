@@ -8,8 +8,8 @@
 package r48.io;
 
 import gabien.uslx.vfs.FSBackend;
+import r48.io.data.DMContext;
 import r48.io.data.DMKey;
-import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -35,12 +35,12 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
     }
 
     @Override
-    public IRIO newObjectO(String n, @NonNull IDM3Context context) {
-        return new IRIOGeneric(context, StandardCharsets.UTF_8);
+    public IRIO newObjectO(String n, @NonNull DMContext context) {
+        return new IRIOGeneric(context);
     }
 
     @Override
-    public IRIO loadObjectFromFile(String filename, @NonNull IDM3Context context) {
+    public IRIO loadObjectFromFile(String filename, @NonNull DMContext context) {
         try (InputStream inp = fs.intoPath(root + filename + ext).openRead()) {
             return loadJSONFromStream(context, inp);
         } catch (Exception e) {
@@ -48,19 +48,19 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             return null;
         }
     }
-    public static IRIO loadJSONFromStream(@NonNull IDM3Context context, InputStream inp) throws IOException {
+    public static IRIO loadJSONFromStream(@NonNull DMContext context, InputStream inp) throws IOException {
         LinkedList<String> tokens = new LinkedList<String>();
         Reader r = new InputStreamReader(inp, StandardCharsets.UTF_8);
         tokenize(tokens, r);
         return loadFromTokens(context, tokens);
     }
 
-    private static IRIO loadFromTokens(@NonNull IDM3Context context, LinkedList<String> tokens) {
+    private static IRIO loadFromTokens(@NonNull DMContext context, LinkedList<String> tokens) {
         String n = tokens.removeFirst();
         if (n.startsWith("\""))
-            return new IRIOGeneric(context, StandardCharsets.UTF_8).setString(n.substring(1));
+            return new IRIOGeneric(context).setString(n.substring(1));
         if (n.equals("{")) {
-            IRIO hash = new IRIOGeneric(context, StandardCharsets.UTF_8).setHash();
+            IRIO hash = new IRIOGeneric(context).setHash();
             // comma policy is very liberal here since it's never ambiguous
             while (true) {
                 n = tokens.getFirst();
@@ -80,7 +80,7 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             }
         }
         if (n.equals("[")) {
-            IRIO array = new IRIOGeneric(context, StandardCharsets.UTF_8).setArray();
+            IRIO array = new IRIOGeneric(context).setArray();
             // comma policy is very liberal here since it's never ambiguous
             while (true) {
                 n = tokens.getFirst();
@@ -96,17 +96,17 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
             }
         }
         if (n.equals("true"))
-            return new IRIOGeneric(context, StandardCharsets.UTF_8).setBool(true);
+            return new IRIOGeneric(context).setBool(true);
         if (n.equals("false"))
-            return new IRIOGeneric(context, StandardCharsets.UTF_8).setBool(false);
+            return new IRIOGeneric(context).setBool(false);
         if (n.equals("null"))
-            return new IRIOGeneric(context, StandardCharsets.UTF_8).setNull();
+            return new IRIOGeneric(context).setNull();
         // Number. Please see "3.10.2. Floating-Point Literals" for an explaination,
         //  and see the relevant notes on parseFloat for why spaces had to be removed during tokenization.
         float f = Float.parseFloat(n);
         if ((((long) f) == f) && (!n.contains(".")))
-            return new IRIOGeneric(context, StandardCharsets.UTF_8).setFX((long) f);
-        IRIOGeneric str = new IRIOGeneric(context, StandardCharsets.UTF_8);
+            return new IRIOGeneric(context).setFX((long) f);
+        IRIOGeneric str = new IRIOGeneric(context);
         str.setFloat(n.getBytes(StandardCharsets.UTF_8));
         return str;
     }

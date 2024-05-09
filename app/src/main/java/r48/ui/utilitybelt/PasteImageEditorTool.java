@@ -12,6 +12,7 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
+import gabien.uslx.io.ByteArrayMemoryish;
 import r48.App;
 import r48.io.BMPConnection;
 import r48.io.data.RORIO;
@@ -47,7 +48,7 @@ public class PasteImageEditorTool extends ImageEditorTool {
                 if (ro.getSymbol().equals("Image")) {
                     // Everything valid so far...
                     try {
-                        result = new BMPConnection(ro.getBuffer(), BMPConnection.CMode.Normal, 0, false);
+                        result = new BMPConnection(new ByteArrayMemoryish(ro.getBufferCopy()), BMPConnection.CMode.Normal, 0, false);
                     } catch (IOException ioe) {
                     }
                 }

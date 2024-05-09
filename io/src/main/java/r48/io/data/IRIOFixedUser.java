@@ -9,17 +9,26 @@ package r48.io.data;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.uslx.io.MemoryishR;
+import gabien.uslx.io.MemoryishRW;
+
 /**
  * Created on November 24, 2018.
  */
-public class IRIOFixedUser extends IRIOFixed {
+public class IRIOFixedUser extends IRIOFixedData {
     private final String objType;
-    public byte[] userVal;
+    private DMBlob userVal;
 
-    public IRIOFixedUser(@NonNull IDM3Context context, String user, byte[] def) {
+    public IRIOFixedUser(@NonNull DMContext context, String user, byte[] def) {
         super(context, 'u');
         objType = user;
-        userVal = def;
+        userVal = new DMBlob(context, def);
+    }
+
+    @Override
+    public Runnable saveState() {
+        final DMBlob saved = userVal;
+        return () -> userVal = saved;
     }
 
     @Override
@@ -43,20 +52,27 @@ public class IRIOFixedUser extends IRIOFixed {
     }
 
     @Override
-    public byte[] getBuffer() {
+    public MemoryishR getBuffer() {
+        return userVal;
+    }
+
+    @Override
+    public MemoryishRW editUser() {
         return userVal;
     }
 
     @Override
     public void putBuffer(byte[] data) {
-        userVal = data;
+        trackingWillChange();
+        userVal = new DMBlob(context, data.clone());
     }
 
     @Override
     public IRIO setUser(String symbol, byte[] data) {
         if (!symbol.equals(objType))
             return super.setUser(symbol, data);
-        userVal = data;
+        trackingWillChange();
+        userVal = new DMBlob(context, data.clone());
         return this;
     }
 }

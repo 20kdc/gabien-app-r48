@@ -8,8 +8,10 @@
 package r48.io.r2k.struct;
 
 import r48.io.data.*;
-import r48.io.data.obj.DM2Context;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMCXInteger;
+import r48.io.data.obj.DMCXObject;
+import r48.io.data.obj.DMCXSupplier;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
@@ -21,41 +23,30 @@ import r48.io.r2k.obj.MapTreeStart;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.function.Consumer;
 
 /**
  * This isn't even standard LCF madness. This is something *else*.
  * Created on 31/05/17.
  */
 public class MapTree extends IRIOFixedObject implements IR2kInterpretable {
-    @DM2FXOBinding("@map_infos")
+    @DMFXOBinding("@map_infos") @DMCXSupplier(MapInfo.class)
     public DM2SparseArrayH<MapInfo> mapInfos;
-    @DM2FXOBinding("@map_order")
+    @DMFXOBinding("@map_order")
     public IRIOFixedArray<IRIOFixnum> mapOrder;
-    @DM2FXOBinding("@active_node")
+    public static Consumer<MapTree> mapOrder_add = (v) -> v.mapOrder = new IRIOFixedArray<IRIOFixnum>(v.context) {
+        @Override
+        public IRIOFixnum newValue() {
+            return new IRIOFixnum(v.context, 0);
+        }
+    };
+    @DMFXOBinding("@active_node") @DMCXInteger(0)
     public IntegerR2kStruct activeNode;
-    @DM2FXOBinding("@start")
+    @DMFXOBinding("@start") @DMCXObject
     public MapTreeStart start;
 
-    public MapTree(DM2Context ctx) {
+    public MapTree(DMContext ctx) {
         super(ctx, "RPG::MapTree");
-    }
-
-    @Override
-    public IRIO addIVar(String sym) {
-        if (sym.equals("@map_infos"))
-            return mapInfos = new DM2SparseArrayH<MapInfo>(dm2Ctx, () -> new MapInfo(dm2Ctx));
-        if (sym.equals("@map_order"))
-            return mapOrder = new IRIOFixedArray<IRIOFixnum>(context) {
-                @Override
-                public IRIOFixnum newValue() {
-                    return new IRIOFixnum(context, 0);
-                }
-            };
-        if (sym.equals("@active_node"))
-            return activeNode = new IntegerR2kStruct(dm2Ctx, 0);
-        if (sym.equals("@start"))
-            return start = new MapTreeStart(dm2Ctx);
-        return null;
     }
 
     @Override
@@ -67,7 +58,7 @@ public class MapTree extends IRIOFixedObject implements IR2kInterpretable {
         for (int i = 0; i < mapOrder.arrVal.length; i++)
             mapOrder.arrVal[i] = new IRIOFixnum(context, R2kUtil.readLcfVLI(fis));
         activeNode.importData(fis);
-        start = new MapTreeStart(dm2Ctx);
+        start = new MapTreeStart(context);
         start.importData(fis);
     }
 
@@ -82,7 +73,7 @@ public class MapTree extends IRIOFixedObject implements IR2kInterpretable {
         // the rest of it
         R2kUtil.writeLcfVLI(baos, mapOrder.arrVal.length);
         for (int i = 0; i < mapOrder.arrVal.length; i++)
-            R2kUtil.writeLcfVLI(baos, (int) ((IRIOFixnum) mapOrder.arrVal[i]).val);
+            R2kUtil.writeLcfVLI(baos, (int) ((IRIOFixnum) mapOrder.arrVal[i]).getFX());
         activeNode.exportData(baos);
         start.exportData(baos);
     }

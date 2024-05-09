@@ -8,60 +8,81 @@
 package r48.io.data.obj;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.LinkedList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixed;
+import r48.io.data.IRIOFixedData;
+import r48.io.data.obj.FixedObjectProps.FXOBinding;
 
 /**
  * An IRIO describing a fixed-layout object.
  * Created on November 22, 2018.
  */
-public abstract class IRIOFixedObject extends IRIOFixed {
-    private final String objType;
-    private final static ConcurrentHashMap<Class<?>, Field[]> classFields = new ConcurrentHashMap<>();
-    protected final Field[] cachedFields;
-    public final DM2Context dm2Ctx;
+public abstract class IRIOFixedObject extends IRIOFixedData {
+    public final String objType;
+    protected final FixedObjectProps cachedFields;
 
-    public IRIOFixedObject(DM2Context ctx, String sym) {
-        super(ctx.dm3, 'o');
-        dm2Ctx = ctx;
+    public IRIOFixedObject(DMContext ctx, String sym) {
+        super(ctx, 'o');
         objType = sym;
         Class<?> c = getClass();
-        Field[] data = classFields.get(c);
-        if (data != null) {
-            cachedFields = data;
-        } else {
-            cachedFields = c.getFields();
-            classFields.put(c, cachedFields);
-        }
+        cachedFields = FixedObjectProps.forClass(c);
         initialize();
+    }
+
+    @Override
+    public Runnable saveState() {
+        final Object myClone;
+        try {
+            myClone = clone();
+        } catch (Exception ex) {
+            // impossible as Cloneable is implemented here, right?
+            throw new RuntimeException(ex);
+        }
+        return () -> {
+            try {
+                for (Field f : FixedObjectProps.forClass(IRIOFixedObject.this.getClass()).fieldsArray) {
+                    if ((f.getModifiers() & Modifier.FINAL) != 0)
+                        continue;
+                    f.set(IRIOFixedObject.this, f.get(myClone));
+                }
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        };
     }
 
     @Override
     public IRIO setObject(String symbol) {
         if (!symbol.equals(objType))
             return super.setObject(symbol);
-        initialize();
+        reAddAllIVars();
         return this;
     }
 
-    protected void initialize() {
+    /**
+     * This resets the contents of all FXO bindings.
+     */
+    protected final void reAddAllIVars() {
         try {
-            for (Field f : cachedFields) {
-                DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
-                if (dmx != null) {
-                    if (!f.isAnnotationPresent(DM2Optional.class)) {
-                        addIVar(dmx.value());
-                    } else {
-                        f.set(this, null);
-                    }
+            for (FXOBinding f : cachedFields.fxoBindingsArray) {
+                if (!f.optional) {
+                    addIVar(f.iVar);
+                } else {
+                    trackingWillChange();
+                    f.field.set(this, null);
                 }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected void initialize() {
+        reAddAllIVars();
     }
 
     @Override
@@ -72,52 +93,81 @@ public abstract class IRIOFixedObject extends IRIOFixed {
     @Override
     public String[] getIVars() {
         LinkedList<String> s = new LinkedList<String>();
-        for (Field f : cachedFields) {
-            DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
-            if (dmx != null) {
-                if (f.isAnnotationPresent(DM2Optional.class)) {
-                    try {
-                        if (f.get(this) == null)
-                            continue;
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
+        for (FXOBinding f : cachedFields.fxoBindingsArray) {
+            if (f.optional) {
+                try {
+                    if (f.field.get(this) == null)
+                        continue;
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
                 }
-                s.add(dmx.value());
             }
+            s.add(f.iVar);
         }
         return s.toArray(new String[0]);
     }
 
     @Override
     public IRIO getIVar(String sym) {
-        for (Field f : cachedFields) {
-            DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
-            if (dmx != null) {
-                if (dmx.value().equals(sym)) {
-                    try {
-                        return (IRIO) f.get(this);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+        FXOBinding f = cachedFields.byIVar(sym);
+        if (f != null) {
+            try {
+                return (IRIO) f.field.get(this);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
             }
         }
         return null;
     }
 
+    /**
+     * This should only be overridden by IRIOFixedObjectPacked, or if it is overridden otherwise, with great care.
+     * Mainly because trackingWillChange() will need to be called when relevant.
+     */
+    @Override
+    public IRIO addIVar(String sym) {
+        FXOBinding f = cachedFields.byIVar(sym);
+        if (f != null)
+            return (IRIO) addFieldImpl(f.field, f.iVarAdd);
+        return null;
+    }
+
+    /**
+     * This function is like addIVar, but it works by Field.
+     * This should only be overridden by IRIOFixedObjectPacked, or if it is overridden otherwise, with great care.
+     * Mainly because trackingWillChange() will need to be called when relevant.
+     */
+    public Object addField(Field f) {
+        return addFieldImpl(f, cachedFields.iVarAddByFieldName(f.getName()));
+    }
+
+    // Must not handle translation into addIVar because it's called from there.
+    private Object addFieldImpl(Field f, Consumer<IRIO> factory) {
+        if (factory == null)
+            return null;
+        trackingWillChange();
+        factory.accept(this);
+        try {
+            Object res = f.get(this);
+            if (res == null)
+                throw new RuntimeException("Factory did not actually set a non-null value");
+            return res;
+        } catch (Exception ex) {
+            throw new RuntimeException("At field: " + f, ex);
+        }
+    }
+
     @Override
     public void rmIVar(String sym) {
-        for (Field f : cachedFields) {
-            DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
-            if (dmx != null) {
-                if (dmx.value().equals(sym) && f.isAnnotationPresent(DM2Optional.class)) {
-                    try {
-                        f.set(this, null);
-                        return;
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
+        FXOBinding f = cachedFields.byIVar(sym);
+        if (f != null) {
+            if (f.optional) {
+                trackingWillChange();
+                try {
+                    f.field.set(this, null);
+                    return;
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }

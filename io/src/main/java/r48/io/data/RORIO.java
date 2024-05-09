@@ -13,6 +13,8 @@ import r48.io.IMIUtils;
 import java.io.*;
 import java.nio.charset.Charset;
 
+import gabien.uslx.io.MemoryishR;
+
 /**
  * Read-only IRIO subset.
  * Created 27th August, 2022.
@@ -25,7 +27,7 @@ public abstract class RORIO {
 
     public abstract RORIO getIVar(String sym);
 
-    // '"'
+    // '"', 'f'
     public abstract Charset getBufferEnc();
 
     // ':', 'o'
@@ -41,13 +43,19 @@ public abstract class RORIO {
         // the specific details are that:
         // SOME (not all) strings, are tagged with an ":encoding" iVar.
         // This specifies their encoding.
-        return new String(getBuffer(), getBufferEnc());
+        return new String(getBufferCopy(), getBufferEnc());
     }
 
     // '"', 'f', 'u', 'l'
 
-    // For 'u', the buffer must be mutable ; for others it is variable.
-    public abstract byte[] getBuffer();
+    // Gets the buffer.
+    public abstract MemoryishR getBuffer();
+
+    // can be fast-path'd depending on what the "primary" storage is
+    public byte[] getBufferCopy() {
+        MemoryishR mr = getBuffer();
+        return mr.getBulk(0, (int) mr.length);
+    }
 
     // '['
     public abstract int getALen();
@@ -82,7 +90,7 @@ public abstract class RORIO {
         Charset enc = getBufferEnc();
         if (!enc.equals(encoding))
             return decString().getBytes(encoding);
-        return getBuffer();
+        return getBufferCopy();
     }
 
     @Override

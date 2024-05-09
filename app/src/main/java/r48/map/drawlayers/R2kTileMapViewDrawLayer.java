@@ -8,7 +8,7 @@
 package r48.map.drawlayers;
 
 import r48.App;
-import r48.RubyTable;
+import r48.RubyTableR;
 import r48.io.data.IRIO;
 import r48.map.tiles.ITileRenderer;
 
@@ -17,14 +17,14 @@ import r48.map.tiles.ITileRenderer;
  */
 public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
     public final boolean upper;
-    public final RubyTable lowpass;
-    public final RubyTable highpass;
+    public final RubyTableR lowpass;
+    public final RubyTableR highpass;
 
-    public R2kTileMapViewDrawLayer(App app, RubyTable tbl, ITileRenderer tr, int targLayer, boolean targUpper, IRIO ts, String post) {
+    public R2kTileMapViewDrawLayer(App app, RubyTableR tbl, ITileRenderer tr, int targLayer, boolean targUpper, IRIO ts, String post) {
         super(app, tbl, new int[] {targLayer}, tr, post);
         upper = targUpper;
-        lowpass = new RubyTable(ts.getIVar("@lowpass_data").getBuffer());
-        highpass = new RubyTable(ts.getIVar("@highpass_data").getBuffer());
+        lowpass = new RubyTableR(ts.getIVar("@lowpass_data").getBuffer());
+        highpass = new RubyTableR(ts.getIVar("@highpass_data").getBuffer());
     }
 
     @Override
@@ -42,7 +42,7 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
         return r == upper;
     }
 
-    public static int getTileFlags(short tidx, RubyTable lowpass, RubyTable highpass) {
+    public static int getTileFlags(short tidx, RubyTableR lowpass, RubyTableR highpass) {
         int flags = 0;
 
         flags |= checkUpperRange(tidx, lowpass, 0, 1000, 0);
@@ -71,7 +71,7 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
         return flags;
     }
 
-    private static int checkUpperRange(short tidx, RubyTable tileset, int rangeS, int rangeE, int group) {
+    private static int checkUpperRange(short tidx, RubyTableR tileset, int rangeS, int rangeE, int group) {
         if (tidx >= rangeS)
             if (tidx < rangeE) {
                 short val = tileset.getTiletype(group, 0, 0);

@@ -7,56 +7,35 @@
 
 package r48.io.ika;
 
-import r48.io.data.IRIO;
+import r48.io.data.DMContext;
 import r48.io.data.IRIOFixnum;
-import r48.io.data.obj.DM2Context;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMCXInteger;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.IRIOFixedObject;
 
 /**
  * Created on November 24, 2018.
  */
 public class IkaEvent extends IRIOFixedObject {
-    @DM2FXOBinding("@x")
+    @DMFXOBinding("@x") @DMCXInteger(0)
     public IRIOFixnum x;
-    @DM2FXOBinding("@y")
+    @DMFXOBinding("@y") @DMCXInteger(0)
     public IRIOFixnum y;
-    @DM2FXOBinding("@tOX")
+    @DMFXOBinding("@tOX") @DMCXInteger(0)
     public IRIOFixnum tox;
-    @DM2FXOBinding("@tOY")
+    @DMFXOBinding("@tOY") @DMCXInteger(0)
     public IRIOFixnum toy;
-    @DM2FXOBinding("@type")
+    @DMFXOBinding("@type") @DMCXInteger(0)
     public IRIOFixnum type;
-    @DM2FXOBinding("@status")
+    @DMFXOBinding("@status") @DMCXInteger(0)
     public IRIOFixnum status;
-    @DM2FXOBinding("@scriptId")
+    @DMFXOBinding("@scriptId") @DMCXInteger(0)
     public IRIOFixnum scriptId;
-    @DM2FXOBinding("@collisionType")
+    @DMFXOBinding("@collisionType") @DMCXInteger(0)
     public IRIOFixnum collisionType;
 
-    public IkaEvent(DM2Context ctx) {
+    public IkaEvent(DMContext ctx) {
         super(ctx, "IkachanEvent");
         initialize();
-    }
-
-    @Override
-    public IRIO addIVar(String sym) {
-        if (sym.equals("@x"))
-            return x = new IRIOFixnum(dm2Ctx.dm3, 0);
-        if (sym.equals("@y"))
-            return y = new IRIOFixnum(dm2Ctx.dm3, 0);
-        if (sym.equals("@tOX"))
-            return tox = new IRIOFixnum(dm2Ctx.dm3, 0);
-        if (sym.equals("@tOY"))
-            return toy = new IRIOFixnum(dm2Ctx.dm3, 0);
-        if (sym.equals("@type"))
-            return type = new IRIOFixnum(dm2Ctx.dm3, 0);
-        if (sym.equals("@status"))
-            return status = new IRIOFixnum(dm2Ctx.dm3, 0);
-        if (sym.equals("@scriptId"))
-            return scriptId = new IRIOFixnum(dm2Ctx.dm3, 0);
-        if (sym.equals("@collisionType"))
-            return collisionType = new IRIOFixnum(dm2Ctx.dm3, 0);
-        return null;
     }
 }

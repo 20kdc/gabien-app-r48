@@ -45,7 +45,7 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final RubyTable targ = new RubyTable(extractTarget(target).getBuffer());
+        final RubyTable targ = new RubyTable(extractTarget(target).editUser());
         final StuffRenderer renderer = launcher.getApp().system.rendererFromTso(target);
         final TileEditingTab[] tileTabs = renderer.tileRenderer.getEditConfig(0);
         final AutoTileTypeField[] atFields = renderer.tileRenderer.indicateATs();

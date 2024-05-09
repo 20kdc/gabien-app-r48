@@ -8,10 +8,10 @@
 package r48.io.r2k.struct;
 
 import r48.io.IntUtils;
-import r48.io.data.IRIO;
+import r48.io.data.DMContext;
 import r48.io.data.IRIOFixnum;
-import r48.io.data.obj.DM2Context;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.obj.DMCXInteger;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.IRIOFixedObject;
 import r48.io.r2k.chunks.IR2kInterpretable;
 
@@ -24,25 +24,25 @@ import java.io.OutputStream;
  * Created on 31/05/17.
  */
 public class TRect extends IRIOFixedObject implements IR2kInterpretable {
-    @DM2FXOBinding("@left")
+    @DMFXOBinding("@left") @DMCXInteger(0)
     public IRIOFixnum l;
-    @DM2FXOBinding("@up")
+    @DMFXOBinding("@up") @DMCXInteger(0)
     public IRIOFixnum u;
-    @DM2FXOBinding("@right")
+    @DMFXOBinding("@right") @DMCXInteger(0)
     public IRIOFixnum r;
-    @DM2FXOBinding("@down")
+    @DMFXOBinding("@down") @DMCXInteger(0)
     public IRIOFixnum d;
 
-    public TRect(DM2Context dm2c) {
+    public TRect(DMContext dm2c) {
         super(dm2c, "Rect");
     }
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        l.val = IntUtils.readS32(bais);
-        u.val = IntUtils.readS32(bais);
-        r.val = IntUtils.readS32(bais);
-        d.val = IntUtils.readS32(bais);
+        l.setFX(IntUtils.readS32(bais));
+        u.setFX(IntUtils.readS32(bais));
+        r.setFX(IntUtils.readS32(bais));
+        d.setFX(IntUtils.readS32(bais));
     }
 
     @Override
@@ -52,22 +52,9 @@ public class TRect extends IRIOFixedObject implements IR2kInterpretable {
 
     @Override
     public void exportData(OutputStream baos) throws IOException {
-        IntUtils.writeS32(baos, (int) l.val);
-        IntUtils.writeS32(baos, (int) u.val);
-        IntUtils.writeS32(baos, (int) r.val);
-        IntUtils.writeS32(baos, (int) d.val);
-    }
-
-    @Override
-    public IRIO addIVar(String sym) {
-        if (sym.equals("@left"))
-            return l = new IRIOFixnum(context, 0);
-        if (sym.equals("@up"))
-            return u = new IRIOFixnum(context, 0);
-        if (sym.equals("@right"))
-            return r = new IRIOFixnum(context, 0);
-        if (sym.equals("@down"))
-            return d = new IRIOFixnum(context, 0);
-        return null;
+        IntUtils.writeS32(baos, (int) l.getFX());
+        IntUtils.writeS32(baos, (int) u.getFX());
+        IntUtils.writeS32(baos, (int) r.getFX());
+        IntUtils.writeS32(baos, (int) d.getFX());
     }
 }

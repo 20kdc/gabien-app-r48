@@ -18,7 +18,6 @@ import gabien.ui.theming.IIcon;
 import gabien.ui.theming.Theme;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.util.EmbedDataKey;
@@ -246,7 +245,7 @@ public class StandardArrayInterface implements IArrayInterface {
 
             private void copyRange(int fixedStart, int fixedEnd) {
                 // the clipboard is very lenient...
-                IRIOGeneric rio = new IRIOGeneric(IDM3Context.Null.CLIPBOARD, app.encoding);
+                IRIOGeneric rio = new IRIOGeneric(app.ctxClipboardAppEncoding);
                 rio.setArray();
 
                 for (int j = fixedStart; j <= fixedEnd; j++)

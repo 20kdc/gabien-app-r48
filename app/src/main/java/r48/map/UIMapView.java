@@ -65,7 +65,7 @@ public class UIMapView extends UIPlaneView {
 
     public final int tileSize;
 
-    private MapViewUpdateScheduler scheduler = new MapViewUpdateScheduler();
+    private DepsLocker scheduler = new DepsLocker();
     // Managed using finalize for now.
     private IGrDriver offscreenBuf;
     private int mouseXT, mouseYT;
@@ -100,7 +100,7 @@ public class UIMapView extends UIPlaneView {
             if (!map.objectId.equals(s))
                 app.odb.registerModificationHandler(s, listener);
         reinitLayerVis();
-        scheduler.forceNextUpdate = true;
+        scheduler.forceNextUpdate();
     }
 
     public boolean[] layerVis;
@@ -285,7 +285,7 @@ public class UIMapView extends UIPlaneView {
             int effectiveFrame = mapTable.renderer.tileRenderer.getFrame();
             config = realSize.width + "_" + realSize.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + debugToggle + "_" + effectiveFrame + "_" + mapTable.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + callbacks + "_" + planeZoomMul + "_" + planeZoomDiv + "_" + viewRenderDisableSwitch;
         }
-        if (scheduler.needsUpdate(config)) {
+        if (scheduler.shouldUpdate(config)) {
             boolean remakeBuf = true;
             if (offscreenBuf != null)
                 if ((offscreenBuf.getWidth() == realSize.width) && (offscreenBuf.getHeight() == realSize.height))
@@ -324,8 +324,8 @@ public class UIMapView extends UIPlaneView {
         float ratio = ((float) planeZoomMul) / planeZoomDiv;
         stb[2] = ratio;
         stb[3] = ratio;
-        stb[0] = -(iCamX * ratio);
-        stb[1] = -(iCamY * ratio);
+        stb[0] = (float) Math.floor(-(iCamX * ratio));
+        stb[1] = (float) Math.floor(-(iCamY * ratio));
 
         IMapViewDrawLayer[] layers = mapTable.renderer.layers;
 

@@ -9,7 +9,8 @@ package r48.dbs;
 
 import r48.App;
 import r48.io.IObjectBackend;
-import r48.io.data.IDM3Context;
+import r48.io.data.DMContext;
+import r48.io.data.DMChangeTracker;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -22,6 +23,8 @@ import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+
+import gabien.uslx.append.Block;
 
 /**
  * Not quite a database, but not quite not a database either.
@@ -62,8 +65,8 @@ public class ObjectDB extends App.Svc {
         return id;
     }
 
-    private IDM3Context ensureDM3Context(@NonNull String id) {
-        return IDM3Context.Null.DELETE_ME;
+    private DMContext ensureDM3Context(@NonNull String id) {
+        return new DMContext(DMChangeTracker.Null.DELETE_ME, app.encoding);
     }
 
     // NOTE: Preferably call the one-parameter version,
@@ -75,8 +78,11 @@ public class ObjectDB extends App.Svc {
                 return r;
         }
         app.loadProgress.accept(T.u.odb_loadObj.r(id));
-        IDM3Context context = ensureDM3Context(id);
-        IObjectBackend.ILoadedObject rio = backend.loadObject(id, context);
+        DMContext context = ensureDM3Context(id);
+        IObjectBackend.ILoadedObject rio;
+        try (Block license = context.changes.openUnpackLicense()) {
+            rio = backend.loadObject(id, context);
+        }
         if (rio == null) {
             if (backupSchema != null) {
                 if (!app.sdb.hasSDBEntry(backupSchema)) {
@@ -85,7 +91,9 @@ public class ObjectDB extends App.Svc {
                 }
                 SchemaElement ise = app.sdb.getSDBEntry(backupSchema);
                 if (ise != null) {
+                    try (Block license = context.changes.openUnpackLicense()) {
                     rio = backend.newObject(id, context);
+                    }
                     if (rio == null)
                         return null;
 
@@ -283,7 +291,11 @@ public class ObjectDB extends App.Svc {
         for (IObjectBackend.ILoadedObject lo : modifiedObjects) {
             String id = getIdByObject(lo);
             if (id != null) {
-                IObjectBackend.ILoadedObject newVal = backend.loadObject(id, ensureDM3Context(id));
+                DMContext context = ensureDM3Context(id);
+                IObjectBackend.ILoadedObject newVal;
+                try (Block license = context.changes.openUnpackLicense()) {
+                    newVal = backend.loadObject(id, context);
+                }
                 if (newVal != null) {
                     // Try doing things just by overwriting the internals, otherwise deep-clone
                     if (!lo.overwriteWith(newVal))

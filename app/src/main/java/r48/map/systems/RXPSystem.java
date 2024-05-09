@@ -13,7 +13,7 @@ import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import r48.App;
 import r48.IMapContext;
-import r48.RubyTable;
+import r48.RubyTableR;
 import r48.dbs.ObjectInfo;
 import r48.imagefx.HueShiftImageEffect;
 import r48.io.IObjectBackend;
@@ -109,7 +109,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         }
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
         if (map != null) {
-            RubyTable rt = new RubyTable(map.getIVar("@data").getBuffer());
+            RubyTableR rt = new RubyTableR(map.getIVar("@data").getBuffer());
             IImage panoImg = null;
             if (!pano.equals(""))
                 panoImg = imageLoader.getImage(pano, true);

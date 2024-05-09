@@ -8,10 +8,10 @@
 package r48.io.r2k.obj.lsd;
 
 import r48.RubyTable;
-import r48.io.data.IRIO;
-import r48.io.data.obj.DM2CXSupplier;
-import r48.io.data.obj.DM2Context;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.RubyTableR;
+import r48.io.data.DMContext;
+import r48.io.data.obj.DMCXSupplier;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
@@ -23,45 +23,51 @@ import r48.io.r2k.dm2chk.*;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.function.Consumer;
+
+import gabien.uslx.io.ByteArrayMemoryish;
+import gabien.uslx.io.MemoryishR;
 
 /**
  * Created on December 13th, 2017
  */
 public class SaveMapInfo extends DM2R2kObject {
-    @DM2FXOBinding("@x") @DM2LcfBinding(0x01) @DMCXInteger(0)
+    @DMFXOBinding("@x") @DM2LcfBinding(0x01) @DMCXInteger(0)
     public IntegerR2kStruct x;
-    @DM2FXOBinding("@y") @DM2LcfBinding(0x02) @DMCXInteger(0)
+    @DMFXOBinding("@y") @DM2LcfBinding(0x02) @DMCXInteger(0)
     public IntegerR2kStruct y;
     // I seriously hope this is correct...
-    @DM2FXOBinding("@encounter_rate") @DM2LcfBinding(0x03) @DMCXInteger(-1)
+    @DMFXOBinding("@encounter_rate") @DM2LcfBinding(0x03) @DMCXInteger(-1)
     public IntegerR2kStruct encounterRate;
-    @DM2FXOBinding("@tileset_id") @DM2LcfBinding(0x05) @DMCXInteger(-1)
+    @DMFXOBinding("@tileset_id") @DM2LcfBinding(0x05) @DMCXInteger(-1)
     public IntegerR2kStruct chipsetId;
-    @DM2FXOBinding("@events") @DM2LcfBinding(0x0B) @DM2CXSupplier(SaveMapEvent.class)
+    @DMFXOBinding("@events") @DM2LcfBinding(0x0B) @DMCXSupplier(SaveMapEvent.class)
     public DM2SparseArrayH<SaveMapEvent> events;
 
     // Transforms are performed on the LCF data before unpack.
-    @DM2FXOBinding("@lower_tile_remap") @DM2LcfBinding(0x15)
+    @DMFXOBinding("@lower_tile_remap") @DM2LcfBinding(0x15)
     public BlobR2kStruct lowerTileRemap;
-    @DM2FXOBinding("@upper_tile_remap") @DM2LcfBinding(0x16)
+    public static Consumer<SaveMapInfo> lowerTileRemap_add = (v) -> v.lowerTileRemap = v.newBlankRemap();
+    @DMFXOBinding("@upper_tile_remap") @DM2LcfBinding(0x16)
     public BlobR2kStruct upperTileRemap;
+    public static Consumer<SaveMapInfo> upperTileRemap_add = (v) -> v.upperTileRemap = v.newBlankRemap();
 
-    @DM2FXOBinding("@parallax_name") @DM2LcfBinding(0x20) @DMCXObject
+    @DMFXOBinding("@parallax_name") @DM2LcfBinding(0x20) @DMCXObject
     public StringR2kStruct parallaxName;
-    @DM2FXOBinding("@parallax_loop_x") @DM2LcfBinding(0x21) @DMCXBoolean(false)
+    @DMFXOBinding("@parallax_loop_x") @DM2LcfBinding(0x21) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopX;
-    @DM2FXOBinding("@parallax_loop_y") @DM2LcfBinding(0x22) @DMCXBoolean(false)
+    @DMFXOBinding("@parallax_loop_y") @DM2LcfBinding(0x22) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopY;
-    @DM2FXOBinding("@parallax_autoloop_x") @DM2LcfBinding(0x23) @DMCXBoolean(false)
+    @DMFXOBinding("@parallax_autoloop_x") @DM2LcfBinding(0x23) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopXAuto;
-    @DM2FXOBinding("@parallax_sx") @DM2LcfBinding(0x24) @DMCXInteger(0)
+    @DMFXOBinding("@parallax_sx") @DM2LcfBinding(0x24) @DMCXInteger(0)
     public IntegerR2kStruct parallaxLoopXSpeed;
-    @DM2FXOBinding("@parallax_autoloop_y") @DM2LcfBinding(0x25) @DMCXBoolean(false)
+    @DMFXOBinding("@parallax_autoloop_y") @DM2LcfBinding(0x25) @DMCXBoolean(false)
     public BooleanR2kStruct parallaxLoopYAuto;
-    @DM2FXOBinding("@parallax_sy") @DM2LcfBinding(0x26) @DMCXInteger(0)
+    @DMFXOBinding("@parallax_sy") @DM2LcfBinding(0x26) @DMCXInteger(0)
     public IntegerR2kStruct parallaxLoopYSpeed;
 
-    public SaveMapInfo(DM2Context ctx) {
+    public SaveMapInfo(DMContext ctx) {
         super(ctx, "RPG::SaveMapInfo");
     }
 
@@ -69,16 +75,7 @@ public class SaveMapInfo extends DM2R2kObject {
         byte[] blank = new byte[0x90];
         for (int i = 0; i < blank.length; i++)
             blank[i] = (byte) i;
-        return new BlobR2kStruct(dm2Ctx, "Table", bToTable(blank));
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@lower_tile_remap"))
-            return lowerTileRemap = newBlankRemap();
-        if (sym.equals("@upper_tile_remap"))
-            return upperTileRemap = newBlankRemap();
-        return super.dm2AddIVar(sym);
+        return new BlobR2kStruct(context, "Table", bToTable(blank));
     }
 
     @Override
@@ -97,19 +94,20 @@ public class SaveMapInfo extends DM2R2kObject {
         // This stores the wrong data for the blobs...
         super.dm2PackIntoMap(pcd);
         // This stores the correct data for the blobs.
-        pcd.put(0x15, bFromTable(lowerTileRemap.userVal));
-        pcd.put(0x16, bFromTable(upperTileRemap.userVal));
+        pcd.put(0x15, bFromTable(lowerTileRemap.getBuffer()));
+        pcd.put(0x16, bFromTable(upperTileRemap.getBuffer()));
     }
 
     private byte[] bToTable(byte[] dat) {
-        RubyTable rt = new RubyTable(3, dat.length, 1, 1, new int[] {0});
+        ByteArrayMemoryish bam = RubyTable.initNewTable(3, dat.length, 1, 1, new int[] {0});
+        RubyTable rt = new RubyTable(bam);
         for (int i = 0; i < dat.length; i++)
             rt.setTiletype(i, 0, 0, (short) (dat[i] & 0xFF));
-        return rt.innerBytes;
+        return bam.data;
     }
 
-    private byte[] bFromTable(byte[] instVarBySymbol) {
-        RubyTable rt = new RubyTable(instVarBySymbol);
+    private byte[] bFromTable(MemoryishR instVarBySymbol) {
+        RubyTableR rt = new RubyTableR(instVarBySymbol);
         byte[] data = new byte[rt.width];
         for (int i = 0; i < data.length; i++)
             data[i] = (byte) rt.getTiletype(i, 0, 0);

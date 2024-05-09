@@ -8,9 +8,9 @@
 package r48.io.r2k.chunks;
 
 import r48.io.IntUtils;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixed;
-import r48.io.data.obj.DM2Context;
+import r48.io.data.IRIOFixedData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,35 +21,34 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Created on 05/06/17.
  */
-public class ByteR2kStruct extends IRIOFixed implements IR2kInterpretable {
-    public byte value;
-    public boolean signed = false;
+public class ByteR2kStruct extends IRIOFixedData implements IR2kInterpretable {
+    protected byte value;
 
-    public ByteR2kStruct(@NonNull DM2Context context, int v) {
-        super(context.dm3, 'i');
+    public ByteR2kStruct(@NonNull DMContext context, int v) {
+        super(context, 'i');
         value = (byte) v;
     }
 
-    public ByteR2kStruct(@NonNull DM2Context context) {
+    public ByteR2kStruct(@NonNull DMContext context) {
         this(context, 0);
     }
 
     @Override
+    public Runnable saveState() {
+        final byte saved = value;
+        return () -> value = saved;
+    }
+
+    @Override
     public IRIO setFX(long fx) {
+        trackingWillChange();
         value = (byte) fx;
         return this;
     }
 
     @Override
     public long getFX() {
-        if (!signed)
-            return value & 0xFF;
-        return value;
-    }
-
-    public ByteR2kStruct signed() {
-        signed = true;
-        return this;
+        return value & 0xFF;
     }
 
     @Override
@@ -80,5 +79,23 @@ public class ByteR2kStruct extends IRIOFixed implements IR2kInterpretable {
     @Override
     public IRIO getIVar(String sym) {
         return null;
+    }
+
+    /**
+     * Created to enable the signed option without custom factories...
+     */
+    public static class Signed extends ByteR2kStruct {
+        public Signed(@NonNull DMContext context, int v) {
+            super(context, v);
+        }
+
+        public Signed(@NonNull DMContext context) {
+            super(context);
+        }
+
+        @Override
+        public long getFX() {
+            return value;
+        }
     }
 }

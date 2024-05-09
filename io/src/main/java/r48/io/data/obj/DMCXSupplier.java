@@ -11,9 +11,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created on December 04, 2018.
+ * Created on December 06, 2018.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DM2FXOBinding {
-    String value();
+public @interface DMCXSupplier {
+    Class<?> value();
 }

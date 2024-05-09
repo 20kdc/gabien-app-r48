@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj.lsd;
 
-import r48.io.data.obj.DM2Context;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.DMContext;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXBoolean;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.r2k.chunks.BooleanR2kStruct;
@@ -17,18 +17,18 @@ import r48.io.r2k.dm2chk.DM2LcfBinding;
 import r48.io.r2k.dm2chk.DM2R2kObject;
 
 public class SaveTarget extends DM2R2kObject {
-    @DM2FXOBinding("@map") @DM2LcfBinding(1) @DMCXInteger(0)
+    @DMFXOBinding("@map") @DM2LcfBinding(1) @DMCXInteger(0)
     public IntegerR2kStruct map;
-    @DM2FXOBinding("@x") @DM2LcfBinding(2) @DMCXInteger(0)
+    @DMFXOBinding("@x") @DM2LcfBinding(2) @DMCXInteger(0)
     public IntegerR2kStruct x;
-    @DM2FXOBinding("@y") @DM2LcfBinding(3) @DMCXInteger(0)
+    @DMFXOBinding("@y") @DM2LcfBinding(3) @DMCXInteger(0)
     public IntegerR2kStruct y;
-    @DM2FXOBinding("@switch_valid") @DM2LcfBinding(4) @DMCXBoolean(false)
+    @DMFXOBinding("@switch_valid") @DM2LcfBinding(4) @DMCXBoolean(false)
     public BooleanR2kStruct switchValid;
-    @DM2FXOBinding("@switch_id") @DM2LcfBinding(5) @DMCXInteger(0)
+    @DMFXOBinding("@switch_id") @DM2LcfBinding(5) @DMCXInteger(0)
     public IntegerR2kStruct switchId;
 
-    public SaveTarget(DM2Context ctx) {
+    public SaveTarget(DMContext ctx) {
         super(ctx, "RPG::SaveTarget");
     }
 }

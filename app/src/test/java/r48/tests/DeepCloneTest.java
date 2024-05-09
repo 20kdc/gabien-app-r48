@@ -12,7 +12,8 @@ import org.junit.Test;
 
 import r48.App;
 import r48.io.IMIUtils;
-import r48.io.data.IDM3Context;
+import r48.io.data.DMContext;
+import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.util.SchemaPath;
@@ -26,10 +27,11 @@ import java.nio.charset.StandardCharsets;
 public class DeepCloneTest {
     @Test
     public void testDeepCloneRPGMap() {
+        DMContext tests = new DMContext(DMChangeTracker.Null.TESTS, StandardCharsets.UTF_8);
         App app = new TestKickstart().kickstart("RAM/", "UTF-8", "rxp");
-        IRIO newObj = new IRIOGeneric(IDM3Context.Null.TESTS, StandardCharsets.UTF_8);
+        IRIO newObj = new IRIOGeneric(tests);
         SchemaPath.setDefaultValue(newObj, app.sdb.getSDBEntry("RPG::Map"), null);
-        IRIO newObj2 = new IRIOGeneric(IDM3Context.Null.TESTS, StandardCharsets.UTF_8).setDeepClone(newObj);
+        IRIO newObj2 = new IRIOGeneric(tests).setDeepClone(newObj);
         try {
             byte[] dat = IMIUtils.createIMIData(newObj, newObj2, "");
             if (dat != null)

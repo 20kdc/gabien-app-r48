@@ -9,39 +9,37 @@ package r48.io.r2k.chunks;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
-import r48.io.data.IRIO;
-import r48.io.data.obj.DM2Context;
+import r48.io.data.DMContext;
+import r48.io.data.IRIOBoolean;
+import r48.io.r2k.R2kUtil;
 
 /**
  * Created on 02/06/17.
  */
-public class BooleanR2kStruct extends IntegerR2kStruct {
-    public BooleanR2kStruct(DM2Context dm2, boolean i2) {
-        super(dm2, i2 ? 1 : 0);
-        type = i2 ? 'T' : 'F';
+public class BooleanR2kStruct extends IRIOBoolean implements IR2kInterpretable {
+    public final boolean di;
+
+    public BooleanR2kStruct(DMContext dm2, boolean i2) {
+        super(dm2, i2);
+        di = i2;
     }
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        super.importData(bais);
-        type = (i != 0) ? 'T' : 'F';
+        setBool(R2kUtil.readLcfVLI(bais) != 0);
     }
 
     @Override
-    public IRIO setFX(long iv) {
-        throw new UnsupportedOperationException();
+    public boolean canOmitChunk() {
+        // return i == di;
+        // false always for now
+        return false;
     }
 
     @Override
-    public long getFX() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public IRIO setBool(boolean b) {
-        i = b ? 1 : 0;
-        type = b ? 'T' : 'F';
-        return this;
+    public void exportData(OutputStream baos) throws IOException {
+        R2kUtil.writeLcfVLI(baos, getBool() ? 1 : 0);
     }
 }

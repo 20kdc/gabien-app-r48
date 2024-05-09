@@ -130,7 +130,7 @@ public class TestKickstart {
     }
 
     public void resetODB(App app) {
-        IObjectBackend backend = IObjectBackend.Factory.create(app.gameRoot, app.encoding, app.engine.odbBackend, app.engine.dataPath, app.engine.dataExt);
+        IObjectBackend backend = IObjectBackend.Factory.create(app.gameRoot, app.engine.odbBackend, app.engine.dataPath, app.engine.dataExt);
         app.odb = new ObjectDB(app, backend, (s) -> {});
     }
 

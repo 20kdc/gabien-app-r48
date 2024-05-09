@@ -14,7 +14,6 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.vfs.FSBackend;
 import r48.App;
-import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.AggregateSchemaElement;
@@ -73,7 +72,7 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
                     int alen = target.getALen();
                     for (int i = 0; i < alen; i++) {
                         // need to inflate
-                        byte[] inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.getAElem(i).getAElem(2).getBuffer())));
+                        byte[] inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.getAElem(i).getAElem(2).getBufferCopy())));
                         // target.arrVal[i].arrVal[2];
 
                         boolean disable = false;
@@ -171,7 +170,7 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
                     // need to inflate
                     byte[] inflated = null;
                     try {
-                        inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.getAElem(i).getAElem(2).getBuffer())));
+                        inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.getAElem(i).getAElem(2).getBufferCopy())));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -194,7 +193,7 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
     private IRIO importScripts() throws IOException {
         // A particular difference that's going to show up here is that empty-named or #-prefixed files won't get removed.
         // This way, the conversion is bi-directional.
-        IRIO scripts = new IRIOGeneric(IDM3Context.Null.DISPOSABLE, app.encoding).setArray();
+        IRIO scripts = new IRIOGeneric(app.ctxDisposableAppEncoding).setArray();
         InputStream inp = GaBIEn.getInFile(app.gameResources.into("scripts", "_scripts.txt"));
         if (inp == null) {
             app.ui.launchDialog(T.s.scx_noIdx);

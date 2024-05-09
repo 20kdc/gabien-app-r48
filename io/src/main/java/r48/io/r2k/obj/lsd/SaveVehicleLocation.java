@@ -7,8 +7,8 @@
 
 package r48.io.r2k.obj.lsd;
 
-import r48.io.data.obj.DM2Context;
-import r48.io.data.obj.DM2FXOBinding;
+import r48.io.data.DMContext;
+import r48.io.data.obj.DMFXOBinding;
 import r48.io.data.obj.DMCXInteger;
 import r48.io.data.obj.DMCXObject;
 import r48.io.r2k.chunks.IntegerR2kStruct;
@@ -20,20 +20,20 @@ import r48.io.r2k.dm2chk.DM2LcfBinding;
  * Created on December 13th, 2017
  */
 public class SaveVehicleLocation extends SaveCharacter {
-    @DM2FXOBinding("@vehicle_type") @DM2LcfBinding(101) @DMCXInteger(0)
+    @DMFXOBinding("@vehicle_type") @DM2LcfBinding(101) @DMCXInteger(0)
     public IntegerR2kStruct vehicleType;
-    @DM2FXOBinding("@original_moveroute_index") @DM2LcfBinding(102) @DMCXInteger(0)
+    @DMFXOBinding("@original_moveroute_index") @DM2LcfBinding(102) @DMCXInteger(0)
     public IntegerR2kStruct originalMoverouteIndex;
-    @DM2FXOBinding("@remaining_ascent") @DM2LcfBinding(106) @DMCXInteger(0)
+    @DMFXOBinding("@remaining_ascent") @DM2LcfBinding(106) @DMCXInteger(0)
     public IntegerR2kStruct remainingAscent;
-    @DM2FXOBinding("@remaining_descent") @DM2LcfBinding(107) @DMCXInteger(0)
+    @DMFXOBinding("@remaining_descent") @DM2LcfBinding(107) @DMCXInteger(0)
     public IntegerR2kStruct remainingDescent;
-    @DM2FXOBinding("@sprite2_name") @DM2LcfBinding(111) @DMCXObject
+    @DMFXOBinding("@sprite2_name") @DM2LcfBinding(111) @DMCXObject
     public StringR2kStruct sprite2Name;
-    @DM2FXOBinding("@sprite2_index") @DM2LcfBinding(112) @DMCXInteger(0)
+    @DMFXOBinding("@sprite2_index") @DM2LcfBinding(112) @DMCXInteger(0)
     public IntegerR2kStruct sprite2Index;
 
-    public SaveVehicleLocation(DM2Context ctx) {
+    public SaveVehicleLocation(DMContext ctx) {
         super(ctx, "RPG::SaveVehicleLocation");
     }
 }

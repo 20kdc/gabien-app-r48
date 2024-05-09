@@ -21,7 +21,6 @@ import r48.dbs.ObjectInfo;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
-import r48.io.data.IDM3Context;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -271,7 +270,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     });
                 },
                 () -> {
-                    IRIOGeneric tmp = new IRIOGeneric(IDM3Context.Null.WORKSPACE, app.encoding);
+                    IRIOGeneric tmp = new IRIOGeneric(app.ctxWorkspaceAppEncoding);
                     final IObjectBackend.ILoadedObject rio = new IObjectBackend.MockLoadedObject(tmp);
                     app.ui.launchPrompt(T.u.prSchemaID, (s) -> {
                         SchemaElement se = app.sdb.getSDBEntry(s);

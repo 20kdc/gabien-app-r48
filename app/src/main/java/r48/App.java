@@ -7,6 +7,7 @@
 package r48;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -29,7 +30,8 @@ import r48.app.EngineDef;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
 import r48.dbs.RPGCommand;
-import r48.io.data.IDM3Context;
+import r48.io.data.DMContext;
+import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -98,6 +100,36 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     public final LinkedList<ITextAnalyzer> textAnalyzers = new LinkedList<>();
 
     /**
+     * Clipboard context in app encoding
+     */
+    public final DMContext ctxClipboardAppEncoding = new DMContext(DMChangeTracker.Null.CLIPBOARD, encoding);
+
+    /**
+     * Clipboard context in UTF-8
+     */
+    public final DMContext ctxClipboardUTF8Encoding = new DMContext(DMChangeTracker.Null.CLIPBOARD, StandardCharsets.UTF_8);
+
+    /**
+     * Workspace context in app encoding
+     */
+    public final DMContext ctxWorkspaceAppEncoding = new DMContext(DMChangeTracker.Null.WORKSPACE, encoding);
+
+    /**
+     * Disposable context in UTF-8
+     */
+    public final DMContext ctxDisposableUTF8Encoding = new DMContext(DMChangeTracker.Null.DISPOSABLE, StandardCharsets.UTF_8);
+
+    /**
+     * Disposable context in app encoding
+     */
+    public final DMContext ctxDisposableAppEncoding = new DMContext(DMChangeTracker.Null.DISPOSABLE, encoding);
+
+    /**
+     * Delme context in UTF-8
+     */
+    public final DMContext ctxDelmeAppEncoding = new DMContext(DMChangeTracker.Null.DELETE_ME, encoding);
+
+    /**
      * Initialize App.
      * Warning: Occurs off main thread.
      */
@@ -141,7 +173,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
      * Sets the clipboard to a deep clone of a value.
      */
     public void setClipboardFrom(IRIO frame) {
-        theClipboard = new IRIOGeneric(IDM3Context.Null.CLIPBOARD, encoding).setDeepClone(frame);
+        theClipboard = new IRIOGeneric(ctxClipboardAppEncoding).setDeepClone(frame);
     }
 
     @Override

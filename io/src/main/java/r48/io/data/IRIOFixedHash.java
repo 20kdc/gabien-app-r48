@@ -16,11 +16,21 @@ import org.eclipse.jdt.annotation.NonNull;
  * Uses hashmaps properly thanks to not using IRIOs for storage.
  * Created on November 24, 2018.
  */
-public abstract class IRIOFixedHash<K, V extends IRIO> extends IRIOFixed {
+public abstract class IRIOFixedHash<K, V extends IRIO> extends IRIOFixedData {
     public HashMap<K, V> hashVal = new HashMap<K, V>();
 
-    public IRIOFixedHash(@NonNull IDM3Context context) {
+    public IRIOFixedHash(@NonNull DMContext context) {
         super(context, '{');
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Runnable saveState() {
+        HashMap<K, V> nkv = (HashMap<K, V>) hashVal.clone();
+        return () -> {
+            hashVal.clear();
+            hashVal.putAll(nkv);
+        };
     }
 
     public abstract K convertIRIOtoKey(RORIO i);
@@ -31,6 +41,7 @@ public abstract class IRIOFixedHash<K, V extends IRIO> extends IRIOFixed {
 
     @Override
     public IRIO setHash() {
+        trackingWillChange();
         hashVal.clear();
         return this;
     }
@@ -52,6 +63,7 @@ public abstract class IRIOFixedHash<K, V extends IRIO> extends IRIOFixed {
 
     @Override
     public V addHashVal(DMKey key) {
+        trackingWillChange();
         K k = convertIRIOtoKey(key);
         V v = newValue();
         hashVal.put(k, v);
@@ -60,6 +72,7 @@ public abstract class IRIOFixedHash<K, V extends IRIO> extends IRIOFixed {
 
     @Override
     public void removeHashVal(DMKey key) {
+        trackingWillChange();
         K k = convertIRIOtoKey(key);
         hashVal.remove(k);
     }

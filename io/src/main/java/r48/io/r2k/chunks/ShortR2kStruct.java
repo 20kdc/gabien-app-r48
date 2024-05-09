@@ -8,9 +8,9 @@
 package r48.io.r2k.chunks;
 
 import r48.io.IntUtils;
+import r48.io.data.DMContext;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixed;
-import r48.io.data.obj.DM2Context;
+import r48.io.data.IRIOFixedData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,12 +19,18 @@ import java.io.OutputStream;
 /**
  * Created on 05/06/17.
  */
-public class ShortR2kStruct extends IRIOFixed implements IR2kInterpretable {
+public class ShortR2kStruct extends IRIOFixedData implements IR2kInterpretable {
     public short value;
 
-    public ShortR2kStruct(DM2Context dm2, int v) {
-        super(dm2.dm3, 'i');
+    public ShortR2kStruct(DMContext dm2, int v) {
+        super(dm2, 'i');
         value = (short) v;
+    }
+
+    @Override
+    public Runnable saveState() {
+        final short saved = value;
+        return () -> value = saved;
     }
 
     @Override
@@ -34,6 +40,7 @@ public class ShortR2kStruct extends IRIOFixed implements IR2kInterpretable {
 
     @Override
     public IRIO setFX(long fx) {
+        trackingWillChange();
         value = (short) fx;
         return this;
     }
