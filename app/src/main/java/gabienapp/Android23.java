@@ -36,6 +36,9 @@ public class Android23 {
         IGrDriver backbufferA = null;
         IGrDriver backbufferB = null;
         while (window.stillRunning()) {
+            // If the user has granted storage permission, then we 'only' lose gabien init resources by continuing
+            if (GaBIEn.hasStoragePermission())
+                return;
             double dTTarg = (globalMS / 1000d) - compensationDT;
             double dT = GaBIEn.endFrame(dTTarg);
             compensationDT = Math.min(dTTarg, dT - dTTarg);

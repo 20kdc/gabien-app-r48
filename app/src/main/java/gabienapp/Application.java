@@ -28,11 +28,9 @@ public class Application {
     }
 
     public static void gabienmain() {
-        if (!GaBIEn.hasStoragePermission()) {
+        if (!GaBIEn.hasStoragePermission())
             Android23.run();
-        } else {
-            Launcher lun = new Launcher(false);
-            lun.run();
-        }
+        Launcher lun = new Launcher(false);
+        lun.run();
     }
 }
