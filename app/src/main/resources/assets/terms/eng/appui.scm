@@ -129,6 +129,7 @@
 	prObjectSrc "Source Object Name?"
 	prObjectDst "Target Object Name?"
 	mTestFonts "Test Fonts"
+	mTestIcons "Test Icons"
 	mTestGraphics "Test Graphics Stuff"
 	mToggleFull "Toggle Fullscreen"
 	mSchemaTranslator "Dump Schemaside Translations"
@@ -147,7 +148,6 @@
 		"Type 'I understand.' at the prompt behind this window if you HAVE done this."
 	)
 	dlgBadNum "Not a valid number."
-	dlgFontSize "Font Size?"
 	dlgClipEmpty "There is nothing in the clipboard."
 	mEditObj "Edit Object"
 	mCorrectObj "Autocorrect Object By Name And Schema"

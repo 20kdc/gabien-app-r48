@@ -66,6 +66,7 @@ public class TrAppUI extends TrPage {
     public String prObjectSrc;
     public String prObjectDst;
     public String mTestFonts;
+    public String mTestIcons;
     public String mTestGraphics;
     public String mToggleFull;
     public String mSchemaTranslator;
@@ -74,7 +75,6 @@ public class TrAppUI extends TrPage {
     public String mREPL;
     public String warnRestoreSafety;
     public String dlgBadNum;
-    public String dlgFontSize;
     public String dlgClipEmpty;
     public String mEditObj;
     public String mCorrectObj;
