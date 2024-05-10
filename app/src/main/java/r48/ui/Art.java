@@ -32,7 +32,8 @@ public class Art {
     // Images
     public IImage layerTabs = GaBIEn.getImageCKEx("layertab.png", false, true, 255, 0, 255);
     public IImage noMap = GaBIEn.getImageCKEx("nomad.png", false, true, 0, 0, 0);
-    public IImage symbolic = GaBIEn.getImageCKEx("symbolic.png", false, true, 0, 0, 0);
+    public IImage symbolic8 = GaBIEn.getImageEx("symbolic8.png", false, true);
+    public IImage symbolic16 = GaBIEn.getImageEx("symbolic16.png", false, true);
 
     // Generated Images
     private IImage colourPal, rainbow;
@@ -211,16 +212,8 @@ public class Art {
         // 16px * X
         // Symbols do NOT get scaled to non-integer sizes, unless size < 4 or force.
         int size = Math.min(sizeW, sizeH);
-        if (size <= 4) {
-            drawSymbol4px(igd, symbol.ordinal(), x, y, sizeW, sizeH);
-        } else if (size < 8) {
-            int mX = (sizeW - 4) / 2;
-            int mY = (sizeH - 4) / 2;
-            if (force) {
-                mX = 0;
-                mY = 0;
-            }
-            drawSymbol4px(igd, symbol.ordinal(), x + mX, y + mY, force ? sizeW : 4, force ? sizeH : 4);
+        if (size <= 8) {
+            drawSymbol8px(igd, symbol.ordinal(), x, y, sizeW, sizeH);
         } else if (size < 16) {
             int mX = (sizeW - 8) / 2;
             int mY = (sizeH - 8) / 2;
@@ -241,23 +234,12 @@ public class Art {
         }
     }
 
-    private void drawSymbol4px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
-        igd.blitScaledImage(0, symbol * 4, 4, 4, x, y, sizeW, sizeH, symbolic);
-    }
-
     private void drawSymbol8px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
-        int page = symbol / 4;
-        symbol %= 4;
-        int subpage = symbol / 2;
-        symbol %= 2;
-        subpage += page * 2;
-        igd.blitScaledImage(4 + (symbol * 8), subpage * 8, 8, 8, x, y, sizeW, sizeH, symbolic);
+        igd.blitScaledImage(0, symbol * 8, 8, 8, x, y, sizeW, sizeH, symbolic8);
     }
 
     private void drawSymbol16px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
-        int page = symbol / 4;
-        symbol %= 4;
-        igd.blitScaledImage(20 + (symbol * 16), page * 16, 16, 16, x, y, sizeW, sizeH, symbolic);
+        igd.blitScaledImage(0, symbol * 16, 16, 16, x, y, sizeW, sizeH, symbolic16);
     }
 
     // Basically a "compatibility" function. Tries to draw an appropriate event-point image given a tile size and a top-left position.
