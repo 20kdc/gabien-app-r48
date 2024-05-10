@@ -32,8 +32,20 @@ public abstract class IRIO extends RORIO {
      */
     public final @NonNull DMContext context;
 
+    /**
+     * Cached DMKey to prevent GC churn.
+     */
+    private DMKey cachedDMKey;
+
     public IRIO(@NonNull DMContext context) {
         this.context = context;
+    }
+
+    @Override
+    public final DMKey asKey() {
+        if (cachedDMKey != null && RORIO.rubyEquals(this, cachedDMKey))
+            return cachedDMKey;
+        return cachedDMKey = DMKey.ofInternal(this);
     }
 
     // Primitive Setters. These make copies of any buffers given, among other things.

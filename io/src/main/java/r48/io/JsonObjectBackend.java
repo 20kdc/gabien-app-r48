@@ -76,7 +76,7 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
                 if (!tokens.removeFirst().equals(":"))
                     throw new RuntimeException("Couldn't find KV separator");
                 IRIO val = loadFromTokens(context, tokens);
-                hash.addHashVal(DMKey.of(key)).setDeepClone(val);
+                hash.addHashVal(key.asKey()).setDeepClone(val);
             }
         }
         if (n.equals("[")) {

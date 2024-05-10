@@ -13,6 +13,8 @@ import r48.io.IMIUtils;
 import java.io.*;
 import java.nio.charset.Charset;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.uslx.io.MemoryishR;
 
 /**
@@ -20,6 +22,12 @@ import gabien.uslx.io.MemoryishR;
  * Created 27th August, 2022.
  */
 public abstract class RORIO {
+    /**
+     * This is implemented by DMKey via 'return itself' and by IRIO via a cache.
+     * The idea is to make DMKey.of(X) more efficient.
+     */
+    public abstract @NonNull DMKey asKey();
+
     public abstract int getType();
 
     // IVar Access
@@ -182,5 +190,9 @@ public abstract class RORIO {
         if (aType == '0')
             return true;
         return false;
+    }
+
+    public static boolean rubySuitableKey(int i) {
+        return (i == 'i' || i == '"' || i == 'f' || i == 'l' || i == ':' || i == 'T' || i == 'F' || i == '0');
     }
 }

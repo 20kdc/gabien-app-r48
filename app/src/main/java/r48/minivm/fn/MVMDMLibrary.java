@@ -200,7 +200,7 @@ public class MVMDMLibrary {
         } else if (v instanceof Long) {
             return DMKey.of((Long) v);
         } else if (v instanceof RORIO) {
-            return DMKey.of((RORIO) v);
+            return ((RORIO) v).asKey();
         } else {
             throw new RuntimeException("Cannot convert " + v + " to DMKey");
         }

@@ -9,6 +9,8 @@ package r48.io.data;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.uslx.io.ByteArrayMemoryish;
 import gabien.uslx.io.MemoryishR;
 
@@ -17,7 +19,7 @@ import gabien.uslx.io.MemoryishR;
  * Note that this particular RORIO variant actually works as a hash key.
  * Created 25th March 2023.
  */
-public class DMKey extends RORIO {
+public final class DMKey extends RORIO {
     public static final DMKey NULL = new DMKey(Subtype.Null, 0, null, null, null);
     public static final DMKey TRUE = new DMKey(Subtype.True, 0, null, null, null);
     public static final DMKey FALSE = new DMKey(Subtype.False, 0, null, null, null);
@@ -41,7 +43,16 @@ public class DMKey extends RORIO {
         this.refVal = refVal;
     }
 
-    public static DMKey of(RORIO src) {
+    @Override
+    public DMKey asKey() {
+        return this;
+    }
+
+    /**
+     * Don't call this unless you are IRIO.
+     * IRIO gets to call this 'cus caching.
+     */
+    static @NonNull DMKey ofInternal(RORIO src) {
         int t = src.getType();
         if (t == 'i') {
             return of(src.getFX());
