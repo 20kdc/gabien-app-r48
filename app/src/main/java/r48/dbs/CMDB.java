@@ -42,7 +42,7 @@ public class CMDB extends App.Svc {
     public FF0[] categories = new FF0[] {() -> T.s.cmdb_defCatName};
     public HashMap<Integer, RPGCommand> knownCommands = new HashMap<Integer, RPGCommand>();
     public LinkedList<Integer> knownCommandOrder = new LinkedList<Integer>();
-    public int listLeaveCmd = -1; // -1 means "no list leave command actually exists".
+    public @Nullable DMKey listLeaveCmd = null; // null means "no list leave command actually exists".
     public int blockLeaveCmd = 0; // This is 10 on R2k, but that is controlled via Lblock.
 
     public CMDB(final SDB sdb, final String id) {
@@ -439,7 +439,7 @@ public class CMDB extends App.Svc {
                             blockLeaveCmd = workingCmdId;
                             rc.typeBlockLeave = true;
                         } else if (args[0].equals("list")) {
-                            listLeaveCmd = workingCmdId;
+                            listLeaveCmd = DMKey.of(workingCmdId);
                             rc.typeListLeave = true;
                         } else if (args[0].equals("strict")) {
                             rc.typeStrictLeave = true;
@@ -447,7 +447,7 @@ public class CMDB extends App.Svc {
                         // "none" is neither
                     } else {
                         // default context: all
-                        listLeaveCmd = workingCmdId;
+                        listLeaveCmd = DMKey.of(workingCmdId);
                         blockLeaveCmd = workingCmdId;
                         rc.typeBlockLeave = true;
                         rc.typeListLeave = true;

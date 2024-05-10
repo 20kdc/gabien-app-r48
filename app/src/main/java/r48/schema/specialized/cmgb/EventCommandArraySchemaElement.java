@@ -88,7 +88,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         int indent = 0;
 
         // Note that this array can grow as it's being searched.
-        boolean hasValidListLeave = database.listLeaveCmd == -1;
+        boolean hasValidListLeave = database.listLeaveCmd == null;
         for (int i = 0; i < array.getALen(); i++) {
             IRIO commandTarg = array.getAElem(i);
             int code = (int) commandTarg.getIVar("@code").getFX();
@@ -98,8 +98,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 final int indentOld = indent;
                 indent += rc.indentPre;
                 if (baseElement.allowControlOfIndent) {
-                    if (indent != commandTarg.getIVar("@indent").getFX()) {
-                        commandTarg.getIVar("@indent").setFX(indent);
+                    IRIO indentTarg = commandTarg.getIVar("@indent");
+                    if (indent != indentTarg.getFX()) {
+                        indentTarg.setFX(indent);
                         modified = true;
                     }
                 }
@@ -185,7 +186,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 int l = array.getALen();
                 IRIO c = array.addAElem(l);
                 SchemaPath.setDefaultValue(c, baseElement, DMKey.of(l));
-                c.getIVar("@code").setFX(database.listLeaveCmd);
+                c.getIVar("@code").setDeepClone(database.listLeaveCmd);
                 modified = true;
             }
         }
