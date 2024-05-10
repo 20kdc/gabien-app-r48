@@ -12,9 +12,17 @@ import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import r48.App;
 import r48.schema.*;
+import r48.schema.displays.EPGDisplaySchemaElement;
+import r48.schema.displays.HuePickerSchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.integers.LowerBoundIntegerSchemaElement;
 import r48.schema.integers.NamespacedIntegerSchemaElement;
+import r48.schema.integers.ROIntegerSchemaElement;
+import r48.schema.specialized.OSStrHashMapSchemaElement;
+import r48.schema.specialized.ScriptControlSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
+import r48.schema.specialized.StringBlobSchemaElement;
+import r48.schema.specialized.ZLibBlobSchemaElement;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 import r48.tr.pages.TrSchema;
@@ -28,10 +36,49 @@ import java.util.function.Function;
  * for creating schema elements
  * Created on Sunday September 17th, 2017
  */
-class SDBHelpers extends App.Svc {
-    SDBHelpers(App app) {
+public class SDBHelpers extends App.Svc {
+    public final OpaqueSchemaElement opaque;
+
+    public SDBHelpers(App app) {
         super(app);
+        opaque = new OpaqueSchemaElement(app);
+
+        app.sdb.setSDBEntry("nil", opaque);
+        app.sdb.setSDBEntry("int", new IntegerSchemaElement(app, 0));
+        app.sdb.setSDBEntry("roint", new ROIntegerSchemaElement(app, 0));
+        app.sdb.setSDBEntry("int+0", new LowerBoundIntegerSchemaElement(app, 0, 0));
+        app.sdb.setSDBEntry("int+1", new LowerBoundIntegerSchemaElement(app, 1, 1));
+        app.sdb.setSDBEntry("index", new AMAISchemaElement(app));
+        app.sdb.setSDBEntry("float", new FloatSchemaElement(app, "0", false));
+        app.sdb.setSDBEntry("jnum", new FloatSchemaElement(app, "0", true));
+        app.sdb.setSDBEntry("string", new StringSchemaElement(app, () -> "", '\"'));
+        app.sdb.setSDBEntry("boolean", new BooleanSchemaElement(app, false));
+        app.sdb.setSDBEntry("booleanDefTrue", new BooleanSchemaElement(app, true));
+        app.sdb.setSDBEntry("int_boolean", new IntBooleanSchemaElement(app, false));
+        app.sdb.setSDBEntry("int_booleanDefTrue", new IntBooleanSchemaElement(app, true));
+        app.sdb.setSDBEntry("OPAQUE", opaque);
+        app.sdb.setSDBEntry("hue", new HuePickerSchemaElement(app));
+
+        app.sdb.setSDBEntry("percent", new LowerBoundIntegerSchemaElement(app, 0, 100));
+
+        app.sdb.setSDBEntry("zlibBlobEditor", new ZLibBlobSchemaElement(app));
+        app.sdb.setSDBEntry("stringBlobEditor", new StringBlobSchemaElement(app));
+
+        app.sdb.setSDBEntry("internal_EPGD", new EPGDisplaySchemaElement(app));
+        app.sdb.setSDBEntry("internal_scriptIE", new ScriptControlSchemaElement(app));
+
+        app.sdb.setSDBEntry("internal_LF_INDEX", new OSStrHashMapSchemaElement(app));
+
+        if (app.engine.defineIndent) {
+            if (app.engine.allowIndentControl) {
+                app.sdb.setSDBEntry("indent", new ROIntegerSchemaElement(app, 0));
+            } else {
+                app.sdb.setSDBEntry("indent", new IntegerSchemaElement(app, 0));
+            }
+        }
     }
+
+
     // Spritesheet definitions are quite opaque lists of numbers defining how a grid sheet should appear. See spriteSelector.
     protected HashMap<String, Function<String, ISpritesheetProvider>> spritesheets = new HashMap<String, Function<String, ISpritesheetProvider>>();
     protected HashMap<String, FF0> spritesheetN = new HashMap<String, FF0>();

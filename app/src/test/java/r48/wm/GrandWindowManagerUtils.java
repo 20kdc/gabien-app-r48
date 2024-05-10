@@ -146,7 +146,13 @@ public class GrandWindowManagerUtils {
                 try {
                     FileOutputStream debugOut = new FileOutputStream("test-out/elements.txt");
                     for (UIElement uie : es) {
-                        String res = "[" + identify(uie) + "] [" + identifyCls(uie) + "]\n";
+                        UIElement lookingAt = uie;
+                        String pathDbg = "";
+                        while (lookingAt != null) {
+                            pathDbg = identify(lookingAt) + "¥" + pathDbg;
+                            lookingAt = lookingAt.getParent();
+                        }
+                        String res = pathDbg + " [" + identifyCls(uie) + "]\n";
                         debugOut.write(res.getBytes(StandardCharsets.UTF_8));
                     }
                     debugOut.close();

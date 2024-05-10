@@ -11,8 +11,6 @@ import gabien.ui.*;
 import gabien.uslx.vfs.FSBackend;
 import r48.AdHocSaveLoad;
 import r48.App;
-import r48.dbs.ObjectDB;
-import r48.dbs.SDB;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -38,16 +36,7 @@ public class AppMain {
 
         // initialize core resources
 
-        app.sdb = new SDB(app);
-
         app.vmCtx.include(engine.initDir + "init", false);
-
-        // initialize everything else that needs initializing, starting with ObjectDB
-        IObjectBackend backend = IObjectBackend.Factory.create(app.gameRoot, engine.odbBackend, engine.dataPath, engine.dataExt);
-        app.odb = new ObjectDB(app, backend, (s) -> {
-            if (app.system != null)
-                app.system.saveHook(s);
-        });
 
         app.system = MapSystem.create(app, engine.mapSystem);
 
@@ -59,6 +48,7 @@ public class AppMain {
         app.sdb.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
         app.sdb.updateDictionaries(null);
         app.sdb.confirmAllExpectationsMet();
+        app.cmdbs.confirmAllExpectationsMet();
 
         // Now that everything that could possibly reasonably create DynTrSlots has been initialized, now load the language file.
         app.vmCtx.include(engine.initDir + "lang/" + ilg.c.language + "/init", true);

@@ -62,8 +62,8 @@ public class LibLCF245Dumper extends App.Svc {
     }
     private void dumpCMDBs(IRIO cmdbs) {
         cmdbs.setHash();
-        for (String id : app.sdb.getAllCMDBIDs()) {
-            CMDB cmdb = app.sdb.getCMDB(id);
+        for (String id : app.cmdbs.getAllCMDBIDs()) {
+            CMDB cmdb = app.cmdbs.getCMDB(id);
             dumpCMDB(cmdb, putProp(cmdbs, id));
         }
     }

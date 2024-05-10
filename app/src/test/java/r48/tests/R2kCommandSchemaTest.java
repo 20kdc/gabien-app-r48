@@ -73,7 +73,7 @@ public class R2kCommandSchemaTest {
 
     private void runMainCommandProcedure(App app, String cmdt, String cmd, IRIO iVar) {
         IRIO res = addCommandInto(app, cmdt, iVar);
-        CMDB cmdb = app.sdb.getCMDB(cmd);
+        CMDB cmdb = app.cmdbs.getCMDB(cmd);
         for (int i : cmdb.knownCommandOrder) {
             res.getIVar("@code").setFX(i);
             rpgEv.modifyVal(rpgEvInst, rpgEvP, true);

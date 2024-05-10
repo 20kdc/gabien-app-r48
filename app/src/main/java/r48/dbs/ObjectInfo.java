@@ -10,7 +10,7 @@ package r48.dbs;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import r48.App;
+import r48.app.AppCore;
 import r48.io.IObjectBackend;
 import r48.io.IObjectBackend.ILoadedObject;
 import r48.schema.SchemaElement;
@@ -19,7 +19,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 13th August, 2022.
  */
-public class ObjectInfo extends App.Svc {
+public class ObjectInfo extends AppCore.Csv {
     /**
      * Object ID
      */
@@ -34,7 +34,7 @@ public class ObjectInfo extends App.Svc {
      */
     public final @Nullable SchemaElement schema;
 
-    public ObjectInfo(@NonNull App app, @NonNull String iN, @NonNull String sN) {
+    public ObjectInfo(@NonNull AppCore app, @NonNull String iN, @NonNull String sN) {
         super(app);
         idName = iN;
         schemaName = sN;

@@ -83,7 +83,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     }
 
     private CMDB getCMDB(String arg) {
-        return sdb.getCMDB(arg);
+        return app.cmdbs.getCMDB(arg);
     }
 
     private void setSDBEntry(String id, SchemaElement se) {
@@ -478,7 +478,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     final PathSyntax varPath = getPathSyntax();
                     final PathSyntax imgPath = getPathSyntax();
                     final String imgPfx = args[point++];
-                    return sdb.helpers.makeSpriteSelector(varPath, imgPath, imgPfx);
+                    return app.sdbHelpers.makeSpriteSelector(varPath, imgPath, imgPfx);
                 }
                 if (text.equals("r2kTonePicker")) {
                     final PathSyntax rPath = getPathSyntax();
@@ -653,12 +653,12 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 }
                 if (text.equals("internal_r2kPPPID")) {
                     SchemaElement se = get();
-                    return sdb.helpers.makePicPointerPatchID(getSDBEntry("var_id"), se);
+                    return app.sdbHelpers.makePicPointerPatchID(getSDBEntry("var_id"), se);
                 }
                 if (text.equals("internal_r2kPPPV")) {
                     FF0 txt = trAnon(args[point++]);
                     SchemaElement se = get();
-                    return sdb.helpers.makePicPointerPatchVar(getSDBEntry("var_id"), txt, se);
+                    return app.sdbHelpers.makePicPointerPatchVar(getSDBEntry("var_id"), txt, se);
                 }
                 if (text.equals("CTNative"))
                     return new CTNativeSchemaElement(app, args[point++]);
@@ -875,7 +875,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 workingObj.aggregate.add(new R2kSystemDefaultsInstallerSchemaElement(app, Integer.parseInt(args[1])));
             } else if (args[0].equals("spritesheet")) {
                 // Defines a spritesheet for spriteSelector.
-                sdb.helpers.createSpritesheet(srcLoc, args);
+                app.sdbHelpers.createSpritesheet(srcLoc, args);
             } else if (args[0].equals("datum")) {
                 // this is used to help port over existing code to be more Datumy
                 String srcLocStr = srcLoc.toString();

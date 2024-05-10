@@ -7,7 +7,7 @@
 
 package r48.dbs;
 
-import r48.App;
+import r48.app.AppCore;
 import r48.io.IObjectBackend;
 import r48.io.data.DMContext;
 import r48.io.data.DMChangeTracker;
@@ -30,15 +30,17 @@ import gabien.uslx.append.Block;
  * Not quite a database, but not quite not a database either.
  * Created on 12/29/16.
  */
-public class ObjectDB extends App.Svc {
+public class ObjectDB extends AppCore.Csv {
     // Useful for object shenanigans.
     public final IObjectBackend backend;
-    private final Consumer<String> saveHook;
+    /**
+     * The MapSystem save hook overwrites this for now
+     */
+    public @NonNull Consumer<String> saveHook = (id) -> {};
 
-    public ObjectDB(App app, IObjectBackend b, Consumer<String> sv) {
+    public ObjectDB(AppCore app, IObjectBackend b) {
         super(app);
         backend = b;
-        saveHook = sv;
     }
 
     public HashMap<String, WeakReference<IObjectBackend.ILoadedObject>> objectMap = new HashMap<String, WeakReference<IObjectBackend.ILoadedObject>>();
@@ -134,7 +136,7 @@ public class ObjectDB extends App.Svc {
             newlyCreatedObjects.remove(rio);
         } catch (Exception ioe) {
             // ERROR!
-            app.ui.launchDialog(T.u.odb_saveErr.r(id), ioe);
+            app.reportNonCriticalErrorToUser(T.u.odb_saveErr.r(id), ioe);
             ioe.printStackTrace();
             return;
         }
@@ -303,10 +305,11 @@ public class ObjectDB extends App.Svc {
             }
         }
         // Perform modification listeners.
+        SchemaElement opaque = app.sdb.getSDBEntry("OPAQUE");
         for (IObjectBackend.ILoadedObject lo : pokedObjects) {
             // Use an opaque schema element because we really don't have a good one here.
             // We don't use changeOccurred because that would activate schema processing, which is also undesired here.
-            objectRootModified(lo, new SchemaPath(app.sdb.opaque, lo));
+            objectRootModified(lo, new SchemaPath(opaque, lo));
         }
         // Remove from modifiedObjects - they don't count as modified.
         modifiedObjects.removeAll(pokedObjects);

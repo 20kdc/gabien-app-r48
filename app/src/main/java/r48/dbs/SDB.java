@@ -9,17 +9,12 @@ package r48.dbs;
 
 import gabien.ui.UIElement;
 import r48.App;
+import r48.app.AppCore;
 import r48.io.IObjectBackend;
 import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.IRIO;
 import r48.schema.*;
 import r48.schema.arrays.*;
-import r48.schema.displays.EPGDisplaySchemaElement;
-import r48.schema.displays.HuePickerSchemaElement;
-import r48.schema.integers.IntegerSchemaElement;
-import r48.schema.integers.LowerBoundIntegerSchemaElement;
-import r48.schema.integers.ROIntegerSchemaElement;
-import r48.schema.specialized.*;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -37,7 +32,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * Kinda required for reading maps.
  * Created on 12/30/16.
  */
-public class SDB extends App.Svc {
+public class SDB extends AppCore.Csv {
     // The very unsafe option which will turn on all sorts of automatic script helper functions.
     // Some of which currently WILL destroy scripts. 315, map29
     // Ok, so I've checked in various ways and done a full restore from virgin copy.
@@ -52,77 +47,15 @@ public class SDB extends App.Svc {
     private LinkedList<Runnable> mergeRunnables = new LinkedList<>();
     private LinkedList<String> remainingExpected = new LinkedList<>();
 
-    protected HashMap<String, CMDB> cmdbs = new HashMap<>();
-    private LinkedList<CMDB> cmdbEntries = new LinkedList<>();
-    public final SDBHelpers helpers;
-
     public final StandardArrayInterface standardArrayUi = new StandardArrayInterface();
 
-    public final OpaqueSchemaElement opaque;
-
-    public SDB(App app) {
+    public SDB(AppCore app) {
         super(app);
-        helpers = new SDBHelpers(app);
-        opaque = new OpaqueSchemaElement(app);
-        schemaDatabase.put("nil", opaque);
-        schemaDatabase.put("int", new IntegerSchemaElement(app, 0));
-        schemaDatabase.put("roint", new ROIntegerSchemaElement(app, 0));
-        schemaDatabase.put("int+0", new LowerBoundIntegerSchemaElement(app, 0, 0));
-        schemaDatabase.put("int+1", new LowerBoundIntegerSchemaElement(app, 1, 1));
-        schemaDatabase.put("index", new AMAISchemaElement(app));
-        schemaDatabase.put("float", new FloatSchemaElement(app, "0", false));
-        schemaDatabase.put("jnum", new FloatSchemaElement(app, "0", true));
-        schemaDatabase.put("string", new StringSchemaElement(app, () -> "", '\"'));
-        schemaDatabase.put("boolean", new BooleanSchemaElement(app, false));
-        schemaDatabase.put("booleanDefTrue", new BooleanSchemaElement(app, true));
-        schemaDatabase.put("int_boolean", new IntBooleanSchemaElement(app, false));
-        schemaDatabase.put("int_booleanDefTrue", new IntBooleanSchemaElement(app, true));
-        schemaDatabase.put("OPAQUE", opaque);
-        schemaDatabase.put("hue", new HuePickerSchemaElement(app));
-
-        schemaDatabase.put("percent", new LowerBoundIntegerSchemaElement(app, 0, 100));
-
-        schemaDatabase.put("zlibBlobEditor", new ZLibBlobSchemaElement(app));
-        schemaDatabase.put("stringBlobEditor", new StringBlobSchemaElement(app));
-
-        schemaDatabase.put("internal_EPGD", new EPGDisplaySchemaElement(app));
-        schemaDatabase.put("internal_scriptIE", new ScriptControlSchemaElement(app));
-
-        schemaDatabase.put("internal_LF_INDEX", new OSStrHashMapSchemaElement(app));
-
-        if (app.engine.defineIndent) {
-            if (app.engine.allowIndentControl) {
-                schemaDatabase.put("indent", new ROIntegerSchemaElement(app, 0));
-            } else {
-                schemaDatabase.put("indent", new IntegerSchemaElement(app, 0));
-            }
-        }
-    }
-
-    public void newCMDB(String a0) {
-        if (cmdbs.containsKey(a0))
-            throw new RuntimeException("Attempted to overwrite CMDB: " + a0);
-        CMDB cm = new CMDB(this, a0);
-        cmdbs.put(a0, cm);
-        cmdbEntries.add(cm);
-    }
-
-    public CMDB getCMDB(String arg) {
-        CMDB cm = cmdbs.get(arg);
-        if (cm == null)
-            throw new RuntimeException("Expected CMDB to exist (and it didn't): " + arg);
-        return cm;
-    }
-
-    public void loadCMDB(String arg, String fn) {
-        getCMDB(arg).load(fn);
     }
 
     public void confirmAllExpectationsMet() {
         if (remainingExpected.size() > 0)
             throw new RuntimeException("Remaining expectation " + remainingExpected.getFirst());
-        for (CMDB cmdb : cmdbs.values())
-            cmdb.check();
     }
 
     public boolean hasSDBEntry(String text) {
@@ -147,7 +80,7 @@ public class SDB extends App.Svc {
             return tmp;
         // Notably, the proxy is put in the database so the expectation is only added once.
         remainingExpected.add(text);
-        SchemaElement ise = new NameProxySchemaElement(app, text);
+        SchemaElement ise = new NameProxySchemaElement((App) app, text);
         schemaDatabase.put(text, ise);
         return ise;
     }
@@ -160,7 +93,7 @@ public class SDB extends App.Svc {
                 throw new RuntimeException("DynamicSchemaElement expected: " + text);
             return (DynamicSchemaElement) se;
         } else {
-            DynamicSchemaElement npse = new DynamicSchemaElement(app, text);
+            DynamicSchemaElement npse = new DynamicSchemaElement((App) app, text);
             schemaDatabase.put(text, npse);
             return npse;
         }
@@ -171,20 +104,6 @@ public class SDB extends App.Svc {
      */
     public HashSet<String> getAllSDBEntryIDs() {
         return new HashSet<>(schemaDatabase.keySet());
-    }
-
-    /**
-     * Added for liblcf#245, not really something app should use otherwise
-     */
-    public HashSet<String> getAllCMDBIDs() {
-        return new HashSet<>(cmdbs.keySet());
-    }
-
-    /**
-     * Gets all CMDBs in a consistent order.
-     */
-    public CMDB[] getAllCMDBs() {
-        return cmdbEntries.toArray(new CMDB[0]);
     }
 
     public LinkedList<ObjectInfo> listFileDefs() {
@@ -201,10 +120,10 @@ public class SDB extends App.Svc {
 
     public @Nullable SchemaElement findSchemaFor(@Nullable String objId, @NonNull IRIO object) {
         if (objId != null)
-            if (app.sdb.hasSDBEntry("File." + objId))
-                return app.sdb.getSDBEntry("File." + objId);
+            if (hasSDBEntry("File." + objId))
+                return getSDBEntry("File." + objId);
         if (object.getType() == 'o')
-            return app.sdb.getSDBEntry(object.getSymbol());
+            return getSDBEntry(object.getSymbol());
         return null;
     }
 

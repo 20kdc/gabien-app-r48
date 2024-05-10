@@ -25,8 +25,10 @@ import r48.dbs.ObjectDB;
 import r48.dbs.ObjectInfo;
 import r48.dbs.SDB;
 import r48.imageio.ImageIOFormat;
+import r48.io.IObjectBackend;
 import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
+import r48.timemachine.TimeMachine;
 import r48.tr.pages.TrRoot;
 import r48.ui.Art;
 
@@ -34,7 +36,7 @@ import r48.ui.Art;
  * An attempt to move as much as possible out of static variables.
  * Pulled out of App, 27th February, 2023
  */
-public class AppCore {
+public abstract class AppCore {
     public final @NonNull InterlaunchGlobals ilg;
     // Sub-objects
     public final @NonNull Art a;
@@ -45,8 +47,9 @@ public class AppCore {
     public final @NonNull EngineDef engine;
     public final @NonNull Charset encoding;
     // Main
+    public final @NonNull TimeMachine timeMachine = new TimeMachine();
     public ObjectDB odb;
-    public SDB sdb;
+    public final SDB sdb;
     public MapSystem system;
     public ImageIOFormat[] imageIOFormats;
 
@@ -89,6 +92,11 @@ public class AppCore {
         loadProgress = lp;
         imageIOFormats = ImageIOFormat.initializeFormats(this);
         deletionButtonsNeedConfirmation = GaBIEn.singleWindowApp();
+        sdb = new SDB(this);
+
+        // initialize everything else that needs initializing, starting with ObjectDB
+        IObjectBackend backend = IObjectBackend.Factory.create(gameRoot, engine.odbBackend, engine.dataPath, engine.dataExt);
+        odb = new ObjectDB(this, backend);
     }
 
     // Attempts to ascertain all known objects
@@ -115,6 +123,8 @@ public class AppCore {
         }
         return oi;
     }
+
+    public abstract void reportNonCriticalErrorToUser(String r, Throwable ioe);
 
     public static class Csv {
         public final @NonNull AppCore app;

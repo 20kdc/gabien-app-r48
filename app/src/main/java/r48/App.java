@@ -29,7 +29,9 @@ import r48.app.AppUI;
 import r48.app.EngineDef;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
+import r48.dbs.CMDBDB;
 import r48.dbs.RPGCommand;
+import r48.dbs.SDBHelpers;
 import r48.io.data.DMContext;
 import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
@@ -65,6 +67,10 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     public HashMap<Integer, String> osSHESEDB;
     // scheduled tasks for when UI is around, not in UI because it may not init (ever, even!)
     public HashSet<Runnable> uiPendingRunnables = new HashSet<Runnable>();
+
+    // this inits SDB's initial schemas, etc.
+    public final SDBHelpers sdbHelpers;
+
     // these init during UI init!
     public AppUI ui;
     public AppNewProject np;
@@ -83,6 +89,8 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
 
     // VM context
     public final MVMEnvR48 vmCtx;
+
+    public final CMDBDB cmdbs;
 
     /**
      * Command tags.
@@ -167,6 +175,9 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
         MVMR48AppLibraries.add(vmCtx, this);
         vmCtx.include("vm/global", false);
         vmCtx.include("vm/app", false);
+        // SDB fill-in
+        sdbHelpers = new SDBHelpers(this);
+        cmdbs = new CMDBDB(this);
     }
 
     /**
@@ -256,6 +267,11 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
             ui.mapContext = null;
         }
         GaBIEn.hintFlushAllTheCaches();
+    }
+
+    @Override
+    public void reportNonCriticalErrorToUser(String r, Throwable ioe) {
+        ui.launchDialog(r, ioe);
     }
 
     public static class Svc {

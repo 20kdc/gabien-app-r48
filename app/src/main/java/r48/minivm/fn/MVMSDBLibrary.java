@@ -41,11 +41,11 @@ public class MVMSDBLibrary {
         }).attachHelp("(cmdb-add-tag ID NAME) : Adds a command tag.");
 
         ctx.defLib("cmdb-init", (a0) -> {
-            app.sdb.newCMDB(MVMU.coerceToString(a0));
+            app.cmdbs.newCMDB(MVMU.coerceToString(a0));
             return null;
         }).attachHelp("(cmdb-init ID) : Setup a CMDB.");
         ctx.defLib("cmdb-load-old", (a0, a1) -> {
-            app.sdb.loadCMDB(MVMU.coerceToString(a0), (String) a1);
+            app.cmdbs.loadCMDB(MVMU.coerceToString(a0), (String) a1);
             return null;
         }).attachHelp("(cmdb-load-old ID FILE) : Read old-format CMDB file.");
 

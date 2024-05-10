@@ -34,7 +34,7 @@ public class ByCodeCommandClassifier implements ICommandClassifier {
     @Override
     @NonNull
     public Instance instance(App app) {
-        final CMDB[] cmdbs = app.sdb.getAllCMDBs();
+        final CMDB[] cmdbs = app.cmdbs.getAllCMDBs();
         if (cmdbs.length == 0) {
             // Uhhhh
             return new Instance() {

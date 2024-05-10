@@ -141,7 +141,7 @@ public class RPGCommand extends App.Svc {
         @Override
         public void applyTo(int idx, LinkedList<UIElement> elementList, IRIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
             App app = launcher.getApp();
-            SchemaElement scse = app.sdb.helpers.makeSpriteSelector(PathSyntax.compile(app, "]" + idx), PathSyntax.compile(app, "]" + spritesheetTargstr), spritesheetId);
+            SchemaElement scse = app.sdbHelpers.makeSpriteSelector(PathSyntax.compile(app, "]" + idx), PathSyntax.compile(app, "]" + spritesheetTargstr), spritesheetId);
             elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
         }
     }

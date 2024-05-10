@@ -12,6 +12,8 @@ import gabien.uslx.append.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.dialogs.UIPopupMenu;
@@ -61,7 +63,7 @@ public abstract class MapSystem extends App.Svc {
         return dobj;
     }
 
-    public static MapSystem create(App app, String sysBackend) {
+    public static @NonNull MapSystem create(App app, String sysBackend) {
         if (sysBackend.equals("null")) {
             return new NullSystem(app);
         } else if (sysBackend.equals("RXP")) {

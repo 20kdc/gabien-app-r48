@@ -45,8 +45,8 @@ public class CMDB extends App.Svc {
     public @Nullable DMKey listLeaveCmd = null; // null means "no list leave command actually exists".
     public int blockLeaveCmd = 0; // This is 10 on R2k, but that is controlled via Lblock.
 
-    public CMDB(final SDB sdb, final String id) {
-        super(sdb.app);
+    public CMDB(final CMDBDB cdb, final String id) {
+        super(cdb.app);
         dbId = id;
     }
 
@@ -86,7 +86,7 @@ public class CMDB extends App.Svc {
 
             @Override
             public void newObj(int objId, String objName) {
-                rc = new RPGCommand(sdb.app, objId, srcLoc, dbId, objName);
+                rc = new RPGCommand(app, objId, srcLoc, dbId, objName);
                 rc.category = categories.length - 1;
                 if (knownCommands.containsKey(objId))
                     throw new RuntimeException("Redefined " + objId);
