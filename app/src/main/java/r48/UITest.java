@@ -19,8 +19,6 @@ import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
-import r48.schema.specialized.IMagicalBinder;
-import r48.schema.specialized.MagicalBinders;
 import r48.ui.UIAppendButton;
 
 import java.io.OutputStream;
@@ -128,12 +126,6 @@ public class UITest extends App.Prx {
                 back.addLast(obj);
                 loadObject(objectList[j]);
             });
-            final IMagicalBinder b = MagicalBinders.getBinderFor(app, objectList[j]);
-            if (b != null)
-                button = new UIAppendButton(T.u.test_binding, button, () -> {
-                    back.addLast(obj);
-                    loadObject(MagicalBinders.toBoundWithCache(app, b, (IRIO) objectList[j]));
-                }, app.f.inspectorTH);
             elms.add(button);
         }
         innerPanel.panelsSet(elms);

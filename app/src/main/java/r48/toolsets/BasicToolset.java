@@ -27,8 +27,6 @@ import r48.io.data.RORIO;
 import r48.map.systems.IRMMapSystem;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
-import r48.schema.specialized.IMagicalBinder;
-import r48.schema.specialized.MagicalBinders;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.utils.LibLCF245Dumper;
 import r48.toolsets.utils.UITestGraphicsStuff;
@@ -297,12 +295,6 @@ public class BasicToolset extends App.Svc implements IToolset {
         }
         for (String k : rio.getIVars())
             total += locateStrings(app, rio.getIVar(k), string);
-        IMagicalBinder b = MagicalBinders.getBinderFor(app, rio);
-        if (b != null) {
-            IRIO bound = MagicalBinders.toBoundWithCache(app, b, rio);
-            int c = locateStrings(app, bound, string);
-            total += c;
-        }
         return total;
     }
 

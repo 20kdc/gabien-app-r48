@@ -34,7 +34,6 @@
 		loadObj (fl1 "Loading object...\n" a0)
 	)
 	(test_
-		binding "Binding"
 		prOk "PRINT.txt written!"
 		prFail "Could not print."
 		PTS "PTS"

@@ -18,11 +18,9 @@ import r48.App;
 import r48.RubyTable;
 import r48.RubyTableR;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOGeneric;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
-import r48.schema.specialized.IMagicalBinder;
-import r48.schema.specialized.MagicalBindingSchemaElement;
+import r48.schema.specialized.RubyTableIndividualCellSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
 import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.specialized.genpos.IGenposTweeningProp;
@@ -195,35 +193,8 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
 
     @Override
     public SchemaPath getCellProp(final int ct, final int i) {
-        // oh, this'll be *hilarious*. NOT.
-        SchemaElement se = new MagicalBindingSchemaElement(app, new IMagicalBinder() {
-            @Override
-            public IRIO targetToBoundNCache(IRIO target) {
-                short val = new RubyTableR(target.getBuffer()).getTiletype(ct, i, 0);
-                return new IRIOGeneric(app.ctxDelmeAppEncoding).setFX(val);
-            }
-
-            @Override
-            public boolean applyBoundToTarget(IRIO bound, IRIO target) {
-                RubyTable rt = new RubyTable(target.editUser());
-                short s = rt.getTiletype(ct, i, 0);
-                short s2 = (short) bound.getFX();
-                if (s != s2) {
-                    rt.setTiletype(ct, i, 0, s2);
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean modifyVal(IRIO trueTarget, boolean setDefault) {
-                // NOTE: THIS SHOULD NEVER HAVE TO OCCUR.
-                // This never gets synthesized.
-                if (setDefault)
-                    throw new RuntimeException("How did this occur?");
-                return false;
-            }
-        }, getCellPropSchemas()[i]);
+        // much better
+        SchemaElement se = new RubyTableIndividualCellSchemaElement(ct, i, 0, getCellPropSchemas()[i]);
         return path.newWindow(se, getFrame().getIVar("@cell_data"));
     }
 

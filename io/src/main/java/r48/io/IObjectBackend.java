@@ -36,9 +36,6 @@ public interface IObjectBackend {
      */
     ILoadedObject newObject(String filename, @NonNull DMContext context);
 
-    // Does this backend use userspace binders, and if so, what's the usersym prefix? Can be null.
-    String userspaceBindersPrefix();
-
     interface ILoadedObject {
         IRIO getObject();
         // Overwrites this object with another if possible.

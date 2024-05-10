@@ -165,11 +165,6 @@ public class JsonObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         }
     }
 
-    @Override
-    public String userspaceBindersPrefix() {
-        return null;
-    }
-
     public static void saveJSONToStream(OutputStream oup, RORIO object) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(oup)) {
             saveValue(dos, object);

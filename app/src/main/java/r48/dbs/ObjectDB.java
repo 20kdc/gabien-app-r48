@@ -34,12 +34,10 @@ public class ObjectDB extends App.Svc {
     // Useful for object shenanigans.
     public final IObjectBackend backend;
     private final Consumer<String> saveHook;
-    public String binderPrefix;
 
     public ObjectDB(App app, IObjectBackend b, Consumer<String> sv) {
         super(app);
         backend = b;
-        binderPrefix = b.userspaceBindersPrefix();
         saveHook = sv;
     }
 

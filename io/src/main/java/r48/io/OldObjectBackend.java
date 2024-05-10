@@ -39,11 +39,6 @@ public abstract class OldObjectBackend<R extends RORIO, W extends IRIO> implemen
 
     public abstract void saveObjectToFile(String filename, R obj) throws IOException;
 
-    @Override
-    public String userspaceBindersPrefix() {
-        return null;
-    }
-
     private class OldObjectBackendLoadedObject implements ILoadedObject {
         private W intern;
         private final String fn;

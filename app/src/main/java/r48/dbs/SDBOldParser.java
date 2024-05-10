@@ -495,13 +495,6 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     final String iPrefix = args[point++];
                     return new TonePickerSchemaElement.Thumbnail(app, rPath, gPath, bPath, sPath, 100, iPath, iPrefix);
                 }
-                if (text.equals("binding")) {
-                    String type = args[point++];
-                    IMagicalBinder binder = MagicalBinders.getBinderByName(type);
-                    if (binder == null)
-                        throw new RuntimeException("Unknown binding " + type);
-                    return new MagicalBindingSchemaElement(app, binder, get());
-                }
                 if (text.equals("context?")) {
                     // context? <id> <default>
                     final String idx = args[point++];

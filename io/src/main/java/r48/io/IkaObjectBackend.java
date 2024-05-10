@@ -173,9 +173,4 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap, IkaMap> {
         // do nothing, usually
         throw new IOException("Can't save " + filename);
     }
-
-    @Override
-    public String userspaceBindersPrefix() {
-        return null;
-    }
 }

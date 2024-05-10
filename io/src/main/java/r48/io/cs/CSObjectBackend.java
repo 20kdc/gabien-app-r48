@@ -215,9 +215,4 @@ public class CSObjectBackend extends OldObjectBackend<IRIO, IRIO> {
             for (int i = 0; i < rt.width; i++)
                 baos.write(rt.getTiletype(i, j, 0));
     }
-
-    @Override
-    public String userspaceBindersPrefix() {
-        return null;
-    }
 }

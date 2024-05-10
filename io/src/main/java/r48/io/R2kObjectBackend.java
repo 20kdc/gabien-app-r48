@@ -13,7 +13,6 @@ import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.io.r2k.R2kIO;
-import r48.io.r2k.R2kUtil;
 import r48.io.r2k.obj.MapUnit;
 import r48.io.r2k.obj.Save;
 import r48.io.r2k.obj.ldb.Database;
@@ -96,10 +95,5 @@ public class R2kObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         try (OutputStream fos = fs.intoPath(filename).openWrite()) {
             baos.writeTo(fos);
         }
-    }
-
-    @Override
-    public String userspaceBindersPrefix() {
-        return R2kUtil.userspaceBinder;
     }
 }

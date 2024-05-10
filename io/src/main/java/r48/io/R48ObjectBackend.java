@@ -199,11 +199,6 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         }
     }
 
-    @Override
-    public String userspaceBindersPrefix() {
-        return null;
-    }
-
     private void saveSymbol(DataOutputStream dis, String sym, SaveCaches caches) throws IOException {
         int symInd = caches.indexOfSym(sym);
         if (symInd >= 0) {
