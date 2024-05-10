@@ -4,21 +4,32 @@
 
 So there's some history to go over here, as it'll cover various terms involved.
 
-* Data Model 1 (DM1): Retroactive name for what became `IRIOGeneric` (formerly called `RubyIO`). This structure is basically necessary to load XP databases, which is what was implemented first. Not very good for memory use and not very good for load times on large databases.
+* Data Model 1 (DM1): Retroactive name for what became `IRIOGeneric` (formerly called `RubyIO`). This structure is basically necessary for RXP IO, which is what was implemented first. Not very good for memory use and not very good for load times on large databases.
 * Data Model 2 (DM2): This was brought in to help with 2K/2K3. The Ikachan editor was the first testbed for the basic DM2 techniques, as shown by `IkaMap`'s description: `Data Model 2 proof of concept`.
 	* This is when `IRIO` was brought in.
-	* Basically, reflection is used to fill out fields. At first, this sounds less efficient (_reflection!?!?!?!_), but the structure used allows for further optimizations.
+	* Basically, reflection is used to fill out fields. At first, this sounds less efficient (_reflection!?!?!?!_), but it uses less memory and the structure used allows for further optimizations.
 	* **On-demand data unpacking!**
 		* This is the primary speed boost DM2 gained, though it's specific to 2K/2K3.
 		* The core code behind this is in `DM2R2kObject`. The TLDR is that initialization gets disabled and instead any _access_ causes an unpack. Since the hashmap is always going to be created for any loaded object, it may as well be created for new objects. As such, they initialize to Lcf defaults.
 * Data Model '2.5': `RORIO` and `DMKey`. Basically it became clear that there was a need for the Hash type to make some actual sense, so `DMKey` was made, which is basically an immutable comparable type with 'Rubyish enough to work' semantics. `RORIO` was brought in because `DMKey` and `IRIO` need a common interchangable base.
-* Data Model 3 (DM3): In progress. Will release proper as part of R48 v2.0 '_Together, we will implement Undo_'. May not ship in my lifetime.
+* Data Model 3 (DM3): Took way longer than it needed to in order to happen due to having to figure out the right approach. This is when global undo/redo was added.
+Mainly, IRIOs were restrained to living in 'contexts'.
 
 ## Philosophy
 
+There are four core principles to how R48 handles data these days:
+
+* `IRIO` is intended to conceptually be a wrapping object for accessing data that may be elsewhere (usually isn't, but may be). The data is _presented_ in a Rubyish form for consistency. `RORIO` is the 'const pointer' equivalent. `IRIO`s can be written to wrap any other kind of data storage, including other `IRIO`s.
+* `DMKey` is used whenever things need to work with `HashMap`/etc.
+* `IDM3Data` amounts to 'any object that is subject to undo/redo'.
+
+### 1. IRIOs are pointers/wrappers
+
 **An IRIO is a smart pointer to some data.**
 
-It may even be so smart that it looks like an entirely different kind of object. Alternatively, it may store the data within itself (and this is the common case).
+This isn't really a 'smart pointer' in the C++ sense. (Though, Java is a GC'd language.) The point is that the data being accessed is wrapped in a way which keeps a close eye on how it's used.
+
+The 'pointer' here can even make it look like an entirely different kind of object. The handling of PicPointerPatch in R48 v2.0 will now be illustrating this. Alternatively, it may store the data within itself (and this is the common case).
 
 `IRIOFixnum` and `IRIOGeneric` represent the common cases; an IRIO which stores some data of a fixed type and an IRIO which stores any data. _In these cases, the IRIO stores the data within itself._
 
@@ -29,6 +40,18 @@ _Beware that misuse of Schema may allow these wrapped IRIOs to stick around long
 **RORIOs are const pointers.**
 
 This is in-line with how IRIO extends RORIO (similar to how const pointers work in C++).
+
+### 2. DMKey is used for maps.
+
+R48 code assumes that any IRIO may be stuffed into a `HashMap` to compare it _by identity._
+
+`DMKey` inherits `RORIO`, allowing it to be interacted with as a `RORIO` and converted via deep clone to data inside an `IRIO`. But it is distinct. In particular it does not require a context like `IRIO` does, and it's immutable.
+
+### 3. `IDM3Data` is any object affected by undo/redo.
+
+Basically, the idea here is simple: _Any mutable object storing undo/redo-relevant data should have some way to access a `DMChangeTracker`, and needs to implement `IDM3Data` as part of the protocol between the two._
+
+![](data-model-and-undo-redo.drawio.svg)
 
 ## Types
 
@@ -46,10 +69,6 @@ Data:
 						* `IRIOFixedObjectPacked`: Implements the core of on-demand unpack.
 							* `DM2R2kObject`: Implements the R2K object IO logic. _Not all R2K structures subclass this, only ones that use the Lcf chunk container format._
 
-Stuff that needs removing:
-
-`IMagicalBinder`: Best described as 'just plain evil,' it was outdated as far back as _`IRIO`s._ (To put that into perspective, it has been outdated longer than it has existed.) It clings to life by legacy code like the PicPointerPatch handlers. It works, to this very day, by using the schema system to mirror changes forwards and backwards between a shadow copy of the target in a different format.
-
 ## Fixed Objects, automatic construction, etc.
 
 `IRIOFixedObject` expects every IVar to be accessible via reflection on fields and constructed either by annotations (as a shorthand), a `public static Consumer<Subclass> exampleField_add = (v) -> v.exampleField = ...;` lambda, or a `public void exampleField_add() {` method. Using this, it automatically handles `getIVar`, `addIVar`, and `rmIVar`, while also constructing the contents of IVars for you (`initialize()` is a separate function to allow controlling this behaviour).
@@ -66,21 +85,6 @@ Both pay very close attention to reflection in the following aspects:
 	* `DMCX` annotations specify a particular constructor call to make.
 
 R2K unpacking uses `DM2LcfBinding`. Notably, a field does not need an FXO binding to be Lcf-bound, which is why `addField` exists as a distinct entity.
-
-## Plans For DM3
-
-_aka 'UNDO MUST HAPPEN'_
-
-_aka R48 v2.0_
-
-* It will be necessary to have a way for `IRIO`s to store a frozen state.
-	* Frozen states _are shallow clones, not deep clones._ To me it seems best if frozen states are of the type `Runnable`, and running the frozen state restores it onto the `IRIO`.
-		* These are shallow clones specifically _because_ it will preserve pointers to 'deleted' objects. Even if these objects are in an invalid state, whatever modifications made them invalid will be undone via more frozen states.
-			* If it isn't done this way, the frozen state is only valid in isolation; it is not possible to apply further frozen states on sub-trees. (This is related to why the Revert button circa R48 v1.6 has to close all the Schema windows. _**All pointers become invalid.**_) In addition the memory usage and CPU requirements for storing complete clones for every modification are... prohibitive. Figuring out that this was what needed to be done is part of why a proposal for this took so long.
-	* Undo/Redo will work by backing up frozen states of any object just before it is modified. Having explicit start/end brackets for modifications was considered, but ultimately I decided this was a bad idea. But, you say, _how will we know when an object is modified?_ The answer...
-* `IDM3Context` needs to be properly used throughout R48. The goal here is that for any data-carrying `IRIO` in `ObjectDB`, _any(!)_ modification to that object's data should cause a notification to `IDM3Context`. It will then associate the current state of the `IRIO` to.
-	* Freezable data is called `IDM3Data`. _Only `IDM3Data`s will carry the freeze/restore logic. All `IDM3Data`s will be required, one way or another, to report modifications to their context._
-	* 'Wrapper' `IRIO`s must be silent about modifications. This is the `IRIO`/`IDM3Data` distinction. _They should still carry their context, it may prove useful later. If it's a problem then an additional class may be needed between IRIO and data-carrying objects._
 
 ## Requirements for `IDM3Data` implementors
 
