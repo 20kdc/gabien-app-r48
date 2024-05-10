@@ -20,21 +20,22 @@
 LANG=en_US.UTF-8
 LANGUAGE=en_US:en
 
-if [ "$#" -ne 4 ]; then
- echo "releaser-core.sh NAME PACKAGE RELEASEID ANDROIDVERSIONCODE"
+if [ "$#" -ne 5 ]; then
+ echo "releaser-core.sh NAME PACKAGE RELEASEID ANDROIDVERSIONCODE DEVFLAG"
  exit 1
 fi
 
 echo
 echo "- R48 Release Process -"
 echo "Name: $1 Package: $2 RID: $3 AVC: $4"
+echo "Dev: $5"
 echo
 echo "Building GaBIEn..."
 (cd ../../gabien-common && ./ready.sh) || exit
 echo "Building GaBIEn [OK]"
 echo
 echo "Building R48..."
-./releaser-pre.sh $3 $4 || exit
+./releaser-pre.sh $3 $4 $5 || exit
 echo "Building R48 [OK]"
 echo
 echo "Finalizing desktop version..."

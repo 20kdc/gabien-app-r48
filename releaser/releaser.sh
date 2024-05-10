@@ -9,5 +9,5 @@ if [ "$#" -ne 2 ]; then
  exit
 fi
 
-./releaser-core.sh R48 t20kdc.experimental.r48 $1 $2
+./releaser-core.sh R48 t20kdc.experimental.r48 $1 $2 0
 

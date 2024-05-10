@@ -11,5 +11,5 @@ fi
 
 export GABIEN_NATIVES_DEV=1
 
-./releaser-core.sh R48-DEV t20kdc.experimental.r48dev $1 1
+./releaser-core.sh R48-DEV t20kdc.experimental.r48dev $1 1 1
 adb install -r "../$1.apk"

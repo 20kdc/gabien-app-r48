@@ -19,6 +19,7 @@ import gabien.ui.elements.UIThumbnail;
 import gabien.uslx.append.*;
 import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
+import r48.wm.Coco;
 
 import java.util.LinkedList;
 import java.util.function.Consumer;
@@ -182,7 +183,10 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
                     sbt.append(s);
                     sbt.append(' ');
                 }
-                element = new UILabel(sbt.toString(), c.f.helpTH).centred();
+                String string = sbt.toString();
+                if (string.equals("{PROGRAM_VERSION} "))
+                    string = Coco.getVersion();
+                element = new UILabel(string, c.f.helpTH).centred();
             } else if (ch == '>') {
                 String t = "";
                 boolean first = true;
