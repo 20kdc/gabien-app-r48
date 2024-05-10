@@ -101,7 +101,7 @@ public abstract class UIPlaneView extends App.Elm {
             Art.drawZoom(igd, true, plusRect.x, plusRect.y, plusRect.height);
         if (planeCanZoom(false))
             Art.drawZoom(igd, false, minusRect.x, minusRect.y, minusRect.height);
-        Art.drawDragControl(igd, planeGetDragLock(), dragRect.x, dragRect.y, minusRect.height);
+        app.a.drawDragControl(igd, planeGetDragLock(), dragRect.x, dragRect.y, minusRect.height);
     }
 
     @Override

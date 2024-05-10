@@ -195,7 +195,7 @@ public class GrandWindowManagerUtils {
 
     private static String identify(UIElement uie) {
         if (uie instanceof UIIconButton)
-            return "symbol:" + ((Art.Symbol) (((UIIconButton) uie).symbol)).name();
+            return "symbol:" + ((Art.Symbol.Instance) (((UIIconButton) uie).symbol)).name();
         if (uie instanceof UITextButton)
             return "button:" + ((UITextButton) uie).getText();
         if (uie instanceof UITextBox)

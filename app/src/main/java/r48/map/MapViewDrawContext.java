@@ -11,7 +11,6 @@ import gabien.render.IGrDriver;
 import gabien.ui.UIElement;
 import gabien.uslx.append.Rect;
 import r48.App;
-import r48.ui.Art;
 
 /**
  * A structure that contains the subset of parameters needed for map view draw layers/etc.
@@ -52,7 +51,7 @@ public class MapViewDrawContext {
         if (solid == IndicatorStyle.SolidBlue) {
             igd.clearRect(0, 0, 255, px, py, tileSize, tileSize);
         } else if (solid == IndicatorStyle.Target) {
-            Art.drawTarget(px, py, tileSize, igd);
+            app.a.drawTarget(px, py, tileSize, igd);
         } else {
             app.a.drawSelectionBox(px, py, tileSize, tileSize, 1, igd);
         }

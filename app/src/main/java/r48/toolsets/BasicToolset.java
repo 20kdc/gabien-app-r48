@@ -339,7 +339,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         Art.Symbol[] syms = Art.Symbol.values();
                         UIElement[] icons = new UIElement[syms.length];
                         for (int i = 0; i < syms.length; i++)
-                            icons[i] = new UISplitterLayout(new UIIconButton(syms[i], fs, () -> {}), new UILabel(syms[i].toString(), fs), false, 0);
+                            icons[i] = new UISplitterLayout(new UIIconButton(syms[i].i(app), fs, () -> {}), new UILabel(syms[i].toString(), fs), false, 0);
                         return new UIScrollLayout(true, app.f.generalS, icons);
                     }));
                 },

@@ -67,12 +67,9 @@ public class UICellEditingPanel extends App.Pan {
                     final IGenposTweeningManagement.KeyTrack keytrack = root.tweening.propertyKeytrack(i);
                     final boolean keyed = root.tweening.propertyKeyed(i, keytrack);
                     // This is a 'delete keyframe' button
-                    uie = new UIAppendButton(keyed ? Art.Symbol.Keyframe : Art.Symbol.Tween, uie, new Runnable() {
-                        @Override
-                        public void run() {
-                            if (keyed)
-                                root.tweening.disablePropertyKey(i, keytrack);
-                        }
+                    uie = new UIAppendButton((keyed ? Art.Symbol.Keyframe : Art.Symbol.Tween).i(app), uie, () -> {
+                        if (keyed)
+                            root.tweening.disablePropertyKey(i, keytrack);
                     }, app.f.schemaFieldTH);
                 }
             }

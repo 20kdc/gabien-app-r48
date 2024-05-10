@@ -363,36 +363,27 @@ public class ImageEditorController extends App.Svc {
             return verticalLayout;
         }));
 
-        UIElement ul = new UIIconButton(Symbol.Target, app.f.imageEditorTH, new Runnable() {
-            @Override
-            public void run() {
-                imageEditView.camX = 0;
-                imageEditView.camY = 0;
-                imageEditView.tiling = null;
-            }
+        UIElement ul = new UIIconButton(Symbol.Target.i(app), app.f.imageEditorTH, () -> {
+            imageEditView.camX = 0;
+            imageEditView.camY = 0;
+            imageEditView.tiling = null;
         });
 
-        ul = pokeOnCause(cause, 1, new UIAppendButton(Symbol.Back, ul, new Runnable() {
-            @Override
-            public void run() {
-                if (imageEditView.eds.hasUndo()) {
-                    imageEditView.setImage(imageEditView.eds.performUndo());
-                    initPalette(1);
-                } else {
-                    app.ui.launchDialog(T.ie.undoNone);
-                }
+        ul = pokeOnCause(cause, 1, new UIAppendButton(Symbol.Back.i(app), ul, () -> {
+            if (imageEditView.eds.hasUndo()) {
+                imageEditView.setImage(imageEditView.eds.performUndo());
+                initPalette(1);
+            } else {
+                app.ui.launchDialog(T.ie.undoNone);
             }
         }, app.f.imageEditorTH));
 
-        ul = pokeOnCause(cause, 2, new UIAppendButton(Symbol.Forward, ul, new Runnable() {
-            @Override
-            public void run() {
-                if (imageEditView.eds.hasRedo()) {
-                    imageEditView.setImage(imageEditView.eds.performRedo());
-                    initPalette(2);
-                } else {
-                    app.ui.launchDialog(T.ie.redoNone);
-                }
+        ul = pokeOnCause(cause, 2, new UIAppendButton(Symbol.Forward.i(app), ul, () -> {
+            if (imageEditView.eds.hasRedo()) {
+                imageEditView.setImage(imageEditView.eds.performRedo());
+                initPalette(2);
+            } else {
+                app.ui.launchDialog(T.ie.redoNone);
             }
         }, app.f.imageEditorTH));
 
@@ -418,7 +409,7 @@ public class ImageEditorController extends App.Svc {
                     initPalette(0);
                 }
             }, !imageEditView.image.t1Lock);
-        }), new UIIconButton(Symbol.Eyedropper, app.f.imageEditorTH, () -> {
+        }), new UIIconButton(Symbol.Eyedropper.i(app), app.f.imageEditorTH, () -> {
             imageEditView.currentTool = new AddColourFromImageEditorTool(app, (integer) -> {
                 imageEditView.eds.startSection();
                 imageEditView.image.appendToPalette(integer);

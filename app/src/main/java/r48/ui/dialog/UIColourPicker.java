@@ -362,20 +362,14 @@ public class UIColourPicker extends App.Prx {
         public final UIPickCoordinator svCoordinator, hCoordinator;
 
         public UIHSVColourView(int sc) {
-            svCoordinator = new UIPickCoordinator(app, 256, 256, sc, new Consumer<Size>() {
-                @Override
-                public void accept(Size size) {
-                    performSendStuff();
-                }
+            svCoordinator = new UIPickCoordinator(app, 256, 256, sc, (size) -> {
+                performSendStuff();
             });
-            hCoordinator = new UIPickCoordinator(app, 256, 16, sc, new Consumer<Size>() {
-                @Override
-                public void accept(Size size) {
-                    svCoordinator.baseImage = Art.getColourPal(app, Art.getRainbowHue(size.width));
-                    performSendStuff();
-                }
+            hCoordinator = new UIPickCoordinator(app, 256, 16, sc, (size) -> {
+                svCoordinator.baseImage = app.a.getColourPal(app, Art.getRainbowHue(size.width));
+                performSendStuff();
             });
-            hCoordinator.baseImage = Art.getRainbow();
+            hCoordinator.baseImage = app.a.getRainbow();
             proxySetElement(new UISplitterLayout(svCoordinator, hCoordinator, true, 1), true);
         }
 
@@ -423,7 +417,7 @@ public class UIColourPicker extends App.Prx {
                 b /= 255;
                 int hScore = 0x7FFFFFFF;
                 // Closest match wins.
-                int[] comparisons = Art.getRainbow().getPixels();
+                int[] comparisons = app.a.getRainbow().getPixels();
                 for (int j = 0; j < comparisons.length; j++) {
                     int score = 0;
                     int t = comparisons[j];
@@ -440,7 +434,7 @@ public class UIColourPicker extends App.Prx {
                 }
             }
 
-            svCoordinator.baseImage = Art.getColourPal(app, Art.getRainbowHue(h));
+            svCoordinator.baseImage = app.a.getColourPal(app, Art.getRainbowHue(h));
             svCoordinator.targetSize = new Size(s, 255 - v);
             hCoordinator.targetSize = new Size(h, 0);
         }

@@ -87,7 +87,7 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
                     onEdit.run();
                 }, app.f.dialogWindowTH);
             }
-            hLine = new UIAppendButton(Symbol.XRed, hLine, () -> {
+            hLine = new UIAppendButton(Symbol.XRed.i(app), hLine, () -> {
                 if (entries != currentEntriesArray)
                     return;
                 System.arraycopy(entries, iFinal + 1, entries, iFinal, entries.length - (iFinal + 1));

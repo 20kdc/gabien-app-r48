@@ -55,7 +55,7 @@ public class RootImageEditorTool extends ImageEditorTool {
         for (int i = 0; i < toolClasses.length; i++) {
             final int ic = i;
             @SuppressWarnings("unchecked")
-            UIElement nx = new UIIconButton(toolSymbol[i], app.f.schemaFieldTH, () -> {
+            UIElement nx = new UIIconButton(toolSymbol[i].i(app), app.f.schemaFieldTH, () -> {
                 try {
                     uiev.currentTool = (ImageEditorTool) (toolClasses[ic].getConstructor(App.class).newInstance(app));
                     uiev.newToolCallback.run();

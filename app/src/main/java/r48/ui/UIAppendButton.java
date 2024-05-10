@@ -7,6 +7,7 @@
 
 package r48.ui;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -33,7 +34,7 @@ public class UIAppendButton extends UIElement.UIPanel {
         this(new UITextButton(s, h2, runnable), holder);
     }
 
-    public UIAppendButton(Art.Symbol s, UIElement holder, Runnable runnable, int h2) {
+    public UIAppendButton(Function<Boolean, IIcon> s, UIElement holder, Runnable runnable, int h2) {
         this(new UIIconButton(s, h2, runnable), holder);
     }
 

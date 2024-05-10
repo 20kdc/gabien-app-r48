@@ -175,7 +175,7 @@ public class WindowManager extends AppCore.Csv {
             icons.add(new UITabBar.TabIcon() {
                 @Override
                 public void draw(IGrDriver igd, int x, int y, int size) {
-                    Art.drawSymbol(igd, Art.Symbol.CloneFrame, x, y, size, false, false);
+                    app.a.drawSymbol(igd, Art.Symbol.CloneFrame, x, y, size, false, false);
                 }
 
                 @Override
@@ -203,7 +203,7 @@ public class WindowManager extends AppCore.Csv {
                 icons.addFirst(new UITabBar.TabIcon() {
                     @Override
                     public void draw(IGrDriver igd, int x, int y, int size) {
-                        Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
+                        app.a.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
                     }
 
                     @Override
@@ -251,7 +251,7 @@ public class WindowManager extends AppCore.Csv {
                     icons.addFirst(new UITabBar.TabIcon() {
                         @Override
                         public void draw(IGrDriver igd, int x, int y, int size) {
-                            Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
+                            app.a.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
                         }
 
                         @Override

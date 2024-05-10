@@ -20,6 +20,7 @@ import gabien.ui.elements.UIBorderedElement;
 import gabien.ui.theming.IIcon;
 import gabien.uslx.append.Rect;
 import r48.App;
+import r48.app.InterlaunchGlobals;
 import r48.imagefx.HueShiftImageEffect;
 
 /**
@@ -31,10 +32,10 @@ public class Art {
     // Images
     public IImage layerTabs = GaBIEn.getImageCKEx("layertab.png", false, true, 255, 0, 255);
     public IImage noMap = GaBIEn.getImageCKEx("nomad.png", false, true, 0, 0, 0);
-    public static IImage symbolic = GaBIEn.getImageCKEx("symbolic.png", false, true, 0, 0, 0);
+    public IImage symbolic = GaBIEn.getImageCKEx("symbolic.png", false, true, 0, 0, 0);
 
     // Generated Images
-    private static IImage colourPal, rainbow;
+    private IImage colourPal, rainbow;
 
     // PVA Animations
     public final PVARenderer r48Logo;
@@ -82,7 +83,7 @@ public class Art {
         igd.clearRect(255, 255, 255, x + (m * 2), y + (size / 2) - m, size - (m * 4), pa);
     }
 
-    public static void drawDragControl(IGrDriver igd, boolean select, int x, int y, int size) {
+    public void drawDragControl(IGrDriver igd, boolean select, int x, int y, int size) {
         int m = size / 12;
 
         int a = 64;
@@ -99,7 +100,7 @@ public class Art {
         //igd.clearRect(b, b, b, x + (m * 2), y + (size / 2) - m2, size - (m * 4), m2 * 2);
 
         int xd = m;
-        Art.drawSymbol(igd, Art.Symbol.Camera, x + m + xd, y + m + xd, size - ((m + xd) * 2), false, select);
+        drawSymbol(igd, Art.Symbol.Camera, x + m + xd, y + m + xd, size - ((m + xd) * 2), false, select);
     }
 
     // this works decently even on high-DPI (with a sufficient thickness)
@@ -156,7 +157,7 @@ public class Art {
         return GaBIEn.createImage(img, 256, 256);
     }
 
-    public static IImage getColourPal(App app, int hue) {
+    public IImage getColourPal(App app, int hue) {
         if (colourPal == null)
             colourPal = genColourPal();
         return app.ui.imageFXCache.process(colourPal, new HueShiftImageEffect(hue));
@@ -173,7 +174,7 @@ public class Art {
         return GaBIEn.createImage(img, 256, 1);
     }
 
-    public static IImage getRainbow() {
+    public IImage getRainbow() {
         if (rainbow == null)
             rainbow = genRainbow();
         return rainbow;
@@ -196,11 +197,11 @@ public class Art {
     }
 
     // For ID reference, ignore the left 20px of symbolic.png, and look at the 16x16-sprite grid.
-    public static void drawSymbol(IGrDriver igd, Symbol symbol, int x, int y, int size, boolean force, boolean background) {
+    public void drawSymbol(IGrDriver igd, Symbol symbol, int x, int y, int size, boolean force, boolean background) {
         drawSymbol(igd, symbol, x, y, size, size, force, background);
     }
 
-    public static void drawSymbol(IGrDriver igd, Symbol symbol, int x, int y, int sizeW, int sizeH, boolean force, boolean background) {
+    public void drawSymbol(IGrDriver igd, Symbol symbol, int x, int y, int sizeW, int sizeH, boolean force, boolean background) {
         if (background)
             igd.clearRect(0, 0, 0, x, y, sizeW, sizeH);
         // NOTE: Symbols are drawn at one of the following sizes:
@@ -240,11 +241,11 @@ public class Art {
         }
     }
 
-    private static void drawSymbol4px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
+    private void drawSymbol4px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
         igd.blitScaledImage(0, symbol * 4, 4, 4, x, y, sizeW, sizeH, symbolic);
     }
 
-    private static void drawSymbol8px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
+    private void drawSymbol8px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
         int page = symbol / 4;
         symbol %= 4;
         int subpage = symbol / 2;
@@ -253,18 +254,18 @@ public class Art {
         igd.blitScaledImage(4 + (symbol * 8), subpage * 8, 8, 8, x, y, sizeW, sizeH, symbolic);
     }
 
-    private static void drawSymbol16px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
+    private void drawSymbol16px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
         int page = symbol / 4;
         symbol %= 4;
         igd.blitScaledImage(20 + (symbol * 16), page * 16, 16, 16, x, y, sizeW, sizeH, symbolic);
     }
 
     // Basically a "compatibility" function. Tries to draw an appropriate event-point image given a tile size and a top-left position.
-    public static void drawTarget(int px, int py, int tileSize, IGrDriver igd) {
-        Art.drawSymbol(igd, Art.Symbol.Target, px + (tileSize / 4), py + (tileSize / 4), tileSize / 2, false, false);
+    public void drawTarget(int px, int py, int tileSize, IGrDriver igd) {
+        drawSymbol(igd, Art.Symbol.Target, px + (tileSize / 4), py + (tileSize / 4), tileSize / 2, false, false);
     }
 
-    public enum Symbol implements IIcon, Function<Boolean, IIcon> {
+    public enum Symbol {
         // NOTE! If you can't tell the difference in grayscale, it's too alike.
         Map, BarV, BarVBranchR, BarCornerUR,
         Target, Area, Expandable, Play,
@@ -280,18 +281,42 @@ public class Art {
         // "Fill" is for a flood fill, so it's a bucket
         Line, Fill;
 
-        private final IIcon forLightTheme = (igd, x, y, size) -> {
-            drawSymbol(igd, this, x, y, size, false, true);
-        };
-
-        @Override
-        public void draw(IGrDriver igd, int x, int y, int size) {
-            drawSymbol(igd, this, x, y, size, false, false);
+        public Instance i(Art a) {
+            return new Instance(a);
         }
 
-        @Override
-        public IIcon apply(Boolean t) {
-            return t ? forLightTheme : this;
+        public Instance i(App a) {
+            return i(a.a);
+        }
+
+        public Instance i(InterlaunchGlobals a) {
+            return i(a.a);
+        }
+
+        public class Instance implements IIcon, Function<Boolean, IIcon> {
+            private final Art a;
+            private final IIcon forLightTheme;
+
+            public Instance(Art a) {
+                this.a = a;
+                forLightTheme = (igd, x, y, size) -> {
+                    a.drawSymbol(igd, Symbol.this, x, y, size, false, true);
+                };
+            }
+
+            @Override
+            public void draw(IGrDriver igd, int x, int y, int size) {
+                a.drawSymbol(igd, Symbol.this, x, y, size, false, false);
+            }
+
+            @Override
+            public IIcon apply(Boolean t) {
+                return t ? forLightTheme : this;
+            }
+
+            public String name() {
+                return Symbol.this.name();
+            }
         }
     }
 }

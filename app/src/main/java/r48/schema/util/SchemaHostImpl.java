@@ -36,35 +36,26 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDupl
     private final Stack<SchemaPath> backStack = new Stack<SchemaPath>();
 
     private UILabel pathLabel = new UILabel("", app.f.schemaPathTH);
-    private UIAppendButton toolbarP = new UIAppendButton(Art.Symbol.Back, pathLabel, new Runnable() {
-        @Override
-        public void run() {
-            popObject();
-        }
+    private UIAppendButton toolbarP = new UIAppendButton(Art.Symbol.Back.i(app), pathLabel, () -> {
+        popObject();
     }, app.f.schemaPathTH);
-    private UIAppendButton toolbarCp = new UIAppendButton(T.g.bCopy, toolbarP, new Runnable() {
-        @Override
-        public void run() {
-            app.setClipboardFrom(innerElem.targetElement);
-        }
+    private UIAppendButton toolbarCp = new UIAppendButton(T.g.bCopy, toolbarP, () -> {
+        app.setClipboardFrom(innerElem.targetElement);
     }, app.f.schemaPathTH);
-    private UIAppendButton toolbarPs = new UIAppendButton(T.g.bPaste, toolbarCp, new Runnable() {
-        @Override
-        public void run() {
-            if (app.theClipboard == null) {
-                app.ui.launchDialog(T.u.shcEmpty);
-            } else {
-                if (IRIO.rubyTypeEquals(innerElem.targetElement, app.theClipboard)) {
-                    try {
-                        innerElem.targetElement.setDeepClone(app.theClipboard);
-                    } catch (Exception e) {
-                        app.ui.launchDialog(T.u.shcIncompatible, e);
-                    }
-                    innerElem.changeOccurred(false);
-                    switchObject(innerElem);
-                } else {
-                    app.ui.launchDialog(T.u.shcIncompatible);
+    private UIAppendButton toolbarPs = new UIAppendButton(T.g.bPaste, toolbarCp, () -> {
+        if (app.theClipboard == null) {
+            app.ui.launchDialog(T.u.shcEmpty);
+        } else {
+            if (IRIO.rubyTypeEquals(innerElem.targetElement, app.theClipboard)) {
+                try {
+                    innerElem.targetElement.setDeepClone(app.theClipboard);
+                } catch (Exception e) {
+                    app.ui.launchDialog(T.u.shcIncompatible, e);
                 }
+                innerElem.changeOccurred(false);
+                switchObject(innerElem);
+            } else {
+                app.ui.launchDialog(T.u.shcIncompatible);
             }
         }
     }, app.f.schemaPathTH);

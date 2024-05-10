@@ -14,6 +14,7 @@ import gabien.uslx.append.*;
 import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
+import r48.App;
 
 import java.util.HashSet;
 import java.util.function.Consumer;
@@ -24,7 +25,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * NOTE: This must be recreated every time it needs to be reloaded, and needs to be contained in a UIScrollViewLayout to work properly.
  * Created on 11/08/17.
  */
-public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IOldMouseReceiver {
+public class UITreeView extends App.Pan implements OldMouseEmulator.IOldMouseReceiver {
     private TreeElement[] elements = new TreeElement[0];
     private OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
     private final int nodeWidth;
@@ -33,7 +34,8 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
     private Art.Symbol dragCursorSymbol = null;
     private int dragBase = -1;
 
-    public UITreeView(int nw) {
+    public UITreeView(App app, int nw) {
+        super(app);
         nodeWidth = nw;
     }
 
@@ -148,21 +150,21 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
 
             for (int j = 0; j < te.indent; j++) {
                 if (j == (te.indent - 1)) {
-                    Art.drawSymbol(igd, pico, j * nodeWidth, y, nodeWidth, te.h, true, blackText);
+                    app.a.drawSymbol(igd, pico, j * nodeWidth, y, nodeWidth, te.h, true, blackText);
                 } else {
                     if (continuingLines.contains(j))
-                        Art.drawSymbol(igd, Art.Symbol.BarV, j * nodeWidth, y, nodeWidth, te.h, true, blackText);
+                        app.a.drawSymbol(igd, Art.Symbol.BarV, j * nodeWidth, y, nodeWidth, te.h, true, blackText);
                 }
             }
             // the actual item icon
             int nwMargin = (te.h - nodeWidth) / 2;
             if (te.hasChildren && (!te.expanded))
-                Art.drawSymbol(igd, Art.Symbol.Expandable, te.indent * nodeWidth, y + nwMargin, nodeWidth, true, blackText);
-            Art.drawSymbol(igd, te.icon, te.indent * nodeWidth, y + nwMargin, nodeWidth, true, blackText);
+                app.a.drawSymbol(igd, Art.Symbol.Expandable, te.indent * nodeWidth, y + nwMargin, nodeWidth, true, blackText);
+            app.a.drawSymbol(igd, te.icon, te.indent * nodeWidth, y + nwMargin, nodeWidth, true, blackText);
             y += te.h;
         }
         if (dragCursorEnable)
-            Art.drawSymbol(igd, dragCursorSymbol, mouseEmulator.mouseX - (nodeWidth / 2), mouseEmulator.mouseY - (nodeWidth / 2), nodeWidth, false, blackText);
+            app.a.drawSymbol(igd, dragCursorSymbol, mouseEmulator.mouseX - (nodeWidth / 2), mouseEmulator.mouseY - (nodeWidth / 2), nodeWidth, false, blackText);
     }
 
     @Override

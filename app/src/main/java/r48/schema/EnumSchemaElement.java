@@ -108,11 +108,8 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
         });
         if (opt != null) {
             if (opt.furtherDataButton != null)
-                return new UIAppendButton(Art.Symbol.CloneFrame, button, new Runnable() {
-                    @Override
-                    public void run() {
-                        launcher.newBlank().pushObject(opt.furtherDataButton);
-                    }
+                return new UIAppendButton(Art.Symbol.CloneFrame.i(app), button, () -> {
+                    launcher.newBlank().pushObject(opt.furtherDataButton);
                 }, app.f.schemaFieldTH);
         }
         return button;

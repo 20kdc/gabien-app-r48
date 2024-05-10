@@ -30,26 +30,10 @@ public class UITimeframeControl extends App.Prx {
 
     public UILabel currentFrame = new UILabel("", app.f.rmaTimeframeTH);
 
-    public UIAppendButton playController = new UIAppendButton(Art.Symbol.Play, currentFrame, new Runnable() {
-        @Override
-        public void run() {
-        }
-    }, app.f.rmaTimeframeTH);
-    public UIAppendButton loopController = new UIAppendButton(Art.Symbol.Loop, playController, new Runnable() {
-        @Override
-        public void run() {
-        }
-    }, app.f.rmaTimeframeTH);
-    public UIAppendButton hsController = new UIAppendButton(Art.Symbol.Div2, loopController, new Runnable() {
-        @Override
-        public void run() {
-        }
-    }, app.f.rmaTimeframeTH);
-    public UIAppendButton tsController = new UIAppendButton(Art.Symbol.Div3, hsController, new Runnable() {
-        @Override
-        public void run() {
-        }
-    }, app.f.rmaTimeframeTH);
+    public UIAppendButton playController = new UIAppendButton(Art.Symbol.Play.i(app), currentFrame, null, app.f.rmaTimeframeTH);
+    public UIAppendButton loopController = new UIAppendButton(Art.Symbol.Loop.i(app), playController, null, app.f.rmaTimeframeTH);
+    public UIAppendButton hsController = new UIAppendButton(Art.Symbol.Div2.i(app), loopController, null, app.f.rmaTimeframeTH);
+    public UIAppendButton tsController = new UIAppendButton(Art.Symbol.Div3.i(app), hsController, null, app.f.rmaTimeframeTH);
 
     // The rest of the toolbar is constructed in the constructor
     public UIElement toolbar = tsController;

@@ -94,8 +94,8 @@ public class AppUI extends App.Svc {
         app.stuffRendererIndependent = app.system.rendererFromTso(null);
 
         // initialize UI
-        saveButtonSym = new UIIconButton(Art.Symbol.Save, app.f.tabTH, this::saveAllModified);
-        final UIIconButton sym2 = new UIIconButton(Art.Symbol.Back, app.f.tabTH, createLaunchConfirmation(T.u.revertWarn, () -> {
+        saveButtonSym = new UIIconButton(Art.Symbol.Save.i(app), app.f.tabTH, this::saveAllModified);
+        final UIIconButton sym2 = new UIIconButton(Art.Symbol.Back.i(app), app.f.tabTH, createLaunchConfirmation(T.u.revertWarn, () -> {
             AppMain.performSystemDump(app, false, "revert file");
             // Shutdown schema hosts
             for (ISchemaHost ish : activeHosts)
@@ -143,7 +143,7 @@ public class AppUI extends App.Svc {
     }
 
     public void tick(double dT) {
-        saveButtonSym.symbol = hasModified() ? Art.Symbol.Save : Art.Symbol.SaveDisabled;
+        saveButtonSym.symbol = (hasModified() ? Art.Symbol.Save : Art.Symbol.SaveDisabled).i(app);
         if (mapContext != null) {
             String mapId = mapContext.getCurrentMapObject();
             IObjectBackend.ILoadedObject map = null;

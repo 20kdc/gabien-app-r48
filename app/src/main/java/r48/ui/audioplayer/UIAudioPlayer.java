@@ -44,14 +44,15 @@ public class UIAudioPlayer extends UIDynAppPrx {
     // delay load stuff
     private Supplier<AudioIOSource> dataSupplier;
 
-    private final UIIconButton playButton = new UIIconButton(Art.Symbol.Play, app.f.schemaFieldTH, new Runnable() {
+    private final UIIconButton playButton = new UIIconButton(Art.Symbol.Play.i(app), app.f.schemaFieldTH, new Runnable() {
         @Override
         public void run() {
+            // "cannot reference a field before it is defined" if this is lambdaized
             setPlaying(playButton.state);
         }
     }).togglable(false);
 
-    private final UIIconButton loopButton = new UIIconButton(Art.Symbol.Loop, app.f.schemaFieldTH, null).togglable(false);
+    private final UIIconButton loopButton = new UIIconButton(Art.Symbol.Loop.i(app), app.f.schemaFieldTH, null).togglable(false);
 
     private final UIScrollbar seeker = new UIScrollbar(false, app.f.generalS);
     private final UIElement innerWithoutWarning;
@@ -65,7 +66,7 @@ public class UIAudioPlayer extends UIDynAppPrx {
         super(app);
         this.dataSupplier = dataSupplier;
         speed = spd;
-        UIIconButton toStart = new UIIconButton(Art.Symbol.Back, app.f.schemaFieldTH, () -> {
+        UIIconButton toStart = new UIIconButton(Art.Symbol.Back.i(app), app.f.schemaFieldTH, () -> {
             position = 0;
         });
         UIScrollLayout svl = new UIScrollLayout(false, app.f.mapToolbarS, toStart, playButton, loopButton);
