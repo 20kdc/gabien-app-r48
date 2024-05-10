@@ -11,9 +11,11 @@ import gabien.GaBIEn;
 import gabien.natives.BadGPU;
 import gabien.ui.*;
 import gabien.ui.dialogs.UIPopupMenu;
+import gabien.ui.elements.UIIconButton;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.*;
 import r48.app.AppMain;
@@ -31,17 +33,20 @@ import r48.schema.util.SchemaPath;
 import r48.toolsets.utils.LibLCF245Dumper;
 import r48.toolsets.utils.UITestGraphicsStuff;
 import r48.tr.pages.TrRoot;
+import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UIMenuButton;
 import r48.ui.audioplayer.UIAudioPlayer;
 import r48.ui.dialog.UIFontSizeConfigurator;
 import r48.ui.dialog.UIReadEvaluatePrintLoop;
+import r48.ui.dialog.UITestFontSizes;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
 import r48.ui.spacing.UIBorderedSubpanel;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -301,6 +306,7 @@ public class BasicToolset extends App.Svc implements IToolset {
     private UIElement createOtherButton() {
         return new UIMenuButton(app, T.u.mOther, app.f.menuTH, null, new String[] {
                 T.u.mTestFonts,
+                T.u.mTestIcons,
                 T.u.mTestGraphics,
                 T.u.mGetGPUInfo,
                 T.u.mUITree,
@@ -312,14 +318,30 @@ public class BasicToolset extends App.Svc implements IToolset {
                 T.u.dumpWhateverICanThinkOfToJSON
         }, new Runnable[] {
                 () -> {
-                    app.ui.launchPrompt(T.u.dlgFontSize, (s) -> {
-                        try {
-                            Integer i = Integer.parseInt(s);
-                            app.ui.wm.createWindow(new UITextBox("", i).setMultiLine());
-                        } catch (Exception e) {
-                            app.ui.launchDialog(T.u.dlgBadNum);
-                        }
-                    });
+                    AtomicReference<String> lastText = new AtomicReference<>(
+                        "Markdown is a markup language -- a language for specifying formatted text -- intended to be intuitive to use.\n" +
+                        "In the early days, in 2004, it was relatively niche, and had few features.\n" +
+                        "These days, extended variants of Markdown are used on major chat platforms such as Discord and Matrix, along with on code hosting platforms such as GitLab or GitHub.\n" +
+                        "The first and most important rule: **Markdown is made up of paragraphs, which are separated by blank lines.**\n" +
+                        "Failing to properly separate paragraphs will lead to incorrect output.\n" +
+                        "Secondly, there are a number of attributes one can use within a paragraph to format text. The example previously went over a few of them, but here's a somewhat more detailed list:\n"
+                    );
+                    app.ui.wm.createWindow(new UITestFontSizes(app, (fs) -> {
+                        UITextBox utb = new UITextBox(lastText.get(), fs).setMultiLine();
+                        utb.onEdit = () -> {
+                            lastText.set(utb.getText());
+                        };
+                        return utb;
+                    }));
+                },
+                () -> {
+                    app.ui.wm.createWindow(new UITestFontSizes(app, (fs) -> {
+                        Art.Symbol[] syms = Art.Symbol.values();
+                        UIElement[] icons = new UIElement[syms.length];
+                        for (int i = 0; i < syms.length; i++)
+                            icons[i] = new UISplitterLayout(new UIIconButton(syms[i], fs, () -> {}), new UILabel(syms[i].toString(), fs), false, 0);
+                        return new UIScrollLayout(true, app.f.generalS, icons);
+                    }));
                 },
                 () -> {
                     app.ui.wm.createWindow(new UITestGraphicsStuff(app));

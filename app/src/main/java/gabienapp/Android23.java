@@ -57,6 +57,7 @@ public class Android23 {
             backbufferB.drawScaledColoured(1, 1, backbufferA.width, backbufferA.height, 0, 0, backbufferB.width, backbufferB.height, backbufferA, IGrDriver.BLEND_ADD, 0, 0.25f, 0.25f, 0.25f, 1);
             // swap
             window.flush(backbufferB);
+            GaBIEn.runCallbacks();
         }
         GaBIEn.ensureQuit();
     }
