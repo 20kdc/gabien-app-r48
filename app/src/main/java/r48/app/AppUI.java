@@ -20,6 +20,7 @@ import gabien.ui.UIElement;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.ui.dialogs.UIAutoclosingPopupMenu;
 import gabien.ui.dialogs.UICredits;
+import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UIIconButton;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
@@ -98,17 +99,32 @@ public class AppUI extends App.Svc {
 
         // initialize UI
         saveButtonSym = new UIIconButton(Art.Symbol.Save.i(app), app.f.tabTH, this::saveAllModified);
-        final UIIconButton sym2 = new UIIconButton(Art.Symbol.Back.i(app), app.f.tabTH, createLaunchConfirmation(T.u.revertWarn, () -> {
-            AppMain.performSystemDump(app, false, "revert file");
-            // Shutdown schema hosts
-            for (ISchemaHost ish : activeHosts)
-                ish.shutdown();
-            // We're prepared for revert, do the thing
-            app.odb.revertEverything();
-            // Map editor will have fixed itself because it watches the roots and does full reinits when anything even remotely changes
-            // But do this as well
-            app.sdb.kickAllDictionariesForMapChange();
-        }));
+        final UIIconButton sym2 = new UIIconButton(Art.Symbol.Back.i(app), app.f.tabTH, () -> {
+            UIAutoclosingPopupMenu ac = new UIAutoclosingPopupMenu(new UIPopupMenu.Entry[] {
+                    new UIPopupMenu.Entry("REVERT", () -> {
+                        createLaunchConfirmation(T.u.revertWarn, () -> {
+                            AppMain.performSystemDump(app, false, "revert file");
+                            // Shutdown schema hosts
+                            for (ISchemaHost ish : activeHosts)
+                                ish.shutdown();
+                            // We're prepared for revert, do the thing
+                            app.odb.revertEverything();
+                            // Map editor will have fixed itself because it watches the roots and does full reinits when anything even remotely changes
+                            // But do this as well
+                            app.sdb.kickAllDictionariesForMapChange();
+                        }).run();
+                    }),
+                    new UIPopupMenu.Entry("Undo", () -> {
+                        if (app.timeMachine.canUndo())
+                            app.timeMachine.undo();
+                    }),
+                    new UIPopupMenu.Entry("Redo", () -> {
+                        if (app.timeMachine.canRedo())
+                            app.timeMachine.redo();
+                    })
+            }, app.f.menuTH, app.f.menuS, isMobile);
+            wm.createMenu(saveButtonSym, ac);
+        });
         UISplitterLayout usl = new UISplitterLayout(saveButtonSym, sym2, false, 0.5);
         wm = new WindowManager(app.ilg, coco, uiTicker, null, usl);
 
@@ -169,6 +185,8 @@ public class AppUI extends App.Svc {
             if (ac.isActive())
                 newActive.add(ac);
         activeHosts = newActive;
+
+        app.timeMachine.doCycle();
     }
 
     private void initializeTabs() {

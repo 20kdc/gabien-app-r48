@@ -11,17 +11,14 @@ import gabien.*;
 import gabien.datum.DatumWriter;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
-import gabien.ui.elements.UIBorderedElement;
 import gabien.ui.layouts.UITabBar;
 import gabien.ui.layouts.UITabPane;
 import gabien.ui.layouts.UIWindowView;
 import gabien.ui.layouts.UIWindowView.TabShell;
-import gabien.ui.theming.Theme;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
-import gabien.wsi.IPointer;
 import r48.app.InterlaunchGlobals;
 import r48.ui.Art;
 

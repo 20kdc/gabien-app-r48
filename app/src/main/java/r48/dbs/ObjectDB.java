@@ -8,9 +8,9 @@
 package r48.dbs;
 
 import r48.app.AppCore;
+import r48.app.TimeMachineChangeSource;
 import r48.io.IObjectBackend;
 import r48.io.data.DMContext;
-import r48.io.data.DMChangeTracker;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.WeakHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -31,6 +32,11 @@ import gabien.uslx.append.Block;
  * Created on 12/29/16.
  */
 public class ObjectDB extends AppCore.Csv {
+    /**
+     * This exists to ensure that IDM3Data keeps the ILoadedObject in memory.
+     */
+    public static final DMContext.Key<IObjectBackend.ILoadedObject> DMCONTEXT_LOADED_OBJECT = new DMContext.Key<>();
+
     // Useful for object shenanigans.
     public final IObjectBackend backend;
     /**
@@ -52,6 +58,7 @@ public class ObjectDB extends AppCore.Csv {
     public WeakHashMap<IObjectBackend.ILoadedObject, LinkedList<WeakReference<Consumer<SchemaPath>>>> objectListenersMap = new WeakHashMap<IObjectBackend.ILoadedObject, LinkedList<WeakReference<Consumer<SchemaPath>>>>();
     public HashMap<String, LinkedList<WeakReference<Consumer<SchemaPath>>>> objectRootListenersMap = new HashMap<String, LinkedList<WeakReference<Consumer<SchemaPath>>>>();
     private HashSet<Runnable> pendingModifications = new HashSet<Runnable>();
+    private HashMap<String, DMContext> dmContexts = new HashMap<>();
 
     private boolean objectRootModifiedRecursion = false;
 
@@ -66,14 +73,27 @@ public class ObjectDB extends AppCore.Csv {
     }
 
     private DMContext ensureDM3Context(@NonNull String id) {
-        return new DMContext(DMChangeTracker.Null.DELETE_ME, app.encoding);
+        DMContext dmc = dmContexts.get(id);
+        if (dmc != null)
+            return dmc;
+        AtomicReference<DMContext> dmcx = new AtomicReference<DMContext>();
+        dmc = new DMContext(new TimeMachineChangeSource(app.timeMachine) {
+            @Override
+            public void onTimeTravel() {
+                markObjectAsAmbiguouslyModified(dmcx.get().get(DMCONTEXT_LOADED_OBJECT));
+            }
+        }, app.encoding);
+        dmcx.set(dmc);
+        dmContexts.put(id, dmc);
+        return dmc;
     }
 
     // NOTE: Preferably call the one-parameter version,
     //  since that tries to create a sensible default.
     public IObjectBackend.ILoadedObject getObject(String id, String backupSchema) {
-        if (objectMap.containsKey(id)) {
-            IObjectBackend.ILoadedObject r = objectMap.get(id).get();
+        WeakReference<IObjectBackend.ILoadedObject> omwr = objectMap.get(id);
+        if (omwr != null) {
+            IObjectBackend.ILoadedObject r = omwr.get();
             if (r != null)
                 return r;
         }
@@ -92,11 +112,11 @@ public class ObjectDB extends AppCore.Csv {
                 SchemaElement ise = app.sdb.getSDBEntry(backupSchema);
                 if (ise != null) {
                     try (Block license = context.changes.openUnpackLicense()) {
-                    rio = backend.newObject(id, context);
+                        rio = backend.newObject(id, context);
                     }
                     if (rio == null)
                         return null;
-
+                    context.set(DMCONTEXT_LOADED_OBJECT, rio);
                     SchemaPath.setDefaultValue(rio.getObject(), ise, null);
                     modifiedObjects.add(rio);
                     newlyCreatedObjects.add(rio);
@@ -106,6 +126,8 @@ public class ObjectDB extends AppCore.Csv {
             } else {
                 return null;
             }
+        } else {
+            context.set(DMCONTEXT_LOADED_OBJECT, rio);
         }
         objectMap.put(id, new WeakReference<IObjectBackend.ILoadedObject>(rio));
         reverseObjectMap.put(rio, id);
@@ -202,7 +224,7 @@ public class ObjectDB extends AppCore.Csv {
     }
 
     public void runPendingModifications() {
-        LinkedList<Runnable> runs = new LinkedList<Runnable>(pendingModifications);
+        LinkedList<Runnable> runs = new LinkedList<>(pendingModifications);
         pendingModifications.clear();
         for (Runnable r : runs)
             r.run();
@@ -285,9 +307,10 @@ public class ObjectDB extends AppCore.Csv {
     }
 
     public void revertEverything() {
+        app.timeMachine.clearUndoRedo();
         // Any object that can be reverted, revert it.
         // Mark them all down for removal from modifiedObjects later.
-        LinkedList<IObjectBackend.ILoadedObject> pokedObjects = new LinkedList<IObjectBackend.ILoadedObject>();
+        LinkedList<IObjectBackend.ILoadedObject> pokedObjects = new LinkedList<>();
         for (IObjectBackend.ILoadedObject lo : modifiedObjects) {
             String id = getIdByObject(lo);
             if (id != null) {
@@ -305,15 +328,20 @@ public class ObjectDB extends AppCore.Csv {
             }
         }
         // Perform modification listeners.
-        SchemaElement opaque = app.sdb.getSDBEntry("OPAQUE");
-        for (IObjectBackend.ILoadedObject lo : pokedObjects) {
-            // Use an opaque schema element because we really don't have a good one here.
-            // We don't use changeOccurred because that would activate schema processing, which is also undesired here.
-            objectRootModified(lo, new SchemaPath(opaque, lo));
-        }
+        for (IObjectBackend.ILoadedObject lo : pokedObjects)
+            markObjectAsAmbiguouslyModified(lo);
         // Remove from modifiedObjects - they don't count as modified.
         modifiedObjects.removeAll(pokedObjects);
         pokedObjects = null;
         System.gc();
+    }
+
+    /**
+     * This is for use specifically by TimeMachine and revertEverything.
+     */
+    private void markObjectAsAmbiguouslyModified(IObjectBackend.ILoadedObject lo) {
+        // Use an opaque schema element because we really don't have a good one here.
+        // We don't use changeOccurred because that would activate schema processing, which is also undesired here.
+        objectRootModified(lo, new SchemaPath(app.sdb.getSDBEntry("OPAQUE"), lo));
     }
 }

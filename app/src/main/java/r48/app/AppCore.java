@@ -27,7 +27,6 @@ import r48.imageio.ImageIOFormat;
 import r48.io.IObjectBackend;
 import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
-import r48.timemachine.TimeMachine;
 import r48.tr.pages.TrRoot;
 import r48.ui.Art;
 
@@ -49,7 +48,7 @@ public abstract class AppCore {
     public final @NonNull EngineDef engine;
     public final @NonNull Charset encoding;
     // Main
-    public final @NonNull TimeMachine timeMachine = new TimeMachine();
+    public final @NonNull TimeMachine timeMachine;
     public ObjectDB odb;
     public final SDB sdb;
     public MapSystem system;
@@ -91,6 +90,10 @@ public abstract class AppCore {
         }
         loadProgress = lp;
         imageIOFormats = ImageIOFormat.initializeFormats(this);
+
+        // time machine should be before data, because data uses time machine for management
+        timeMachine = new TimeMachine(this);
+
         sdb = new SDB(this);
 
         // initialize everything else that needs initializing, starting with ObjectDB
