@@ -164,29 +164,17 @@ public class PasteImageEditorTool extends ImageEditorTool {
 
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
-        UITextButton a = new UITextButton(T.ie.flipX, app.f.schemaFieldTH, new Runnable() {
-            @Override
-            public void run() {
-                flipX = !flipX;
-            }
+        UITextButton a = new UITextButton(T.ie.flipX, app.f.schemaFieldTH, () -> {
+            flipX = !flipX;
         }).togglable(flipX);
-        UITextButton b = new UITextButton(T.ie.flipY, app.f.schemaFieldTH, new Runnable() {
-            @Override
-            public void run() {
-                flipY = !flipY;
-            }
+        UITextButton b = new UITextButton(T.ie.flipY, app.f.schemaFieldTH, () -> {
+            flipY = !flipY;
         }).togglable(flipY);
-        UITextButton c = new UITextButton(T.ie.swapXY, app.f.schemaFieldTH, new Runnable() {
-            @Override
-            public void run() {
-                swapXY = !swapXY;
-            }
+        UITextButton c = new UITextButton(T.ie.swapXY, app.f.schemaFieldTH, () -> {
+            swapXY = !swapXY;
         }).togglable(swapXY);
-        UITextButton d = new UITextButton(T.ie.rawCopy, app.f.schemaFieldTH, new Runnable() {
-            @Override
-            public void run() {
-                rawCopy = !rawCopy;
-            }
+        UITextButton d = new UITextButton(T.ie.rawCopy, app.f.schemaFieldTH, () -> {
+            rawCopy = !rawCopy;
         }).togglable(rawCopy);
         UISplitterLayout sl = new UISplitterLayout(a, b, false, 0.5d);
         UIElement toolPalette = RootImageEditorTool.createToolPalette(uiev, PasteImageEditorTool.class);

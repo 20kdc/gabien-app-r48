@@ -14,22 +14,19 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIListLayout;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.ui.UINSVertLayout;
 
 /**
  * Created on 12/29/16.
  */
 public class SubwindowSchemaElement extends SchemaElement implements IProxySchemaElement {
     public SchemaElement heldElement;
-    public Function<IRIO, String> nameGetter = new Function<IRIO, String>() {
-        @Override
-        public String apply(IRIO rubyIO) {
-            return app.format(rubyIO, heldElement, EnumSchemaElement.Prefix.Prefix);
-        }
+    public Function<IRIO, String> nameGetter = (rubyIO) -> {
+        return app.format(rubyIO, heldElement, EnumSchemaElement.Prefix.Prefix);
     };
 
     public SubwindowSchemaElement(@NonNull SchemaElement encap) {
@@ -48,12 +45,13 @@ public class SubwindowSchemaElement extends SchemaElement implements IProxySchem
         // This is never meant to *actually* scroll.
         String text = nameGetter.apply(target);
         String[] lines = text.split("\n");
-        UIElement r = new UITextButton(lines[0], app.f.schemaFieldTH, () -> {
+        UIElement[] elms = new UIElement[lines.length];
+        elms[0] = new UITextButton(lines[0], app.f.schemaFieldTH, () -> {
             launcher.pushObject(path.newWindow(heldElement, target));
         });
         for (int i = 1; i < lines.length; i++)
-            r = new UINSVertLayout(r, new UILabel(lines[i], app.f.schemaFieldTH));
-        return r;
+            elms[i] = new UILabel(lines[i], app.f.schemaFieldTH);
+        return new UIListLayout(true, elms);
     }
 
     @Override

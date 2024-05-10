@@ -15,7 +15,6 @@ import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.schema.util.ISchemaHost;
 import r48.tr.pages.TrRoot;
-import r48.ui.UINSVertLayout;
 
 /**
  * Part of genpos.
@@ -26,7 +25,7 @@ public class GenposFramePanelController {
     public UICellSelectionPanel cellSelection;
     public UICellEditingPanel editingPanel;
     public UISingleFrameView editor;
-    public UINSVertLayout editingSidebar;
+    public UISplitterLayout editingSidebar;
 
     // For use by the parent.
     public UISplitterLayout rootLayout;
@@ -53,13 +52,10 @@ public class GenposFramePanelController {
         cellSelection = new UICellSelectionPanel(launcher.getApp(), rootForNow);
 
         editingPanel = new UICellEditingPanel(cellSelection, this);
-        gridToggleButton = new UITextButton(T.s.bGrid8px, app.f.rmaCellTH, new Runnable() {
-            @Override
-            public void run() {
-                // Do nothing.
-            }
+        gridToggleButton = new UITextButton(T.s.bGrid8px, app.f.rmaCellTH, () -> {
+            // Do nothing.
         }).togglable(false);
-        editingSidebar = new UINSVertLayout(gridToggleButton, new UINSVertLayout(editingPanel, cellSelection));
+        editingSidebar = new UISplitterLayout(gridToggleButton, new UISplitterLayout(editingPanel, cellSelection, true, 0), true, 0);
         rootLayout = new UISplitterLayout(editor, editingSidebar, false, 1);
     }
 

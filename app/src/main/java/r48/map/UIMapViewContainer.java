@@ -10,17 +10,15 @@ package r48.map;
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 
-import java.util.function.Consumer;
-
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.render.IGrDriver;
 import gabien.ui.UIElement;
 import gabien.ui.UILayer;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTBase;
-import r48.ui.UINSVertLayout;
 
 /**
  * WARNING: May Contain Minigame.
@@ -28,7 +26,7 @@ import r48.ui.UINSVertLayout;
  */
 public class UIMapViewContainer extends App.Pan {
     public UIMapView view;
-    private UINSVertLayout viewToolbarSplit;
+    private UISplitterLayout viewToolbarSplit;
     // Use when mapTool is being set to null.
     private Runnable internalNoToolCallback = new Runnable() {
         @Override
@@ -225,24 +223,18 @@ public class UIMapViewContainer extends App.Pan {
         final IEditingToolbarController metc = view.map.makeToolbar(mtc);
 
         if (metc.allowPickTile()) {
-            view.pickTileHelper = new Consumer<Short>() {
-                @Override
-                public void accept(Short aShort) {
-                    UIMTAutotile atf = mtc.showATField();
-                    atf.selectTile(aShort);
-                    nextMapTool = atf;
-                }
+            view.pickTileHelper = (aShort) -> {
+                UIMTAutotile atf = mtc.showATField();
+                atf.selectTile(aShort);
+                nextMapTool = atf;
             };
         }
 
-        viewToolbarSplit = new UINSVertLayout(metc.getBar(), view);
+        viewToolbarSplit = new UISplitterLayout(metc.getBar(), view, true, 0);
         layoutAddElement(viewToolbarSplit);
         app.sdb.kickAllDictionariesForMapChange();
-        internalNoToolCallback = new Runnable() {
-            @Override
-            public void run() {
-                metc.noTool();
-            }
+        internalNoToolCallback = () -> {
+            metc.noTool();
         };
         metc.noTool();
     }

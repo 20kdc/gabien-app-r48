@@ -46,7 +46,6 @@ import r48.toolsets.MapToolset;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UIDynAppPrx;
-import r48.ui.UINSVertLayout;
 import r48.ui.dialog.UITextPrompt;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
@@ -302,9 +301,9 @@ public class AppUI extends App.Svc {
         };
         final UIScrollLayout uus = new UIScrollLayout(true, app.f.generalS, uis);
         Size rootSize = wm.getRootSize();
-        final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(T.u.helpIndex, uil, () -> {
+        final UISplitterLayout topbar = new UISplitterLayout(new UIAppendButton(T.u.helpIndex, uil, () -> {
             hsc.loadPage(0);
-        }, app.f.helpPathH), uus) {
+        }, app.f.helpPathH), uus, true, 0) {
             @Override
             public String toString() {
                 return T.u.helpTitle;

@@ -13,7 +13,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIProxy;
 import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
-import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UIListLayout;
 import r48.cfg.Config;
 import r48.ui.UIAppendButton;
 
@@ -22,7 +22,7 @@ import r48.ui.UIAppendButton;
  */
 public class UIGamePathList extends UIProxy {
     public final List<String> values;
-    private UIScrollLayout layout;
+    private UIListLayout layout;
     public final UITextBox text;
     private final UIAppendButton appendButton;
     public final Config c;
@@ -41,7 +41,7 @@ public class UIGamePathList extends UIProxy {
                 modified();
             }
         }, c.f.launcherTH);
-        layout = new UIScrollLayout(true, c.f.generalS);
+        layout = new UIListLayout(true);
         refresh();
         proxySetElement(layout, true);
     }

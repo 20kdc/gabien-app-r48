@@ -11,7 +11,7 @@ import java.util.LinkedList;
 
 import gabien.ui.*;
 import gabien.ui.elements.UIIconButton;
-import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UIListLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
 import r48.App;
@@ -72,7 +72,7 @@ public class RootImageEditorTool extends ImageEditorTool {
         }
         if (left != null)
             svl.add(left);
-        return new UIScrollLayout(true, app.f.mapToolbarS, svl);
+        return new UIListLayout(true, svl);
     }
 
     @Override

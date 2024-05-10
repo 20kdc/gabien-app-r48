@@ -10,6 +10,7 @@ package r48.maptools;
 import gabien.ui.*;
 import gabien.ui.elements.UIButton;
 import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UISplitterLayout;
 import gabien.ui.layouts.UITabBar;
 import gabien.ui.layouts.UITabPane;
 import gabien.uslx.append.*;
@@ -20,7 +21,6 @@ import r48.map.UIMapView;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
 import r48.ui.UIAppendButton;
-import r48.ui.UINSVertLayout;
 import r48.ui.UITileGrid;
 import r48.ui.utilitybelt.FillAlgorithm;
 
@@ -130,7 +130,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
 
         subtoolBar = uab;
 
-        changeInner(new UINSVertLayout(subtoolBar, tabPane), inConstructor);
+        changeInner(new UISplitterLayout(subtoolBar, tabPane, true, 0), inConstructor);
         return resultScale;
     }
 

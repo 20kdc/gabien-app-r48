@@ -12,6 +12,7 @@ import gabien.datum.DatumSymbol;
 import gabien.ui.*;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
+import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.*;
 import gabien.uslx.vfs.FSBackend;
 import r48.io.IObjectBackend;
@@ -21,7 +22,6 @@ import r48.io.data.RORIO;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBinders;
 import r48.ui.UIAppendButton;
-import r48.ui.UINSVertLayout;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -89,7 +89,7 @@ public class UITest extends App.Prx {
                 });
             }, app.f.inspectorBackTH);
         }
-        UINSVertLayout outerPanel = new UINSVertLayout(topBar, innerPanel);
+        UISplitterLayout outerPanel = new UISplitterLayout(topBar, innerPanel, true, 0);
         proxySetElement(outerPanel, false);
         setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(320), app.f.scaleGuess(240)));
     }

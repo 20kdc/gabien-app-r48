@@ -126,8 +126,7 @@ public class PagerArrayInterface implements IArrayInterface {
                 }
             }
             barLayoutList.add(new UITextButton(T.s.array_bModePager, app.f.schemaFieldTH, swapModeAndReset));
-            UIScrollLayout barLayout = new UIScrollLayout(false, app.f.mapToolbarS);
-            barLayout.panelsSet(barLayoutList);
+            UIScrollLayout barLayout = new UIScrollLayout(false, app.f.mapToolbarS, barLayoutList);
             if (positions[i].core != null) {
                 uie.add(new UISplitterLayout(barLayout, positions[i].core, true, 0d) {
                     @Override

@@ -21,7 +21,6 @@ import r48.IMapContext;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
-import r48.ui.UINSVertLayout;
 import r48.ui.UITreeView;
 
 import java.util.*;
@@ -170,7 +169,7 @@ public class UIGRMMapInfos extends App.Prx {
                         close.set(true);
                     }
                 }, app.f.textDialogFieldTH);
-                UINSVertLayout dialog = new UINSVertLayout(prompt, new UITextButton(T.m.bFindUnusedID, app.f.textDialogFieldTH, unusedID)) {
+                UISplitterLayout dialog = new UISplitterLayout(prompt, new UITextButton(T.m.bFindUnusedID, app.f.textDialogFieldTH, unusedID), true, 0) {
                     @Override
                     public String toString() {
                         return T.m.dMapID;
