@@ -38,6 +38,7 @@ import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.map.StuffRenderer;
+import r48.map.systems.MapSystem;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMSlot;
 import r48.minivm.fn.MVMR48AppLibraries;
@@ -61,6 +62,9 @@ import r48.tr.pages.TrRoot;
 
 /**
  * An attempt to move as much as possible out of static variables.
+ * The distinction here is that when possible:
+ *  AppCore would hypothetically work without a UI
+ *  App won't
  * Created 26th February, 2023
  */
 public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrProxy {
@@ -83,6 +87,9 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     public final Runnable applyConfigChange = () -> {
         c.applyUIGlobals();
     };
+
+    // configuration
+    public final boolean deletionButtonsNeedConfirmation;
 
     // ID changer entries
     public final LinkedList<IDChangerEntry> idc = new LinkedList<>();
@@ -143,6 +150,48 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
      */
     public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, @NonNull FSBackend rp, @Nullable FSBackend sip, Consumer<String> loadProgress) {
         super(ilg, charset, gp, rp, sip, loadProgress);
+
+        // -- OBJECT DATABASE READY --
+
+        deletionButtonsNeedConfirmation = GaBIEn.singleWindowApp();
+
+        setupAnalysersAndClassifiers();
+
+        // Setup Schema services that don't work without access to UI because reasons
+        sdbHelpers = new SDBHelpers(this);
+        cmdbs = new CMDBDB(this);
+        system = MapSystem.create(this, engine.mapSystem);
+
+        // Y'know, the VM could really be pushed to AppCore, but hmm.
+        // I will say, in R48, everything is dependent on everything else.
+        vmCtx = new MVMEnvR48((str) -> {
+            loadProgress.accept(t.g.loadingProgress.r(str));
+        }, ilg.logTrIssues, ilg.c.language, ilg.strict);
+
+        // Alright, the various bits of SDB are completely present but not yet initialized.
+        // Run VM code to fill them with data.
+        MVMR48AppLibraries.add(vmCtx, this);
+        vmCtx.include("vm/global", false);
+        vmCtx.include("vm/app", false);
+        vmCtx.include(engine.initDir + "init", false);
+
+        // -- VM HAS FULLY INITIALIZED SCHEMA DATABASE --
+
+        // Final internal consistency checks and reading in dictionaries from target
+        //  before starting the UI, which can cause external consistency checks
+        //  (...and potentially cause havoc in the process)
+
+        loadProgress.accept(t.g.loadingDCO);
+        sdb.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
+        sdb.updateDictionaries(null);
+        sdb.confirmAllExpectationsMet();
+        cmdbs.confirmAllExpectationsMet();
+
+        // Now that everything that could possibly reasonably create DynTrSlots has been initialized, now load the language file.
+        vmCtx.include(engine.initDir + "lang/" + ilg.c.language + "/init", true);
+    }
+
+    private void setupAnalysersAndClassifiers() {
         // setup command classifiers
         cmdClassifiers.add(new ICommandClassifier.Immutable() {
             @Override
@@ -154,30 +203,22 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
                 return true;
             }
         });
+
         // setup text analyzers
         for (ITextAnalyzer ita : TextOperator.values())
             textAnalyzers.add(ita);
         textAnalyzers.add(ITextAnalyzer.CJK.I);
         textAnalyzers.add(ITextAnalyzer.NotLatin1.I);
         textAnalyzers.add(ITextAnalyzer.NotLatin1OrFullwidth.I);
+
         // mutable text analyzers to command classifier
         cmdClassifiers.add(new TextAnalyzerCommandClassifier(CompoundTextAnalyzer.I));
+
         // mirror immutable text analyzers to command classifiers (so USL can access them)
         for (ITextAnalyzer ita : textAnalyzers)
             if (ita instanceof ITextAnalyzer.Immutable)
                 cmdClassifiers.add(new ImmutableTextAnalyzerCommandClassifier((ITextAnalyzer.Immutable) ita));
         cmdClassifiers.add(new ByCodeCommandClassifier());
-        // do VM stuff
-        vmCtx = new MVMEnvR48((str) -> {
-            loadProgress.accept(t.g.loadingProgress.r(str));
-        }, ilg.logTrIssues, ilg.c.language, ilg.strict);
-        // needs to init after vmCtx to install system name routines
-        MVMR48AppLibraries.add(vmCtx, this);
-        vmCtx.include("vm/global", false);
-        vmCtx.include("vm/app", false);
-        // SDB fill-in
-        sdbHelpers = new SDBHelpers(this);
-        cmdbs = new CMDBDB(this);
     }
 
     /**

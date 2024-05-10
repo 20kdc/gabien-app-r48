@@ -15,7 +15,6 @@ import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
-import r48.map.systems.MapSystem;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -33,25 +32,6 @@ import org.eclipse.jdt.annotation.Nullable;
 public class AppMain {
     public static App initializeCore(InterlaunchGlobals ilg, Charset charset, final @NonNull FSBackend rp, final @Nullable FSBackend sip, final EngineDef engine, final Consumer<String> progress) {
         final App app = new App(ilg, charset, engine, rp, sip, progress);
-
-        // initialize core resources
-
-        app.vmCtx.include(engine.initDir + "init", false);
-
-        app.system = MapSystem.create(app, engine.mapSystem);
-
-        // Final internal consistency checks and reading in dictionaries from target
-        //  before starting the UI, which can cause external consistency checks
-        //  (...and potentially cause havoc in the process)
-
-        progress.accept(app.t.g.loadingDCO);
-        app.sdb.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
-        app.sdb.updateDictionaries(null);
-        app.sdb.confirmAllExpectationsMet();
-        app.cmdbs.confirmAllExpectationsMet();
-
-        // Now that everything that could possibly reasonably create DynTrSlots has been initialized, now load the language file.
-        app.vmCtx.include(engine.initDir + "lang/" + ilg.c.language + "/init", true);
 
         return app;
     }

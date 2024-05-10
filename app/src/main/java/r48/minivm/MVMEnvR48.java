@@ -20,12 +20,12 @@ import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import gabien.datum.DatumWriter;
 import gabienapp.Application;
+import r48.app.Coco;
 import r48.dbs.DatumLoader;
 import r48.tr.DynTrBase;
 import r48.tr.DynTrSlot;
 import r48.tr.IDynTrProxy;
 import r48.tr.NLSTr;
-import r48.wm.Coco;
 
 /**
  * MiniVM environment.

@@ -17,9 +17,9 @@ import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.elements.UIThumbnail;
 import gabien.uslx.append.*;
+import r48.app.Coco;
 import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
-import r48.wm.Coco;
 
 import java.util.LinkedList;
 import java.util.function.Consumer;

@@ -67,7 +67,7 @@ public class BasicToolset extends App.Svc implements IToolset {
     @Override
     public UIElement[] generateTabs() {
         UIElement menu4 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.mR48Version, app.f.menuTH, () -> {
-            app.ui.wm.coco.launch();
+            app.ui.coco.launch();
         }).centred(), app.f.menuTH), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.mHelp, app.f.menuTH, () -> {
             app.ui.startHelp(null, "0");
         }).centred(), app.f.menuTH), new UIBorderedSubpanel(new UITextButton(T.u.mConfiguration, app.f.menuTH, () -> {

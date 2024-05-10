@@ -75,9 +75,12 @@ public class AppUI extends App.Svc {
 
     private UIIconButton saveButtonSym;
 
+    public final Coco coco;
+
     public AppUI(App app, boolean mobile) {
         super(app);
         isMobile = mobile;
+        coco = new Coco(app);
     }
 
     public void initialize(WindowCreatingUIElementConsumer uiTicker) {
@@ -107,7 +110,7 @@ public class AppUI extends App.Svc {
             app.sdb.kickAllDictionariesForMapChange();
         }));
         UISplitterLayout usl = new UISplitterLayout(saveButtonSym, sym2, false, 0.5);
-        wm = new WindowManager(app, uiTicker, null, usl);
+        wm = new WindowManager(app.ilg, coco, uiTicker, null, usl);
 
         initializeTabs();
 
@@ -182,20 +185,6 @@ public class AppUI extends App.Svc {
         } else {
             mapContext = null;
         }
-
-        Runnable runVisFrame = new Runnable() {
-            @Override
-            public void run() {
-                double keys = app.odb.objectMap.keySet().size();
-                if (keys < 1) {
-                    wm.setOrange(0.0d);
-                } else {
-                    wm.setOrange(app.odb.modifiedObjects.size() / keys);
-                }
-                app.uiPendingRunnables.add(this);
-            }
-        };
-        app.uiPendingRunnables.add(runVisFrame);
 
         UIElement firstTab = null;
         // Initialize toolsets.

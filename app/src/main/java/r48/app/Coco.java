@@ -5,7 +5,7 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.wm;
+package r48.app;
 
 import gabien.GaBIEn;
 import gabien.audio.IRawAudioDriver.IRawAudioSource;
@@ -16,6 +16,7 @@ import r48.App;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -23,14 +24,15 @@ import org.eclipse.jdt.annotation.NonNull;
  * Manager for easter egg of unspecified origin response.
  * Created on 07/06/17.
  */
-public class Coco extends App.Svc {
+public class Coco extends App.Svc implements Consumer<IDesktopPeripherals> {
     private char[] combuf = new char[10];
 
     public Coco(App app) {
         super(app);
     }
 
-    public void run(IDesktopPeripherals igd) {
+    @Override
+    public void accept(IDesktopPeripherals igd) {
         if (igd.isKeyJustPressed(IGrInDriver.VK_LEFT))
             key('L');
         if (igd.isKeyJustPressed(IGrInDriver.VK_DOWN))

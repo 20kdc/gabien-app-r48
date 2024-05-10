@@ -14,7 +14,6 @@ import java.util.function.Consumer;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.GaBIEn;
 import gabien.uslx.vfs.FSBackend;
 import gabien.uslx.vfs.impl.DodgyInputWorkaroundFSBackend;
 import gabien.uslx.vfs.impl.UnionFSBackend;
@@ -34,6 +33,9 @@ import r48.ui.Art;
 
 /**
  * An attempt to move as much as possible out of static variables.
+ * The distinction here is that when possible:
+ *  AppCore would hypothetically work without a UI
+ *  App won't
  * Pulled out of App, 27th February, 2023
  */
 public abstract class AppCore {
@@ -69,8 +71,6 @@ public abstract class AppCore {
 
     public final @NonNull Consumer<String> loadProgress;
 
-    public final boolean deletionButtonsNeedConfirmation;
-
     /**
      * Initialize App.
      * Warning: Occurs off main thread.
@@ -91,7 +91,6 @@ public abstract class AppCore {
         }
         loadProgress = lp;
         imageIOFormats = ImageIOFormat.initializeFormats(this);
-        deletionButtonsNeedConfirmation = GaBIEn.singleWindowApp();
         sdb = new SDB(this);
 
         // initialize everything else that needs initializing, starting with ObjectDB
@@ -124,6 +123,9 @@ public abstract class AppCore {
         return oi;
     }
 
+    /**
+     * Theoretically an alias for App.ui.launchDialog to be used by ObjectDB.
+     */
     public abstract void reportNonCriticalErrorToUser(String r, Throwable ioe);
 
     public static class Csv {

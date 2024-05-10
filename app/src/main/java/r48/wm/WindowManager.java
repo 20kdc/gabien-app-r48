@@ -10,7 +10,6 @@ package r48.wm;
 import gabien.*;
 import gabien.datum.DatumWriter;
 import gabien.render.IGrDriver;
-import gabien.render.IImage;
 import gabien.ui.*;
 import gabien.ui.elements.UIBorderedElement;
 import gabien.ui.layouts.UITabBar;
@@ -23,12 +22,12 @@ import gabien.uslx.append.Size;
 import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
-import r48.App;
-import r48.app.AppCore;
+import r48.app.InterlaunchGlobals;
 import r48.ui.Art;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -54,7 +53,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * <p>
  * Created on November 14, 2018.
  */
-public class WindowManager extends AppCore.Csv {
+public class WindowManager {
     private Rect preFullscreenRect = null;
     // 'protected' elements here are accessible to the testing framework.
     private final UIWindowView rootView;
@@ -62,21 +61,20 @@ public class WindowManager extends AppCore.Csv {
     private final TrackedUITicker uiTicker;
     // It is required by the test system that all UIWindowViews be roots of their own windows.
     protected final LinkedList<UIWindowView> allWindowViews = new LinkedList<UIWindowView>();
-    private IImage modImg;
     private boolean performingScreenTransfer = true;
     public final HashMap<String, Rect> recordedWindowPositions = new HashMap<String, Rect>();
-    public final Coco coco;
+    public final Consumer<IDesktopPeripherals> coco;
+    public final InterlaunchGlobals ilg;
 
-    public WindowManager(App app, final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR) {
-        super(app);
-        coco = new Coco(app);
+    public WindowManager(InterlaunchGlobals ilg, final Consumer<IDesktopPeripherals> coco, final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR) {
+        this.ilg = ilg;
+        this.coco = coco;
         uiTicker = new TrackedUITicker(uiTick);
-        modImg = GaBIEn.createImage(new int[] {0x80000000}, 1, 1);
         rootView = new UIWindowView() {
             @Override
             public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
                 if (peripherals instanceof IDesktopPeripherals)
-                    coco.run((IDesktopPeripherals) peripherals);
+                    coco.accept((IDesktopPeripherals) peripherals);
                 uiTicker.shakeOffDeadWindows();
                 super.update(deltaTime, selected, peripherals);
             }
@@ -88,12 +86,12 @@ public class WindowManager extends AppCore.Csv {
                     super.onWindowClose();
             }
         };
-        rootView.windowTextHeight = app.f.windowFrameH;
+        rootView.windowTextHeight = ilg.c.f.windowFrameH;
         rootView.sizerVisual = rootView.windowTextHeight / 2;
         rootView.sizerActual = rootView.windowTextHeight;
-        rootView.setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(800), app.f.scaleGuess(600)));
+        rootView.setForcedBounds(null, new Rect(0, 0, ilg.c.f.scaleGuess(800), ilg.c.f.scaleGuess(600)));
 
-        tabPane = new UITabPane(app.f.tabTH, true, true, app.f.maintabsS, thbrL, thbrR);
+        tabPane = new UITabPane(ilg.c.f.tabTH, true, true, ilg.c.f.maintabsS, thbrL, thbrR);
 
         UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, tabPane);
         rootView.addShell(backing);
@@ -175,7 +173,7 @@ public class WindowManager extends AppCore.Csv {
             icons.add(new UITabBar.TabIcon() {
                 @Override
                 public void draw(IGrDriver igd, int x, int y, int size) {
-                    app.a.drawSymbol(igd, Art.Symbol.CloneFrame, x, y, size, false, false);
+                    ilg.a.drawSymbol(igd, Art.Symbol.CloneFrame, x, y, size, false, false);
                 }
 
                 @Override
@@ -203,7 +201,7 @@ public class WindowManager extends AppCore.Csv {
                 icons.addFirst(new UITabBar.TabIcon() {
                     @Override
                     public void draw(IGrDriver igd, int x, int y, int size) {
-                        app.a.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
+                        ilg.a.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
                     }
 
                     @Override
@@ -217,7 +215,7 @@ public class WindowManager extends AppCore.Csv {
             tabPane.addTab(new UITabBar.Tab(uie, icons.toArray(new UITabBar.TabIcon[0])));
             tabPane.selectTab(uie);
         } else {
-            if (app.c.windowingExternal && !GaBIEn.singleWindowApp()) {
+            if (ilg.c.windowingExternal && !GaBIEn.singleWindowApp()) {
                 UIWindowView uwv = new UIWindowView() {
                     @Override
                     public void onWindowClose() {
@@ -251,7 +249,7 @@ public class WindowManager extends AppCore.Csv {
                     icons.addFirst(new UITabBar.TabIcon() {
                         @Override
                         public void draw(IGrDriver igd, int x, int y, int size) {
-                            app.a.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
+                            ilg.a.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
                         }
 
                         @Override
@@ -342,34 +340,7 @@ public class WindowManager extends AppCore.Csv {
             if (r2 != null) {
                 if (r2.rectEquals(results[i])) {
                     menu.setForcedBounds(null, r2);
-                    screen.addShell(new UIWindowView.ElementShell(screen, menu) {
-                        @Override
-                        public IPointerReceiver provideReceiver(IPointer i) {
-                            IPointerReceiver ipr = super.provideReceiver(i);
-                            if (ipr == null) {
-                                screen.removeShell(this);
-                                uie.onWindowClose();
-                                return IPointerReceiver.NopPointerReceiver.I;
-                            }
-                            return ipr;
-                        }
-
-                        @Override
-                        public void render(IGrDriver igd) {
-                            Size sz = screen.getSize();
-                            igd.blitScaledImage(0, 0, 1, 1, 0, 0, sz.width, sz.height, modImg);
-                            int bw = 4;
-                            Rect r = menu.getParentRelativeBounds();
-                            Theme theme = GaBIEnUI.sysThemeRoot.getTheme();
-                            // The border is shown 'behind' the menu base, but the menu is shown over it
-                            UIBorderedElement.drawBorder(theme, igd, Theme.B_R48OVERLAY, bw, r.x - bw, r.y - bw, r.width + (bw * 2), r.height + (bw * 2));
-                            float otx = igd.trsTXS(base.x);
-                            float oty = igd.trsTYS(base.y);
-                            baseElem.renderAllLayers(igd);
-                            igd.trsTXYE(otx, oty);
-                            super.render(igd);
-                        }
-                    });
+                    screen.addShell(new UIWindowView.MenuShell(screen, menu, baseElem, base));
                     return;
                 }
             }
@@ -380,10 +351,6 @@ public class WindowManager extends AppCore.Csv {
 
     public Size getRootSize() {
         return rootView.getSize();
-    }
-
-    public void setOrange(double v) {
-        tabPane.visualizationOrange = v;
     }
 
     public void debugDumpUITree(DatumWriter dw) {

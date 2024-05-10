@@ -24,9 +24,9 @@ import gabien.uslx.append.Rect;
 import r48.AdHocSaveLoad;
 import r48.App;
 import r48.app.AppMain;
+import r48.app.Coco;
 import r48.app.IAppAsSeenByLauncher;
 import r48.tr.pages.TrRoot;
-import r48.wm.Coco;
 
 /**
  * Error handling tracker.
