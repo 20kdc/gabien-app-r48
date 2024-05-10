@@ -54,7 +54,7 @@ public class MapViewDrawContext {
         } else if (solid == IndicatorStyle.Target) {
             Art.drawTarget(px, py, tileSize, igd);
         } else {
-            Art.drawSelectionBox(px, py, tileSize, tileSize, 1, igd);
+            app.a.drawSelectionBox(px, py, tileSize, tileSize, 1, igd);
         }
     }
 

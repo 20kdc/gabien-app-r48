@@ -10,7 +10,6 @@ package r48.map.drawlayers;
 import r48.App;
 import r48.map.MapViewDrawContext;
 import r48.map.pass.IPassabilitySource;
-import r48.ui.Art;
 
 import java.util.Random;
 
@@ -50,13 +49,13 @@ public class PassabilityMapViewDrawLayer extends App.Svc implements IMapViewDraw
                 int tsH = tileSize - 8;
                 int tsQ = (tileSize / 2) - 4;
                 if ((flags & 0x01) == 0)
-                    mvdc.igd.blitImage(16, 0, 8, 8, px + tsQ, py + tsH, Art.layerTabs);
+                    mvdc.igd.blitImage(16, 0, 8, 8, px + tsQ, py + tsH, app.a.layerTabs);
                 if ((flags & 0x02) == 0)
-                    mvdc.igd.blitImage(8, 0, 8, 8, px + tsH, py + tsQ, Art.layerTabs);
+                    mvdc.igd.blitImage(8, 0, 8, 8, px + tsH, py + tsQ, app.a.layerTabs);
                 if ((flags & 0x04) == 0)
-                    mvdc.igd.blitImage(24, 0, 8, 8, px, py + tsQ, Art.layerTabs);
+                    mvdc.igd.blitImage(24, 0, 8, 8, px, py + tsQ, app.a.layerTabs);
                 if ((flags & 0x08) == 0)
-                    mvdc.igd.blitImage(0, 0, 8, 8, px + tsQ, py, Art.layerTabs);
+                    mvdc.igd.blitImage(0, 0, 8, 8, px + tsQ, py, app.a.layerTabs);
             }
         }
     }

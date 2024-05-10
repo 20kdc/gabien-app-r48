@@ -29,8 +29,8 @@ import r48.imagefx.HueShiftImageEffect;
 public class Art {
 
     // Images
-    public static IImage layerTabs = GaBIEn.getImageCKEx("layertab.png", false, true, 255, 0, 255);
-    public static IImage noMap = GaBIEn.getImageCKEx("nomad.png", false, true, 0, 0, 0);
+    public IImage layerTabs = GaBIEn.getImageCKEx("layertab.png", false, true, 255, 0, 255);
+    public IImage noMap = GaBIEn.getImageCKEx("nomad.png", false, true, 0, 0, 0);
     public static IImage symbolic = GaBIEn.getImageCKEx("symbolic.png", false, true, 0, 0, 0);
 
     // Generated Images
@@ -103,7 +103,7 @@ public class Art {
     }
 
     // this works decently even on high-DPI (with a sufficient thickness)
-    public static void drawSelectionBox(int x, int y, int w, int h, int thickness, IGrDriver igd) {
+    public void drawSelectionBox(int x, int y, int w, int h, int thickness, IGrDriver igd) {
         int f = ((int) (GaBIEn.getTime() * (dotLineAni + 1))) % (dotLineAni + 1);
         while (thickness > 0) {
             drawDotLineV(x, y, h, f, igd);
@@ -118,7 +118,7 @@ public class Art {
         }
     }
 
-    private static void drawDotLineV(int x, int y, int h, int f, IGrDriver igd) {
+    private void drawDotLineV(int x, int y, int h, int f, IGrDriver igd) {
         if (h <= 0)
             return;
         while (h > dotLineMetric) {
@@ -129,7 +129,7 @@ public class Art {
         igd.blitImage(32, f, 1, h, x, y, layerTabs);
     }
 
-    private static void drawDotLineH(int x, int y, int w, int f, IGrDriver igd) {
+    private void drawDotLineH(int x, int y, int w, int f, IGrDriver igd) {
         if (w <= 0)
             return;
         while (w > dotLineMetric) {

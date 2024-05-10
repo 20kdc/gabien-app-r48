@@ -15,7 +15,6 @@ import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
-import r48.ui.Art;
 
 /**
  * Created on 1/1/17.
@@ -43,7 +42,7 @@ public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
         if (mvdc.mouseStatus != null) {
             int tx = mvdc.mouseStatus.x / mvdc.tileSize;
             int ty = mvdc.mouseStatus.y / mvdc.tileSize;
-            Art.drawSelectionBox(tx, ty, mvdc.tileSize, mvdc.tileSize, 1, mvdc.igd);
+            app.a.drawSelectionBox(tx, ty, mvdc.tileSize, mvdc.tileSize, 1, mvdc.igd);
         }
     }
 

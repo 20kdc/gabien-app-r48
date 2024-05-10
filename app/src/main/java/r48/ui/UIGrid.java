@@ -118,7 +118,7 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
                 igd.clearRect(128, 0, 128, px, py, tileSizeW, tileSizeH);
             drawTile(p, p == mouseSel, px, py, igd);
             if (p == selTile)
-                Art.drawSelectionBox(px, py, tileSizeW, tileSizeH, app.f.getSpriteScale(), igd);
+                app.a.drawSelectionBox(px, py, tileSizeW, tileSizeH, app.f.getSpriteScale(), igd);
             pi++;
         }
         for (int ty = 0; ty < selHeight; ty++) {
@@ -130,7 +130,7 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
                     continue;
                 if (py >= r.height)
                     continue;
-                Art.drawSelectionBox(px, py, tileSizeW, tileSizeH, app.f.getSpriteScale(), igd);
+                app.a.drawSelectionBox(px, py, tileSizeW, tileSizeH, app.f.getSpriteScale(), igd);
                 pi++;
             }
         }

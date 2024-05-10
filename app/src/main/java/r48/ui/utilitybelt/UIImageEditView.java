@@ -155,7 +155,7 @@ public class UIImageEditView extends UIPlaneView {
             drawGrid(igd, viewRct, true);
 
         if (tiling != null)
-            Art.drawSelectionBox(viewRct.x + (int) planeMulZoom(ofsX), viewRct.y + (int) planeMulZoom(ofsY), (int) planeMulZoom(ofsW), (int) planeMulZoom(ofsH), app.f.getSpriteScale(), igd);
+            app.a.drawSelectionBox(viewRct.x + (int) planeMulZoom(ofsX), viewRct.y + (int) planeMulZoom(ofsY), (int) planeMulZoom(ofsW), (int) planeMulZoom(ofsH), app.f.getSpriteScale(), igd);
 
 
         Rect theSelection = currentTool.getSelection();
@@ -163,7 +163,7 @@ public class UIImageEditView extends UIPlaneView {
             if (theSelection.width == 0 && theSelection.height == 0) {
                 Art.drawTarget(viewRct.x + (int) planeMulZoom(theSelection.x), viewRct.y + (int) planeMulZoom(theSelection.y), (int) planeMulZoom(1), igd);
             } else {
-                Art.drawSelectionBox(viewRct.x + (int) planeMulZoom(theSelection.x), viewRct.y + (int) planeMulZoom(theSelection.y), (int) planeMulZoom(theSelection.width), (int) planeMulZoom(theSelection.height), app.f.getSpriteScale(), igd);
+                app.a.drawSelectionBox(viewRct.x + (int) planeMulZoom(theSelection.x), viewRct.y + (int) planeMulZoom(theSelection.y), (int) planeMulZoom(theSelection.width), (int) planeMulZoom(theSelection.height), app.f.getSpriteScale(), igd);
             }
         }
 

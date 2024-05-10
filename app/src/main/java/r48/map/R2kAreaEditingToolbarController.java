@@ -18,7 +18,6 @@ import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.maptools.UIMTBase;
 import r48.schema.util.SchemaPath;
-import r48.ui.Art;
 
 /**
  * Created on 11/08/17.
@@ -82,7 +81,7 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
                 mvdc.drawIndicator(firstPointX, firstPointY, MapViewDrawContext.IndicatorStyle.Target);
             if (subFrame() == 0) {
                 Rect r = getViewedRect();
-                Art.drawSelectionBox((r.x * tileSize) - 1, (r.y * tileSize) - 1, (r.width * mvdc.tileSize) + 2, (r.height * mvdc.tileSize) + 2, 1, mvdc.igd);
+                app.a.drawSelectionBox((r.x * tileSize) - 1, (r.y * tileSize) - 1, (r.width * mvdc.tileSize) + 2, (r.height * mvdc.tileSize) + 2, 1, mvdc.igd);
             }
         }
 

@@ -8,7 +8,6 @@
 package r48.map;
 
 import r48.App;
-import r48.ui.Art;
 
 import java.util.Random;
 
@@ -18,7 +17,7 @@ import gabien.render.IGrDriver;
  * For once, a simple to describe class.
  * Created on 1/2/17.
  */
-public class TimeWaster {
+public class TimeWaster extends App.Svc {
     private double moveTime = 16;
     private int iconPlanX = 0;
     private int iconPlanY = 0;
@@ -26,6 +25,7 @@ public class TimeWaster {
     private Random madness = new Random();
 
     public TimeWaster(App app) {
+        super(app);
         iconSize = 64 * app.f.getSpriteScale();
     }
 
@@ -69,7 +69,7 @@ public class TimeWaster {
         // more of a reason to start getting serious about PVA, frankly. it'd handle all of this perfectly.
         if (type != 2) {
             igd.fillRect(0, 0, 0, 255, iconPlanX, iconPlanY, iconSize, iconSize);
-            igd.blitScaledImage(0, 0, 64, 64, iconPlanX, iconPlanY, iconSize, iconSize, Art.noMap);
+            igd.blitScaledImage(0, 0, 64, 64, iconPlanX, iconPlanY, iconSize, iconSize, app.a.noMap);
             igd.fillRect(0, 0, 0, type * 127, iconPlanX, iconPlanY, iconSize, iconSize);
         }
     }

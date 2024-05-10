@@ -15,13 +15,13 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
-import r48.ui.Art;
+import r48.App;
 
 /**
  * Handles drawing for a single-frame editor.
  * Created on 2/17/17.
  */
-public class UISingleFrameView extends UIElement implements OldMouseEmulator.IOldMouseReceiver {
+public class UISingleFrameView extends App.Elm implements OldMouseEmulator.IOldMouseReceiver {
     public GenposFramePanelController basePanelAccess;
 
     private int lastMX, lastMY, lossX, lossY;
@@ -30,7 +30,8 @@ public class UISingleFrameView extends UIElement implements OldMouseEmulator.IOl
 
     public OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
 
-    public UISingleFrameView(GenposFramePanelController rmAnimRootPanel) {
+    public UISingleFrameView(App app, GenposFramePanelController rmAnimRootPanel) {
+        super(app);
         basePanelAccess = rmAnimRootPanel;
     }
 
@@ -63,7 +64,7 @@ public class UISingleFrameView extends UIElement implements OldMouseEmulator.IOl
         if (basePanelAccess.cellSelection.cellNumber != -1)
             if (basePanelAccess.frame.getCellCount() > basePanelAccess.cellSelection.cellNumber) {
                 Rect r = basePanelAccess.frame.getCellSelectionIndicator(basePanelAccess.cellSelection.cellNumber);
-                Art.drawSelectionBox(opx + (r.x - 1), opy + (r.y - 1), r.width + 2, r.height + 2, 1, igd);
+                app.a.drawSelectionBox(opx + (r.x - 1), opy + (r.y - 1), r.width + 2, r.height + 2, 1, igd);
             }
         int cellCount = basePanelAccess.frame.getCellCount();
         for (int i = 0; i < cellCount; i++)

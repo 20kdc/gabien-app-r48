@@ -14,7 +14,6 @@ import r48.io.data.RORIO;
 import r48.map.MapViewDrawContext;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
-import r48.ui.Art;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -74,7 +73,7 @@ public class EventMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer 
             int py = y * mvdc.tileSize;
             if (layer == 0x7FFFFFFF) {
                 if (mvdc.app.ui.currentlyOpenInEditor(evI))
-                    Art.drawSelectionBox(px - 1, py - 1, mvdc.tileSize + 2, mvdc.tileSize + 2, 1, mvdc.igd);
+                    app.a.drawSelectionBox(px - 1, py - 1, mvdc.tileSize + 2, mvdc.tileSize + 2, 1, mvdc.igd);
             } else {
                 if (iegr.determineEventLayer(evI) != layer)
                     continue;

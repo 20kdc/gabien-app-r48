@@ -43,7 +43,7 @@ public class GenposFramePanelController {
         tweening = gtm;
         hostLauncher = launcher;
         frame = rootForNow;
-        editor = new UISingleFrameView(this);
+        editor = new UISingleFrameView(app, this);
         IImage bkg = rootForNow.getBackground();
         if (bkg != null) {
             editor.camX = bkg.getWidth() / 2;

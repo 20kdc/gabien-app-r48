@@ -28,6 +28,7 @@ import r48.imageio.ImageIOFormat;
 import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
 import r48.tr.pages.TrRoot;
+import r48.ui.Art;
 
 /**
  * An attempt to move as much as possible out of static variables.
@@ -36,6 +37,7 @@ import r48.tr.pages.TrRoot;
 public class AppCore {
     public final @NonNull InterlaunchGlobals ilg;
     // Sub-objects
+    public final @NonNull Art a;
     public final @NonNull Config c;
     public final @NonNull FontSizes f;
     public final @NonNull TrRoot t;
@@ -73,6 +75,7 @@ public class AppCore {
     public AppCore(@NonNull InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef engine, @NonNull FSBackend rp, @Nullable FSBackend sip, @NonNull Consumer<String> lp) {
         this.ilg = ilg;
         this.encoding = charset;
+        a = ilg.a;
         c = ilg.c;
         f = c.f;
         t = ilg.t;
