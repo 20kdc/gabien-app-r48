@@ -11,19 +11,14 @@ import gabien.datum.DatumSrcLoc;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import r48.App;
-import r48.io.data.DMKey;
-import r48.io.data.IRIO;
-import r48.io.data.IRIOGeneric;
 import r48.schema.*;
-import r48.schema.displays.HWNDSchemaElement;
-import r48.schema.specialized.IMagicalBinder;
-import r48.schema.specialized.MagicalBindingSchemaElement;
+import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.integers.NamespacedIntegerSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 import r48.tr.pages.TrSchema;
 import r48.ui.dialog.ISpritesheetProvider;
-import r48.ui.dialog.UIEnumChoice.EntryMode;
 
 import java.util.HashMap;
 import java.util.function.Function;
@@ -157,128 +152,21 @@ class SDBHelpers extends App.Svc {
 
     public SchemaElement makePicPointerPatchID(SchemaElement varId, SchemaElement val) {
         final TrSchema S = varId.T.s;
-        // Since this is much too complicated for a mere enum,
-        //  use the magical binding to make it more in-line with R48's standards,
-        //  with a minimal amount of code
-        HashMap<String, FF0> types = new HashMap<String, FF0>();
-        types.put("0", () -> S.ppp_constant);
-        types.put("1", () -> S.ppp_idVar);
-        types.put("2", () -> S.ppp_idNSfx);
-        HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
-        ArrayElementSchemaElement idV = new ArrayElementSchemaElement(app, 1, () -> S.ppp_idVarFN, varId, null, false);
-        disambiguations.put("1", idV);
-        disambiguations.put("2", idV);
-        disambiguations.put("", new ArrayElementSchemaElement(app, 1, () -> S.ppp_idFN, val, null, false));
-        AggregateSchemaElement inner = new AggregateSchemaElement(app, new SchemaElement[] {
-                new HalfsplitSchemaElement(
-                        new ArrayElementSchemaElement(app, 0, () -> S.ppp_typeFN, new EnumSchemaElement(app, types, DMKey.of(0), EntryMode.LOCK, () -> ""), null, false),
-                        new DisambiguatorSchemaElement(app, PathSyntax.compile(app, "]0"), disambiguations)
-                ),
-                new SubwindowSchemaElement(new HWNDSchemaElement(app, PathSyntax.compile(app, "]0"), "R2K/H_Internal_PPP"), new Function<IRIO, String>() {
-                    @Override
-                    public String apply(IRIO rubyIO) {
-                        return S.ppp_explain;
-                    }
-                }),
+        return new NamespacedIntegerSchemaElement(app, new NamespacedIntegerSchemaElement.Namespace[] {
+                new NamespacedIntegerSchemaElement.Namespace(() -> S.ppp_constant, () -> S.ppp_constant_h,     0,           9999,     0, val),
+                new NamespacedIntegerSchemaElement.Namespace(() -> S.ppp_idVarFN , () -> S.ppp_idVar     , 10000,          49999, 10000, varId),
+                new NamespacedIntegerSchemaElement.Namespace(() -> S.ppp_idNSfxFN, () -> S.ppp_idNSfx    , 50000, Long.MAX_VALUE, 50000, varId),
+                new NamespacedIntegerSchemaElement.Namespace(() -> S.ppp_unknown , null, Long.MIN_VALUE,    -1,     0, new IntegerSchemaElement(app, -1)),
         });
-        return new MagicalBindingSchemaElement(app, new IMagicalBinder() {
-            @Override
-            public IRIOGeneric targetToBoundNCache(IRIO target) {
-                // Split PPP address into components
-                long t = target.getFX();
-                long type = 0;
-                if (t >= 10000) {
-                    t -= 10000;
-                    type++;
-                    if (t >= 40000) {
-                        t -= 40000;
-                        type++;
-                    }
-                }
-                IRIOGeneric base = new IRIOGeneric(app.ctxDelmeAppEncoding);
-                base.setArray(2);
-                base.getAElem(0).setFX(type);
-                base.getAElem(1).setFX(t);
-                return base;
-            }
-
-            @Override
-            public boolean applyBoundToTarget(IRIO bound, IRIO target) {
-                // Stitch it back together
-                long type = bound.getAElem(0).getFX();
-                long t = bound.getAElem(1).getFX();
-                if (type == 2) {
-                    t += 50000;
-                } else if (type == 1) {
-                    t += 10000;
-                }
-                if (target.getFX() != t) {
-                    target.setFX(t);
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean modifyVal(IRIO trueTarget, boolean setDefault) {
-                if ((trueTarget.getType() != 'i') || setDefault) {
-                    trueTarget.setFX(0);
-                    return true;
-                }
-                return false;
-            }
-        }, inner);
     }
 
     public SchemaElement makePicPointerPatchVar(SchemaElement varId, FF0 vname, SchemaElement val) {
         // Less complicated but still more than an enum is reasonable for.
         final TrSchema S = varId.T.s;
-        HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
-        disambiguations.put("0", new ArrayElementSchemaElement(app, 1, vname, val, null, false));
-        disambiguations.put("", new ArrayElementSchemaElement(app, 1, () -> S.ppp_valueVarFN, varId, null, false));
-        SchemaElement inner = new HalfsplitSchemaElement(
-                new ArrayElementSchemaElement(app, 0, () -> S.ppp_isVarFN, new IntBooleanSchemaElement(app, false), null, false),
-                new DisambiguatorSchemaElement(app, PathSyntax.compile(app, "]0"), disambiguations)
-        );
-        return new MagicalBindingSchemaElement(app, new IMagicalBinder() {
-            @Override
-            public IRIOGeneric targetToBoundNCache(IRIO target) {
-                // Split PPP address into components
-                long t = target.getFX();
-                long type = 0;
-                if (t >= 10000) {
-                    t -= 10000;
-                    type++;
-                }
-                IRIOGeneric base = new IRIOGeneric(app.ctxDelmeAppEncoding);
-                base.setArray(2);
-                base.getAElem(0).setFX(type);
-                base.getAElem(1).setFX(t);
-                return base;
-            }
-
-            @Override
-            public boolean applyBoundToTarget(IRIO bound, IRIO target) {
-                // Stitch it back together
-                long type = bound.getAElem(0).getFX();
-                long t = bound.getAElem(1).getFX();
-                if (type != 0)
-                    t += 10000;
-                if (target.getFX() != t) {
-                    target.setFX(t);
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean modifyVal(IRIO trueTarget, boolean setDefault) {
-                if ((trueTarget.getType() != 'i') || setDefault) {
-                    trueTarget.setFX(0);
-                    return true;
-                }
-                return false;
-            }
-        }, inner);
-    }
+        return new NamespacedIntegerSchemaElement(app, new NamespacedIntegerSchemaElement.Namespace[] {
+                new NamespacedIntegerSchemaElement.Namespace(vname, null,     0,           9999,     0, val),
+                new NamespacedIntegerSchemaElement.Namespace(() -> S.ppp_valVarFN, null, 10000, Long.MAX_VALUE, 10000, varId),
+                new NamespacedIntegerSchemaElement.Namespace(() -> S.ppp_unknown , null, Long.MIN_VALUE,    -1,     0, new IntegerSchemaElement(app, -1)),
+        });
+   }
 }

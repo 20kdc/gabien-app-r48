@@ -20,9 +20,9 @@ public class TrSchema extends TrPage {
     public String bOpenTable;
     public String selectTileGraphic;
     public String ppp_constant, ppp_idVar, ppp_idNSfx;
-    public String ppp_idVarFN, ppp_idFN, ppp_typeFN;
-    public String ppp_explain;
-    public String ppp_valueVarFN, ppp_isVarFN;
+    public String ppp_constant_h;
+    public String ppp_valVarFN, ppp_idVarFN, ppp_idNSfxFN;
+    public String ppp_unknown;
 
     public String aElmInv;
     public FF2 aElmOpt;

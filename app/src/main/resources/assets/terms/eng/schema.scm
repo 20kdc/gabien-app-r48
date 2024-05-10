@@ -21,14 +21,13 @@
 	selectTileGraphic "Select Tile Graphic..."
 	(ppp_
 		constant "Constant"
-		idVar "From Id Var. (PPP/EasyRPG/2k3 1.12)"
-		idNSfx "From Id/Name Suffix Var. Pair (PPP/EasyRPG/2k3 1.12)"
-		idVarFN "idVar"
-		idFN "id "
-		typeFN "type "
-		explain "Explain this picture mode..."
-		valueVarFN "valueVar "
-		isVarFN "isVar "
+		idVar "From Id Var. (PPP/EasyRPG/2k3 1.12)\nThe picture ID is retrieved from the variable."
+		idNSfx "From Id/Name Suffix Var. Pair (PPP/EasyRPG/2k3 1.12)\nThe picture ID is retrieved from the variable.\nIf this is a show command, the last 4 characters of the image name are replaced with the value of the variable after the given one.\nThus, if the variable chosen was variable 6, with the value 1, and the variable after (variable 7) had the value 2, and the image was 'tomcat':\n1. The image would be \"to0002\"\n2. The picture ID would be 1."
+		constant_h "The ID given is the picture's number."
+		valVarFN "valVar "
+		idVarFN "idVar "
+		idNSfxFN "idNSfx "
+		unknown "Unknown"
 	)
 	aElmInv "(This index isn't valid - did you modify a group from another window?)"
 	aElmOpt (fl2 "Field " a0 " doesn't exist (default " a1 ")")

@@ -15,13 +15,11 @@ import gabien.uslx.io.MemoryishR;
 import gabien.uslx.io.MemoryishRW;
 
 /**
- * All methods apart from IVars (left unimplemented except for rmIVar, which is not supported) are implemented as 'not supported' by default.
- * The setter methods for your specific types should be reimplemented.
- * Keep in sync with IRIOTypedMask!
- * Split from IRIOFixedData (formerly IRIOFixed) May 9, 2024.
+ * Keep in sync with IRIOTypedData!
+ * Copied from IRIOTypedData 10th May 2024.
  */
-public abstract class IRIOTypedData extends IRIOData {
-    public IRIOTypedData(@NonNull DMContext context) {
+public abstract class IRIOTypedMask extends IRIO {
+    public IRIOTypedMask(@NonNull DMContext context) {
         super(context);
     }
 
