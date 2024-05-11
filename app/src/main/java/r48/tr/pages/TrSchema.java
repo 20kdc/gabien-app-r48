@@ -101,4 +101,6 @@ public class TrSchema extends TrPage {
     public String align_centre;
     public String align_right;
     public String align_button;
+    public FF2 objectHasBecomeInvalid;
+    public String seInternalError;
 }

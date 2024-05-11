@@ -36,7 +36,7 @@ public class TempDialogSchemaChoice extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
         if (update != null)
             update.run();
         return heldDialog;

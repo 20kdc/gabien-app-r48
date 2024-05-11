@@ -42,7 +42,7 @@ public class TonePickerSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
         int nr = (int) rP.getRO(target).getFX();
         int ng = (int) gP.getRO(target).getFX();
         int nb = (int) bP.getRO(target).getFX();

@@ -30,7 +30,7 @@ public class FloatSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         final String oldValue;
         if (target.getType() == 'f') {
             oldValue = IntUtils.decodeRbFloat(target.getBuffer());

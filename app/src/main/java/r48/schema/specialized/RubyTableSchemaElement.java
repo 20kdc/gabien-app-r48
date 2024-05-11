@@ -63,7 +63,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final IRIO targV = extractTarget(target);
         final RubyTable targ = new RubyTable(targV.editUser());
         final IRIO width = widthVar == null ? null : widthVar.getRW(target);

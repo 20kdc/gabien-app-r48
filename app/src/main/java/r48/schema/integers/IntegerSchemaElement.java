@@ -35,7 +35,7 @@ public class IntegerSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public final UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public final UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         return buildIntegerEditor(target.getFX(), new IIntegerContext() {
             @Override
             public void update(long n) {

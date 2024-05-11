@@ -199,7 +199,7 @@ public class SDB extends AppCore.Csv {
         }
 
         @Override
-        public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+        public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
             return getEntry().buildHoldingEditor(target, launcher, path);
         }
 

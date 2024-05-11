@@ -38,11 +38,9 @@ public class ObjectClassSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        if (target.getType() != type)
-            throw new RuntimeException("Wrong type passed to ObjectClassSchemaElement (should be " + type + " was " + target.getType() + ")");
-        if (!target.getSymbol().equals(symbol))
-            throw new RuntimeException("Classable of type " + target.getSymbol() + " passed to OCSE of type " + symbol);
+    public UIElement buildHoldingEditorImpl(IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+        if (checkType(target, type, symbol, false))
+            return objectHasBecomeInvalidScreen(path);
 
         LinkedList<String> iVars = new LinkedList<String>();
         boolean enableIVarCheck = findAndAddIVars(backing, target, iVars);

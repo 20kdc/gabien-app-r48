@@ -41,7 +41,7 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
 
         final UITextButton importer = new UITextButton(T.s.bImportOS, app.f.schemaFieldTH, new Runnable() {
             @Override

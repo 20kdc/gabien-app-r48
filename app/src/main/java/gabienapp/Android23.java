@@ -29,7 +29,7 @@ public class Android23 {
         IGrInDriver window = GaBIEn.makeGrIn("storage permission error", 800, 600, ws);
         PVARenderer pf;
         try {
-            pf = new PVARenderer(GaBIEn.getResource("androidStoragePermissionError.pva"));
+            pf = new PVARenderer(GaBIEn.getResource("animations/androidStoragePermissionError.pva"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

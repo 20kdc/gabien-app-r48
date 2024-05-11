@@ -33,7 +33,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement.Leaf {
         super(app);
     }
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         App app = launcher.getApp();
         tryInitOSSHESEDB(app);
         if (app.osSHESEDB == null)

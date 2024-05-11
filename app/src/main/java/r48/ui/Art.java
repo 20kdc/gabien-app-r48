@@ -30,9 +30,8 @@ import r48.imagefx.HueShiftImageEffect;
 public class Art {
 
     // Images
-    public IImage layerTabs = GaBIEn.getImageCKEx("layertab.png", false, true, 255, 0, 255);
-    public IImage noMap = GaBIEn.getImageCKEx("nomad.png", false, true, 0, 0, 0);
-    public IImage symbolic8 = GaBIEn.getImageEx("symbolic8.png", false, true);
+    public IImage layerTabs = GaBIEn.getImageEx("layertab.png", false, true);
+    public IImage noMap = GaBIEn.getImageEx("nomad.png", false, true);
     public IImage symbolic16 = GaBIEn.getImageEx("symbolic16.png", false, true);
 
     // Generated Images
@@ -235,7 +234,7 @@ public class Art {
     }
 
     private void drawSymbol8px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
-        igd.blitScaledImage(0, symbol * 8, 8, 8, x, y, sizeW, sizeH, symbolic8);
+        igd.blitScaledImage(24, symbol * 16, 8, 8, x, y, sizeW, sizeH, symbolic16);
     }
 
     private void drawSymbol16px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
@@ -261,7 +260,8 @@ public class Art {
         Camera, New, Folder, Keyframe,
         Tween, SaveDisabled, Forward, Eyedropper,
         // "Fill" is for a flood fill, so it's a bucket
-        Line, Fill;
+        Line, Fill, Undo, UndoDisabled,
+        Redo, RedoDisabled;
 
         public Instance i(Art a) {
             return new Instance(a);

@@ -30,15 +30,17 @@ public class StringSchemaElement extends SchemaElement.Leaf {
 
     // Note the type must be UITextBox - This is so StringLenSchemaElement can latch on.
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UITextBox tb = new UITextBox(decodeVal(target), app.f.schemaFieldTH);
+    public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+        if (target.getType() != '"')
+            return objectHasBecomeInvalidScreen(path);
+        final UITextBox tb = new UITextBox(target.decString(), app.f.schemaFieldTH);
         tb.onEdit = () -> {
             String text = tb.getText();
             if (verifier(text)) {
                 encodeVal(text, target);
                 path.changeOccurred(false);
             } else {
-                tb.setText(decodeVal(target));
+                tb.setText(target.decString());
             }
         };
         return tb;
@@ -51,10 +53,6 @@ public class StringSchemaElement extends SchemaElement.Leaf {
 
     protected boolean verifier(String text) {
         return true;
-    }
-
-    protected String decodeVal(IRIO target) {
-        return target.decString();
     }
 
     @Override

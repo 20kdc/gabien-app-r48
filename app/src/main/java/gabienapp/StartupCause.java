@@ -34,6 +34,7 @@ public class StartupCause implements Runnable {
     @Override
     public void run() {
         if (ls.lun.currentState == ls) {
+            System.err.println("StartupCause: actually entering application");
             final Charset charset;
             try {
                 charset = Charset.forName(box);

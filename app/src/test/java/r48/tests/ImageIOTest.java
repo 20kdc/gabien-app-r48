@@ -27,12 +27,12 @@ public class ImageIOTest {
     @Test
     public void testXYZ() throws IOException {
         App app = new TestKickstart().kickstart("RAM/", "UTF-8", "r2k");
-        testFormat(new XYZImageIOFormat(app), true);
+        testFormat(new XYZImageIOFormat(app.ilg), true);
     }
     @Test
     public void testPNG8I() throws IOException {
         App app = new TestKickstart().kickstart("RAM/", "UTF-8", "r2k");
-        testFormat(new PNG8IImageIOFormat(app), false);
+        testFormat(new PNG8IImageIOFormat(app.ilg), false);
     }
 
     private void testFormat(ImageIOFormat imageIOFormat, boolean expectedToLoseTransparency) throws IOException {

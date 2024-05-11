@@ -35,7 +35,7 @@ public class MapPositionHelperSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         IRIO pathARIO = null;
         if (pathA != null)
             pathARIO = pathA.getRW(target);

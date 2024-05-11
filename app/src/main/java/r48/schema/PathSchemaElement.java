@@ -44,7 +44,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         UILabel uil = null;
         if (alias != null)
             uil = new UILabel(alias.r() + " ", app.f.schemaFieldTH);

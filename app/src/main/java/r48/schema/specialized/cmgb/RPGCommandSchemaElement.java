@@ -75,7 +75,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path2) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path2) {
         // A note here:
         // Using newWindow on path will cause a growing stack issue:
         //  newWindow always returns DIRECTLY to the path, subwindows use Back which 

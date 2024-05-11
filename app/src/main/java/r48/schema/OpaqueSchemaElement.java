@@ -27,7 +27,7 @@ public class OpaqueSchemaElement extends SchemaElement.Leaf {
         return T.s.cantEdit + v;
     }
 
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         return new UITextButton(getMessage(target), app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {

@@ -44,7 +44,7 @@ public class JSONImportExportSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
 
         final UITextButton importer = new UITextButton(importText.r(), app.f.schemaFieldTH, () -> {
             GaBIEn.startFileBrowser(importText.r(), false, "", (fn) -> {

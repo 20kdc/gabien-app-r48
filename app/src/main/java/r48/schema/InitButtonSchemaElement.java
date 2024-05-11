@@ -45,7 +45,7 @@ public class InitButtonSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         UITextButton utb = new UITextButton(text.r(), app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {

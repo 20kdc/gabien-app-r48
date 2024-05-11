@@ -44,7 +44,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path2) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path2) {
         final SchemaPath path = path2.tagSEMonitor(target, this, true);
         String iv = getDisambigIndex(target);
         SchemaElement ise = getSchemaElement(iv);

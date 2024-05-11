@@ -50,12 +50,21 @@ public class Launcher {
         uiTicker = new WindowCreatingUIElementConsumer();
         // Setup initial state
         currentState = new LSSplashScreen(this, () -> {
+            // prewarm MXbean
+            GaBIEn.getLoadedClassCount();
+            int loadedClassesStart = GaBIEn.getLoadedClassCount();
+            // -- start --
             // Initialize as much as possible here.
             c = new Config(isMobile);
             fontsLoaded.set(ConfigIO.load(true, c));
             ilg = new InterlaunchGlobals(new Art(), c, (vm) -> vmCtx = vm, (str) -> {
                 // this would presumably go to the splash screen
             }, (str) -> System.err.println("TR: " + str), strict);
+            try {
+                Class.forName("gabienapp.CriticalClassLoading").getMethod("actuallyLoad", InterlaunchGlobals.class).invoke(null, ilg);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
             boolean canAvoidWait = c.fontOverride == null;
             // If we're setup correctly: English never needs the font-loading.
             // The reason it's important we use the correct language for this is because if font-loading is slow,
@@ -67,6 +76,13 @@ public class Launcher {
             if (fontsNecessary)
                 while (!GaBIEn.fontsReady)
                     Thread.yield();
+            // -- end --
+            int loadedClassesEnd = GaBIEn.getLoadedClassCount();
+            if (loadedClassesStart != -1) {
+                System.err.println("Launcher: Loaded " + (loadedClassesEnd - loadedClassesStart) + " classes.");
+            } else {
+                System.err.println("Launcher: Unable to measure classes loaded.");
+            }
         }, (uiScaleTenths) -> {
             c.applyUIGlobals();
             globalMS = 33;

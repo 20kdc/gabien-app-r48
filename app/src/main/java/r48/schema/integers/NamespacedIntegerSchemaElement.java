@@ -48,7 +48,7 @@ public class NamespacedIntegerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
         Namespace ns = namespaceOf(target.getFX());
         LinkedList<UIPopupMenu.Entry> mapped = new LinkedList<>();
         for (final Namespace ns2 : namespaces) {

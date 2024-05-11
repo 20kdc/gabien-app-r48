@@ -40,7 +40,7 @@ public class SoundPlayerSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
         RORIO nameObj = namePath.getRO(target);
         RORIO tempoObj = tempoPath == null ? null : tempoPath.getRO(target);
         double tempo = 1;

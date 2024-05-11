@@ -34,7 +34,7 @@ public class StringLenSchemaElement extends StringSchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UITextBox utb = (UITextBox) super.buildHoldingEditor(target, launcher, path);
         utb.feedback = new Function<String, String>() {
             @Override

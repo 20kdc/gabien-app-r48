@@ -35,7 +35,7 @@ public class CTNativeSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
         MemoryishRW rct = target.editUser();
         UIElement[] uiSVLContents = {
                 addField(T.s.toneR, 0, rct, path),

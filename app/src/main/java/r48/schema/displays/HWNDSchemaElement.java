@@ -36,7 +36,7 @@ public class HWNDSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
         UIHelpSystem uhs = new UIHelpSystem(app.ilg);
         final HelpSystemController hsc = new HelpSystemController(null, file, uhs);
         uhs.onLinkClick = new Consumer<String>() {

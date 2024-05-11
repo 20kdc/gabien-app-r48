@@ -50,7 +50,7 @@ public class HashSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
         EmbedDataSlot<IRIO> keyWorkspaceSlot = launcher.embedSlot(target, keyWorkspaceKey, null);
         IRIO preWorkspace = keyWorkspaceSlot.value;

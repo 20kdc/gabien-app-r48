@@ -37,7 +37,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         if (mode == 3) {
             UITextButton utb1 = new UITextButton(T.s.svDoReset, app.f.schemaFieldTH, () -> {
                 // Before doing anything stupid...

@@ -7,9 +7,14 @@
 
 package r48.schema;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
+import gabien.ui.elements.UILabel;
+import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -36,6 +41,29 @@ public abstract class SchemaElement extends App.Svc {
         return setDefault;
     }
 
+    /**
+     * Creates a UI element to indicate the target object has become invalid.
+     */
+    public final UIElement objectHasBecomeInvalidScreen(SchemaPath sp) {
+        return new UIScrollLayout(true, app.f.generalS, new UILabel(T.s.objectHasBecomeInvalid.r(sp, this), app.f.schemaFieldTH));
+    }
+
+    /**
+     * Creates the editor control.
+     */
+    public final UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+        try {
+            return buildHoldingEditorImpl(target, launcher, path);
+        } catch (Exception ex) {
+            if (app.ilg.strict)
+                throw ex;
+            ex.printStackTrace();
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+            return new UIScrollLayout(true, app.f.generalS, new UILabel(T.s.seInternalError + sw.toString(), app.f.schemaFieldTH));
+        }
+    }
+
     // Creates the editor control.
     // Ground rules:
     // 1. If the control changes the value, path.changeOccurred(false) MUST be called.
@@ -60,7 +88,7 @@ public abstract class SchemaElement extends App.Svc {
     // These rules were determined by trial and error over 5 and a half days.
     // Before the system was even *completed.*
     // Probably best not to break them.
-    public abstract UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path);
+    protected abstract UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path);
 
     /**
      * Gets the window title suffix for this schema element.

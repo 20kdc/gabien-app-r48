@@ -49,10 +49,10 @@ import org.eclipse.jdt.annotation.Nullable;
 public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSystem {
     public R2kSystem(App app) {
         super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "", "", new ChainedImageLoader(new IImageLoader[] {
-                new ImageIOImageLoader(app, new XYZImageIOFormat(app), ".xyz", true),
+                new ImageIOImageLoader(app, new XYZImageIOFormat(app.ilg), ".xyz", true),
                 // This is actually valid, but almost nobody wanted to use BMP over one of PNG or XYZ. Who'd have guessed?
-                new ImageIOImageLoader(app, new BMP8IImageIOFormat(app, 8), ".bmp", true),
-                new ImageIOImageLoader(app, new PNG8IImageIOFormat(app), ".png", true),
+                new ImageIOImageLoader(app, new BMP8IImageIOFormat(app.ilg, 8), ".bmp", true),
+                new ImageIOImageLoader(app, new PNG8IImageIOFormat(app.ilg), ".png", true),
                 // EasyRPG extension: arbitrary PNGs
                 new GabienImageLoader(app, ".png")
         }))), true);

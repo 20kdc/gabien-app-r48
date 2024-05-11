@@ -20,10 +20,11 @@ import gabien.ui.UIElement;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.ui.dialogs.UIAutoclosingPopupMenu;
 import gabien.ui.dialogs.UICredits;
-import gabien.ui.dialogs.UIPopupMenu;
+import gabien.ui.elements.UIEmpty;
 import gabien.ui.elements.UIIconButton;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UIListLayout;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
@@ -75,6 +76,8 @@ public class AppUI extends App.Svc {
     public IMapContext mapContext;
 
     private UIIconButton saveButtonSym;
+    private UIIconButton undoButtonSym;
+    private UIIconButton redoButtonSym;
 
     public final Coco coco;
 
@@ -99,34 +102,27 @@ public class AppUI extends App.Svc {
 
         // initialize UI
         saveButtonSym = new UIIconButton(Art.Symbol.Save.i(app), app.f.tabTH, this::saveAllModified);
-        final UIIconButton sym2 = new UIIconButton(Art.Symbol.Back.i(app), app.f.tabTH, () -> {
-            UIAutoclosingPopupMenu ac = new UIAutoclosingPopupMenu(new UIPopupMenu.Entry[] {
-                    new UIPopupMenu.Entry("REVERT", () -> {
-                        createLaunchConfirmation(T.u.revertWarn, () -> {
-                            AppMain.performSystemDump(app, false, "revert file");
-                            // Shutdown schema hosts
-                            for (ISchemaHost ish : activeHosts)
-                                ish.shutdown();
-                            // We're prepared for revert, do the thing
-                            app.odb.revertEverything();
-                            // Map editor will have fixed itself because it watches the roots and does full reinits when anything even remotely changes
-                            // But do this as well
-                            app.sdb.kickAllDictionariesForMapChange();
-                        }).run();
-                    }),
-                    new UIPopupMenu.Entry("Undo", () -> {
-                        if (app.timeMachine.canUndo())
-                            app.timeMachine.undo();
-                    }),
-                    new UIPopupMenu.Entry("Redo", () -> {
-                        if (app.timeMachine.canRedo())
-                            app.timeMachine.redo();
-                    })
-            }, app.f.menuTH, app.f.menuS, isMobile);
-            wm.createMenu(saveButtonSym, ac);
+        final UIIconButton btnRevert = new UIIconButton(Art.Symbol.Back.i(app), app.f.tabTH, createLaunchConfirmation(T.u.revertWarn, () -> {
+            AppMain.performSystemDump(app, false, "revert file");
+            // Shutdown schema hosts
+            for (ISchemaHost ish : activeHosts)
+                ish.shutdown();
+            // We're prepared for revert, do the thing
+            app.odb.revertEverything();
+            // Map editor will have fixed itself because it watches the roots and does full reinits when anything even remotely changes
+            // But do this as well
+            app.sdb.kickAllDictionariesForMapChange();
+        }));
+        undoButtonSym = new UIIconButton(Art.Symbol.Undo.i(app), app.f.tabTH, () -> {
+            if (app.timeMachine.canUndo())
+                app.timeMachine.undo();
         });
-        UISplitterLayout usl = new UISplitterLayout(saveButtonSym, sym2, false, 0.5);
-        wm = new WindowManager(app.ilg, coco, uiTicker, null, usl);
+        redoButtonSym = new UIIconButton(Art.Symbol.Redo.i(app), app.f.tabTH, () -> {
+            if (app.timeMachine.canRedo())
+                app.timeMachine.redo();
+        });
+        UIListLayout iconBar = new UIListLayout(false, saveButtonSym, new UIEmpty(app.f.scaleGuess(4), 0), btnRevert, new UIEmpty(app.f.scaleGuess(8), 0), undoButtonSym, new UIEmpty(app.f.scaleGuess(4), 0), redoButtonSym);
+        wm = new WindowManager(app.ilg, coco, uiTicker, null, iconBar);
 
         initializeTabs();
 
@@ -163,6 +159,8 @@ public class AppUI extends App.Svc {
 
     public void tick(double dT) {
         saveButtonSym.symbol = (hasModified() ? Art.Symbol.Save : Art.Symbol.SaveDisabled).i(app);
+        undoButtonSym.symbol = (app.timeMachine.canUndo() ? Art.Symbol.Undo : Art.Symbol.UndoDisabled).i(app);
+        redoButtonSym.symbol = (app.timeMachine.canRedo() ? Art.Symbol.Redo : Art.Symbol.RedoDisabled).i(app);
         if (mapContext != null) {
             String mapId = mapContext.getCurrentMapObject();
             IObjectBackend.ILoadedObject map = null;

@@ -31,7 +31,7 @@ public class RubyTableIndividualCellSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
         return interior.buildHoldingEditor(new CellMask(target), launcher, path);
     }
 

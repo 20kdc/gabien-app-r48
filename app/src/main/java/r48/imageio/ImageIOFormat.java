@@ -10,7 +10,7 @@ package r48.imageio;
 import gabien.GaBIEn;
 import gabien.render.WSIImage;
 import gabien.uslx.vfs.FSBackend;
-import r48.app.AppCore;
+import r48.app.InterlaunchGlobals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,11 +21,12 @@ import java.io.InputStream;
  * Describes an image format (save/load buttons)
  * Created on April 13th 2018
  */
-public abstract class ImageIOFormat extends AppCore.Csv {
+public abstract class ImageIOFormat {
+    public final InterlaunchGlobals ilg;
     public final boolean knowsColourKey;
 
-    public ImageIOFormat(AppCore app, boolean ck) {
-        super(app);
+    public ImageIOFormat(InterlaunchGlobals ilg, boolean ck) {
+        this.ilg = ilg;
         knowsColourKey = ck;
     }
 
@@ -39,7 +40,7 @@ public abstract class ImageIOFormat extends AppCore.Csv {
     // gInput is null (rather than the error image reference) or the system image loader output.
     public abstract ImageIOImage loadFile(byte[] s, WSIImage gInput) throws IOException;
 
-    public static ImageIOFormat[] initializeFormats(AppCore app) {
+    public static ImageIOFormat[] initializeFormats(InterlaunchGlobals app) {
         return new ImageIOFormat[] {
                 new XYZImageIOFormat(app),
                 new PNG8IImageIOFormat(app),

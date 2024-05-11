@@ -33,7 +33,7 @@ public class HiddenSchemaElement extends SchemaElement implements IProxySchemaEl
     }
 
     @Override
-    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
         if (show.apply(target))
             return content.buildHoldingEditor(target, launcher, path);
         return new UIEmpty();

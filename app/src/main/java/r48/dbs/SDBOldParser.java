@@ -501,7 +501,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     final SchemaElement insideThat = get();
                     return new SchemaElement(app) {
                         @Override
-                        public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+                        public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
                             return getSchema(path).buildHoldingEditor(target, launcher, path);
                         }
 
@@ -537,7 +537,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     final SchemaElement insideThat = get();
                     return new SchemaElement(app) {
                         @Override
-                        public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+                        public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
                             return insideThat.buildHoldingEditor(target, launcher, applySchema(target, path, true));
                         }
 

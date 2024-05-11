@@ -28,7 +28,7 @@ public class TypeChangerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO targetValue, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO targetValue, final ISchemaHost launcher, final SchemaPath path) {
         int rei = getRelevantElementId(targetValue);
 
         SchemaElement targetS = new OpaqueSchemaElement(app);

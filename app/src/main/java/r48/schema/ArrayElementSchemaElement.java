@@ -50,9 +50,11 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         if (alias == null)
             return new UIEmpty();
+        if (target.getType() != '[')
+            return objectHasBecomeInvalidScreen(path);
         final String name = alias.r();
         if (target.getALen() <= index) {
             String tx = T.s.aElmInv;

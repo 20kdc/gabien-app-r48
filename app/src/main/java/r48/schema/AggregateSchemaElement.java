@@ -49,7 +49,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     }
 
     @Override
-    public UIElement buildHoldingEditor(IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         // Assist with the layout of "property grids".
         if (!overrideSet)
             overrideFW = getDefaultFieldWidth(target);

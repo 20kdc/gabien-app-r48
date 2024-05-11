@@ -6,7 +6,7 @@
  */
 package r48.imageio;
 
-import r48.app.AppCore;
+import r48.app.InterlaunchGlobals;
 import r48.io.BMPConnection;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ import gabien.uslx.io.ByteArrayMemoryish;
 public class BMP8IImageIOFormat extends ImageIOFormat {
     public int actuallyBits;
 
-    public BMP8IImageIOFormat(AppCore app, int actuallyB) {
+    public BMP8IImageIOFormat(InterlaunchGlobals app, int actuallyB) {
         super(app, false);
         actuallyBits = actuallyB;
     }
@@ -36,7 +36,7 @@ public class BMP8IImageIOFormat extends ImageIOFormat {
             return null;
         if (img.palette.size() > (1 << actuallyBits))
             return null;
-        return T.g.img_bmpX.r(actuallyBits);
+        return ilg.t.g.img_bmpX.r(actuallyBits);
     }
 
     @Override

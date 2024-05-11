@@ -205,7 +205,7 @@ public class CharacterGeneratorController extends App.Svc {
             return img.createPNG();
         }
 
-        PNG8IImageIOFormat tempFmt = new PNG8IImageIOFormat(app);
+        PNG8IImageIOFormat tempFmt = new PNG8IImageIOFormat(app.ilg);
         try {
             return tempFmt.saveFile(iei2);
         } catch (IOException e) {

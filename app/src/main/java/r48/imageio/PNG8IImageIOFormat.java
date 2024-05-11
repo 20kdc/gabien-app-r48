@@ -6,7 +6,7 @@
  */
 package r48.imageio;
 
-import r48.app.AppCore;
+import r48.app.InterlaunchGlobals;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -20,7 +20,7 @@ import gabien.render.WSIImage;
  * Created on April 14th 2018.
  */
 public class PNG8IImageIOFormat extends ImageIOFormat {
-    public PNG8IImageIOFormat(AppCore app) {
+    public PNG8IImageIOFormat(InterlaunchGlobals app) {
         super(app, true);
     }
     
@@ -45,7 +45,7 @@ public class PNG8IImageIOFormat extends ImageIOFormat {
     @Override
     public String saveName(ImageIOImage img) {
         if (supports(img))
-            return T.g.img_png8;
+            return ilg.t.g.img_png8;
         return null;
     }
 

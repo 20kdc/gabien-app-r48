@@ -30,7 +30,7 @@ public class EPGDisplaySchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, SchemaPath path) {
         StuffRenderer r = launcher.getContextRenderer();
         return buildEditorFromObject(app, r, target);
     }

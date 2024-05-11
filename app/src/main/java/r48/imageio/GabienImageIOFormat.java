@@ -6,7 +6,7 @@
  */
 package r48.imageio;
 
-import r48.app.AppCore;
+import r48.app.InterlaunchGlobals;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ import gabien.render.WSIImage;
  * Created on April 14th 2018.
  */
 public class GabienImageIOFormat extends ImageIOFormat {
-    public GabienImageIOFormat(AppCore app) {
+    public GabienImageIOFormat(InterlaunchGlobals app) {
         super(app, true);
     }
 
@@ -26,7 +26,7 @@ public class GabienImageIOFormat extends ImageIOFormat {
         // Don't recommend saving in this format if indexed is possible.
         if (PNG8IImageIOFormat.supports(img))
             return null;
-        return T.g.img_png32;
+        return ilg.t.g.img_png32;
     }
 
     @Override

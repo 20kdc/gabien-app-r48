@@ -116,4 +116,6 @@
 		right "Right"
 		button "Group Text..."
 	)
+	objectHasBecomeInvalid (fl2 "This window has become invalid because of a change in the target data.\nThis can be (for example) caused by undoing the creation of an object you are looking at.\nSchema Path: " a0 "\nSchema Element: " a1)
+	seInternalError "This window has become invalid because of an internal error in R48.\nPlease report it! Details:\n"
 )

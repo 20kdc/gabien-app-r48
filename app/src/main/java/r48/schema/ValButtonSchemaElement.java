@@ -34,7 +34,7 @@ public class ValButtonSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         UITextButton utb = new UITextButton(text.r(), app.f.schemaFieldTH, () -> {
             target.setDeepClone(value);
             path.changeOccurred(false);

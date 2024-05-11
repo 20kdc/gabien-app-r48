@@ -55,7 +55,9 @@ public abstract class ArraySchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path2) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path2) {
+        if (target.getType() != '[')
+            return objectHasBecomeInvalidScreen(path2);
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
         final App app = launcher.getApp();

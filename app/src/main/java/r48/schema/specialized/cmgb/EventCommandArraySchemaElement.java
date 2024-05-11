@@ -247,7 +247,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         final boolean cctF = canCopyText;
         group[group.length - 1] = new SchemaElement.Leaf(app) {
             @Override
-            public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+            public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
                 LinkedList<UIElement> addons = new LinkedList<>();
                 if (addRemoveF) {
                     addons.add(new UITextButton(addText, app.f.schemaFieldTH, () -> {
@@ -358,6 +358,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
      * Finds the instance tracker in target.
      */
     public static int findActualStart(IRIO target, IRIO tracker) {
+        if (target.getType() != '[')
+            return -1;
         int alen = target.getALen();
         for (int i = 0; i < alen; i++)
             if (target.getAElem(i) == tracker)
@@ -374,7 +376,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         EmbedDataKey<Double> ecwsKey = new EmbedDataKey<>();
         return new SchemaElement(app) {
             @Override
-            public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+            public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
                 int actualStart = findActualStart(target, tracker);
                 if (actualStart == -1)
                     return new UILabel(T.s.cmdOutOfList, app.f.schemaFieldTH);

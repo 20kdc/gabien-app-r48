@@ -26,14 +26,11 @@ public class BooleanSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         final UITextButton utb = new UITextButton(determineTruth(target) ? T.s.booleanTrue : T.s.booleanFalse, app.f.schemaFieldTH, null).togglable(determineTruth(target));
-        utb.onClick = new Runnable() {
-            @Override
-            public void run() {
-                modifyValueTruth(target, utb.state);
-                path.changeOccurred(false);
-            }
+        utb.onClick = () -> {
+            modifyValueTruth(target, utb.state);
+            path.changeOccurred(false);
         };
         return utb;
     }

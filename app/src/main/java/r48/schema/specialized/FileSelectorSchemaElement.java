@@ -47,7 +47,7 @@ public class FileSelectorSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         app.ui.performFullImageFlush();
         String[] strs = GaBIEn.listEntries(app.gameResources.intoPath(pathExtender));
         if (strs == null)
