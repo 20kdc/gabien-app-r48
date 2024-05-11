@@ -8,7 +8,6 @@
 package r48.app;
 
 import gabien.ui.*;
-import gabien.uslx.vfs.FSBackend;
 import r48.AdHocSaveLoad;
 import r48.App;
 import r48.io.IObjectBackend;
@@ -18,24 +17,12 @@ import r48.io.data.IRIOGeneric;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.util.SchemaPath;
 
-import java.nio.charset.Charset;
-import java.util.function.Consumer;
-
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-
 /**
  * Used to contain static variables, now just initialization routines.
  * This is theoretically roughly one of the oldest classes in the project, but has been phased out.
  * Created on 12/27/16. Being phased out as of 26th February 2023, reduced to static methods as of the 28th.
  */
 public class AppMain {
-    public static App initializeCore(InterlaunchGlobals ilg, Charset charset, final @NonNull FSBackend rp, final @Nullable FSBackend sip, final EngineDef engine, final Consumer<String> progress) {
-        final App app = new App(ilg, charset, engine, rp, sip, progress);
-
-        return app;
-    }
-
     public static void initializeUI(App app, final WindowCreatingUIElementConsumer uiTicker, boolean mobile) {
         app.np = new AppNewProject(app);
         app.ui = new AppUI(app, mobile);

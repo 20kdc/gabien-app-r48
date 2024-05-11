@@ -65,8 +65,6 @@ public abstract class DMChangeTracker {
         public static final DMChangeTracker DISPOSABLE = new Null();
         // clipboard
         public static final DMChangeTracker CLIPBOARD = new Null();
-        // this needs to be addressed
-        public static final DMChangeTracker DELETE_ME = new Null();
         // AdHocSaveLoad & pals
         public static final DMChangeTracker ADHOC_IO = new Null();
         // key workspace editor

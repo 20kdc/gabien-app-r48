@@ -268,7 +268,11 @@ public class Art {
         }
 
         public Instance i(App a) {
-            return i(a.a);
+            return a.ui.symbolInstances[ordinal()];
+        }
+
+        public Instance instanceDirect(App app) {
+            return i(app.a);
         }
 
         public Instance i(InterlaunchGlobals a) {

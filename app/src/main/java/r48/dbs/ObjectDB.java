@@ -17,6 +17,7 @@ import r48.schema.util.SchemaPath;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -260,12 +261,18 @@ public class ObjectDB extends AppCore.Csv {
     private void handleNotificationList(LinkedList<WeakReference<Consumer<SchemaPath>>> notifyObjectModified, SchemaPath sp) {
         if (notifyObjectModified == null)
             return;
-        for (WeakReference<Consumer<SchemaPath>> spi : new LinkedList<WeakReference<Consumer<SchemaPath>>>(notifyObjectModified)) {
+        Iterator<WeakReference<Consumer<SchemaPath>>> it = notifyObjectModified.iterator();
+        while (it.hasNext()) {
+            WeakReference<Consumer<SchemaPath>> spi = it.next();
             Consumer<SchemaPath> ics = spi.get();
-            if (ics == null) {
-                notifyObjectModified.remove(spi);
-            } else if (sp != null) {
-                ics.accept(sp);
+            if (ics == null)
+                it.remove();
+        }
+        if (sp != null) {
+            for (WeakReference<Consumer<SchemaPath>> spi : new LinkedList<WeakReference<Consumer<SchemaPath>>>(notifyObjectModified)) {
+                Consumer<SchemaPath> ics = spi.get();
+                if (ics != null && sp != null)
+                    ics.accept(sp);
             }
         }
     }

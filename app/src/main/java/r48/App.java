@@ -140,11 +140,6 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     public final DMContext ctxDisposableAppEncoding = new DMContext(DMChangeTracker.Null.DISPOSABLE, encoding);
 
     /**
-     * Delme context in UTF-8
-     */
-    public final DMContext ctxDelmeAppEncoding = new DMContext(DMChangeTracker.Null.DELETE_ME, encoding);
-
-    /**
      * Initialize App.
      * Warning: Occurs off main thread.
      */

@@ -59,7 +59,7 @@ public class StartupCause implements Runnable {
                         throw new RuntimeException("EngineDef " + objName + " missing!");
                     // Regarding thread safety, this should be safe enough because app is kept here.
                     // It's then transferred out.
-                    App app = AppMain.initializeCore(ls.lun.ilg, charset, rootPath, silPath, engine, theKickstart);
+                    App app = new App(ls.lun.ilg, charset, engine, rootPath, silPath, theKickstart);
                     AppMain.initializeUI(app, ls.lun.uiTicker, ls.lun.isMobile);
                     theKickstart.doneInjector.set(() -> {
                         lia.app = app;

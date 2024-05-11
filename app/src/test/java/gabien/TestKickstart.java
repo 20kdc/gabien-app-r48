@@ -18,7 +18,6 @@ import gabien.wsi.IPointer;
 import gabien.wsi.ITextEditingSession;
 import gabien.wsi.WindowSpecs;
 import r48.App;
-import r48.app.AppMain;
 import r48.app.EngineDef;
 import r48.app.EnginesList;
 import r48.app.InterlaunchGlobals;
@@ -81,7 +80,7 @@ public class TestKickstart {
         EngineDef engine = EnginesList.getEngines(null).get(engineDefId);
         if (engine == null)
             throw new RuntimeException("missing engine def: " + engineDefId);
-        return AppMain.initializeCore(ilg, charset, GaBIEn.mutableDataFS.intoPath(s2), null, engine, (s) -> {});
+        return new App(ilg, charset, engine, GaBIEn.mutableDataFS.intoPath(s2), null, (s) -> {});
     }
 
     public void kickstartRFS() {

@@ -84,8 +84,10 @@ public class UIObjectDBMonitor extends App.Elm {
             UILabel.drawLabel(theme, igd, width, 0, oy, s + status, Theme.B_LABEL, app.f.objectDBMonitorTH, tc, isBackground, !isBackground);
             oy += step;
         }
-        maxHeight = oy;
-        layoutRecalculateMetrics();
+        if (maxHeight != oy) {
+            maxHeight = oy;
+            layoutRecalculateMetrics();
+        }
     }
 
     @Override
