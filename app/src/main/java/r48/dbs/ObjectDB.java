@@ -108,13 +108,15 @@ public class ObjectDB extends AppCore.Csv {
                 }
                 SchemaElement ise = app.sdb.getSDBEntry(backupSchema);
                 if (ise != null) {
+                    // Note that the setup of the object counts as part of the object's unpack license.
+                    // This is INTENTIONAL. It stops SEVERE crashes when undoing the new map operation.
                     try (Block license = context.changes.openUnpackLicense()) {
                         rio = backend.newObject(id, context);
+                        if (rio == null)
+                            return null;
+                        context.set(DMCONTEXT_LOADED_OBJECT, rio);
+                        SchemaPath.setDefaultValue(rio.getObject(), ise, null);
                     }
-                    if (rio == null)
-                        return null;
-                    context.set(DMCONTEXT_LOADED_OBJECT, rio);
-                    SchemaPath.setDefaultValue(rio.getObject(), ise, null);
                     modifiedObjects.add(rio);
                     newlyCreatedObjects.add(rio);
                 } else {
