@@ -23,6 +23,8 @@ import r48.io.data.IDM3Data;
  * Created 10th May, 2024.
  */
 public final class TimeMachine extends AppCore.Csv {
+    public static final int MAX_STEPS = 4;
+
     /**
      * Undo stack. First is considered top-of-stack.
      */
@@ -81,6 +83,8 @@ public final class TimeMachine extends AppCore.Csv {
             if (!recording.isEmpty()) {
                 System.err.println("TimeMachine: COMMIT");
                 undoStack.addFirst(recording);
+                while (undoStack.size() > MAX_STEPS)
+                    undoStack.removeLast();
                 recording = new Recording();
                 redoStack.clear();
             }
@@ -110,6 +114,8 @@ public final class TimeMachine extends AppCore.Csv {
         recording = undoStack.removeFirst();
         // prepare redo from all the stuff that is about to be reverted
         redoStack.addFirst(recording.createCounterRecording());
+        while (redoStack.size() > MAX_STEPS)
+            redoStack.removeLast();
         // and revert it
         revertToRecording(sourceTrack);
         updateRestOfWorld(sourceTrack);
