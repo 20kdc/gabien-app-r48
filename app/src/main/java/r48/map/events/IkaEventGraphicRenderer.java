@@ -86,6 +86,6 @@ public class IkaEventGraphicRenderer extends App.Svc implements IEventGraphicRen
             fail = false;
         }
         if (fail)
-            GaBIEn.engineFonts.f8.drawLine(igd, ox, oy, "EV" + type, false);
+            GaBIEn.engineFonts.f8.drawLine(igd, ox, oy, "EV" + type, 255, 255, 255, 255);
     }
 }
