@@ -55,7 +55,7 @@ public class TrFontSizes extends TrPage {
 
     public String maintabsS;
 
-    public String objectDBMonitorTH;
+    public String backgroundObjectMonitorTH;
     public String fontSizerTH;
     public String gSysCoreTH;
     public String launcherTH;

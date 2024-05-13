@@ -9,6 +9,7 @@ package r48.wm;
 
 import gabien.*;
 import gabien.datum.DatumWriter;
+import gabien.natives.BadGPUEnum;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.layouts.UITabBar;
@@ -19,6 +20,7 @@ import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
+import gabien.wsi.IPointer;
 import r48.app.InterlaunchGlobals;
 import r48.ui.Art;
 
@@ -63,7 +65,7 @@ public class WindowManager {
     public final Consumer<IDesktopPeripherals> coco;
     public final InterlaunchGlobals ilg;
 
-    public WindowManager(InterlaunchGlobals ilg, final Consumer<IDesktopPeripherals> coco, final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR) {
+    public WindowManager(InterlaunchGlobals ilg, final Consumer<IDesktopPeripherals> coco, final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR, IQuickStatusGetter qsg) {
         this.ilg = ilg;
         this.coco = coco;
         uiTicker = new TrackedUITicker(uiTick);
@@ -88,7 +90,76 @@ public class WindowManager {
         rootView.sizerActual = rootView.windowTextHeight;
         rootView.setForcedBounds(null, new Rect(0, 0, ilg.c.f.scaleGuess(800), ilg.c.f.scaleGuess(600)));
 
-        tabPane = new UITabPane(ilg.c.f.tabTH, true, true, ilg.c.f.maintabsS, thbrL, thbrR);
+        tabPane = new UITabPane(ilg.c.f.tabTH, true, true, ilg.c.f.maintabsS, thbrL, thbrR) {
+            float orange = 0.0f;
+            double orangeLastUpdate = GaBIEn.getTime();
+            double noiseTime = 0.0d;
+
+            @Override
+            public IPointerReceiver handleNewPointer(IPointer state) {
+                IPointerReceiver res = super.handleNewPointer(state);
+                if (selectedTab == null)
+                    if (res == null)
+                        System.gc();
+                return res;
+            }
+
+            @Override
+            public void renderNoTabPanel(IGrDriver igd, int x, int y, int w, int h) {
+                int sz = Math.max(w, h);
+                int ex = x - (sz - w) / 2;
+                int ey = y - (sz - h) / 2;
+
+                float ox = igd.trsTXS(ex);
+                float oy = igd.trsTYS(ey);
+                float osx = igd.trsSXS(sz);
+                float osy = igd.trsSYS(sz);
+                {
+                    // ok, actual rendering time, 0-1 let's go
+                    double instantTime = GaBIEn.getTime();
+                    double dT = instantTime - orangeLastUpdate;
+                    float orangeSource = qsg.getOrange();
+                    if (orange < orangeSource) {
+                        orange += dT / 8.0d;
+                        if (orange > orangeSource)
+                            orange = orangeSource;
+                    } else {
+                        orange -= dT / 8.0d;
+                        if (orange < orangeSource)
+                            orange = orangeSource;
+                    }
+                    noiseTime += dT * (1.0f + (orange * 4.0f));
+                    orangeLastUpdate = instantTime;
+                    // --
+                    float l0x = (float) (noiseTime * 1), l0y = (float) (noiseTime * -1);
+                    float l1x = (float) (noiseTime * 0.2), l1y = (float) (noiseTime * -0.2);
+                    float l2x = (float) (noiseTime * -0.5), l2y = (float) (noiseTime * -0.5);
+                    float l3x = (float) (noiseTime * -0.3), l3y = (float) (noiseTime * 0.2);
+                    float l4x = (float) (noiseTime * 0.4), l4y = (float) (noiseTime * 0.3);
+                    int df = BadGPUEnum.DrawFlags.MagLinear | BadGPUEnum.DrawFlags.WrapS | BadGPUEnum.DrawFlags.WrapT;
+                    int dnf = BadGPUEnum.DrawFlags.WrapS | BadGPUEnum.DrawFlags.WrapT;
+                    igd.drawScaledColoured(l0x, l0y, 8192, 8192, 0, 0, 1, 1, ilg.a.gNoise, IGrDriver.BLEND_NONE, dnf, 0.125f, 0.125f, 0.25f, 1);
+                    igd.drawScaledColoured(128 + l1x, 128 + l1y, 128, 128, 0, 0, 1, 1, ilg.a.gNoise, IGrDriver.BLEND_ADD, df, 0.125f + (orange * 0.25f), 0.125f + (orange * 0.25f), 0.25f, 1);
+                    igd.drawScaledColoured(256 + l2x, 128 + l2y, 64, 64, 0, 0, 1, 1, ilg.a.gNoise, IGrDriver.BLEND_ADD, df, 0.125f + (orange * 0.25f), 0.25f + (orange * 0.25f), 0.25f, 1);
+                    igd.drawScaledColoured(128 + l3x, 256 + l3y, 32, 32, 0, 0, 1, 1, ilg.a.gNoise, IGrDriver.BLEND_ADD, df, 0.125f + (orange * 0.25f), 0.25f + (orange * 0.25f), 0.25f, 1);
+                    igd.drawScaledColoured(256 + l4x, 256 + l4y, 16, 16, 0, 0, 1, 1, ilg.a.gNoise, IGrDriver.BLEND_ADD, df, 0.125f + (orange * 0.75f), 0.125f + (orange * 0.25f), 0.125f, 1);
+                    int control = ((int) (Math.sin(System.currentTimeMillis() / 13750987.08314d) * 64) + 128);
+                    igd.fillRect(32, 32, 32, control, 0, 0, 1, 1);
+                }
+                igd.trsSYE(osy);
+                igd.trsSXE(osx);
+                igd.trsTYE(oy);
+                igd.trsTXE(ox);
+
+                int th = ilg.c.f.backgroundObjectMonitorTH;
+                int m = th / 2;
+                int ty = y + m;
+                for (String s : qsg.getQuickStatus()) {
+                    GaBIEn.engineFonts.drawString(igd, x + m, ty, s, false, false, th);
+                    ty += th;
+                }
+            }
+        };
 
         UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, tabPane);
         rootView.addShell(backing);

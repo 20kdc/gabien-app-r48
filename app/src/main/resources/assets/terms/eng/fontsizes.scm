@@ -46,7 +46,7 @@
 	
 	maintabsS "maintabsS"
 	
-	objectDBMonitorTH "objectDBMonitorTH"
+	backgroundObjectMonitorTH "backgroundObjectMonitorTH"
 	fontSizerTH "fontSizerTH"
 	gSysCoreTH "gSysCoreTH"
 	launcherTH "launcherTH"

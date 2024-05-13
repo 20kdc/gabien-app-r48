@@ -35,6 +35,7 @@ import gabien.uslx.append.Block;
 public class ObjectDB extends AppCore.Csv {
     /**
      * This exists to ensure that IDM3Data keeps the ILoadedObject in memory.
+     * This ensures we can't lose an object as long as we have undo/redo data for it.
      */
     public static final DMContext.Key<IObjectBackend.ILoadedObject> DMCONTEXT_LOADED_OBJECT = new DMContext.Key<>();
 
@@ -59,7 +60,6 @@ public class ObjectDB extends AppCore.Csv {
     public WeakHashMap<IObjectBackend.ILoadedObject, LinkedList<WeakReference<Consumer<SchemaPath>>>> objectListenersMap = new WeakHashMap<IObjectBackend.ILoadedObject, LinkedList<WeakReference<Consumer<SchemaPath>>>>();
     public HashMap<String, LinkedList<WeakReference<Consumer<SchemaPath>>>> objectRootListenersMap = new HashMap<String, LinkedList<WeakReference<Consumer<SchemaPath>>>>();
     private HashSet<Runnable> pendingModifications = new HashSet<Runnable>();
-    private HashMap<String, DMContext> dmContexts = new HashMap<>();
 
     private boolean objectRootModifiedRecursion = false;
 
@@ -73,19 +73,15 @@ public class ObjectDB extends AppCore.Csv {
         return id;
     }
 
-    private DMContext ensureDM3Context(@NonNull String id) {
-        DMContext dmc = dmContexts.get(id);
-        if (dmc != null)
-            return dmc;
+    private DMContext createDM3Context() {
         AtomicReference<DMContext> dmcx = new AtomicReference<DMContext>();
-        dmc = new DMContext(new TimeMachineChangeSource(app.timeMachine) {
+        DMContext dmc = new DMContext(new TimeMachineChangeSource(app.timeMachine) {
             @Override
             public void onTimeTravel() {
                 markObjectAsAmbiguouslyModified(dmcx.get().get(DMCONTEXT_LOADED_OBJECT));
             }
         }, app.encoding);
         dmcx.set(dmc);
-        dmContexts.put(id, dmc);
         return dmc;
     }
 
@@ -99,7 +95,7 @@ public class ObjectDB extends AppCore.Csv {
                 return r;
         }
         app.loadProgress.accept(T.u.odb_loadObj.r(id));
-        DMContext context = ensureDM3Context(id);
+        DMContext context = createDM3Context();
         IObjectBackend.ILoadedObject rio;
         try (Block license = context.changes.openUnpackLicense()) {
             rio = backend.loadObject(id, context);
@@ -321,7 +317,7 @@ public class ObjectDB extends AppCore.Csv {
         for (IObjectBackend.ILoadedObject lo : modifiedObjects) {
             String id = getIdByObject(lo);
             if (id != null) {
-                DMContext context = ensureDM3Context(id);
+                DMContext context = createDM3Context();
                 IObjectBackend.ILoadedObject newVal;
                 try (Block license = context.changes.openUnpackLicense()) {
                     newVal = backend.loadObject(id, context);

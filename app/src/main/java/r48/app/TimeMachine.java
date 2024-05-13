@@ -58,8 +58,16 @@ public final class TimeMachine extends AppCore.Csv {
         return !undoStack.isEmpty();
     }
 
+    public int undoSnapshots() {
+        return undoStack.size();
+    }
+
     public boolean canRedo() {
         return !redoStack.isEmpty();
+    }
+
+    public int redoSnapshots() {
+        return redoStack.size();
     }
 
     /**

@@ -9,6 +9,7 @@ package r48.ui;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 import java.util.function.Function;
 
 import gabien.GaBIEn;
@@ -36,6 +37,7 @@ public class Art {
 
     // Generated Images
     private IImage colourPal, rainbow;
+    public final IImage gNoise;
 
     // PVA Animations
     public final PVARenderer r48Logo;
@@ -50,6 +52,13 @@ public class Art {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        int[] noise = new int[512 * 512];
+        Random r = new Random();
+        for (int i = 0; i < noise.length; i++) {
+            int tmp = r.nextInt(256);
+            noise[i] = (tmp | (tmp << 8) | (tmp << 16)) | 0xFF000000;
+        }
+        gNoise = GaBIEn.createImage("r48 noise", noise, 512, 512);
     }
 
     // This controls the layout of (in particular) zoom

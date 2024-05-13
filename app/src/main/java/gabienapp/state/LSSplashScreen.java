@@ -8,17 +8,23 @@ package gabienapp.state;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import gabien.GaBIEn;
 import gabien.pva.PVAFile;
 import gabien.pva.PVARenderer;
 import gabien.render.IGrDriver;
+import gabien.text.RenderedTextChunk;
+import gabien.text.TextTools;
 import gabien.uslx.append.Rect;
 import gabien.wsi.IGrInDriver;
 import gabien.wsi.WindowSpecs;
 import gabienapp.Launcher;
+import gabienapp.PleaseFailBrutally;
 import gabienapp.Launcher.State;
 
 /**
@@ -33,6 +39,7 @@ public class LSSplashScreen extends State {
     private final IGrInDriver gi;
     private IGrDriver backBuffer;
     private final AtomicBoolean donePrimaryTask = new AtomicBoolean(false);
+    private final AtomicReference<String> initError = new AtomicReference<>(null);
     private PVARenderer r48Logo;
 
     public LSSplashScreen(Launcher lun, Runnable task, Consumer<Integer> done) {
@@ -49,11 +56,21 @@ public class LSSplashScreen extends State {
         gi = GaBIEn.makeGrIn("R48 Startup...", 800, 600, ws);
         // runs in parallel with font-load wait
         Thread txdbThread = new Thread(() -> {
-            long a = System.currentTimeMillis();
-            task.run();
-            donePrimaryTask.set(true);
-            long b = System.currentTimeMillis();
-            System.err.println("R48: Splash: Spent " + (b - a) + "ms (of 1000ms logo time) on actual init.");
+            try {
+                long a = System.currentTimeMillis();
+                task.run();
+                PleaseFailBrutally.checkFailBrutallyAtLoader();
+                donePrimaryTask.set(true);
+                long b = System.currentTimeMillis();
+                System.err.println("R48: Splash: Spent " + (b - a) + "ms (of 1000ms logo time) on actual init.");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                StringWriter sw = new StringWriter();
+                // can't be translated; translator may have caused the error!
+                sw.append("ERROR WHILE LOADING, WILL NOT CONTINUE\n\n");
+                ex.printStackTrace(new PrintWriter(sw));
+                initError.set(sw.toString());
+            }
         });
         txdbThread.start();
     }
@@ -62,9 +79,11 @@ public class LSSplashScreen extends State {
     public void tick(double dT) {
         if (completed)
             return;
+
         if (!isFirstFrame) {
             logoAnimationTimer += dT * 1000;
         } else {
+            PleaseFailBrutally.checkFailBrutallyAtSplash();
             System.err.println("R48: Splash: Took " + GaBIEn.getTime() + " seconds to get here");
             // This is kept separate from Art so that Art can be initialized off-thread
             try (InputStream inp = GaBIEn.getResource("animations/logo.pva")) {
@@ -78,7 +97,10 @@ public class LSSplashScreen extends State {
         gi.flush(backBuffer); // to kickstart w/h
         IGrDriver bb = backBuffer = gi.ensureBackBuffer(backBuffer);
         bb.clearAll(255, 255, 255);
+
         int sz = (Math.min(bb.getWidth(), bb.getHeight()) / 4) * 2;
+
+        String err = initError.get();
 
         // note the swap on Y from - (sz / 2) because of the version
         Rect pos = new Rect((bb.getWidth() / 2) - (sz / 2), (bb.getHeight() / 2) - (sz / 2), sz, sz);
@@ -89,8 +111,15 @@ public class LSSplashScreen extends State {
             r48Logo.renderInline(logoFrame, bb, pos.x - (logoExpand / 2), pos.y, pos.width + logoExpand, pos.height);
         }
 
+        if (err != null) {
+            RenderedTextChunk rtc = TextTools.renderString(err, GaBIEn.getNativeFont(16, null, true), true);
+            rtc.backgroundRoot(bb, 4, 4, 255, 255, 255, 255);
+            rtc.renderRoot(bb, 4, 4);
+        }
+
+        frames++;
+
         if (donePrimaryTask.get()) {
-            frames++;
             // 16 frames for WSI to stabilize OR 1 second
             if (frames >= 16 && logoAnimationTimer > 1000.0d) {
                 int r = gi.estimateUIScaleTenths();

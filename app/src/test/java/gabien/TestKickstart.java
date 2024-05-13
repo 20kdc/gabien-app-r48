@@ -122,7 +122,7 @@ public class TestKickstart {
         GaBIEn.mutableDataFS = new UnionFSBackend(ram, new AttachedFSBackend(JavaIOFSBackend.ROOT, "real_fs", true));
         GaBIEn.internalFileBrowser = impl;
         GaBIEn.internalWindowing = impl;
-        GaBIEn.setupNativesAndAssets(true, false);
+        GaBIEn.setupNativesAndAssets(true, false, false);
         GaBIEnUI.setupAssets();
         // Reset GaBIEn stuff
         new Config(false).applyUIGlobals();

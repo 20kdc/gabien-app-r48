@@ -25,11 +25,6 @@
 		"The file 'assets/version.txt' needs to exist for text to appear here."
 	)
 	(odb_
-		disposed " [disposed]"
-		created " [created]"
-		modified " [modified]"
-		lost " [modifications lost, should never occur!]"
-		listeners (fl1 " [" a0 "ML]")
 		saveErr (fl1 "Error saving object: " a0)
 		loadObj (fl1 "Loading object...\n" a0)
 	)

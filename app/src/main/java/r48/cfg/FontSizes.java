@@ -98,8 +98,8 @@ public class FontSizes {
     @FontSizeDefault(8) @FontSizeOName("S/Scrollersize")
     public int maintabsS;
 
-    @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
-    public int objectDBMonitorTH;
+    @FontSizeDefault(8) @FontSizeOName("TH/TextHeight")
+    public int backgroundObjectMonitorTH;
     @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")
     public int fontSizerTH;
     @FontSizeDefault(16) @FontSizeOName("TH/TextHeight")

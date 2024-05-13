@@ -39,7 +39,6 @@ import gabien.uslx.vfs.impl.DodgyInputWorkaroundFSBackend;
 import gabien.uslx.vfs.impl.DodgyInputWorkaroundPathModel;
 import gabien.uslx.vfs.impl.UnionFSBackend;
 import gabien.wsi.IPointer;
-import r48.UIObjectDBMonitor;
 import r48.UITest;
 import r48.app.AppNewProject;
 import r48.app.AppUI;
@@ -229,7 +228,6 @@ public class CriticalClassLoading {
             IntegerSchemaElement.IIntegerContext.class,
             IImageEffect.class,
             UITest.class,
-            UIObjectDBMonitor.class,
             UIDynamicProxy.class,
             UIDynAppPrx.class,
             UITestFontSizes.class,

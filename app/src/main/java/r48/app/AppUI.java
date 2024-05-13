@@ -8,7 +8,9 @@ package r48.app;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.ref.WeakReference;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -52,6 +54,7 @@ import r48.ui.dialog.UITextPrompt;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
 import r48.ui.utilitybelt.ImageEditorController;
+import r48.wm.IQuickStatusGetter;
 import r48.wm.WindowManager;
 
 /**
@@ -131,7 +134,40 @@ public class AppUI extends App.Svc {
                 app.timeMachine.redo();
         });
         UIListLayout iconBar = new UIListLayout(false, saveButtonSym, new UIEmpty(app.f.scaleGuess(4), 0), btnRevert, new UIEmpty(app.f.scaleGuess(8), 0), undoButtonSym, new UIEmpty(app.f.scaleGuess(4), 0), redoButtonSym);
-        wm = new WindowManager(app.ilg, coco, uiTicker, null, iconBar);
+        wm = new WindowManager(app.ilg, coco, uiTicker, null, iconBar, new IQuickStatusGetter() {
+            
+            @Override
+            public String[] getQuickStatus() {
+                Runtime r = Runtime.getRuntime();
+                String qs = ((r.totalMemory() - r.freeMemory()) / (1024 * 1024)) + "/" + (r.totalMemory() / (1024 * 1024)) + "M " + (r.maxMemory() / (1024 * 1024)) + "MX " + app.odb.objectMap.size() + "O " + "<" + app.timeMachine.undoSnapshots() + " " + app.timeMachine.redoSnapshots() + ">";
+                int keyCount = app.odb.objectMap.keySet().size();
+                String[] data = new String[keyCount + 1];
+                data[0] = qs;
+                int idx = 1;
+                for (Map.Entry<String, WeakReference<IObjectBackend.ILoadedObject>> s : app.odb.objectMap.entrySet()) {
+                    IObjectBackend.ILoadedObject ilo = s.getValue().get();
+                    if (ilo != null) {
+                        boolean modified = app.odb.getObjectModified(s.getKey());
+                        data[idx++] = s.getKey() + (modified ? "* " : " ") + app.odb.countModificationListeners(ilo) + "ML";
+                    }
+                }
+                while (idx < data.length)
+                    data[idx++] = "";
+                return data;
+            }
+            
+            @Override
+            public float getOrange() {
+                int modifiedObjectCount = app.odb.modifiedObjects.size();
+                if (modifiedObjectCount == 1)
+                    return 0.33f;
+                if (modifiedObjectCount == 2)
+                    return 0.66f;
+                if (modifiedObjectCount >= 3)
+                    return 1.0f;
+                return 0.0f;
+            }
+        });
 
         initializeTabs();
 
