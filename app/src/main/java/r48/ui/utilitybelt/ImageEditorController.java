@@ -369,21 +369,20 @@ public class ImageEditorController extends App.Svc {
             imageEditView.tiling = null;
         });
 
-        ul = pokeOnCause(cause, 1, new UIAppendButton(Symbol.Back.i(app), ul, () -> {
+        Symbol symUndo = imageEditView.eds.hasUndo() ? Symbol.Undo : Symbol.UndoDisabled;
+        Symbol symRedo = imageEditView.eds.hasRedo() ? Symbol.Redo : Symbol.RedoDisabled;
+
+        ul = pokeOnCause(cause, 1, new UIAppendButton(symUndo.i(app), ul, () -> {
             if (imageEditView.eds.hasUndo()) {
                 imageEditView.setImage(imageEditView.eds.performUndo());
                 initPalette(1);
-            } else {
-                app.ui.launchDialog(T.ie.undoNone);
             }
         }, app.f.imageEditorTH));
 
-        ul = pokeOnCause(cause, 2, new UIAppendButton(Symbol.Forward.i(app), ul, () -> {
+        ul = pokeOnCause(cause, 2, new UIAppendButton(symRedo.i(app), ul, () -> {
             if (imageEditView.eds.hasRedo()) {
                 imageEditView.setImage(imageEditView.eds.performRedo());
                 initPalette(2);
-            } else {
-                app.ui.launchDialog(T.ie.redoNone);
             }
         }, app.f.imageEditorTH));
 

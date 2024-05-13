@@ -97,6 +97,7 @@ public class FillImageEditorTool extends ImageEditorTool {
             }
         }
         view.eds.endSection();
+        view.newToolCallback.run();
     }
 
     private FillAlgorithm.Point tileAS(UIImageEditView view, FillAlgorithm.Point point) {

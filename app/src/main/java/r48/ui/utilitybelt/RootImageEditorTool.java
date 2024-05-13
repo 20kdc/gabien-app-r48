@@ -118,5 +118,6 @@ public class RootImageEditorTool extends ImageEditorTool {
     public void endApply(UIImageEditView view) {
         view.eds.endSection();
         activeSection = false;
+        view.newToolCallback.run();
     }
 }

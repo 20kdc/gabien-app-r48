@@ -148,6 +148,7 @@ public class PasteImageEditorTool extends ImageEditorTool {
             }
         }
         view.eds.endSection();
+        view.newToolCallback.run();
     }
 
     private int colourDistance(int argb, int argb2) {

@@ -42,6 +42,7 @@ public class LineImageEditorTool extends StagedImageEditorTool {
             }
         });
         view.eds.endSection();
+        view.newToolCallback.run();
     }
 
     @Override

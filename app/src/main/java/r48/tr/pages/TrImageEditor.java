@@ -46,8 +46,6 @@ public class TrImageEditor extends TrPage {
     public String gridSize;
     public String gridOffset;
     public String gridColour;
-    public String undoNone;
-    public String redoNone;
     public String charGen;
     public String pal;
     public String palAdd;

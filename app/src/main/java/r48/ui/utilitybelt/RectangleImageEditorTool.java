@@ -61,6 +61,7 @@ public class RectangleImageEditorTool extends ImageEditorTool {
             }
         }
         view.eds.endSection();
+        view.newToolCallback.run();
     }
 
     @Override

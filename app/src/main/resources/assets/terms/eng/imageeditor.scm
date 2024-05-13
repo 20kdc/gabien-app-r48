@@ -39,8 +39,6 @@
 	gridSize "Grid Size:"
 	gridOffset "Grid Offset:"
 	gridColour "Grid Colour"
-	undoNone "There is nothing to undo."
-	redoNone "There is nothing to redo."
 	charGen "CharacterGen..."
 	pal "Pal. "
 	palAdd "Add Palette Colour..."
