@@ -64,13 +64,11 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
      */
     public void include(String filename, boolean opt) {
         DatumDecToLambdaVisitor.Handler eval = this::evalObject; 
-        boolean attempt = DatumLoader.read(filename + ".scm", loadProgress, eval);
-        if (!attempt)
-            attempt = DatumLoader.read(filename + ".txt", loadProgress, eval);
+        boolean attempt = DatumLoader.read(filename, loadProgress, eval);
         if ((!opt) && !attempt)
-            throw new RuntimeException("Expected " + filename + "(.scm|.txt) to exist");
+            throw new RuntimeException("Expected " + filename + ".scm to exist");
         // don't care if this doesn't exist
-        DatumLoader.read(filename + ".aux.scm", loadProgress, eval);
+        DatumLoader.read(filename + ".aux", loadProgress, eval);
     }
 
     /**

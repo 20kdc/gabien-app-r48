@@ -1,0 +1,107 @@
+
+; gabien-app-r48 - Editing program for various formats
+; Written starting in 2016 by contributors (see CREDITS.txt)
+; To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+; A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
+
+; GI-B Command List
+; Monoliths here go into Monolith3.
+
+(obj 1005 "(\"<Battle> Call Common Event \"(? ]1((@ ]1 commonevent_id #t)\" \"))\"(2k3)\")")
+(C category \4)
+(d Calls a common event. Not sure what else to say here.)
+(p _ string)
+(p cev commonevent_id)
+
+(obj 1006 "\"<Battle> Force Enemy/Player Flee (2k3)\"")
+(C category \4)
+(d Forces the player, or the enemies, to leave \(without EXP/Gold gain\). Note: Assuming ignoreChecks is false, Mode \0 fails in Pincer battles, \1 and \2 fail in Surround.)
+(p _ string)
+(p mode forceescape_mode)
+(P \1 _ int)
+(v \2 troopEnemyIdx troop_enemy_id)
+(p ignoreChecks int_boolean)
+
+(obj 1007 "\"<Battle> Setup Battle Combo (2k3?)\"")
+(C category \4)
+(d Prepares a battle combo \(multiple uses of one command\) for usage by a party member.)
+(p _ string)
+(p user actor_id)
+(p command battlecommand_id)
+(p uses int_default_1)
+
+(obj 13110 "\"<Battle> Change Enemy HP\"")
+(C category \4)
+(d Changes an enemy\'s HP by some amount. This can kill it. The meaning of \'unknown\' is unknown.)
+(p _ string)
+(p troopEnemyIdx troop_enemy_id)
+(p negative int_boolean)
+(p modAmount change_enemy_hp_mode)
+(P \3 amount int)
+(v \1 amountVar var_id)
+(p unknown int_default_1)
+
+(obj 13120 "\"<Battle> Change Enemy SP\"")
+(C category \4)
+(d Changes an enemy\'s SP by some amount.)
+(p _ string)
+(p troopEnemyIdx troop_enemy_id)
+(p negative int_boolean)
+(p amountIsVar int_boolean)
+(P \3 amount int)
+(v \1 amountVar var_id)
+
+(obj 13130 "\"<Battle> Change Enemy Condition\"")
+(C category \4)
+(d A state is given/taken from/to an enemy.)
+(p _ string)
+(p troopEnemyIdx troop_enemy_id)
+(p remove int_boolean)
+(p state state_id)
+
+(obj 13150 "\"<Battle> Unhide Enemy\"")
+(C category \4)
+(d A previously hidden enemy comes out of the shadows!)
+(p _ string)
+(p troopEnemyIdx troop_enemy_id)
+
+(obj 13210 "\"<Battle> Change Battle Background\" ($ \" to \" ]0)")
+(C category \4)
+(d Change the background of the battle.)
+(p back f_battleback_name)
+
+(obj 13260 "\"<Battle> Show Battle Animation\"")
+(C category \4)
+(d Show an animation in battle.)
+(p _ string)
+(X show_battle_animation_parameters)
+
+(obj 13410 "\"<Battle> Terminate Battle\"")
+(C category \4)
+(d Just... stop the battle. Cut the scene. Stop fighting. Seriously, cut it out! Counts as abort, which isn\'t even a standard result.)
+(p _ string)
+
+(obj 13310 "\"<Battle> Conditional Branch\"")
+(C category \4)
+(d Runs the following code if a condition is true. Otherwise, runs the code at the Else Branch inside, or if one does not exist, goes to the end of the branch.)
+(p _ string)
+(C groupBehavior form \23310 Else \23311)
+(X battle_cbranch_parameters)
+(I \1)
+
+(obj 23310 "\"<Battle> Else Branch\"")
+(C category \4)
+(d Indicates that if the containing branch was false, the following code should be executed. \(Otherwise, the previous code will be executed, and this will not.\))
+(p _ string)
+(C groupBehavior expectHead \13310)
+(i \-1)
+(I \1)
+(l)
+
+(obj 23311 "\"<Battle> End Branch\"")
+(C category \4)
+(d Indicates the end of a conditional branch.)
+(p _ string)
+(C groupBehavior expectHead \13310 \23310)
+(i \-1)
+(l)

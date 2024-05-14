@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.GaBIEn;
 import gabien.datum.DatumDecToLambdaVisitor;
 import gabien.datum.DatumReaderTokenSource;
@@ -51,14 +53,15 @@ public class DatumLoader {
     /**
      * Loads the given file into this context.
      */
-    public static boolean read(String filename, Consumer<String> loadProgress, DatumDecToLambdaVisitor.Handler eval) {
+    public static boolean read(String filename, @Nullable Consumer<String> loadProgress, DatumDecToLambdaVisitor.Handler eval) {
         return read(filename, loadProgress, new DatumDecToLambdaVisitor(eval));
     }
 
     /**
      * Loads the given file into this context.
      */
-    public static boolean read(String filename, Consumer<String> loadProgress, DatumVisitor ddv) {
+    public static boolean read(String filename, @Nullable Consumer<String> loadProgress, DatumVisitor ddv) {
+        filename += ".scm";
         try (InputStreamReader ins = GaBIEn.getTextResource(filename)) {
             if (ins == null) {
                 if (reportLoadSE)

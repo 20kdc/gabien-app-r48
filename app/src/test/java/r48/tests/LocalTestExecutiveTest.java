@@ -6,7 +6,10 @@
  */
 package r48.tests;
 
+import gabien.GaBIEn;
 import gabien.TestKickstart;
+import gabien.datum.DatumDecToLambdaVisitor;
+import gabien.datum.DatumReaderTokenSource;
 import gabien.uslx.append.Block;
 
 import org.junit.Test;
@@ -14,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import r48.App;
-import r48.dbs.DBLoader;
 import r48.dbs.ObjectInfo;
 import r48.dbs.IDatabase;
 import r48.io.IMIUtils;
@@ -26,8 +28,8 @@ import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -43,23 +45,26 @@ public class LocalTestExecutiveTest {
         final LinkedList<Object[]> tests = new LinkedList<Object[]>();
         new TestKickstart().kickstartRFS();
         try {
-            String fn = findBasePath() + "LTE.txt";
+            String fn = findBasePath() + "LTE.scm";
             System.out.println("LocalTestExecutive manifest: " + fn);
-            DBLoader.readFile(fn, new FileInputStream(fn), new IDatabase() {
-                @Override
-                public void newObj(int objId, final String objName) {
-                }
-
-                @Override
-                public void execCmd(char c, String[] args) {
-                    if (c == '.') {
-                        Object[] cmdLine = new Object[args.length];
-                        for (int i = 0; i < cmdLine.length; i++)
-                            cmdLine[i] = args[i];
-                        tests.add(cmdLine);
+            try (InputStreamReader ins = GaBIEn.getTextResource(fn)) {
+                DatumReaderTokenSource drts = new DatumReaderTokenSource(fn, ins);
+                drts.visit(new DatumDecToLambdaVisitor(new IDatabase() {
+                    @Override
+                    public void newObj(int objId, final String objName) {
                     }
-                }
-            });
+
+                    @Override
+                    public void execCmd(char c, String[] args) {
+                        if (c == '.') {
+                            Object[] cmdLine = new Object[args.length];
+                            for (int i = 0; i < cmdLine.length; i++)
+                                cmdLine[i] = args[i];
+                            tests.add(cmdLine);
+                        }
+                    }
+                }));
+           }
         } catch (Exception e) {
             System.err.println("Exception during LocalTestExecutive parameterization. Unread tests will not be executed.");
             System.err.println("If you do not have the LTE files, then this is normal, do not panic.");

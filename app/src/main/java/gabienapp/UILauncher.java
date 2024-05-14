@@ -139,7 +139,7 @@ public class UILauncher extends UIProxy {
             setPanel(LauncherEntry.makeFrom(null, ls, DatumTreeUtils.cList(res)));
         });
         DatumVisitor visitor2 = visitor.visitList(DatumSrcLoc.NONE);
-        DatumLoader.read("gamepaks.scm", null, visitor2);
+        DatumLoader.read("gamepaks", null, visitor2);
         visitor2.visitEnd(DatumSrcLoc.NONE);
         // done!
         proxySetElement(tabPane, false);

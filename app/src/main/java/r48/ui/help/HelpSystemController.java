@@ -53,15 +53,20 @@ public class HelpSystemController implements Consumer<String> {
         String efl = c.language;
         if (efl.equals(LanguageList.helpLang))
             efl = "";
-        String actualFN = helpFile + efl + ".txt";
-        InputStream helpStream = GaBIEn.getResource(actualFN);
+        String actualFN = helpFile + efl;
+        InputStream helpStream = GaBIEn.getResource(actualFN + ".scm");
         if (helpStream == null) {
             hs.page.add(new UIHelpSystem.HelpElement(ilg, '.', hs.ilg.t.g.helpUnavailable));
-            actualFN = helpFile + ".txt";
-            helpStream = GaBIEn.getResource(actualFN);
+            actualFN = helpFile;
+            helpStream = GaBIEn.getResource(actualFN + ".scm");
         }
         if (helpStream != null) {
-            DBLoader.readFile(actualFN, helpStream, new IDatabase() {
+            try {
+                helpStream.close();
+            } catch (Exception ex) {
+                // nope
+            }
+            DBLoader.readFile(actualFN, new IDatabase() {
                 boolean working = false;
                 UIHelpSystem.HelpElement workingElement;
 

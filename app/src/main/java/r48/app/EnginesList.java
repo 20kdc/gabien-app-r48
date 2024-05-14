@@ -30,9 +30,8 @@ public class EnginesList {
                 return ed.newVisitor();
             }
         };
-        DatumLoader.read("engines.scm", loadProgress, kvd);
-        DatumLoader.read("engines.txt", loadProgress, kvd);
-        DatumLoader.read("engines.aux.scm", loadProgress, kvd);
+        DatumLoader.read("engines", loadProgress, kvd);
+        DatumLoader.read("engines.aux", loadProgress, kvd);
         return hm;
     }
 }
