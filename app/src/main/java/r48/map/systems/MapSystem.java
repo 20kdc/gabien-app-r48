@@ -181,11 +181,14 @@ public abstract class MapSystem extends App.Svc {
             return false;
         }
 
+        /**
+         * Renderer for mapshots/etc.
+         */
         public void renderCore(IGrDriver igd, int vCX, int vCY, boolean[] layerVis, int currentLayer, boolean debugToggle) {
             IMapViewDrawLayer[] layers = renderer.layers;
             int tileSize = renderer.tileRenderer.tileSize;
 
-            MapViewDrawContext mvdc = new MapViewDrawContext(renderer.app, new Rect(vCX, vCY, igd.getWidth(), igd.getHeight()), tileSize);
+            MapViewDrawContext mvdc = new MapViewDrawContext(renderer.app, new Rect(vCX, vCY, igd.getWidth(), igd.getHeight()), tileSize, false);
 
             mvdc.currentLayer = currentLayer;
             mvdc.debugToggle = debugToggle;

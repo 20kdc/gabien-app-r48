@@ -16,7 +16,7 @@
 (I HelpImg/0.demo.png)
 (p 4)
 (. "It's split into the tab bar, with a global 'save' button, and the tab contents.")
-(, "Here, no tab is active, so it's a field of blue squares.")
+(, "Here, no tab is active, so the background is shown.")
 (, "Tabs can be turned into floating windows and back with the window-like-button on them.")
 (, "Closable tabs/windows will have a red button on them.")
 (.)

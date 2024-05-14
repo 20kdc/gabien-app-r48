@@ -314,7 +314,8 @@ public class UIMapView extends UIPlaneView {
         // Ok, so I should write this down SOMEWHERE:
         // As of R48 v1.5, map rendering always renders to a surface the size of the map view.
         // This changes a lot of semantics, but mainly it optimizes in favour of zooming out a map.
-        MapViewDrawContext mvdc = new MapViewDrawContext(app, new Rect((int) iCamX, (int) iCamY, camR.width, camR.height), tileSize);
+        boolean atOrBelowHalfSize = planeZoomDiv >= (planeZoomMul * 2);
+        MapViewDrawContext mvdc = new MapViewDrawContext(app, new Rect((int) iCamX, (int) iCamY, camR.width, camR.height), tileSize, atOrBelowHalfSize);
 
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);

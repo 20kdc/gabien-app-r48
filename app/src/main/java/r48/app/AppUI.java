@@ -138,6 +138,22 @@ public class AppUI extends App.Svc {
             
             @Override
             public String[] getQuickStatus() {
+                if (coco.helpDisplayMode == 1) {
+                    return new String[] {
+                            wm.getRootSize().toString(),
+                            "Target: 464x127"
+                    };
+                } else if (coco.helpDisplayMode == 2) {
+                    return new String[] {
+                            "^ Tab Bar                                    Save Un/Redo",
+                            "                                               Revert",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "                      Main Panel Area",
+                    };
+                }
                 Runtime r = Runtime.getRuntime();
                 String qs = ((r.totalMemory() - r.freeMemory()) / (1024 * 1024)) + "/" + (r.totalMemory() / (1024 * 1024)) + "M " + (r.maxMemory() / (1024 * 1024)) + "MX " + app.odb.objectMap.size() + "O " + "<" + app.timeMachine.undoSnapshots() + " " + app.timeMachine.redoSnapshots() + ">";
                 int keyCount = app.odb.objectMap.keySet().size();

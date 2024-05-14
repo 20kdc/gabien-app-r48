@@ -81,9 +81,9 @@ public class BasicToolset extends App.Svc implements IToolset {
 
         UISplitterLayout menu3 = new UISplitterLayout(menu4, menu6, true, 1d / 3d);
 
-        UISplitterLayout menu8 = new UISplitterLayout(menu3, createStatusBar(app), true, 1);
+        UIBorderedSubpanel menu3b = new UIBorderedSubpanel(menu3, app.f.schemaFieldTH * 4);
 
-        UIBorderedSubpanel menu3b = new UIBorderedSubpanel(menu8, app.f.schemaFieldTH * 4) {
+        UISplitterLayout menu8 = new UISplitterLayout(menu3b, createStatusBar(app), true, 1) {
             @Override
             public String toString() {
                 return T.t.sysTools;
@@ -93,11 +93,11 @@ public class BasicToolset extends App.Svc implements IToolset {
         UIElement fl = makeFileList(app);
         if (fl != null)
             return new UIElement[] {
-                    menu3b,
+                    menu8,
                     fl
             };
         return new UIElement[] {
-                menu3b
+                menu8
         };
     }
 

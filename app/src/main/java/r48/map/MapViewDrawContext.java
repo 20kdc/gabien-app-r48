@@ -22,6 +22,7 @@ public class MapViewDrawContext {
     public final Rect cam;
     public final Rect camT;
     public final Rect camTMargin;
+    public final boolean atOrBelowHalfSize;
     public int currentLayer;
     public IMapViewCallbacks callbacks;
     public boolean debugToggle;
@@ -29,9 +30,10 @@ public class MapViewDrawContext {
     // Null if the mouse doesn't exist.
     public MouseStatus mouseStatus;
 
-    public MapViewDrawContext(App app, Rect camera, int ts) {
+    public MapViewDrawContext(App app, Rect camera, int ts, boolean atOrBelowHalfSize) {
         this.app = app;
         tileSize = ts;
+        this.atOrBelowHalfSize = atOrBelowHalfSize;
         cam = camera;
         int camTR = UIElement.sensibleCellDiv(cam.x + cam.width, tileSize) + 1;
         int camTB = UIElement.sensibleCellDiv(cam.y + cam.height, tileSize) + 1;
@@ -51,7 +53,7 @@ public class MapViewDrawContext {
         if (solid == IndicatorStyle.SolidBlue) {
             igd.clearRect(0, 0, 255, px, py, tileSize, tileSize);
         } else if (solid == IndicatorStyle.Target) {
-            app.a.drawTarget(px, py, tileSize, igd);
+            app.a.drawTarget(px, py, tileSize, igd, atOrBelowHalfSize);
         } else {
             app.a.drawSelectionBox(px, py, tileSize, tileSize, 1, igd);
         }

@@ -26,6 +26,7 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public class Coco extends App.Svc implements Consumer<IDesktopPeripherals> {
     private char[] combuf = new char[10];
+    public int helpDisplayMode;
 
     public Coco(App app) {
         super(app);
@@ -56,6 +57,8 @@ public class Coco extends App.Svc implements Consumer<IDesktopPeripherals> {
         String r = new String(combuf);
         if (r.equals("UUDDLRLRBA"))
             launch();
+        if (r.equals("UUDDLRUDUD"))
+            helpDisplayMode = (helpDisplayMode + 1) % 3;
         if (r.equals("UUDDLRLRUI")) {
             app.ui.copyUITree();
             // Acknowledge without disturbing UI state using an audio cue.

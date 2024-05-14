@@ -160,7 +160,7 @@ public class UIImageEditView extends UIPlaneView {
         Rect theSelection = currentTool.getSelection();
         if (theSelection != null) {
             if (theSelection.width == 0 && theSelection.height == 0) {
-                app.a.drawTarget(viewRct.x + (int) planeMulZoom(theSelection.x), viewRct.y + (int) planeMulZoom(theSelection.y), (int) planeMulZoom(1), igd);
+                app.a.drawTarget(viewRct.x + (int) planeMulZoom(theSelection.x), viewRct.y + (int) planeMulZoom(theSelection.y), (int) planeMulZoom(1), igd, false);
             } else {
                 app.a.drawSelectionBox(viewRct.x + (int) planeMulZoom(theSelection.x), viewRct.y + (int) planeMulZoom(theSelection.y), (int) planeMulZoom(theSelection.width), (int) planeMulZoom(theSelection.height), app.f.getSpriteScale(), igd);
             }

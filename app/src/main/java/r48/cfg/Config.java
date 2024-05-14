@@ -40,6 +40,9 @@ public class Config {
     public boolean fontOverrideUE8;
     public int borderTheme;
 
+    // Global audio volume
+    public float globalVolume;
+
     public Config(boolean isMobile) {
         reset(isMobile);
     }

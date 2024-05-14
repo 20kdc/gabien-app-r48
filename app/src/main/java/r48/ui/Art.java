@@ -19,6 +19,7 @@ import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.elements.UIBorderedElement;
 import gabien.ui.theming.IIcon;
+import gabien.uslx.append.Block;
 import gabien.uslx.append.Rect;
 import r48.App;
 import r48.app.InterlaunchGlobals;
@@ -251,8 +252,15 @@ public class Art {
     }
 
     // Basically a "compatibility" function. Tries to draw an appropriate event-point image given a tile size and a top-left position.
-    public void drawTarget(int px, int py, int tileSize, IGrDriver igd) {
-        drawSymbol(igd, Art.Symbol.Target, px + (tileSize / 4), py + (tileSize / 4), tileSize / 2, false, false);
+    public void drawTarget(int px, int py, int tileSize, IGrDriver igd, boolean atOrBelowHalfSize) {
+        if (atOrBelowHalfSize && tileSize == 32) {
+            // hardcoded rule for games like OS
+            try (Block b = igd.openTRS(px, py, 2, 2)) {
+                drawSymbol(igd, Art.Symbol.Target, (tileSize / 8), (tileSize / 8), tileSize / 4, false, false);
+            }
+        } else {
+            drawSymbol(igd, Art.Symbol.Target, px + (tileSize / 4), py + (tileSize / 4), tileSize / 2, false, false);
+        }
     }
 
     public enum Symbol {

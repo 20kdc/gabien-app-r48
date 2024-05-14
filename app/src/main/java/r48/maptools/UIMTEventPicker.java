@@ -62,7 +62,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         for (int tx = mvdc.camT.x; tx < mvdc.camT.x + mvdc.camT.width; tx++) {
             for (int ty = mvdc.camT.y; ty < mvdc.camT.y + mvdc.camT.height; ty++) {
                 if (eventCache.containsKey(tx + ";" + ty))
-                    app.a.drawTarget(tx * mvdc.tileSize, ty * mvdc.tileSize, mapView.tileSize, mvdc.igd);
+                    app.a.drawTarget(tx * mvdc.tileSize, ty * mvdc.tileSize, mapView.tileSize, mvdc.igd, mvdc.atOrBelowHalfSize);
             }
         }
     }

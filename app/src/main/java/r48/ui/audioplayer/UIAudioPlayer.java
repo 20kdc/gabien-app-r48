@@ -135,8 +135,8 @@ public class UIAudioPlayer extends UIDynAppPrx {
                     for (int i = ofs; i < lim; i += 2) {
                         source.getInterpolatedF32(position, audioThreadBuffer, loopButton.state);
                         int secondChannel = audioThreadBuffer.length > 1 ? 1 : 0;
-                        interleaved[i] = (short) (AudioIOFormat.cF64toS32(audioThreadBuffer[0]) >> 16);
-                        interleaved[i + 1] = (short) (AudioIOFormat.cF64toS32(audioThreadBuffer[secondChannel]) >> 16);
+                        interleaved[i] = (short) (AudioIOFormat.cF64toS32(audioThreadBuffer[0] * app.c.globalVolume) >> 16);
+                        interleaved[i + 1] = (short) (AudioIOFormat.cF64toS32(audioThreadBuffer[secondChannel] * app.c.globalVolume) >> 16);
                         position += (source.sampleRate / 22050d) * speed;
                     }
                     if (source.length != 0)
