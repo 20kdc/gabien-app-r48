@@ -11,6 +11,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.atlas.AtlasSet;
 import gabien.render.IGrDriver;
+import gabien.uslx.append.Block;
 import r48.App;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
@@ -49,14 +50,9 @@ public abstract class ITileRenderer extends App.Svc {
     public abstract void drawTile(int layer, short tidx, int px, int py, IGrDriver igd);
     public final void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale) {
         if (spriteScale != 1) {
-            float rx = igd.trsTXS(px), ry = igd.trsTYS(py);
-            float rsx = igd.trs[2], rsy = igd.trs[3];
-            igd.trs[2] = rsx * spriteScale;
-            igd.trs[3] = rsy * spriteScale;
-            drawTile(layer, tidx, 0, 0, igd);
-            igd.trs[2] = rsx;
-            igd.trs[3] = rsy;
-            igd.trsTXYE(rx, ry);
+            try (Block b = igd.openTRS(px, py, spriteScale, spriteScale)) {
+                drawTile(layer, tidx, 0, 0, igd);
+            }
         } else {
             drawTile(layer, tidx, px, py, igd);
         }

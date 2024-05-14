@@ -16,6 +16,7 @@ import gabien.ui.layouts.UITabBar;
 import gabien.ui.layouts.UITabPane;
 import gabien.ui.layouts.UIWindowView;
 import gabien.ui.layouts.UIWindowView.TabShell;
+import gabien.uslx.append.Block;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import gabien.wsi.IDesktopPeripherals;
@@ -110,11 +111,7 @@ public class WindowManager {
                 int ex = x - (sz - w) / 2;
                 int ey = y - (sz - h) / 2;
 
-                float ox = igd.trsTXS(ex);
-                float oy = igd.trsTYS(ey);
-                float osx = igd.trsSXS(sz);
-                float osy = igd.trsSYS(sz);
-                {
+                try (Block b = igd.openTRS(ex, ey, sz, sz)) {
                     // ok, actual rendering time, 0-1 let's go
                     double instantTime = GaBIEn.getTime();
                     double dT = instantTime - orangeLastUpdate;
@@ -146,10 +143,6 @@ public class WindowManager {
                     int control = ((int) (Math.sin(System.currentTimeMillis() / 13750987.08314d) * 64) + 128);
                     igd.fillRect(32, 32, 32, control, 0, 0, 1, 1);
                 }
-                igd.trsSYE(osy);
-                igd.trsSXE(osx);
-                igd.trsTYE(oy);
-                igd.trsTXE(ox);
 
                 int th = ilg.c.f.backgroundObjectMonitorTH;
                 int m = th / 2;

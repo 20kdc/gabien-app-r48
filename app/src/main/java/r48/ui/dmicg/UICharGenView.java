@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.IPointerReceiver;
+import gabien.uslx.append.Block;
 import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
@@ -49,10 +50,9 @@ public class UICharGenView extends UIPlaneView {
         int ex = ((mySize.width - ew) / 2) - ((int) planeMulZoom(camX));
         int ey = ((mySize.height - eh) / 2) - ((int) planeMulZoom(camY));
 
-        float otx = igd.trsTXS(ex);
-        float oty = igd.trsTYS(ey);
-        render(igd, ew, eh);
-        igd.trsTXYE(otx, oty);
+        try (Block b = igd.openTranslate(ex, ey)) {
+            render(igd, ew, eh);
+        }
 
         super.render(igd);
     }

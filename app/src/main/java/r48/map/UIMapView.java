@@ -320,7 +320,7 @@ public class UIMapView extends UIPlaneView {
         igd.clearAll(0, 0, 0);
 
         // Rendering is all done at a 1:1 match with tiles.
-        float[] stb = igd.getTRS();
+        float[] stb = igd.trs;
         float ratio = ((float) planeZoomMul) / planeZoomDiv;
         stb[2] = ratio;
         stb[3] = ratio;
