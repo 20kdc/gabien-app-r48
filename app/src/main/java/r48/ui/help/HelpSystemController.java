@@ -7,16 +7,9 @@
 
 package r48.ui.help;
 
-import gabien.GaBIEn;
 import gabien.ui.elements.UILabel;
-import r48.dbs.DBLoader;
-import r48.dbs.IDatabase;
-import r48.tr.LanguageList;
-import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.function.Consumer;
 
 /**
@@ -26,6 +19,7 @@ import java.util.function.Consumer;
 public class HelpSystemController implements Consumer<String> {
     private UILabel pageName;
     private String helpFile;
+    private HelpFile helpFileData;
     private UIHelpSystem hs;
     public Runnable onLoad;
     public final Config c;
@@ -34,6 +28,7 @@ public class HelpSystemController implements Consumer<String> {
         c = charge.c;
         pageName = pName;
         helpFile = hFile == null ? "Help/Main/Entry" : hFile;
+        helpFileData = HelpFile.load(charge.ilg, helpFile);
         hs = charge;
     }
 
@@ -41,6 +36,7 @@ public class HelpSystemController implements Consumer<String> {
         if (link.contains(":")) {
             String[] coms = link.split(":");
             helpFile = coms[0];
+            helpFileData = HelpFile.load(hs.ilg, helpFile);
             loadPage(Integer.parseInt(coms[1]));
         } else {
             loadPage(Integer.parseInt(link));
@@ -49,65 +45,17 @@ public class HelpSystemController implements Consumer<String> {
 
     public void loadPage(final int i) {
         hs.page.clear();
-        final InterlaunchGlobals ilg = hs.ilg;
-        String efl = c.language;
-        if (efl.equals(LanguageList.helpLang))
-            efl = "";
-        String actualFN = helpFile + efl;
-        InputStream helpStream = GaBIEn.getResource(actualFN + ".scm");
-        if (helpStream == null) {
-            hs.page.add(new UIHelpSystem.HelpElement(ilg, ".", hs.ilg.t.g.helpUnavailable));
-            actualFN = helpFile;
-            helpStream = GaBIEn.getResource(actualFN + ".scm");
+        HelpFile.Page page = helpFileData.pages.get(i);
+        if (page == null) {
+            // uhhhhhhhhhh
+            if (pageName != null)
+                pageName.setText(helpFile + ":" + i);
+        } else {
+            if (pageName != null)
+                pageName.setText(page.name);
+            hs.page.addAll(page.contents);
         }
-        if (helpStream != null) {
-            try {
-                helpStream.close();
-            } catch (Exception ex) {
-                // nope
-            }
-            DBLoader.readFile(actualFN, new IDatabase() {
-                boolean working = false;
-                UIHelpSystem.HelpElement workingElement;
-
-                @Override
-                public void newObj(int objId, String objName) throws IOException {
-                    if (objId == i) {
-                        if (pageName != null)
-                            pageName.setText(objName);
-                        working = true;
-                    } else {
-                        working = false;
-                    }
-                }
-
-                @Override
-                public void execCmd(String ch, String[] args) throws IOException {
-                    if (working) {
-                        StringBuilder argbuilder = new StringBuilder();
-                        boolean first = true;
-                        for (String s : args) {
-                            if (first) {
-                                first = false;
-                            } else {
-                                argbuilder.append(' ');
-                            }
-                            argbuilder.append(s);
-                        }
-                        if (ch.equals(",")) {
-                            UILabel uil = ((UILabel) workingElement.element);
-                            // this is bad code and I should feel bad
-                            // luckily this only happens on pageswitch
-                            // REST of layout should be faster now!
-                            uil.setText(uil.getText() + "\n" + argbuilder.toString());
-                        } else {
-                            hs.page.add(workingElement = new UIHelpSystem.HelpElement(ilg, ch, argbuilder.toString()));
-                        }
-                    }
-                }
-            });
-            hs.tightlyCoupledLayoutRecalculateMetrics();
-        }
+        hs.tightlyCoupledLayoutRecalculateMetrics();
         if (onLoad != null)
             onLoad.run();
     }

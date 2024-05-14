@@ -70,13 +70,7 @@ public class TestKickstart {
         } catch (UnsupportedCharsetException uce) {
             throw new RuntimeException(uce);
         }
-        Art a = new Art();
-        Config c = new Config(false);
-        c.applyUIGlobals();
-        InterlaunchGlobals ilg = new InterlaunchGlobals(a, c, (vm) -> {}, (str) -> {}, (str) -> {
-            // this is to catch any SDB tr conflicts
-            throw new RuntimeException("TR issue during tests: " + str);
-        }, true);
+        InterlaunchGlobals ilg = kickstartILG();
         EngineDef engine = EnginesList.getEngines(null).get(engineDefId);
         if (engine == null)
             throw new RuntimeException("missing engine def: " + engineDefId);
@@ -126,6 +120,17 @@ public class TestKickstart {
         GaBIEnUI.setupAssets();
         // Reset GaBIEn stuff
         new Config(false).applyUIGlobals();
+    }
+
+    public InterlaunchGlobals kickstartILG() {
+        kickstartRFS();
+        Art a = new Art();
+        Config c = new Config(false);
+        c.applyUIGlobals();
+        return new InterlaunchGlobals(a, c, (vm) -> {}, (str) -> {}, (str) -> {
+            // this is to catch any SDB tr conflicts
+            throw new RuntimeException("TR issue during tests: " + str);
+        }, true);
     }
 
     public void resetODB(App app) {
