@@ -113,8 +113,8 @@ public class LSSplashScreen extends State {
 
         if (err != null) {
             RenderedTextChunk rtc = TextTools.renderString(err, GaBIEn.getNativeFont(16, null, true), true);
-            rtc.backgroundRoot(bb, 4, 4, 255, 255, 255, 255);
-            rtc.renderRoot(bb, 4, 4);
+            rtc.backgroundRootAutoOffset(bb, 4, 4, 255, 255, 255, 255);
+            rtc.renderRootAutoOffset(bb, 4, 4);
         }
 
         frames++;
