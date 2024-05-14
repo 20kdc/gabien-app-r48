@@ -7,6 +7,8 @@
 
 package r48.schema.specialized;
 
+import java.util.function.Supplier;
+
 import gabien.ui.UIElement;
 import r48.App;
 import r48.io.data.IRIO;
@@ -25,10 +27,11 @@ import r48.schema.util.SchemaPath;
  */
 public class TempDialogSchemaChoice extends SchemaElement.Leaf {
     public UIElement heldDialog;
-    public Runnable update;
+    // Returns false if invalid.
+    public Supplier<Boolean> update;
     public SchemaPath hPar;
 
-    public TempDialogSchemaChoice(App app, UIElement held, Runnable updater, SchemaPath hr) {
+    public TempDialogSchemaChoice(App app, UIElement held, Supplier<Boolean> updater, SchemaPath hr) {
         super(app);
         heldDialog = held;
         update = updater;
@@ -38,7 +41,8 @@ public class TempDialogSchemaChoice extends SchemaElement.Leaf {
     @Override
     public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
         if (update != null)
-            update.run();
+            if (!update.get())
+                return objectHasBecomeInvalidScreen(path);
         return heldDialog;
     }
 
@@ -47,6 +51,6 @@ public class TempDialogSchemaChoice extends SchemaElement.Leaf {
         if (hPar.editor != null)
             hPar.editor.modifyVal(hPar.targetElement, hPar, setDefault);
         if (update != null)
-            update.run();
+            update.get();
     }
 }

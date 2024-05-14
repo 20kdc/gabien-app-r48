@@ -23,6 +23,7 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 import java.io.*;
+import java.util.function.Supplier;
 
 /**
  * Generic string blob (no compression on this one)
@@ -69,14 +70,15 @@ public class StringBlobSchemaElement extends SchemaElement.Leaf {
         }), importer, false, 0.5d); 
         return new UISplitterLayout(usl, new UITextButton(T.s.bEditHere, app.f.blobTH, () -> {
             final UITextBox utb = new UITextBox("", app.f.schemaFieldTH).setMultiLine();
-            Runnable update = () -> {
+            Supplier<Boolean> update = () -> {
                 try {
                     utb.setText(readContentString(target));
                 } catch (IOException e) {
                     app.ui.launchDialog(T.s.dErrNoRead, e);
                 }
+                return true;
             };
-            update.run();
+            update.get();
             UIElement ui = new UISplitterLayout(utb, new UITextButton(T.g.bConfirm, app.f.schemaFieldTH, () -> {
                 try {
                     writeContentString(target, utb.getText());

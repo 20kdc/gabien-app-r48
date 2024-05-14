@@ -44,6 +44,12 @@ public abstract class DMChangeTracker {
     }
 
     /**
+     * Reports that a data object has been created.
+     * The data object starts dirty.
+     */
+    public abstract void register(IDM3Data irioData);
+
+    /**
      * Reports that a data object is about to be modified.
      * This should only fire once ever per IDM3Data unless markClean is called.
      * However, IDM3Contexts should be ready to handle an IDM3Data which calls this function multiple times in a row.
@@ -75,6 +81,10 @@ public abstract class DMChangeTracker {
         public static final DMChangeTracker TESTS = new Null();
 
         private Null() {
+        }
+
+        @Override
+        public void register(IDM3Data irioData) {
         }
 
         @Override

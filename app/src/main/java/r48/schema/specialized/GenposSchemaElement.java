@@ -79,12 +79,12 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
                     };
                     final GenposAnimRootPanel rmarp = new GenposAnimRootPanel(anim, launcher, framerate);
                     // Setup automatic-update safety net
-                    safetyWrap(rmarp, launcher, new Runnable() {
-                        @Override
-                        public void run() {
-                            sc.prepareFramesetCache();
-                            rmarp.incomingModification();
-                        }
+                    safetyWrap(rmarp, launcher, () -> {
+                        if (!anim.isStillValid())
+                            return false;
+                        sc.prepareFramesetCache();
+                        rmarp.incomingModification();
+                        return true;
                     }, boot, path);
                 } else if (genposType.equals("r2kAnimation")) {
                     // This is particularly mucky because of it's direct interaction with a magically-bound element,
@@ -136,13 +136,12 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
                     };
                     final GenposAnimRootPanel rmarp = new GenposAnimRootPanel(anim, launcher, framerate);
 
-                    safetyWrap(rmarp, launcher, new Runnable() {
-                        @Override
-                        public void run() {
-                            // usual stuff
-                            rmarp.incomingModification();
-                            sc.prepareFramesetCache();
-                        }
+                    safetyWrap(rmarp, launcher, () -> {
+                        if (!anim.isStillValid())
+                            return false;
+                        sc.prepareFramesetCache();
+                        rmarp.incomingModification();
+                        return true;
                     }, boot, path);
                 } else if (genposType.equals("r2kTroop")) {
                     launchFrame(launcher, path, new R2kTroopGenposFrame(app, target, path, () -> {
@@ -163,15 +162,15 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
         final GenposFramePanelController rmarp = new GenposFramePanelController(gpf, null, launcher);
         rmarp.frameChanged();
         // Setup automatic-update safety net
-        safetyWrap(rmarp.rootLayout, launcher, new Runnable() {
-            @Override
-            public void run() {
-                rmarp.frameChanged();
-            }
+        safetyWrap(rmarp.rootLayout, launcher, () -> {
+            if (!gpf.isStillValid())
+                return false;
+            rmarp.frameChanged();
+            return true;
         }, boot, path);
     }
 
-    private void safetyWrap(UIElement rmarp, ISchemaHost shi, Runnable update, TempDialogSchemaChoice sc, final SchemaPath path) {
+    private void safetyWrap(UIElement rmarp, ISchemaHost shi, Supplier<Boolean> update, TempDialogSchemaChoice sc, final SchemaPath path) {
         sc.heldDialog = rmarp;
         sc.update = update;
         shi.pushObject(path);

@@ -15,6 +15,12 @@ import r48.io.data.RORIO;
  * Created on 29/07/17.
  */
 public interface IGenposAnim {
+    /**
+     * Confirms that the data still appears valid.
+     * This has to catch undo shenanigans, but not that much else.
+     */
+    boolean isStillValid();
+
     void setFrameIdx(int i);
 
     int getFrameIdx();

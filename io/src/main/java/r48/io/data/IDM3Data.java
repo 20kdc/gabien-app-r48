@@ -16,7 +16,8 @@ import org.eclipse.jdt.annotation.NonNull;
 public interface IDM3Data {
     /**
      * This indicates that the IDM3Context would like to be notified about the next update to this object.
-     * All IDM3Data objects start clean by default.
+     * All IDM3Data objects start dirty by default, but register themselves with DMChangeTracker.
+     * This will mark them clean if it wishes.
      */
     void trackingMarkClean();
 

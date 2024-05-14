@@ -86,6 +86,18 @@ Both pay very close attention to reflection in the following aspects:
 
 R2K unpacking uses `DM2LcfBinding`. Notably, a field does not need an FXO binding to be Lcf-bound, which is why `addField` exists as a distinct entity.
 
+## `IDM3Data` Lifecycle
+
+So due to bugs found mid-way through v2.0 development, the life-cycle of `IDM3Data` had to become a little complex.
+
+Simply put, here's the lifecycle of an `IDM3Data` implementor:
+
+1. On creation, the object is marked dirty. If the change tracker does _not_ have an active License To Unpack Data, the object is considered _fresh._ Fresh objects are immediately registered with the change tracker and remain dirty. Otherwise, the object is marked clean and is ready to be dirtied by changes (when they occur outside of the License To Unpack Data).
+	* Fresh objects are marked clean with the other dirty objects on recording rotation, but are not actually _in_ the recording. This mechanism gives the object time to be initialized. This ensures that objects that Schema assumes are single-type stay that way. At particular risk of this phenomenon are Genpos animations/frames.
+		* The system remains consistent because reversing over the creation of the object would also reverse over any reference to it.
+2. The object oscillates between being dirty and clean. When dirty, the object is in a `TimeMachine.Recording` object.
+3. The object becomes completely unreferenced at some point (deleted and fell off of Undo/Redo buffer, root no longer in use, etc.) and is GC'd.
+
 ## Requirements for `IDM3Data` implementors
 
 The following guarantees MUST be followed:

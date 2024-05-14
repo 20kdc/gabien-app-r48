@@ -43,6 +43,11 @@ public class R2kGenposFrame extends App.Svc implements IGenposFrame {
     }
 
     @Override
+    public boolean isStillValid() {
+        return frameSource.get().getIVar("@cells") != null;
+    }
+
+    @Override
     public int[] getIndicators() {
         int[] cp = new int[R2kTroopGenposFrame.gameBattleDisplay.length + 2];
         int resW = 160;

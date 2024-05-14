@@ -20,6 +20,11 @@ import r48.schema.util.SchemaPath;
  * Created on 28/07/17.
  */
 public interface IGenposFrame {
+    /**
+     * Verifies the frame object is still valid.
+     * This has to catch undo shenanigans, but not that much else.
+     */
+    boolean isStillValid();
 
     // Interleaved X/Y. Provides position markers.
     int[] getIndicators();

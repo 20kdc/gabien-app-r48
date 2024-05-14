@@ -21,6 +21,15 @@ public abstract class TimeMachineChangeSource extends DMChangeTracker {
     }
 
     @Override
+    public void register(IDM3Data irioData) {
+        if (getLicensesToUnpackData() != 0) {
+            irioData.trackingMarkClean();
+        } else {
+            tm.recordFresh(irioData);
+        }
+    }
+
+    @Override
     public void modifying(IDM3Data modifiedData) {
         tm.record(modifiedData, this);
     }

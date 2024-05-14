@@ -54,6 +54,11 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
         spriteCache = sc;
     }
 
+    @Override
+    public boolean isStillValid() {
+        return true;
+    }
+
     public IRIO getFrame() {
         return frameSource.get();
     }

@@ -121,6 +121,11 @@ public class LocalTestExecutiveTest {
                 final LinkedList<Runnable> states = new LinkedList<>();
                 DMContext monitor = new DMContext(new DMChangeTracker() {
                     @Override
+                    public void register(IDM3Data irioData) {
+                        irioData.trackingMarkClean();
+                    }
+
+                    @Override
                     public void modifying(IDM3Data modifiedData) {
                         states.add(modifiedData.saveState());
                     }

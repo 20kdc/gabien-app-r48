@@ -14,7 +14,7 @@ import gabien.uslx.io.ByteArrayMemoryish;
  * Created 9th May, 2024.
  */
 public final class DMBlob extends ByteArrayMemoryish implements IDM3Data {
-    private boolean clean = true;
+    private boolean clean;
     public final DMContext context;
 
     /**
@@ -23,6 +23,7 @@ public final class DMBlob extends ByteArrayMemoryish implements IDM3Data {
     public DMBlob(DMContext context, byte[] data) {
         super(data);
         this.context = context;
+        context.changes.register(this);
     }
 
     @Override

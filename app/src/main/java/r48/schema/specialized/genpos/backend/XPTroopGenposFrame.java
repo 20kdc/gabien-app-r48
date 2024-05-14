@@ -41,6 +41,11 @@ public class XPTroopGenposFrame extends TroopGenposFrame {
         }
     }
 
+    @Override
+    public boolean isStillValid() {
+        return troop.getType() == 'o';
+    }
+
     private IImage readEnemy(IRIO value, IImageLoader img) {
         if (SchemaElement.checkType(value, 'o', "RPG::Enemy", false))
             return null;

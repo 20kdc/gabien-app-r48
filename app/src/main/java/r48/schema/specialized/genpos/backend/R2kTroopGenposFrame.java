@@ -53,6 +53,11 @@ public class R2kTroopGenposFrame extends TroopGenposFrame {
             enemies[(int) (map.getFX())] = readEnemy(enemi.getHashVal(map), img);
     }
 
+    @Override
+    public boolean isStillValid() {
+        return troop.getType() == 'o';
+    }
+
     private IImage readEnemy(IRIO value, IImageLoader img) {
         IImage im = img.getImage("Monster/" + value.getIVar("@battler_name").decString(), false);
         return app.ui.imageFXCache.process(im, new HueShiftImageEffect((int) value.getIVar("@battler_hue").getFX()));

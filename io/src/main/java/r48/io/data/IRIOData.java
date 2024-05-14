@@ -13,10 +13,11 @@ package r48.io.data;
  * Created 9th May, 2024.
  */
 public abstract class IRIOData extends IRIO implements IDM3Data, Cloneable {
-    private boolean clean = true;
+    private boolean clean;
 
     public IRIOData(DMContext context) {
         super(context);
+        context.changes.register(this);
     }
 
     @Override

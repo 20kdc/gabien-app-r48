@@ -40,6 +40,11 @@ public final class TimeMachine extends AppCore.Csv {
      */
     private Recording recording = new Recording();
 
+    /**
+     * Fresh objects are recorded here.
+     */
+    private final HashSet<IDM3Data> fresh = new HashSet<>();
+
     private boolean hasRecordBeenCalledThisCycle = false;
 
     public TimeMachine(AppCore app) {
@@ -54,6 +59,13 @@ public final class TimeMachine extends AppCore.Csv {
         if (!recording.data.containsKey(data))
             recording.data.put(data, data.saveState());
         recording.sources.add(src);
+    }
+
+    /**
+     * Marks fresh data. Fresh data objects get marked clean but don't 'count'.
+     */
+    public void recordFresh(IDM3Data irioData) {
+        fresh.add(irioData);
     }
 
     public boolean canUndo() {
@@ -72,12 +84,21 @@ public final class TimeMachine extends AppCore.Csv {
         return redoStack.size();
     }
 
+    private void markFreshObjectsClean() {
+        // right, you're all Officially Initialized now
+        for (IDM3Data f : fresh)
+            f.trackingMarkClean();
+        fresh.clear();
+    }
+
     /**
      * Auto-creates undo points.
      */
     public void doCycle() {
         // clean all data to ensure anything new will be caught
         recording.cleanAll();
+        markFreshObjectsClean();
+        // continue...
         if (!hasRecordBeenCalledThisCycle) {
             // data is in a stable state, commit if there's anything there
             if (!recording.isEmpty()) {
@@ -97,6 +118,7 @@ public final class TimeMachine extends AppCore.Csv {
      * Undo everything to after the last thing that can be 'officially' undone.
      */
     private void revertToRecording(HashSet<TimeMachineChangeSource> sourceTrack) {
+        markFreshObjectsClean();
         Recording tmp = recording;
         recording = new Recording();
         tmp.invoke(sourceTrack);
@@ -151,8 +173,8 @@ public final class TimeMachine extends AppCore.Csv {
     }
 
     private static class Recording {
-        final HashMap<IDM3Data, Runnable> data = new HashMap<IDM3Data, Runnable>();
-        final HashSet<TimeMachineChangeSource> sources = new HashSet<TimeMachineChangeSource>();
+        final HashMap<IDM3Data, Runnable> data = new HashMap<>();
+        final HashSet<TimeMachineChangeSource> sources = new HashSet<>();
 
         // be sure to add sources!
         void invoke(HashSet<TimeMachineChangeSource> sourceTrack) {

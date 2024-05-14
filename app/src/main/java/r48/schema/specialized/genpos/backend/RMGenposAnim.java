@@ -57,6 +57,11 @@ public class RMGenposAnim extends App.Svc implements IGenposAnim {
         setFrameIdx(getFrameIdx());
     }
 
+    @Override
+    public boolean isStillValid() {
+        return target.getType() == '[';
+    }
+
     public IRIO getFrame() {
         int min = 0;
         if (ix1)
@@ -122,6 +127,8 @@ public class RMGenposAnim extends App.Svc implements IGenposAnim {
 
     @Override
     public int getFrameCount() {
+        if (target.getType() != '[')
+            return 0;
         int min = 0;
         if (ix1)
             min = 1;
