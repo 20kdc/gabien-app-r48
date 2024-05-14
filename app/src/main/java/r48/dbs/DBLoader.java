@@ -60,8 +60,13 @@ public class DBLoader {
                     break;
                 } else if (firstChar <= 32) {
                     // comments/blank lines
-                    while (firstChar != -1 && firstChar != 10)
+                    StringBuilder sb = new StringBuilder();
+                    while (firstChar != -1 && firstChar != 10) {
                         firstChar = r.read();
+                        if (firstChar != -1 && firstChar != 10)
+                            sb.append((char) firstChar);
+                    }
+                    db.comment(sb.toString());
                     continue;
                 }
                 if (firstChar >= '0' && firstChar <= '9') {

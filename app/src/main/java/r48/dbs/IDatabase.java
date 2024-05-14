@@ -23,4 +23,7 @@ public interface IDatabase {
     }
 
     void execCmd(char c, String[] args) throws IOException;
+
+    default void comment(String string) {
+    }
 }
