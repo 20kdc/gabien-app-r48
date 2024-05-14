@@ -62,17 +62,19 @@ public class CharacterGeneratorController extends App.Svc {
             }
 
             @Override
-            public void execCmd(char c, String[] args) throws IOException {
-                if (c == ':') {
+            public void execCmd(String c, String[] args) throws IOException {
+                if (c.equals(":")) {
                     view = new UICharGenView(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), CharacterGeneratorController.this);
                     modes.addTab(new UITabBar.Tab(view, new UITabBar.TabIcon[0]));
                     views.add(view);
-                } else if (c == '.') {
+                } else if (c.equals(".")) {
                     if (args.length == 1)
                         view.text = args[0];
                     if (args.length == 2)
                         if (app.c.language.equals(args[0]))
                             view.text = args[1];
+                } else {
+                    throw new RuntimeException("Unknown command " + c);
                 }
             }
         });
@@ -88,9 +90,9 @@ public class CharacterGeneratorController extends App.Svc {
             }
 
             @Override
-            public void execCmd(char c, String[] args) throws IOException {
-                if ((c == 'x') || (c == ':') || (c == '+')) {
-                    final Layer l = target = new Layer(args[0], (c == '+') || (c == 'x'));
+            public void execCmd(String c, String[] args) throws IOException {
+                if (c.equals("x") || c.equals(":") || c.equals("+")) {
+                    final Layer l = target = new Layer(args[0], c.equals("+") || c.equals("x"));
 
                     final LinkedList<String> layerGroups = new LinkedList<String>();
 
@@ -114,7 +116,7 @@ public class CharacterGeneratorController extends App.Svc {
                                 l.swatch.col = integer;
                         }, true));
                     };
-                    if (c != 'x') {
+                    if (!c.equals("x")) {
                         availableOpts.add(new UISplitterLayout(l.naming, l.swatch, false, 1));
                     } else {
                         availableOpts.add(l.swatch);
@@ -126,16 +128,18 @@ public class CharacterGeneratorController extends App.Svc {
                         groupsToLayers.get(args[i]).add(l);
                         layerGroups.add(args[i]);
                     }
-                } else if (c == 'm') {
+                } else if (c.equals("m")) {
                     mode = args[0];
-                } else if (c == 'i') {
+                } else if (c.equals("i")) {
                     charLay.add(new LayerImage(Integer.parseInt(args[1]), "CharGen/" + target.id + args[0] + ".png", mode, target.id));
-                } else if (c == '.') {
+                } else if (c.equals(".")) {
                     if (args.length == 1)
                         target.naming.setText(args[0]);
                     if (args.length == 2)
                         if (app.c.language.equals(args[0]))
                             target.naming.setText(args[1]);
+                } else {
+                    throw new RuntimeException("Unknown command: " + c);
                 }
             }
         });

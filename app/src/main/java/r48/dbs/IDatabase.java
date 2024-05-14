@@ -36,12 +36,10 @@ public interface IDatabase extends DatumDecToLambdaVisitor.Handler {
                 throw new RuntimeException("args must be 3 long for obj");
             newObj(Integer.parseInt(MVMU.coerceToString(args.get(1))), MVMU.coerceToString(args.get(2)));
         } else {
-            if (ctl.length() != 1)
-                throw new RuntimeException("nope");
             String[] args2 = new String[args.size() - 1];
             for (int i = 0; i < args2.length; i++)
                 args2[i] = MVMU.coerceToString(args.get(i + 1));
-            execCmd(ctl.charAt(0), args2);
+            execCmd(ctl, args2);
         }
     }
 
@@ -51,7 +49,7 @@ public interface IDatabase extends DatumDecToLambdaVisitor.Handler {
         
     }
 
-    void execCmd(char c, String[] args) throws IOException;
+    void execCmd(String c, String[] args) throws IOException;
 
     default void comment(String string) {
     }

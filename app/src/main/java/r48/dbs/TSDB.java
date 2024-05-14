@@ -46,25 +46,25 @@ public class TSDB extends App.Svc {
             }
 
             @Override
-            public void execCmd(char c, String[] args) throws IOException {
-                if (c == '#') {
+            public void execCmd(String c, String[] args) throws IOException {
+                if (c.equals("#")) {
                     image = GaBIEn.getImage(args[0]);
-                } else if (c == 'p') {
+                } else if (c.equals("p")) {
                     int w = Integer.parseInt(args[7]);
                     int h = Integer.parseInt(args[8]);
                     ITexRegion imgOff = image.subRegion(Integer.parseInt(args[1]), Integer.parseInt(args[2]), w, h);
                     ITexRegion imgOn = image.subRegion(Integer.parseInt(args[3]), Integer.parseInt(args[4]), w, h);
                     pictures.add(new TSPicture(acceptable, compileData(args[0]), imgOff, imgOn, Integer.parseInt(args[5]), Integer.parseInt(args[6]), w, h));
-                } else if (c == 'P') {
+                } else if (c.equals("P")) {
                     int tileSize = image.height;
                     int tidOff = Integer.parseInt(args[1]);
                     int tidOn = Integer.parseInt(args[2]);
                     ITexRegion imgOff = tidOff != -1 ? image.subRegion(tidOff * tileSize, 0, tileSize, tileSize) : null;
                     ITexRegion imgOn = tidOn != -1 ? image.subRegion(tidOn * tileSize, 0, tileSize, tileSize) : null;
                     pictures.add(new TSPicture(acceptable, compileData(args[0]), imgOff, imgOn, 0, 0, tileSize, tileSize));
-                } else if (c == 'x') {
+                } else if (c.equals("x")) {
                     xorDoubleclick = Integer.parseInt(args[0]);
-                } else if (c == 'l') {
+                } else if (c.equals("l")) {
                     if (args.length < 2) {
                         acceptable = (integer) -> {
                             return true;
@@ -76,19 +76,19 @@ public class TSDB extends App.Svc {
                             return (integer >= first) && (integer < (first + len));
                         };
                     }
-                } else if (c == 'X') {
+                } else if (c.equals("X")) {
                     tileW = Integer.parseInt(args[0]);
                     tileH = Integer.parseInt(args[1]);
                     tileWHSet = true;
-                } else if (c == 'z') {
+                } else if (c.equals("z")) {
                     disableHex = true;
-                } else if (c == 't') {
+                } else if (c.equals("t")) {
                     mapping = new int[Integer.parseInt(args[0])];
-                } else if (c == 'i') {
+                } else if (c.equals("i")) {
                     mapping[Integer.parseInt(args[0])] = Integer.parseInt(args[1]);
-                } else if (c == '>') {
+                } else if (c.equals(">")) {
                     DBLoader.readFile(app, args[0], this);
-                } else if (c == 'r') {
+                } else if (c.equals("r")) {
                     int ofs1 = Integer.parseInt(args[0]);
                     int ofs2 = Integer.parseInt(args[1]);
                     int len = Integer.parseInt(args[2]);

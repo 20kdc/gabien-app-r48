@@ -56,7 +56,7 @@ public class HelpSystemController implements Consumer<String> {
         String actualFN = helpFile + efl;
         InputStream helpStream = GaBIEn.getResource(actualFN + ".scm");
         if (helpStream == null) {
-            hs.page.add(new UIHelpSystem.HelpElement(ilg, '.', hs.ilg.t.g.helpUnavailable));
+            hs.page.add(new UIHelpSystem.HelpElement(ilg, ".", hs.ilg.t.g.helpUnavailable));
             actualFN = helpFile;
             helpStream = GaBIEn.getResource(actualFN + ".scm");
         }
@@ -82,7 +82,7 @@ public class HelpSystemController implements Consumer<String> {
                 }
 
                 @Override
-                public void execCmd(char ch, String[] args) throws IOException {
+                public void execCmd(String ch, String[] args) throws IOException {
                     if (working) {
                         StringBuilder argbuilder = new StringBuilder();
                         boolean first = true;
@@ -94,7 +94,7 @@ public class HelpSystemController implements Consumer<String> {
                             }
                             argbuilder.append(s);
                         }
-                        if (ch == ',') {
+                        if (ch.equals(",")) {
                             UILabel uil = ((UILabel) workingElement.element);
                             // this is bad code and I should feel bad
                             // luckily this only happens on pageswitch

@@ -6,7 +6,6 @@
  */
 package r48.tests;
 
-import gabien.GaBIEn;
 import gabien.TestKickstart;
 import gabien.datum.DatumDecToLambdaVisitor;
 import gabien.datum.DatumReaderTokenSource;
@@ -28,6 +27,7 @@ import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
@@ -47,7 +47,7 @@ public class LocalTestExecutiveTest {
         try {
             String fn = findBasePath() + "LTE.scm";
             System.out.println("LocalTestExecutive manifest: " + fn);
-            try (InputStreamReader ins = GaBIEn.getTextResource(fn)) {
+            try (InputStreamReader ins = new InputStreamReader(new FileInputStream(fn))) {
                 DatumReaderTokenSource drts = new DatumReaderTokenSource(fn, ins);
                 drts.visit(new DatumDecToLambdaVisitor(new IDatabase() {
                     @Override
@@ -55,12 +55,14 @@ public class LocalTestExecutiveTest {
                     }
 
                     @Override
-                    public void execCmd(char c, String[] args) {
-                        if (c == '.') {
+                    public void execCmd(String c, String[] args) {
+                        if (c.equals(".")) {
                             Object[] cmdLine = new Object[args.length];
                             for (int i = 0; i < cmdLine.length; i++)
                                 cmdLine[i] = args[i];
                             tests.add(cmdLine);
+                        } else {
+                            throw new RuntimeException("unknown command: " + c);
                         }
                     }
                 }));

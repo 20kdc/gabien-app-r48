@@ -165,10 +165,10 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
         private Consumer<String> onLinkClick;
         public final boolean position;
 
-        public HelpElement(InterlaunchGlobals ilg, char ch, String arg) {
+        public HelpElement(InterlaunchGlobals ilg, String ch, String arg) {
             Config c = ilg.c;
             String[] args = arg.split(" ");
-            if (ch == '.') {
+            if (ch.equals(".")) {
                 position = false;
                 StringBuilder sbt = new StringBuilder();
                 for (String s : args) {
@@ -176,7 +176,7 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
                     sbt.append(' ');
                 }
                 element = new UILabel(sbt.toString(), c.f.helpTH);
-            } else if (ch == 'h') {
+            } else if (ch.equals("h")) {
                 position = false;
                 StringBuilder sbt = new StringBuilder();
                 for (String s : args) {
@@ -187,7 +187,7 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
                 if (string.equals("{PROGRAM_VERSION} "))
                     string = Coco.getVersion();
                 element = new UILabel(string, c.f.helpTH).centred();
-            } else if (ch == '>') {
+            } else if (ch.equals(">")) {
                 String t = "";
                 boolean first = true;
                 for (String s : args) {
@@ -206,10 +206,10 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
                             onLinkClick.accept(index);
                     }
                 });
-            } else if (ch == 'p') {
+            } else if (ch.equals("p")) {
                 position = false;
                 element = new UIEmpty(0, c.f.scaleGuess(Integer.parseInt(args[0])));
-            } else if ((ch == 'i') || (ch == 'I')) {
+            } else if (ch.equals("i") || ch.equals("I")) {
                 IDrawable r;
                 if (args[0].equals("R48LOGO")) {
                     r = new PVAFrameDrawable(ilg.a.r48Logo, ilg.a.r48Logo.pvaFile.frames.length - 1);
@@ -228,7 +228,7 @@ public class UIHelpSystem extends UIPanel implements Consumer<String> {
                 final int w = c.f.scaleGuess(extended2 ? Integer.parseInt(args[5]) : (int) sw);
                 r = r.subRegion(xx, yy, sw, sh);
                 UIThumbnail uie = new UIThumbnail(r, w);
-                position = ch == 'i';
+                position = ch.equals("i");
                 element = uie;
             } else {
                 throw new RuntimeException("Cannot handle!");

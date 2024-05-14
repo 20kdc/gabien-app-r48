@@ -70,12 +70,12 @@ public class ATDB extends AppCore.Csv {
             }
 
             @Override
-            public void execCmd(char cmd, String[] args) {
+            public void execCmd(String cmd, String[] args) {
                 // Import a new word-map.
-                if (cmd == 'w')
+                if (cmd.equals("w")) {
                     wordMap = args;
-                // "x" format for wall ATs (used to help import Ancurio's table)
-                if (cmd == 'x') {
+                } else if (cmd.equals("x")) {
+                    // "x" format for wall ATs (used to help import Ancurio's table)
                     current = new Autotile();
                     current.name = "X" + autoIncrementingId;
                     entries[autoIncrementingId++] = current;
@@ -84,15 +84,15 @@ public class ATDB extends AppCore.Csv {
                     };
                     for (int i = 0; i < 4; i++)
                         current.corners[i] = cornerMapping[Integer.parseInt(args[i])];
-                }
-                // "Standard" format for RXP
-                if (cmd == 'd') {
+                } else if (cmd.equals("d")) {
+                    // "Standard" format for RXP
                     current.corners[0] = nameFromWord(args[0]);
                     current.corners[1] = nameFromWord(args[1]);
-                }
-                if (cmd == 'D') {
+                } else if (cmd.equals("D")) {
                     current.corners[2] = nameFromWord(args[0]);
                     current.corners[3] = nameFromWord(args[1]);
+                } else {
+                    throw new RuntimeException("Unknown cmd: " + cmd);
                 }
             }
         });
@@ -154,11 +154,14 @@ public class ATDB extends AppCore.Csv {
             }
 
             @Override
-            public void execCmd(char c, String[] args) {
-                if (c == 'C')
+            public void execCmd(String c, String[] args) {
+                if (c.equals("C")) {
                     if (args[0].equals("disable"))
                         for (int i = 1; i < args.length; i++)
                             avoidThese.add(Integer.parseInt(args[i]));
+                } else {
+                    throw new RuntimeException("unknown command: " + c);
+                }
             }
         });
         LinkedList<String> issues = new LinkedList<String>();

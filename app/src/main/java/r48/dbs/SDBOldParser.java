@@ -711,11 +711,11 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     }
 
     @Override
-    public void execCmd(char c, final String[] args) throws IOException {
-        if (c == 'a') {
+    public void execCmd(String c, final String[] args) throws IOException {
+        if (c.equals("a")) {
             if (!sdb.hasSDBEntry(args[0]))
                 throw new RuntimeException("Bad Schema Database: 'a' used to expect item " + args[0] + " that didn't exist.");
-        } else if (c == ':') {
+        } else if (c.equals(":")) {
             if (args.length == 1) {
                 workingObj = new AggregateSchemaElement(app, new SchemaElement[]{});
                 outerContext = args[0];
@@ -726,15 +726,15 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 setSDBEntry(args[0], new ObjectClassSchemaElement(args[0], handleChain(args, 1), 'o'));
                 outerContext = backup;
             }
-        } else if (c == '.') {
+        } else if (c.equals(".")) {
             workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
             outerContext = args[0];
             setSDBEntry(args[0], workingObj);
-        } else if (c == '@') {
+        } else if (c.equals("@")) {
             PathSyntax t = compilePS("@" + PathSyntax.poundEscape(args[0]));
             // Note: the unescaping happens in the Path
             workingObj.aggregate.add(new PathSchemaElement(t, trAnon(t.decompiled), handleChain(args, 1), false));
-        } else if (c == '}') {
+        } else if (c.equals("}")) {
             String intA0 = args[0];
             boolean opt = false;
             // This shouldn't collide with PathSyntax
@@ -746,14 +746,14 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             // Automatically escape.
             PathSyntax t = compilePS(":{" + PathSyntax.poundEscape(intA0));
             workingObj.aggregate.add(new PathSchemaElement(t, trAnon(args[1]), handleChain(args, 2), opt));
-        } else if (c == '+') {
+        } else if (c.equals("+")) {
             workingObj.aggregate.add(handleChain(args, 0));
-        } else if (c == '>') {
+        } else if (c.equals(">")) {
             String backup = outerContext;
             outerContext = args[0];
             setSDBEntry(args[0], handleChain(args, 1));
             outerContext = backup;
-        } else if (c == 'e') {
+        } else if (c.equals("e")) {
             // "e SDBNAME VALUE NAME..."
             HashMap<String, FF0> options = new HashMap<String, FF0>();
             int defVal = 0;
@@ -768,7 +768,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             // INT: is part of the format
             EnumSchemaElement e = new EnumSchemaElement(app, options, DMKey.of(defVal), EntryMode.INT, () -> T.s.enum_int);
             setSDBEntry(args[0], e);
-        } else if (c == 's') {
+        } else if (c.equals("s")) {
             // Symbols
             HashMap<String, FF0> options = new HashMap<String, FF0>();
             for (int i = 1; i < args.length; i++) {
@@ -778,7 +778,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
 
             EnumSchemaElement ese = new EnumSchemaElement(app, options, ValueSyntax.decode(":" + args[1]), EntryMode.SYM, () -> T.s.enum_sym);
             setSDBEntry(args[0], ese);
-        } else if (c == 'E') {
+        } else if (c.equals("E")) {
             HashMap<String, FF0> options = new HashMap<String, FF0>();
             for (int i = 2; i < args.length; i += 2) {
                 FF0 nam = app.dTr(srcLoc, TrNames.sdbEnum(args[0], args[i]), args[i + 1]);
@@ -786,7 +786,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             }
             EnumSchemaElement e = new EnumSchemaElement(app, options, ValueSyntax.decode(args[2]), EntryMode.INT, trAnon(args[0], args[1]));
             setSDBEntry(args[0], e);
-        } else if (c == 'M') {
+        } else if (c.equals("M")) {
             // Make a proxy (because we change the backing element all the time)
             final SchemaElement srcA = sdb.getSDBEntry(args[0]);
             final SchemaElement srcB = sdb.getSDBEntry(args[1]);
@@ -800,11 +800,11 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 finalMap.putAll(mergeB.lookupOptions);
                 return new EnumSchemaElement(app, finalMap.values(), mergeB.defaultVal, mergeB.entryMode, mergeB.buttonText);
             });
-        } else if (c == ']') {
+        } else if (c.equals("]")) {
             workingObj.aggregate.add(new ArrayElementSchemaElement(app, Integer.parseInt(args[0]), trAnonExUnderscoreNull(args[1]), handleChain(args, 2), null, false));
-        } else if (c == 'i') {
+        } else if (c.equals("i")) {
             readFile(app, args[0]);
-        } else if (c == 'D') {
+        } else if (c.equals("D")) {
             // D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID / empty string] [data schema]
             final String[] root = PathSyntax.breakToken(args[2]);
             String interpret = null;
@@ -821,7 +821,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             }
             final DynamicSchemaElement dict = sdb.ensureSDBProxy(args[0]);
             sdb.addDUR(new DictionaryUpdaterRunnable(app, dict, root[0], compilePS(root[1]), args[3].equals("1"), compilePS(args[4]), Integer.parseInt(args[1]), interpret, dataSchema));
-        } else if (c == 'A') {
+        } else if (c.equals("A")) {
             // This is needed so the engine actually understands which autotiles map to what
             int p = 0;
             app.autoTiles = new ATDB[args.length / 2];
@@ -835,7 +835,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     app.autoTiles[p].calculateInverseMap(args[i + 1]);
                 p++;
             }
-        } else if (c == 'C') {
+        } else if (c.equals("C")) {
             if (args[0].equals("md")) {
                 // This is getting changed over for sanity reasons.
                 // It's not used right now, so it's safe to move it over.
@@ -884,7 +884,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             } else {
                 throw new RuntimeException("C-command " + args[0] + " is not supported.");
             }
-        } else if (c != ' ') {
+        } else {
             for (String arg : args)
                 System.err.print(arg + " ");
             System.err.println("(The command " + c + " in the SDB is not supported.)");

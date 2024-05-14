@@ -387,17 +387,17 @@ public class CMDB extends App.Svc {
             }
 
             @Override
-            public void execCmd(char c, String[] args) {
+            public void execCmd(String c, String[] args) {
                 gbStatePosition = -1;
                 gbStateArgs = null;
-                if (c == 'p') {
+                if (c.equals("p")) {
                     int paramIdx = rc.params.size();
                     final FF0 fv = dTrExUnderscoreNull(TrNames.cmdbParam(dbId, rc.commandId, paramIdx), args[0]);
                     String s = args[1].trim();
                     final SchemaElement se = aliasingAwareSG(s);
                     rc.params.add(new RPGCommand.PStatic(fv, se));
                     useTag();
-                } else if (c == 'P') {
+                } else if (c.equals("P")) {
                     int paramIdx = rc.params.size();
                     // Pv-syntax:
                     // P arrayDI defaultName defaultType
@@ -412,27 +412,27 @@ public class CMDB extends App.Svc {
                     // and actually add
                     rc.params.add(sd);
                     useTag();
-                } else if (c == 'v') {
+                } else if (c.equals("v")) {
                     // v specificVal name type
                     final int idx = Integer.parseInt(args[0]);
                     FF0 name = dTrExUnderscoreNull(currentPvHLocPrefix + idx, args[1]);
                     currentPvH.put(idx, new RPGCommand.PStatic(name, aliasingAwareSG(args[2])));
-                } else if (c == 'd') {
+                } else if (c.equals("d")) {
                     String desc = "";
                     for (String s : args)
                         desc += " " + s;
                     rc.description = app.dTr(srcLoc, TrNames.cmdbDesc(dbId, rc.commandId), desc.trim());
-                } else if (c == 'i') {
+                } else if (c.equals("i")) {
                     rc.indentPre = Integer.parseInt(args[0]);
-                } else if (c == 'I') {
+                } else if (c.equals("I")) {
                     final int s = Integer.parseInt(args[0]);
                     rc.indentPost = (irio) -> s;
-                } else if (c == 'K') {
+                } else if (c.equals("K")) {
                     rc.needsBlockLeavePre = true;
                     rc.blockLeaveReplacement = Integer.parseInt(args[0]);
-                } else if (c == 'l') {
+                } else if (c.equals("l")) {
                     rc.needsBlockLeavePre = true;
-                } else if (c == 'L') {
+                } else if (c.equals("L")) {
                     if (args.length > 0) {
                         if (args[0].equals("block")) {
                             // block context only
@@ -452,12 +452,12 @@ public class CMDB extends App.Svc {
                         rc.typeBlockLeave = true;
                         rc.typeListLeave = true;
                     }
-                } else if (c == '>') {
+                } else if (c.equals(">")) {
                     localAliasing.put(args[0], sdb.getSDBEntry(args[1]));
-                } else if ((c == 'X') || (c == 'x')) {
+                } else if (c.equals("X") || c.equals("x")) {
                     rc.specialSchema = sdb.getSDBEntry(args[0]);
-                    rc.specialSchemaEssential = c == 'X';
-                } else if (c == 'C') {
+                    rc.specialSchemaEssential = c.equals("X");
+                } else if (c.equals("C")) {
                     if (args[0].equals("category")) {
                         rc.category = Integer.parseInt(args[1]);
                     } else if (args[0].equals("categories")) {
@@ -528,13 +528,12 @@ public class CMDB extends App.Svc {
                     } else {
                         throw new RuntimeException("Unknown C-command: " + args[0]);
                     }
-                } else if (c == '#') {
+                } else if (c.equals("#")) {
                     String oldFile = baseFile;
                     baseFile = args[0];
                     DBLoader.readFile(app, args[0], this);
                     baseFile = oldFile;
-                } else if (c != ' ') {
-                    // Aha! Defining comments as a != ought to shut up the warnings!
+                } else {
                     throw new RuntimeException("Unknown command '" + c + "'.");
                 }
             }
