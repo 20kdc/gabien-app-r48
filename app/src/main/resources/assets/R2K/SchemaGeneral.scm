@@ -4,7 +4,7 @@
 ; To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
 ; A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-(A R2K/AutoTiles.txt R2KXPCOM/AutoTileRules.txt R2K/WaterATs.txt R2K/WaterATRules.txt)
+(A R2K/AutoTiles R2KXPCOM/AutoTileRules R2K/WaterATs R2K/WaterATRules)
 
 (D internal_mapDictionary \1 RPG_RT.lmt@map_infos \1 @name #{}# RPG::MapInfo)
 (D internal_eventDictionary \1 __MAP__@events \1 @name #{}# RPG::Event)

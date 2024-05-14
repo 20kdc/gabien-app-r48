@@ -7,7 +7,7 @@
 (\# tileAttributes32.png)
 (X \48 \48)
 
-(> RXP/TSTables.txt)
+(> RXP/TSTables)
 
 ;  base
 ;  F-   I0 I1

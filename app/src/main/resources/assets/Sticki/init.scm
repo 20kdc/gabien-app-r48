@@ -6,6 +6,6 @@
 ; Sticki MVM init
 
 (cmdb-init "notes")
-(cmdb-load-old "notes" "Sticki/NoteTypes.txt")
+(cmdb-load-old "notes" "Sticki/NoteTypes")
 
-(sdb-load-old "Sticki/Schema.txt")
+(sdb-load-old "Sticki/Schema")

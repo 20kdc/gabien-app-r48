@@ -12,6 +12,6 @@
 
 (C categories \1\ -\ Text \2\ -\ Flow \3\ -\ Party \4\ -\ Map \5\ -\ Battle \6\ -\ Misc)
 
-(\# R2K/CommandsGI_0.txt)
-(\# R2K/CommandsGI_M.txt)
-(\# R2K/CommandsGI_B.txt)
+(\# R2K/CommandsGI_0)
+(\# R2K/CommandsGI_M)
+(\# R2K/CommandsGI_B)

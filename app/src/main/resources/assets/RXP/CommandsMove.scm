@@ -10,7 +10,7 @@
 (d Mostly harmless.)
 (L)
 
-(\# RCOM/CommonMove.txt)
+(\# RCOM/CommonMove)
 
 ; I am now very glad I reused the EventCommand code for this
 

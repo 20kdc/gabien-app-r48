@@ -17,27 +17,27 @@
 (include "R2K/vm/itemtext")
 
 ; General stuff
-(sdb-load-old "R2K/SchemaGeneral.txt")
+(sdb-load-old "R2K/SchemaGeneral")
 
 ; Event scripts
-(sdb-load-old "R2K/SchemaScripting.txt")
-(sdb-load-old "R2K/SchemaScriptingKII.txt")
-(sdb-load-old "R2K/SchemaScriptingSBGM.txt")
-(sdb-load-old "R2K/SchemaScriptingMonolith.txt")
-(sdb-load-old "R2K/SchemaScriptingMonolith2.txt")
-(sdb-load-old "R2K/SchemaScriptingMonolith3.txt")
+(sdb-load-old "R2K/SchemaScripting")
+(sdb-load-old "R2K/SchemaScriptingKII")
+(sdb-load-old "R2K/SchemaScriptingSBGM")
+(sdb-load-old "R2K/SchemaScriptingMonolith")
+(sdb-load-old "R2K/SchemaScriptingMonolith2")
+(sdb-load-old "R2K/SchemaScriptingMonolith3")
 
 (cmdb-init "event")
-(cmdb-load-old "event" "R2K/Commands.txt")
+(cmdb-load-old "event" "R2K/Commands")
 
 (cmdb-init "move")
-(cmdb-load-old "move" "R2K/CommandsMove.txt")
+(cmdb-load-old "move" "R2K/CommandsMove")
 
-(sdb-load-old "R2K/SchemaScriptingFooter.txt")
+(sdb-load-old "R2K/SchemaScriptingFooter")
 
 ; The main files
-(sdb-load-old "R2K/SchemaLMU.txt")
-(sdb-load-old "R2K/SchemaLMT.txt")
-(sdb-load-old "R2K/SchemaLDB.txt")
-(sdb-load-old "R2K/SchemaLDBTerms.txt")
-(sdb-load-old "R2K/SchemaLSD.txt")
+(sdb-load-old "R2K/SchemaLMU")
+(sdb-load-old "R2K/SchemaLMT")
+(sdb-load-old "R2K/SchemaLDB")
+(sdb-load-old "R2K/SchemaLDBTerms")
+(sdb-load-old "R2K/SchemaLSD")

@@ -21,7 +21,7 @@
 
 (e comparison_type \0 == \1 >= \2 <= \3 > \4 < \5 !=)
 
-(i RCOM/CommonConditionals.txt)
+(i RCOM/CommonConditionals)
 
 ; This is going to suck (even more)
 
@@ -101,7 +101,7 @@
 \(define-name\ set_variables_parameters_ext\ \(@\ ]3\ set_variables_source\)\)\
 )
 
-(i RCOM/CommonSV.txt)
+(i RCOM/CommonSV)
 
 (. set_variables_script)
 (+ set_variables_base)

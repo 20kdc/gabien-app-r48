@@ -5,4 +5,4 @@
 
 ; Ika MVM init
 
-(sdb-load-old "Ika/Schema.txt")
+(sdb-load-old "Ika/Schema")

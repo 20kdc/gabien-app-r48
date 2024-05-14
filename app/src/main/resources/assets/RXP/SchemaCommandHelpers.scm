@@ -25,7 +25,7 @@
 
 (e conditional_branch_types \0 switch \1 variable \2 selfSwitch \3 timer \4 actor \5 enemy \6 event \7 gold \8 item \9 weapon \10 armour \11 button \12 script)
 
-(i RCOM/CommonConditionals.txt)
+(i RCOM/CommonConditionals)
 
 ; This is going to suck.
 
@@ -100,7 +100,7 @@
 \)\)\
 )
 
-(i RCOM/CommonSV.txt)
+(i RCOM/CommonSV)
 
 (. set_variables_itemCount)
 (+ set_variables_base)

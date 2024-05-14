@@ -6,7 +6,7 @@
 
 ; Event commands for VX Ace.
 
-(\# RCOM/CommonCommands.txt)
+(\# RCOM/CommonCommands)
 
 ; LINE 251
 

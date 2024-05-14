@@ -7,23 +7,23 @@
 
 (include "RCOM/common")
 
-(sdb-load-old "RXP/Schema.txt")
+(sdb-load-old "RXP/Schema")
 
 ; Everything needed for map editing.
-(sdb-load-old "RCOM/SchemaScript.txt")
+(sdb-load-old "RCOM/SchemaScript")
 
-(sdb-load-old "RXP/SchemaCommandHelpers.txt")
+(sdb-load-old "RXP/SchemaCommandHelpers")
 
 (cmdb-init "event")
-(cmdb-load-old "event" "RXP/Commands.txt")
+(cmdb-load-old "event" "RXP/Commands")
 
 (cmdb-init "move")
-(cmdb-load-old "move" "RXP/CommandsMove.txt")
+(cmdb-load-old "move" "RXP/CommandsMove")
 
-(sdb-load-old "RXP/SchemaEditing.txt")
+(sdb-load-old "RXP/SchemaEditing")
 
 ; Defining 'non-essential' bits & pieces, that the system could conceivably survive without.
 ; Though in some cases they may be used to attempt to create stand-ins for missing files,
 ;  and in this case they are required.
 
-(sdb-load-old "RXP/SchemaFiles.txt")
+(sdb-load-old "RXP/SchemaFiles")

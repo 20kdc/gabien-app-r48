@@ -5,4 +5,4 @@
 
 ; OSLoc MVM init
 
-(sdb-load-old "OSLoc/Schema.txt")
+(sdb-load-old "OSLoc/Schema")

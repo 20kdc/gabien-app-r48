@@ -51,14 +51,32 @@ public class DatumLoader {
     }
 
     /**
-     * Loads the given file into this context.
+     * Loads an essential Datum file.
+     */
+    public static void readEssential(String filename, @Nullable Consumer<String> loadProgress, DatumDecToLambdaVisitor.Handler eval) {
+        if (!read(filename, loadProgress, eval))
+            throw new RuntimeException("Expected " + filename + " but it did not exist!");
+    }
+
+    /**
+     * Loads an essential Datum file.
+     */
+    public static void readEssential(String filename, @Nullable Consumer<String> loadProgress, DatumVisitor ddv) {
+        if (!read(filename, loadProgress, ddv))
+            throw new RuntimeException("Expected " + filename + " but it did not exist!");
+    }
+
+    /**
+     * Loads an optional Datum file.
+     * Returns true on success.
      */
     public static boolean read(String filename, @Nullable Consumer<String> loadProgress, DatumDecToLambdaVisitor.Handler eval) {
         return read(filename, loadProgress, new DatumDecToLambdaVisitor(eval));
     }
 
     /**
-     * Loads the given file into this context.
+     * Loads an optional Datum file.
+     * Returns true on success.
      */
     public static boolean read(String filename, @Nullable Consumer<String> loadProgress, DatumVisitor ddv) {
         filename += ".scm";

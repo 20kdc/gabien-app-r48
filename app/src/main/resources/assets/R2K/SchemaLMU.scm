@@ -72,7 +72,7 @@
 (. eventpage_graphics)
 (@ character_name f_charset_name)
 (@ character_index int)
-(+ halfsplit eventTileHelper @character_index @character_name \1 R2K/TS144.txt spriteSelector @character_index @character_name CharSet/)
+(+ halfsplit eventTileHelper @character_index @character_name \1 R2K/TS144 spriteSelector @character_index @character_name CharSet/)
 (@ character_direction sprite_direction)
 (@ character_pattern int= \1)
 (@ character_blend_mode boolean)

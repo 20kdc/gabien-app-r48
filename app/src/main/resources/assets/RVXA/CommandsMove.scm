@@ -10,7 +10,7 @@
 (d Do I really need to describe this?)
 (L)
 
-(\# RCOM/CommonMove.txt)
+(\# RCOM/CommonMove)
 
 (obj 39 "\"Enable transparency\"")
 (d I would assume *translucency* is the correct*GACK!*)

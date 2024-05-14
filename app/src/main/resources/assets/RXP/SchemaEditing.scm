@@ -57,7 +57,7 @@
 (@ pattern rpg_event_page_graphic_pattern)
 (@ character_name f_char_name)
 (@ tile_id int)
-(+ halfsplitPost eventTileHelper @tile_id @character_name \0 RXP/TSTables.txt valButton \0 Clear)
+(+ halfsplitPost eventTileHelper @tile_id @character_name \0 RXP/TSTables valButton \0 Clear)
 (+ hwnd . RXP/H_EventGraphics)
 (@ direction direction)
 (@ blend_type blend_type)

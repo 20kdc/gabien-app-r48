@@ -297,7 +297,7 @@
 (. rpg_character_graphics)
 (@ character_name f_save_charset_name)
 (@ character_index int)
-(+ halfsplit eventTileHelper @character_index @character_name \1 R2K/TS144.txt spriteSelector @character_index @character_name CharSet/)
+(+ halfsplit eventTileHelper @character_index @character_name \1 R2K/TS144 spriteSelector @character_index @character_name CharSet/)
 (@ character_direction sprite_direction)
 (@ character_pattern int= \1)
 (+ internal_EPGD)
@@ -369,7 +369,7 @@
 (@ remaining_descent int)
 (@ sprite2_name f_save_charset_name)
 (@ sprite2_index int)
-(+ halfsplit eventTileHelper @sprite2_index @sprite2_name \1 R2K/TS144.txt spriteSelector @sprite2_index @sprite2_name CharSet/)
+(+ halfsplit eventTileHelper @sprite2_index @sprite2_name \1 R2K/TS144 spriteSelector @sprite2_index @sprite2_name CharSet/)
 
 (: RPG::SavePartyLocation)
 (C datum \

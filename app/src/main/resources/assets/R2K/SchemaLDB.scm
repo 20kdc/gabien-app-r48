@@ -562,9 +562,9 @@
 
 ; 18-161 is the 5000-5143 set.
 
-(+ tableSTAD R2K/TS162.txt @terrain_id_data . . \3 \162 \1 \1 \1)
-(+ tableSTADF R2K/TSPass162.txt @lowpass_data . . \3 \162 \1 \1 \15 down left right up upper wall .)
-(+ tableSTADF R2K/TSPass144.txt @highpass_data . . \3 \144 \1 \1 \15 down left right up upper wall counter)
+(+ tableSTAD R2K/TS162 @terrain_id_data . . \3 \162 \1 \1 \1)
+(+ tableSTADF R2K/TSPass162 @lowpass_data . . \3 \162 \1 \1 \15 down left right up upper wall .)
+(+ tableSTADF R2K/TSPass144 @highpass_data . . \3 \144 \1 \1 \15 down left right up upper wall counter)
 (@ anim_cyclic boolean)
 (@ anim_speed int)
 ; Sets up @highpass_data

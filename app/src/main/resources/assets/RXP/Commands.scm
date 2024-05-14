@@ -55,13 +55,13 @@
 
 ; [Early codes]
 
-(\# RCOM/CommonCommands.txt)
+(\# RCOM/CommonCommands)
 
 ; 0: insert point in CommonCommands
 ; 108/408: Comments in CommonCommands
 
-(\# RXP/CommandsI3.txt)
-(\# RXP/CommandsI4.txt)
-(\# RXP/CommandsI5.txt)
-(\# RXP/CommandsI6.txt)
-(\# RXP/CommandsI7.txt)
+(\# RXP/CommandsI3)
+(\# RXP/CommandsI4)
+(\# RXP/CommandsI5)
+(\# RXP/CommandsI6)
+(\# RXP/CommandsI7)

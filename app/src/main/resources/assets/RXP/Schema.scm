@@ -6,7 +6,7 @@
 
 ; XP Schema.
 
-(A RXP/AutoTiles.txt R2KXPCOM/AutoTileRules.txt)
+(A RXP/AutoTiles R2KXPCOM/AutoTileRules)
 
 ; THE RXP SCHEMA FILE
 ; <Documentation moved to IRB_SDB.txt

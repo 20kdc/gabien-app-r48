@@ -6,5 +6,5 @@
 
 ; High
 
-(> R2K/TSPass.txt)
-(> R2K/TS144.txt)
+(> R2K/TSPass)
+(> R2K/TS144)

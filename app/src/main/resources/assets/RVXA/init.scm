@@ -7,15 +7,15 @@
 
 (include "RCOM/common")
 
-(sdb-load-old "RVXA/Schema.txt")
-(sdb-load-old "RVXA/SchemaCommandHelpers.txt")
-(sdb-load-old "RCOM/SchemaScript.txt")
+(sdb-load-old "RVXA/Schema")
+(sdb-load-old "RVXA/SchemaCommandHelpers")
+(sdb-load-old "RCOM/SchemaScript")
 
 (cmdb-init "event")
-(cmdb-load-old "event" "RVXA/Commands.txt")
+(cmdb-load-old "event" "RVXA/Commands")
 
 (cmdb-init "move")
-(cmdb-load-old "move" "RVXA/CommandsMove.txt")
+(cmdb-load-old "move" "RVXA/CommandsMove")
 
-(sdb-load-old "RVXA/SchemaEditing.txt")
-(sdb-load-old "RVXA/SchemaFiles.txt")
+(sdb-load-old "RVXA/SchemaEditing")
+(sdb-load-old "RVXA/SchemaFiles")

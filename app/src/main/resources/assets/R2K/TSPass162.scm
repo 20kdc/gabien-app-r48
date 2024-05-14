@@ -8,5 +8,5 @@
 
 (l \0 \0)
 
-(> R2K/TSPass.txt)
-(> R2K/TS162.txt)
+(> R2K/TSPass)
+(> R2K/TS162)

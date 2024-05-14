@@ -24,8 +24,8 @@ public interface IDatabase extends DatumDecToLambdaVisitor.Handler {
     default void handle(Object value, DatumSrcLoc srcLoc) {
         try {
             receiveLine((List<Object>) value, srcLoc);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException("@ " + srcLoc, e);
         }
     }
 

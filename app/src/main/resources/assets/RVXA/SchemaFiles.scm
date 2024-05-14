@@ -6,11 +6,11 @@
 
 ; This should contain ALL RPG::*Item::<name here> classes.
 
-(i RVXA/SchemaBatEF.txt)
+(i RVXA/SchemaBatEF)
 
 ; This contains the DropItems kind stuff.
 
-(i RVXA/SchemaBatDI.txt)
+(i RVXA/SchemaBatDI)
 
 ; The definitions of files.
 
