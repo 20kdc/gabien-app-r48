@@ -12,7 +12,7 @@
 
 (: RPG::SaveTitle)
 ; Yes, this is important. Not setting a timestamp leads to a rejected save last I checked
-(@ timestamp float= \1.0)
+(@ timestamp float= 1.0)
 (@ hero_name string)
 (@ hero_level int)
 (@ hero_hp int)
@@ -29,7 +29,7 @@
 (@ face4_index int)
 (+ spriteSelector @face4_index @face4_name FaceSet/)
 
-(e rpg_saveactor_row \-1 back \0 unset \1 front)
+(e rpg_saveactor_row -1 back 0 unset 1 front)
 (: RPG::SaveActor)
 (@ name string)
 (@ title string)
@@ -50,11 +50,11 @@
 (@ def_mod int)
 (@ spi_mod int)
 (@ agi_mod int)
-(@ skills subwindow array \0 skill_id)
+(@ skills subwindow array 0 skill_id)
 (@ equipment rpg_actor_equipment_block)
 (@ changed_battle_commands_2k3 boolean)
-(@ battle_commands_2k3 subwindow array \7 battlecommand_menu_id)
-(@ states array \0 state_id)
+(@ battle_commands_2k3 subwindow array 7 battlecommand_menu_id)
+(@ states array 0 state_id)
 (@ class_id_2k3 class_complex_id)
 (@ row rpg_saveactor_row)
 (@ two_weapon boolean)
@@ -72,7 +72,7 @@
 (@ switch_id switch_id)
 
 ; The screen value is completely ignored
-(e rpg_savesystem_screen \5 save)
+(e rpg_savesystem_screen 5 save)
 (: RPG::SaveSystem)
 (@ screen rpg_savesystem_screen)
 (@ frame_count int)
@@ -81,25 +81,25 @@
 ; If not present, defaults to that in Database.
 (+ optP @system_box_tiling int_boolean)
 (@ font_id rpg_system_font)
-(@ switches subwindow arrayEIdX switch_id \1 \0 boolean)
-(@ variables subwindow arrayEIdX var_id \1 \0 int)
-(+ subwindow: Messagebox rpg_savesystem_text)
-(+ subwindow: Music rpg_savesystem_music)
-(+ subwindow: Sound rpg_savesystem_sound)
-(+ subwindow: Transitions rpg_savesystem_transition)
+(@ switches subwindow arrayEIdX switch_id 1 0 boolean)
+(@ variables subwindow arrayEIdX var_id 1 0 int)
+(+ subwindow: "Messagebox" rpg_savesystem_text)
+(+ subwindow: "Music" rpg_savesystem_music)
+(+ subwindow: "Sound" rpg_savesystem_sound)
+(+ subwindow: "Transitions" rpg_savesystem_transition)
 (@ can_teleport booleanDefTrue)
 (@ can_escape booleanDefTrue)
 (@ can_save booleanDefTrue)
 (@ can_menu booleanDefTrue)
 (@ battle_background string)
 (@ save_count int)
-(@ save_slot int= \1)
+(@ save_slot int= 1)
 (@ atb_wait_mode_2k3 int_boolean)
 
 (. rpg_savesystem_text)
 (@ message_transparent int)
-(@ message_position int= \2)
-(@ message_prevent_overlap int= \1)
+(@ message_position int= 2)
+(@ message_prevent_overlap int= 1)
 (@ message_continue_events int)
 (@ face_name f_faceset_name)
 (@ face_index int)
@@ -149,16 +149,16 @@
 (: RPG::Interpreter)
 ; Regarding this routine, {A=0=1|#A} makes an A of 0 show as 1,
 ;  because of the Ix1 - then 1 is changed to "empty" and other values are changed to the original count minus 1.
-(C datum \
-\(define-tr\ TrNStr.rpg_interpreter_empty\ \"empty\"\)\
-\(define-tr\ TrNStr.rpg_interpreter_depth\ \(fl1\ a0\ \"-deep\ interpreter\"\)\)\
-\(define-name-nls\ Class.RPG::Interpreter\ \(vm\ \(let\
-\	\(\(stack-len\ \(dm-a-len\ \(dm-at\ a0\ @stack\)\)\)\)\
-\	\(if\ \(=\ stack-len\ 0\)\
-\	\	\(TrNStr.rpg_interpreter_empty\ a0\)\
-\	\	\(TrNStr.rpg_interpreter_depth\ \(-\ stack-len\ 1\)\)\
-\	\)\
-\)\)\)\
+(vm
+	(define-tr TrNStr.rpg_interpreter_empty "empty")
+	(define-tr TrNStr.rpg_interpreter_depth (fl1 a0 "-deep interpreter"))
+	(define-name-nls Class.RPG::Interpreter (vm (let
+		((stack-len (dm-a-len (dm-at a0 @stack))))
+		(if (= stack-len 0)
+			(TrNStr.rpg_interpreter_empty a0)
+			(TrNStr.rpg_interpreter_depth (- stack-len 1))
+		)
+	)))
 )
 (@ stack arrayIx1 subwindow RPG::InterpreterStackLevel)
 (@ shown_message boolean)
@@ -190,7 +190,7 @@
 (@ index int)
 (@ event_id event_or_none_id)
 (@ actioned boolean)
-(@ branches subwindow array \0 int)
+(@ branches subwindow array 0 int)
 
 (: RPG::SaveCommonEvent)
 (@ i subwindow RPG::Interpreter)
@@ -206,16 +206,16 @@
 (@ mod_shake boolean)
 
 (: RPG::SavePicture)
-(C datum \
-\(define-name\ Class.RPG::SavePicture\ \(if-ne\ @name\ \"\"\ \(\
-\	\(@\ @name\)\
-\	\"[\"\ \(@\ @spritesheet_cols_112\)\ \",\"\ \(@\ @spritesheet_rows_112\)\ \"][\"\ \(@\ @spritesheet_frame_112\)\ \"]\"\
-\	\"\ at\ \"\ \(@\ @x\)\ \"\ \"\ \(@\ @y\)\
-\)\ \"<unused\ picture>\"\)\)\
+(vm
+	(define-name Class.RPG::SavePicture (if-ne @name "" (
+		(@ @name)
+		"[" (@ @spritesheet_cols_112) "," (@ @spritesheet_rows_112) "][" (@ @spritesheet_frame_112) "]"
+		" at " (@ @x) " " (@ @y)
+	) "<unused picture>"))
 )
 (@ name f_picture_name)
-(@ spritesheet_cols_112 int= \1)
-(@ spritesheet_rows_112 int= \1)
+(@ spritesheet_cols_112 int= 1)
+(@ spritesheet_rows_112 int= 1)
 (@ spritesheet_frame_112 int)
 (@ spritesheet_speed_112 int)
 ; no, not that one
@@ -231,39 +231,39 @@
 (@ lifetime int)
 (@ flags_112 rpg_savepicture_flags)
 
-(+ subwindow: Current\ State rpg_savepicture_state_current)
+(+ subwindow: "Current State" rpg_savepicture_state_current)
 (@ move_remain_time int)
-(+ subwindow: Target\ State rpg_savepicture_state_target)
+(+ subwindow: "Target State" rpg_savepicture_state_target)
 
 (. rpg_savepicture_state_current)
 (@ x float)
 (@ y float)
-(@ magnify float= \100.0)
+(@ magnify float= 100.0)
 (@ transparency boolean)
 (@ transparency_top float)
 (@ transparency_bottom float)
-(@ r float= \100.0)
-(@ g float= \100.0)
-(@ b float= \100.0)
-(@ s float= \100.0)
+(@ r float= 100.0)
+(@ g float= 100.0)
+(@ b float= 100.0)
+(@ s float= 100.0)
 (@ fx int)
 (@ fxstrength float)
 
 (. rpg_savepicture_state_target)
 (@ target_x float)
 (@ target_y float)
-(@ target_magnify int= \100)
+(@ target_magnify int= 100)
 (@ target_transp_top int)
 (@ target_transp_bottom int)
-(@ target_r int= \100)
-(@ target_g int= \100)
-(@ target_b int= \100)
-(@ target_s int= \100)
+(@ target_r int= 100)
+(@ target_g int= 100)
+(@ target_b int= 100)
+(@ target_s int= 100)
 (@ target_fxstrength int)
 
 (: RPG::SaveParty)
-(@ party subwindow array \0 actor_id)
-(@ inventory subwindow array \0 RPG::SaveItem)
+(@ party subwindow array 0 actor_id)
+(@ inventory subwindow array 0 RPG::SaveItem)
 (@ party_gold int)
 ; NOTE: Suspicious lack of intra-second info.
 ;       Could be framecount based
@@ -287,19 +287,19 @@
 ; Synthesized from whole nylon by SaveParty
 (: RPG::SaveItem)
 (@ id item_id)
-(@ count int= \1)
+(@ count int= 1)
 (@ usage int)
 
 ; Common between the various eventlikes
 
 ; note: check if this is actually a bitfield
-(e rpg_character_transparency \0 off \3 on)
+(e rpg_character_transparency 0 off 3 on)
 (. rpg_character_graphics)
 (@ character_name f_save_charset_name)
 (@ character_index int)
-(+ halfsplit eventTileHelper @character_index @character_name \1 R2K/TS144 spriteSelector @character_index @character_name CharSet/)
+(+ halfsplit eventTileHelper @character_index @character_name 1 R2K/TS144 spriteSelector @character_index @character_name CharSet/)
 (@ character_direction sprite_direction)
-(@ character_pattern int= \1)
+(@ character_pattern int= 1)
 (+ internal_EPGD)
 
 (. rpg_character)
@@ -310,7 +310,7 @@
 (@ x int)
 (@ y int)
 (+ mapPositionHelper @map @x @y)
-(+ subwindow: Graphics rpg_character_graphics)
+(+ subwindow: "Graphics" rpg_character_graphics)
 (@ dir sprite_direction)
 (@ transparency rpg_character_transparency)
 (@ remaining_step int)
@@ -321,8 +321,8 @@
 ; These settings have to be the same as the real default ones for the player,
 ;  or an attempt at synthesizing a "blank" WILL fail.
 ; This means it's forced to 2,4 by default.
-(@ move_freq int= \2)
-(@ move_speed int= \4)
+(@ move_freq int= 2)
+(@ move_speed int= 4)
 (@ move_route RPG::MoveRoute)
 (@ move_route_overwrite boolean)
 (@ move_route_position int)
@@ -338,15 +338,15 @@
 (@ unknown_47 int)
 (@ moved_on_frame int)
 (@ flying boolean)
-(@ flash_red int= \100)
-(@ flash_green int= \100)
-(@ flash_blue int= \100)
+(@ flash_red int= 100)
+(@ flash_green int= 100)
+(@ flash_blue int= 100)
 (@ flash_position float)
 (@ flash_frames_left int)
 
 (: RPG::SaveMapEvent)
-(C datum \
-\(define-name\ Class.RPG::SaveMapEvent\ \(@\ @character_name\)\ \":\"\ \(@\ @character_index\)\ \"@\"\ \(@\ @x\)\ \",\"\ \(@\ @y\)\)\
+(vm
+	(define-name Class.RPG::SaveMapEvent (@ @character_name) ":" (@ @character_index) "@" (@ @x) "," (@ @y))
 )
 (+ rpg_character)
 (@ running boolean)
@@ -355,12 +355,12 @@
 (@ interpreter subwindow RPG::Interpreter)
 ; 2f is just plain ignored for now
 
-(e rpg_save_vehicletype_opt \0 none \1 boat \2 ship \3 airShip)
-(e rpg_save_vehicletype \1 boat \2 ship \3 airShip)
+(e rpg_save_vehicletype_opt 0 none 1 boat 2 ship 3 airShip)
+(e rpg_save_vehicletype 1 boat 2 ship 3 airShip)
 
 (: RPG::SaveVehicleLocation)
-(C datum \
-\(define-name\ Class.RPG::SaveVehicleLocation\ \(@\ @character_name\)\ \":\"\ \(@\ @character_index\)\ \"@\"\ \(@\ @map\ map_id\ #t\)\ \"\ \"\ \(@\ @x\)\ \",\"\ \(@\ @y\)\)\
+(vm
+	(define-name Class.RPG::SaveVehicleLocation (@ @character_name) ":" (@ @character_index) "@" (@ @map map_id #t) " " (@ @x) "," (@ @y))
 )
 (+ rpg_character)
 (@ vehicle_type rpg_save_vehicletype)
@@ -369,11 +369,11 @@
 (@ remaining_descent int)
 (@ sprite2_name f_save_charset_name)
 (@ sprite2_index int)
-(+ halfsplit eventTileHelper @sprite2_index @sprite2_name \1 R2K/TS144 spriteSelector @sprite2_index @sprite2_name CharSet/)
+(+ halfsplit eventTileHelper @sprite2_index @sprite2_name 1 R2K/TS144 spriteSelector @sprite2_index @sprite2_name CharSet/)
 
 (: RPG::SavePartyLocation)
-(C datum \
-\(define-name\ Class.RPG::SavePartyLocation\ \(@\ @character_name\)\ \":\"\ \(@\ @character_index\)\ \"@\"\ \(@\ @map\ map_id\ #t\)\ \"\ \"\ \(@\ @x\)\ \",\"\ \(@\ @y\)\)\
+(vm
+	(define-name Class.RPG::SavePartyLocation (@ @character_name) ":" (@ @character_index) "@" (@ @map map_id #t) " " (@ @x) "," (@ @y))
 )
 (+ rpg_character)
 (@ sprite_transparent boolean)
@@ -387,12 +387,12 @@
 (@ menu_activation_waiting boolean)
 ; -1: not panning
 ; other: panning
-(@ pan_state int= \-1)
-(@ pan_x int= \2304)
-(@ pan_y int= \1792)
-(@ pan_end_x int= \3304)
-(@ pan_end_y int= \1792)
-(@ pan_speed int= \16)
+(@ pan_state int= -1)
+(@ pan_x int= 2304)
+(@ pan_y int= 1792)
+(@ pan_end_x int= 3304)
+(@ pan_end_y int= 1792)
+(@ pan_speed int= 16)
 (@ encounter_steps int)
 (@ encounter_activation_waiting boolean)
 (@ map_save_count int)
@@ -404,8 +404,8 @@
 (@ encounter_rate int)
 (@ tileset_id save_tileset_id)
 (@ events subwindow hash int subwindow RPG::SaveMapEvent)
-(@ lower_tile_remap table . . . \3 \144 \1 \1)
-(@ upper_tile_remap table . . . \3 \144 \1 \1)
+(@ lower_tile_remap table . . . 3 144 1 1)
+(@ upper_tile_remap table . . . 3 144 1 1)
 (@ parallax_name string)
 (@ parallax_loop_x boolean)
 (@ parallax_loop_y boolean)
@@ -415,15 +415,15 @@
 (@ parallax_sy int)
 
 (: RPG::SaveScreen)
-(@ tint_r float= \100.0)
-(@ tint_g float= \100.0)
-(@ tint_b float= \100.0)
-(@ tint_s float= \100.0)
-(@ tint_end_r int= \100)
-(@ tint_end_g int= \100)
-(@ tint_end_b int= \100)
-(@ tint_end_s int= \100)
-(@ tint_frames_left int= \0)
+(@ tint_r float= 100.0)
+(@ tint_g float= 100.0)
+(@ tint_b float= 100.0)
+(@ tint_s float= 100.0)
+(@ tint_end_r int= 100)
+(@ tint_end_g int= 100)
+(@ tint_end_b int= 100)
+(@ tint_end_s int= 100)
+(@ tint_frames_left int= 0)
 
 (@ flash_continuous boolean)
 (@ flash_r int)
@@ -451,11 +451,11 @@
 (@ weather_strength weather_control_strength)
 
 (: RPG::Save)
-(C datum \
-\(define-name\ Class.RPG::Save\
-\	\(vm\ \(r2kts->string\ \(dm-at\ a0\ @title@timestamp\)\)\)\ \"\ \"\
-\	\(@\ @title@hero_name\)\ \"\ L\"\ \(@\ @title@hero_level\)\ \"\ \"\ \(@\ @title@hero_hp\)\ \"HP\"\
-\)\
+(vm
+	(define-name Class.RPG::Save
+		(vm (r2kts->string (dm-at a0 @title@timestamp))) " "
+		(@ @title@hero_name) " L" (@ @title@hero_level) " " (@ @title@hero_hp) "HP"
+	)
 )
 ; Important
 (@ title subwindow RPG::SaveTitle)
@@ -467,7 +467,7 @@
 (@ boat_pos subwindow RPG::SaveVehicleLocation)
 (@ ship_pos subwindow RPG::SaveVehicleLocation)
 (@ airship_pos subwindow RPG::SaveVehicleLocation)
-(@ targets subwindow array \0 RPG::SaveTarget)
+(@ targets subwindow array 0 RPG::SaveTarget)
 ; Unimportant Local
 (@ map_info subwindow RPG::SaveMapInfo)
 (@ screen subwindow RPG::SaveScreen)
@@ -476,9 +476,9 @@
 (@ main_interpreter subwindow RPG::Interpreter)
 (@ common_events subwindow hash commonevent_id RPG::SaveCommonEvent)
 ; Really Unimportant
-(+ optP @unused_panorama subwindow array \0 int)
+(+ optP @unused_panorama subwindow array 0 int)
 ; This is 0.6.0.
-(+ optP @easyrpg_player_version_EPL int= \600)
+(+ optP @easyrpg_player_version_EPL int= 600)
 
 ; NOTE: This also creates buttons
-(C magicR2kSystemDefaults \3)
+(C magicR2kSystemDefaults 3)

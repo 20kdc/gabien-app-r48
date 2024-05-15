@@ -56,7 +56,7 @@ public class LocalTestExecutiveTest {
                     }
 
                     @Override
-                    public void execCmd(String c, String[] args, DatumSrcLoc sl) {
+                    public void execCmd(String c, String[] args, Object[] argsObj, DatumSrcLoc sl) {
                         if (c.equals(".")) {
                             Object[] cmdLine = new Object[args.length];
                             for (int i = 0; i < cmdLine.length; i++)

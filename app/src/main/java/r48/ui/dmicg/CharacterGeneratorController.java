@@ -63,7 +63,7 @@ public class CharacterGeneratorController extends App.Svc {
             }
 
             @Override
-            public void execCmd(String c, String[] args, DatumSrcLoc sl) throws IOException {
+            public void execCmd(String c, String[] args, Object[] argsObj, DatumSrcLoc sl) throws IOException {
                 if (c.equals(":")) {
                     view = new UICharGenView(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), CharacterGeneratorController.this);
                     modes.addTab(new UITabBar.Tab(view, new UITabBar.TabIcon[0]));
@@ -91,7 +91,7 @@ public class CharacterGeneratorController extends App.Svc {
             }
 
             @Override
-            public void execCmd(String c, String[] args, DatumSrcLoc sl) throws IOException {
+            public void execCmd(String c, String[] args, Object[] argsObj, DatumSrcLoc sl) throws IOException {
                 if (c.equals("x") || c.equals(":") || c.equals("+")) {
                     final Layer l = target = new Layer(args[0], c.equals("+") || c.equals("x"));
 

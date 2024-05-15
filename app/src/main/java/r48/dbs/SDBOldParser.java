@@ -86,7 +86,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     }
 
     private SchemaElement getSDBEntry(String id) {
-        return sdb.getSDBEntry(id);
+        return sdb.getSDBEntry(id, srcLoc);
     }
 
     public static void readFile(App app, final String fName) {
@@ -524,7 +524,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     // contextDictionary <ctxId> <default 0 @name rpg_troop_core
                     final String contextName = args[point++];
                     final String baseText = args[point++];
-                    final SchemaElement base = baseText.equals(".") ? null : sdb.getSDBEntry(baseText);
+                    final SchemaElement base = baseText.equals(".") ? null : getSDBEntry(baseText);
                     final DMKey defVal = ValueSyntax.decode(args[point++]);
                     final PathSyntax outer = getPathSyntax();
                     final boolean hash = args[point++].equals("1");
@@ -707,7 +707,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     }
 
     @Override
-    public void execCmd(String c, final String[] args, DatumSrcLoc sl) throws IOException {
+    public void execCmd(String c, final String[] args, Object[] argsObj, DatumSrcLoc sl) throws IOException {
         srcLoc = sl;
         if (c.equals("a")) {
             if (!sdb.hasSDBEntry(args[0]))
@@ -785,8 +785,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             setSDBEntry(args[0], e);
         } else if (c.equals("M")) {
             // Make a proxy (because we change the backing element all the time)
-            final SchemaElement srcA = sdb.getSDBEntry(args[0]);
-            final SchemaElement srcB = sdb.getSDBEntry(args[1]);
+            final SchemaElement srcA = getSDBEntry(args[0]);
+            final SchemaElement srcB = getSDBEntry(args[1]);
             sdb.ensureSDBProxy(args[2]);
             sdb.addMergeRunnable(args[2], () -> {
                 // Proxies are bad for this.
@@ -873,14 +873,13 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             } else if (args[0].equals("spritesheet")) {
                 // Defines a spritesheet for spriteSelector.
                 app.sdbHelpers.createSpritesheet(srcLoc, args);
-            } else if (args[0].equals("datum")) {
-                // this is used to help port over existing code to be more Datumy
-                String srcLocStr = srcLoc.toString();
-                for (int i = 1; i < args.length; i++)
-                    app.vmCtx.evalString(args[i], srcLocStr);
             } else {
                 throw new RuntimeException("C-command " + args[0] + " is not supported.");
             }
+        } else if (c.equals("vm")) {
+            // replacement for C datum
+            for (int i = 0; i < argsObj.length; i++)
+                app.vmCtx.evalObject(argsObj[i], srcLoc);
         } else {
             for (String arg : args)
                 System.err.print(arg + " ");

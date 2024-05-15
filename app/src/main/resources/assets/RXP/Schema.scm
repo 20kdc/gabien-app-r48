@@ -13,35 +13,35 @@
 
 ; defining internal dictionaries
 
-(D internal_tilesetDictionary \1 Tilesets \0 @name)
-(D internal_mapDictionary \1 MapInfos \1 @name)
-(D internal_itemDictionary \1 Items \0 @name)
-(D internal_animationDictionary \1 Animations \0 @name)
-(D internal_actorDictionary \1 Actors \0 @name)
-(D internal_commevDictionary \1 CommonEvents \0 @name)
-(D internal_skillDictionary \1 Skills \0 @name)
-(D internal_stateDictionary \1 States \0 @name)
-(D internal_weaponDictionary \1 Weapons \0 @name)
-(D internal_armourDictionary \1 Armors \0 @name)
-(D internal_troopDictionary \1 Troops \0 @name)
-(D internal_classDictionary \1 Classes \0 @name)
-(D internal_elementDictionary \1 System@elements \0 :)
-(D internal_variableDictionary \1 System@variables \0 :)
-(D internal_switchDictionary \1 System@switches \0 :)
+(D internal_tilesetDictionary 1 Tilesets 0 @name)
+(D internal_mapDictionary 1 MapInfos 1 @name)
+(D internal_itemDictionary 1 Items 0 @name)
+(D internal_animationDictionary 1 Animations 0 @name)
+(D internal_actorDictionary 1 Actors 0 @name)
+(D internal_commevDictionary 1 CommonEvents 0 @name)
+(D internal_skillDictionary 1 Skills 0 @name)
+(D internal_stateDictionary 1 States 0 @name)
+(D internal_weaponDictionary 1 Weapons 0 @name)
+(D internal_armourDictionary 1 Armors 0 @name)
+(D internal_troopDictionary 1 Troops 0 @name)
+(D internal_classDictionary 1 Classes 0 @name)
+(D internal_elementDictionary 1 System@elements 0 :)
+(D internal_variableDictionary 1 System@variables 0 :)
+(D internal_switchDictionary 1 System@switches 0 :)
 
-(D internal_enemyDictionary \1 Enemies \0 @name)
+(D internal_enemyDictionary 1 Enemies 0 @name)
 
-(D internal_eventDictionary \1 __MAP__@events \1 @name)
+(D internal_eventDictionary 1 __MAP__@events 1 @name)
 
 ; Defining the basic aliases...
 ; Note that if you're unsure where to put it, put it here.
 
 (> int_or_var int)
 (> selfswitch_id string= A)
-(> opacity int= \255)
-(> zoom int= \100)
+(> opacity int= 255)
+(> zoom int= 100)
 
-(E iterate_enemy_base EnemyID \-1 All)
+(E iterate_enemy_base EnemyID -1 All)
 
 ; Binds contextual troop enemy ID to actual troop enemy ID
 (> troop_enemy_id context? troop_enemy_id int)
@@ -87,10 +87,10 @@
 ; Defining the enums.
 ; In most cases these are global, so just don't move them from here.
 
-(E character_id_base EventID \-1 player \0 thisEvent)
+(E character_id_base EventID -1 player 0 thisEvent)
 (M internal_eventDictionary character_id_base character_id)
 
-(E id_or_none_base ID \0 none)
+(E id_or_none_base ID 0 none)
 
 ; or-none dictionaries. Unfinished, add as needed
 (M internal_commevDictionary id_or_none_base commonevent_id_or_none)
@@ -101,23 +101,23 @@
 (M internal_troopDictionary id_or_none_base troop_id_or_none)
 (M internal_classDictionary id_or_none_base class_id_or_none)
 
-(e comparison_type \0 == \1 >= \2 <= \3 > \4 < \5 !=)
-(e change_text_options_position \0 top \1 middle \2 bottom)
+(e comparison_type 0 == 1 >= 2 <= 3 > 4 < 5 !=)
+(e change_text_options_position 0 top 1 middle 2 bottom)
 
-(E iterate_actor_base ActorID \0 All)
+(E iterate_actor_base ActorID 0 All)
 (M internal_actorDictionary iterate_actor_base iterate_actor)
 
-(e iterate_battler0 \0 EnemyIx \1 ActorIx)
-(E iterate_battler1 ID \-1 All)
-(e weather_type \0 none \1 rain \2 storm \3 snow)
+(e iterate_battler0 0 EnemyIx 1 ActorIx)
+(E iterate_battler1 ID -1 All)
+(e weather_type 0 none 1 rain 2 storm 3 snow)
 ; -1 may be supported by MKXP, meaning "KeepDestAlpha", but nobody else supports it.
-(e blend_type \0 Normal \1 Add \2 Sub)
+(e blend_type 0 Normal 1 Add 2 Sub)
 
 ; ---- not quite sure about this bit
-(e enemy_action_kind \0 Basic \1 Skill \2 Item)
-(e enemy_action_basic \0 Attack \1 Guard \2 Escape \3 Rest)
+(e enemy_action_kind 0 Basic 1 Skill 2 Item)
+(e enemy_action_basic 0 Attack 1 Guard 2 Escape 3 Rest)
 (> enemy_action_basic_skill_item_id int)
-(E force_action_target Actor/TroopEnemyID \-2 Last \-1 Random)
+(E force_action_target Actor/TroopEnemyID -2 Last -1 Random)
 ; ----
 
 ; event_trigger NOTE. 4 is used for West exit of LP,
@@ -131,38 +131,38 @@
 (> Tone CTNative Tone)
 
 (: RPG::AudioFile)
-(C datum \
-\(define-name\ Class.RPG::AudioFile\ \(@\ @name\)\ \"\ p.\"\ \(@\ @pitch\)\ \"\ v.\"\ \(@\ @volume\)\)\
+(vm
+	(define-name Class.RPG::AudioFile (@ @name) " p." (@ @pitch) " v." (@ @volume))
 )
 ; This depends on context, apparently, so cannot be filenamed.
 (@ name string)
-(@ pitch int= \100)
-(@ volume int= \100)
+(@ pitch int= 100)
+(@ volume int= 100)
 
 (. rpg_audiofile_bgm)
 (+ hide RPG::AudioFile)
 (@ name { string fileSelector Audio/BGM/ })
 (+ soundPlayerComplex Audio/BGM/ @name @volume @pitch .)
-(@ pitch int= \100)
-(@ volume int= \100)
+(@ pitch int= 100)
+(@ volume int= 100)
 
 (. rpg_audiofile_bgs)
 (+ hide RPG::AudioFile)
 (@ name { string fileSelector Audio/BGS/ })
 (+ soundPlayerComplex Audio/BGS/ @name @volume @pitch .)
-(@ pitch int= \100)
-(@ volume int= \100)
+(@ pitch int= 100)
+(@ volume int= 100)
 
 (. rpg_audiofile_me)
 (+ hide RPG::AudioFile)
 (@ name { string fileSelector Audio/ME/ })
 (+ soundPlayerComplex Audio/ME/ @name @volume @pitch .)
-(@ pitch int= \100)
-(@ volume int= \100)
+(@ pitch int= 100)
+(@ volume int= 100)
 
 (. rpg_audiofile_se)
 (+ hide RPG::AudioFile)
 (@ name { string fileSelector Audio/SE/ })
 (+ soundPlayerComplex Audio/SE/ @name @volume @pitch .)
-(@ pitch int= \100)
-(@ volume int= \100)
+(@ pitch int= 100)
+(@ volume int= 100)

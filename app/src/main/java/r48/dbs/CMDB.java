@@ -383,7 +383,7 @@ public class CMDB extends App.Svc {
             }
 
             @Override
-            public void execCmd(String c, String[] args, DatumSrcLoc sl) {
+            public void execCmd(String c, String[] args, Object[] argsObj, DatumSrcLoc sl) {
                 srcLoc = sl;
                 gbStatePosition = -1;
                 gbStateArgs = null;

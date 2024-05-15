@@ -71,7 +71,7 @@ public class ATDB extends AppCore.Csv {
             }
 
             @Override
-            public void execCmd(String cmd, String[] args, DatumSrcLoc sl) {
+            public void execCmd(String cmd, String[] args, Object[] argsObj, DatumSrcLoc sl) {
                 // Import a new word-map.
                 if (cmd.equals("w")) {
                     wordMap = args;
@@ -155,7 +155,7 @@ public class ATDB extends AppCore.Csv {
             }
 
             @Override
-            public void execCmd(String c, String[] args, DatumSrcLoc sl) {
+            public void execCmd(String c, String[] args, Object[] argsObj, DatumSrcLoc sl) {
                 if (c.equals("C")) {
                     if (args[0].equals("disable"))
                         for (int i = 1; i < args.length; i++)

@@ -6,33 +6,33 @@
 
 ; Common Set Variables helpers between RXP and RVXA.
 
-(e set_variables_operation \0 = \1 += \2 \-= \3 *= \4 /= \5 %=)
+(e set_variables_operation 0 "=" 1 "+=" 2 "-=" 3 "*=" 4 "/=" 5 "%=")
 
 ; Setup a default.
 
-(C datum \
-\(define-name\ set_variables_parameters\ \(=\ ]3\ \(@\ :\ set_variables_parameters_ext\)\
-\	\(0\ \"int:\ \"\ \(@\ ]4\)\)\
-\	\(1\ \"var:\ \"\ \(@\ ]4\ var_id\ #t\)\)\
-\	\(2\ \"random:\ \"\ \(@\ ]4\)\ \"\ through\ \"\ \(@\ ]5\)\)\
-\)\)\
+(vm
+	(define-name set_variables_parameters (= ]3 (@ : set_variables_parameters_ext)
+		(0 "int: " (@ ]4))
+		(1 "var: " (@ ]4 var_id #t))
+		(2 "random: " (@ ]4) " through " (@ ]5))
+	))
 )
 
 (. set_variables_base)
-(] \0 firstVar var_id)
-(] \1 lastVar var_id)
-(] \2 op set_variables_operation)
-(] \3 source set_variables_source)
+(] 0 firstVar var_id)
+(] 1 lastVar var_id)
+(] 2 op set_variables_operation)
+(] 3 source set_variables_source)
 
 (. set_variables_int)
 (+ set_variables_base)
-(] \4 value int)
+(] 4 value int)
 
 (. set_variables_var)
 (+ set_variables_base)
-(] \4 sourceVar var_id)
+(] 4 sourceVar var_id)
 
 (. set_variables_random)
 (+ set_variables_base)
-(] \4 minimum int)
-(] \5 maximum int)
+(] 4 minimum int)
+(] 5 maximum int)

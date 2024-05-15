@@ -99,11 +99,11 @@
 (> Color CTNative Color)
 (> Tone CTNative Tone)
 
-(C datum \
-\(define-name\ Class.RPG::SE\ \(@\ @name\)\ \"\ p.\"\ \(@\ @pitch\)\ \"\ v.\"\ \(@\ @volume\)\)\
-\(define-name\ Class.RPG::ME\ \(@\ :\ Class.RPG::SE\)\)\
-\(define-name\ Class.RPG::BGM\ \(@\ :\ Class.RPG::SE\)\)\
-\(define-name\ Class.RPG::BGS\ \(@\ :\ Class.RPG::SE\)\)\
+(vm
+	(define-name Class.RPG::SE (@ @name) " p." (@ @pitch) " v." (@ @volume))
+	(define-name Class.RPG::ME (@ : Class.RPG::SE))
+	(define-name Class.RPG::BGM (@ : Class.RPG::SE))
+	(define-name Class.RPG::BGS (@ : Class.RPG::SE))
 )
 
 (: RPG::ME)

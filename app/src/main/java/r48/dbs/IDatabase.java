@@ -31,19 +31,26 @@ public interface IDatabase extends DatumDecToLambdaVisitor.Handler {
 
     default void receiveLine(List<Object> args, DatumSrcLoc sl) throws IOException {
         String ctl = MVMU.coerceToString(args.get(0));
-        if (ctl.equals("obj")) {
-            if (args.size() != 3)
+        Object[] arga = new Object[args.size() - 1];
+        for (int i = 0; i < arga.length; i++)
+            arga[i] = args.get(i + 1);
+        receiveCmd(ctl, arga, sl);
+    }
+
+    default void receiveCmd(String c, Object[] args, DatumSrcLoc sl) throws IOException {
+        if (c.equals("obj")) {
+            if (args.length != 2)
                 throw new RuntimeException("args must be 3 long for obj");
-            newObj(MVMU.cInt(args.get(1)), MVMU.coerceToString(args.get(2)), sl);
+            newObj(MVMU.cInt(args[0]), MVMU.coerceToString(args[1]), sl);
         } else {
-            String[] args2 = new String[args.size() - 1];
+            String[] args2 = new String[args.length];
             for (int i = 0; i < args2.length; i++)
-                args2[i] = MVMU.coerceToString(args.get(i + 1));
-            execCmd(ctl, args2, sl);
+                args2[i] = MVMU.coerceToString(args[i]);
+            execCmd(c, args2, args, sl);
         }
     }
 
     void newObj(int objId, String objName, DatumSrcLoc sl) throws IOException;
 
-    void execCmd(String c, String[] args, DatumSrcLoc sl) throws IOException;
+    void execCmd(String c, String[] args, Object[] argsObj, DatumSrcLoc sl) throws IOException;
 }

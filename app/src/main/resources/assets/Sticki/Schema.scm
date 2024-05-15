@@ -8,14 +8,14 @@
 
 (s ltp_type concurrent waitOn)
 
-(C datum \
-\(define-name\ ltp_type\
-\	\(=\ :\
-\	\	\(\"Unknown\ \"\ \(@\ :\)\)\
-\	\	\(concurrent\ \"Concurrent\"\)\
-\	\	\(waitOn\ \"Wait\ On...\"\)\
-\	\)\
-\)\
+(vm
+	(define-name ltp_type
+		(= :
+			("Unknown " (@ :))
+			(concurrent "Concurrent")
+			(waitOn "Wait On...")
+		)
+	)
 )
 
 (. ams_setting_host)

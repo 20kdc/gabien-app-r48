@@ -4,21 +4,21 @@
 ; To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
 ; A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-(e mapinfo_musictype \0 inherit \1 ignored \2 specified)
-(e mapinfo_backtype \0 inherit \1 terrainLDB \2 specified)
-(e mapinfo_inheritflag \0 inheritParent \1 true \2 false)
-(e mapinfo_type \1 map \2 area \0 root)
+(e mapinfo_musictype 0 inherit 1 ignored 2 specified)
+(e mapinfo_backtype 0 inherit 1 terrainLDB 2 specified)
+(e mapinfo_inheritflag 0 inheritParent 1 true 2 false)
+(e mapinfo_type 1 map 2 area 0 root)
 
 (: RPG::Encounter)
 (@ troop troop_id)
 
 (: RPG::MapInfo)
-(C datum \
-\(define-name\ Class.RPG::MapInfo\ \"MapInfo:\ \"\ \(@\ @name\)\)\
+(vm
+	(define-name Class.RPG::MapInfo "MapInfo: " (@ @name))
 )
 (@ name string)
 (@ parent_id map_id)
-(@ indent int= \1)
+(@ indent int= 1)
 (@ type mapinfo_type)
 (@ OFED_edit_pos_x int)
 (@ OFED_edit_pos_y int)
@@ -32,7 +32,7 @@
 (@ escape_state mapinfo_inheritflag)
 (@ save_state mapinfo_inheritflag)
 (@ encounters subwindow arrayIx1 RPG::Encounter)
-(@ encounter_steps int= \25)
+(@ encounter_steps int= 25)
 (@ area_rect Rect)
 
 (: RPG::Start)
@@ -55,10 +55,10 @@
 
 (: RPG::MapTree)
 (@ map_infos subwindow hash int+0 subwindow RPG::MapInfo)
-(@ map_order subwindow array \0 map_id)
+(@ map_order subwindow array 0 map_id)
 (@ active_node map_id)
-(@ start subwindow: Player/Vehicle\ Start\ Point RPG::Start)
+(@ start subwindow: "Player/Vehicle Start Point" RPG::Start)
 ; Supplies defaults
-(C magicR2kSystemDefaults \1)
+(C magicR2kSystemDefaults 1)
 
 (> File.RPG_RT.lmt RPG::MapTree)

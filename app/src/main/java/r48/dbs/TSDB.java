@@ -47,7 +47,7 @@ public class TSDB extends App.Svc {
             }
 
             @Override
-            public void execCmd(String c, String[] args, DatumSrcLoc sl) throws IOException {
+            public void execCmd(String c, String[] args, Object[] argsObj, DatumSrcLoc sl) throws IOException {
                 if (c.equals("#")) {
                     image = GaBIEn.getImage(args[0]);
                 } else if (c.equals("p")) {

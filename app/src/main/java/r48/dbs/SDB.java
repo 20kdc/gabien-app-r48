@@ -7,6 +7,7 @@
 
 package r48.dbs;
 
+import gabien.datum.DatumSrcLoc;
 import gabien.ui.UIElement;
 import r48.App;
 import r48.app.AppCore;
@@ -45,7 +46,7 @@ public class SDB extends AppCore.Csv {
     private HashMap<String, SchemaElement> schemaDatabase = new HashMap<>();
     private LinkedList<DynamicSchemaUpdater> dictionaryUpdaterRunnables = new LinkedList<>();
     private LinkedList<Runnable> mergeRunnables = new LinkedList<>();
-    private LinkedList<String> remainingExpected = new LinkedList<>();
+    private HashMap<String, DatumSrcLoc> remainingExpected = new HashMap<>();
 
     public final StandardArrayInterface standardArrayUi = new StandardArrayInterface();
 
@@ -55,7 +56,7 @@ public class SDB extends AppCore.Csv {
 
     public void confirmAllExpectationsMet() {
         if (remainingExpected.size() > 0)
-            throw new RuntimeException("Remaining expectation " + remainingExpected.getFirst());
+            throw new RuntimeException("Remaining expectation " + remainingExpected.entrySet().iterator().next());
     }
 
     public boolean hasSDBEntry(String text) {
@@ -75,11 +76,15 @@ public class SDB extends AppCore.Csv {
     }
 
     public SchemaElement getSDBEntry(final String text) {
+        return getSDBEntry(text, DatumSrcLoc.NONE);
+    }
+
+    public SchemaElement getSDBEntry(final String text, final DatumSrcLoc location) {
         SchemaElement tmp = schemaDatabase.get(text);
         if (tmp != null)
             return tmp;
         // Notably, the proxy is put in the database so the expectation is only added once.
-        remainingExpected.add(text);
+        remainingExpected.put(text, location);
         SchemaElement ise = new NameProxySchemaElement((App) app, text);
         schemaDatabase.put(text, ise);
         return ise;

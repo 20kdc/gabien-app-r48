@@ -66,7 +66,7 @@ public class HelpFile {
             }
 
             @Override
-            public void execCmd(String ch, String[] args, DatumSrcLoc sl) throws IOException {
+            public void execCmd(String ch, String[] args, Object[] argsObj, DatumSrcLoc sl) throws IOException {
                 StringBuilder argbuilder = new StringBuilder();
                 boolean first = true;
                 for (String s : args) {

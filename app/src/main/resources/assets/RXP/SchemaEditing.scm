@@ -6,7 +6,7 @@
 
 ; Defining the script commands...
 
-(> genericScriptParameter typeChanger{ genericScriptParametersSW [ RPG::MoveRoute oRPG::MoveRoute RPG::MoveCommand oRPG::MoveCommand RPG::AudioFile oRPG::AudioFile string \" boolean T boolean F int i })
+(> genericScriptParameter typeChanger{ genericScriptParametersSW [ RPG::MoveRoute oRPG::MoveRoute RPG::MoveCommand oRPG::MoveCommand RPG::AudioFile oRPG::AudioFile string "\"" boolean T boolean F int i })
 
 (> EventListEditor subwindow arrayCS RPG::EventCommand EventCommandEditor_Most event)
 (> MoveListEditor subwindow arrayMS RPG::MoveCommand MoveCommandEditor_Most move)
@@ -21,23 +21,23 @@
 ; Defining Events...
 
 (: RPG::Event::Page::Condition)
-(C datum \
-\(define-name\ RPG::Event::Page::Condition.switchA\ \(if-eq\ @switch1_valid\ #t\ \(\
-\	\",\ Switch\ \"\ \(@\ @switch1_id\ switch_id\ #t\)\
-\)\)\)\
-\(define-name\ RPG::Event::Page::Condition.switchB\ \(if-eq\ @switch2_valid\ #t\ \(\
-\	\",\ Switch\ \"\ \(@\ @switch2_id\ switch_id\ #t\)\
-\)\)\)\
-\(define-name\ RPG::Event::Page::Condition.var\ \(if-eq\ @variable_valid\ #t\ \(\
-\	\",\ Var\ \"\ \(@\ @variable_id\ var_id\ #t\)\ \"\ \"\ \(@\ @variable_value\)\
-\)\)\)\
-\(define-name\ RPG::Event::Page::Condition.selfSwitch\ \(if-eq\ @self_switch_valid\ #t\ \(\
-\	\",\ Self-Switch\ \"\ \(@\ @self_switch_ch\ selfswitch_id\ #t\)\
-\)\)\)\
-\(define-name\ Class.RPG::Event::Page::Condition\
-\	\(@\ :\ RPG::Event::Page::Condition.switchA\)\ \(@\ :\ RPG::Event::Page::Condition.switchB\)\
-\	\(@\ :\ RPG::Event::Page::Condition.var\)\ \(@\ :\ RPG::Event::Page::Condition.selfSwitch\)\
-\)\
+(vm
+	(define-name RPG::Event::Page::Condition.switchA (if-eq @switch1_valid #t (
+		", Switch " (@ @switch1_id switch_id #t)
+	)))
+	(define-name RPG::Event::Page::Condition.switchB (if-eq @switch2_valid #t (
+		", Switch " (@ @switch2_id switch_id #t)
+	)))
+	(define-name RPG::Event::Page::Condition.var (if-eq @variable_valid #t (
+		", Var " (@ @variable_id var_id #t) " " (@ @variable_value)
+	)))
+	(define-name RPG::Event::Page::Condition.selfSwitch (if-eq @self_switch_valid #t (
+		", Self-Switch " (@ @self_switch_ch selfswitch_id #t)
+	)))
+	(define-name Class.RPG::Event::Page::Condition
+		(@ : RPG::Event::Page::Condition.switchA) (@ : RPG::Event::Page::Condition.switchB)
+		(@ : RPG::Event::Page::Condition.var) (@ : RPG::Event::Page::Condition.selfSwitch)
+	)
 )
 (@ switch1_valid boolean)
 (@ switch1_id switch_id)
@@ -49,34 +49,34 @@
 (@ self_switch_valid boolean)
 (@ self_switch_ch selfswitch_id)
 
-(e rpg_event_page_graphic_pattern_ \0 Stand \1 Walk\ A \2 Walk\ B \3 Walk\ C)
-(> rpg_event_page_graphic_pattern ui rpg_event_page_graphic_pattern_ halfsplit halfsplit valButton \0 Stand valButton \1 Walk\ A halfsplit valButton \2 B valButton \3 C)
+(e rpg_event_page_graphic_pattern_ 0 Stand 1 "Walk A" 2 "Walk B" 3 "Walk C")
+(> rpg_event_page_graphic_pattern ui rpg_event_page_graphic_pattern_ halfsplit halfsplit valButton 0 "Stand" valButton 1 "Walk A" halfsplit valButton 2 "B" valButton 3 "C")
 
 (: RPG::Event::Page::Graphic)
 (@ opacity opacity)
 (@ pattern rpg_event_page_graphic_pattern)
 (@ character_name f_char_name)
 (@ tile_id int)
-(+ halfsplitPost eventTileHelper @tile_id @character_name \0 RXP/TSTables valButton \0 Clear)
+(+ halfsplitPost eventTileHelper @tile_id @character_name 0 RXP/TSTables valButton 0 Clear)
 (+ hwnd . RXP/H_EventGraphics)
 (@ direction direction)
 (@ blend_type blend_type)
 (@ character_hue hue)
 (+ internal_EPGD)
 
-(e event_trigger \0 onInteract \1 onPlayerWalkAgainst \2 onEventWalkAgainst \3 autorun \4 parallel)
-(e event_movetype \0 fixed \1 random \2 approachPlayer \3 moveRoute)
+(e event_trigger 0 onInteract 1 onPlayerWalkAgainst 2 onEventWalkAgainst 3 autorun 4 parallel)
+(e event_movetype 0 fixed 1 random 2 approachPlayer 3 moveRoute)
 
 (: RPG::Event::Page)
-(C datum \
-\(define-name\ Class.RPG::Event::Page\ \(@\ @condition\)\)\
+(vm
+	(define-name Class.RPG::Event::Page (@ @condition))
 )
 (@ condition subwindow RPG::Event::Page::Condition)
 (@ through boolean)
 (@ move_type event_movetype)
 (@ move_route RPG::MoveRoute)
-(@ move_speed int= \3)
-(@ move_frequency int= \3)
+(@ move_speed int= 3)
+(@ move_frequency int= 3)
 (@ step_anime boolean)
 (@ walk_anime boolean)
 (@ always_on_top boolean)
@@ -97,14 +97,14 @@
 (: RPG::Map)
 (@ bgm rpg_audiofile_bgm)
 (@ bgs rpg_audiofile_bgs)
-(@ width roint= \20)
-(@ height roint= \15)
-(+ tableD @data @width @height \3 \20 \15 \3 \48 \0 \0)
+(@ width roint= 20)
+(@ height roint= 15)
+(+ tableD @data @width @height 3 20 15 3 48 0 0)
 (@ events subwindow hash int+1 subwindow RPG::Event)
 (@ tileset_id tileset_id)
 (@ autoplay_bgm boolean)
 (@ autoplay_bgs boolean)
 
 ; Limited information here. Pretty sure this is it.
-(@ encounter_list subwindow array \0 troop_id)
-(@ encounter_step int= \30)
+(@ encounter_list subwindow array 0 troop_id)
+(@ encounter_step int= 30)

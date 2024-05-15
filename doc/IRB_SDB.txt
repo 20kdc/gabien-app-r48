@@ -4,6 +4,9 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
+ This is getting more and more out of date. Oh goodness.
+ I recommend reading `dbloader.md`
+
  THE GLOBAL SCHEMA FILE (this text moved from RXP schema)
  commands:
   ']' Use only if this object is an array - indexes the array.
@@ -53,9 +56,7 @@
   'A' Install AutoTiles files.
    The autotiles system works with a set of autotiles definitions, which must be installed.
   'C' Random stuff (allowIndentControl, name definitions..., access to the super special schema that only works for a given structure...)
+  'vm' Runs regular MVM code.
   <
    The actual chaining language is... complicated - see SDB.java for details.
-   Notably, there are two 'versions' of SDB.
-   One of them uses a syntax called "EscapedStringSyntax", which is horrific to deal with.
-   The other has eradicated that in favour of the added support in DBLoader for JSON string syntax.
   >
