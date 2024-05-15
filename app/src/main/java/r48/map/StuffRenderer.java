@@ -71,7 +71,7 @@ public class StuffRenderer {
         layers[0] = new PanoramaMapViewDrawLayer(app, panoImg, lx, ly, alx, aly, rt.width, rt.height, panoSW, panoSH, panoSC);
         layers[1] = new EventMapViewDrawLayer(app, -1, events, igr, T.m.lowest);
         for (int i = 0; i < rt.planeCount; i++) {
-            layers[(i * 2) + 2] = new TileMapViewDrawLayer(app, rt, tlOrder[i], itr);
+            layers[(i * 2) + 2] = new TileMapViewDrawLayer(app, rt, tlOrder[i], itr, false, false);
             layers[(i * 2) + 3] = new EventMapViewDrawLayer(app, i, events, igr, "");
         }
         layers[layers.length - 3] = new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, igr, "");

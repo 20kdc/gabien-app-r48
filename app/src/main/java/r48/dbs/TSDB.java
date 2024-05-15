@@ -8,6 +8,7 @@
 package r48.dbs;
 
 import gabien.GaBIEn;
+import gabien.datum.DatumSrcLoc;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.render.ITexRegion;
@@ -41,12 +42,12 @@ public class TSDB extends App.Svc {
             public IImage image = app.a.layerTabs;
 
             @Override
-            public void newObj(int objId, String objName) throws IOException {
+            public void newObj(int objId, String objName, DatumSrcLoc sl) throws IOException {
 
             }
 
             @Override
-            public void execCmd(String c, String[] args) throws IOException {
+            public void execCmd(String c, String[] args, DatumSrcLoc sl) throws IOException {
                 if (c.equals("#")) {
                     image = GaBIEn.getImage(args[0]);
                 } else if (c.equals("p")) {

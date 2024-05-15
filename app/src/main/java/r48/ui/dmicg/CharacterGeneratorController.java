@@ -8,6 +8,7 @@
 package r48.ui.dmicg;
 
 import gabien.GaBIEn;
+import gabien.datum.DatumSrcLoc;
 import gabien.render.IGrDriver;
 import gabien.render.WSIImage;
 import gabien.ui.*;
@@ -57,12 +58,12 @@ public class CharacterGeneratorController extends App.Svc {
             private UICharGenView view;
 
             @Override
-            public void newObj(int objId, String objName) throws IOException {
+            public void newObj(int objId, String objName, DatumSrcLoc sl) throws IOException {
 
             }
 
             @Override
-            public void execCmd(String c, String[] args) throws IOException {
+            public void execCmd(String c, String[] args, DatumSrcLoc sl) throws IOException {
                 if (c.equals(":")) {
                     view = new UICharGenView(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), CharacterGeneratorController.this);
                     modes.addTab(new UITabBar.Tab(view, new UITabBar.TabIcon[0]));
@@ -85,12 +86,12 @@ public class CharacterGeneratorController extends App.Svc {
             private final HashMap<String, LinkedList<Layer>> groupsToLayers = new HashMap<String, LinkedList<Layer>>();
 
             @Override
-            public void newObj(int objId, String objName) throws IOException {
+            public void newObj(int objId, String objName, DatumSrcLoc sl) throws IOException {
 
             }
 
             @Override
-            public void execCmd(String c, String[] args) throws IOException {
+            public void execCmd(String c, String[] args, DatumSrcLoc sl) throws IOException {
                 if (c.equals("x") || c.equals(":") || c.equals("+")) {
                     final Layer l = target = new Layer(args[0], c.equals("+") || c.equals("x"));
 

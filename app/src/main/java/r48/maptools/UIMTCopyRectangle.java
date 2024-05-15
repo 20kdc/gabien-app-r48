@@ -41,11 +41,6 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
         changeInner(inner, true);
     }
 
-    @Override
-    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
-        return there;
-    }
-
     private int subFrame() {
         return ((int) (GaBIEn.getTime() * 4)) & 1;
     }

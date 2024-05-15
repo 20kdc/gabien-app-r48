@@ -9,6 +9,7 @@ package r48.tests;
 import gabien.TestKickstart;
 import gabien.datum.DatumDecToLambdaVisitor;
 import gabien.datum.DatumReaderTokenSource;
+import gabien.datum.DatumSrcLoc;
 import gabien.uslx.append.Block;
 
 import org.junit.Test;
@@ -51,11 +52,11 @@ public class LocalTestExecutiveTest {
                 DatumReaderTokenSource drts = new DatumReaderTokenSource(fn, ins);
                 drts.visit(new DatumDecToLambdaVisitor(new IDatabase() {
                     @Override
-                    public void newObj(int objId, final String objName) {
+                    public void newObj(int objId, final String objName, DatumSrcLoc sl) {
                     }
 
                     @Override
-                    public void execCmd(String c, String[] args) {
+                    public void execCmd(String c, String[] args, DatumSrcLoc sl) {
                         if (c.equals(".")) {
                             Object[] cmdLine = new Object[args.length];
                             for (int i = 0; i < cmdLine.length; i++)

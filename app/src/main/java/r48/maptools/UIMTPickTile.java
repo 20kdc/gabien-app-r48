@@ -30,11 +30,6 @@ public class UIMTPickTile extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
-        return there;
-    }
-
-    @Override
     public void performGlobalOverlay(MapViewDrawContext mvdc, boolean minimap) {
         mvdc.drawMouseIndicator();
     }

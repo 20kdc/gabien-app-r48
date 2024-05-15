@@ -9,6 +9,7 @@ package r48.dbs;
 
 import java.util.LinkedList;
 
+import gabien.datum.DatumSrcLoc;
 import r48.app.AppCore;
 
 /**
@@ -63,14 +64,14 @@ public class ATDB extends AppCore.Csv {
             int autoIncrementingId = 0;
 
             @Override
-            public void newObj(int objId, String objName) {
+            public void newObj(int objId, String objName, DatumSrcLoc sl) {
                 current = new Autotile();
                 current.name = objName;
                 entries[objId] = current;
             }
 
             @Override
-            public void execCmd(String cmd, String[] args) {
+            public void execCmd(String cmd, String[] args, DatumSrcLoc sl) {
                 // Import a new word-map.
                 if (cmd.equals("w")) {
                     wordMap = args;
@@ -133,7 +134,7 @@ public class ATDB extends AppCore.Csv {
         final LinkedList<Integer> avoidThese = new LinkedList<Integer>();
         DBLoader.readFile(app, file, new IDatabase() {
             @Override
-            public void newObj(int objId, String objName) {
+            public void newObj(int objId, String objName, DatumSrcLoc sl) {
                 boolean[] mustTrue = new boolean[8];
                 boolean[] mustFalse = new boolean[8];
                 String trueThings = objName.split("T")[1];
@@ -154,7 +155,7 @@ public class ATDB extends AppCore.Csv {
             }
 
             @Override
-            public void execCmd(String c, String[] args) {
+            public void execCmd(String c, String[] args, DatumSrcLoc sl) {
                 if (c.equals("C")) {
                     if (args[0].equals("disable"))
                         for (int i = 1; i < args.length; i++)

@@ -66,11 +66,6 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
         public int firstPointX, firstPointY;
         public boolean definingPoint2;
 
-        @Override
-        public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
-            return there;
-        }
-
         private int subFrame() {
             return ((int) (GaBIEn.getTime() * 4)) & 1;
         }

@@ -33,11 +33,6 @@ public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
     // tool stuff
 
     @Override
-    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
-        return there;
-    }
-
-    @Override
     public void performGlobalOverlay(MapViewDrawContext mvdc, boolean minimap) {
         if (mvdc.mouseStatus != null) {
             int tx = mvdc.mouseStatus.x / mvdc.tileSize;

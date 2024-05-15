@@ -14,7 +14,9 @@ import org.eclipse.jdt.annotation.NonNull;
  * Created on 12/28/16.
  */
 public interface IMapViewCallbacks {
-    short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer);
+    default short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
+        return there;
+    }
 
     void performGlobalOverlay(MapViewDrawContext mvdc, boolean minimap);
 

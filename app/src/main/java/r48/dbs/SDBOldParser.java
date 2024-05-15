@@ -64,11 +64,6 @@ public class SDBOldParser extends App.Svc implements IDatabase {
         outerContext = "NONE";
     }
 
-    @Override
-    public void updateSrcLoc(DatumSrcLoc sl) {
-        srcLoc = sl;
-    }
-
     private PathSyntax compilePS(String text) {
         return PathSyntax.compile(app, text);
     }
@@ -113,7 +108,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     }
 
     @Override
-    public void newObj(int objId, String objName) {
+    public void newObj(int objId, String objName, DatumSrcLoc sl) {
+        srcLoc = sl;
         outerContext = "commandBuffer";
         workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
         if (objId != -1) {
@@ -711,7 +707,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     }
 
     @Override
-    public void execCmd(String c, final String[] args) throws IOException {
+    public void execCmd(String c, final String[] args, DatumSrcLoc sl) throws IOException {
+        srcLoc = sl;
         if (c.equals("a")) {
             if (!sdb.hasSDBEntry(args[0]))
                 throw new RuntimeException("Bad Schema Database: 'a' used to expect item " + args[0] + " that didn't exist.");

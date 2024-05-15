@@ -63,7 +63,7 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
         public final int pIndex;
 
         public RVXAPriorityPlane(App app, int p) {
-            super(app, mapTable, layerPreference, tiles, "INTERNAL - YOU SHOULD NOT SEE THIS");
+            super(app, mapTable, layerPreference, tiles, "INTERNAL - YOU SHOULD NOT SEE THIS", false, false);
             pIndex = p;
         }
 

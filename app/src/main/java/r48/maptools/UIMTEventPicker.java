@@ -45,10 +45,6 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     }
 
     // -- Tool things --
-    @Override
-    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
-        return there;
-    }
 
     @Override
     public void performGlobalOverlay(MapViewDrawContext mvdc, boolean minimap) {

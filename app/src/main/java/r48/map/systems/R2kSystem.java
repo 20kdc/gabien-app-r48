@@ -129,6 +129,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             IImage img = null;
             if (!vxaPano.equals(""))
                 img = imageLoader.getImage("Panorama/" + vxaPano, true);
+            boolean tileLoopX = (scrollFlags & 2) != 0;
+            boolean tileLoopY = (scrollFlags & 1) != 0;
             // Layer order seems to be this:
             // layer 1 lower
             // layer 2 lower
@@ -137,14 +139,14 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             // layer 2 upper
             layers = new IMapViewDrawLayer[] {
                 new PanoramaMapViewDrawLayer(app, img, loopX, loopY, autoLoopX, autoLoopY, tbl.width, tbl.height, 320, 240, 1),
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, false, tileset, T.m.l_rk0l),
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, false, tileset, T.m.l_rk1l),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, false, tileset, T.m.l_rk0l, tileLoopX, tileLoopY),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, false, tileset, T.m.l_rk1l, tileLoopX, tileLoopY),
                     new EventMapViewDrawLayer(app, 0, events, eventRenderer, T.m.l_rkbp),
                     new EventMapViewDrawLayer(app, 1, events, eventRenderer, T.m.l_rkps), // Player/Same
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, true, tileset, T.m.l_rk0u),
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, true, tileset, T.m.l_rk1u),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, true, tileset, T.m.l_rk0u, tileLoopX, tileLoopY),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, true, tileset, T.m.l_rk1u, tileLoopX, tileLoopY),
                     new EventMapViewDrawLayer(app, 2, events, eventRenderer, T.m.l_rkap),
-                new PassabilityMapViewDrawLayer(app, new R2kPassabilitySource(tbl, tileset, (scrollFlags & 2) != 0, (scrollFlags & 1) != 0), 16),
+                new PassabilityMapViewDrawLayer(app, new R2kPassabilitySource(tbl, tileset, tileLoopX, tileLoopY), 16),
                     new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, eventRenderer, ""),
                 new GridMapViewDrawLayer(app),
                 new BorderMapViewDrawLayer(app, tbl.width, tbl.height)

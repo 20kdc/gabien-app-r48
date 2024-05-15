@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import gabien.GaBIEn;
+import gabien.datum.DatumSrcLoc;
 import gabien.ui.elements.UILabel;
 import r48.app.InterlaunchGlobals;
 import r48.dbs.DBLoader;
@@ -57,7 +58,7 @@ public class HelpFile {
             UIHelpSystem.HelpElement workingElement;
 
             @Override
-            public void newObj(int objId, String objName) throws IOException {
+            public void newObj(int objId, String objName, DatumSrcLoc sl) throws IOException {
                 helpPage = new Page(objName);
                 if (!wasLoadedInNativeLanguage)
                     helpPage.contents.add(new UIHelpSystem.HelpElement(ilg, ".", ilg.t.g.helpUnavailable));
@@ -65,7 +66,7 @@ public class HelpFile {
             }
 
             @Override
-            public void execCmd(String ch, String[] args) throws IOException {
+            public void execCmd(String ch, String[] args, DatumSrcLoc sl) throws IOException {
                 StringBuilder argbuilder = new StringBuilder();
                 boolean first = true;
                 for (String s : args) {

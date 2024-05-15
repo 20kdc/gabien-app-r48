@@ -72,11 +72,6 @@ public class CMDB extends App.Svc {
 
             DatumSrcLoc srcLoc = DatumSrcLoc.NONE;
 
-            @Override
-            public void updateSrcLoc(DatumSrcLoc sl) {
-                srcLoc = sl;
-            }
-
             private @Nullable FF0 dTrExUnderscoreNull(String subkey, String defVal) {
                 // Hidden parameters, introduced to deal with the "text as first parameter" thing brought about by R2k
                 if (defVal.equals("_"))
@@ -85,7 +80,8 @@ public class CMDB extends App.Svc {
             }
 
             @Override
-            public void newObj(int objId, String objName) {
+            public void newObj(int objId, String objName, DatumSrcLoc sl) {
+                srcLoc = sl;
                 rc = new RPGCommand(app, objId, srcLoc, dbId, objName);
                 rc.category = categories.length - 1;
                 if (knownCommands.containsKey(objId))
@@ -387,7 +383,8 @@ public class CMDB extends App.Svc {
             }
 
             @Override
-            public void execCmd(String c, String[] args) {
+            public void execCmd(String c, String[] args, DatumSrcLoc sl) {
+                srcLoc = sl;
                 gbStatePosition = -1;
                 gbStateArgs = null;
                 if (c.equals("p")) {
