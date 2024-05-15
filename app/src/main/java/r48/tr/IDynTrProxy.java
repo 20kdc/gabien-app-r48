@@ -10,7 +10,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
-import r48.dbs.DatumLoader;
 import r48.tr.TrPage.FF0;
 import r48.tr.TrPage.FF1;
 import r48.tr.TrPage.FF2;
@@ -35,15 +34,15 @@ public interface IDynTrProxy {
     /**
      * Dynamically translate a Datum object (as usual, for compilation)
      */
-    default FF1 dTrFF1(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF1, DatumLoader.readInlineList(srcLoc, text), false);
+    default FF1 dTrFF1(DatumSrcLoc srcLoc, String id, Object text) {
+        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF1, text, false);
     }
 
     /**
      * Dynamically translate a Datum object (as usual, for compilation)
      */
-    default FF2 dTrFF2(DatumSrcLoc srcLoc, String id, String text) {
-        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF2, DatumLoader.readInlineList(srcLoc, text), false);
+    default FF2 dTrFF2(DatumSrcLoc srcLoc, String id, Object text) {
+        return dynTrBase(srcLoc, id, DynTrSlot.DYNTR_FF2, text, false);
     }
 
     /**

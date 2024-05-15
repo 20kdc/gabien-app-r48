@@ -93,7 +93,7 @@ public class RPGCommand extends App.Svc {
 
     public void finish() {
         // Names use NDB syntax, thus, separate context
-        name = app.dTrFF1(srcLoc, TrNames.cmdbName(dbId, commandId), nameRawUnlocalized);
+        name = app.dTrFF1(srcLoc, TrNames.cmdbName(dbId, commandId), DatumLoader.readInlineList(srcLoc, nameRawUnlocalized));
     }
 
     // Pass null for parameters if this is for combobox display.

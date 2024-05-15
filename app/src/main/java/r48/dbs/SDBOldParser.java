@@ -389,7 +389,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
 
                 if (text.equals("subwindowDynamic")) {
                     String text2 = args[point++];
-                    final FF1 cb = app.dTrFF1(srcLoc, TrNames.sdbAnon(outerContext, text2), text2);
+                    final FF1 cb = app.dTrFF1(srcLoc, TrNames.sdbAnon(outerContext, text2), DatumLoader.readInlineList(srcLoc, text2));
                     return new SubwindowSchemaElement(get(), (rubyIO) -> {
                         return cb.r(rubyIO);
                     });
@@ -673,7 +673,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(app, tsdb), Integer.parseInt(layer), idx, name), getFunctionToReturn(T.s.selectTileGraphic));
                 }
                 if (text.equals("windowTitleAttachment")) {
-                    FF2 txt = app.dTrFF2(srcLoc, TrNames.sdbWindowTitle(outerContext), args[point++]);
+                    String tmpStr = args[point++];
+                    FF2 txt = app.dTrFF2(srcLoc, TrNames.sdbWindowTitle(outerContext), DatumLoader.readInlineList(srcLoc, tmpStr));
                     return new WindowTitleAttachmentSchemaElement(app, txt);
                 }
                 if (text.equals("soundPlayer")) {
