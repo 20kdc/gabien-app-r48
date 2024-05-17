@@ -36,11 +36,11 @@ public class MVMScopingLibrary {
     public static void add(MVMEnv ctx) {
         // Scheme library
         ctx.defineSlot(sym("define"), new Define()
-                .attachHelp("(define K V) | function define: (define (K ARG... [. VA]) STMT...) : Defines mutable variables or functions."));
+                .attachHelp("(define K [TYPE] V) | function define: (define (K ARG... [. VA]) STMT...) : Defines mutable variables or functions. See lambda."));
         ctx.defineSlot(sym("let"), new Let()
                 .attachHelp("(let ((K V)...) CODE...) : Creates variables. For constants, more efficient than define."));
         ctx.defineSlot(sym("lambda"), new Lambda()
-            .attachHelp("(lambda (ARG... [. VA]) STMT...) : Creates first-class functions. The symbol . splits main args from a var-arg list arg."));
+            .attachHelp("(lambda (ARG... [. VA]) STMT...) : Creates first-class functions. The symbol . splits main args from a var-arg list arg. Args can be symbols or (SYM TYPE) for type-checking."));
         ctx.defineSlot(sym("set!"), new Set()
             .attachHelp("(set! VAR V) : Sets a variable."));
     }
@@ -53,36 +53,56 @@ public class MVMScopingLibrary {
     public static MVMCExpr lambda(String hint, MVMCompileScope mcs, Object[] argsUC, Object[] call, int base) {
         MVMSubScope lambdaSc = mcs.extendWithFrame();
         LinkedList<MVMCLocal> rootsX = new LinkedList<>();
+        LinkedList<MVMType> argTypes = new LinkedList<>();
         boolean isVA = false;
-        boolean hasAddedVAList = false;
+        MVMType vaType = null;
         for (Object arg : argsUC) {
-            if (!(arg instanceof DatumSymbol))
-                throw new RuntimeException("lambda " + hint + ": arg " + MVMU.userStr(arg) + " expected to be sym");
-            DatumSymbol aSym = (DatumSymbol) arg;
-            if (aSym.id.equals(".")) {
-                if (isVA)
-                    throw new RuntimeException("lambda " + hint + " can't be a VA twice!");
-                isVA = true;
-            } else {
-                if (isVA) {
-                    if (hasAddedVAList)
-                        throw new RuntimeException("lambda " + hint + " can't have two VA lists!");
-                    hasAddedVAList = true;
+            MVMType argType = null;
+            DatumSymbol argName = null;
+            if (arg instanceof DatumSymbol) {
+                DatumSymbol aSym = (DatumSymbol) arg;
+                if (aSym.id.equals(".")) {
+                    if (isVA)
+                        throw new RuntimeException("lambda " + hint + " can't be a VA twice!");
+                    isVA = true;
+                    continue;
                 }
-                // actual arg logic
-                rootsX.add(lambdaSc.newLocal(aSym, MVMType.ANY));
+                argType = MVMType.ANY;
+                argName = aSym;
+            } else if (arg instanceof List) {
+                List<?> la = (List<?>) arg;
+                if (la.size() != 2)
+                    throw new RuntimeException("lambda " + hint + ": arg " + MVMU.userStr(arg) + " looks typed but is weird");
+                argType = mcs.context.getType(la.get(1));
+                Object name = la.get(0);
+                if (!(name instanceof DatumSymbol))
+                    throw new RuntimeException("lambda " + hint + ": arg " + MVMU.userStr(arg) + " looks typed but name isn't a symbol");
+                argName = (DatumSymbol) name;
+            } else {
+                throw new RuntimeException("lambda " + hint + ": arg " + MVMU.userStr(arg) + " expected to be sym or (SYM TYPE)");
+            }
+            if (isVA) {
+                if (vaType != null)
+                    throw new RuntimeException("lambda " + hint + " can't have two VA lists!");
+                vaType = argType;
+                rootsX.add(lambdaSc.newLocal(argName, new MVMType.TypedList(argType)));
+            } else {
+                argTypes.add(argType);
+                rootsX.add(lambdaSc.newLocal(argName, argType));
             }
         }
+        final MVMType[] argTypesArray = argTypes.toArray(new MVMType[0]);
         final MVMCLocal[] roots = rootsX.toArray(new MVMCLocal[0]);
         // compiled lambda code, but expects to be framed in an MVMFn in the context of the creation
         int exprs = call.length - base;
         final MVMCExpr compiledLambda = exprs == 1 ? lambdaSc.compile(call[base]) : MVMCBegin.of(lambdaSc, call, base, exprs);
         final @Nullable MVMCompileFrame rootFrame = lambdaSc.getFrameIfOwned();
         // finally, confirm
+        MVMType.Fn fnType = new MVMType.Fn(compiledLambda.returnType, argTypesArray.length, argTypesArray, vaType);
         if (isVA) {
-            if (!hasAddedVAList)
+            if (vaType == null)
                 throw new RuntimeException("lambda " + hint + ": VA, but no VA arg");
-            return new MVMCExpr(new MVMType.Fn(compiledLambda.returnType)) {
+            return new MVMCExpr(fnType) {
                 @Override
                 public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                     return new MVMLambdaVAFn(new MVMLambdaFn(hint, ctx, compiledLambda, roots, rootFrame));
@@ -93,7 +113,7 @@ public class MVMScopingLibrary {
                 }
             };
         }
-        return new MVMCExpr(new MVMType.Fn(compiledLambda.returnType)) {
+        return new MVMCExpr(fnType) {
             @Override
             public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                 return new MVMLambdaFn(hint, ctx, compiledLambda, roots, rootFrame);
@@ -134,6 +154,17 @@ public class MVMScopingLibrary {
         }
     }
 
+    public static MVMCExpr compileIndividualDefine(MVMCompileScope cs, Object k, Object t, Supplier<MVMCExpr> v) {
+        if (!(k instanceof DatumSymbol))
+            throw new RuntimeException(MVMU.userStr(k) + " expected to be sym");
+        DatumSymbol k2 = (DatumSymbol) k;
+        try {
+            return cs.compileDefine(k2, cs.context.getType(t), v);
+        } catch (Exception ex) {
+            throw new RuntimeException("during '" + k + "' definition", ex);
+        }
+    }
+
     public static interface IFnDefineConverter {
         MVMCExpr convert(Object head, Object[] args);
     }
@@ -151,13 +182,14 @@ public class MVMScopingLibrary {
                     return compileFnDefine(cs, call, (head, args) -> lambda(head.toString(), cs, args, call, 1));
                 }
             }
-            int pairEntries = call.length / 2;
-            if ((pairEntries * 2) != call.length)
-                throw new RuntimeException("define does not match available define formats (CL " + call.length + ")");
-            if (pairEntries == 0)
-                return null;
-            if (pairEntries == 1)
+            if (call.length == 0)
+                throw new RuntimeException("can't have empty global define");
+            if (call.length == 1)
+                throw new RuntimeException("can't have global define with only one arg");
+            if (call.length == 2)
                 return compileIndividualDefine(cs, call[0], () -> cs.compile(call[1]));
+            if (call.length == 3)
+                return compileIndividualDefine(cs, call[0], call[1], () -> cs.compile(call[2]));
             throw new RuntimeException("invalid define format");
         }
     }

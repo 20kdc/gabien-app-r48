@@ -148,3 +148,23 @@ The following macros are essentially paired to internal functionality built just
 * `set!` uses `writeLookup`.
 
 * `let` uses `extendMayFrame` and `newLocal`.
+
+## Static Typing
+
+As of R48 v2.0, D/MVM is gaining limited support for static typing. This is to help prevent any obviously avoidable bugs in D/MVM code over long periods of time.
+
+The main outcome of this is that:
+
+1. `define` will assign a type based on the expression given. This includes function signatures, but note that type inference does not flow 'backwards', so you will need to manually set argument types if you want that. For values, you can set a type, and this will be checked against the expression.
+2. Slot values are checked at compile-time. (Slot values are _never_ checked at runtime in order to avoid introducing runtime bugs that weren't there before.)
+3. Environments now have a type registry. These are not regular slots.
+
+D/MVM types are _not_ Java classes. This is because D/MVM types have to support function signatures and -- at least in theory -- list contents.
+
+The best way to understand the D/MVM type system is to understand that it is an attempt to shoehorn in static typing into an already somewhat estranged Scheme dialect:  
+
+	* Null-checking was considered but ran into practical problems.
+	* The type checking is overtly permissive, not helped by type signatures not really being "dynamic" enough to match the actual runtime semantics.
+	* It is impossible to manually specify certain types, requiring resorting to `any` (which, like in TypeScript, essentially disables the whole apparatus).
+
+In practice, if it catches some obvious errors while refactoring, it has succeeded in what it is supposed to do.

@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import static gabien.datum.DatumTreeUtils.*;
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
+import r48.minivm.MVMScope;
 import r48.minivm.MVMU;
 import r48.minivm.MVMSlot;
 import r48.minivm.MVMType;
@@ -57,6 +58,7 @@ public class MVMExtensionsLibrary {
         ctx.defLib("help-set!", MVMType.typeOfClass(MVMHelpable.class), MVMType.typeOfClass(MVMHelpable.class), MVMType.STR, (a0, a1) -> {
             return ((MVMHelpable) a0).attachHelp((String) a1);
         }).attachHelp("(help-set! TOPIC VALUE) : Sets information on the given value.");
+        ctx.defineSlot(sym("cast"), new Cast().attachHelp("(cast [TYPE] V) : Casts V to TYPE, or otherwise the 'any' type."));
     }
 
     public static final class Macroify extends MVMMacro {
@@ -95,6 +97,39 @@ public class MVMExtensionsLibrary {
             if (a0 instanceof MVMHelpable)
                 return ((MVMHelpable) a0).help;
             return null;
+        }
+    }
+
+    public static final class Cast extends MVMMacro {
+        public Cast() {
+            super("cast");
+        }
+
+        @Override
+        public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
+            MVMCExpr res;
+            MVMType type;
+            if (call.length == 1) {
+                type = MVMType.ANY;
+                res = cs.compile(call[0]);
+            } else if (call.length == 2) {
+                type = cs.context.getType(call[0]);
+                res = cs.compile(call[1]);
+            } else {
+                throw new RuntimeException("cast expected only one or two args");
+            }
+            return new MVMCExpr(type) {
+                @Override
+                public Object execute(MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6,
+                        Object l7) {
+                    return res.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+                }
+                
+                @Override
+                public Object disasm() {
+                    return MVMU.l(sym("cast"), type.toString(), res.disasm());
+                }
+            };
         }
     }
 }

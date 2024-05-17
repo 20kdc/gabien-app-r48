@@ -26,23 +26,23 @@
 (define (list . v) v)
 (help-set! list "(list V...) : Creates a list of values.")
 
-(define (car v) (list-ref v 0))
+(define (car (v list)) (list-ref v 0))
 (help-set! car "(car V) : Returns the first element of the list.")
-(define (cdr v) (sublist v 1 (list-length v)))
+(define (cdr (v list)) (sublist v 1 (list-length v)))
 (help-set! cdr "(cdr V) : Returns the remainder of the list. This is created with sublist because cons pairs aren't real here.")
 
-(define (list-tail v i) (sublist v i (list-length v)))
+(define (list-tail (v list) (i i64)) (sublist v i (list-length v)))
 (help-set! list-tail "(list-tail V I) : Returns the remainder of the list (index I and onwards). This is created with sublist because cons pairs aren't real here.")
 
 ; obvious operations - cadr composites
 
-(define (caar v) (list-ref (list-ref v 0) 0))
-(define (caaar v) (list-ref (list-ref (list-ref v 0) 0) 0))
-(define (caaaar v) (list-ref (list-ref (list-ref (list-ref v 0) 0) 0) 0))
+(define (caar (v list)) (list-ref (list-ref v 0) 0))
+(define (caaar (v list)) (list-ref (list-ref (list-ref v 0) 0) 0))
+(define (caaaar (v list)) (list-ref (list-ref (list-ref (list-ref v 0) 0) 0) 0))
 
-(define (cdar v) (cdr (list-ref v 0)))
-(define (cdaar v) (cdr (list-ref (list-ref v 0) 0)))
-(define (cdaaar v) (cdr (list-ref (list-ref (list-ref v 0) 0) 0)))
+(define (cdar (v list)) (cdr (list-ref v 0)))
+(define (cdaar (v list)) (cdr (list-ref (list-ref v 0) 0)))
+(define (cdaaar (v list)) (cdr (list-ref (list-ref (list-ref v 0) 0) 0)))
 
 ; obvious operations - booleans
 

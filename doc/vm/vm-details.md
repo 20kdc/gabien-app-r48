@@ -68,7 +68,7 @@ Reasons for deoptimization include:
 
 The main purpose of fast locals is to support lambdas that *don't* allocate anything just for calling them. This is in contrast to most other interpreters written in Java.
 
-## Scopes
+### Scopes
 
 The second most important element is MVMScope.
 
@@ -96,15 +96,7 @@ Some rationale:
 
 - Of course, other less inconsistent approaches exist -- if you can require a function's environment reference never changes, you can auto-optimize the environment such that a slot approach is feasible while still making it fit the API of a table, and then apply similar logic to descendant environments with, i.e. a prototyping system -- but the requirements of fast locals (see later in this document) made these not reasonable courses of action.
 
-## Environments
-
-`MVMEnv` is the class which covers the root scope.
-
-`MVMEnv` contains a symbol to `MVMSlot` lookup table, which holds all the globals.
-
-It also contains a symbol to `MVMType` lookup table, which will be used for stricter typing in future.
-
-## Functions
+### Functions
 
 Functions, aka MVMFn, are where some of the other interesting GC performance tricks come into play.
 
@@ -117,3 +109,7 @@ Any function call with up to 4 parameters doesn't initially cause an allocation.
   - MVMLambdaVAFn still attempts to avoid `callIndirect` when possible, which would need an intermediate array just to then put it into a list.
 
 When `callIndirect` isn't involved, function calls are very simple -- a series of argument objects (and nothing else) are passed in, and a return value comes out the other side.
+
+## `MVMEnv` / `MVMCompileScope` etc.
+
+**These classes are firmly in D/MVM's territory.**

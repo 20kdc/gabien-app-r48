@@ -6,7 +6,7 @@
 ; Translation helper universal utility functions
 
 ; dm-try-copy!
-(define (dm-try-copy! dst src) (or (eq? src #nil) (eq? dst #nil) (dm-enc! dst src)))
+(define (dm-try-copy! (dst irio) (src any)) (or (eq? src #nil) (eq? dst #nil) (dm-enc! dst src)))
 (help-set! dm-try-copy! "(dm-try-copy! DST SRC) : dm-enc! but both DST and SRC must not be #nil (it's intended that SRC is a RORIO)")
 
 ; Functions to import/export database entry translations as JSON
