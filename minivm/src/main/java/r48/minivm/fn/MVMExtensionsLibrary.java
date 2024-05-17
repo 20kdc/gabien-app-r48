@@ -49,6 +49,9 @@ public class MVMExtensionsLibrary {
             }
             throw new RuntimeException("Can't disassemble " + MVMU.userStr(a0));
         }).attachHelp("(mvm-disasm LAMBDA) : Disassembles the given lambda.");
+        ctx.defLib("mvm-typeof", MVMType.STR, MVMType.SYM, (a0) -> {
+            return ctx.getSlot((DatumSymbol) a0).type.toString();
+        }).attachHelp("(mvm-typeof X) : Gets type of slot symbol X as a string.");
         ctx.defineSlot(sym("help"), new Help(ctx)
                 .attachHelp("(help [TOPIC]) : Helpful information on the given value (if any), or lists helpable symbols in the root context.\nUsed to list all symbols, then crashed."));
         ctx.defLib("help-set!", MVMType.typeOfClass(MVMHelpable.class), MVMType.typeOfClass(MVMHelpable.class), MVMType.STR, (a0, a1) -> {

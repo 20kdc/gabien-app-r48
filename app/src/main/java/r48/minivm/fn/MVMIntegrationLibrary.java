@@ -24,7 +24,7 @@ import r48.minivm.MVMType;
  */
 public class MVMIntegrationLibrary {
     public static void add(MVMEnvR48 ctx) {
-        ctx.defLib("include", MVMType.NULL, MVMType.STR, (a0) -> {
+        ctx.defLib("include", MVMType.ANY, MVMType.STR, (a0) -> {
             ctx.include((String) a0, false);
             return null;
         }).attachHelp("(include FILE) : Includes the given file. The code within magically counts as top-level even if it shouldn't. The filename has \".scm\" appended, and a second file is checked for with \".aux.scm\" appended for user additions.");

@@ -20,7 +20,11 @@ import r48.minivm.expr.MVMCExpr;
  */
 public final class MVMSlot extends MVMCExpr {
     public final DatumSymbol s;
-    public final MVMType type;
+    /**
+     * Because definitions can be recursive, we might not know the type of a slot at creation time.
+     * Don't abuse this!
+     */
+    public MVMType type;
     public Object v;
 
     public MVMSlot(DatumSymbol s, MVMType t) {

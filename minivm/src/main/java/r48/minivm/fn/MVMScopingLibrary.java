@@ -82,7 +82,7 @@ public class MVMScopingLibrary {
         if (isVA) {
             if (!hasAddedVAList)
                 throw new RuntimeException("lambda " + hint + ": VA, but no VA arg");
-            return new MVMCExpr(MVMType.ANY) {
+            return new MVMCExpr(new MVMType.Fn(compiledLambda.returnType)) {
                 @Override
                 public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                     return new MVMLambdaVAFn(new MVMLambdaFn(hint, ctx, compiledLambda, roots, rootFrame));
@@ -93,7 +93,7 @@ public class MVMScopingLibrary {
                 }
             };
         }
-        return new MVMCExpr(MVMType.ANY) {
+        return new MVMCExpr(new MVMType.Fn(compiledLambda.returnType)) {
             @Override
             public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                 return new MVMLambdaFn(hint, ctx, compiledLambda, roots, rootFrame);

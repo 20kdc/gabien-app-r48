@@ -217,7 +217,7 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
                         if (lastElement)
                             return new PathSyntax(parentContext, strict, base, base, new MVMCError("Cannot delete hash default value. Fix your schema."), arg);
                     } else if (subcom.equals("fail")) {
-                        base = new MVMCExpr.Const(null, MVMType.NULL);
+                        base = new MVMCExpr.Const(null, MVMType.ANY);
                         if (lastElement)
                             return new PathSyntax(parentContext, strict, base, base, base, arg);
                     } else if (subcom.length() != 0) {

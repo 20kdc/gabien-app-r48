@@ -115,7 +115,7 @@ For a requirement of intermediate states to exist, that implies that the state i
 8. The golden rule: Code outside the datamodel and undo/redo layer should see the data in the IRIOs 'magically' change to pre-modification, as if the code had been recording modifications and undoing them via the IRIO interface.
 
 Practical considerations as a result of these rules:
-1. The keyset of the latest save-point's map (`IDM3Data` to `Runnable`) is the exact inverse of the clean objects of the context's data.
+1. The keyset of the latest save-point's map (`IDM3Data` to `Runnable`) is the inverse of the clean objects of the context's data. (**The only caveat is that doesn't apply to 'fresh' objects; but while they aren't in the save-point map, they must still be registered and logged. You can think of them as recorded with the state `() -> {}`; this would be _mostly_ accurate.**)
 2. Earlier save-points will likely be missing states from later save-points that need to also be reverted for consistency.
 	These need to be managed somehow.
 	What will need to be done here is entirely dependent on the undo/redo model.

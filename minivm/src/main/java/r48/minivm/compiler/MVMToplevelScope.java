@@ -31,7 +31,9 @@ public class MVMToplevelScope extends MVMCompileScope {
     public MVMCExpr compileDefine(DatumSymbol sym, Supplier<MVMCExpr> value) {
         MVMSlot slot = context.ensureSlot(sym);
         try {
-            return new MVMCSetSlot(slot, value.get());
+            MVMCExpr expr = value.get();
+            slot.type = expr.returnType;
+            return new MVMCSetSlot(slot, expr);
         } catch (Exception ex) {
             throw new RuntimeException("during " + sym + " definition", ex);
         }

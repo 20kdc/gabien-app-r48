@@ -115,7 +115,7 @@ public abstract class MVMCompileScope {
                 // Macro compile tiiiiimmmeeeee
                 MVMCExpr macroRes = ((MVMMacro) effectiveValueForMacroLookup).compile(this, oa);
                 if (macroRes == null)
-                    return new MVMCExpr.Const(null, MVMType.NULL);
+                    return new MVMCExpr.Const(null, MVMType.ANY);
                 return macroRes;
             }
             final MVMCExpr[] exprs = new MVMCExpr[oa.length];

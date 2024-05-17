@@ -20,19 +20,14 @@ public class MVMTypeSystemTest {
     public void testObvious() {
         assertTrue(MVMType.OBJ.canImplicitlyCastFrom(MVMType.LIST));
         assertTrue(MVMType.OBJ.canImplicitlyCastFrom(MVMType.ANY));
-        assertFalse(MVMType.OBJ.canImplicitlyCastFrom(MVMType.NULL));
+        assertFalse(MVMType.OBJ.canImplicitlyCastFrom(MVMType.ANY));
 
         assertFalse(MVMType.LIST.canImplicitlyCastFrom(MVMType.OBJ));
         assertTrue(MVMType.LIST.canImplicitlyCastFrom(MVMType.ANY));
-        assertFalse(MVMType.LIST.canImplicitlyCastFrom(MVMType.NULL));
+        assertFalse(MVMType.LIST.canImplicitlyCastFrom(MVMType.ANY));
 
         assertTrue(MVMType.ANY.canImplicitlyCastFrom(MVMType.OBJ));
         assertTrue(MVMType.ANY.canImplicitlyCastFrom(MVMType.LIST));
-        assertTrue(MVMType.ANY.canImplicitlyCastFrom(MVMType.NULL));
-
-        assertFalse(MVMType.NULL.canImplicitlyCastFrom(MVMType.OBJ));
-        assertFalse(MVMType.NULL.canImplicitlyCastFrom(MVMType.LIST));
-        assertTrue(MVMType.NULL.canImplicitlyCastFrom(MVMType.ANY));
 
         assertTrue(new MVMType.TypedList(MVMType.I64).canImplicitlyCastTo(MVMType.LIST));
     }

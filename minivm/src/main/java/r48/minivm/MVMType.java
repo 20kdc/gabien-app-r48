@@ -43,23 +43,6 @@ public abstract class MVMType {
         }
     };
     /**
-     * 'NULL' is the null type.
-     */
-    public static final MVMType NULL = new MVMType() {
-        @Override
-        protected boolean canImplicitlyCastFromImpl(MVMType other) {
-            return false;
-        }
-        @Override
-        protected boolean canImplicitlyCastToImpl(MVMType other) {
-            return false;
-        }
-        @Override
-        public String toString() {
-            return "type.null";
-        }
-    };
-    /**
      * The type of Object, to which any non-null value may be assigned.
      */
     public static final MVMType OBJ = typeOfClass(Object.class);
@@ -109,7 +92,7 @@ public abstract class MVMType {
      */
     public static MVMType typeOf(@Nullable Object v) {
         if (v == null)
-            return NULL;
+            return ANY;
         if (v instanceof IMVMTypable)
             return ((IMVMTypable) v).getMVMType();
         return typeOfClass(v.getClass());

@@ -44,7 +44,6 @@ public class MVMEnv {
 
     public MVMEnv() {
         defineType(new DatumSymbol("any"), MVMType.ANY);
-        defineType(new DatumSymbol("null"), MVMType.NULL);
         defineType(new DatumSymbol("obj"), MVMType.OBJ);
         defineType(new DatumSymbol("list"), MVMType.LIST);
         defineType(new DatumSymbol("i64"), MVMType.I64);

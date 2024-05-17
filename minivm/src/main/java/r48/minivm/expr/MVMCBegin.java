@@ -24,7 +24,7 @@ public final class MVMCBegin extends MVMCExpr {
     public final MVMCExpr[] exprs;
 
     private MVMCBegin(MVMCExpr[] ex) {
-        super(ex.length == 0 ? MVMType.NULL : (ex[ex.length - 1].returnType));
+        super(ex.length == 0 ? MVMType.ANY : (ex[ex.length - 1].returnType));
         exprs = ex;
     }
 

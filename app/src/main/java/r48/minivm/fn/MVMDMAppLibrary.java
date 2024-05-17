@@ -10,6 +10,7 @@ import gabien.datum.DatumSymbol;
 import r48.App;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
+import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 import r48.schema.EnumSchemaElement;
@@ -20,13 +21,13 @@ import r48.schema.EnumSchemaElement;
  */
 public class MVMDMAppLibrary {
     public static void add(MVMEnv ctx, App app) {
-        ctx.defineSlot(new DatumSymbol("dm-fmt")).v = new DMFmt(app)
-                .attachHelp("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. If the passed-in object is null (say, due to a PathSyntax failure) returns the empty string. Important: Because of schemas and stuff this doesn't exist in the static translation context. PREFIXENUMS can be #f, #t or #nil (default).");
+        ctx.defineSlot(new DatumSymbol("dm-fmt"), new DMFmt(app)
+                .attachHelp("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. If the passed-in object is null (say, due to a PathSyntax failure) returns the empty string. Important: Because of schemas and stuff this doesn't exist in the static translation context. PREFIXENUMS can be #f, #t or #nil (default)."));
     }
     public static final class DMFmt extends MVMFn.Fixed {
         public final App app;
         public DMFmt(App app) {
-            super(new MVMType.Fn(MVMType.STR), "dm-fmt");
+            super(new MVMType.Fn(MVMType.STR, 1, new MVMType[] {MVMEnvR48.RORIO_TYPE, MVMType.STR, MVMType.ANY}, null), "dm-fmt");
             this.app = app;
         }
         @Override

@@ -138,7 +138,7 @@ public class MVMDMLibrary {
                 return null;
             return ((IRIO) a).addHashVal(dmKeyify(i));
         }).attachHelp("(dm-h-add! TARGET IV) : Adds hash key of TARGET. Passes through #nil TARGET.");
-        ctx.defLib("dm-h-rm!", MVMType.NULL, MVMEnvR48.IRIO_TYPE, MVMType.ANY, (a, i) -> {
+        ctx.defLib("dm-h-rm!", MVMType.ANY, MVMEnvR48.IRIO_TYPE, MVMType.ANY, (a, i) -> {
             ((IRIO) a).removeHashVal(dmKeyify(i));
             return null;
         }).attachHelp("(dm-h-rm! TARGET IV) : Removes hash key of TARGET");
