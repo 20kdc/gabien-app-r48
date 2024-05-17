@@ -36,7 +36,7 @@ public class MVMScopingLibrary {
     public static void add(MVMEnv ctx) {
         // Scheme library
         ctx.defineSlot(sym("define"), new Define()
-                .attachHelp("(define K V) | function define: (define (K ARG... [. VA]) STMT...) | bulk define: (define K V K V...) : Defines mutable variables or functions. Bulk define is an R48 extension."));
+                .attachHelp("(define K V) | function define: (define (K ARG... [. VA]) STMT...) : Defines mutable variables or functions."));
         ctx.defineSlot(sym("let"), new Let()
                 .attachHelp("(let ((K V)...) CODE...) : Creates variables. For constants, more efficient than define."));
         ctx.defineSlot(sym("lambda"), new Lambda()
@@ -158,14 +158,7 @@ public class MVMScopingLibrary {
                 return null;
             if (pairEntries == 1)
                 return compileIndividualDefine(cs, call[0], () -> cs.compile(call[1]));
-            MVMCExpr[] exprs = new MVMCExpr[pairEntries];
-            int base = 0;
-            for (int i = 0; i < exprs.length; i++) {
-                final int thisBase = base;
-                exprs[i] = compileIndividualDefine(cs, call[thisBase], () -> cs.compile(call[thisBase + 1]));
-                base += 2;
-            }
-            return MVMCBegin.of(exprs);
+            throw new RuntimeException("invalid define format");
         }
     }
 

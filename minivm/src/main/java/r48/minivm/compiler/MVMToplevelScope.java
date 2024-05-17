@@ -12,6 +12,7 @@ import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMSlot;
+import r48.minivm.MVMType;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCSetSlot;
 
@@ -34,6 +35,20 @@ public class MVMToplevelScope extends MVMCompileScope {
             MVMCExpr expr = value.get();
             slot.type = expr.returnType;
             return new MVMCSetSlot(slot, expr);
+        } catch (Exception ex) {
+            throw new RuntimeException("during " + sym + " definition", ex);
+        }
+    }
+
+    @Override
+    public MVMCExpr compileDefine(DatumSymbol sym, MVMType type, Supplier<MVMCExpr> value) {
+        MVMSlot slot = context.ensureSlot(sym);
+        // for ANY, this will be fine
+        slot.type.assertCanImplicitlyCastFrom(type, "compileDefine of " + sym);
+        slot.type.assertCanImplicitlyCastTo(type, "compileDefine of " + sym);
+        slot.type = type;
+        try {
+            return new MVMCSetSlot(slot, value.get());
         } catch (Exception ex) {
             throw new RuntimeException("during " + sym + " definition", ex);
         }

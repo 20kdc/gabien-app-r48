@@ -42,6 +42,12 @@ public abstract class MVMCompileScope {
     public abstract MVMCExpr compileDefine(DatumSymbol sym, Supplier<MVMCExpr> value);
 
     /**
+     * Compiles a typed define in this scope.
+     * Note the supplier. The define/local must be in place before the expression is given.
+     */
+    public abstract MVMCExpr compileDefine(DatumSymbol sym, MVMType type, Supplier<MVMCExpr> value);
+
+    /**
      * Extends with a formal frame boundary (into a lambdas for example)
      * This means you're responsible for wrapRuntimeScope.
      */

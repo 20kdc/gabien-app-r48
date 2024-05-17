@@ -120,6 +120,13 @@ public class MVMSubScope extends MVMCompileScope {
     }
 
     @Override
+    public MVMCExpr compileDefine(DatumSymbol sym, MVMType type, Supplier<MVMCExpr> value) {
+        LocalRoot local = new LocalRoot(type);
+        locals.put(sym, local);
+        return local.setter(value.get());
+    }
+
+    @Override
     public MVMSubScope extendWithFrame() {
         return new MVMSubScope(this, true);
     }
