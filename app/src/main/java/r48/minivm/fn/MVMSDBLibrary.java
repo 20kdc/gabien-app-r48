@@ -13,6 +13,7 @@ import gabien.datum.DatumSrcLoc;
 import r48.App;
 import r48.dbs.SDBOldParser;
 import r48.minivm.MVMEnv;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 import r48.schema.SchemaElement;
 import r48.search.CommandTag;
@@ -26,12 +27,12 @@ import r48.tr.TrPage.FF0;
  */
 public class MVMSDBLibrary {
     public static void add(MVMEnv ctx, App app) {
-        ctx.defLib("sdb-load-old", (a0) -> {
+        ctx.defLib("sdb-load-old", MVMType.NULL, MVMType.STR, (a0) -> {
             SDBOldParser.readFile(app, (String) a0);
             return null;
         }).attachHelp("(sdb-load-old FILE) : Read old-format SDB file.");
 
-        ctx.defLib("cmdb-add-tag", (a0, a1) -> {
+        ctx.defLib("cmdb-add-tag", MVMType.NULL, MVMType.ANY, MVMType.ANY, (a0, a1) -> {
             String id = MVMU.coerceToString(a0);
             FF0 ax = app.dTr(DatumSrcLoc.NONE, TrNames.cmdbCommandTag(id), MVMU.coerceToString(a1));
             CommandTag tag = new CommandTag(id, ax);
@@ -40,25 +41,25 @@ public class MVMSDBLibrary {
             return null;
         }).attachHelp("(cmdb-add-tag ID NAME) : Adds a command tag.");
 
-        ctx.defLib("cmdb-init", (a0) -> {
+        ctx.defLib("cmdb-init", MVMType.NULL, MVMType.ANY, (a0) -> {
             app.cmdbs.newCMDB(MVMU.coerceToString(a0));
             return null;
         }).attachHelp("(cmdb-init ID) : Setup a CMDB.");
-        ctx.defLib("cmdb-load-old", (a0, a1) -> {
+        ctx.defLib("cmdb-load-old", MVMType.NULL, MVMType.ANY, MVMType.STR, (a0, a1) -> {
             app.cmdbs.loadCMDB(MVMU.coerceToString(a0), (String) a1);
             return null;
         }).attachHelp("(cmdb-load-old ID FILE) : Read old-format CMDB file.");
 
-        ctx.defLib("sdb-get", (a0) -> {
+        ctx.defLib("sdb-get", MVMType.NULL, MVMType.ANY, (a0) -> {
             return app.sdb.getSDBEntry(MVMU.coerceToString(a0));
         }).attachHelp("(sdb-get ID) : Gets a SchemaElement from SDB.");
 
-        ctx.defLib("sdb-set", (a0, a1) -> {
+        ctx.defLib("sdb-set", MVMType.NULL, MVMType.ANY, MVMType.typeOfClass(SchemaElement.class), (a0, a1) -> {
             app.sdb.setSDBEntry(MVMU.coerceToString(a0), (SchemaElement) a1);
             return null;
         }).attachHelp("(sdb-set ID SE) : Puts a SchemaElement into SDB.");
 
-        ctx.defLib("idchanger-add", (a0, a1) -> {
+        ctx.defLib("idchanger-add", MVMType.NULL, MVMType.ANY, MVMType.ANY, (a0, a1) -> {
             List<Object> lo = MVMU.cList(a1);
             LinkedList<SchemaElement> potential = new LinkedList<>();
             for (Object o : lo)

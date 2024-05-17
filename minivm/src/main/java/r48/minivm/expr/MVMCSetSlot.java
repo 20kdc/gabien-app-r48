@@ -22,6 +22,8 @@ public class MVMCSetSlot extends MVMCExpr {
     public final MVMSlot slot;
     public final MVMCExpr value;
     public MVMCSetSlot(MVMSlot s, MVMCExpr val) {
+        super(val.returnType);
+        s.type.assertCanImplicitlyCastFrom(val.returnType, s);
         slot = s;
         value = val;
     }

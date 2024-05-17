@@ -18,10 +18,11 @@ import r48.minivm.MVMU;
  * MiniVM hash stuff
  * Created 14th April 2023.
  */
-public final class MVMCGetHashDefVal extends MVMCExpr {
+public final class MVMCDMGetHashDefVal extends MVMCExpr {
     private final MVMCExpr addBase;
 
-    public MVMCGetHashDefVal(MVMCExpr addBase) {
+    public MVMCDMGetHashDefVal(MVMCExpr addBase) {
+        super(addBase.returnType);
         this.addBase = addBase;
     }
 

@@ -12,6 +12,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import static gabien.datum.DatumTreeUtils.*;
 
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 
 /**
@@ -23,6 +24,7 @@ public final class MVMCWhile extends MVMCExpr {
     public final @Nullable MVMCExpr v;
 
     public MVMCWhile(@NonNull MVMCExpr c, @Nullable MVMCExpr v) {
+        super(MVMType.ANY);
         this.c = c;
         this.v = v;
     }

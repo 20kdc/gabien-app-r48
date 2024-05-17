@@ -20,10 +20,13 @@ import r48.minivm.expr.MVMCExpr;
  */
 public final class MVMSlot extends MVMCExpr {
     public final DatumSymbol s;
+    public final MVMType type;
     public Object v;
 
-    public MVMSlot(DatumSymbol s) {
+    public MVMSlot(DatumSymbol s, MVMType t) {
+        super(t);
         this.s = s;
+        this.type = t;
     }
 
     @Override
@@ -33,6 +36,6 @@ public final class MVMSlot extends MVMCExpr {
 
     @Override
     public Object disasm() {
-        return MVMU.l(sym("slot"), s);
+        return MVMU.l(sym("slot"), s, sym(type.toString()));
     }
 }

@@ -15,7 +15,7 @@
 (] 2 invert int_boolean)
 
 (. conditional_branch_variable)
-(VM
+(vm
 	(define-name conditional_branch_variable (@ ]1 var_id_encased) " " (@ ]4 comparison_type) " "
 		(if-eq ]2 0 (@ ]3) (@ ]3 var_id_encased))
 	)

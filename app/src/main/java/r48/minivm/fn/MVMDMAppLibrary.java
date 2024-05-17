@@ -10,6 +10,7 @@ import gabien.datum.DatumSymbol;
 import r48.App;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 import r48.schema.EnumSchemaElement;
 
@@ -25,7 +26,7 @@ public class MVMDMAppLibrary {
     public static final class DMFmt extends MVMFn.Fixed {
         public final App app;
         public DMFmt(App app) {
-            super("dm-fmt");
+            super(new MVMType.Fn(MVMType.STR), "dm-fmt");
             this.app = app;
         }
         @Override

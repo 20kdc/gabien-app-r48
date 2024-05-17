@@ -10,34 +10,34 @@ import static gabien.datum.DatumTreeUtils.sym;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import r48.io.data.DMKey;
-import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.minivm.MVMScope;
 import r48.minivm.MVMU;
 
 /**
- * MiniVM PathSyntax immediate hash value getter.
+ * MiniVM PathSyntax IVar getter.
  * Created 26th February 2023.
  */
-public class MVMCGetHashValImm extends MVMCExpr {
+public class MVMCDMGetIVar extends MVMCExpr {
     public final MVMCExpr base;
-    public final DMKey key;
+    public final String key;
 
-    public MVMCGetHashValImm(MVMCExpr base, DMKey k) {
+    public MVMCDMGetIVar(MVMCExpr base, String k) {
+        super(base.returnType);
         this.base = base;
         key = k;
     }
 
     @Override
     public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-        IRIO res = (IRIO) base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+        RORIO res = (RORIO) base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         if (res == null)
             return null;
-        return res.getHashVal(key);
+        return res.getIVar(key);
     }
 
     @Override
     public Object disasm() {
-        return MVMU.l(sym("getHashValImm"), base.disasm(), MVMU.userStr(key));
+        return MVMU.l(sym("getIVar"), base.disasm(), key);
     }
 }

@@ -6,9 +6,11 @@
  */
 package r48.minivm.compiler;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.expr.MVMCLocal;
 
 /**
@@ -51,9 +53,9 @@ public final class MVMCompileFrame {
     /**
      * Allocates a local.
      */
-    public MVMCLocal allocateLocal() {
+    public MVMCLocal allocateLocal(@NonNull MVMType type) {
         markExpectedToExist();
-        return new MVMCLocal(frameID, allocatedLocals++);
+        return new MVMCLocal(frameID, allocatedLocals++, type);
     }
 
     /**

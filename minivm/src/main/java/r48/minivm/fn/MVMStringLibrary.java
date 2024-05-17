@@ -12,6 +12,7 @@ import java.util.List;
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMU;
 import r48.minivm.MVMEnv;
+import r48.minivm.MVMType;
 
 /**
  * MiniVM standard library.
@@ -20,38 +21,51 @@ import r48.minivm.MVMEnv;
 public class MVMStringLibrary {
     public static void add(MVMEnv ctx) {
         // strings
-        ctx.defineSlot(new DatumSymbol("string-append")).v = new Add()
-                .attachHelp("(string-append V...) : Appends items into a big string.");
-        ctx.defLib("string-length", (a0) -> (long) ((String) a0).length())
+        ctx.defineSlot(new DatumSymbol("string-append"), new Add()
+                .attachHelp("(string-append V...) : Appends items into a big string."));
+        ctx.defLib("string-length", MVMType.I64, MVMType.STR, (a0) -> (long) ((String) a0).length())
             .attachHelp("(string-length V) : Returns the length of a string.");
-        ctx.defineSlot(new DatumSymbol("number->string")).v = new N2S()
-                .attachHelp("(number->string V [R]) : Converts a number to a string with possible conversion.");
-        ctx.defineSlot(new DatumSymbol("string->number")).v = new S2N()
-                .attachHelp("(string->number V [R]) : Converts a string to a number.");
-        ctx.defLib("string-ref", (a0, a1) -> ((String) a0).charAt(MVMU.cInt(a1)))
+        ctx.defineSlot(new DatumSymbol("number->string"), new N2S()
+                .attachHelp("(number->string V [R]) : Converts a number to a string with possible conversion."));
+        ctx.defineSlot(new DatumSymbol("string->number"), new S2N()
+                .attachHelp("(string->number V [R]) : Converts a string to a number."));
+        ctx.defLib("string-ref", MVMType.CHAR, MVMType.STR, MVMType.I64, (a0, a1) -> ((String) a0).charAt(MVMU.cInt(a1)))
             .attachHelp("(string-ref V K) : Returns a character from a string.");
-        ctx.defineSlot(new DatumSymbol("string->list")).v = new S2L()
-                .attachHelp("(string->list V) : String to list of characters.");
-        ctx.defineSlot(new DatumSymbol("list->string")).v = new L2S()
-                .attachHelp("(list->string V) : List of characters to string.");
-        ctx.defLib("string->symbol", (a0) -> new DatumSymbol((String) a0))
+        ctx.defLib("string->list", new MVMType.TypedList(MVMType.CHAR), MVMType.STR, (a0) -> {
+            LinkedList<Character> llc = new LinkedList<>();
+            String s = (String) a0;
+            int sl = s.length();
+            for (int i = 0; i < sl; i++)
+                llc.add(s.charAt(i));
+            return llc;
+        }).attachHelp("(string->list V) : String to list of characters.");
+        ctx.defLib("list->string", MVMType.STR, new MVMType.TypedList(MVMType.CHAR), (a0) -> {
+            @SuppressWarnings("unchecked")
+            List<Character> lc = (List<Character>) a0;
+            char[] chars = new char[lc.size()];
+            int ptr = 0;
+            for (Character ch : lc)
+                chars[ptr++] = ch;
+            return new String(chars);
+        }).attachHelp("(list->string V) : List of characters to string.");
+        ctx.defLib("string->symbol", MVMType.SYM, MVMType.STR, (a0) -> new DatumSymbol((String) a0))
             .attachHelp("(string->symbol V) : String to symbol.");
-        ctx.defLib("symbol->string", (a0) -> ((DatumSymbol) a0).id)
+        ctx.defLib("symbol->string", MVMType.STR, MVMType.SYM, (a0) -> ((DatumSymbol) a0).id)
             .attachHelp("(symbol->string V) : Symbol to string.");
-        ctx.defineSlot(new DatumSymbol("substring")).v = new Sub()
-                .attachHelp("(substring S START END) : Substring.");
-        ctx.defLib("value->string", (a0) -> String.valueOf(a0))
+        ctx.defineSlot(new DatumSymbol("substring"), new Sub()
+                .attachHelp("(substring S START END) : Substring."));
+        ctx.defLib("value->string", MVMType.STR, MVMType.ANY, (a0) -> String.valueOf(a0))
             .attachHelp("(value->string V) : Converts any value to a string.");
         // chars
-        ctx.defLib("char->integer", (a0) -> (long) (Character) a0)
+        ctx.defLib("char->integer", MVMType.I64, MVMType.CHAR, (a0) -> (long) (Character) a0)
             .attachHelp("(char->integer V) : Character to integer.");
-        ctx.defLib("integer->char", (a0) -> (char) MVMU.cInt(a0))
+        ctx.defLib("integer->char", MVMType.CHAR, MVMType.I64, (a0) -> (char) MVMU.cInt(a0))
             .attachHelp("(integer->char V) : Integer to Character.");
     }
 
     public static final class Add extends MVMFn {
         public Add() {
-            super("string-append");
+            super(new MVMType.Fn(MVMType.STR, 0, new MVMType[0], MVMType.STR), "string-append");
         }
 
         @Override
@@ -132,7 +146,7 @@ public class MVMStringLibrary {
 
     public static final class N2S extends MVMFn.Fixed {
         public N2S() {
-            super("number->string");
+            super(new MVMType.Fn(MVMType.STR, 1, new MVMType[] {MVMType.NUM, MVMType.I64}, null), "number->string");
         }
 
         @Override
@@ -157,7 +171,7 @@ public class MVMStringLibrary {
 
     public static final class S2N extends MVMFn.Fixed {
         public S2N() {
-            super("string->number");
+            super(new MVMType.Fn(MVMType.NUM, 1, new MVMType[] {MVMType.STR, MVMType.I64}, null), "string->number");
         }
 
         @Override
@@ -185,42 +199,9 @@ public class MVMStringLibrary {
         }
     }
 
-    public static final class L2S extends MVMFn.Fixed {
-        public L2S() {
-            super("list->string");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            @SuppressWarnings("unchecked")
-            List<Character> lc = (List<Character>) a0;
-            char[] chars = new char[lc.size()];
-            int ptr = 0;
-            for (Character ch : lc)
-                chars[ptr++] = ch;
-            return new String(chars);
-        }
-    }
-
-    public static final class S2L extends MVMFn.Fixed {
-        public S2L() {
-            super("string->list");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            LinkedList<Character> llc = new LinkedList<>();
-            String s = (String) a0;
-            int sl = s.length();
-            for (int i = 0; i < sl; i++)
-                llc.add(s.charAt(i));
-            return llc;
-        }
-    }
-
     public static final class Sub extends MVMFn.Fixed {
         public Sub() {
-            super("substring");
+            super(MVMType.Fn.simple(MVMType.STR, MVMType.STR, MVMType.I64, MVMType.I64), "substring");
         }
 
         @Override

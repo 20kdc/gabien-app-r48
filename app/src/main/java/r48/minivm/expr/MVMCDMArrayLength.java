@@ -9,37 +9,37 @@ package r48.minivm.expr;
 import org.eclipse.jdt.annotation.NonNull;
 
 import static gabien.datum.DatumTreeUtils.*;
-import r48.io.data.IRIO;
+
+import r48.io.data.DMKey;
+import r48.io.data.RORIO;
 import r48.minivm.MVMScope;
 import r48.minivm.MVMU;
 
 /**
- * MiniVM PathSyntax immediate array value getter.
+ * MiniVM array stuff
  * Created 26th February 2023.
  */
-public class MVMCArrayGetImm extends MVMCExpr {
-    public final MVMCExpr base;
-    public final int index;
+public final class MVMCDMArrayLength extends MVMCExpr {
+    private final MVMCExpr addBase;
 
-    public MVMCArrayGetImm(MVMCExpr base, int k) {
-        this.base = base;
-        index = k;
+    public MVMCDMArrayLength(MVMCExpr addBase) {
+        super(addBase.returnType);
+        this.addBase = addBase;
     }
 
     @Override
     public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-        IRIO res = (IRIO) base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-        if (res == null)
+        RORIO root = (RORIO) addBase.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+        if (root == null)
             return null;
-        if (res.getType() != '[')
+        // This is used for length disambiguation.
+        if (root.getType() != '[')
             return null;
-        if (index < 0 || index >= res.getALen())
-            return null;
-        return res.getAElem(index);
+        return DMKey.of(root.getALen());
     }
 
     @Override
     public Object disasm() {
-        return MVMU.l(sym("arrayGetImm"), base.disasm(), index);
+        return MVMU.l(sym("arrayLength"), addBase.disasm());
     }
 }

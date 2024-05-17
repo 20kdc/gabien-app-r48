@@ -6,13 +6,29 @@
  */
 package r48.minivm.fn;
 
+import org.eclipse.jdt.annotation.NonNull;
+
+import r48.minivm.IMVMTypable;
+import r48.minivm.MVMType;
+
 /**
  * MiniVM function bound into a neat little package.
  * Created 28th February 2023.
  */
-public abstract class MVMFn extends MVMHelpable {
-    public MVMFn(String nh) {
+public abstract class MVMFn extends MVMHelpable implements IMVMTypable {
+    public final MVMType.Fn myFunctionType;
+
+    /**
+     * Return type set but nothing else (freeform)
+     */
+    public MVMFn(@NonNull MVMType.Fn fnt, String nh) {
         super(nh);
+        myFunctionType = fnt;
+    }
+
+    @Override
+    public MVMType getMVMType() {
+        return myFunctionType;
     }
 
     protected RuntimeException cError(Exception ex2) {
@@ -90,7 +106,7 @@ public abstract class MVMFn extends MVMHelpable {
      */
     public static abstract class VA extends MVMFn {
         public VA(String nh) {
-            super(nh);
+            super(new MVMType.Fn(MVMType.ANY), nh);
         }
 
         public final Object callDirect() {
@@ -114,8 +130,8 @@ public abstract class MVMFn extends MVMHelpable {
      * Always uses callDirect.
      */
     public static abstract class Fixed extends MVMFn {
-        public Fixed(String nh) {
-            super(nh);
+        public Fixed(MVMType.Fn fn, String nh) {
+            super(fn, nh);
         }
 
         public Object callDirect() {
@@ -156,8 +172,8 @@ public abstract class MVMFn extends MVMHelpable {
      * For mathematical operations and such.
      */
     public static abstract class ChainOp<V> extends MVMFn {
-        public ChainOp(String nh) {
-            super(nh);
+        public ChainOp(MVMType res, String nh, MVMType participant) {
+            super(new MVMType.Fn(res, 1, new MVMType[] {participant}, participant), nh);
         }
 
         public abstract V checkParticipant(Object v);

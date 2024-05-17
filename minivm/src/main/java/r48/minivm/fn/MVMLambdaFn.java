@@ -9,6 +9,7 @@ package r48.minivm.fn;
 import org.eclipse.jdt.annotation.Nullable;
 
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.compiler.MVMCompileFrame;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCLocal;
@@ -23,7 +24,7 @@ public class MVMLambdaFn extends MVMFn {
     public final MVMCLocal[] argL;
     public final @Nullable MVMCompileFrame rootFrame;
     public MVMLambdaFn(String nh, MVMScope scope, MVMCExpr content, MVMCLocal[] args, MVMCompileFrame rootFrame) {
-        super(nh);
+        super(new MVMType.Fn(content.returnType), nh);
         this.scope = scope;
         this.content = content;
         this.argL = args;

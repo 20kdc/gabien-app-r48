@@ -11,6 +11,7 @@ import static gabien.datum.DatumTreeUtils.*;
 import gabien.datum.DatumSrcLoc;
 import r48.minivm.MVMU;
 import r48.minivm.MVMEnv;
+import r48.minivm.MVMType;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.expr.MVMCBegin;
 import r48.minivm.expr.MVMCExpr;
@@ -24,11 +25,11 @@ import r48.minivm.expr.MVMCWhile;
 public class MVMBasicsLibrary {
     public static void add(MVMEnv ctx) {
         // Scheme library
-        ctx.defineSlot(sym("quote")).v = new Quote()
-            .attachHelp("(quote A) | 'A : A is not evaluated. Allows expressing complex structures inline.");
-        ctx.defineSlot(sym("begin")).v = new Begin()
-            .attachHelp("(begin ...) : Runs a series of expressions and returns the result from the last.");
-        ctx.defineSlot(sym("if")).v = new If(false)
+        ctx.defineSlot(sym("quote"), new Quote()
+            .attachHelp("(quote A) | 'A : A is not evaluated. Allows expressing complex structures inline."));
+        ctx.defineSlot(sym("begin"), new Begin()
+            .attachHelp("(begin ...) : Runs a series of expressions and returns the result from the last."));
+        ctx.defineSlot(sym("if"), new If(false)
             .attachHelp(
                 "(if C T [F]) : Conditional primitive.\n" +
                 "If C is truthy (any value but #f), then T is executed and the result returned.\n" +
@@ -38,8 +39,8 @@ public class MVMBasicsLibrary {
                 "Defining it this way makes (and A B C) into (if A (if B C)).\n" +
                 "Theoretically, since #f is the only falsy value, this isn't always necessary here.\n" +
                 "However, it's important for if-not (useful to implement cond, or...)"
-            );
-        ctx.defineSlot(sym("if-not")).v = new If(true)
+            ));
+        ctx.defineSlot(sym("if-not"), new If(true)
             .attachHelp(
                 "(if-not C F [T]) : Conditional primitive.\n" +
                 "If C is truthy (any value but #f), then F is executed and the result returned.\n" +
@@ -48,35 +49,35 @@ public class MVMBasicsLibrary {
                 "Rationale: This is a custom extension to implement or with very little Java code.\n" +
                 "So (or A B C) becomes (if-not A (if-not B C)).\n" +
                 "In addition this is used for guard-only cond branches."
-            );
-        ctx.defLib("eq?", MVMU::eqQ)
+            ));
+        ctx.defLib("eq?", MVMType.BOOL, MVMType.ANY, MVMType.ANY, MVMU::eqQ)
             .attachHelp("(eq? A B) : Checks two values for near-exact equality, except value types (Character, Long, Double, DatumSymbol).");
-        ctx.defLib("eqv?", MVMU::eqvQ)
+        ctx.defLib("eqv?", MVMType.BOOL, MVMType.ANY, MVMType.ANY, MVMU::eqvQ)
             .attachHelp("(eqv? A B) : Checks two values for near-exact equality, except value types and strings.");
-        ctx.defLib("equal?", MVMU::equalQ)
+        ctx.defLib("equal?", MVMType.BOOL, MVMType.ANY, MVMType.ANY, MVMU::equalQ)
             .attachHelp("(equal? A B) : Checks two values for deep equality.");
         // not strictly standard in Scheme, but is standard in Common Lisp, but exact details differ
-        ctx.defLib("gensym", () -> ctx.gensym())
+        ctx.defLib("gensym", MVMType.SYM, () -> ctx.gensym())
             .attachHelp("(gensym) : Creates a new uniqueish symbol.");
         // Technically implement just enough of R5RS environments that the parts we're cheating on don't stick out like sore thumbs.
-        ctx.defLib("eval", (a0, a1) -> {
+        ctx.defLib("eval", MVMType.ANY, MVMType.ANY, MVMType.ENV, (a0, a1) -> {
             try {
                 return ((MVMEnv) a1).evalObject(a0, DatumSrcLoc.NONE);
             } catch (Exception ex) {
                 throw new RuntimeException("During eval: " + a0, ex);
             }
         }).attachHelp("(eval EXPR ENV) : Evaluates EXPR in ENV. Note EXPR is unquoted, so you can dynamically generate it.");
-        ctx.defLib("interaction-environment", () -> {
+        ctx.defLib("interaction-environment", MVMType.ENV, () -> {
             return ctx;
         }).attachHelp("(interaction-environment) : To put it nicely, this is cheating. It returns the global environment it was defined in, to let eval work.");
-        ctx.defineSlot(sym("error")).v = new Errorer()
-            .attachHelp("(error MSG V...) : Throws an exception. No, there's no way to catch these in MVM...");
-        ctx.defLib("apply", (a0, a1) -> {
+        ctx.defineSlot(sym("error"), new Errorer()
+            .attachHelp("(error MSG V...) : Throws an exception. No, there's no way to catch these in MVM..."));
+        ctx.defLib("apply", MVMType.ANY, MVMType.FN, MVMType.LIST, (a0, a1) -> {
             return ((MVMFn) a0).callIndirect(MVMU.cList(a1).toArray());
         }).attachHelp("(apply FN ARGS) : Runs FN with the list of args as ARGS.");
         // Both S9FES and Guile implement this to enough of a degree that I feel comfortable adding it.
-        ctx.defineSlot(sym("while")).v = new While()
-                .attachHelp("(while EXPR CODE...) : Repeats CODE until EXPR returns false.");
+        ctx.defineSlot(sym("while"), new While()
+                .attachHelp("(while EXPR CODE...) : Repeats CODE until EXPR returns false."));
     }
 
     public static interface IFnDefineConverter {
@@ -92,7 +93,7 @@ public class MVMBasicsLibrary {
         public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
             if (call.length != 1)
                 throw new RuntimeException("quote expects exactly 1 arg");
-            return new MVMCExpr.Const(call[0]);
+            return new MVMCExpr.Const(call[0], MVMType.typeOf(call[0]));
         }
     }
 
@@ -133,7 +134,7 @@ public class MVMBasicsLibrary {
 
     public static final class Errorer extends MVMFn {
         public Errorer() {
-            super("error");
+            super(new MVMType.Fn(MVMType.ANY), "error");
         }
         @Override
         protected Object callDirect() {

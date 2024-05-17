@@ -8,6 +8,7 @@ package r48.minivm.fn;
 
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
+import r48.minivm.MVMType;
 
 /**
  * MiniVM standard library.
@@ -19,37 +20,37 @@ public class MVMMathsLibrary {
     private static final Long res1 = 1L;
     public static void add(MVMEnv ctx) {
         // Scheme library
-        ctx.defineSlot(new DatumSymbol("+")).v = new Add()
-                .attachHelp("(+ V...) : Adds various values. If none given, returns 0.");
-        ctx.defineSlot(new DatumSymbol("-")).v = new Sub()
-                .attachHelp("(- V...) : Subtracts various values. If none given, returns 0. A special rule is that - with a single parameter negates.");
-        ctx.defLib("=", (a0, a1) -> {
+        ctx.defineSlot(new DatumSymbol("+"), new Add()
+                .attachHelp("(+ V...) : Adds various values. If none given, returns 0."));
+        ctx.defineSlot(new DatumSymbol("-"), new Sub()
+                .attachHelp("(- V...) : Subtracts various values. If none given, returns 0. A special rule is that - with a single parameter negates."));
+        ctx.defLib("=", MVMType.BOOL, MVMType.NUM, MVMType.NUM, (a0, a1) -> {
             // copied to equal? for inlining
             if (a0 instanceof Double || a1 instanceof Double)
                 return ((Number) a0).doubleValue() == ((Number) a1).doubleValue();
             return ((Number) a0).longValue() == ((Number) a1).longValue();
         }).attachHelp("(= A B) : Checks for equality between two numbers. This is different from eq? and equal? due to numeric types.");
-        ctx.defLib(">", (a0, a1) -> {
+        ctx.defLib(">", MVMType.BOOL, MVMType.NUM, MVMType.NUM, (a0, a1) -> {
             if (a0 instanceof Double || a1 instanceof Double)
                 return ((Number) a0).doubleValue() > ((Number) a1).doubleValue();
             return ((Number) a0).longValue() > ((Number) a1).longValue();
         }).attachHelp("(> A B) : Checks for A > B.");
-        ctx.defLib("<", (a0, a1) -> {
+        ctx.defLib("<", MVMType.BOOL, MVMType.NUM, MVMType.NUM, (a0, a1) -> {
             if (a0 instanceof Double || a1 instanceof Double)
                 return ((Number) a0).doubleValue() < ((Number) a1).doubleValue();
             return ((Number) a0).longValue() < ((Number) a1).longValue();
         }).attachHelp("(< A B) : Checks for A < B.");
-        ctx.defLib(">=", (a0, a1) -> {
+        ctx.defLib(">=", MVMType.BOOL, MVMType.NUM, MVMType.NUM, (a0, a1) -> {
             if (a0 instanceof Double || a1 instanceof Double)
                 return ((Number) a0).doubleValue() >= ((Number) a1).doubleValue();
             return ((Number) a0).longValue() >= ((Number) a1).longValue();
         }).attachHelp("(>= A B) : Checks for A >= B.");
-        ctx.defLib("<=", (a0, a1) -> {
+        ctx.defLib("<=", MVMType.BOOL, MVMType.NUM, MVMType.NUM, (a0, a1) -> {
             if (a0 instanceof Double || a1 instanceof Double)
                 return ((Number) a0).doubleValue() <= ((Number) a1).doubleValue();
             return ((Number) a0).longValue() <= ((Number) a1).longValue();
         }).attachHelp("(<= A B) : Checks for A <= B.");
-        ctx.defLib("number-compare", (a0, a1) -> {
+        ctx.defLib("number-compare", MVMType.I64, MVMType.NUM, MVMType.NUM, (a0, a1) -> {
             int res;
             if (a0 instanceof Double || a1 instanceof Double)
                 res = Double.compare(((Number) a0).doubleValue(), ((Number) a1).doubleValue());
@@ -66,7 +67,7 @@ public class MVMMathsLibrary {
 
     public static final class Add extends MVMFn.ChainOp<Number> {
         public Add() {
-            super("+");
+            super(MVMType.NUM, "+", MVMType.NUM);
         }
 
         @Override
@@ -94,7 +95,7 @@ public class MVMMathsLibrary {
 
     public static final class Sub extends MVMFn.ChainOp<Number> {
         public Sub() {
-            super("-");
+            super(MVMType.NUM, "-", MVMType.NUM);
         }
 
         @Override

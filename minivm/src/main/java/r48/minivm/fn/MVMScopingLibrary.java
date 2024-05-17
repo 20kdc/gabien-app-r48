@@ -19,6 +19,7 @@ import gabien.datum.DatumSymbol;
 import r48.minivm.MVMU;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.compiler.MVMCompileFrame;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.compiler.MVMSubScope;
@@ -34,14 +35,14 @@ import r48.minivm.expr.MVMCLocal;
 public class MVMScopingLibrary {
     public static void add(MVMEnv ctx) {
         // Scheme library
-        ctx.defineSlot(sym("define")).v = new Define()
-                .attachHelp("(define K V) | function define: (define (K ARG... [. VA]) STMT...) | bulk define: (define K V K V...) : Defines mutable variables or functions. Bulk define is an R48 extension.");
-        ctx.defineSlot(sym("let")).v = new Let()
-                .attachHelp("(let ((K V)...) CODE...) : Creates variables. For constants, more efficient than define.");
-        ctx.defineSlot(sym("lambda")).v = new Lambda()
-            .attachHelp("(lambda (ARG... [. VA]) STMT...) : Creates first-class functions. The symbol . splits main args from a var-arg list arg.");
-        ctx.defineSlot(sym("set!")).v = new Set()
-            .attachHelp("(set! VAR V) : Sets a variable.");
+        ctx.defineSlot(sym("define"), new Define()
+                .attachHelp("(define K V) | function define: (define (K ARG... [. VA]) STMT...) | bulk define: (define K V K V...) : Defines mutable variables or functions. Bulk define is an R48 extension."));
+        ctx.defineSlot(sym("let"), new Let()
+                .attachHelp("(let ((K V)...) CODE...) : Creates variables. For constants, more efficient than define."));
+        ctx.defineSlot(sym("lambda"), new Lambda()
+            .attachHelp("(lambda (ARG... [. VA]) STMT...) : Creates first-class functions. The symbol . splits main args from a var-arg list arg."));
+        ctx.defineSlot(sym("set!"), new Set()
+            .attachHelp("(set! VAR V) : Sets a variable."));
     }
 
     /**
@@ -69,7 +70,7 @@ public class MVMScopingLibrary {
                     hasAddedVAList = true;
                 }
                 // actual arg logic
-                rootsX.add(lambdaSc.newLocal(aSym));
+                rootsX.add(lambdaSc.newLocal(aSym, MVMType.ANY));
             }
         }
         final MVMCLocal[] roots = rootsX.toArray(new MVMCLocal[0]);
@@ -81,7 +82,7 @@ public class MVMScopingLibrary {
         if (isVA) {
             if (!hasAddedVAList)
                 throw new RuntimeException("lambda " + hint + ": VA, but no VA arg");
-            return new MVMCExpr() {
+            return new MVMCExpr(MVMType.ANY) {
                 @Override
                 public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                     return new MVMLambdaVAFn(new MVMLambdaFn(hint, ctx, compiledLambda, roots, rootFrame));
@@ -92,7 +93,7 @@ public class MVMScopingLibrary {
                 }
             };
         }
-        return new MVMCExpr() {
+        return new MVMCExpr(MVMType.ANY) {
             @Override
             public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                 return new MVMLambdaFn(hint, ctx, compiledLambda, roots, rootFrame);
@@ -188,8 +189,9 @@ public class MVMScopingLibrary {
                     throw new RuntimeException("let binding must be of 2 elements, name and expression");
                 Object name = b.get(0);
                 Object expr = b.get(1);
-                letLocals.add(innerScope.newLocal((DatumSymbol) name));
-                letExprs.add(cs.compile(expr));
+                MVMCExpr exprC = cs.compile(expr);
+                letLocals.add(innerScope.newLocal((DatumSymbol) name, exprC.returnType));
+                letExprs.add(exprC);
             }
             // compile the "begin" contents
             MVMCExpr inner = MVMCBegin.of(innerScope, call, 1, call.length - 1);

@@ -9,45 +9,52 @@ package r48.minivm.fn;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import r48.minivm.MVMType;
+
 /**
  * Conversions.
  * Created 10th March 2023.
  */
 public class MVMJLambdaConv {
-    public static MVMFn c(String s, Supplier<Object> fn) {
-        return new MVMFn.Fixed(s) {
+    public static MVMFn c(String s, MVMType rt, Supplier<Object> fn) {
+        MVMType.Fn ft = new MVMType.Fn(rt, 0, new MVMType[] {}, null);
+        return new MVMFn.Fixed(ft, s) {
             @Override
             public Object callDirect() {
                 return fn.get();
             }
         };
     }
-    public static MVMFn c(String s, Function<Object, Object> fn) {
-        return new MVMFn.Fixed(s) {
+    public static MVMFn c(String s, MVMType rt, MVMType t0, Function<Object, Object> fn) {
+        MVMType.Fn ft = new MVMType.Fn(rt, 1, new MVMType[] {t0}, null);
+        return new MVMFn.Fixed(ft, s) {
             @Override
             public Object callDirect(Object a0) {
                 return fn.apply(a0);
             }
         };
     }
-    public static MVMFn c(String s, F2 fn) {
-        return new MVMFn.Fixed(s) {
+    public static MVMFn c(String s, MVMType rt, MVMType t0, MVMType t1, F2 fn) {
+        MVMType.Fn ft = new MVMType.Fn(rt, 2, new MVMType[] {t0, t1}, null);
+        return new MVMFn.Fixed(ft, s) {
             @Override
             public Object callDirect(Object a0, Object a1) {
                 return fn.apply(a0, a1);
             }
         };
     }
-    public static MVMFn c(String s, F3 fn) {
-        return new MVMFn.Fixed(s) {
+    public static MVMFn c(String s, MVMType rt, MVMType t0, MVMType t1, MVMType t2, F3 fn) {
+        MVMType.Fn ft = new MVMType.Fn(rt, 3, new MVMType[] {t0, t1, t2}, null);
+        return new MVMFn.Fixed(ft, s) {
             @Override
             public Object callDirect(Object a0, Object a1, Object a2) {
                 return fn.apply(a0, a1, a2);
             }
         };
     }
-    public static MVMFn c(String s, F4 fn) {
-        return new MVMFn.Fixed(s) {
+    public static MVMFn c(String s, MVMType rt, MVMType t0, MVMType t1, MVMType t2, MVMType t3, F4 fn) {
+        MVMType.Fn ft = new MVMType.Fn(rt, 4, new MVMType[] {t0, t1, t2, t3}, null);
+        return new MVMFn.Fixed(ft, s) {
             @Override
             public Object callDirect(Object a0, Object a1, Object a2, Object a3) {
                 return fn.apply(a0, a1, a2, a3);

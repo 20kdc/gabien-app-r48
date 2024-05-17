@@ -11,6 +11,7 @@ import static gabien.datum.DatumTreeUtils.sym;
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 
 /**
@@ -20,6 +21,7 @@ import r48.minivm.MVMU;
 public final class MVMCError extends MVMCExpr {
     public final String message;
     public MVMCError(String err) {
+        super(MVMType.ANY);
         message = err;
     }
 

@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.fn.MVMFn;
 
@@ -23,8 +24,22 @@ import r48.minivm.fn.MVMFn;
 public class MVMFnCallCompiler {
 
     public static MVMCExpr compile(MVMCompileScope cs, MVMCExpr call, MVMCExpr[] exprs) {
+        MVMType infer = MVMType.ANY;
+        if (call.returnType instanceof MVMType.Fn) {
+            MVMType.Fn fnType = (MVMType.Fn) call.returnType;
+            if (exprs.length < fnType.minArgs)
+                throw new RuntimeException("Too few args for " + call + ": " + fnType);
+            for (int i = 0; i < exprs.length; i++) {
+                MVMType expected = fnType.argAt(i);
+                if (expected == null)
+                    throw new RuntimeException("Too many args for " + call + ": " + fnType);
+                expected.assertCanImplicitlyCastFrom(exprs[i].returnType, call);
+            }
+            infer = fnType.returnType;
+        }
+
         if (exprs.length == 0) {
-            return new MVMCExpr() {
+            return new MVMCExpr(infer) {
                 @Override
                 public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                     MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
@@ -37,7 +52,7 @@ public class MVMFnCallCompiler {
                 }
             };
         } else if (exprs.length == 1) {
-            return new MVMCExpr() {
+            return new MVMCExpr(infer) {
                 @Override
                 public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                     MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
@@ -51,7 +66,7 @@ public class MVMFnCallCompiler {
                 }
             };
         } else if (exprs.length == 2) {
-            return new MVMCExpr() {
+            return new MVMCExpr(infer) {
                 @Override
                 public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                     MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
@@ -66,7 +81,7 @@ public class MVMFnCallCompiler {
                 }
             };
         } else if (exprs.length == 3) {
-            return new MVMCExpr() {
+            return new MVMCExpr(infer) {
                 @Override
                 public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                     MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
@@ -82,7 +97,7 @@ public class MVMFnCallCompiler {
                 }
             };
         } else if (exprs.length == 4) {
-            return new MVMCExpr() {
+            return new MVMCExpr(infer) {
                 @Override
                 public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                     MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
@@ -99,7 +114,7 @@ public class MVMFnCallCompiler {
                 }
             };
         } else {
-            return new MVMCExpr() {
+            return new MVMCExpr(infer) {
                 @Override
                 public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                     MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));

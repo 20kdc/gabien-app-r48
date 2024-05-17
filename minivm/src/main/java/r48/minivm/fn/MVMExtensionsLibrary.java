@@ -13,6 +13,7 @@ import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMU;
 import r48.minivm.MVMSlot;
+import r48.minivm.MVMType;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCMacroify;
@@ -24,22 +25,22 @@ import r48.minivm.expr.MVMCMacroify;
 public class MVMExtensionsLibrary {
     public static void add(MVMEnv ctx) {
         // Custom: Clojureisms
-        ctx.defLib("string->class", (a0) -> {
+        ctx.defLib("string->class", MVMType.typeOfClass(Class.class), MVMType.STR, (a0) -> {
             try {
                 return Class.forName((String) a0);
             } catch (ClassNotFoundException e) {
                 return null;
             }
         }).attachHelp("(string->class V) : Gets the given class, or null if unable.");
-        ctx.defLib("instance?", (a0, a1) -> {
+        ctx.defLib("instance?", MVMType.BOOL, MVMType.typeOfClass(Class.class), MVMType.ANY, (a0, a1) -> {
             return ((Class<?>) a0).isInstance(a1);
         }).attachHelp("(instance? C V) : Class.isInstance(V)");
         // Custom: Macro facilities
         // This should be roughly compatible with the Scheme 9 from Empty Space implementation.
-        ctx.defineSlot(sym("define-syntax")).v = new Macroify()
-                .attachHelp("(define-syntax (NAME ARG... [. VA]) PROC) : Defines a macro, given tree elements and assembles the replacement tree element. Only really makes sense at top-level.");
+        ctx.defineSlot(sym("define-syntax"), new Macroify()
+                .attachHelp("(define-syntax (NAME ARG... [. VA]) PROC) : Defines a macro, given tree elements and assembles the replacement tree element. Only really makes sense at top-level."));
         // Custom: Debug
-        ctx.defLib("mvm-disasm", (a0) -> {
+        ctx.defLib("mvm-disasm", MVMType.ANY, MVMType.ANY, (a0) -> {
             if (a0 instanceof MVMCExpr)
                 return ((MVMCExpr) a0).disasm();
             if (a0 instanceof MVMLambdaFn) {
@@ -48,9 +49,9 @@ public class MVMExtensionsLibrary {
             }
             throw new RuntimeException("Can't disassemble " + MVMU.userStr(a0));
         }).attachHelp("(mvm-disasm LAMBDA) : Disassembles the given lambda.");
-        ctx.defineSlot(sym("help")).v = new Help(ctx)
-                .attachHelp("(help [TOPIC]) : Helpful information on the given value (if any), or lists helpable symbols in the root context.\nUsed to list all symbols, then crashed.");
-        ctx.defLib("help-set!", (a0, a1) -> {
+        ctx.defineSlot(sym("help"), new Help(ctx)
+                .attachHelp("(help [TOPIC]) : Helpful information on the given value (if any), or lists helpable symbols in the root context.\nUsed to list all symbols, then crashed."));
+        ctx.defLib("help-set!", MVMType.typeOfClass(MVMHelpable.class), MVMType.typeOfClass(MVMHelpable.class), MVMType.STR, (a0, a1) -> {
             return ((MVMHelpable) a0).attachHelp((String) a1);
         }).attachHelp("(help-set! TOPIC VALUE) : Sets information on the given value.");
     }
@@ -72,7 +73,7 @@ public class MVMExtensionsLibrary {
     public static final class Help extends MVMFn.Fixed {
         final MVMEnv ctx;
         public Help(MVMEnv ctx) {
-            super("help");
+            super(new MVMType.Fn(MVMType.ANY), "help");
             this.ctx = ctx;
         }
 

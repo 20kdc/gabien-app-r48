@@ -12,6 +12,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import static gabien.datum.DatumTreeUtils.*;
 
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 
 /**
@@ -22,7 +23,14 @@ public final class MVMCIf extends MVMCExpr {
     public final @NonNull MVMCExpr c;
     public final @Nullable MVMCExpr a, b;
 
+    private static MVMType figureOutReturnType(@NonNull MVMCExpr c, @Nullable MVMCExpr a, @Nullable MVMCExpr b) {
+        MVMType aPath = a != null ? a.returnType : c.returnType;
+        MVMType bPath = b != null ? b.returnType : c.returnType;
+        return MVMType.Union.of(aPath, bPath, false);
+    }
+
     public MVMCIf(@NonNull MVMCExpr c, @Nullable MVMCExpr a, @Nullable MVMCExpr b) {
+        super(figureOutReturnType(c, a, b));
         this.c = c;
         this.a = a;
         this.b = b;

@@ -27,6 +27,7 @@ public class MVMCLet extends MVMCExpr {
     public final MVMCExpr inner;
 
     public MVMCLet(MVMCExpr[] e, MVMCLocal[] lr, @Nullable MVMCompileFrame rf, MVMCExpr i) {
+        super(i.returnType);
         expressions = e;
         roots = lr;
         rootFrame = rf;

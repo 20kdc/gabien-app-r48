@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import gabien.datum.DatumSymbol;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnvR48;
+import r48.minivm.MVMType;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.expr.MVMCExpr;
 import r48.tr.DynTrSlot;
@@ -23,28 +24,28 @@ import r48.tr.DynTrSlot;
  */
 public class MVMTrLibrary {
     public static void add(MVMEnvR48 ctx) {
-        ctx.defLib("tr-set!", (a0, a1) -> {
+        ctx.defLib("tr-set!", MVMType.ANY, MVMType.typeOfClass(DynTrSlot.class), MVMType.ANY, (a0, a1) -> {
             ((DynTrSlot) a0).setValue(a1);
             return a1;
         }).attachHelp("(tr-set! DYNTR VALUE) : Compiles a value into a dynamic translation entry. Beware VALUE is unquoted, and tr-set! itself does it's own form of compilation, so writing code directly as VALUE may have unexpected effects.");
 
-        ctx.defineSlot(new DatumSymbol("define-name")).v = new DefineName("define-name", false)
-                .attachHelp("(define-name KEY CONTENT...) : Defines a name routine.");
-        ctx.defineSlot(new DatumSymbol("define-name-nls")).v = new DefineName("define-name-nls", true)
-                .attachHelp("(define-name-nls KEY CONTENT...) : Defines a non-localizable name routine.");
+        ctx.defineSlot(new DatumSymbol("define-name"), new DefineName("define-name", false)
+                .attachHelp("(define-name KEY CONTENT...) : Defines a name routine."));
+        ctx.defineSlot(new DatumSymbol("define-name-nls"), new DefineName("define-name-nls", true)
+                .attachHelp("(define-name-nls KEY CONTENT...) : Defines a non-localizable name routine."));
 
-        ctx.defineSlot(new DatumSymbol("define-tr")).v = new DefineTr("define-tr", null, false)
-                .attachHelp("(define-tr KEY EXPR) : Defines a DynTrSlot.");
-        ctx.defineSlot(new DatumSymbol("define-tr-nls")).v = new DefineTr("define-tr-nls", null, true)
-                .attachHelp("(define-tr-nls KEY EXPR) : Defines a non-localizable DynTr 'sort of slot'.");
+        ctx.defineSlot(new DatumSymbol("define-tr"), new DefineTr("define-tr", null, false)
+                .attachHelp("(define-tr KEY EXPR) : Defines a DynTrSlot."));
+        ctx.defineSlot(new DatumSymbol("define-tr-nls"), new DefineTr("define-tr-nls", null, true)
+                .attachHelp("(define-tr-nls KEY EXPR) : Defines a non-localizable DynTr 'sort of slot'."));
 
-        ctx.defLib("r2kts->string", (x) -> {
+        ctx.defLib("r2kts->string", MVMType.STR, MVMEnvR48.RORIO_TYPE, (x) -> {
             RORIO rubyIO = (RORIO) x;
             double d = Double.parseDouble(rubyIO.decString());
             // WARNING: THIS IS MADNESS, and could be off by a few seconds.
             // In practice I tested it and it somehow wasn't off at all.
             // Command used given here:
-            // [gamemanj@archways ~]$ date --date="12/30/1899 12:00 am" +%s
+            // date --date="12/30/1899 12:00 am" +%s
             // -2209161600
             // since we want ms, 3 more 0s have been added
             long v = -2209161600000L;

@@ -13,6 +13,7 @@ import static gabien.datum.DatumTreeUtils.*;
 import java.util.LinkedList;
 
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.compiler.MVMCompileScope;
 
 /**
@@ -23,13 +24,19 @@ public final class MVMCBegin extends MVMCExpr {
     public final MVMCExpr[] exprs;
 
     private MVMCBegin(MVMCExpr[] ex) {
+        super(ex.length == 0 ? MVMType.NULL : (ex[ex.length - 1].returnType));
         exprs = ex;
     }
 
-    private MVMCBegin(MVMCompileScope cs, Object[] obj, int base, int len) {
-        exprs = new MVMCExpr[len];
+    private static MVMCExpr[] compileAll(MVMCompileScope cs, Object[] obj, int base, int len) {
+        MVMCExpr[] exprs = new MVMCExpr[len];
         for (int i = 0; i < len; i++)
             exprs[i] = cs.compile(obj[base + i]);
+        return exprs;
+    }
+
+    private MVMCBegin(MVMCompileScope cs, Object[] obj, int base, int len) {
+        this(compileAll(cs, obj, base, len));
     }
 
     public static MVMCExpr of(MVMCExpr... content) {

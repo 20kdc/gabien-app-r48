@@ -875,16 +875,14 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 // Defines a spritesheet for spriteSelector.
                 app.sdbHelpers.createSpritesheet(srcLoc, args);
             } else {
-                throw new RuntimeException("C-command " + args[0] + " is not supported.");
+                throw new RuntimeException("C-command " + args[0] + " is not supported @ " + srcLoc);
             }
         } else if (c.equals("vm")) {
             // replacement for C datum
             for (int i = 0; i < argsObj.length; i++)
                 app.vmCtx.evalObject(argsObj[i], srcLoc);
         } else {
-            for (String arg : args)
-                System.err.print(arg + " ");
-            System.err.println("(The command " + c + " in the SDB is not supported.)");
+            throw new RuntimeException("The command " + c + " in the SDB is not supported @ " + srcLoc);
         }
     }
 }

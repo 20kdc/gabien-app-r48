@@ -12,6 +12,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMScope;
 import r48.minivm.MVMU;
 
@@ -24,6 +25,7 @@ public final class MVMCPathHashAdd extends MVMCExpr {
     private final DMKey hashVal;
 
     public MVMCPathHashAdd(MVMCExpr addBase, DMKey hashVal) {
+        super(MVMEnvR48.IRIO_TYPE);
         this.addBase = addBase;
         this.hashVal = hashVal;
     }

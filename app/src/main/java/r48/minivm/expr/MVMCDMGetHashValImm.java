@@ -6,9 +6,9 @@
  */
 package r48.minivm.expr;
 
-import org.eclipse.jdt.annotation.NonNull;
+import static gabien.datum.DatumTreeUtils.sym;
 
-import static gabien.datum.DatumTreeUtils.*;
+import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.DMKey;
 import r48.io.data.RORIO;
@@ -16,29 +16,29 @@ import r48.minivm.MVMScope;
 import r48.minivm.MVMU;
 
 /**
- * MiniVM array stuff
+ * MiniVM PathSyntax immediate hash value getter.
  * Created 26th February 2023.
  */
-public final class MVMCArrayLength extends MVMCExpr {
-    private final MVMCExpr addBase;
+public class MVMCDMGetHashValImm extends MVMCExpr {
+    public final MVMCExpr base;
+    public final DMKey key;
 
-    public MVMCArrayLength(MVMCExpr addBase) {
-        this.addBase = addBase;
+    public MVMCDMGetHashValImm(MVMCExpr base, DMKey k) {
+        super(base.returnType);
+        this.base = base;
+        key = k;
     }
 
     @Override
     public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-        RORIO root = (RORIO) addBase.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-        if (root == null)
+        RORIO res = (RORIO) base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+        if (res == null)
             return null;
-        // This is used for length disambiguation.
-        if (root.getType() != '[')
-            return null;
-        return DMKey.of(root.getALen());
+        return res.getHashVal(key);
     }
 
     @Override
     public Object disasm() {
-        return MVMU.l(sym("arrayLength"), addBase.disasm());
+        return MVMU.l(sym("getHashValImm"), base.disasm(), MVMU.userStr(key));
     }
 }

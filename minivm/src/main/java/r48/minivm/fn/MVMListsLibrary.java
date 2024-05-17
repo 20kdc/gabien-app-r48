@@ -14,6 +14,7 @@ import java.util.ListIterator;
 
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 import r48.minivm.compiler.MVMFnCallCompiler;
 
@@ -23,19 +24,19 @@ import r48.minivm.compiler.MVMFnCallCompiler;
  */
 public class MVMListsLibrary {
     public static void add(MVMEnv ctx) {
-        ctx.defineSlot(new DatumSymbol("for-each")).v = new ForEach()
-                .attachHelp("(for-each F L...) : Given a group of lists, iterates over all of them simultaneously, calling F with each set of results.");
-        ctx.defineSlot(new DatumSymbol("append")).v = new Append()
-                .attachHelp("(append L...) : Creates a new list from a set of appended lists.");
-        ctx.defineSlot(new DatumSymbol("append!")).v = new AppendM()
-                .attachHelp("(append! T L...) : Modifies an existing list to append a set of lists.");
-        ctx.defineSlot(new DatumSymbol("sublist")).v = new Sublist()
-                .attachHelp("(sublist L START END) : Substring, but on lists!");
-        ctx.defLib("list-length", (a0) -> (long) MVMU.cList(a0).size())
+        ctx.defineSlot(new DatumSymbol("for-each"), new ForEach()
+                .attachHelp("(for-each F L...) : Given a group of lists, iterates over all of them simultaneously, calling F with each set of results."));
+        ctx.defineSlot(new DatumSymbol("append"), new Append()
+                .attachHelp("(append L...) : Creates a new list from a set of appended lists."));
+        ctx.defineSlot(new DatumSymbol("append!"), new AppendM()
+                .attachHelp("(append! T L...) : Modifies an existing list to append a set of lists."));
+        ctx.defineSlot(new DatumSymbol("sublist"), new Sublist()
+                .attachHelp("(sublist L START END) : Substring, but on lists!"));
+        ctx.defLib("list-length", MVMType.I64, MVMType.LIST, (a0) -> (long) MVMU.cList(a0).size())
                 .attachHelp("(list-length L) : List length");
-        ctx.defLib("list-ref", (a0, a1) -> MVMU.cList(a0).get(MVMU.cInt(a1)))
+        ctx.defLib("list-ref", MVMType.ANY, MVMType.LIST, MVMType.I64, (a0, a1) -> MVMU.cList(a0).get(MVMU.cInt(a1)))
                 .attachHelp("(list-ref L I) : List get");
-        ctx.defLib("list-set!", (a0, a1, a2) -> {
+        ctx.defLib("list-set!", MVMType.ANY, MVMType.LIST, MVMType.I64, MVMType.ANY, (a0, a1, a2) -> {
             MVMU.cList(a0).set(MVMU.cInt(a1), a2);
             return a2;
         }).attachHelp("(list-set! L I V) : List set");
@@ -43,7 +44,7 @@ public class MVMListsLibrary {
 
     public static final class ForEach extends MVMFn {
         public ForEach() {
-            super("for-each");
+            super(new MVMType.Fn(MVMType.ANY), "for-each");
         }
 
         @Override
@@ -128,7 +129,7 @@ public class MVMListsLibrary {
 
     public static final class Append extends MVMFn {
         public Append() {
-            super("append");
+            super(new MVMType.Fn(MVMType.LIST, 0, new MVMType[0], MVMType.LIST), "append");
         }
 
         @Override
@@ -186,7 +187,7 @@ public class MVMListsLibrary {
 
     public static final class AppendM extends MVMFn {
         public AppendM() {
-            super("append!");
+            super(new MVMType.Fn(MVMType.LIST, 1, new MVMType[] {MVMType.LIST}, MVMType.LIST), "append!");
         }
 
         @Override
@@ -238,7 +239,7 @@ public class MVMListsLibrary {
 
     public static final class Sublist extends MVMFn.Fixed {
         public Sublist() {
-            super("sublist");
+            super(MVMType.Fn.simple(MVMType.LIST, MVMType.LIST, MVMType.I64, MVMType.I64), "sublist");
         }
 
         @Override

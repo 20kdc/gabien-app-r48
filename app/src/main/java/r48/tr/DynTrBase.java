@@ -12,6 +12,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
+import r48.minivm.MVMType;
 import r48.minivm.fn.MVMFn;
 
 /**
@@ -23,7 +24,7 @@ public abstract class DynTrBase extends MVMFn.Fixed implements TrPage.FF0, TrPag
     public final DatumSrcLoc sourceLoc;
 
     public DynTrBase(String i, DatumSrcLoc srcLoc) {
-        super(i);
+        super(new MVMType.Fn(MVMType.STR), i);
         excludeFromHelp = true;
         id = i;
         sourceLoc = srcLoc;

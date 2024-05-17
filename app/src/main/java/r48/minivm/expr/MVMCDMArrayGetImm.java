@@ -6,37 +6,42 @@
  */
 package r48.minivm.expr;
 
-import static gabien.datum.DatumTreeUtils.sym;
-
 import org.eclipse.jdt.annotation.NonNull;
 
-import r48.io.data.IRIO;
+import static gabien.datum.DatumTreeUtils.*;
+import r48.io.data.RORIO;
 import r48.minivm.MVMScope;
 import r48.minivm.MVMU;
 
 /**
- * MiniVM PathSyntax IVar getter.
+ * MiniVM PathSyntax immediate array value getter.
  * Created 26th February 2023.
  */
-public class MVMCGetIVar extends MVMCExpr {
+public class MVMCDMArrayGetImm extends MVMCExpr {
     public final MVMCExpr base;
-    public final String key;
+    public final int index;
 
-    public MVMCGetIVar(MVMCExpr base, String k) {
+    public MVMCDMArrayGetImm(MVMCExpr base, int k) {
+        // inherits IRIO/RORIOness
+        super(base.returnType);
         this.base = base;
-        key = k;
+        index = k;
     }
 
     @Override
     public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-        IRIO res = (IRIO) base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+        RORIO res = (RORIO) base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         if (res == null)
             return null;
-        return res.getIVar(key);
+        if (res.getType() != '[')
+            return null;
+        if (index < 0 || index >= res.getALen())
+            return null;
+        return res.getAElem(index);
     }
 
     @Override
     public Object disasm() {
-        return MVMU.l(sym("getIVar"), base.disasm(), key);
+        return MVMU.l(sym("arrayGetImm"), base.disasm(), index);
     }
 }

@@ -8,9 +8,12 @@ package r48.minivm.expr;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.datum.DatumWriter;
+
 import static gabien.datum.DatumTreeUtils.*;
 
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 
 /**
@@ -19,6 +22,11 @@ import r48.minivm.MVMU;
  * Created 26th February 2023.
  */
 public abstract class MVMCExpr {
+    public final MVMType returnType;
+    public MVMCExpr(MVMType type) {
+        this.returnType = type;
+    }
+
     public final Object exc(@NonNull MVMScope ctx) {
         return execute(ctx, null, null, null, null, null, null, null, null);
     }
@@ -32,13 +40,18 @@ public abstract class MVMCExpr {
      */
     public abstract Object disasm();
 
+    @Override
+    public String toString() {
+        return DatumWriter.objectToString(disasm());
+    }
+
     /**
      * Constant.
      */
     public static class Const extends MVMCExpr {
         public final Object value;
-        public Const(Object v) {
-            super();
+        public Const(Object v, MVMType type) {
+            super(type);
             value = v;
         }
         @Override
@@ -52,7 +65,7 @@ public abstract class MVMCExpr {
     }
 
     // These two manipulate the L0 slot. This is used by "hand-written" code using the VM like PathSyntax.
-    public static final MVMCExpr getL0 = new MVMCExpr() {
+    public static final MVMCExpr getL0 = new MVMCExpr(MVMType.ANY) {
         @Override
         public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l0;
@@ -65,6 +78,7 @@ public abstract class MVMCExpr {
     private static abstract class Set extends MVMCExpr {
         protected final MVMCExpr value, ret;
         Set(MVMCExpr value, MVMCExpr ret) {
+            super(ret.returnType);
             this.value = value;
             this.ret = ret;
         }

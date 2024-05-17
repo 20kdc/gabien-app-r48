@@ -13,6 +13,7 @@ import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMSlot;
+import r48.minivm.MVMType;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCSetSlot;
 import r48.minivm.fn.MVMMacro;
@@ -114,7 +115,7 @@ public abstract class MVMCompileScope {
                 // Macro compile tiiiiimmmeeeee
                 MVMCExpr macroRes = ((MVMMacro) effectiveValueForMacroLookup).compile(this, oa);
                 if (macroRes == null)
-                    return new MVMCExpr.Const(null);
+                    return new MVMCExpr.Const(null, MVMType.NULL);
                 return macroRes;
             }
             final MVMCExpr[] exprs = new MVMCExpr[oa.length];
@@ -122,7 +123,7 @@ public abstract class MVMCompileScope {
                 exprs[i] = compile(oa[i]);
             return MVMFnCallCompiler.compile(this, ol1v, exprs);
         } else {
-            return new MVMCExpr.Const(o);
+            return new MVMCExpr.Const(o, MVMType.typeOf(o));
         }
     }
 }

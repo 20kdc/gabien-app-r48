@@ -19,6 +19,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.datum.DatumReaderTokenSource;
 import gabien.datum.DatumSrcLoc;
 import gabien.datum.DatumSymbol;
+import gabien.datum.DatumWriter;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.compiler.MVMToplevelScope;
 import r48.minivm.expr.MVMCExpr;
@@ -31,29 +32,36 @@ import static gabien.datum.DatumTreeUtils.decVisitor;
  * Created 26th February 2023 but only fleshed out 28th.
  */
 public class MVMEnv {
-    private final @Nullable MVMEnv parent;
+    /**
+     * Value namespace.
+     */
     private final ConcurrentHashMap<DatumSymbol, MVMSlot> values = new ConcurrentHashMap<>();
-    private final AtomicLong gensymCounter;
+    /**
+     * Separate type namespace.
+     */
+    private final ConcurrentHashMap<DatumSymbol, MVMType> types = new ConcurrentHashMap<>();
+    private final AtomicLong gensymCounter = new AtomicLong();
 
     public MVMEnv() {
-        parent = null;
-        gensymCounter = new AtomicLong();
-    }
-
-    protected MVMEnv(MVMEnv p) {
-        parent = p;
-        gensymCounter = p.gensymCounter;
-    }
-
-    public MVMEnv extend() {
-        return new MVMEnv(this);
+        defineType(new DatumSymbol("any"), MVMType.ANY);
+        defineType(new DatumSymbol("null"), MVMType.NULL);
+        defineType(new DatumSymbol("obj"), MVMType.OBJ);
+        defineType(new DatumSymbol("list"), MVMType.LIST);
+        defineType(new DatumSymbol("i64"), MVMType.I64);
+        defineType(new DatumSymbol("f64"), MVMType.F64);
+        defineType(new DatumSymbol("str"), MVMType.STR);
+        defineType(new DatumSymbol("sym"), MVMType.SYM);
+        defineType(new DatumSymbol("bool"), MVMType.BOOL);
+        defineType(new DatumSymbol("fn"), MVMType.FN);
+        defineType(new DatumSymbol("num"), MVMType.NUM);
+        defineType(new DatumSymbol("env"), MVMType.ENV);
+        defineType(new DatumSymbol("char"), MVMType.CHAR);
     }
 
     public final DatumSymbol gensym() {
         return new DatumSymbol(" g" + (gensymCounter.getAndIncrement()));
     }
 
-    
     /**
      * Evaluates a string (for REPL)
      */
@@ -85,15 +93,31 @@ public class MVMEnv {
         }
     }
 
-    public @Nullable MVMSlot getSlot(DatumSymbol d) {
-        if (parent != null) {
-            MVMSlot at = parent.getSlot(d);
-            if (at != null)
-                return at;
+    /**
+     * Attempts to parse a type.
+     */
+    public @NonNull MVMType getType(Object type) {
+        if (type instanceof DatumSymbol) {
+            MVMType mt = types.get((DatumSymbol) type);
+            if (mt == null)
+                throw new RuntimeException("Unknown type: " + type);
+            return mt;
+        } else {
+            throw new RuntimeException("Cannot parse type: " + DatumWriter.objectToString(type));
         }
+    }
+
+    public void defineType(DatumSymbol d, MVMType type) {
+        types.put(d, type);
+    }
+
+    public @Nullable MVMSlot getSlot(DatumSymbol d) {
         return values.get(d);
     }
 
+    /**
+     * Ensures a slot is present (like define does)
+     */
     public @NonNull MVMSlot ensureSlot(DatumSymbol d) {
         MVMSlot res = getSlot(d);
         if (res != null)
@@ -105,9 +129,24 @@ public class MVMEnv {
      * Beware: This defines the slot "here and now", with shadowing, which is not how (define) works. Use ensureSlot.
      */
     public @NonNull MVMSlot defineSlot(DatumSymbol d) {
+        return defineSlot(d, null, MVMType.ANY);
+    }
+
+    /**
+     * Beware: This defines the slot "here and now", with shadowing, which is not how (define) works. Use ensureSlot.
+     */
+    public @NonNull MVMSlot defineSlot(DatumSymbol d, Object v) {
+        return defineSlot(d, v, MVMType.typeOf(v));
+    }
+
+    /**
+     * Beware: This defines the slot "here and now", with shadowing, which is not how (define) works. Use ensureSlot.
+     */
+    public @NonNull MVMSlot defineSlot(DatumSymbol d, Object v, MVMType t) {
         if (values.containsKey(d))
             throw new RuntimeException("Cannot redefine: " + d);
-        MVMSlot s = new MVMSlot(d);
+        MVMSlot s = new MVMSlot(d, t);
+        s.v = v;
         values.put(d, s);
         return s;
     }
@@ -119,45 +158,45 @@ public class MVMEnv {
     /**
      * Quickly defines a library function.
      */
-    public MVMFn defLib(String s, Supplier<Object> fn) {
-        MVMFn f2 = MVMJLambdaConv.c(s, fn);
-        defineSlot(new DatumSymbol(s)).v = f2;
+    public MVMFn defLib(String s, MVMType rt, Supplier<Object> fn) {
+        MVMFn f2 = MVMJLambdaConv.c(s, rt, fn);
+        defineSlot(new DatumSymbol(s), f2);
         return f2;
     }
 
     /**
      * Quickly defines a library function.
      */
-    public MVMFn defLib(String s, Function<Object, Object> fn) {
-        MVMFn f2 = MVMJLambdaConv.c(s, fn);
-        defineSlot(new DatumSymbol(s)).v = f2;
+    public MVMFn defLib(String s, MVMType rt, MVMType t0, Function<Object, Object> fn) {
+        MVMFn f2 = MVMJLambdaConv.c(s, rt, t0, fn);
+        defineSlot(new DatumSymbol(s), f2);
         return f2;
     }
 
     /**
      * Quickly defines a library function.
      */
-    public MVMFn defLib(String s, MVMJLambdaConv.F2 fn) {
-        MVMFn f2 = MVMJLambdaConv.c(s, fn);
-        defineSlot(new DatumSymbol(s)).v = f2;
+    public MVMFn defLib(String s, MVMType rt, MVMType t0, MVMType t1, MVMJLambdaConv.F2 fn) {
+        MVMFn f2 = MVMJLambdaConv.c(s, rt, t0, t1, fn);
+        defineSlot(new DatumSymbol(s), f2);
         return f2;
     }
 
     /**
      * Quickly defines a library function.
      */
-    public MVMFn defLib(String s, MVMJLambdaConv.F3 fn) {
-        MVMFn f2 = MVMJLambdaConv.c(s, fn);
-        defineSlot(new DatumSymbol(s)).v = f2;
+    public MVMFn defLib(String s, MVMType rt, MVMType t0, MVMType t1, MVMType t2, MVMJLambdaConv.F3 fn) {
+        MVMFn f2 = MVMJLambdaConv.c(s, rt, t0, t1, t2, fn);
+        defineSlot(new DatumSymbol(s), f2);
         return f2;
     }
 
     /**
      * Quickly defines a library function.
      */
-    public MVMFn defLib(String s, MVMJLambdaConv.F4 fn) {
-        MVMFn f2 = MVMJLambdaConv.c(s, fn);
-        defineSlot(new DatumSymbol(s)).v = f2;
+    public MVMFn defLib(String s, MVMType rt, MVMType t0, MVMType t1, MVMType t2, MVMType t3, MVMJLambdaConv.F4 fn) {
+        MVMFn f2 = MVMJLambdaConv.c(s, rt, t0, t1, t2, t3, fn);
+        defineSlot(new DatumSymbol(s), f2);
         return f2;
     }
 }

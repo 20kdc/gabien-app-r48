@@ -28,10 +28,6 @@ There are some caveats:
 
 * A hypothetical simplicity optimum would be to merge *global* and *local* access into one mechanism. However, this requires globals to live in an expandable array of some sort, and the access complexity added here isn't worth it.
 
-```
-
-```
-
 ## Data Types
 
 The key assumption is that the JVM's optimization target has been towards ensuring that core boxed Java types such as `Double`, `Long`, and `String` are optimized.
@@ -100,7 +96,15 @@ Some rationale:
 
 - Of course, other less inconsistent approaches exist -- if you can require a function's environment reference never changes, you can auto-optimize the environment such that a slot approach is feasible while still making it fit the API of a table, and then apply similar logic to descendant environments with, i.e. a prototyping system -- but the requirements of fast locals (see later in this document) made these not reasonable courses of action.
 
-### Functions
+## Environments
+
+`MVMEnv` is the class which covers the root scope.
+
+`MVMEnv` contains a symbol to `MVMSlot` lookup table, which holds all the globals.
+
+It also contains a symbol to `MVMType` lookup table, which will be used for stricter typing in future.
+
+## Functions
 
 Functions, aka MVMFn, are where some of the other interesting GC performance tricks come into play.
 

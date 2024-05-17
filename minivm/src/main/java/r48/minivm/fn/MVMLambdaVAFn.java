@@ -8,6 +8,7 @@ package r48.minivm.fn;
 
 import java.util.List;
 
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 
 /**
@@ -18,7 +19,7 @@ public class MVMLambdaVAFn extends MVMFn {
     public final MVMLambdaFn underlying;
     public final int fixedArgs;
     public MVMLambdaVAFn(MVMLambdaFn u) {
-        super(u.nameHint);
+        super(new MVMType.Fn(u.content.returnType), u.nameHint);
         help = u.help;
         underlying = u;
         fixedArgs = underlying.argL.length - 1;

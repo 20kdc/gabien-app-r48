@@ -13,6 +13,7 @@ import java.util.Arrays;
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 
 /**
@@ -29,14 +30,21 @@ public final class MVMCLocal {
      * Local ID. within frame.
      */
     private int localID;
+    /**
+     * Local's type.
+     * This has to be overwritable because the local's type isn't necessarily "perfect" yet
+     */
+    public @NonNull MVMType type;
 
-    public MVMCLocal(int fl) {
+    public MVMCLocal(int fl, @NonNull MVMType t) {
         localID = fl;
+        type = t;
     }
 
-    public MVMCLocal(int fID, int lID) {
+    public MVMCLocal(int fID, int lID, @NonNull MVMType t) {
         frameID = fID;
         localID = lID;
+        type = t;
     }
 
     public int getFastSlot() {
@@ -57,6 +65,10 @@ public final class MVMCLocal {
     }
 
     public final class Read extends MVMCExpr {
+        public Read() {
+            super(type);
+        }
+
         @Override
         public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             if (frameID == -1) {
@@ -94,9 +106,10 @@ public final class MVMCLocal {
     public MVMCExpr write(final MVMCExpr val) {
         if (frameID == -1)
             throw new RuntimeException("A local being written cannot be fast. Deoptimize it.");
+        val.returnType.assertCanImplicitlyCastTo(type, val);
         final int fID = frameID;
         final int lID = localID;
-        return new MVMCExpr() {
+        return new MVMCExpr(val.returnType) {
             @Override
             public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                 Object v = val.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);

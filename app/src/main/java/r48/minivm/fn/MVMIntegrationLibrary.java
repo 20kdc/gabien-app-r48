@@ -16,6 +16,7 @@ import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMU;
 import r48.minivm.MVMSlot;
+import r48.minivm.MVMType;
 
 /**
  * MiniVM standard library.
@@ -23,14 +24,14 @@ import r48.minivm.MVMSlot;
  */
 public class MVMIntegrationLibrary {
     public static void add(MVMEnvR48 ctx) {
-        ctx.defLib("include", (a0) -> {
+        ctx.defLib("include", MVMType.NULL, MVMType.STR, (a0) -> {
             ctx.include((String) a0, false);
             return null;
         }).attachHelp("(include FILE) : Includes the given file. The code within magically counts as top-level even if it shouldn't. The filename has \".scm\" appended, and a second file is checked for with \".aux.scm\" appended for user additions.");
-        ctx.defineSlot(new DatumSymbol("log")).v = new Log()
-                .attachHelp("(log V...) : Logs the given values.");
-        ctx.defineSlot(new DatumSymbol("help-html")).v = new HelpHTML(ctx)
-                .attachHelp("(help-html) : Creates r48-repl-help.html in the R48 launch directory.");
+        ctx.defineSlot(new DatumSymbol("log"), new Log()
+                .attachHelp("(log V...) : Logs the given values."));
+        ctx.defineSlot(new DatumSymbol("help-html"), new HelpHTML(ctx)
+                .attachHelp("(help-html) : Creates r48-repl-help.html in the R48 launch directory."));
     }
     public static final class Log extends MVMFn.VA {
         public Log() {
@@ -47,7 +48,7 @@ public class MVMIntegrationLibrary {
     public static final class HelpHTML extends MVMFn.Fixed {
         public final MVMEnv ctx;
         public HelpHTML(MVMEnv ctx) {
-            super("help-html");
+            super(new MVMType.Fn(MVMType.STR), "help-html");
             this.ctx = ctx;
         }
         public String textToHTML(String txt) {

@@ -10,9 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.datum.DatumSymbol;
+import r48.minivm.MVMType;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCLocal;
 
@@ -81,8 +83,8 @@ public class MVMSubScope extends MVMCompileScope {
     /**
      * Creates a new local, directly.
      */
-    public MVMCLocal newLocal(DatumSymbol aSym) {
-        LocalRoot lr = new LocalRoot();
+    public MVMCLocal newLocal(@NonNull DatumSymbol aSym, @NonNull MVMType type) {
+        LocalRoot lr = new LocalRoot(type);
         // Overwriting of existing locals dereferences them and frees them up for fast-local allocation.
         // That's fine. (We'll never see those locals again, so fast local reuse is just creative budgeting.)
         // Existing references are also fine because whatever changes those fast locals can't be retroactive.
@@ -110,9 +112,11 @@ public class MVMSubScope extends MVMCompileScope {
 
     @Override
     public MVMCExpr compileDefine(DatumSymbol sym, Supplier<MVMCExpr> value) {
-        LocalRoot local = new LocalRoot();
+        LocalRoot local = new LocalRoot(MVMType.ANY);
         locals.put(sym, local);
-        return local.setter(value.get());
+        MVMCExpr res = value.get();
+        local.local.type = res.returnType;
+        return local.setter(res);
     }
 
     @Override
@@ -156,13 +160,13 @@ public class MVMSubScope extends MVMCompileScope {
     private final class LocalRoot extends Local {
         // Local.
         public final MVMCLocal local;
-        public LocalRoot() {
+        public LocalRoot(@NonNull MVMType type) {
             // Perform initial allocation
             int fl = getFreeFastLocalSlot();
             if (fl != -1) {
-                local = new MVMCLocal(fl);
+                local = new MVMCLocal(fl, type);
             } else {
-                local = frame.allocateLocal();
+                local = frame.allocateLocal(type);
             }
         }
 

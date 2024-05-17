@@ -11,6 +11,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import static gabien.datum.DatumTreeUtils.*;
 
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.compiler.MVMFnCallCompiler;
@@ -25,6 +26,7 @@ public final class MVMCMacroify extends MVMCExpr {
     public final MVMCExpr expr;
 
     public MVMCMacroify(MVMCExpr f) {
+        super(MVMType.typeOfClass(MVMMacro.class));
         expr = f;
     }
 

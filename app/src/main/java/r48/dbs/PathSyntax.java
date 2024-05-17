@@ -19,14 +19,15 @@ import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
-import r48.minivm.expr.MVMCArrayGetImm;
-import r48.minivm.expr.MVMCArrayLength;
+import r48.minivm.expr.MVMCDMArrayGetImm;
+import r48.minivm.expr.MVMCDMArrayLength;
 import r48.minivm.expr.MVMCError;
 import r48.minivm.expr.MVMCExpr;
-import r48.minivm.expr.MVMCGetHashDefVal;
-import r48.minivm.expr.MVMCGetHashValImm;
-import r48.minivm.expr.MVMCGetIVar;
+import r48.minivm.expr.MVMCDMGetHashDefVal;
+import r48.minivm.expr.MVMCDMGetHashValImm;
+import r48.minivm.expr.MVMCDMGetIVar;
 import r48.minivm.expr.MVMCPathHashAdd;
 import r48.minivm.expr.MVMCPathHashDel;
 
@@ -160,8 +161,8 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
 
     // Used for missing IV autodetect
     public static String getAbsoluteIVar(PathSyntax iv) {
-        if (iv.getProgram instanceof MVMCGetIVar) {
-            MVMCGetIVar sb = ((MVMCGetIVar) iv.getProgram);
+        if (iv.getProgram instanceof MVMCDMGetIVar) {
+            MVMCDMGetIVar sb = ((MVMCDMGetIVar) iv.getProgram);
             if (sb.base != MVMCExpr.getL0)
                 return null;
             return sb.key;
@@ -200,7 +201,7 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
                 if (subcom.startsWith("{")) {
                     String esc = subcom.substring(1);
                     DMKey hashVal = ValueSyntax.decode(esc);
-                    MVMCExpr currentGet = new MVMCGetHashValImm(base, hashVal);
+                    MVMCExpr currentGet = new MVMCDMGetHashValImm(base, hashVal);
                     if (lastElement)
                         return new PathSyntax(parentContext, strict, currentGet, new MVMCPathHashAdd(base, hashVal), new MVMCPathHashDel(base, hashVal), arg);
                     base = currentGet;
@@ -208,15 +209,15 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
                     queuedIV = subcom.substring(1);
                 } else {
                     if (subcom.equals("length")) {
-                        base = new MVMCArrayLength(base);
+                        base = new MVMCDMArrayLength(base);
                         if (lastElement)
                             return new PathSyntax(parentContext, strict, base, base, new MVMCError("Cannot delete array length. Fix your schema."), arg);
                     } else if (subcom.equals("defVal")) {
-                        base = new MVMCGetHashDefVal(base);
+                        base = new MVMCDMGetHashDefVal(base);
                         if (lastElement)
                             return new PathSyntax(parentContext, strict, base, base, new MVMCError("Cannot delete hash default value. Fix your schema."), arg);
                     } else if (subcom.equals("fail")) {
-                        base = new MVMCExpr.Const(null);
+                        base = new MVMCExpr.Const(null, MVMType.NULL);
                         if (lastElement)
                             return new PathSyntax(parentContext, strict, base, base, base, arg);
                     } else if (subcom.length() != 0) {
@@ -227,7 +228,7 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
                 queuedIV = "@" + subcom;
             } else if (f == ']') {
                 final int atl = Integer.parseInt(subcom);
-                base = new MVMCArrayGetImm(base, atl);
+                base = new MVMCDMArrayGetImm(base, atl);
                 if (lastElement)
                     return new PathSyntax(parentContext, strict, base, base, new MVMCError("Cannot delete array element. Fix your schema."), arg);
             } else {
@@ -235,10 +236,10 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
             }
             if (queuedIV != null) {
                 final String iv = queuedIV;
-                MVMCExpr currentGet = new MVMCGetIVar(base, queuedIV);
+                MVMCExpr currentGet = new MVMCDMGetIVar(base, queuedIV);
                 final MVMCExpr parent = base;
                 if (lastElement)
-                    return new PathSyntax(parentContext, strict, currentGet, new MVMCExpr() {
+                    return new PathSyntax(parentContext, strict, currentGet, new MVMCExpr(MVMEnvR48.IRIO_TYPE) {
                         @Override
                         public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                             IRIO res = (IRIO) parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
@@ -258,7 +259,7 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
                         public Object disasm() {
                             return MVMU.l(new DatumSymbol("pathAddIVar"), parent.disasm(), iv);
                         }
-                    }, new MVMCExpr() {
+                    }, new MVMCExpr(MVMEnvR48.IRIO_TYPE) {
                         @Override
                         public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                             IRIO res = (IRIO) parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);

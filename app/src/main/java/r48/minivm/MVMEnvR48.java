@@ -22,6 +22,8 @@ import gabien.datum.DatumWriter;
 import gabienapp.Application;
 import r48.app.Coco;
 import r48.dbs.DatumLoader;
+import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.tr.DynTrBase;
 import r48.tr.DynTrSlot;
 import r48.tr.IDynTrProxy;
@@ -33,6 +35,9 @@ import r48.tr.NLSTr;
  * Include/loadProgress split from MiniVM core 1st March 2023.
  */
 public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
+    public static final MVMType IRIO_TYPE = MVMType.typeOfClass(IRIO.class);
+    public static final MVMType RORIO_TYPE = MVMType.typeOfClass(RORIO.class);
+
     private final Consumer<String> loadProgress, logTrIssues;
     private final HashMap<String, DynTrSlot> dynMap;
     private final LinkedList<String> dynList;
@@ -41,22 +46,14 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
 
     public MVMEnvR48(Consumer<String> loadProgress, Consumer<String> logTrIssues, String lid, boolean strict) {
         super();
+        defineType(new DatumSymbol("rorio"), RORIO_TYPE);
+        defineType(new DatumSymbol("irio"), IRIO_TYPE);
         this.loadProgress = loadProgress;
         this.logTrIssues = logTrIssues;
         dynMap = new HashMap<>();
         dynList = new LinkedList<>();
         langID = lid;
         this.strict = strict;
-    }
-
-    protected MVMEnvR48(MVMEnvR48 p) {
-        super(p);
-        loadProgress = p.loadProgress;
-        logTrIssues = p.logTrIssues;
-        dynMap = p.dynMap;
-        dynList = p.dynList;
-        langID = p.langID;
-        strict = p.strict;
     }
 
     /**
