@@ -25,6 +25,8 @@ import r48.minivm.expr.MVMCMacroify;
  */
 public class MVMExtensionsLibrary {
     public static void add(MVMEnv ctx) {
+        // Custom: Typed Racketisms
+        ctx.defineSlot(sym("define-type"), new DefineType().attachHelp("(define-type NAME TYPE) : Defines a name for a type. Should be top-level only as this is not scoped."));
         // Custom: Clojureisms
         ctx.defLib("string->class", MVMType.typeOfClass(Class.class), MVMType.STR, (a0) -> {
             try {
@@ -130,6 +132,20 @@ public class MVMExtensionsLibrary {
                     return MVMU.l(sym("cast"), type.toString(), res.disasm());
                 }
             };
+        }
+    }
+
+    public static final class DefineType extends MVMMacro {
+        public DefineType() {
+            super("define-type");
+        }
+
+        @Override
+        public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
+            if (call.length != 2)
+                throw new RuntimeException("define-type NAME TYPE");
+            cs.context.defineType((DatumSymbol) call[0], cs.context.getType(call[1]));
+            return null;
         }
     }
 }
