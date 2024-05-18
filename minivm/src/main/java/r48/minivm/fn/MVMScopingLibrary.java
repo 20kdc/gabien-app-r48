@@ -73,7 +73,7 @@ public class MVMScopingLibrary {
                 List<?> la = (List<?>) arg;
                 if (la.size() != 2)
                     throw new RuntimeException("lambda " + hint + ": arg " + MVMU.userStr(arg) + " looks typed but is weird");
-                argType = mcs.context.getType(la.get(1));
+                argType = mcs.context.getType(la.get(1), "lambda " + hint + " arg");
                 Object name = la.get(0);
                 if (!(name instanceof DatumSymbol))
                     throw new RuntimeException("lambda " + hint + ": arg " + MVMU.userStr(arg) + " looks typed but name isn't a symbol");
@@ -159,7 +159,7 @@ public class MVMScopingLibrary {
             throw new RuntimeException(MVMU.userStr(k) + " expected to be sym");
         DatumSymbol k2 = (DatumSymbol) k;
         try {
-            return cs.compileDefine(k2, cs.context.getType(t), v);
+            return cs.compileDefine(k2, cs.context.getType(t, "typeof-" + k2.id), v);
         } catch (Exception ex) {
             throw new RuntimeException("during '" + k + "' definition", ex);
         }

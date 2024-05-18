@@ -161,10 +161,26 @@ The main outcome of this is that:
 
 D/MVM types are _not_ Java classes. This is because D/MVM types have to support function signatures and -- at least in theory -- list contents.
 
-The best way to understand the D/MVM type system is to understand that it is an attempt to shoehorn in static typing into an already somewhat estranged Scheme dialect:  
+The best way to understand the D/MVM type system is to understand that it is an attempt to shoehorn in static typing into an already somewhat estranged Scheme dialect:
 
-	* Null-checking was considered but ran into practical problems.
-	* The type checking is overtly permissive, not helped by type signatures not really being "dynamic" enough to match the actual runtime semantics.
-	* It is impossible to manually specify certain types, requiring resorting to `any` (which, like in TypeScript, essentially disables the whole apparatus).
+* Null-checking was considered but ran into practical problems.
+* The type checking is overtly permissive, not helped by type signatures not really being "dynamic" enough to match the actual runtime semantics.
+* It is impossible to manually specify certain types, requiring resorting to `any` (which, like in TypeScript, essentially disables the whole apparatus).
 
 In practice, if it catches some obvious errors while refactoring, it has succeeded in what it is supposed to do.
+
+### Types
+
+Where types are used, here is what you can write:
+
+* The symbol of a type is valid to represent that type.
+* `(S base-type)` declares a subtype of `base-type`. _It is not possible to implicitly cast to a subtype, except via `any`._
+
+### Where are types specified?
+
+Types can be specified:
+
+* As part of `define`: `(define counter i64 2)`
+* As part of arguments to functions or lambdas: `(define (iadd (a i64) (b i64) (+ a b))`
+* As part of `define-type`: `(define-type special-list (S list))`
+* As part of `cast`: `(cast i64 some-value)`

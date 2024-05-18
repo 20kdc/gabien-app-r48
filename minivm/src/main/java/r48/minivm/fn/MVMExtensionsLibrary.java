@@ -115,7 +115,7 @@ public class MVMExtensionsLibrary {
                 type = MVMType.ANY;
                 res = cs.compile(call[0]);
             } else if (call.length == 2) {
-                type = cs.context.getType(call[0]);
+                type = cs.context.getType(call[0], "cast-type");
                 res = cs.compile(call[1]);
             } else {
                 throw new RuntimeException("cast expected only one or two args");
@@ -144,7 +144,8 @@ public class MVMExtensionsLibrary {
         public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
             if (call.length != 2)
                 throw new RuntimeException("define-type NAME TYPE");
-            cs.context.defineType((DatumSymbol) call[0], cs.context.getType(call[1]));
+            DatumSymbol name = (DatumSymbol) call[0];
+            cs.context.defineType(name, cs.context.getType(call[1], name.id));
             return null;
         }
     }

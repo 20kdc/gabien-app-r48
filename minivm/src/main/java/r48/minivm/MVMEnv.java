@@ -7,6 +7,7 @@
 package r48.minivm;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -95,15 +96,24 @@ public class MVMEnv {
     /**
      * Attempts to parse a type.
      */
-    public @NonNull MVMType getType(Object type) {
+    public @NonNull MVMType getType(Object type, String name) {
         if (type instanceof DatumSymbol) {
             MVMType mt = types.get((DatumSymbol) type);
             if (mt == null)
                 throw new RuntimeException("Unknown type: " + type);
             return mt;
-        } else {
-            throw new RuntimeException("Cannot parse type: " + DatumWriter.objectToString(type));
+        } else if (type instanceof List) {
+            List<?> tdef = (List<?>) type;
+            if (tdef.size() > 0) {
+                Object inst = tdef.get(0);
+                if (inst instanceof DatumSymbol) {
+                    String cmd = ((DatumSymbol) inst).id;
+                    if (cmd.equals("S") && tdef.size() == 2)
+                        return new MVMType.Subtype(getType(tdef.get(1), name + "-base"), name);
+                }
+            }
         }
+        throw new RuntimeException("Cannot parse type: " + DatumWriter.objectToString(type));
     }
 
     public void defineType(DatumSymbol d, MVMType type) {

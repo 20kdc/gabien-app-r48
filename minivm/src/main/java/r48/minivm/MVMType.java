@@ -414,4 +414,33 @@ public abstract class MVMType {
             return false;
         }
     }
+
+    /**
+     * A subtype.
+     * This requires explicit casting to "enter" the subtype, though it can be implicitly "left".
+     */
+    public static final class Subtype extends MVMType {
+        public final MVMType baseType;
+        public final String name;
+
+        public Subtype(MVMType mt, String name) {
+            this.baseType = mt;
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        @Override
+        protected boolean canImplicitlyCastFromImpl(MVMType other) {
+            return false;
+        }
+
+        @Override
+        protected boolean canImplicitlyCastToImpl(MVMType other) {
+            return other.canImplicitlyCastFrom(baseType);
+        }
+    }
 }
