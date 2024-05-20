@@ -6,31 +6,31 @@
 
 ; Movement commands for VX Ace.
 
-(obj 0 "\"Terminate\"")
-(d Do I really need to describe this?)
+(cmd 0 "Terminate")
+(d "Do I really need to describe this?")
 (L)
 
 (\# RCOM/CommonMove)
 
-(obj 39 "\"Enable transparency\"")
-(d I would assume *translucency* is the correct*GACK!*)
-(obj 40 "\"Disable transparency\"")
-(d ...)
+(cmd 39 "Enable transparency")
+(d "I would assume *translucency* is the correct*GACK!*")
+(cmd 40 "Disable transparency")
+(d "...")
 
-(obj 41 "\"Set graphic\" ($ \" to \" ]0) ($ \" \" ]1)")
-(d Change the sprites of the character.)
+(cmd 41 "Set graphic" ($ " to " ]0) ($ " " ]1))
+(d "Change the sprites of the character.")
 (p characterName f_char_name)
-(C spritesheet \0 Characters/)
+(C spritesheet 0 Characters/)
 (p characterIndex int)
 
-(obj 42 "\"Set opacity\" ($ \" to \" ]0 opacity)")
-(d Change the opacity of the character.)
+(cmd 42 "Set opacity" ($ " to " ]0 opacity))
+(d "Change the opacity of the character.")
 (p opacity opacity)
 
-(obj 43 "\"Change blend_type\" ($ \" to \" ]0 blend_type)")
-(d Change the blend type \(how translucency interacts with the environment\) of the character.)
+(cmd 43 "Change blend_type" ($ " to " ]0 blend_type))
+(d "Change the blend type (how translucency interacts with the environment) of the character.")
 (p blendType blend_type)
 
-(obj 44 "\"Play SE\" ($ \" \" ]0)")
-(d Play a sound effect.)
+(cmd 44 "Play SE" ($ " " ]0))
+(d "Play a sound effect.")
 (p se RPG::SE)

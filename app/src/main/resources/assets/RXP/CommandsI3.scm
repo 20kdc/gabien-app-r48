@@ -6,46 +6,46 @@
 
 ; [Interpreter Part 3]
 
-(obj 101 "\"Say\" ($ \" \" ]0)")
-(C category \0)
-(d Begins showing a message.)
+(cmd 101 "Say" ($ " " ]0))
+(C category 0)
+(d "Begins showing a message.")
 (C tag translatable sayCmd)
-(C textArg \0)
+(C textArg 0)
 (p text string)
-(C groupBehavior messagebox \401)
+(C groupBehavior messagebox 401)
 
-(obj 401 "\"Say (cont.)\" ($ \" \" ]0)")
-(C category \0)
-(d Continues a message.)
+(cmd 401 "Say (cont.)" ($ " " ]0))
+(C category 0)
+(d "Continues a message.")
 (C tag translatable sayCmd)
 (C commandSiteAllowed false)
-(C textArg \0)
+(C textArg 0)
 (p text string)
 
 ; Choices and input moved to RCOM/CommonCommands
 
-(obj 104 "\"Change Text Options\" ($ \": \" ]0 change_text_options_position) (? ]1 \", \" (if-eq ]1 0 \"visible bkg.\" \"invisible bkg.\"))")
-(C category \0)
-(d Changes the settings used to display text.)
+(cmd 104 "Change Text Options" ($ ": " ]0 change_text_options_position) (? ]1 ", " (if-eq ]1 0 "visible bkg." "invisible bkg.")))
+(C category 0)
+(d "Changes the settings used to display text.")
 (p position change_text_options_position)
 (p frameTransparent int_boolean)
 
-(obj 105 "\"Button Input\" ($ \" to \" ]0 var_id #t)")
-(C category \5)
-(d Stores a pressed button in a variable.)
+(cmd 105 "Button Input" ($ " to " ]0 var_id #t))
+(C category 5)
+(d "Stores a pressed button in a variable.")
 (p varId var_id)
 
-(obj 106 "\"Wait\" (? ]0 (\" \" (@ ]0) \" frames\"))")
-(C category \5)
-(d Waits some amount of time.)
+(cmd 106 "Wait" (? ]0 (" " (@ ]0) " frames")))
+(C category 5)
+(d "Waits some amount of time.")
 (p time int)
 
 ; conditional branch (111/411/412) and loops (112/113/413) and EEP 115 in CommonCommands
 
 ; [A perfectly ordinary gap.]
 
-(obj 116 "\"Temp. Erase Calling Event\"")
-(C category \3)
-(d Erases the running event until next map load.)
+(cmd 116 "Temp. Erase Calling Event")
+(C category 3)
+(d "Erases the running event until next map load.")
 
 ; CCE 117, LBL 118, JMP 119 in CommonCommands

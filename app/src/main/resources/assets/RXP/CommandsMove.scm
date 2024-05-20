@@ -6,35 +6,35 @@
 
 ; MoveCommands stuff.
 
-(obj 0 "\">> insert point\"")
-(d Mostly harmless.)
+(cmd 0 ">> insert point")
+(d "Mostly harmless.")
 (L)
 
 (\# RCOM/CommonMove)
 
 ; I am now very glad I reused the EventCommand code for this
 
-(obj 39 "\"Ignore Z Depth On\"")
-(d ...)
-(obj 40 "\"Ignore Z Depth Off\"")
-(d ...)
+(cmd 39 "Ignore Z Depth On")
+(d "...")
+(cmd 40 "Ignore Z Depth Off")
+(d "...")
 
-(obj 41 "\"Set graphic\" ($ \" to \" ]0) ($ \":\" ]3) ($ \", facing \" ]2 direction)")
-(d Changes the graphics of this event.)
+(cmd 41 "Set graphic" ($ " to " ]0) ($ ":" ]3) ($ ", facing " ]2 direction))
+(d "Changes the graphics of this event.")
 (p name f_char_name)
 (p hue hue)
 (p dir direction)
 (C xpMoveCommandSetGraphic)
 (p pattern rpg_event_page_graphic_pattern)
 
-(obj 42 "\"Set opacity\" ($ \" to \" ]0 opacity)")
-(d Changes the opacity of this event.)
+(cmd 42 "Set opacity" ($ " to " ]0 opacity))
+(d "Changes the opacity of this event.")
 (p opacity opacity)
 
-(obj 43 "\"Change blend_type\" ($ \" to \" ]0 blend_type)")
-(d Changes the @blend_type of this event.)
+(cmd 43 "Change blend_type" ($ " to " ]0 blend_type))
+(d "Changes the @blend_type of this event.")
 (p blendType blend_type)
 
-(obj 44 "\"Play SE\" ($ \" \" ]0)")
-(d Plays a sound effect.)
+(cmd 44 "Play SE" ($ " " ]0))
+(d "Plays a sound effect.")
 (p audio rpg_audiofile_se)

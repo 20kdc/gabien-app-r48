@@ -10,7 +10,7 @@
 ; 100X is 2k3 Base
 ; 500X is 2k3 English
 
-(C categories \1\ -\ Text \2\ -\ Flow \3\ -\ Party \4\ -\ Map \5\ -\ Battle \6\ -\ Misc)
+(C categories "1 - Text" "2 - Flow" "3 - Party" "4 - Map" "5 - Battle" "6 - Misc")
 
 (\# R2K/CommandsGI_0)
 (\# R2K/CommandsGI_M)
