@@ -383,7 +383,7 @@ public class CMDB extends App.Svc {
                 if (c.equals("cmd")) {
                     int objId = Integer.parseInt(args[0]);
                     LinkedList<Object> lls = new LinkedList<>();
-                    for (int i = 2; i < argsObj.length; i++)
+                    for (int i = 1; i < argsObj.length; i++)
                         lls.add(argsObj[i]);
                     rc = new RPGCommand(app, objId, srcLoc, dbId, DatumWriter.objectToString(lls));
                     rc.category = categories.length - 1;
