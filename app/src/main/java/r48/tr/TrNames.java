@@ -54,6 +54,10 @@ public class TrNames {
         return "TrSDB_" + ovc + ".title";
     }
 
+    public static String sdbLabel(String ovc, String topic) {
+        return "TrSDB_" + ovc + ".label." + topic;
+    }
+
     public static String nameRoutine(String name) {
         return "TrName." + name;
     }

@@ -12,3 +12,7 @@
 "Help/Tips/Adventure"
 "Help/Tips/Entry"
 "Help/Tips/Secret"
+
+"RVXA/BatActions"
+"RVXA/BatEffects"
+"RVXA/BatFeatures"

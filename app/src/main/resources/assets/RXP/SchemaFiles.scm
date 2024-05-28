@@ -376,7 +376,10 @@
 (+ tableSTAF RXP/TSTablesPass @passages . . 1 1632 1 1 blockDown blockLeft blockRight blockUp UNK. UNK. submerge "'counter'")
 (+ tableSTA RXP/TSTables @priorities . . 1 1632 1 1)
 (+ tableSTA RXP/TSTables @terrain_tags . . 1 1632 1 1)
-(+ hwnd . RXP/H_StuffAboutTiles)
+(+ label rxpStuffAboutTiles
+"@passages controls collision, counter.
+@priorities controls the Z-plane of the tile relative to events.
+@terrain_tags is an arbitrary number for your use.")
 (@ fog_name f_fog_name)
 (@ fog_zoom int)
 (@ fog_sx int)

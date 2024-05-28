@@ -104,7 +104,8 @@
 (@ note stringBlobEditor)
 (@ description stringBlobEditor)
 (@ icon_index int)
-(+ hwnd . RVXA/H_BatParamsTableDoc)
+(+ label rvxaBatParamsTableDoc
+"Columns are: maxHP, maxMP, attack, defense, magicAttack, magicDefense, agility, luck")
 (+ table @params . . 2 8 100 1)
 (@ features subwindow array 0 subwindow RPG::BaseItem::Feature)
 (@ learnings subwindow array 0 subwindow RPG::Class::Learning)

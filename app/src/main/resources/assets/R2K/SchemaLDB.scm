@@ -63,7 +63,11 @@
 (+ spriteSelector @face_index @face_name FaceSet/)
 
 (. rpg_actorclassbase_levelling)
-(+ hwnd . R2K/H_Levelling)
+
+(+ label r2kLevellingGuide
+"RM2000: inflate starts out at (1.5 + (exp_mul * 0.01)), base is exp. for each level, add (correction + base), then perform base *= inflate.
+Then change inflate to (((LVL * 0.002) + 0.802) * (inflate - 1)) + 1, and run for the next level until done. Levels are 1 to LVL. My goodness this is long.
+RM2003: (exp * LVL) + (factorial(LVL) * exp_mul) + (exp_add * LVL)")
 (+ optP @init_level_exp int= 30)
 (+ optP @each_level_exp_mul int= 30)
 (@ each_level_exp_add int)
@@ -193,7 +197,7 @@
 (@ use_sp_cost int)
 (+ optP @easyrpg_using_message string)
 
-(+ hwnd . R2K/H_ItemActorClass2)
+(+ label r2kitemActorClass2 "@system/@item_allow_classbased_2k3 controls which of these two are used.")
 (@ actor_set subwindow: "Allowed Actors" hash actor_id boolean)
 (@ class_set_2k3 subwindow: "Allowed Classes" hash class_id boolean)
 
@@ -610,7 +614,7 @@
 (@ system_box_tiling int_boolean)
 (@ system2_name_2k3 f_system2_name)
 
-(+ hwnd . R2K/H_ItemActorClass)
+(+ label r2kitemActorClass1 "This applies to all items, and replaces the allowed-actor lists with allowed-class lists.")
 
 (@ item_allow_classbased_2k3 rpg_system_itemactorclass2k3)
 

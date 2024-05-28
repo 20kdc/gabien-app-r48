@@ -24,7 +24,10 @@
 (@ OFED_edit_pos_y int)
 (@ OFED_expanded boolean)
 (@ music_type mapinfo_musictype)
-(+ hwnd . R2K/H_MusicType)
+(+ label r2kMusicType
+"If @music_type is inherit, both @music and @music_type are inherited from the parent map.
+If @music_type is ignored, the music is not changed (whatever was already playing remains playing).
+If @music_type is specified, the music to play is specified by the @music value.")
 (@ music RPG::Music)
 (@ background_type mapinfo_backtype)
 (@ background_name f_battleback_name)

@@ -191,6 +191,12 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     PathSyntax a = getNullablePathSyntax();
                     return new HWNDSchemaElement(app, a, args[point++]);
                 }
+                if (text.equals("label")) {
+                    String topic = args[point++];
+                    String body = args[point++];
+                    FF0 bodyTr = app.dTr(srcLoc, TrNames.sdbLabel(outerContext, topic), body);
+                    return new LabelSchemaElement(app, bodyTr);
+                }
                 if (text.equals("hide")) {
                     SchemaElement hide = get();
                     return new HiddenSchemaElement(hide, new Function<IRIO, Boolean>() {

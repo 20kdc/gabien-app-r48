@@ -58,7 +58,9 @@
 (@ character_name f_char_name)
 (@ tile_id int)
 (+ halfsplitPost eventTileHelper @tile_id @character_name 0 RXP/TSTables valButton 0 Clear)
-(+ hwnd . RXP/H_EventGraphics)
+(+ label rxpEventGraphics
+"If @tile_id is not 0, then the event is displayed as a tile. Otherwise, @character_name refers to the spritesheet.
+Importantly, tile events, when collidable (@through is false) use the collision rules of the chosen tile, as if the event occupied a layer above all existing tile layers.")
 (@ direction direction)
 (@ blend_type blend_type)
 (@ character_hue hue)
