@@ -344,7 +344,7 @@ public class UIMapView extends UIPlaneView {
                 if (layerVis[i])
                     layers[i].draw(mvdc);
 
-        boolean minimap = planeZoomDiv > 1;
+        boolean minimap = planeZoomDiv > planeZoomMul;
         if (callbacks != null)
             callbacks.performGlobalOverlay(mvdc, minimap);
     }
