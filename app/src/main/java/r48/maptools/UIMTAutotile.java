@@ -25,7 +25,6 @@ import r48.ui.UITileGrid;
 import r48.ui.utilitybelt.FillAlgorithm;
 
 import java.util.LinkedList;
-import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -262,27 +261,21 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             // 2. Any two tiles which are both part of an AT group and that is the same AT group, are the same.
             // 3. Anything else is not the same.
             final int key = map.mapTable.getTiletype(x, y, layer);
-            FillAlgorithm fa = new FillAlgorithm(new Function<FillAlgorithm.Point, FillAlgorithm.Point>() {
-                @Override
-                public FillAlgorithm.Point apply(FillAlgorithm.Point point) {
-                    if (map.mapTable.outOfBounds(point.x, point.y))
-                        return null;
-                    return point;
+            FillAlgorithm fa = new FillAlgorithm((point) -> {
+                if (map.mapTable.outOfBounds(point.x, point.y))
+                    return null;
+                return point;
+            }, (point) -> {
+                short here = map.mapTable.getTiletype(point.x, point.y, layer);
+                if (here != key) {
+                    AutoTileTypeField attf = getAutotileType(map, point.x, point.y, layer, atBases, null);
+                    if (attf == null)
+                        return false;
+                    if (!attf.contains(key))
+                        return false;
                 }
-            }, new Function<FillAlgorithm.Point, Boolean>() {
-                @Override
-                public Boolean apply(FillAlgorithm.Point point) {
-                    short here = map.mapTable.getTiletype(point.x, point.y, layer);
-                    if (here != key) {
-                        AutoTileTypeField attf = getAutotileType(map, point.x, point.y, layer, atBases, null);
-                        if (attf == null)
-                            return false;
-                        if (!attf.contains(key))
-                            return false;
-                    }
-                    map.mapTable.setTiletype(point.x, point.y, layer, getTCSelected(point.x - x, point.y - y));
-                    return true;
-                }
+                map.mapTable.setTiletype(point.x, point.y, layer, getTCSelected(point.x - x, point.y - y));
+                return true;
             });
             fa.availablePointSet.add(new FillAlgorithm.Point(x, y));
             while (!fa.availablePointSet.isEmpty())
@@ -335,6 +328,10 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         if (map.mapTable.outOfBounds(x, y))
             return preferred;
         int m = map.mapTable.getTiletype(x, y, layer);
+        return getAutotileType(m, atBases);
+    }
+
+    private static AutoTileTypeField getAutotileType(int m, AutoTileTypeField[] atBases) {
         for (int i = 0; i < atBases.length; i++)
             if (atBases[i].start <= m)
                 if ((atBases[i].start + atBases[i].length) > m)
@@ -377,10 +374,20 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         return "T" + tabInst.actTiles[selectedLocalTileIndex];
     }
 
-    public void selectTile(short aShort) {
+    public void selectTile(int aShort, boolean preferATs) {
+        if (preferATs) {
+            AutoTileTypeField attf = getAutotileType(aShort, atBases);
+            if (attf != null)
+                aShort = attf.start;
+        }
         for (int pass = 0; pass < 2; pass++) {
+            // preferATs == false : (false, true)
+            // preferATs == true : (true, false)
+            boolean queryATProcessingValue = preferATs;
+            if (pass != 0)
+                queryATProcessingValue = !queryATProcessingValue;
             for (int i = 0; i < tileTabs.length; i++) {
-                if ((pass == 0) && tileTabs[i].atProcessing)
+                if (tileTabs[i].atProcessing != queryATProcessingValue)
                     continue;
                 for (int j = 0; j < tileTabs[i].actTiles.length; j++) {
                     if (tileTabs[i].actTiles[j] == aShort) {

@@ -59,17 +59,21 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         outerLayout.scrollbar.scrollPoint = iniScroll;
         final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
         final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();
-        elms.add(new UISplitterLayout(new UITextButton("*2", c.f.fontSizerTH, () -> {
-            for (Runnable r : doubleAll)
-                r.run();
-            apply.run();
-            refreshLayout(false);
-        }), new UITextButton("/2", c.f.fontSizerTH, () -> {
+        elms.add(new UISplitterLayout(new UISplitterLayout(new UITextButton(T.g.fsc_smaller, c.f.fontSizerTH, () -> {
             for (Runnable r : halfAll)
                 r.run();
             apply.run();
             refreshLayout(false);
-        }), false, 1, 2));
+        }), new UITextButton(T.g.fsc_larger, c.f.fontSizerTH, () -> {
+            for (Runnable r : doubleAll)
+                r.run();
+            apply.run();
+            refreshLayout(false);
+        }), false, 1, 3), new UITextButton(T.g.fsc_default, c.f.fontSizerTH, () -> {
+            c.resetFontSizes();
+            apply.run();
+            refreshLayout(false);
+        }), false, 2, 3));
         elms.add(new UISplitterLayout(new UITextButton(T.g.wordSave, c.f.fontSizerTH, () -> {
             ConfigIO.save(c);
         }), new UITextButton(T.g.wordLoad, c.f.fontSizerTH, () -> {
@@ -118,16 +122,32 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         }).togglable(c.windowingExternal), false, 0.5));
         for (final FontSizeField field : c.f.fields) {
             doubleAll.add(() -> {
-                int v = field.get() * 2;
-                if (v == 12)
-                    v = 8;
-                field.accept(v);
+                int v = field.get();
+                int o = v + (v / 2);
+                if (v <= 24)
+                    o = 32;
+                if (v <= 16)
+                    o = 24;
+                if (v <= 8)
+                    o = 16;
+                if (v <= 6)
+                    o = 8;
+                field.accept(o);
             });
             halfAll.add(() -> {
-                int v = field.get() / 2;
-                if (v < field.minValue)
-                    v = field.minValue;
-                field.accept(v);
+                int v = field.get();
+                int o = (v * 2) / 3;
+                if (v <= 32)
+                    o = 24;
+                if (v <= 24)
+                    o = 16;
+                if (v <= 16)
+                    o = 8;
+                if (v <= 8)
+                    o = 6;
+                if (v <= 6)
+                    o = 6;
+                field.accept(o);
             });
             UIAdjuster tb = new UIAdjuster(c.f.fontSizerTH, field.get(), (aLong) -> {
                 int nv = (int) (long) aLong;

@@ -19,8 +19,8 @@ public final class TileEditingTab {
     public final int[] visTilesHover;
     public final int[] actTiles;
 
-    public TileEditingTab(String text, boolean dnu, int[] type) {
-        atProcessing = false;
+    public TileEditingTab(String text, boolean dnu, boolean atp, int[] type) {
+        atProcessing = atp;
         doNotUse = dnu;
         localizedText = text;
         actTiles = type;

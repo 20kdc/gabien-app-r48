@@ -28,4 +28,7 @@ public interface IMapToolContext {
 
     boolean getMasterAnimDisableSwitch();
     void setMasterAnimDisableSwitch(boolean value);
+
+    boolean getPickTileSwitch();
+    void setPickTileSwitch(boolean value);
 }

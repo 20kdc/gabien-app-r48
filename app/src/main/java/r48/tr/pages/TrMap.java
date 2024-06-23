@@ -21,6 +21,7 @@ public class TrMap extends TrPage {
     public String tsStartRect;
     public String tsFinishCopy;
     public String tsPickTile;
+    public String tsPickTileAT;
     public String tRaisePen;
     public FF1 tDeepWater;
     public String tsClickTarget;

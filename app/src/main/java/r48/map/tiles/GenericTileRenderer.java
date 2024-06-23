@@ -38,7 +38,7 @@ public class GenericTileRenderer extends ITileRenderer {
     @Override
     public TileEditingTab[] getEditConfig(int layerIdx) {
         return new TileEditingTab[] {
-                new TileEditingTab(T.m.tiles, false, TileEditingTab.range(0, tileCount))
+                new TileEditingTab(T.m.tiles, false, false, TileEditingTab.range(0, tileCount))
         };
     }
 

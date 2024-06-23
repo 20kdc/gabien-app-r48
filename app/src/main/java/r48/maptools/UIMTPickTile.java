@@ -10,6 +10,8 @@ package r48.maptools;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextButton;
+import gabien.ui.layouts.UISplitterLayout;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
@@ -26,7 +28,9 @@ public class UIMTPickTile extends UIMTBase implements IMapViewCallbacks {
     public UIMTPickTile(IMapToolContext m) {
         super(m);
         map = m.getMapView();
-        changeInner(innerLabel, true);
+        changeInner(new UISplitterLayout(innerLabel, new UITextButton(T.m.tsPickTileAT, app.f.dialogWindowTH, () -> {
+            m.setPickTileSwitch(!m.getPickTileSwitch());
+        }).togglable(!m.getPickTileSwitch()), true, 1), true);
     }
 
     @Override

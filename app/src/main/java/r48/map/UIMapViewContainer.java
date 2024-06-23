@@ -46,6 +46,7 @@ public class UIMapViewContainer extends App.Pan {
 
     private boolean masterRenderDisableSwitch = false;
     private boolean masterAnimDisableSwitch = false;
+    private boolean pickTileSwitch = true;
 
     public UIMapViewContainer(App app) {
         super(app);
@@ -218,6 +219,15 @@ public class UIMapViewContainer extends App.Pan {
                 if (view != null)
                     view.viewAnimDisableSwitch = value;
             }
+
+            @Override
+            public boolean getPickTileSwitch() {
+                return pickTileSwitch;
+            }
+            @Override
+            public void setPickTileSwitch(boolean value) {
+                pickTileSwitch = value;
+            }
         };
 
         final IEditingToolbarController metc = view.map.makeToolbar(mtc);
@@ -225,7 +235,7 @@ public class UIMapViewContainer extends App.Pan {
         if (metc.allowPickTile()) {
             view.pickTileHelper = (aShort) -> {
                 UIMTAutotile atf = mtc.showATField();
-                atf.selectTile(aShort);
+                atf.selectTile(aShort, pickTileSwitch);
                 nextMapTool = atf;
             };
         }

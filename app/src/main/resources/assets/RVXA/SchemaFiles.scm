@@ -382,7 +382,7 @@
 (+ subwindow: "Tile Attributes" internal_vxaTilesetFlags)
 (@ tileset_names RPG::Tileset.names)
 
-(> File.Tilesets arrayIx1 typeChanger{ subwindow RPG::Tileset oRPG::Tileset nil 0 })
+(> File.Tilesets arrayIx1 typeChanger{ nil 0 subwindow RPG::Tileset oRPG::Tileset })
 
 (: RPG::Troop::Member)
 (@ enemy_id enemy_id)

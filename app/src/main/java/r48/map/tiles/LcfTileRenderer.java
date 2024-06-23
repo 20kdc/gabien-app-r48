@@ -280,13 +280,13 @@ public class LcfTileRenderer extends TSOAwareTileRenderer {
         // On L0, lower layer tiles take priority,
         // on L1, upper layer tiles take priority
         TileEditingTab atf = new TileEditingTab(app, "ATF", layerIdx != 0, genLcfATs, indicateATs());
-        TileEditingTab lwr = new TileEditingTab("LOWER", layerIdx != 0, TileEditingTab.range(5000, 144));
-        TileEditingTab ani = new TileEditingTab("ANI", layerIdx != 0, new int[] {3000, 3050, 3100});
-        TileEditingTab tem = new TileEditingTab("TEM", layerIdx != 0, TileEditingTab.range(4000, 600));
-        TileEditingTab w1m = new TileEditingTab("W1M", layerIdx != 0, TileEditingTab.range(0, 1000));
-        TileEditingTab w2m = new TileEditingTab("W2M", layerIdx != 0, TileEditingTab.range(1000, 1000));
-        TileEditingTab w3m = new TileEditingTab("W3M", layerIdx != 0, TileEditingTab.range(2000, 1000));
-        TileEditingTab upr = new TileEditingTab("UPPER", layerIdx != 1, TileEditingTab.range(10000, 144));
+        TileEditingTab lwr = new TileEditingTab("LOWER", layerIdx != 0, true, TileEditingTab.range(5000, 144));
+        TileEditingTab ani = new TileEditingTab("ANI", layerIdx != 0, false, new int[] {3000, 3050, 3100});
+        TileEditingTab tem = new TileEditingTab("TEM", layerIdx != 0, false, TileEditingTab.range(4000, 600));
+        TileEditingTab w1m = new TileEditingTab("W1M", layerIdx != 0, false, TileEditingTab.range(0, 1000));
+        TileEditingTab w2m = new TileEditingTab("W2M", layerIdx != 0, false, TileEditingTab.range(1000, 1000));
+        TileEditingTab w3m = new TileEditingTab("W3M", layerIdx != 0, false, TileEditingTab.range(2000, 1000));
+        TileEditingTab upr = new TileEditingTab("UPPER", layerIdx != 1, true, TileEditingTab.range(10000, 144));
         if (layerIdx == 0) {
             return new TileEditingTab[] {
                     atf,

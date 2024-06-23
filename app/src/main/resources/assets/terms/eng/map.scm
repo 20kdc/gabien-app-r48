@@ -14,6 +14,7 @@
 	tsStartRect "Click on a tile to start the rectangle, or:"
 	tsFinishCopy "Click on another tile to finish copying."
 	tsPickTile "Click on a tile to pick it."
+	tsPickTileAT "Exact Tile (not AutoTile)"
 	tRaisePen "Raise Pen"
 	tDeepWater (fl1 "Deep Water, layer " a0)
 	tsClickTarget "Click at the target, or close this window."

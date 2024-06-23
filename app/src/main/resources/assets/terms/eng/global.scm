@@ -86,6 +86,9 @@
 		footer "Error details follow:"
 	)
 	(fsc_
+		smaller "Smaller"
+		larger "Larger"
+		default "Default"
 		font (fl1 "Font: " a0)
 		fontInternal "Internal w/fallbacks"
 		fontEvenSmall "Even for height <= 8"

@@ -44,4 +44,5 @@ public class TrGlobal extends TrPage {
     // fsc
     public FF1 fsc_font, fsc_theme;
     public String fsc_fontInternal, fsc_fontEvenSmall, fsc_externalWindowing;
+    public String fsc_larger, fsc_smaller, fsc_default;
 }

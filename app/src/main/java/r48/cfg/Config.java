@@ -23,6 +23,16 @@ import r48.tr.LanguageList;
  * Created 27th February 2023
  */
 public class Config {
+    /**
+     * UI scale as detected during startup.
+     * This is not saved or loaded.
+     */
+    public int autodetectedUIScaleTenths = 10;
+    /**
+     * isMobile: Used for reset, etc.
+     */
+    public final boolean isMobile;
+
     public final FontSizes f = new FontSizes();
 
     public boolean windowingExternal;
@@ -44,20 +54,13 @@ public class Config {
     public float globalVolume;
 
     public Config(boolean isMobile) {
-        reset(isMobile);
+        this.isMobile = isMobile;
     }
 
-    public void reset(boolean isMobile) {
-        try {
-            for (final FontSizeField field : f.fields)
-                field.accept(field.defValue);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public void reset() {
+        resetFontSizes();
 
         windowingExternal = false;
-        fontOverride = GaBIEn.getDefaultNativeFontName();
-        fontOverrideUE8 = false;
         borderTheme = 0;
 
         secondaryImageLoadLocationBackup.clear();
@@ -70,6 +73,33 @@ public class Config {
         // If EasyRPG Player has an issue with this, please bring it up at any time, and I will change this.
         if (isMobile)
             rootPathBackup.add("easyrpg/games/R48 Game");
+    }
+
+    public void resetFontSizes() {
+        try {
+            for (final FontSizeField field : f.fields)
+                field.accept(field.defValue);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        fontOverride = GaBIEn.getDefaultNativeFontName();
+        fontOverrideUE8 = false;
+        // The above triggered a flush, which would cause the initial resize on SWPs.
+        // That then allowed it to estimate a correct scale which ended up here.
+        f.uiGuessScaleTenths = autodetectedUIScaleTenths;
+        for (FontSizeField fsf : f.fields) {
+            // as this is a touch device, map 8 to 16 (6 is for things that really matter)
+            if (isMobile)
+                if (fsf.get() == 8)
+                    fsf.accept(16);
+            // uiGuessScaleTenths was set manually.
+            if (fsf != f.f_uiGuessScaleTenths)
+                fsf.accept(f.scaleGuess(fsf.get()));
+        }
+        // exceptions
+        if (isMobile)
+            f.tilesTabTH *= 2;
+        applyUIGlobals();
     }
 
     /**

@@ -20,7 +20,6 @@ import gabienapp.state.LSSplashScreen;
 import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
-import r48.cfg.FontSizes.FontSizeField;
 import r48.minivm.MVMEnv;
 import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
@@ -46,7 +45,7 @@ public class Launcher {
 
     public Launcher(boolean strict) {
         isMobile = GaBIEn.singleWindowApp();
-        final AtomicBoolean fontsLoaded = new AtomicBoolean();
+        final AtomicBoolean configLoaded = new AtomicBoolean();
         uiTicker = new WindowCreatingUIElementConsumer();
         // Setup initial state
         currentState = new LSSplashScreen(this, () -> {
@@ -56,7 +55,7 @@ public class Launcher {
             // -- start --
             // Initialize as much as possible here.
             c = new Config(isMobile);
-            fontsLoaded.set(ConfigIO.load(true, c));
+            configLoaded.set(ConfigIO.load(true, c));
             ilg = new InterlaunchGlobals(new Art(), c, (vm) -> vmCtx = vm, (str) -> {
                 // this would presumably go to the splash screen
             }, (str) -> System.err.println("TR: " + str), strict);
@@ -85,9 +84,10 @@ public class Launcher {
             }
         }, (uiScaleTenths) -> {
             c.applyUIGlobals();
+            c.autodetectedUIScaleTenths = uiScaleTenths;
             globalMS = 33;
-            if (!fontsLoaded.get())
-                autoDetectCorrectUISize(uiScaleTenths);
+            if (!configLoaded.get())
+                c.resetFontSizes(); // will fixup UI globals itself
             currentState = new LSMain(this);
         });
     }
@@ -101,25 +101,6 @@ public class Launcher {
             currentState.tick(dT);
         }
         GaBIEn.ensureQuit();
-    }
-
-    private void autoDetectCorrectUISize(int uiGuessScaleTenths) {
-        // The above triggered a flush, which would cause the initial resize on SWPs.
-        // That then allowed it to estimate a correct scale which ended up here.
-        c.f.uiGuessScaleTenths = uiGuessScaleTenths;
-        for (FontSizeField fsf : c.f.fields) {
-            // as this is a touch device, map 8 to 16 (6 is for things that really matter)
-            if (isMobile)
-                if (fsf.get() == 8)
-                    fsf.accept(16);
-            // uiGuessScaleTenths was set manually.
-            if (fsf != c.f.f_uiGuessScaleTenths)
-                fsf.accept(c.f.scaleGuess(fsf.get()));
-        }
-        // exceptions
-        if (isMobile)
-            c.f.tilesTabTH *= 2;
-        c.applyUIGlobals();
     }
 
     void shutdownAllAppMainWindows() {

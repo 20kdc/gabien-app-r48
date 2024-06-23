@@ -166,8 +166,8 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
                         48 * 6,
                         48 * 7
                 }, indicateATs()),
-                new TileEditingTab("TMAP", false, TileEditingTab.range(48 * 8, tileCount)),
-                new TileEditingTab("AT-M", false, TileEditingTab.range(48, 48 * 7)),
+                new TileEditingTab("TMAP", false, true, TileEditingTab.range(48 * 8, tileCount)),
+                new TileEditingTab("AT-M", false, false, TileEditingTab.range(48, 48 * 7)),
         };
     }
 
