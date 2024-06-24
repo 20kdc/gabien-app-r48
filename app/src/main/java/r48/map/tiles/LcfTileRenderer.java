@@ -102,7 +102,7 @@ public class LcfTileRenderer extends TSOAwareTileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd) {
+    public void drawTile(int layer, int tidx, int px, int py, IGrDriver igd) {
         if (chipsetLeft == null)
             return;
         // There are 288 "Common Tiles" (non-AT) divided into upper and lower layer tiles.
@@ -257,7 +257,7 @@ public class LcfTileRenderer extends TSOAwareTileRenderer {
         igd.blitScaledImage(tox + cx, toy + cy, etc, etc, px + cx, py + cy, etc, etc, chipsetLeft);
     }
 
-    private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrDriver igd) {
+    private void handleCommonPage(int base, int ofsPage, int tidx, int px, int py, IGrDriver igd) {
         // Divided into 6-wide columns, 96 tiles per column.
         int ti = tidx - base;
         ti += ofsPage * 144;

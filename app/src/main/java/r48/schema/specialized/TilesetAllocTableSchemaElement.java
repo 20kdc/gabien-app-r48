@@ -68,10 +68,10 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
     }
 
     @Override
-    public short baseFlipBits(short p) {
+    public int baseFlipBits(int p) {
         int i = p & 0xFFFF;
         i ^= allocSource.xorDoubleclick;
-        return (short) i;
+        return i;
     }
 
 }

@@ -85,7 +85,7 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
     }
 
     // MKXP bounds between 0 and 5, this is used for optimisation but is otherwise not relied upon by this code.
-    private int getTIDPriority(short tid) {
+    private int getTIDPriority(int tid) {
         RubyTableR rts = tiles.priorities;
         if (rts == null)
             return 0;
@@ -131,7 +131,7 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
         }
 
         @Override
-        public boolean shouldDraw(int x, int y, int layer, short value) {
+        public boolean shouldDraw(int x, int y, int layer, int value) {
             if (!tileSignalLayers[layer].active)
                 return false;
             int pri = getTIDPriority(value);

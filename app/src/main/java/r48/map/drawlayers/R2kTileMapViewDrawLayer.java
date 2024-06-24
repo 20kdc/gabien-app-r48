@@ -33,7 +33,7 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
     }
 
     @Override
-    public boolean shouldDraw(int x, int y, int layer, short tidx) {
+    public boolean shouldDraw(int x, int y, int layer, int tidx) {
         // Work out upper/lower.
         int val = getTileFlags(tidx, lowpass, highpass);
         // 0x10: Above. 0x20: Wall. I tested a Wall on L1 on ERPG, did not render over player,
@@ -42,7 +42,7 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
         return r == upper;
     }
 
-    public static int getTileFlags(short tidx, RubyTableR lowpass, RubyTableR highpass) {
+    public static int getTileFlags(int tidx, RubyTableR lowpass, RubyTableR highpass) {
         int flags = 0;
 
         flags |= checkUpperRange(tidx, lowpass, 0, 1000, 0);
@@ -71,12 +71,10 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
         return flags;
     }
 
-    private static int checkUpperRange(short tidx, RubyTableR tileset, int rangeS, int rangeE, int group) {
+    private static int checkUpperRange(int tidx, RubyTableR tileset, int rangeS, int rangeE, int group) {
         if (tidx >= rangeS)
-            if (tidx < rangeE) {
-                short val = tileset.getTiletype(group, 0, 0);
-                return val & 0xFFFF;
-            }
+            if (tidx < rangeE)
+                return tileset.getTiletype(group, 0, 0) & 0xFFFF;
         return 0;
     }
 }

@@ -92,7 +92,7 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd) {
+    public void drawTile(int layer, int tidx, int px, int py, IGrDriver igd) {
         if (tileset == null)
             return; // just don't bother.
         // [EPC] (use this to find other bits of documentation)
@@ -219,7 +219,7 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
         return attf;
     }
 
-    private void drawShadowTileFlag(short tidx, int i, int i1, int i2, IGrDriver igd, int st) {
+    private void drawShadowTileFlag(int tidx, int i, int i1, int i2, IGrDriver igd, int st) {
         if ((tidx & i) != 0)
             igd.fillRect(0, 0, 0, 128, i1, i2, st, st);
     }
@@ -227,7 +227,7 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
     /**
      * Handles 2-column 256-tile sheets
      */
-    private boolean handleMTLayer(short tidx, int ets, int px, int py, int tm, IGrDriver igd) {
+    private boolean handleMTLayer(int tidx, int ets, int px, int py, int tm, IGrDriver igd) {
         int t = tidx & 0xFF;
         ITexRegion planeImage = tilesetReg[tm];
         if (planeImage != null) {
@@ -246,7 +246,7 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
         return false;
     }
 
-    private boolean handleATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrDriver igd, int atF, int atOX, int atOY) {
+    private boolean handleATLayer(int tidx, int base, int ets, int px, int py, int tm, IGrDriver igd, int atF, int atOX, int atOY) {
         int tin = tidx - base;
         if (tin < 0)
             return false;

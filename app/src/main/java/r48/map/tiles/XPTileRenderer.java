@@ -109,7 +109,7 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd) {
+    public void drawTile(int layer, int tidx, int px, int py, IGrDriver igd) {
         /*
          * First 48 tiles: Nothing ("AT 0")
          * 7 sets of 48 tiles afterwards: Each of the 7 AT fields

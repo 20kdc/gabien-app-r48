@@ -15,7 +15,7 @@ import gabien.uslx.io.MemoryishRW;
  * Note that the given Memoryish is manipulated by-reference.
  * Created on 12/27/16. Split into RubyTable/RubyTableR 9th May, 2024.
  */
-public class RubyTable extends RubyTableR {
+public class RubyTable extends RubyTableR implements ITileAccess.RW {
     public final MemoryishRW innerTableW;
 
     public RubyTable(MemoryishRW data) {
@@ -40,7 +40,8 @@ public class RubyTable extends RubyTableR {
         this(initNewTable(dc, w, h, i, defVals));
     }
 
-    public void setTiletype(int x, int y, int plane, short type) {
+    @Override
+    public void setTiletype(int x, int y, int plane, int type) {
         int p = 20 + ((x + (y * width)) * 2);
         p += width * height * 2 * plane;
         innerTableW.set16LE(p, type);

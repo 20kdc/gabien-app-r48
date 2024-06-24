@@ -88,7 +88,7 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
         }
 
         @Override
-        public boolean shouldDraw(int x, int y, int layer, short value) {
+        public boolean shouldDraw(int x, int y, int layer, int value) {
             if (!tileSignalLayers[layer].active)
                 return false;
             int targPIndex = y;

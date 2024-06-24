@@ -65,7 +65,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouseAllowed, int tx, int ty, short there, int layer, int currentLayer) {
+    public int shouldDrawAt(MapViewDrawContext.MouseStatus mouseAllowed, int tx, int ty, int there, int layer, int currentLayer) {
         if (layer != currentLayer)
             return there;
         TOutline mo = workspace.getOutlineForTile(tx, ty);

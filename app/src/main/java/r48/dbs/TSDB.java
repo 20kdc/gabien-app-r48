@@ -121,7 +121,7 @@ public class TSDB extends App.Svc {
         return rout;
     }
 
-    public void draw(int x, int y, int t, short tiletype, int sprScale, IGrDriver igd) {
+    public void draw(int x, int y, int t, int tiletype, int sprScale, IGrDriver igd) {
         for (TSDB.TSPicture tsp : pictures)
             tsp.draw(x, y, t, tiletype, sprScale, igd);
     }
@@ -152,7 +152,7 @@ public class TSDB extends App.Svc {
             this.imgOn = imgOn;
         }
 
-        public boolean testFlag(short tiletype) {
+        public boolean testFlag(int tiletype) {
             for (int i = 0; i < flagData.length; i += 3) {
                 switch (flagData[i + 2]) {
                     case 0:
@@ -170,7 +170,7 @@ public class TSDB extends App.Svc {
             return true;
         }
 
-        public void draw(int ox, int oy, int t, short tiletype, int sprScale, IGrDriver igd) {
+        public void draw(int ox, int oy, int t, int tiletype, int sprScale, IGrDriver igd) {
             if (!acceptable.apply(t))
                 return;
             boolean flagValid = testFlag(tiletype);

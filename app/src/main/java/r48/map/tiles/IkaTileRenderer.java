@@ -60,8 +60,8 @@ public class IkaTileRenderer extends ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd) {
-        int plane = (tidx & 0xFFF0) >> 4;
+    public void drawTile(int layer, int tidx, int px, int py, IGrDriver igd) {
+        int plane = (tidx & ~0xF) >> 4;
         int block = tidx & 0xF;
         if (plane < 0)
             return;

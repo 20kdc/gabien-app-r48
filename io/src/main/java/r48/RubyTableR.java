@@ -15,7 +15,7 @@ import gabien.uslx.io.MemoryishR;
  * Note that the given Memoryish is manipulated by-reference.
  * Created on 12/27/16. Split into RubyTable/RubyTableR 9th May, 2024.
  */
-public class RubyTableR {
+public class RubyTableR implements ITileAccess {
     public final MemoryishR innerTable;
     // Can be 0, 1, or 2. Apparently does not affect actual function.
     // Nevermind the weird "support" for 4D tables, and the inconsistent... arggggghhhh.
@@ -43,12 +43,35 @@ public class RubyTableR {
     // It seems to be consistent enough between files for now, in any case.
     // The data is based around 16-bit tile planes.
 
-    public short getTiletype(int x, int y, int plane) {
+    /**
+     * Gets a tiletype. These are read as unsigned 16-bit values.
+     */
+    @Override
+    public int getTiletype(int x, int y, int plane) {
         int p = 20 + ((x + (y * width)) * 2);
         p += width * height * 2 * plane;
-        return innerTable.getS16LE(p);
+        return innerTable.getU16LE(p);
     }
 
+    @Override
+    public boolean xOOB(int x) {
+        if (x < 0)
+            return true;
+        if (x >= width)
+            return true;
+        return false;
+    }
+
+    @Override
+    public boolean yOOB(int y) {
+        if (y < 0)
+            return true;
+        if (y >= height)
+            return true;
+        return false;
+    }
+
+    @Override
     public boolean outOfBounds(int x, int y) {
         if (x < 0)
             return true;

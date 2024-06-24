@@ -14,7 +14,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * Created on 12/28/16.
  */
 public interface IMapViewCallbacks {
-    default short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
+    default int shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {
         return there;
     }
 

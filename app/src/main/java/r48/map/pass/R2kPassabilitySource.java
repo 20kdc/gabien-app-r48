@@ -36,7 +36,7 @@ public class R2kPassabilitySource implements IPassabilitySource {
         if (mapTable.outOfBounds(x, y))
             return -1;
 
-        short f0id = mapTable.getTiletype(x, y, 0);
+        int f0id = mapTable.getTiletype(x, y, 0);
         int f0 = R2kTileMapViewDrawLayer.getTileFlags(f0id, tsLow, tsHigh);
         int f1 = R2kTileMapViewDrawLayer.getTileFlags(mapTable.getTiletype(x, y, 1), tsLow, tsHigh);
 
@@ -72,7 +72,7 @@ public class R2kPassabilitySource implements IPassabilitySource {
         if (mapTable.outOfBounds(oX, oY))
             return false;
 
-        short b0id = mapTable.getTiletype(oX, oY, 0);
+        int b0id = mapTable.getTiletype(oX, oY, 0);
         int b0 = R2kTileMapViewDrawLayer.getTileFlags(b0id, tsLow, tsHigh);
         int b1 = R2kTileMapViewDrawLayer.getTileFlags(mapTable.getTiletype(oX, oY, 1), tsLow, tsHigh);
 

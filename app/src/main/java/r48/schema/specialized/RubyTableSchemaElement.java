@@ -125,8 +125,8 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
                     planeValues[i] = targ.getTiletype(tX, tY, i);
                 editorOnSelChange.run();
                 if (oldSel == sel) {
-                    short p = targ.getTiletype(tX, tY, 0);
-                    short p2 = baseFlipBits(p);
+                    int p = targ.getTiletype(tX, tY, 0);
+                    int p2 = baseFlipBits(p);
                     if (p != p2) {
                         targ.setTiletype(tX, tY, 0, p2);
                         path.changeOccurred(false);
@@ -181,7 +181,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
         return null;
     }
 
-    public short baseFlipBits(short p) {
+    public int baseFlipBits(int p) {
         return p;
     }
 

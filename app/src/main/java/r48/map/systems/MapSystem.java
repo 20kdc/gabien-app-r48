@@ -10,7 +10,6 @@ package r48.map.systems;
 import gabien.uslx.append.*;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -20,6 +19,7 @@ import gabien.ui.*;
 import gabien.ui.dialogs.UIPopupMenu;
 import r48.App;
 import r48.IMapContext;
+import r48.ITileAccess;
 import r48.RubyTable;
 import r48.dbs.ObjectInfo;
 import r48.dbs.PathSyntax;
@@ -173,19 +173,15 @@ public abstract class MapSystem extends App.Svc {
          */
         public final int width, height, planeCount;
         /**
-         * int[] contains X, Y, Layer
+         * Read/write tile data
          */
-        public final Function<int[], Short> getTileData;
-        /**
-         * int[] contains X, Y, Layer, value
-         */
-        public final Consumer<int[]> setTileData;
+        public final ITileAccess.RW tileAccess;
         /**
          * int[] contains X, Y, (defaults...)
          */
         public final Consumer<int[]> resize;
 
-        public MapViewState(StuffRenderer r, @NonNull IMapViewDrawLayer[] layers, @Nullable boolean[] activeDefault, String usm, String[] exrefresh, int w, int h, int pc, Function<int[], Short> gtd, Consumer<int[]> std, Consumer<int[]> rz, IEventAccess iea) {
+        public MapViewState(StuffRenderer r, @NonNull IMapViewDrawLayer[] layers, @Nullable boolean[] activeDefault, String usm, String[] exrefresh, int w, int h, int pc, ITileAccess.RW tileAccess, Consumer<int[]> rz, IEventAccess iea) {
             renderer = r;
             this.layers = layers;
             if (activeDefault != null) {
@@ -205,8 +201,7 @@ public abstract class MapSystem extends App.Svc {
             width = w;
             height = h;
             planeCount = pc;
-            getTileData = gtd;
-            setTileData = std;
+            this.tileAccess = tileAccess;
             resize = rz;
             eventAccess = iea;
         }
@@ -241,14 +236,21 @@ public abstract class MapSystem extends App.Svc {
         }
 
         public static MapViewState getBlank(App app, String underscoreMapObjectId, String[] ex, IEventAccess iea) {
-            return new MapViewState(app.stuffRendererIndependent, new IMapViewDrawLayer[0], null, underscoreMapObjectId, ex, 0, 0, 0, new Function<int[], Short>() {
+            return new MapViewState(app.stuffRendererIndependent, new IMapViewDrawLayer[0], null, underscoreMapObjectId, ex, 0, 0, 0, new ITileAccess.RW() {
                 @Override
-                public Short apply(int[] ints) {
+                public boolean xOOB(int x) {
+                    return true;
+                }
+                @Override
+                public boolean yOOB(int y) {
+                    return true;
+                }
+                @Override
+                public int getTiletype(int x, int y, int plane) {
                     return 0;
                 }
-            }, new Consumer<int[]>() {
                 @Override
-                public void accept(int[] ints) {
+                public void setTiletype(int x, int y, int plane, int value) {
                 }
             }, new Consumer<int[]>() {
                 @Override
@@ -262,12 +264,28 @@ public abstract class MapSystem extends App.Svc {
             // This happens once in a blue moon, it's fine
             final IRIO sz = PathSyntax.compile(stuffRenderer.app, str).getRW(its);
             final RubyTable rt = new RubyTable(sz.editUser());
-            return new MapViewState(stuffRenderer, mvdl, activeDef, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, (ints) -> {
-                return rt.getTiletype(ints[0], ints[1], ints[2]);
-            }, (ints) -> {
-                if (readOnly)
-                    return;
-                rt.setTiletype(ints[0], ints[1], ints[2], (short) ints[3]);
+            return new MapViewState(stuffRenderer, mvdl, activeDef, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, new ITileAccess.RW() {
+                @Override
+                public boolean xOOB(int x) {
+                    return rt.xOOB(x);
+                }
+                @Override
+                public boolean yOOB(int y) {
+                    return rt.yOOB(y);
+                }
+                @Override
+                public boolean outOfBounds(int mouseXT, int mouseYT) {
+                    return rt.outOfBounds(mouseXT, mouseYT);
+                }
+                @Override
+                public int getTiletype(int i, int i1, int i2) {
+                    return rt.getTiletype(i, i1, i2);
+                }
+                public void setTiletype(int x, int y, int plane, int value) {
+                    if (readOnly)
+                        return;
+                    rt.setTiletype(x, y, plane, value);
+                }
             }, (ints) -> {
                 if (readOnly)
                     return;
@@ -282,12 +300,12 @@ public abstract class MapSystem extends App.Svc {
             }, iea);
         }
 
-        public short getTiletype(int i, int i1, int i2) {
-            return getTileData.apply(new int[] {i, i1, i2});
+        public int getTiletype(int i, int i1, int i2) {
+            return tileAccess.getTiletype(i, i1, i2);
         }
 
-        public void setTiletype(int i, int i1, int i2, short i3) {
-            setTileData.accept(new int[] {i, i1, i2, i3});
+        public void setTiletype(int i, int i1, int i2, int i3) {
+            tileAccess.setTiletype(i, i1, i2, i3);
         }
 
         public void resize(int w, int h) {
@@ -297,7 +315,7 @@ public abstract class MapSystem extends App.Svc {
             if (w > 0)
                 if (h > 0)
                     for (int i = 0; i < planeCount; i++)
-                        r[i + 2] = getTileData.apply(new int[] {0, 0, i}) & 0xFFFF;
+                        r[i + 2] = tileAccess.getTiletype(0, 0, i);
             resize.accept(r);
         }
     }

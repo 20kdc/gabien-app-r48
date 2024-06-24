@@ -53,7 +53,7 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
+    public int shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {
         int cx;
         int cy;
         if (confirming) {

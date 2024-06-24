@@ -52,7 +52,7 @@ public class UIMapView extends UIPlaneView {
     public boolean shiftDown = false;
     public IMapViewCallbacks callbacks;
     // Responsible for starting a tool with the given tile.
-    public Consumer<Short> pickTileHelper = null;
+    public Consumer<Integer> pickTileHelper = null;
 
     /**
      * set from UIMapViewContainer 
@@ -244,9 +244,9 @@ public class UIMapView extends UIPlaneView {
                 visCurrentlyDrawing = true;
                 recalcXYT(state.getX(), state.getY());
                 if (shiftDown) {
-                    if (!mapTable.outOfBounds(mouseXT, mouseYT))
+                    if (!mapTable.tileAccess.outOfBounds(mouseXT, mouseYT))
                         if (pickTileHelper != null)
-                            pickTileHelper.accept(mapTable.getTileData.apply(new int[] {mouseXT, mouseYT, currentLayer}));
+                            pickTileHelper.accept(mapTable.tileAccess.getTiletype(mouseXT, mouseYT, currentLayer));
                 } else if (callbacks != null) {
                     callbacks.confirmAt(mouseXT, mouseYT, mouseXTP, mouseYTP, currentLayer, true);
                 }

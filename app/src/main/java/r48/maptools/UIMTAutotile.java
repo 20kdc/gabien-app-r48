@@ -181,7 +181,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
+    public int shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {
         if (layer != currentLayer)
             return there;
         if (mouse == null)
@@ -266,7 +266,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                     return null;
                 return point;
             }, (point) -> {
-                short here = map.mapTable.getTiletype(point.x, point.y, layer);
+                int here = map.mapTable.getTiletype(point.x, point.y, layer);
                 if (here != key) {
                     AutoTileTypeField attf = getAutotileType(here, atBases);
                     if (attf == null)

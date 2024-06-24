@@ -45,7 +45,7 @@ public class TileMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
         return name;
     }
 
-    public boolean shouldDraw(int x, int y, int layer, short value) {
+    public boolean shouldDraw(int x, int y, int layer, int value) {
         return true;
     }
 
@@ -80,14 +80,14 @@ public class TileMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
                 int px = i * mvdc.tileSize;
                 int py = j * mvdc.tileSize;
                 for (int tileLayer : tileLayers) {
-                    short tidx = targetTable.getTiletype(boundedI, boundedJ, tileLayer);
+                    int tidx = targetTable.getTiletype(boundedI, boundedJ, tileLayer);
                     tileDrawIntern(tileLayer, mvdc.mouseStatus, mvdc.currentLayer, mvdc.callbacks, mvdc.debugToggle, mvdc.igd, tidx, i, j, px, py);
                 }
             }
         }
     }
 
-    private void tileDrawIntern(int tdi, MapViewDrawContext.MouseStatus mouseAllowed, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd, short tidx, int i, int j, int px, int py) {
+    private void tileDrawIntern(int tdi, MapViewDrawContext.MouseStatus mouseAllowed, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd, int tidx, int i, int j, int px, int py) {
         if (callbacks != null)
             tidx = callbacks.shouldDrawAt(mouseAllowed, i, j, tidx, tdi, currentLayer);
         if (shouldDraw(i, j, tdi, tidx)) {
