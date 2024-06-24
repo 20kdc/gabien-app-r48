@@ -31,7 +31,7 @@ public class R2kPassabilitySource implements IPassabilitySource {
 
     @Override
     public int getPassability(int x, int y) {
-        if (mapTable.outOfBounds(x, y))
+        if (!mapTable.coordAccessible(x, y))
             return -1;
 
         int f0id = mapTable.getTiletype(x, y, 0);
@@ -57,7 +57,7 @@ public class R2kPassabilitySource implements IPassabilitySource {
     }
 
     private boolean merge(int f0id, int f0, int f1, int flag, int flagInv, int oX, int oY) {
-        if (mapTable.outOfBounds(oX, oY))
+        if (!mapTable.coordAccessible(oX, oY))
             return false;
 
         int b0id = mapTable.getTiletype(oX, oY, 0);

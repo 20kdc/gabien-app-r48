@@ -78,7 +78,7 @@ public class RVXASystem extends RXPSystem {
                 // selection
                 new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, renderer.eventRenderer, ""),
                 new GridMapViewDrawLayer(app),
-                new BorderMapViewDrawLayer(app, rt.width, rt.height)
+                new BorderMapViewDrawLayer(app, rt.getBounds().multiplied(renderer.tileRenderer.tileSize))
         };
     }
 

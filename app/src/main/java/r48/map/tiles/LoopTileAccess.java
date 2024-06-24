@@ -7,6 +7,7 @@
 package r48.map.tiles;
 
 import gabien.uslx.append.MathsX;
+import gabien.uslx.append.Rect;
 import r48.ITileAccess;
 import r48.RubyTable;
 import r48.RubyTableR;
@@ -16,27 +17,31 @@ import r48.RubyTableR;
  * It is an API guarantee that this only changes X/Y/P bases; the resulting bases are compatible with the inner tile access
  * Created 24th June 2024
  */
-public class LoopTileAccess implements ITileAccess {
-    public final ITileAccess base;
-    public final int width, height;
+public class LoopTileAccess implements ITileAccess.Bounded {
+    private final ITileAccess.Bounded base;
+    private final Rect bounds;
+    private final int planes;
+    private final boolean loopX, loopY;
 
-    public LoopTileAccess(ITileAccess ro, int width, int height) {
+    public LoopTileAccess(ITileAccess.Bounded ro, boolean loopX, boolean loopY) {
         base = ro;
-        this.width = width;
-        this.height = height;
+        this.bounds = ro.getBounds();
+        this.planes = ro.getPlanes();
+        this.loopX = loopX && bounds.width != 0;
+        this.loopY = loopY && bounds.height != 0;
     }
 
     @Override
     public int getXBase(int x) {
-        if (width != 0)
-            x = MathsX.seqModulo(x, width);
+        if (loopX)
+            x = MathsX.seqModulo(x - bounds.x, bounds.width) + bounds.x;
         return base.getXBase(x);
     }
 
     @Override
     public int getYBase(int y) {
-        if (height != 0)
-            y = MathsX.seqModulo(y, height);
+        if (loopY)
+            y = MathsX.seqModulo(y - bounds.y, bounds.height) + bounds.y;
         return base.getYBase(y);
     }
 
@@ -46,15 +51,25 @@ public class LoopTileAccess implements ITileAccess {
     }
 
     @Override
+    public Rect getBounds() {
+        return bounds;
+    }
+
+    @Override
+    public int getPlanes() {
+        return planes;
+    }
+
+    @Override
     public int getTiletypeRaw(int cellID) {
         return base.getTiletypeRaw(cellID);
     }
 
-    public static class RW extends LoopTileAccess implements ITileAccess.RW {
-        public final ITileAccess.RW baseRW;
+    public static class RW extends LoopTileAccess implements ITileAccess.RWBounded {
+        public final ITileAccess.RWBounded baseRW;
 
-        public RW(ITileAccess.RW rw, int width, int height) {
-            super(rw, width, height);
+        public RW(ITileAccess.RWBounded rw, boolean loopX, boolean loopY) {
+            super(rw, loopX, loopY);
             baseRW = rw;
         }
 
@@ -64,15 +79,15 @@ public class LoopTileAccess implements ITileAccess {
         }
     }
 
-    public static ITileAccess of(RubyTableR tbl, boolean tileLoopX, boolean tileLoopY) {
+    public static ITileAccess.Bounded of(RubyTableR tbl, boolean tileLoopX, boolean tileLoopY) {
         if (tileLoopX || tileLoopY)
-            return new LoopTileAccess(tbl, tileLoopX ? tbl.width : 0, tileLoopY ? tbl.height : 0);
+            return new LoopTileAccess(tbl, tileLoopX, tileLoopY);
         return tbl;
     }
 
-    public static ITileAccess.RW of(RubyTable tbl, boolean tileLoopX, boolean tileLoopY) {
+    public static ITileAccess.RWBounded of(RubyTable tbl, boolean tileLoopX, boolean tileLoopY) {
         if (tileLoopX || tileLoopY)
-            return new LoopTileAccess.RW(tbl, tileLoopX ? tbl.width : 0, tileLoopY ? tbl.height : 0);
+            return new LoopTileAccess.RW(tbl, tileLoopX, tileLoopY);
         return tbl;
     }
 }

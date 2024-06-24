@@ -158,7 +158,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             new PassabilityMapViewDrawLayer(app, new R2kPassabilitySource(looper, tileset), 16),
                 new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, renderer.eventRenderer, ""),
             new GridMapViewDrawLayer(app),
-            new BorderMapViewDrawLayer(app, tbl.width, tbl.height)
+            new BorderMapViewDrawLayer(app, tbl.getBounds().multiplied(renderer.tileRenderer.tileSize))
         };
     }
 

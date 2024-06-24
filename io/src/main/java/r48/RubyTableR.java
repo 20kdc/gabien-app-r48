@@ -7,6 +7,7 @@
 
 package r48;
 
+import gabien.uslx.append.Rect;
 import gabien.uslx.io.ByteArrayMemoryish;
 import gabien.uslx.io.MemoryishR;
 
@@ -22,6 +23,7 @@ public class RubyTableR implements ITileAccess.Bounded {
     public final int dimensionCount;
     public final int width, height, planeCount;
     private final int planeDataSize, rowDataSize;
+    private final Rect bounds;
 
     public RubyTableR(byte[] data) {
         this(new ByteArrayMemoryish(data));
@@ -35,16 +37,17 @@ public class RubyTableR implements ITileAccess.Bounded {
         height = innerTable.getS32LE(8);
         planeDataSize = width * height * 2;
         rowDataSize = width * 2;
+        bounds = new Rect(0, 0, width, height);
     }
 
     @Override
-    public int getWidth() {
-        return width;
+    public Rect getBounds() {
+        return bounds;
     }
 
     @Override
-    public int getHeight() {
-        return height;
+    public int getPlanes() {
+        return planeCount;
     }
 
     // inline notes on Table format:
@@ -86,16 +89,8 @@ public class RubyTableR implements ITileAccess.Bounded {
     }
 
     @Override
-    public boolean outOfBounds(int x, int y) {
-        if (x < 0)
-            return true;
-        if (x >= width)
-            return true;
-        if (y < 0)
-            return true;
-        if (y >= height)
-            return true;
-        return false;
+    public boolean coordAccessible(int x, int y) {
+        return (x >= 0) && (x < width) && (y >= 0) && (y < height);
     }
 
     public ByteArrayMemoryish resize(int w, int h, int[] defVals) {

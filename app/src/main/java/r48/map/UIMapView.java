@@ -244,7 +244,7 @@ public class UIMapView extends UIPlaneView {
                 visCurrentlyDrawing = true;
                 recalcXYT(state.getX(), state.getY());
                 if (shiftDown) {
-                    if (!mapTable.tileAccess.outOfBounds(mouseXT, mouseYT))
+                    if (mapTable.tileAccess.coordAccessible(mouseXT, mouseYT))
                         if (pickTileHelper != null)
                             pickTileHelper.accept(mapTable.tileAccess.getTiletype(mouseXT, mouseYT, currentLayer));
                 } else if (callbacks != null) {

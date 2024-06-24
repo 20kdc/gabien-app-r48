@@ -57,7 +57,7 @@ public class StuffRenderer {
         }
         layers[layers.length - 3] = new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, renderer.eventRenderer, "");
         layers[layers.length - 2] = new GridMapViewDrawLayer(app);
-        layers[layers.length - 1] = new BorderMapViewDrawLayer(app, rt.width, rt.height);
+        layers[layers.length - 1] = new BorderMapViewDrawLayer(app, rt.getBounds().multiplied(renderer.tileRenderer.tileSize));
         return layers;
     }
 }

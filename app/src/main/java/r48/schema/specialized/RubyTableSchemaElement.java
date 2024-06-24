@@ -81,7 +81,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
             protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
                 int tX = t % targ.width;
                 int tY = t / targ.width;
-                if (targ.outOfBounds(tX, tY))
+                if (!targ.coordAccessible(tX, tY))
                     return;
                 tileHelper = baseTileDraw(target, t, x, y, igd, tileHelper);
                 if (allowTextdraw) {

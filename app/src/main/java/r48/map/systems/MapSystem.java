@@ -183,7 +183,7 @@ public abstract class MapSystem extends App.Svc {
          */
         public final Consumer<int[]> resize;
 
-        public MapViewState(StuffRenderer r, @NonNull IMapViewDrawLayer[] layers, @Nullable boolean[] activeDefault, String usm, String[] exrefresh, int w, int h, int pc, ITileAccess.RW tileAccess, Consumer<int[]> rz, IEventAccess iea) {
+        public MapViewState(StuffRenderer r, @NonNull IMapViewDrawLayer[] layers, @Nullable boolean[] activeDefault, String usm, String[] exrefresh, ITileAccess.RWBounded tileAccess, Consumer<int[]> rz, IEventAccess iea) {
             renderer = r;
             this.layers = layers;
             if (activeDefault != null) {
@@ -200,16 +200,16 @@ public abstract class MapSystem extends App.Svc {
             }
             underscoreMapObjectId = usm;
             refreshOnObjectChange = exrefresh;
-            width = w;
-            height = h;
-            planeCount = pc;
+            width = tileAccess.getBounds().width;
+            height = tileAccess.getBounds().height;
+            planeCount = tileAccess.getPlanes();
             this.tileAccess = tileAccess;
             resize = rz;
             eventAccess = iea;
         }
 
         public boolean outOfBounds(int mouseXT, int mouseYT) {
-            return tileAccess.outOfBounds(mouseXT, mouseYT);
+            return !tileAccess.coordAccessible(mouseXT, mouseYT);
         }
 
         public boolean outOfBoundsUnlooped(int mouseXT, int mouseYT) {
@@ -242,7 +242,15 @@ public abstract class MapSystem extends App.Svc {
         }
 
         public static MapViewState getBlank(App app, String underscoreMapObjectId, String[] ex, IEventAccess iea) {
-            return new MapViewState(app.stuffRendererIndependent, new IMapViewDrawLayer[0], null, underscoreMapObjectId, ex, 0, 0, 0, new ITileAccess.RW() {
+            return new MapViewState(app.stuffRendererIndependent, new IMapViewDrawLayer[0], null, underscoreMapObjectId, ex, new ITileAccess.RWBounded() {
+                @Override
+                public Rect getBounds() {
+                    return Rect.ZERO;
+                }
+                @Override
+                public int getPlanes() {
+                    return 0;
+                }
                 @Override
                 public int getPBase(int p) {
                     return -1;
@@ -274,11 +282,11 @@ public abstract class MapSystem extends App.Svc {
             // This happens once in a blue moon, it's fine
             final IRIO sz = PathSyntax.compile(stuffRenderer.app, str).getRW(its);
             final RubyTable rt = new RubyTable(sz.editUser());
-            ITileAccess.RW rtLooped = LoopTileAccess.of(rt, loopX, loopY);
-            ITileAccess.RW tar = rtLooped;
+            ITileAccess.RWBounded rtLooped = LoopTileAccess.of(rt, loopX, loopY);
+            ITileAccess.RWBounded tar = rtLooped;
             if (readOnly)
                 tar = new NOPWriteTileAccess(tar);
-            return new MapViewState(stuffRenderer, mvdl, activeDef, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, tar, (ints) -> {
+            return new MapViewState(stuffRenderer, mvdl, activeDef, underscoreMapObjectId, ex, tar, (ints) -> {
                 if (readOnly)
                     return;
                 int[] defs = new int[ints.length - 2];

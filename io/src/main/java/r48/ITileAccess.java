@@ -6,6 +6,8 @@
  */
 package r48;
 
+import gabien.uslx.append.Rect;
+
 /**
  * Abstract tile access.
  * This is built in such a way as to allow semi-efficient loop-and-remap without repeated checks.
@@ -32,10 +34,17 @@ public interface ITileAccess {
     int getPBase(int p);
 
     /**
-     * Returns true if this coordinate is out of bounds.
+     * Gets the number of planes.
+     * This is a constant even for unbounded tilemaps.
      */
-    default boolean outOfBounds(int x, int y) {
-        return (getXBase(x) == -1) || (getYBase(y) == -1);
+    int getPlanes();
+
+    /**
+     * Returns true if this coordinate is accessible.
+     * Note that a coordinate that is out of the formal bounds of a "Bounded" accessor, but can still be accessed, is still accessible.
+     */
+    default boolean coordAccessible(int x, int y) {
+        return (getXBase(x) != -1) && (getYBase(y) != -1);
     }
 
     /**
@@ -80,18 +89,23 @@ public interface ITileAccess {
 
     /**
      * Bounded implies the ITileAccess has a fixed region (the bounds).
-     * Access may or may not be permitted outside of that region.
+     * Importantly, access may or may not be permitted outside of that region.
+     * Basically, all content is stored in this region, but the content may repeat outside of that region.
+     * These accesses are still defined behaviour, so long as they're properly checked.
      */
     interface Bounded extends ITileAccess {
         /**
-         * Gets the width of this ITileAccess.
+         * Gets the boundary rectangle of the map.
          */
-        int getWidth();
+        Rect getBounds();
 
         /**
-         * Gets the height of this ITileAccess.
+         * If the given coordinate is in-bounds.
+         * This is <i>distinct</i> from 'accessible'.
          */
-        int getHeight();
+        default boolean coordInbounds(int x, int y) {
+            return getBounds().contains(x, y);
+        }
     }
 
     /**

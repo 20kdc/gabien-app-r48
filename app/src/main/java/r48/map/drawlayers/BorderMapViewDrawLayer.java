@@ -7,6 +7,8 @@
 
 package r48.map.drawlayers;
 
+import gabien.uslx.append.Block;
+import gabien.uslx.append.Rect;
 import r48.App;
 import r48.map.MapViewDrawContext;
 import r48.ui.Art;
@@ -15,11 +17,10 @@ import r48.ui.Art;
  * Created on 6/16/18.
  */
 public class BorderMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
-    public int width, height;
-    public BorderMapViewDrawLayer(App app, int w, int h) {
+    public Rect mapBoundsPx;
+    public BorderMapViewDrawLayer(App app, Rect mapBoundsPx) {
         super(app);
-        width = w;
-        height = h;
+        this.mapBoundsPx = mapBoundsPx;
     }
 
     @Override
@@ -29,13 +30,16 @@ public class BorderMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer
 
     @Override
     public void draw(MapViewDrawContext mvdc) {
-        for (int i = Math.max(mvdc.camT.x, 0); i < Math.min(mvdc.camT.x + mvdc.camT.width, width); i++) {
-            app.a.drawSymbol(mvdc.igd, Art.Symbol.Stripes, i * mvdc.tileSize, -mvdc.tileSize, mvdc.tileSize, false, false);
-            app.a.drawSymbol(mvdc.igd, Art.Symbol.Stripes, i * mvdc.tileSize, height * mvdc.tileSize, mvdc.tileSize, false, false);
-        }
-        for (int j = Math.max(mvdc.camT.y, -1); j < Math.min(mvdc.camT.y + mvdc.camT.height, height + 1); j++) {
-            app.a.drawSymbol(mvdc.igd, Art.Symbol.Stripes, -mvdc.tileSize, j * mvdc.tileSize, mvdc.tileSize, false, false);
-            app.a.drawSymbol(mvdc.igd, Art.Symbol.Stripes, width * mvdc.tileSize, j * mvdc.tileSize, mvdc.tileSize, false, false);
+        int half = mvdc.tileSize / 2;
+        try (Block blk = mvdc.igd.openScissor(mapBoundsPx.x - half, mapBoundsPx.y - half, mapBoundsPx.width + mvdc.tileSize, mapBoundsPx.height + mvdc.tileSize)) {
+            for (int i = Math.max(mvdc.cam.x, mapBoundsPx.x); i < Math.min(mvdc.cam.right, mapBoundsPx.right); i += mvdc.tileSize) {
+                app.a.drawSymbol(mvdc.igd, Art.Symbol.Stripes, i, mapBoundsPx.y - mvdc.tileSize, mvdc.tileSize, false, false);
+                app.a.drawSymbol(mvdc.igd, Art.Symbol.Stripes, i, mapBoundsPx.bottom, mvdc.tileSize, false, false);
+            }
+            for (int j = Math.max(mvdc.cam.y, mapBoundsPx.y - mvdc.tileSize); j < Math.min(mvdc.cam.bottom, mapBoundsPx.right + mvdc.tileSize); j += mvdc.tileSize) {
+                app.a.drawSymbol(mvdc.igd, Art.Symbol.Stripes, mapBoundsPx.x - mvdc.tileSize, j, mvdc.tileSize, false, false);
+                app.a.drawSymbol(mvdc.igd, Art.Symbol.Stripes, mapBoundsPx.right, j, mvdc.tileSize, false, false);
+            }
         }
     }
 }

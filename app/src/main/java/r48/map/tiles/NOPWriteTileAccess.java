@@ -6,17 +6,28 @@
  */
 package r48.map.tiles;
 
+import gabien.uslx.append.Rect;
 import r48.ITileAccess;
 
 /**
  * Read only via force
  * Created 24th June 2024
  */
-public class NOPWriteTileAccess implements ITileAccess.RW {
-    public final ITileAccess base;
+public class NOPWriteTileAccess implements ITileAccess.RWBounded {
+    public final ITileAccess.Bounded base;
 
-    public NOPWriteTileAccess(ITileAccess ro) {
+    public NOPWriteTileAccess(ITileAccess.Bounded ro) {
         base = ro;
+    }
+
+    @Override
+    public Rect getBounds() {
+        return base.getBounds();
+    }
+
+    @Override
+    public int getPlanes() {
+        return base.getPlanes();
     }
 
     @Override
