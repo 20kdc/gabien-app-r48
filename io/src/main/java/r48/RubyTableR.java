@@ -15,12 +15,13 @@ import gabien.uslx.io.MemoryishR;
  * Note that the given Memoryish is manipulated by-reference.
  * Created on 12/27/16. Split into RubyTable/RubyTableR 9th May, 2024.
  */
-public class RubyTableR implements ITileAccess {
+public class RubyTableR implements ITileAccess.Bounded {
     public final MemoryishR innerTable;
     // Can be 0, 1, or 2. Apparently does not affect actual function.
     // Nevermind the weird "support" for 4D tables, and the inconsistent... arggggghhhh.
     public final int dimensionCount;
     public final int width, height, planeCount;
+    private final int planeDataSize, rowDataSize;
 
     public RubyTableR(byte[] data) {
         this(new ByteArrayMemoryish(data));
@@ -32,6 +33,18 @@ public class RubyTableR implements ITileAccess {
         planeCount = innerTable.getS32LE(12);
         width = innerTable.getS32LE(4);
         height = innerTable.getS32LE(8);
+        planeDataSize = width * height * 2;
+        rowDataSize = width * 2;
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
     }
 
     // inline notes on Table format:
@@ -43,32 +56,33 @@ public class RubyTableR implements ITileAccess {
     // It seems to be consistent enough between files for now, in any case.
     // The data is based around 16-bit tile planes.
 
+    @Override
+    public int getPBase(int p) {
+        if (p < 0 || p >= planeCount)
+            return -1;
+        return 20 + (planeDataSize * p);
+    }
+
+    @Override
+    public int getXBase(int x) {
+        if (x < 0 || x >= width)
+            return -1;
+        return x * 2;
+    }
+
+    @Override
+    public int getYBase(int y) {
+        if (y < 0 || y >= height)
+            return -1;
+        return y * rowDataSize;
+    }
+
     /**
      * Gets a tiletype. These are read as unsigned 16-bit values.
      */
     @Override
-    public int getTiletype(int x, int y, int plane) {
-        int p = 20 + ((x + (y * width)) * 2);
-        p += width * height * 2 * plane;
-        return innerTable.getU16LE(p);
-    }
-
-    @Override
-    public boolean xOOB(int x) {
-        if (x < 0)
-            return true;
-        if (x >= width)
-            return true;
-        return false;
-    }
-
-    @Override
-    public boolean yOOB(int y) {
-        if (y < 0)
-            return true;
-        if (y >= height)
-            return true;
-        return false;
+    public int getTiletypeRaw(int cellID) {
+        return innerTable.getU16LE(cellID);
     }
 
     @Override

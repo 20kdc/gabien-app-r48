@@ -34,6 +34,8 @@ import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.drawlayers.PassabilityMapViewDrawLayer;
 import r48.map.events.IEventAccess;
 import r48.map.imaging.IImageLoader;
+import r48.map.tiles.LoopTileAccess;
+import r48.map.tiles.NOPWriteTileAccess;
 
 /**
  * Responsible for creating NSRs and such.
@@ -207,6 +209,10 @@ public abstract class MapSystem extends App.Svc {
         }
 
         public boolean outOfBounds(int mouseXT, int mouseYT) {
+            return tileAccess.outOfBounds(mouseXT, mouseYT);
+        }
+
+        public boolean outOfBoundsUnlooped(int mouseXT, int mouseYT) {
             if (mouseXT < 0)
                 return true;
             if (mouseYT < 0)
@@ -238,19 +244,23 @@ public abstract class MapSystem extends App.Svc {
         public static MapViewState getBlank(App app, String underscoreMapObjectId, String[] ex, IEventAccess iea) {
             return new MapViewState(app.stuffRendererIndependent, new IMapViewDrawLayer[0], null, underscoreMapObjectId, ex, 0, 0, 0, new ITileAccess.RW() {
                 @Override
-                public boolean xOOB(int x) {
-                    return true;
+                public int getPBase(int p) {
+                    return -1;
                 }
                 @Override
-                public boolean yOOB(int y) {
-                    return true;
+                public int getXBase(int x) {
+                    return -1;
                 }
                 @Override
-                public int getTiletype(int x, int y, int plane) {
+                public int getYBase(int y) {
+                    return -1;
+                }
+                @Override
+                public int getTiletypeRaw(int cellID) {
                     return 0;
                 }
                 @Override
-                public void setTiletype(int x, int y, int plane, int value) {
+                public void setTiletypeRaw(int cellID, int value) {
                 }
             }, new Consumer<int[]>() {
                 @Override
@@ -260,33 +270,15 @@ public abstract class MapSystem extends App.Svc {
             }, iea);
         }
 
-        public static MapViewState fromRT(@NonNull StuffRenderer stuffRenderer, @NonNull IMapViewDrawLayer[] mvdl, @Nullable boolean[] activeDef, String underscoreMapObjectId, String[] ex, final IRIO its, final String str, final boolean readOnly, IEventAccess iea) {
+        public static MapViewState fromRT(@NonNull StuffRenderer stuffRenderer, @NonNull IMapViewDrawLayer[] mvdl, @Nullable boolean[] activeDef, String underscoreMapObjectId, String[] ex, final IRIO its, final String str, final boolean readOnly, IEventAccess iea, final boolean loopX, final boolean loopY) {
             // This happens once in a blue moon, it's fine
             final IRIO sz = PathSyntax.compile(stuffRenderer.app, str).getRW(its);
             final RubyTable rt = new RubyTable(sz.editUser());
-            return new MapViewState(stuffRenderer, mvdl, activeDef, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, new ITileAccess.RW() {
-                @Override
-                public boolean xOOB(int x) {
-                    return rt.xOOB(x);
-                }
-                @Override
-                public boolean yOOB(int y) {
-                    return rt.yOOB(y);
-                }
-                @Override
-                public boolean outOfBounds(int mouseXT, int mouseYT) {
-                    return rt.outOfBounds(mouseXT, mouseYT);
-                }
-                @Override
-                public int getTiletype(int i, int i1, int i2) {
-                    return rt.getTiletype(i, i1, i2);
-                }
-                public void setTiletype(int x, int y, int plane, int value) {
-                    if (readOnly)
-                        return;
-                    rt.setTiletype(x, y, plane, value);
-                }
-            }, (ints) -> {
+            ITileAccess.RW rtLooped = LoopTileAccess.of(rt, loopX, loopY);
+            ITileAccess.RW tar = rtLooped;
+            if (readOnly)
+                tar = new NOPWriteTileAccess(tar);
+            return new MapViewState(stuffRenderer, mvdl, activeDef, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, tar, (ints) -> {
                 if (readOnly)
                     return;
                 int[] defs = new int[ints.length - 2];

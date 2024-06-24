@@ -14,6 +14,7 @@ import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import r48.App;
 import r48.IMapContext;
+import r48.ITileAccess;
 import r48.RubyTableR;
 import r48.dbs.ObjectInfo;
 import r48.imageio.BMP8IImageIOFormat;
@@ -33,6 +34,7 @@ import r48.map.mapinfos.UIGRMMapInfos;
 import r48.map.mapinfos.UISaveScanMapInfos;
 import r48.map.pass.R2kPassabilitySource;
 import r48.map.tiles.LcfTileRenderer;
+import r48.map.tiles.LoopTileAccess;
 import r48.maptools.UIMTBase;
 import r48.maptools.deep.UIMTFtrGdt01;
 import r48.toolsets.utils.RMTranscriptDumper;
@@ -111,7 +113,6 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     public IMapViewDrawLayer[] createLayersForMap(StuffRenderer renderer, @NonNull IRIO map, IRIO tileset, IEventAccess events) {
         if (tileset == null)
             return new IMapViewDrawLayer[0];
-        long scrollFlags = map.getIVar("@scroll_type").getFX();
         RubyTableR tbl = new RubyTableR(map.getIVar("@data").getBuffer());
         String vxaPano = map.getIVar("@parallax_name").decString();
         boolean loopX = false;
@@ -133,8 +134,12 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         IImage img = null;
         if (!vxaPano.equals(""))
             img = imageLoader.getImage("Panorama/" + vxaPano, true);
+
+        long scrollFlags = map.getIVar("@scroll_type").getFX();
         boolean tileLoopX = (scrollFlags & 2) != 0;
         boolean tileLoopY = (scrollFlags & 1) != 0;
+        ITileAccess looper = LoopTileAccess.of(tbl, tileLoopX, tileLoopY);
+
         // Layer order seems to be this:
         // layer 1 lower
         // layer 2 lower
@@ -143,14 +148,14 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         // layer 2 upper
         return new IMapViewDrawLayer[] {
             new PanoramaMapViewDrawLayer(app, img, loopX, loopY, autoLoopX, autoLoopY, tbl.width, tbl.height, 320, 240, 1),
-            new R2kTileMapViewDrawLayer(app, tbl, renderer.tileRenderer, 0, false, tileset, T.m.l_rk0l, tileLoopX, tileLoopY),
-            new R2kTileMapViewDrawLayer(app, tbl, renderer.tileRenderer, 1, false, tileset, T.m.l_rk1l, tileLoopX, tileLoopY),
+            new R2kTileMapViewDrawLayer(app, looper, renderer.tileRenderer, 0, false, tileset, T.m.l_rk0l),
+            new R2kTileMapViewDrawLayer(app, looper, renderer.tileRenderer, 1, false, tileset, T.m.l_rk1l),
                 new EventMapViewDrawLayer(app, 0, events, renderer.eventRenderer, T.m.l_rkbp),
                 new EventMapViewDrawLayer(app, 1, events, renderer.eventRenderer, T.m.l_rkps), // Player/Same
-            new R2kTileMapViewDrawLayer(app, tbl, renderer.tileRenderer, 0, true, tileset, T.m.l_rk0u, tileLoopX, tileLoopY),
-            new R2kTileMapViewDrawLayer(app, tbl, renderer.tileRenderer, 1, true, tileset, T.m.l_rk1u, tileLoopX, tileLoopY),
+            new R2kTileMapViewDrawLayer(app, looper, renderer.tileRenderer, 0, true, tileset, T.m.l_rk0u),
+            new R2kTileMapViewDrawLayer(app, looper, renderer.tileRenderer, 1, true, tileset, T.m.l_rk1u),
                 new EventMapViewDrawLayer(app, 2, events, renderer.eventRenderer, T.m.l_rkap),
-            new PassabilityMapViewDrawLayer(app, new R2kPassabilitySource(tbl, tileset, tileLoopX, tileLoopY), 16),
+            new PassabilityMapViewDrawLayer(app, new R2kPassabilitySource(looper, tileset), 16),
                 new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, renderer.eventRenderer, ""),
             new GridMapViewDrawLayer(app),
             new BorderMapViewDrawLayer(app, tbl.width, tbl.height)
@@ -249,12 +254,16 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     IRIO lastTileset = tsoById(currentTsId);
                     tileRenderer.checkReloadTSO(lastTileset);
 
+                    long scrollFlags = map.getObject().getIVar("@scroll_type").getFX();
+                    boolean tileLoopX = (scrollFlags & 2) != 0;
+                    boolean tileLoopY = (scrollFlags & 1) != 0;
+
                     StuffRenderer renderer = rendererFromMapAndTso(map.getObject(), lastTileset, events, tileRenderer);
                     IMapViewDrawLayer[] layers = createLayersForMap(renderer, map.getObject(), lastTileset, events);
                     return MapViewState.fromRT(renderer, layers, null, objn, new String[] {
                             objn,
                             "RPG_RT.ldb"
-                    }, map.getObject(), "@data", true, events);
+                    }, map.getObject(), "@data", true, events, tileLoopX, tileLoopY);
                 }
                 @Override
                 public IEditingToolbarController makeToolbar(IMapToolContext context) {
@@ -303,11 +312,16 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
                 IRIO lastTileset = tsoById(currentTsId);
                 tileRenderer.checkReloadTSO(lastTileset);
+
+                long scrollFlags = map.getObject().getIVar("@scroll_type").getFX();
+                boolean tileLoopX = (scrollFlags & 2) != 0;
+                boolean tileLoopY = (scrollFlags & 1) != 0;
+
                 StuffRenderer renderer = rendererFromMapAndTso(map.getObject(), lastTileset, iea, tileRenderer);
                 IMapViewDrawLayer[] layers = createLayersForMap(renderer, map.getObject(), lastTileset, iea);
                 return MapViewState.fromRT(renderer, layers, null, objn, new String[] {
                         "RPG_RT.ldb"
-                }, map.getObject(), "@data", false, iea);
+                }, map.getObject(), "@data", false, iea, tileLoopX, tileLoopY);
             }
 
             public IEditingToolbarController makeToolbar(IMapToolContext context) {

@@ -163,7 +163,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 StuffRenderer renderer = rendererFromMapAndTso(map.getObject(), lastTileset, events, tileRenderer);
                 return MapViewState.fromRT(renderer, createLayersForMap(renderer, map.getObject(), lastTileset, events), null, gum, new String[] {
                     "Tilesets"
-                }, map.getObject(), "@data", false, events);
+                }, map.getObject(), "@data", false, events, false, false);
             }
             @Override
             public IEditingToolbarController makeToolbar(IMapToolContext context) {

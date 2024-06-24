@@ -7,6 +7,7 @@
 
 package r48.map.pass;
 
+import r48.ITileAccess;
 import r48.RubyTableR;
 import r48.io.data.IRIO;
 import r48.map.drawlayers.R2kTileMapViewDrawLayer;
@@ -19,16 +20,13 @@ import r48.map.drawlayers.R2kTileMapViewDrawLayer;
  * Created on 09/06/17.
  */
 public class R2kPassabilitySource implements IPassabilitySource {
-    public final RubyTableR mapTable;
+    public final ITileAccess mapTable;
     public final RubyTableR tsLow, tsHigh;
-    public final boolean scrollW, scrollH;
 
-    public R2kPassabilitySource(RubyTableR rt, IRIO tileset, boolean w, boolean h) {
+    public R2kPassabilitySource(ITileAccess rt, IRIO tileset) {
         mapTable = rt;
         tsLow = new RubyTableR(tileset.getIVar("@lowpass_data").getBuffer());
         tsHigh = new RubyTableR(tileset.getIVar("@highpass_data").getBuffer());
-        scrollW = w;
-        scrollH = h;
     }
 
     @Override
@@ -59,16 +57,6 @@ public class R2kPassabilitySource implements IPassabilitySource {
     }
 
     private boolean merge(int f0id, int f0, int f1, int flag, int flagInv, int oX, int oY) {
-        if (scrollW) {
-            while (oX < 0)
-                oX += mapTable.width;
-            oX %= mapTable.width;
-        }
-        if (scrollH) {
-            while (oY < 0)
-                oY += mapTable.height;
-            oY %= mapTable.height;
-        }
         if (mapTable.outOfBounds(oX, oY))
             return false;
 

@@ -29,33 +29,24 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
     public UIMTFtrGdt01(IMapToolContext o) {
         super(o);
 
-        changeInner(new UIAppendButton(T.g.bConfirm, new UIAppendButton(T.m.tRaisePen, new UITextButton(T.g.bUndo, app.f.schemaFieldTH, new Runnable() {
-            @Override
-            public void run() {
-                TOutline.Line l = workspace.removeLast();
-                if (l != null) {
-                    lcrX = l.a.x;
-                    lcrY = l.a.y;
-                } else {
-                    placingPen = true;
-                }
-            }
-        }), new Runnable() {
-            @Override
-            public void run() {
+        changeInner(new UIAppendButton(T.g.bConfirm, new UIAppendButton(T.m.tRaisePen, new UITextButton(T.g.bUndo, app.f.schemaFieldTH, () -> {
+            TOutline.Line l = workspace.removeLast();
+            if (l != null) {
+                lcrX = l.a.x;
+                lcrY = l.a.y;
+            } else {
                 placingPen = true;
             }
-        }, app.f.schemaFieldTH), new Runnable() {
-            @Override
-            public void run() {
-                UIMapView umv = mapToolContext.getMapView();
-                for (FillAlgorithm.Point p : workspace.getAllInvolvedTiles())
-                    if (!umv.mapTable.outOfBounds(p.x, p.y))
-                        umv.mapTable.setTiletype(p.x, p.y, umv.currentLayer, workspace.getOutlineForTile(p.x, p.y).getUsedIdReal());
-                umv.passModificationNotification();
-                workspace = new MOutline();
-                placingPen = true;
-            }
+        }), () -> {
+            placingPen = true;
+        }, app.f.schemaFieldTH), () -> {
+            UIMapView umv = mapToolContext.getMapView();
+            for (FillAlgorithm.Point p : workspace.getAllInvolvedTiles())
+                if (!umv.mapTable.outOfBounds(p.x, p.y))
+                    umv.mapTable.setTiletype(p.x, p.y, umv.currentLayer, workspace.getOutlineForTile(p.x, p.y).getUsedIdReal());
+            umv.passModificationNotification();
+            workspace = new MOutline();
+            placingPen = true;
         }, app.f.schemaFieldTH), true);
     }
 

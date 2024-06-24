@@ -8,6 +8,7 @@
 package r48.map.drawlayers;
 
 import r48.App;
+import r48.ITileAccess;
 import r48.RubyTableR;
 import r48.io.data.IRIO;
 import r48.map.tiles.ITileRenderer;
@@ -20,8 +21,8 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
     public final RubyTableR lowpass;
     public final RubyTableR highpass;
 
-    public R2kTileMapViewDrawLayer(App app, RubyTableR tbl, ITileRenderer tr, int targLayer, boolean targUpper, IRIO ts, String post, boolean loopX, boolean loopY) {
-        super(app, tbl, new int[] {targLayer}, tr, post, loopX, loopY);
+    public R2kTileMapViewDrawLayer(App app, ITileAccess tbl, ITileRenderer tr, int targLayer, boolean targUpper, IRIO ts, String post) {
+        super(app, tbl, new int[] {targLayer}, tr, post);
         upper = targUpper;
         lowpass = new RubyTableR(ts.getIVar("@lowpass_data").getBuffer());
         highpass = new RubyTableR(ts.getIVar("@highpass_data").getBuffer());

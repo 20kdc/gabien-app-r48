@@ -55,7 +55,7 @@ public class IkaSystem extends MapSystem {
             @Override
             public MapViewState rebuild(String changed) {
                 StuffRenderer sr = rendererGeneral();
-                return MapViewState.fromRT(sr, StuffRenderer.prepareTraditional(app, sr, new int[] {0}, map.getObject(), events, "Back", true, true, 0, 0, -1, -1, 1), null, gum, new String[] {}, map.getObject(), "@data", false, events);
+                return MapViewState.fromRT(sr, StuffRenderer.prepareTraditional(app, sr, new int[] {0}, map.getObject(), events, "Back", true, true, 0, 0, -1, -1, 1), null, gum, new String[] {}, map.getObject(), "@data", false, events, false, false);
             }
             @Override
             public IEditingToolbarController makeToolbar(IMapToolContext context) {

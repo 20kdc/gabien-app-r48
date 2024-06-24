@@ -229,13 +229,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             anchorX = x;
             anchorY = y;
         }
-        if (x < 0)
-            return;
-        if (y < 0)
-            return;
-        if (x >= map.mapTable.width)
-            return;
-        if (y >= map.mapTable.height)
+        if (map.mapTable.outOfBounds(x, y))
             return;
         int tab = tabPane.getTabIndex();
         // give up
@@ -262,7 +256,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             // 3. Anything else is not the same.
             final int key = map.mapTable.getTiletype(x, y, layer);
             FillAlgorithm fa = new FillAlgorithm((point) -> {
-                if (map.mapTable.outOfBounds(point.x, point.y))
+                if (map.mapTable.outOfBoundsUnlooped(point.x, point.y))
                     return null;
                 return point;
             }, (point) -> {
@@ -296,14 +290,8 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         boolean willATProcess = false;
         boolean shouldCheckATProcess = tileTabs[tab].atProcessing;
         for (int px = x; px <= mx; px++) {
-            if (px < 0)
-                continue;
-            if (px >= map.mapTable.width)
-                continue;
             for (int py = y; py <= my; py++) {
-                if (py < 0)
-                    continue;
-                if (py >= map.mapTable.height)
+                if (map.mapTable.outOfBounds(px, py))
                     continue;
                 short tid = getTCSelected(px - ox, py - oy);
                 if (shouldCheckATProcess) {
