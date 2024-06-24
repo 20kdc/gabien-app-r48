@@ -27,34 +27,15 @@ public class StuffRenderer {
     public final ITileRenderer tileRenderer;
     public final IEventGraphicRenderer eventRenderer;
     public final IImageLoader imageLoader;
-    public final IMapViewDrawLayer[] layers;
-    public final boolean[] activeDef;
 
-    public StuffRenderer(App app, IImageLoader l, ITileRenderer t, IEventGraphicRenderer e, IMapViewDrawLayer[] l2) {
-        this(app, l, t, e, l2, null);
-    }
-
-    public StuffRenderer(App app, IImageLoader l, ITileRenderer t, IEventGraphicRenderer e, IMapViewDrawLayer[] l2, boolean[] activeDefault) {
+    public StuffRenderer(App app, IImageLoader l, ITileRenderer t, IEventGraphicRenderer e) {
         this.app = app;
         tileRenderer = t;
         eventRenderer = e;
         imageLoader = l;
-        layers = l2;
-        if (activeDefault != null) {
-            activeDef = activeDefault;
-        } else {
-            activeDef = new boolean[l2.length];
-            for (int i = 0; i < activeDef.length; i++) {
-                activeDef[i] = true;
-                if (l2[i] instanceof PassabilityMapViewDrawLayer)
-                    activeDef[i] = false;
-                if (l2[i] instanceof GridMapViewDrawLayer)
-                    activeDef[i] = false;
-            }
-        }
     }
 
-    public static IMapViewDrawLayer[] prepareTraditional(App app, ITileRenderer itr, int[] tlOrder, IEventGraphicRenderer igr, IImageLoader iil, IRIO map, IEventAccess events, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
+    public static IMapViewDrawLayer[] prepareTraditional(App app, StuffRenderer renderer, int[] tlOrder, IRIO map, IEventAccess events, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
         if (map == null)
             return new IMapViewDrawLayer[0];
         final TrRoot T = app.t;
@@ -67,14 +48,14 @@ public class StuffRenderer {
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[(rt.planeCount * 2) + 5];
         IImage panoImg = null;
         if (!vxaPano.equals(""))
-            panoImg = iil.getImage(vxaPano, true);
+            panoImg = renderer.imageLoader.getImage(vxaPano, true);
         layers[0] = new PanoramaMapViewDrawLayer(app, panoImg, lx, ly, alx, aly, rt.width, rt.height, panoSW, panoSH, panoSC);
-        layers[1] = new EventMapViewDrawLayer(app, -1, events, igr, T.m.lowest);
+        layers[1] = new EventMapViewDrawLayer(app, -1, events, renderer.eventRenderer, T.m.lowest);
         for (int i = 0; i < rt.planeCount; i++) {
-            layers[(i * 2) + 2] = new TileMapViewDrawLayer(app, rt, tlOrder[i], itr, false, false);
-            layers[(i * 2) + 3] = new EventMapViewDrawLayer(app, i, events, igr, "");
+            layers[(i * 2) + 2] = new TileMapViewDrawLayer(app, rt, tlOrder[i], renderer.tileRenderer, false, false);
+            layers[(i * 2) + 3] = new EventMapViewDrawLayer(app, i, events, renderer.eventRenderer, "");
         }
-        layers[layers.length - 3] = new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, igr, "");
+        layers[layers.length - 3] = new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, renderer.eventRenderer, "");
         layers[layers.length - 2] = new GridMapViewDrawLayer(app);
         layers[layers.length - 1] = new BorderMapViewDrawLayer(app, rt.width, rt.height);
         return layers;

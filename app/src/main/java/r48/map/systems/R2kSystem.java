@@ -40,6 +40,7 @@ import r48.toolsets.utils.RMTranscriptDumper;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
@@ -104,55 +105,56 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     // saveData is optional, and replaces some things.
     private StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events, LcfTileRenderer tileRenderer) {
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(app, imageLoader, tileRenderer);
-        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
-        // Cannot get enough information without map & tileset
-        if ((map != null) && (tileset != null)) {
-            long scrollFlags = map.getIVar("@scroll_type").getFX();
-            RubyTableR tbl = new RubyTableR(map.getIVar("@data").getBuffer());
-            String vxaPano = map.getIVar("@parallax_name").decString();
-            boolean loopX = false;
-            boolean loopY = false;
-            int autoLoopX = 0;
-            int autoLoopY = 0;
-            if (map.getIVar("@parallax_flag").getType() != 'T') {
-                vxaPano = "";
-            } else {
-                loopX = map.getIVar("@parallax_loop_x").getType() == 'T';
-                loopY = map.getIVar("@parallax_loop_y").getType() == 'T';
-                boolean aloopX = map.getIVar("@parallax_loop_x").getType() == 'T';
-                boolean aloopY = map.getIVar("@parallax_loop_y").getType() == 'T';
-                if (aloopX)
-                    autoLoopX = (int) map.getIVar("@parallax_sx").getFX();
-                if (aloopY)
-                    autoLoopY = (int) map.getIVar("@parallax_sy").getFX();
-            }
-            IImage img = null;
-            if (!vxaPano.equals(""))
-                img = imageLoader.getImage("Panorama/" + vxaPano, true);
-            boolean tileLoopX = (scrollFlags & 2) != 0;
-            boolean tileLoopY = (scrollFlags & 1) != 0;
-            // Layer order seems to be this:
-            // layer 1 lower
-            // layer 2 lower
-            // <events>
-            // layer 1 upper
-            // layer 2 upper
-            layers = new IMapViewDrawLayer[] {
-                new PanoramaMapViewDrawLayer(app, img, loopX, loopY, autoLoopX, autoLoopY, tbl.width, tbl.height, 320, 240, 1),
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, false, tileset, T.m.l_rk0l, tileLoopX, tileLoopY),
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, false, tileset, T.m.l_rk1l, tileLoopX, tileLoopY),
-                    new EventMapViewDrawLayer(app, 0, events, eventRenderer, T.m.l_rkbp),
-                    new EventMapViewDrawLayer(app, 1, events, eventRenderer, T.m.l_rkps), // Player/Same
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, true, tileset, T.m.l_rk0u, tileLoopX, tileLoopY),
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, true, tileset, T.m.l_rk1u, tileLoopX, tileLoopY),
-                    new EventMapViewDrawLayer(app, 2, events, eventRenderer, T.m.l_rkap),
-                new PassabilityMapViewDrawLayer(app, new R2kPassabilitySource(tbl, tileset, tileLoopX, tileLoopY), 16),
-                    new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, eventRenderer, ""),
-                new GridMapViewDrawLayer(app),
-                new BorderMapViewDrawLayer(app, tbl.width, tbl.height)
-            };
+        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
+    }
+
+    public IMapViewDrawLayer[] createLayersForMap(StuffRenderer renderer, @NonNull IRIO map, IRIO tileset, IEventAccess events) {
+        if (tileset == null)
+            return new IMapViewDrawLayer[0];
+        long scrollFlags = map.getIVar("@scroll_type").getFX();
+        RubyTableR tbl = new RubyTableR(map.getIVar("@data").getBuffer());
+        String vxaPano = map.getIVar("@parallax_name").decString();
+        boolean loopX = false;
+        boolean loopY = false;
+        int autoLoopX = 0;
+        int autoLoopY = 0;
+        if (map.getIVar("@parallax_flag").getType() != 'T') {
+            vxaPano = "";
+        } else {
+            loopX = map.getIVar("@parallax_loop_x").getType() == 'T';
+            loopY = map.getIVar("@parallax_loop_y").getType() == 'T';
+            boolean aloopX = map.getIVar("@parallax_loop_x").getType() == 'T';
+            boolean aloopY = map.getIVar("@parallax_loop_y").getType() == 'T';
+            if (aloopX)
+                autoLoopX = (int) map.getIVar("@parallax_sx").getFX();
+            if (aloopY)
+                autoLoopY = (int) map.getIVar("@parallax_sy").getFX();
         }
-        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, layers);
+        IImage img = null;
+        if (!vxaPano.equals(""))
+            img = imageLoader.getImage("Panorama/" + vxaPano, true);
+        boolean tileLoopX = (scrollFlags & 2) != 0;
+        boolean tileLoopY = (scrollFlags & 1) != 0;
+        // Layer order seems to be this:
+        // layer 1 lower
+        // layer 2 lower
+        // <events>
+        // layer 1 upper
+        // layer 2 upper
+        return new IMapViewDrawLayer[] {
+            new PanoramaMapViewDrawLayer(app, img, loopX, loopY, autoLoopX, autoLoopY, tbl.width, tbl.height, 320, 240, 1),
+            new R2kTileMapViewDrawLayer(app, tbl, renderer.tileRenderer, 0, false, tileset, T.m.l_rk0l, tileLoopX, tileLoopY),
+            new R2kTileMapViewDrawLayer(app, tbl, renderer.tileRenderer, 1, false, tileset, T.m.l_rk1l, tileLoopX, tileLoopY),
+                new EventMapViewDrawLayer(app, 0, events, renderer.eventRenderer, T.m.l_rkbp),
+                new EventMapViewDrawLayer(app, 1, events, renderer.eventRenderer, T.m.l_rkps), // Player/Same
+            new R2kTileMapViewDrawLayer(app, tbl, renderer.tileRenderer, 0, true, tileset, T.m.l_rk0u, tileLoopX, tileLoopY),
+            new R2kTileMapViewDrawLayer(app, tbl, renderer.tileRenderer, 1, true, tileset, T.m.l_rk1u, tileLoopX, tileLoopY),
+                new EventMapViewDrawLayer(app, 2, events, renderer.eventRenderer, T.m.l_rkap),
+            new PassabilityMapViewDrawLayer(app, new R2kPassabilitySource(tbl, tileset, tileLoopX, tileLoopY), 16),
+                new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, renderer.eventRenderer, ""),
+            new GridMapViewDrawLayer(app),
+            new BorderMapViewDrawLayer(app, tbl.width, tbl.height)
+        };
     }
 
     @Override
@@ -160,7 +162,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         LcfTileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader);
         tileRenderer.checkReloadTSO(tso);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(app, imageLoader, tileRenderer);
-        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
+        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }
 
     @Override
@@ -247,7 +249,9 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     IRIO lastTileset = tsoById(currentTsId);
                     tileRenderer.checkReloadTSO(lastTileset);
 
-                    return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, events, tileRenderer), objn, new String[] {
+                    StuffRenderer renderer = rendererFromMapAndTso(map.getObject(), lastTileset, events, tileRenderer);
+                    IMapViewDrawLayer[] layers = createLayersForMap(renderer, map.getObject(), lastTileset, events);
+                    return MapViewState.fromRT(renderer, layers, null, objn, new String[] {
                             objn,
                             "RPG_RT.ldb"
                     }, map.getObject(), "@data", true, events);
@@ -299,7 +303,9 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
                 IRIO lastTileset = tsoById(currentTsId);
                 tileRenderer.checkReloadTSO(lastTileset);
-                return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, iea, tileRenderer), objn, new String[] {
+                StuffRenderer renderer = rendererFromMapAndTso(map.getObject(), lastTileset, iea, tileRenderer);
+                IMapViewDrawLayer[] layers = createLayersForMap(renderer, map.getObject(), lastTileset, iea);
+                return MapViewState.fromRT(renderer, layers, null, objn, new String[] {
                         "RPG_RT.ldb"
                 }, map.getObject(), "@data", false, iea);
             }

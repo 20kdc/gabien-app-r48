@@ -13,6 +13,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.render.IGrDriver;
 import gabien.ui.*;
@@ -28,7 +29,9 @@ import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
 import r48.map.MapViewDrawContext;
 import r48.map.StuffRenderer;
+import r48.map.drawlayers.GridMapViewDrawLayer;
 import r48.map.drawlayers.IMapViewDrawLayer;
+import r48.map.drawlayers.PassabilityMapViewDrawLayer;
 import r48.map.events.IEventAccess;
 import r48.map.imaging.IImageLoader;
 
@@ -141,23 +144,62 @@ public abstract class MapSystem extends App.Svc {
      * Notably, the wrapping is NOT to be used for the renderers because the wrapping kind of noms performance.
      */
     public static class MapViewState {
+        /**
+         * Customized renderer.
+         */
         public final StuffRenderer renderer;
-        // Used for __MAP__ dictionaries
+        /**
+         * Map draw layers.
+         */
+        public final IMapViewDrawLayer[] layers;
+        /**
+         * Default states of map draw layers.
+         */
+        public final boolean[] activeDef;
+        /**
+         * Used for __MAP__ dictionaries
+         */
         public final String underscoreMapObjectId;
-        // This is an additional list of object roots to listen for modifications on.
+        /**
+         * This is an additional list of object roots to listen for modifications on.
+         */
         public final String[] refreshOnObjectChange;
-        // Only for tool use, so can be null if the tools won't ever access it
+        /**
+         * Only for tool use, so can be null if the tools won't ever access it
+         */
         public final IEventAccess eventAccess;
+        /**
+         * "The Obvious" attributes.
+         */
         public final int width, height, planeCount;
-        // int[] contains X, Y, Layer
+        /**
+         * int[] contains X, Y, Layer
+         */
         public final Function<int[], Short> getTileData;
-        // int[] contains X, Y, Layer, value
+        /**
+         * int[] contains X, Y, Layer, value
+         */
         public final Consumer<int[]> setTileData;
-        // int[] contains X, Y, (defaults...)
+        /**
+         * int[] contains X, Y, (defaults...)
+         */
         public final Consumer<int[]> resize;
 
-        public MapViewState(StuffRenderer r, String usm, String[] exrefresh, int w, int h, int pc, Function<int[], Short> gtd, Consumer<int[]> std, Consumer<int[]> rz, IEventAccess iea) {
+        public MapViewState(StuffRenderer r, @NonNull IMapViewDrawLayer[] layers, @Nullable boolean[] activeDefault, String usm, String[] exrefresh, int w, int h, int pc, Function<int[], Short> gtd, Consumer<int[]> std, Consumer<int[]> rz, IEventAccess iea) {
             renderer = r;
+            this.layers = layers;
+            if (activeDefault != null) {
+                activeDef = activeDefault;
+            } else {
+                activeDef = new boolean[layers.length];
+                for (int i = 0; i < activeDef.length; i++) {
+                    activeDef[i] = true;
+                    if (layers[i] instanceof PassabilityMapViewDrawLayer)
+                        activeDef[i] = false;
+                    if (layers[i] instanceof GridMapViewDrawLayer)
+                        activeDef[i] = false;
+                }
+            }
             underscoreMapObjectId = usm;
             refreshOnObjectChange = exrefresh;
             width = w;
@@ -185,7 +227,6 @@ public abstract class MapSystem extends App.Svc {
          * Renderer for mapshots/etc.
          */
         public void renderCore(IGrDriver igd, int vCX, int vCY, boolean[] layerVis, int currentLayer, boolean debugToggle) {
-            IMapViewDrawLayer[] layers = renderer.layers;
             int tileSize = renderer.tileRenderer.tileSize;
 
             MapViewDrawContext mvdc = new MapViewDrawContext(renderer.app, new Rect(vCX, vCY, igd.getWidth(), igd.getHeight()), tileSize, false);
@@ -200,7 +241,7 @@ public abstract class MapSystem extends App.Svc {
         }
 
         public static MapViewState getBlank(App app, String underscoreMapObjectId, String[] ex, IEventAccess iea) {
-            return new MapViewState(app.stuffRendererIndependent, underscoreMapObjectId, ex, 0, 0, 0, new Function<int[], Short>() {
+            return new MapViewState(app.stuffRendererIndependent, new IMapViewDrawLayer[0], null, underscoreMapObjectId, ex, 0, 0, 0, new Function<int[], Short>() {
                 @Override
                 public Short apply(int[] ints) {
                     return 0;
@@ -217,11 +258,11 @@ public abstract class MapSystem extends App.Svc {
             }, iea);
         }
 
-        public static MapViewState fromRT(StuffRenderer stuffRenderer, String underscoreMapObjectId, String[] ex, final IRIO its, final String str, final boolean readOnly, IEventAccess iea) {
+        public static MapViewState fromRT(@NonNull StuffRenderer stuffRenderer, @NonNull IMapViewDrawLayer[] mvdl, @Nullable boolean[] activeDef, String underscoreMapObjectId, String[] ex, final IRIO its, final String str, final boolean readOnly, IEventAccess iea) {
             // This happens once in a blue moon, it's fine
             final IRIO sz = PathSyntax.compile(stuffRenderer.app, str).getRW(its);
             final RubyTable rt = new RubyTable(sz.editUser());
-            return new MapViewState(stuffRenderer, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, (ints) -> {
+            return new MapViewState(stuffRenderer, mvdl, activeDef, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, (ints) -> {
                 return rt.getTiletype(ints[0], ints[1], ints[2]);
             }, (ints) -> {
                 if (readOnly)

@@ -39,6 +39,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.function.Supplier;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Created on 03/06/17.
  */
@@ -94,6 +96,10 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events, ITileRenderer tileRenderer) {
         RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, false);
+        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
+    }
+
+    public IMapViewDrawLayer[] createLayersForMap(StuffRenderer renderer, @NonNull IRIO map, IRIO tileset, IEventAccess events) {
         String pano = "";
         int panoHue = 0;
         if (tileset != null) {
@@ -107,33 +113,29 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             if (hueRIO != null)
                 panoHue = (int) hueRIO.getFX();
         }
-        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
-        if (map != null) {
-            RubyTableR rt = new RubyTableR(map.getIVar("@data").getBuffer());
-            IImage panoImg = null;
-            if (!pano.equals(""))
-                panoImg = imageLoader.getImage(pano, true);
-            if (panoImg != null && panoHue != 0)
-                panoImg = app.ui.imageFXCache.process(panoImg, new HueShiftImageEffect(panoHue));
-            RXPAccurateDrawLayer accurate = new RXPAccurateDrawLayer(rt, events, (XPTileRenderer) tileRenderer, eventRenderer);
-            layers = new IMapViewDrawLayer[] {
-                    // works for green docks
-                    new PanoramaMapViewDrawLayer(app, panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
-                    // Signal layers (controls Z-Emulation)
-                    accurate.tileSignalLayers[0],
-                    accurate.tileSignalLayers[1],
-                    accurate.tileSignalLayers[2],
-                    accurate.signalLayerEvA,
-                    accurate.signalLayerEvB,
-                    // Z-Emulation
-                    accurate,
-                    // selection
-                    new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, eventRenderer, ""),
-                    new GridMapViewDrawLayer(app),
-                    new BorderMapViewDrawLayer(app, rt.width, rt.height)
-            };
-        }
-        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, layers);
+        RubyTableR rt = new RubyTableR(map.getIVar("@data").getBuffer());
+        IImage panoImg = null;
+        if (!pano.equals(""))
+            panoImg = imageLoader.getImage(pano, true);
+        if (panoImg != null && panoHue != 0)
+            panoImg = app.ui.imageFXCache.process(panoImg, new HueShiftImageEffect(panoHue));
+        RXPAccurateDrawLayer accurate = new RXPAccurateDrawLayer(rt, events, (XPTileRenderer) renderer.tileRenderer, (RMEventGraphicRenderer) renderer.eventRenderer);
+        return new IMapViewDrawLayer[] {
+                // works for green docks
+                new PanoramaMapViewDrawLayer(app, panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
+                // Signal layers (controls Z-Emulation)
+                accurate.tileSignalLayers[0],
+                accurate.tileSignalLayers[1],
+                accurate.tileSignalLayers[2],
+                accurate.signalLayerEvA,
+                accurate.signalLayerEvB,
+                // Z-Emulation
+                accurate,
+                // selection
+                new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, renderer.eventRenderer, ""),
+                new GridMapViewDrawLayer(app),
+                new BorderMapViewDrawLayer(app, rt.width, rt.height)
+        };
     }
 
     @Override
@@ -141,7 +143,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         TSOAwareTileRenderer tileRenderer = createTileRenderer();
         tileRenderer.checkReloadTSO(tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, false);
-        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
+        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }
 
     @Override
@@ -158,7 +160,8 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
                 IRIO lastTileset = tsoById(app, currentTsId);
                 tileRenderer.checkReloadTSO(lastTileset);
-                return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, events, tileRenderer), gum, new String[] {
+                StuffRenderer renderer = rendererFromMapAndTso(map.getObject(), lastTileset, events, tileRenderer);
+                return MapViewState.fromRT(renderer, createLayersForMap(renderer, map.getObject(), lastTileset, events), null, gum, new String[] {
                     "Tilesets"
                 }, map.getObject(), "@data", false, events);
             }

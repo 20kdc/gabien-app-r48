@@ -268,7 +268,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             }, (point) -> {
                 short here = map.mapTable.getTiletype(point.x, point.y, layer);
                 if (here != key) {
-                    AutoTileTypeField attf = getAutotileType(map, point.x, point.y, layer, atBases, null);
+                    AutoTileTypeField attf = getAutotileType(here, atBases);
                     if (attf == null)
                         return false;
                     if (!attf.contains(key))
@@ -293,6 +293,8 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         int tab = tabPane.getTabIndex();
         if (tab == -1)
             return;
+        boolean willATProcess = false;
+        boolean shouldCheckATProcess = tileTabs[tab].atProcessing;
         for (int px = x; px <= mx; px++) {
             if (px < 0)
                 continue;
@@ -303,10 +305,19 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                     continue;
                 if (py >= map.mapTable.height)
                     continue;
-                map.mapTable.setTiletype(px, py, layer, getTCSelected(px - ox, py - oy));
+                short tid = getTCSelected(px - ox, py - oy);
+                if (shouldCheckATProcess) {
+                    // only actually enable AT processing if the tile was or will be involved in AT processing
+                    // this reduces the amount of "breakage" of manually selected tiles
+                    if (getAutotileType(tid, atBases) != null || getAutotileType(map.mapTable.getTiletype(px, py, layer), atBases) != null) {
+                        shouldCheckATProcess = false;
+                        willATProcess = true;
+                    }
+                }
+                map.mapTable.setTiletype(px, py, layer, tid);
             }
         }
-        if (tileTabs[tab].atProcessing) {
+        if (willATProcess) {
             for (int px = x - 1; px <= mx + 1; px++) {
                 if (px < 0)
                     continue;

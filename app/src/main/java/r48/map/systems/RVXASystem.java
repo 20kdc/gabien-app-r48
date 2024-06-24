@@ -50,35 +50,36 @@ public class RVXASystem extends RXPSystem {
 
     @Override
     public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tso, IEventAccess events, ITileRenderer tileRenderer) {
-        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
         RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, true);
-        if (map != null) {
-            String vxaPano = map.getIVar("@parallax_name").decString();
-            if (map.getIVar("@parallax_show").getType() != 'T')
-                vxaPano = "";
-            IImage panoImg = null;
-            if (!vxaPano.equals(""))
-                panoImg = imageLoader.getImage("Parallaxes/" + vxaPano, true);
-            RubyTableR rt = new RubyTableR(map.getIVar("@data").getBuffer());
-            RVXAAccurateDrawLayer accurate = new RVXAAccurateDrawLayer(rt, events, (VXATileRenderer) tileRenderer, eventRenderer);
-            layers = new IMapViewDrawLayer[] {
-                    // works for green docks
-                    new PanoramaMapViewDrawLayer(app, panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
-                    // Signal layers (controls Z-Emulation)
-                    accurate.tileSignalLayers[0],
-                    accurate.tileSignalLayers[1],
-                    accurate.tileSignalLayers[2],
-                    accurate.tileSignalLayers[3],
-                    accurate.signalLayerEvA,
-                    // Z-Emulation
-                    accurate,
-                    // selection
-                    new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, eventRenderer, ""),
-                    new GridMapViewDrawLayer(app),
-                    new BorderMapViewDrawLayer(app, rt.width, rt.height)
-            };
-        }
-        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, layers);
+        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
+    }
+
+    @Override
+    public IMapViewDrawLayer[] createLayersForMap(StuffRenderer renderer, IRIO map, IRIO tileset, IEventAccess events) {
+        String vxaPano = map.getIVar("@parallax_name").decString();
+        if (map.getIVar("@parallax_show").getType() != 'T')
+            vxaPano = "";
+        IImage panoImg = null;
+        if (!vxaPano.equals(""))
+            panoImg = imageLoader.getImage("Parallaxes/" + vxaPano, true);
+        RubyTableR rt = new RubyTableR(map.getIVar("@data").getBuffer());
+        RVXAAccurateDrawLayer accurate = new RVXAAccurateDrawLayer(rt, events, (VXATileRenderer) renderer.tileRenderer, (RMEventGraphicRenderer) renderer.eventRenderer);
+        return new IMapViewDrawLayer[] {
+                // works for green docks
+                new PanoramaMapViewDrawLayer(app, panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
+                // Signal layers (controls Z-Emulation)
+                accurate.tileSignalLayers[0],
+                accurate.tileSignalLayers[1],
+                accurate.tileSignalLayers[2],
+                accurate.tileSignalLayers[3],
+                accurate.signalLayerEvA,
+                // Z-Emulation
+                accurate,
+                // selection
+                new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, renderer.eventRenderer, ""),
+                new GridMapViewDrawLayer(app),
+                new BorderMapViewDrawLayer(app, rt.width, rt.height)
+        };
     }
 
     @Override
@@ -86,7 +87,7 @@ public class RVXASystem extends RXPSystem {
         TSOAwareTileRenderer tileRenderer = createTileRenderer();
         tileRenderer.checkReloadTSO(tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, true);
-        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
+        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }
 
     @Override

@@ -10,7 +10,6 @@ package r48.map.systems;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
-import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.NullEventGraphicRenderer;
 import r48.map.imaging.CacheImageLoader;
@@ -33,7 +32,7 @@ public class NullSystem extends MapSystem {
     public StuffRenderer rendererFromTso(IRIO target) {
         ITileRenderer tileRenderer = new NullTileRenderer(app);
         IEventGraphicRenderer eventRenderer = new NullEventGraphicRenderer();
-        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
+        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }
 
     @Override

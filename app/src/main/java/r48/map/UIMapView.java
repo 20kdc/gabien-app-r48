@@ -137,10 +137,10 @@ public class UIMapView extends UIPlaneView {
 
     public void reinitLayerVis() {
         if (layerVis != null)
-            if (layerVis.length == mapTable.renderer.layers.length)
+            if (layerVis.length == mapTable.layers.length)
                 return;
-        layerVis = new boolean[mapTable.renderer.layers.length];
-        System.arraycopy(mapTable.renderer.activeDef, 0, layerVis, 0, mapTable.renderer.activeDef.length);
+        layerVis = new boolean[mapTable.layers.length];
+        System.arraycopy(mapTable.activeDef, 0, layerVis, 0, mapTable.activeDef.length);
     }
 
     @Override
@@ -328,7 +328,7 @@ public class UIMapView extends UIPlaneView {
         stb[0] = (float) Math.floor(-(iCamX * ratio));
         stb[1] = (float) Math.floor(-(iCamY * ratio));
 
-        IMapViewDrawLayer[] layers = mapTable.renderer.layers;
+        IMapViewDrawLayer[] layers = mapTable.layers;
 
         // NOTE: Block copy/paste isn't nice this way... add confirmation or something instead?
         // If so, make sure that camDragSwitch still disables this.

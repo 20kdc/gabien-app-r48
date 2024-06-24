@@ -33,15 +33,15 @@ public class IkaSystem extends MapSystem {
         tileRenderer = new IkaTileRenderer(app, imageLoader);
     }
 
-    public StuffRenderer rendererGeneral(IRIO map, IEventAccess iea) {
+    public StuffRenderer rendererGeneral() {
         tileRenderer.checkReload();
         IEventGraphicRenderer eventRenderer = new IkaEventGraphicRenderer(app, imageLoader);
-        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(app, tileRenderer, new int[] {0}, eventRenderer, imageLoader, map, iea, "Back", true, true, 0, 0, -1, -1, 1));
+        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }
 
     @Override
     public StuffRenderer rendererFromTso(IRIO target) {
-        return rendererGeneral(null, null);
+        return rendererGeneral();
     }
 
     @Override
@@ -54,7 +54,8 @@ public class IkaSystem extends MapSystem {
         return new MapViewDetails(app, gum, "IkachanMap") {
             @Override
             public MapViewState rebuild(String changed) {
-                return MapViewState.fromRT(rendererGeneral(map.getObject(), events), gum, new String[] {}, map.getObject(), "@data", false, events);
+                StuffRenderer sr = rendererGeneral();
+                return MapViewState.fromRT(sr, StuffRenderer.prepareTraditional(app, sr, new int[] {0}, map.getObject(), events, "Back", true, true, 0, 0, -1, -1, 1), null, gum, new String[] {}, map.getObject(), "@data", false, events);
             }
             @Override
             public IEditingToolbarController makeToolbar(IMapToolContext context) {
