@@ -23,5 +23,16 @@
 		<module>releaser/javase</module>
 		<module>releaser/metadata</module>
 	</modules>
+
+	<repositories>
+		<repository>
+			<id>kdc-pages</id>
+			<name>20kdc GitHub Pages</name>
+			<url>https://20kdc.github.io/maven</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 </project>
 

@@ -23,9 +23,9 @@
 			<version>0.666-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>t20kdc.hs2</groupId>
-			<artifactId>gabien-datum</artifactId>
-			<version>0.666-SNAPSHOT</version>
+			<groupId>t20kdc.datum</groupId>
+			<artifactId>datum</artifactId>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>
 		<!-- test-only : in particular, we don't want to rely on gabien-javase during normal builds due to Android support -->
 		<dependency>
