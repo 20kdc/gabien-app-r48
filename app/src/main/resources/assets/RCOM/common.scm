@@ -14,9 +14,9 @@
 		(string->symbol (.. "Class." (symbol->string csym)))
 		eng
 		" "
-		'(@ @id)
+		(quote (@ @id))
 		": "
-		'(@ @name)
+		(quote (@ @name))
 	)
 )
 

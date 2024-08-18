@@ -10,6 +10,6 @@
 	(list
 		define-name-nls
 		(string->symbol (.. "Class." (symbol->string csym)))
-		'(@ @name)
+		(quote (@ @name))
 	)
 )

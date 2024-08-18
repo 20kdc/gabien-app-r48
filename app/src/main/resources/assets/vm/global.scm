@@ -41,16 +41,16 @@
 (help-set! .. "(.. V...) : Macro that wraps each parameter in value->string and the whole in string-append.")
 
 ; for very quick formatting
-(define-syntax (fl1 . entries) (list lambda '(a0) (append '(..) entries)))
+(define-syntax (fl1 . entries) (list lambda (quote (a0)) (append (quote (..)) entries)))
 (help-set! fl1 "(fl1 V...) : Formatting Lambda 1: equivalent to (lambda (a0) (.. V...))")
 
-(define-syntax (fl2 . entries) (list lambda '(a0 a1) (append '(..) entries)))
+(define-syntax (fl2 . entries) (list lambda (quote (a0 a1)) (append (quote (..)) entries)))
 (help-set! fl2 "(fl2 V...) : Formatting Lambda 2: equivalent to (lambda (a0 a1) (.. V...))")
 
-(define-syntax (fl3 . entries) (list lambda '(a0 a1 a2) (append '(..) entries)))
+(define-syntax (fl3 . entries) (list lambda (quote (a0 a1 a2)) (append (quote (..)) entries)))
 (help-set! fl3 "(fl3 V...) : Formatting Lambda 3: equivalent to (lambda (a0 a1 a2) (.. V...))")
 
-(define-syntax (fl4 . entries) (list lambda '(a0 a1 a2 a3) (append '(..) entries)))
+(define-syntax (fl4 . entries) (list lambda (quote (a0 a1 a2 a3)) (append (quote (..)) entries)))
 (help-set! fl4 "(fl4 V...) : Formatting Lambda 4: equivalent to (lambda (a0 a1 a2 a3) (.. V...))")
 
 (include "vm/dmth")

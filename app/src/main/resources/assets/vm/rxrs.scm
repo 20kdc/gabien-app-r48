@@ -52,7 +52,7 @@
 ; one is if with fancy syntax, the other restructures the list into a tree
 (define-syntax (cond-branch branch else-code)
 	(if
-		(eq? 'else (car branch))
+		(eq? (quote else) (car branch))
 		; this branch is an else-guard, so we stop here, compiling just that guard as-is into a begin
 		(append! (list begin) (cdr branch))
 		; this branch is not an else-guard, sadly, so it needs to become one of two forms based on length

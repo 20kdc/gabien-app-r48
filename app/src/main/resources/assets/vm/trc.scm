@@ -70,7 +70,7 @@
 		; target
 		(list base)
 		; focus
-		'a0
+		(quote a0)
 	))
 	; actually eval
 	(tr-dyn-compiler-list code ctx)

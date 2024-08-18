@@ -14,17 +14,17 @@
 (define-syntax (dmth-props-call-sanity tvc jvc)
 	(list let
 		; ((tv TVC))
-		(list (list 'tv tvc))
+		(list (list (quote tv) tvc))
 		; suppress null entries in arrays
-		(list if-not '(dm-eq? tv (dm-key #nil))
+		(list if-not (quote (dm-eq? tv (dm-key #nil)))
 			(list let
 				; ((jv JVC))
-				(list (list 'jv jvc))
-				'(if-not
+				(list (list (quote jv) jvc))
+				(quote (if-not
 					; if there's no JSON key to read/write, don't continue
 					(eq? jv #nil)
 					(props ex tv jv)
-				)
+				))
 			)
 		)
 	)

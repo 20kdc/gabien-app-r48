@@ -48,13 +48,13 @@
 			(list
 				let
 				(list (list
-					'tmp$ (tr-dyni-path ctx path)
+					(quote tmp$) (tr-dyni-path ctx path)
 				))
 				(list
 					if
 					(list
 						eq?
-						'tmp$
+						(quote tmp$)
 						#nil
 					)
 					""
@@ -63,7 +63,7 @@
 						apfx
 						(list
 							dm-fmt
-							'tmp$
+							(quote tmp$)
 							; this is so interp can be a symbol
 							(if (eq? interp #nil)
 								#nil
@@ -111,7 +111,7 @@
 		(append! clauses (list
 			(list
 				; condition
-				(list equal? 'tmp$ (list quote (list-ref v 0)))
+				(list equal? (quote tmp$) (list quote (list-ref v 0)))
 				; clause contents
 				(tr-dyn-compiler-expr (cdr v) ctx)
 			)
@@ -127,7 +127,7 @@
 			(list
 				let
 				(list (list
-					'tmp$ (list dm-dec (tr-dyni-path ctx path))
+					(quote tmp$) (list dm-dec (tr-dyni-path ctx path))
 				))
 				; (cond ... (else DEF))
 				(append!
@@ -135,7 +135,7 @@
 					(tr-dyni-eqci ctx extra)
 					(list
 						; (else DEF)
-						(list 'else (tr-dyn-compiler-expr def ctx))
+						(list (quote else) (tr-dyn-compiler-expr def ctx))
 					)
 				)
 			)

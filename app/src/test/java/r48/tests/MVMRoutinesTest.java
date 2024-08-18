@@ -53,8 +53,8 @@ public class MVMRoutinesTest {
         env.include("vm/global", false);
 
         assertEquals(true, env.evalString("(cond (#t) (#f) (#f))"));
-        assertEquals(new DatumSymbol("yes"), env.evalString("(cond ((> 1 2) 'no) ((> 2 1) 'yes) (else 'never))"));
+        assertEquals(new DatumSymbol("yes"), env.evalString("(cond ((> 1 2) (quote no)) ((> 2 1) (quote yes)) (else (quote never)))"));
         assertEquals(false, env.evalString("(cond)"));
-        assertEquals(new DatumSymbol("yes"), env.evalString("(cond ((> 1 2) 'no) (else 'yes))"));
+        assertEquals(new DatumSymbol("yes"), env.evalString("(cond ((> 1 2) (quote no)) (else (quote yes)))"));
     }
 }

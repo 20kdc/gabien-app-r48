@@ -66,8 +66,8 @@
 	(define-tr R2KIDC.Var "Var. ID")
 	(define-tr R2KIDC.Switch "Switch. ID")
 
-	(idchanger-add R2KIDC.Var '(var_id var_or_none_id))
-	(idchanger-add R2KIDC.Switch '(switch_id))
+	(idchanger-add R2KIDC.Var (quote (var_id var_or_none_id)))
+	(idchanger-add R2KIDC.Switch (quote (switch_id)))
 )
 
 ; Continue...
