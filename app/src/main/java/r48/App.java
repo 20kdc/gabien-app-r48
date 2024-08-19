@@ -16,9 +16,9 @@ import java.util.function.Consumer;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+import datum.DatumSrcLoc;
+import datum.DatumSymbol;
 import gabien.GaBIEn;
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumSymbol;
 import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIPanel;
 import gabien.ui.UIElement.UIProxy;

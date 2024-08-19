@@ -7,8 +7,6 @@
 
 package r48.dbs;
 
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumWriter;
 import r48.App;
 import r48.dbs.RPGCommand.PDyn;
 import r48.dbs.RPGCommand.SpritesheetSpecialTag;
@@ -29,6 +27,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.*;
+
+import datum.DatumSrcLoc;
+import datum.DatumWriter;
 
 /**
  * Created on 12/30/16.

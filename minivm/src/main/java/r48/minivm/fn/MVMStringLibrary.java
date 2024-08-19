@@ -9,7 +9,7 @@ package r48.minivm.fn;
 import java.util.LinkedList;
 import java.util.List;
 
-import gabien.datum.DatumSymbol;
+import datum.DatumSymbol;
 import r48.minivm.MVMU;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMType;

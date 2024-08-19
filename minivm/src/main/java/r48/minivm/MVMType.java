@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.datum.DatumSymbol;
+import datum.DatumSymbol;
 import r48.minivm.fn.MVMFn;
 
 /**

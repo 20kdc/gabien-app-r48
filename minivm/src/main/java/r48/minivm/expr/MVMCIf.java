@@ -6,10 +6,10 @@
  */
 package r48.minivm.expr;
 
+import static datum.DatumTreeUtils.*;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-
-import static gabien.datum.DatumTreeUtils.*;
 
 import r48.minivm.MVMScope;
 import r48.minivm.MVMType;

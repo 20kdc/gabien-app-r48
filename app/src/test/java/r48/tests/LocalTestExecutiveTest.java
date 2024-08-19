@@ -7,15 +7,15 @@
 package r48.tests;
 
 import gabien.TestKickstart;
-import gabien.datum.DatumDecToLambdaVisitor;
-import gabien.datum.DatumReaderTokenSource;
-import gabien.datum.DatumSrcLoc;
 import gabien.uslx.append.Block;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import datum.DatumDecToLambdaVisitor;
+import datum.DatumReaderTokenSource;
+import datum.DatumSrcLoc;
 import r48.App;
 import r48.dbs.ObjectInfo;
 import r48.dbs.IDatabase;

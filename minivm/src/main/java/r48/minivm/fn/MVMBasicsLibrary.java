@@ -6,10 +6,11 @@
  */
 package r48.minivm.fn;
 
-import static gabien.datum.DatumTreeUtils.*;
-
-import gabien.datum.DatumSrcLoc;
 import r48.minivm.MVMU;
+
+import static datum.DatumTreeUtils.*;
+
+import datum.DatumSrcLoc;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMType;
 import r48.minivm.compiler.MVMCompileScope;

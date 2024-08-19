@@ -8,7 +8,6 @@
 package r48.dbs;
 
 import gabien.GaBIEn;
-import gabien.datum.DatumSrcLoc;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.render.ITexRegion;
@@ -19,6 +18,8 @@ import java.util.LinkedList;
 import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.Nullable;
+
+import datum.DatumSrcLoc;
 
 /**
  * Created on 04/06/17.

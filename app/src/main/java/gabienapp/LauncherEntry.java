@@ -12,10 +12,10 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import datum.DatumSrcLoc;
+import datum.DatumSymbol;
+import datum.DatumTreeUtils;
 import gabien.GaBIEn;
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumSymbol;
-import gabien.datum.DatumTreeUtils;
 import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.minivm.MVMU;

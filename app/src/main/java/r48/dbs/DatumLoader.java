@@ -12,11 +12,11 @@ import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import datum.DatumDecToLambdaVisitor;
+import datum.DatumReaderTokenSource;
+import datum.DatumSrcLoc;
+import datum.DatumVisitor;
 import gabien.GaBIEn;
-import gabien.datum.DatumDecToLambdaVisitor;
-import gabien.datum.DatumReaderTokenSource;
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumVisitor;
 
 /**
  * DBLoader, but not DBLoader!

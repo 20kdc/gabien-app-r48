@@ -10,12 +10,12 @@ import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.function.Function;
 
+import datum.DatumDecToLambdaVisitor;
+import datum.DatumSrcLoc;
+import datum.DatumTreeUtils;
+import datum.DatumVisitor;
+import datum.DatumWriter;
 import gabien.GaBIEn;
-import gabien.datum.DatumDecToLambdaVisitor;
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumTreeUtils;
-import gabien.datum.DatumVisitor;
-import gabien.datum.DatumWriter;
 import gabien.ui.UIElement;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.ui.UIElement.UIProxy;

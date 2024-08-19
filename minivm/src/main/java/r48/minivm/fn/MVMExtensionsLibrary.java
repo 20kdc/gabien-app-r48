@@ -6,10 +6,11 @@
  */
 package r48.minivm.fn;
 
+import static datum.DatumTreeUtils.*;
+
 import java.util.LinkedList;
 
-import static gabien.datum.DatumTreeUtils.*;
-import gabien.datum.DatumSymbol;
+import datum.DatumSymbol;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMScope;
 import r48.minivm.MVMU;

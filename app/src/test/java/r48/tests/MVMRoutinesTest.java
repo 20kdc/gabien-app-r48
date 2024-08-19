@@ -10,8 +10,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import datum.DatumSymbol;
 import gabien.TestKickstart;
-import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMR48GlobalLibraries;
 

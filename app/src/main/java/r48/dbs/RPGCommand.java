@@ -7,7 +7,6 @@
 
 package r48.dbs;
 
-import gabien.datum.DatumSrcLoc;
 import gabien.ui.UIElement;
 import r48.App;
 import r48.io.data.IRIO;
@@ -31,6 +30,8 @@ import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+
+import datum.DatumSrcLoc;
 
 /**
  * RPGCommand database entry.

@@ -8,7 +8,6 @@
 package r48.ui.dmicg;
 
 import gabien.GaBIEn;
-import gabien.datum.DatumSrcLoc;
 import gabien.render.IGrDriver;
 import gabien.render.WSIImage;
 import gabien.ui.*;
@@ -37,6 +36,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.function.Consumer;
+
+import datum.DatumSrcLoc;
 
 /**
  * Character Generator

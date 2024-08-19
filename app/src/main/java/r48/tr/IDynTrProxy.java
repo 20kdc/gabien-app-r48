@@ -8,8 +8,8 @@ package r48.tr;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumSymbol;
+import datum.DatumSrcLoc;
+import datum.DatumSymbol;
 import r48.tr.TrPage.FF0;
 import r48.tr.TrPage.FF1;
 import r48.tr.TrPage.FF2;

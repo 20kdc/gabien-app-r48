@@ -14,11 +14,11 @@ import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import datum.DatumDecToLambdaVisitor;
+import datum.DatumSrcLoc;
+import datum.DatumSymbol;
+import datum.DatumWriter;
 import gabien.GaBIEn;
-import gabien.datum.DatumDecToLambdaVisitor;
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumSymbol;
-import gabien.datum.DatumWriter;
 import gabienapp.Application;
 import r48.app.Coco;
 import r48.dbs.DatumLoader;

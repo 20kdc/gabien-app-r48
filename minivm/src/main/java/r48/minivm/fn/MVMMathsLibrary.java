@@ -6,7 +6,7 @@
  */
 package r48.minivm.fn;
 
-import gabien.datum.DatumSymbol;
+import datum.DatumSymbol;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMType;
 

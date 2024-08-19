@@ -11,8 +11,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import datum.DatumSrcLoc;
 import gabien.GaBIEn;
-import gabien.datum.DatumSrcLoc;
 import gabien.ui.elements.UILabel;
 import r48.app.InterlaunchGlobals;
 import r48.dbs.DBLoader;

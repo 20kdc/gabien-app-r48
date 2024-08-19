@@ -6,11 +6,11 @@
  */
 package r48.minivm;
 
-import static gabien.datum.DatumTreeUtils.sym;
+import static datum.DatumTreeUtils.sym;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import gabien.datum.DatumSymbol;
+import datum.DatumSymbol;
 import r48.minivm.expr.MVMCExpr;
 
 /**

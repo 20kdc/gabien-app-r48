@@ -8,7 +8,6 @@
 package r48.wm;
 
 import gabien.*;
-import gabien.datum.DatumWriter;
 import gabien.natives.BadGPUEnum;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
@@ -30,6 +29,8 @@ import java.util.LinkedList;
 import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
+
+import datum.DatumWriter;
 
 /**
  * For lack of a better place, this is a description of how window management works in R48:

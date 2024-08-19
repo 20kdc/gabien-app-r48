@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.datum.DatumSrcLoc;
+import datum.DatumSrcLoc;
 import gabien.ui.UIElement;
 import r48.App;
 import r48.DictionaryUpdaterRunnable;

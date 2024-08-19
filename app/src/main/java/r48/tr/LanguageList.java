@@ -14,12 +14,12 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import datum.DatumDecodingVisitor;
+import datum.DatumKVDVisitor;
+import datum.DatumReaderTokenSource;
+import datum.DatumSrcLoc;
+import datum.DatumVisitor;
 import gabien.GaBIEn;
-import gabien.datum.DatumDecodingVisitor;
-import gabien.datum.DatumKVDVisitor;
-import gabien.datum.DatumReaderTokenSource;
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumVisitor;
 
 /**
  * Intended to pull even more functionality out of TXDB.

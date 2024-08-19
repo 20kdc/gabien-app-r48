@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.datum.DatumSymbol;
+import datum.DatumSymbol;
 import r48.minivm.MVMType;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCLocal;

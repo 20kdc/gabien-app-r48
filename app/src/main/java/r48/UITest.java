@@ -8,7 +8,6 @@
 package r48;
 
 import gabien.GaBIEn;
-import gabien.datum.DatumSymbol;
 import gabien.ui.*;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
@@ -27,6 +26,8 @@ import java.util.*;
 import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.Nullable;
+
+import datum.DatumSymbol;
 
 /**
  * At first was a break-into-console - now a proper window, if crude.

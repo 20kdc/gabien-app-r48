@@ -10,8 +10,8 @@ package r48.dbs;
 import java.io.IOException;
 import java.util.List;
 
-import gabien.datum.DatumDecToLambdaVisitor;
-import gabien.datum.DatumSrcLoc;
+import datum.DatumDecToLambdaVisitor;
+import datum.DatumSrcLoc;
 import r48.minivm.MVMU;
 
 /**

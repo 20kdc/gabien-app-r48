@@ -11,9 +11,9 @@ import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import datum.DatumSrcLoc;
+import datum.DatumSymbol;
 import gabien.GaBIEn;
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumSymbol;
 import r48.AdHocSaveLoad;
 import r48.cfg.Config;
 import r48.io.data.DMContext;

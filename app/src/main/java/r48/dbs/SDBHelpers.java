@@ -7,7 +7,6 @@
 
 package r48.dbs;
 
-import gabien.datum.DatumSrcLoc;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import r48.App;
@@ -30,6 +29,8 @@ import r48.ui.dialog.ISpritesheetProvider;
 
 import java.util.HashMap;
 import java.util.function.Function;
+
+import datum.DatumSrcLoc;
 
 /**
  * Things that SDB shouldn't have inside it,

@@ -6,7 +6,7 @@
  */
 package gabienapp;
 
-import static gabien.datum.DatumTreeUtils.decVisitor;
+import static datum.DatumTreeUtils.decVisitor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,11 +16,11 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
+import datum.DatumReaderTokenSource;
+import datum.DatumSrcLoc;
+import datum.DatumSymbol;
+import datum.DatumWriter;
 import gabien.GaBIEn;
-import gabien.datum.DatumReaderTokenSource;
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumSymbol;
-import gabien.datum.DatumWriter;
 import gabien.uslx.vfs.FSBackend;
 
 /**

@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.datum.DatumSymbol;
+import datum.DatumSymbol;
 import r48.minivm.MVMScope;
 import r48.minivm.compiler.MVMCompileFrame;
 

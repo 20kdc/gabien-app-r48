@@ -6,7 +6,7 @@
  */
 package r48.minivm.compiler;
 
-import static gabien.datum.DatumTreeUtils.sym;
+import static datum.DatumTreeUtils.sym;
 
 import java.util.LinkedList;
 

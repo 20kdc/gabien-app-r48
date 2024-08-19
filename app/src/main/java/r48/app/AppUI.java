@@ -16,8 +16,8 @@ import java.util.function.Consumer;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+import datum.DatumWriter;
 import gabien.GaBIEn;
-import gabien.datum.DatumWriter;
 import gabien.ui.UIElement;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.ui.dialogs.UIAutoclosingPopupMenu;

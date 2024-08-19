@@ -7,7 +7,6 @@
 
 package r48.dbs;
 
-import gabien.datum.DatumSrcLoc;
 import gabien.ui.UIElement;
 import r48.App;
 import r48.app.AppCore;
@@ -27,6 +26,8 @@ import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+
+import datum.DatumSrcLoc;
 
 /**
  * The ultimate database, more or less, since this houses the data definitions needed to do things like edit Events.

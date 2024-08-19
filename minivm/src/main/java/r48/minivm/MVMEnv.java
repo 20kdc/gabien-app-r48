@@ -6,6 +6,8 @@
  */
 package r48.minivm;
 
+import static datum.DatumTreeUtils.decVisitor;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,16 +19,15 @@ import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.datum.DatumReaderTokenSource;
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumSymbol;
-import gabien.datum.DatumWriter;
+import datum.DatumReaderTokenSource;
+import datum.DatumSrcLoc;
+import datum.DatumSymbol;
+import datum.DatumWriter;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.compiler.MVMToplevelScope;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.fn.MVMFn;
 import r48.minivm.fn.MVMJLambdaConv;
-import static gabien.datum.DatumTreeUtils.decVisitor;
 
 /**
  * MiniVM environment.

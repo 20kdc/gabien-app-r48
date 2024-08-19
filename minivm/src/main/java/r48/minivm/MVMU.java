@@ -10,8 +10,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import gabien.datum.DatumSymbol;
-import gabien.datum.DatumWriter;
+import datum.DatumSymbol;
+import datum.DatumWriter;
 
 /**
  * Common complicated casts and things.

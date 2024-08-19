@@ -8,7 +8,7 @@ package r48.minivm.expr;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import static gabien.datum.DatumTreeUtils.*;
+import static datum.DatumTreeUtils.*;
 
 import java.util.LinkedList;
 

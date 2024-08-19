@@ -9,8 +9,8 @@ package r48.tr;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumSymbol;
+import datum.DatumSrcLoc;
+import datum.DatumSymbol;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMType;
 import r48.minivm.fn.MVMFn;

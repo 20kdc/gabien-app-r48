@@ -10,8 +10,8 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
+import datum.DatumSymbol;
 import gabien.GaBIEn;
-import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMU;

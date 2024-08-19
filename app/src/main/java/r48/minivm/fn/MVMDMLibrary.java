@@ -9,7 +9,7 @@ package r48.minivm.fn;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
-import gabien.datum.DatumSymbol;
+import datum.DatumSymbol;
 import r48.dbs.PathSyntax;
 import r48.io.data.DMChangeTracker;
 import r48.io.data.DMContext;

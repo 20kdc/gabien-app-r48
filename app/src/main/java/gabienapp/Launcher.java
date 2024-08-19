@@ -10,9 +10,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import datum.DatumSrcLoc;
+import datum.DatumSymbol;
 import gabien.GaBIEn;
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumSymbol;
 import gabien.ui.UIElement;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabienapp.state.LSMain;

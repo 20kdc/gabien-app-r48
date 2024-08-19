@@ -9,8 +9,8 @@ package r48.minivm.compiler;
 import java.util.List;
 import java.util.function.Supplier;
 
-import gabien.datum.DatumSrcLoc;
-import gabien.datum.DatumSymbol;
+import datum.DatumSrcLoc;
+import datum.DatumSymbol;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMSlot;
 import r48.minivm.MVMType;

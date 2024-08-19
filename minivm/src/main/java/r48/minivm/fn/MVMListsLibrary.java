@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import gabien.datum.DatumSymbol;
+import datum.DatumSymbol;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMType;
 import r48.minivm.MVMU;

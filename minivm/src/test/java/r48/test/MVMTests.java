@@ -6,11 +6,10 @@
  */
 package r48.test;
 
+import static datum.DatumTreeUtils.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
-
-import static gabien.datum.DatumTreeUtils.*;
 
 import org.junit.Test;
 

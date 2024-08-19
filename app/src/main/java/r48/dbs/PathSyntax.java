@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import gabien.datum.DatumSymbol;
+import datum.DatumSymbol;
 import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
