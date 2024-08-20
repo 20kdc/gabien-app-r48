@@ -89,6 +89,7 @@ public class TrAppUI extends TrPage {
     public String mUniversalStringFinder;
     public String mUniversalStringReplacer;
     public String mTranscriptDump;
+    public String mVirtualMachineManual;
 
     public String dClipSaved;
     public String dClipBad;

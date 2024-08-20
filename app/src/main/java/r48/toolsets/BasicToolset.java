@@ -313,7 +313,8 @@ public class BasicToolset extends App.Svc implements IToolset {
                 T.u.mTryRecover,
                 T.u.mAudPlay,
                 T.u.mREPL,
-                T.u.dumpWhateverICanThinkOfToJSON
+                T.u.dumpWhateverICanThinkOfToJSON,
+                T.u.mVirtualMachineManual
         }, new Runnable[] {
                 () -> {
                     AtomicReference<String> lastText = new AtomicReference<>(
@@ -398,6 +399,10 @@ public class BasicToolset extends App.Svc implements IToolset {
                 () -> {
                     RORIO res = new LibLCF245Dumper(app).dumpRoot();
                     AdHocSaveLoad.saveJSON("cmdb", res);
+                },
+                () -> {
+                    // MVMIntegrationLibrary
+                    app.vmCtx.evalString("(help-html)");
                 }
         }).centred();
     }

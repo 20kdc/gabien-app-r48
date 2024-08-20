@@ -33,7 +33,8 @@ public class MVMExtensionsLibrary {
             try {
                 return Class.forName((String) a0);
             } catch (ClassNotFoundException e) {
-                return null;
+                // After what happened with the Datum extraction...
+                throw new RuntimeException(e);
             }
         }).attachHelp("(string->class V) : Gets the given class, or null if unable.");
         ctx.defLib("instance?", MVMType.BOOL, MVMType.typeOfClass(Class.class), MVMType.ANY, (a0, a1) -> {
