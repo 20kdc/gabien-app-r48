@@ -20,36 +20,36 @@ public class MVMMathsLibrary {
     private static final Long res1 = 1L;
     public static void add(MVMEnv ctx) {
         // Scheme library
-        ctx.defineSlot(new DatumSymbol("+"), new Add()
-                .attachHelp("(+ V...) : Adds various values. If none given, returns 0."));
-        ctx.defineSlot(new DatumSymbol("-"), new Sub()
-                .attachHelp("(- V...) : Subtracts various values. If none given, returns 0. A special rule is that - with a single parameter negates."));
+        ctx.defineSlot(new DatumSymbol("+"), new Add())
+            .help("(+ V...) : Adds various values. If none given, returns 0.");
+        ctx.defineSlot(new DatumSymbol("-"), new Sub())
+            .help("(- V...) : Subtracts various values. If none given, returns 0. A special rule is that - with a single parameter negates.");
         ctx.defLib("=", MVMType.BOOL, MVMType.NUM, MVMType.NUM, (a0, a1) -> {
             // copied to equal? for inlining
             if (a0 instanceof Double || a1 instanceof Double)
                 return ((Number) a0).doubleValue() == ((Number) a1).doubleValue();
             return ((Number) a0).longValue() == ((Number) a1).longValue();
-        }).attachHelp("(= A B) : Checks for equality between two numbers. This is different from eq? and equal? due to numeric types.");
+        }, "(= A B) : Checks for equality between two numbers. This is different from eq? and equal? due to numeric types.");
         ctx.defLib(">", MVMType.BOOL, MVMType.NUM, MVMType.NUM, (a0, a1) -> {
             if (a0 instanceof Double || a1 instanceof Double)
                 return ((Number) a0).doubleValue() > ((Number) a1).doubleValue();
             return ((Number) a0).longValue() > ((Number) a1).longValue();
-        }).attachHelp("(> A B) : Checks for A > B.");
+        }, "(> A B) : Checks for A > B.");
         ctx.defLib("<", MVMType.BOOL, MVMType.NUM, MVMType.NUM, (a0, a1) -> {
             if (a0 instanceof Double || a1 instanceof Double)
                 return ((Number) a0).doubleValue() < ((Number) a1).doubleValue();
             return ((Number) a0).longValue() < ((Number) a1).longValue();
-        }).attachHelp("(< A B) : Checks for A < B.");
+        }, "(< A B) : Checks for A < B.");
         ctx.defLib(">=", MVMType.BOOL, MVMType.NUM, MVMType.NUM, (a0, a1) -> {
             if (a0 instanceof Double || a1 instanceof Double)
                 return ((Number) a0).doubleValue() >= ((Number) a1).doubleValue();
             return ((Number) a0).longValue() >= ((Number) a1).longValue();
-        }).attachHelp("(>= A B) : Checks for A >= B.");
+        }, "(>= A B) : Checks for A >= B.");
         ctx.defLib("<=", MVMType.BOOL, MVMType.NUM, MVMType.NUM, (a0, a1) -> {
             if (a0 instanceof Double || a1 instanceof Double)
                 return ((Number) a0).doubleValue() <= ((Number) a1).doubleValue();
             return ((Number) a0).longValue() <= ((Number) a1).longValue();
-        }).attachHelp("(<= A B) : Checks for A <= B.");
+        }, "(<= A B) : Checks for A <= B.");
         ctx.defLib("number-compare", MVMType.I64, MVMType.NUM, MVMType.NUM, (a0, a1) -> {
             int res;
             if (a0 instanceof Double || a1 instanceof Double)
@@ -62,7 +62,7 @@ public class MVMMathsLibrary {
                 return res1;
             else
                 return res0;
-        }).attachHelp("(number-compare A B) : Compares two numbers, returning integers -1 (A < B) to 1 (A > B).");
+        }, "(number-compare A B) : Compares two numbers, returning integers -1 (A < B) to 1 (A > B).");
     }
 
     public static final class Add extends MVMFn.ChainOp<Number> {

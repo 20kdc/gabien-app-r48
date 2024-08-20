@@ -21,16 +21,16 @@ import r48.minivm.MVMType;
 public class MVMStringLibrary {
     public static void add(MVMEnv ctx) {
         // strings
-        ctx.defineSlot(new DatumSymbol("string-append"), new Add()
-                .attachHelp("(string-append V...) : Appends items into a big string."));
-        ctx.defLib("string-length", MVMType.I64, MVMType.STR, (a0) -> (long) ((String) a0).length())
-            .attachHelp("(string-length V) : Returns the length of a string.");
-        ctx.defineSlot(new DatumSymbol("number->string"), new N2S()
-                .attachHelp("(number->string V [R]) : Converts a number to a string with possible conversion."));
-        ctx.defineSlot(new DatumSymbol("string->number"), new S2N()
-                .attachHelp("(string->number V [R]) : Converts a string to a number."));
-        ctx.defLib("string-ref", MVMType.CHAR, MVMType.STR, MVMType.I64, (a0, a1) -> ((String) a0).charAt(MVMU.cInt(a1)))
-            .attachHelp("(string-ref V K) : Returns a character from a string.");
+        ctx.defineSlot(new DatumSymbol("string-append"), new Add())
+                .help("(string-append V...) : Appends items into a big string.");
+        ctx.defLib("string-length", MVMType.I64, MVMType.STR, (a0) -> (long) ((String) a0).length(),
+            "(string-length V) : Returns the length of a string.");
+        ctx.defineSlot(new DatumSymbol("number->string"), new N2S())
+                .help("(number->string V [R]) : Converts a number to a string with possible conversion.");
+        ctx.defineSlot(new DatumSymbol("string->number"), new S2N())
+                .help("(string->number V [R]) : Converts a string to a number.");
+        ctx.defLib("string-ref", MVMType.CHAR, MVMType.STR, MVMType.I64, (a0, a1) -> ((String) a0).charAt(MVMU.cInt(a1)),
+            "(string-ref V K) : Returns a character from a string.");
         ctx.defLib("string->list", new MVMType.TypedList(MVMType.CHAR), MVMType.STR, (a0) -> {
             LinkedList<Character> llc = new LinkedList<>();
             String s = (String) a0;
@@ -38,7 +38,7 @@ public class MVMStringLibrary {
             for (int i = 0; i < sl; i++)
                 llc.add(s.charAt(i));
             return llc;
-        }).attachHelp("(string->list V) : String to list of characters.");
+        }, "(string->list V) : String to list of characters.");
         ctx.defLib("list->string", MVMType.STR, new MVMType.TypedList(MVMType.CHAR), (a0) -> {
             @SuppressWarnings("unchecked")
             List<Character> lc = (List<Character>) a0;
@@ -47,20 +47,20 @@ public class MVMStringLibrary {
             for (Character ch : lc)
                 chars[ptr++] = ch;
             return new String(chars);
-        }).attachHelp("(list->string V) : List of characters to string.");
-        ctx.defLib("string->symbol", MVMType.SYM, MVMType.STR, (a0) -> new DatumSymbol((String) a0))
-            .attachHelp("(string->symbol V) : String to symbol.");
-        ctx.defLib("symbol->string", MVMType.STR, MVMType.SYM, (a0) -> ((DatumSymbol) a0).id)
-            .attachHelp("(symbol->string V) : Symbol to string.");
-        ctx.defineSlot(new DatumSymbol("substring"), new Sub()
-                .attachHelp("(substring S START END) : Substring."));
-        ctx.defLib("value->string", MVMType.STR, MVMType.ANY, (a0) -> String.valueOf(a0))
-            .attachHelp("(value->string V) : Converts any value to a string.");
+        }, "(list->string V) : List of characters to string.");
+        ctx.defLib("string->symbol", MVMType.SYM, MVMType.STR, (a0) -> new DatumSymbol((String) a0),
+            "(string->symbol V) : String to symbol.");
+        ctx.defLib("symbol->string", MVMType.STR, MVMType.SYM, (a0) -> ((DatumSymbol) a0).id,
+            "(symbol->string V) : Symbol to string.");
+        ctx.defineSlot(new DatumSymbol("substring"), new Sub())
+                .help("(substring S START END) : Substring.");
+        ctx.defLib("value->string", MVMType.STR, MVMType.ANY, (a0) -> String.valueOf(a0),
+            "(value->string V) : Converts any value to a string.");
         // chars
-        ctx.defLib("char->integer", MVMType.I64, MVMType.CHAR, (a0) -> (long) (Character) a0)
-            .attachHelp("(char->integer V) : Character to integer.");
-        ctx.defLib("integer->char", MVMType.CHAR, MVMType.I64, (a0) -> (char) MVMU.cInt(a0))
-            .attachHelp("(integer->char V) : Integer to Character.");
+        ctx.defLib("char->integer", MVMType.I64, MVMType.CHAR, (a0) -> (long) (Character) a0,
+            "(char->integer V) : Character to integer.");
+        ctx.defLib("integer->char", MVMType.CHAR, MVMType.I64, (a0) -> (char) MVMU.cInt(a0),
+            "(integer->char V) : Integer to Character.");
     }
 
     public static final class Add extends MVMFn {

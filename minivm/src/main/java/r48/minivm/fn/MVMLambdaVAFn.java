@@ -20,7 +20,6 @@ public class MVMLambdaVAFn extends MVMFn {
     public final int fixedArgs;
     public MVMLambdaVAFn(MVMLambdaFn u) {
         super(new MVMType.Fn(u.content.returnType), u.nameHint);
-        help = u.help;
         underlying = u;
         fixedArgs = underlying.argL.length - 1;
     }

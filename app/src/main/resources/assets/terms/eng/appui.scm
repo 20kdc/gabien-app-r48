@@ -154,6 +154,7 @@
 	mUniversalStringReplacer "Universal String Replacer"
 	mTranscriptDump "MEV/CEV Transcript Dump (no Troop/Item/etc.)"
 	mVirtualMachineManual "Create r48-repl-help.html"
+	mSchemaTrace "Edit At Path..."
 
 	dClipSaved "The clipboard was saved."
 	dClipBad "The clipboard file is invalid or does not exist."

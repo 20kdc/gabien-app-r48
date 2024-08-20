@@ -9,6 +9,7 @@ package r48.minivm;
 import static datum.DatumTreeUtils.sym;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import datum.DatumSymbol;
 import r48.minivm.expr.MVMCExpr;
@@ -27,10 +28,20 @@ public final class MVMSlot extends MVMCExpr {
     public MVMType type;
     public Object v;
 
+    /**
+     * Help information. Non-translatable.
+     */
+    public @Nullable String help = "No help is available for this value at this time.";
+
     public MVMSlot(DatumSymbol s, MVMType t) {
         super(t);
         this.s = s;
         this.type = t;
+    }
+
+    public MVMSlot help(@Nullable String text) {
+        help = text;
+        return this;
     }
 
     @Override

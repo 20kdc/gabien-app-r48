@@ -12,14 +12,8 @@ package r48.minivm.fn;
  */
 public abstract class MVMHelpable {
     public final String nameHint;
-    public String help;
-    public boolean excludeFromHelp;
+
     public MVMHelpable(String nh) {
         this.nameHint = nh;
-    }
-
-    public MVMHelpable attachHelp(String text) {
-        help = text;
-        return this;
     }
 }

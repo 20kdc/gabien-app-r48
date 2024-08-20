@@ -27,11 +27,11 @@ public class MVMIntegrationLibrary {
         ctx.defLib("include", MVMType.ANY, MVMType.STR, (a0) -> {
             ctx.include((String) a0, false);
             return null;
-        }).attachHelp("(include FILE) : Includes the given file. The code within magically counts as top-level even if it shouldn't. The filename has \".scm\" appended, and a second file is checked for with \".aux.scm\" appended for user additions.");
-        ctx.defineSlot(new DatumSymbol("log"), new Log()
-                .attachHelp("(log V...) : Logs the given values."));
-        ctx.defineSlot(new DatumSymbol("help-html"), new HelpHTML(ctx)
-                .attachHelp("(help-html) : Creates r48-repl-help.html in the R48 launch directory."));
+        }, "(include FILE) : Includes the given file. The code within magically counts as top-level even if it shouldn't. The filename has \".scm\" appended, and a second file is checked for with \".aux.scm\" appended for user additions.");
+        ctx.defineSlot(new DatumSymbol("log"), new Log())
+            .help("(log V...) : Logs the given values.");
+        ctx.defineSlot(new DatumSymbol("help-html"), new HelpHTML(ctx))
+            .help("(help-html) : Creates r48-repl-help.html in the R48 launch directory.");
     }
     public static final class Log extends MVMFn.VA {
         public Log() {
@@ -89,27 +89,19 @@ public class MVMIntegrationLibrary {
             sb.append("Central index: <ul>");
             LinkedList<MVMSlot> confirmed = new LinkedList<>();
             for (MVMSlot s : slots) {
-                Object v = s.v;
-                if (v instanceof MVMHelpable) {
-                    MVMHelpable vh = (MVMHelpable) v;
-                    if (vh.excludeFromHelp)
-                        continue;
-                    confirmed.add(s);
-                    String help = vh.help;
-                    if (help != null) {
-                        sb.append("<li><a href=\"#");
-                        sb.append(encodeAnchor(s.s.id));
-                        sb.append("\">");
-                        sb.append(textToHTML(s.s.id));
-                        sb.append("</a></li>");
-                    }
-                }
+                if (s.help == null)
+                    continue;
+                confirmed.add(s);
+                sb.append("<li><a href=\"#");
+                sb.append(encodeAnchor(s.s.id));
+                sb.append("\">");
+                sb.append(textToHTML(s.s.id));
+                sb.append("</a></li>");
             }
             sb.append("</ul>");
             for (MVMSlot s : confirmed) {
-                MVMHelpable vh = (MVMHelpable) s.v;
                 String name = s.s.id;
-                String help = vh.help;
+                String help = s.help;
                 if (help != null) {
                     sb.append("<a name=\"");
                     sb.append(encodeAnchor(name));
@@ -117,26 +109,12 @@ public class MVMIntegrationLibrary {
                     sb.append("<h2>");
                     sb.append(textToHTML(name));
                     sb.append(": ");
-                    sb.append(vh);
+                    sb.append(s.v);
                     sb.append("</h2>");
                     sb.append("</a>");
                     sb.append(textToHTML(help));
                 }
             }
-            sb.append("<h2>No help available for...</h2>");
-            sb.append("only worry if one of these isn't a translation routine");
-            sb.append("<ul>");
-            for (MVMSlot s : confirmed) {
-                MVMHelpable vh = (MVMHelpable) s.v;
-                String name = s.s.id;
-                String help = vh.help;
-                if (help == null) {
-                    sb.append("<li>");
-                    sb.append(textToHTML(name));
-                    sb.append("</li>");
-                }
-            }
-            sb.append("</ul>");
             try (OutputStream os = GaBIEn.getOutFile("r48-repl-help.html")) {
                 os.write(sb.toString().getBytes(StandardCharsets.UTF_8));
             } catch (Exception ex) {

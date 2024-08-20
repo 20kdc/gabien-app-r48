@@ -168,45 +168,45 @@ public class MVMEnv {
     /**
      * Quickly defines a library function.
      */
-    public MVMFn defLib(String s, MVMType rt, Supplier<Object> fn) {
+    public MVMFn defLib(String s, MVMType rt, Supplier<Object> fn, String help) {
         MVMFn f2 = MVMJLambdaConv.c(s, rt, fn);
-        defineSlot(new DatumSymbol(s), f2);
+        defineSlot(new DatumSymbol(s), f2).help(help);
         return f2;
     }
 
     /**
      * Quickly defines a library function.
      */
-    public MVMFn defLib(String s, MVMType rt, MVMType t0, Function<Object, Object> fn) {
+    public MVMFn defLib(String s, MVMType rt, MVMType t0, Function<Object, Object> fn, String help) {
         MVMFn f2 = MVMJLambdaConv.c(s, rt, t0, fn);
-        defineSlot(new DatumSymbol(s), f2);
+        defineSlot(new DatumSymbol(s), f2).help(help);
         return f2;
     }
 
     /**
      * Quickly defines a library function.
      */
-    public MVMFn defLib(String s, MVMType rt, MVMType t0, MVMType t1, MVMJLambdaConv.F2 fn) {
+    public MVMFn defLib(String s, MVMType rt, MVMType t0, MVMType t1, MVMJLambdaConv.F2 fn, String help) {
         MVMFn f2 = MVMJLambdaConv.c(s, rt, t0, t1, fn);
-        defineSlot(new DatumSymbol(s), f2);
+        defineSlot(new DatumSymbol(s), f2).help(help);
         return f2;
     }
 
     /**
      * Quickly defines a library function.
      */
-    public MVMFn defLib(String s, MVMType rt, MVMType t0, MVMType t1, MVMType t2, MVMJLambdaConv.F3 fn) {
+    public MVMFn defLib(String s, MVMType rt, MVMType t0, MVMType t1, MVMType t2, MVMJLambdaConv.F3 fn, String help) {
         MVMFn f2 = MVMJLambdaConv.c(s, rt, t0, t1, t2, fn);
-        defineSlot(new DatumSymbol(s), f2);
+        defineSlot(new DatumSymbol(s), f2).help(help);
         return f2;
     }
 
     /**
      * Quickly defines a library function.
      */
-    public MVMFn defLib(String s, MVMType rt, MVMType t0, MVMType t1, MVMType t2, MVMType t3, MVMJLambdaConv.F4 fn) {
+    public MVMFn defLib(String s, MVMType rt, MVMType t0, MVMType t1, MVMType t2, MVMType t3, MVMJLambdaConv.F4 fn, String help) {
         MVMFn f2 = MVMJLambdaConv.c(s, rt, t0, t1, t2, t3, fn);
-        defineSlot(new DatumSymbol(s), f2);
+        defineSlot(new DatumSymbol(s), f2).help(help);
         return f2;
     }
 }

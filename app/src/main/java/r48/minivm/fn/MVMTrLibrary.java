@@ -24,20 +24,20 @@ import r48.tr.DynTrSlot;
  */
 public class MVMTrLibrary {
     public static void add(MVMEnvR48 ctx) {
-        ctx.defLib("tr-set!", MVMType.ANY, MVMType.typeOfClass(DynTrSlot.class), MVMType.ANY, (a0, a1) -> {
+        ctx.defLib("tr-set!", MVMType.ANY, MVMEnvR48.DYNTRSLOT_TYPE, MVMType.ANY, (a0, a1) -> {
             ((DynTrSlot) a0).setValue(a1);
             return a1;
-        }).attachHelp("(tr-set! DYNTR VALUE) : Compiles a value into a dynamic translation entry. Beware VALUE is unquoted, and tr-set! itself does it's own form of compilation, so writing code directly as VALUE may have unexpected effects.");
+        }, "(tr-set! DYNTR VALUE) : Compiles a value into a dynamic translation entry. Beware VALUE is unquoted, and tr-set! itself does it's own form of compilation, so writing code directly as VALUE may have unexpected effects.");
 
-        ctx.defineSlot(new DatumSymbol("define-name"), new DefineName("define-name", false)
-                .attachHelp("(define-name KEY CONTENT...) : Defines a name routine."));
-        ctx.defineSlot(new DatumSymbol("define-name-nls"), new DefineName("define-name-nls", true)
-                .attachHelp("(define-name-nls KEY CONTENT...) : Defines a non-localizable name routine."));
+        ctx.defineSlot(new DatumSymbol("define-name"), new DefineName("define-name", false))
+                .help("(define-name KEY CONTENT...) : Defines a name routine.");
+        ctx.defineSlot(new DatumSymbol("define-name-nls"), new DefineName("define-name-nls", true))
+                .help("(define-name-nls KEY CONTENT...) : Defines a non-localizable name routine.");
 
-        ctx.defineSlot(new DatumSymbol("define-tr"), new DefineTr("define-tr", null, false)
-                .attachHelp("(define-tr KEY EXPR) : Defines a DynTrSlot."));
-        ctx.defineSlot(new DatumSymbol("define-tr-nls"), new DefineTr("define-tr-nls", null, true)
-                .attachHelp("(define-tr-nls KEY EXPR) : Defines a non-localizable DynTr 'sort of slot'."));
+        ctx.defineSlot(new DatumSymbol("define-tr"), new DefineTr("define-tr", null, false))
+                .help("(define-tr KEY EXPR) : Defines a DynTrSlot.");
+        ctx.defineSlot(new DatumSymbol("define-tr-nls"), new DefineTr("define-tr-nls", null, true))
+                .help("(define-tr-nls KEY EXPR) : Defines a non-localizable DynTr 'sort of slot'.");
 
         ctx.defLib("r2kts->string", MVMType.STR, MVMEnvR48.RORIO_TYPE, (x) -> {
             RORIO rubyIO = (RORIO) x;
@@ -64,7 +64,7 @@ public class MVMTrLibrary {
 
             // NOTE: This converts to local time zone.
             return new Date(v).toString();
-        }).attachHelp("(r2kts->string OBJ) : Converts an R2K save timestamp, as a RORIO, to a human-readable local time zone string.");
+        }, "(r2kts->string OBJ) : Converts an R2K save timestamp, as a RORIO, to a human-readable local time zone string.");
     }
     public static class DefineName extends MVMMacro {
         public final boolean isNLS;

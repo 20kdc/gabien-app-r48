@@ -97,6 +97,45 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
     }
 
     /**
+     * With hash index.
+     */
+    public PathSyntax withHash(DMKey hashVal, String arg) {
+        return withStep(new MVMCDMGetHashValImm(hashVal), new MVMCPathHashAdd(hashVal), new MVMCPathHashDel(hashVal), arg);
+    }
+
+    /**
+     * With array index.
+     */
+    public PathSyntax withArray(int index, String arg) {
+        MVMCLinear.Step currentGet = new MVMCDMArrayGetImm(index);
+        return withStepRO(currentGet, "Cannot delete array element", arg);
+    }
+
+    /**
+     * With array length.
+     */
+    public PathSyntax withArrayLength(String arg) {
+        MVMCLinear.Step currentGet = new MVMCDMArrayLength();
+        return withStepRO(currentGet, "Cannot delete array length", arg);
+    }
+
+    /**
+     * With default value.
+     */
+    public PathSyntax withDefVal(String arg) {
+        MVMCLinear.Step currentGet = new MVMCDMGetHashDefVal();
+        return withStepRO(currentGet, "Cannot delete hash default value", arg);
+    }
+
+    /**
+     * With failure.
+     */
+    public PathSyntax withFail(String arg) {
+        MVMCLinear.Step currentGet = new MVMCLinear.Const(null, MVMEnvR48.IRIO_TYPE);
+        return withStep(currentGet, currentGet, currentGet, arg);
+    }
+
+    /**
      * Appends another PathSyntax onto this PathSyntax.
      * Kind of horrific memory-thrashing-wise but it'll work.
      * It's intended for very small uses in 'navigate to' buttons, that kinda deal.
@@ -241,23 +280,27 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
     }
 
     public static PathSyntax compile(App parentContext, String arg) {
-        return compile(parentContext.vmCtx, parentContext.ilg.strict, MVMCExpr.getL0, arg);
+        return compile(parentContext.vmCtx, parentContext.ilg.strict, arg);
     }
 
     public static PathSyntax compile(MVMEnvR48 parentContext, String arg) {
-        return compile(parentContext, parentContext.strict, MVMCExpr.getL0, arg);
-    }
-
-    public static PathSyntax compile(MVMEnv parentContext, boolean strict, String arg) {
-        return compile(parentContext, strict, MVMCExpr.getL0, arg);
+        return compile(parentContext, parentContext.strict, arg);
     }
 
     public static PathSyntax compile(PathSyntax basePS, String arg) {
-        return compile(basePS.parentContext, basePS.strict, basePS.getProgram, arg);
+        return compile(basePS.parentContext, basePS.strict, basePS, arg);
     }
 
-    public static PathSyntax compile(MVMEnv parentContext, boolean strict, MVMCExpr base, String arg) {
-        PathSyntax workingOn = new PathSyntax(parentContext, strict, new MVMCLinear(base), new MVMCLinear(base), new MVMCLinear(base), arg);
+    public static PathSyntax compile(MVMEnv parentContext, boolean strict) {
+        return new PathSyntax(parentContext, strict, new MVMCLinear(MVMCExpr.getL0), new MVMCLinear(MVMCExpr.getL0), new MVMCLinear(MVMCExpr.getL0), "");
+    }
+
+    public static PathSyntax compile(MVMEnv parentContext, boolean strict, String arg) {
+        PathSyntax workingOn = compile(parentContext, strict);
+        return compile(parentContext, strict, workingOn, arg);
+    }
+
+    public static PathSyntax compile(MVMEnv parentContext, boolean strict, PathSyntax workingOn, String arg) {
         // System.out.println("compiled pathsyntax " + arg);
         String workingArg = arg;
         while (workingArg.length() > 0) {
@@ -270,19 +313,16 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
                 if (subcom.startsWith("{")) {
                     String esc = subcom.substring(1);
                     DMKey hashVal = ValueSyntax.decode(esc);
-                    workingOn = workingOn.withStep(new MVMCDMGetHashValImm(hashVal), new MVMCPathHashAdd(hashVal), new MVMCPathHashDel(hashVal), arg);
+                    workingOn = workingOn.withHash(hashVal, arg);
                 } else if (subcom.startsWith(".")) {
                     workingOn = workingOn.withIVar(subcom.substring(1), arg);
                 } else {
                     if (subcom.equals("length")) {
-                        MVMCLinear.Step currentGet = new MVMCDMArrayLength();
-                        workingOn = workingOn.withStepRO(currentGet, "Cannot delete array length. Fix your schema.", arg);
+                        workingOn = workingOn.withArrayLength(arg);
                     } else if (subcom.equals("defVal")) {
-                        MVMCLinear.Step currentGet = new MVMCDMGetHashDefVal();
-                        workingOn = workingOn.withStepRO(currentGet, "Cannot delete hash default value. Fix your schema.", arg);
+                        workingOn = workingOn.withDefVal(arg);
                     } else if (subcom.equals("fail")) {
-                        MVMCLinear.Step currentGet = new MVMCLinear.Const(null, MVMEnvR48.IRIO_TYPE);
-                        workingOn = workingOn.withStep(currentGet, currentGet, currentGet, arg);
+                        workingOn = workingOn.withFail(arg);
                     } else if (subcom.length() != 0) {
                         throw new RuntimeException("$-command must be '$' (self), '${\"someSFormatTextForHVal' (hash string), '${123' (hash number), '$:someIval' ('raw' iVar), '$length', '$fail'");
                     }
@@ -291,8 +331,7 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
                 workingOn = workingOn.withIVar("@" + subcom, arg);
             } else if (f == ']') {
                 final int atl = Integer.parseInt(subcom);
-                MVMCLinear.Step currentGet = new MVMCDMArrayGetImm(atl);
-                workingOn = workingOn.withStepRO(currentGet, "Cannot delete array element. Fix your schema.", arg);
+                workingOn = workingOn.withArray(atl, arg);
             } else {
                 throw new RuntimeException("Bad pathsynt starter " + f + " (did root get separated properly?) code " + arg);
             }

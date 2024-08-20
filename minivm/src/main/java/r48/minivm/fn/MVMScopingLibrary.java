@@ -35,14 +35,14 @@ import r48.minivm.expr.MVMCLocal;
 public class MVMScopingLibrary {
     public static void add(MVMEnv ctx) {
         // Scheme library
-        ctx.defineSlot(sym("define"), new Define()
-                .attachHelp("(define K [TYPE] V) | function define: (define (K ARG... [. VA]) STMT...) : Defines mutable variables or functions. See lambda."));
-        ctx.defineSlot(sym("let"), new Let()
-                .attachHelp("(let ((K V)...) CODE...) : Creates variables. For constants, more efficient than define."));
-        ctx.defineSlot(sym("lambda"), new Lambda()
-            .attachHelp("(lambda (ARG... [. VA]) STMT...) : Creates first-class functions. The symbol . splits main args from a var-arg list arg. Args can be symbols or (SYM TYPE) for type-checking."));
-        ctx.defineSlot(sym("set!"), new Set()
-            .attachHelp("(set! VAR V) : Sets a variable."));
+        ctx.defineSlot(sym("define"), new Define())
+                .help("(define K [TYPE] V) | function define: (define (K ARG... [. VA]) STMT...) : Defines mutable variables or functions. See lambda.");
+        ctx.defineSlot(sym("let"), new Let())
+                .help("(let ((K V)...) CODE...) : Creates variables. For constants, more efficient than define.");
+        ctx.defineSlot(sym("lambda"), new Lambda())
+            .help("(lambda (ARG... [. VA]) STMT...) : Creates first-class functions. The symbol . splits main args from a var-arg list arg. Args can be symbols or (SYM TYPE) for type-checking.");
+        ctx.defineSlot(sym("set!"), new Set())
+            .help("(set! VAR V) : Sets a variable.");
     }
 
     /**

@@ -24,22 +24,22 @@ import r48.minivm.compiler.MVMFnCallCompiler;
  */
 public class MVMListsLibrary {
     public static void add(MVMEnv ctx) {
-        ctx.defineSlot(new DatumSymbol("for-each"), new ForEach()
-                .attachHelp("(for-each F L...) : Given a group of lists, iterates over all of them simultaneously, calling F with each set of results."));
-        ctx.defineSlot(new DatumSymbol("append"), new Append()
-                .attachHelp("(append L...) : Creates a new list from a set of appended lists."));
-        ctx.defineSlot(new DatumSymbol("append!"), new AppendM()
-                .attachHelp("(append! T L...) : Modifies an existing list to append a set of lists."));
-        ctx.defineSlot(new DatumSymbol("sublist"), new Sublist()
-                .attachHelp("(sublist L START END) : Substring, but on lists!"));
-        ctx.defLib("list-length", MVMType.I64, MVMType.LIST, (a0) -> (long) MVMU.cList(a0).size())
-                .attachHelp("(list-length L) : List length");
-        ctx.defLib("list-ref", MVMType.ANY, MVMType.LIST, MVMType.I64, (a0, a1) -> MVMU.cList(a0).get(MVMU.cInt(a1)))
-                .attachHelp("(list-ref L I) : List get");
+        ctx.defineSlot(new DatumSymbol("for-each"), new ForEach())
+                .help("(for-each F L...) : Given a group of lists, iterates over all of them simultaneously, calling F with each set of results.");
+        ctx.defineSlot(new DatumSymbol("append"), new Append())
+                .help("(append L...) : Creates a new list from a set of appended lists.");
+        ctx.defineSlot(new DatumSymbol("append!"), new AppendM())
+                .help("(append! T L...) : Modifies an existing list to append a set of lists.");
+        ctx.defineSlot(new DatumSymbol("sublist"), new Sublist())
+                .help("(sublist L START END) : Substring, but on lists!");
+        ctx.defLib("list-length", MVMType.I64, MVMType.LIST, (a0) -> (long) MVMU.cList(a0).size(),
+                "(list-length L) : List length");
+        ctx.defLib("list-ref", MVMType.ANY, MVMType.LIST, MVMType.I64, (a0, a1) -> MVMU.cList(a0).get(MVMU.cInt(a1)),
+                "(list-ref L I) : List get");
         ctx.defLib("list-set!", MVMType.ANY, MVMType.LIST, MVMType.I64, MVMType.ANY, (a0, a1, a2) -> {
             MVMU.cList(a0).set(MVMU.cInt(a1), a2);
             return a2;
-        }).attachHelp("(list-set! L I V) : List set");
+        }, "(list-set! L I V) : List set");
     }
 
     public static final class ForEach extends MVMFn {
