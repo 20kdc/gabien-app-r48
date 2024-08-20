@@ -34,6 +34,7 @@ import gabien.uslx.append.Size;
 import gabien.uslx.vfs.FSBackend;
 import r48.App;
 import r48.IMapContext;
+import r48.dbs.PathSyntax;
 import r48.imagefx.ImageFXCache;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
@@ -465,6 +466,30 @@ public class AppUI extends App.Svc {
         sp = sp.arrayHashIndex(arrayIndex, indexText);
         shi.pushObject(sp.newWindow(elementSchema, element));
         return shi;
+    }
+
+    /**
+     * Launches a schema by starting with a root/path pair.
+     * Or tries, anyway.
+     */
+    public @Nullable ISchemaHost launchSchemaTrace(String s, @NonNull IObjectBackend.ILoadedObject root, @Nullable UIMapView context, @Nullable PathSyntax goal) {
+        return launchSchemaTrace(app.sdb.getSDBEntry(s), root, context, goal);
+    }
+
+    /**
+     * Launches a schema by starting with a root/path pair.
+     * Or tries, anyway.
+     */
+    public @Nullable ISchemaHost launchSchemaTrace(SchemaElement s, @NonNull IObjectBackend.ILoadedObject root, @Nullable UIMapView context, @Nullable PathSyntax goal) {
+        SchemaPath pathRoot = new SchemaPath(s, root);
+        SchemaPath res = pathRoot.tracePathRoute(goal);
+        if (res == null) {
+            launchDialog(T.u.schemaTraceFailure);
+            return null;
+        }
+        SchemaHostImpl watcher = new SchemaHostImpl(app, context);
+        watcher.pushPathTree(res);
+        return watcher;
     }
 
     public void copyUITree() {

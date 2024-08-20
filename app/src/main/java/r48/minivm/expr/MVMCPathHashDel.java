@@ -14,25 +14,29 @@ import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 
 /**
  * MiniVM path hash stuff
  * Created 26th February 2023.
  */
-public final class MVMCPathHashDel extends MVMCExpr {
-    private final MVMCExpr delBase;
+public final class MVMCPathHashDel extends MVMCLinear.Step {
     private final DMKey hashVal;
 
-    public MVMCPathHashDel(MVMCExpr delBase, DMKey hashVal) {
-        super(MVMEnvR48.IRIO_TYPE);
-        this.delBase = delBase;
+    public MVMCPathHashDel(DMKey hashVal) {
         this.hashVal = hashVal;
     }
 
     @Override
-    public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-        IRIO root = (IRIO) delBase.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+    public MVMType getTypeForInput(MVMType inputType) {
+        inputType.assertCanImplicitlyCastTo(MVMEnvR48.IRIO_TYPE, this);
+        return MVMEnvR48.IRIO_TYPE;
+    }
+
+    @Override
+    public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7, Object value) {
+        IRIO root = (IRIO) value;
         if (root == null)
             return null;
         IRIO res = root.getHashVal(hashVal);
@@ -42,6 +46,6 @@ public final class MVMCPathHashDel extends MVMCExpr {
 
     @Override
     public Object disasm() {
-        return MVMU.l(sym("pathHashDel"), delBase.disasm(), MVMU.userStr(hashVal));
+        return MVMU.l(sym("pathHashDel"), MVMU.userStr(hashVal));
     }
 }

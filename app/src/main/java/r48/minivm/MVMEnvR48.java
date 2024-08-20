@@ -57,6 +57,16 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
     }
 
     /**
+     * Determines the correct type to cast to for an accessor.
+     */
+    public static MVMType irioOrRORIOForAccessor(MVMType input, Object context) {
+        if (input.canImplicitlyCastTo(IRIO_TYPE))
+            return IRIO_TYPE;
+        input.assertCanImplicitlyCastTo(RORIO_TYPE, context);
+        return RORIO_TYPE;
+    }
+
+    /**
      * Loads the given file into this context.
      */
     public void include(String filename, boolean opt) {

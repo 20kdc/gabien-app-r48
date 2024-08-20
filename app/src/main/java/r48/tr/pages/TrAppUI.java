@@ -44,6 +44,7 @@ public class TrAppUI extends TrPage {
     public String shNoCloneTmp;
     public String openAud;
     public String bts_ramObj;
+    public String schemaTraceFailure;
 
     public String mGetGPUInfo;
 
@@ -90,6 +91,7 @@ public class TrAppUI extends TrPage {
     public String mUniversalStringReplacer;
     public String mTranscriptDump;
     public String mVirtualMachineManual;
+    public String mSchemaTrace;
 
     public String dClipSaved;
     public String dClipBad;

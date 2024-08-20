@@ -11,33 +11,36 @@ import static datum.DatumTreeUtils.sym;
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.RORIO;
+import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 
 /**
  * MiniVM PathSyntax IVar getter.
  * Created 26th February 2023.
  */
-public class MVMCDMGetIVar extends MVMCExpr {
-    public final MVMCExpr base;
+public class MVMCDMGetIVar extends MVMCLinear.Step {
     public final String key;
 
-    public MVMCDMGetIVar(MVMCExpr base, String k) {
-        super(base.returnType);
-        this.base = base;
+    public MVMCDMGetIVar(String k) {
         key = k;
     }
 
     @Override
-    public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-        RORIO res = (RORIO) base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-        if (res == null)
+    public MVMType getTypeForInput(MVMType inputType) {
+        return MVMEnvR48.irioOrRORIOForAccessor(inputType, this);
+    }
+
+    @Override
+    public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7, Object value) {
+        if (value == null)
             return null;
-        return res.getIVar(key);
+        return ((RORIO) value).getIVar(key);
     }
 
     @Override
     public Object disasm() {
-        return MVMU.l(sym("getIVar"), base.disasm(), key);
+        return MVMU.l(sym("getIVar"), key);
     }
 }

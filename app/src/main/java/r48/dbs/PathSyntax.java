@@ -7,11 +7,12 @@
 
 package r48.dbs;
 
+import java.util.HashSet;
 import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
-import datum.DatumSymbol;
 import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -19,12 +20,13 @@ import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMScope;
-import r48.minivm.MVMType;
-import r48.minivm.MVMU;
+import r48.minivm.expr.MVMCDMAddIVar;
 import r48.minivm.expr.MVMCDMArrayGetImm;
 import r48.minivm.expr.MVMCDMArrayLength;
+import r48.minivm.expr.MVMCDMDelIVar;
 import r48.minivm.expr.MVMCError;
 import r48.minivm.expr.MVMCExpr;
+import r48.minivm.expr.MVMCLinear;
 import r48.minivm.expr.MVMCDMGetHashDefVal;
 import r48.minivm.expr.MVMCDMGetHashValImm;
 import r48.minivm.expr.MVMCDMGetIVar;
@@ -33,12 +35,13 @@ import r48.minivm.expr.MVMCPathHashDel;
 
 /**
  * NOTE: This uses escapes internally to escape from itself.
- * With that in mind, do not escape this w/EscapedStringSyntax. It's not necessary.
  * Created on 08/06/17, heavily refactored 26 February 2023.
  */
 public final class PathSyntax implements Function<IRIO, IRIO> {
-    // MiniVM programs for the various PathSyntax operations.
-    public final MVMCExpr getProgram, addProgram, delProgram;
+    /*
+     * MiniVM programs for the various PathSyntax operations.
+     */
+    public final MVMCLinear getProgram, addProgram, delProgram;
     public final String decompiled;
     public final MVMEnv parentContext;
     /**
@@ -49,13 +52,61 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
     // NOTE: This must not contain anything used in ValueSyntax.
     public static char[] breakersSDB2 = new char[] {':', '@', ']'};
 
-    private PathSyntax(MVMEnv parentContext, boolean strict, MVMCExpr g, MVMCExpr a, MVMCExpr d, String dc) {
+    private PathSyntax(MVMEnv parentContext, boolean strict, MVMCLinear g, MVMCLinear a, MVMCLinear d, String dc) {
         this.parentContext = parentContext;
         this.strict = strict;
         getProgram = g;
         addProgram = a;
         delProgram = d;
         decompiled = dc;
+    }
+
+    /**
+     * Appends a step onto this PathSyntax, returning a new one.
+     */
+    public PathSyntax withStep(@NonNull MVMCLinear.Step get, @NonNull MVMCLinear.Step add, @NonNull MVMCLinear.Step del, String dc) {
+        // The use of the getProgram as the base is intentional.
+        // The get/add/del differentiation is only for the last step.
+
+        MVMCLinear.Step[] steps = new MVMCLinear.Step[getProgram.steps.length + 1];
+        System.arraycopy(getProgram.steps, 0, steps, 0, getProgram.steps.length);
+
+        steps[steps.length - 1] = get;
+        MVMCLinear getProgram = new MVMCLinear(this.getProgram.source, steps.clone());
+        steps[steps.length - 1] = add;
+        MVMCLinear addProgram = new MVMCLinear(this.getProgram.source, steps.clone());
+        steps[steps.length - 1] = del;
+        MVMCLinear delProgram = new MVMCLinear(this.getProgram.source, steps);
+
+        return new PathSyntax(parentContext, strict, getProgram, addProgram, delProgram, dc);
+    }
+
+    /**
+     * Appends a step onto this PathSyntax, returning a new one.
+     */
+    public PathSyntax withStepRO(@NonNull MVMCLinear.Step get, @NonNull String error, String dc) {
+        return withStep(get, get, new MVMCError(error), dc);
+    }
+
+    /**
+     * With instance variable.
+     */
+    public PathSyntax withIVar(String iv, String arg) {
+        MVMCLinear.Step currentGet = new MVMCDMGetIVar(iv);
+        return withStep(currentGet, new MVMCDMAddIVar(iv), new MVMCDMDelIVar(iv), arg);
+    }
+
+    /**
+     * Appends another PathSyntax onto this PathSyntax.
+     * Kind of horrific memory-thrashing-wise but it'll work.
+     * It's intended for very small uses in 'navigate to' buttons, that kinda deal.
+     */
+    public PathSyntax concatWith(@NonNull PathSyntax other) {
+        PathSyntax workingOn = this;
+        String decomp2 = decompiled + other.decompiled;
+        for (int i = 0; i < other.getProgram.steps.length; i++)
+            workingOn = workingOn.withStep(other.getProgram.steps[i], other.addProgram.steps[i], other.delProgram.steps[i], decomp2);
+        return workingOn;
     }
 
     @Override
@@ -74,6 +125,26 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
                 throw ex;
             ex.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * Traces the execution of a get to find the involved objects.
+     * Used in SchemaPath.tracePathRoute().
+     */
+    public final @Nullable HashSet<RORIO> traceRO(RORIO v) {
+        HashSet<RORIO> set = new HashSet<>();
+        try {
+            Object[] res = getProgram.executeWithIntrospection(MVMScope.ROOT, v, null, null, null, null, null, null, null);
+            for (int i = 0; i < res.length; i++)
+                if (res[i] instanceof RORIO)
+                    set.add((RORIO) res[i]);
+            return set;
+        } catch (Exception ex) {
+            if (strict)
+                throw ex;
+            ex.printStackTrace();
+            return set;
         }
     }
 
@@ -161,12 +232,11 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
 
     // Used for missing IV autodetect
     public static String getAbsoluteIVar(PathSyntax iv) {
-        if (iv.getProgram instanceof MVMCDMGetIVar) {
-            MVMCDMGetIVar sb = ((MVMCDMGetIVar) iv.getProgram);
-            if (sb.base != MVMCExpr.getL0)
-                return null;
-            return sb.key;
-        }
+        if (iv.getProgram.steps.length != 1)
+            return null;
+        MVMCLinear.Step step = iv.getProgram.steps[0];
+        if (step instanceof MVMCDMGetIVar)
+            return ((MVMCDMGetIVar) step).key;
         return null;
     }
 
@@ -187,6 +257,7 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
     }
 
     public static PathSyntax compile(MVMEnv parentContext, boolean strict, MVMCExpr base, String arg) {
+        PathSyntax workingOn = new PathSyntax(parentContext, strict, new MVMCLinear(base), new MVMCLinear(base), new MVMCLinear(base), arg);
         // System.out.println("compiled pathsyntax " + arg);
         String workingArg = arg;
         while (workingArg.length() > 0) {
@@ -195,90 +266,38 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
             String[] subcomA = breakToken(workingArg);
             String subcom = subcomA[0];
             workingArg = subcomA[1];
-            boolean lastElement = (workingArg.length() == 0);
-            String queuedIV = null;
             if (f == ':') {
                 if (subcom.startsWith("{")) {
                     String esc = subcom.substring(1);
                     DMKey hashVal = ValueSyntax.decode(esc);
-                    MVMCExpr currentGet = new MVMCDMGetHashValImm(base, hashVal);
-                    if (lastElement)
-                        return new PathSyntax(parentContext, strict, currentGet, new MVMCPathHashAdd(base, hashVal), new MVMCPathHashDel(base, hashVal), arg);
-                    base = currentGet;
+                    workingOn = workingOn.withStep(new MVMCDMGetHashValImm(hashVal), new MVMCPathHashAdd(hashVal), new MVMCPathHashDel(hashVal), arg);
                 } else if (subcom.startsWith(".")) {
-                    queuedIV = subcom.substring(1);
+                    workingOn = workingOn.withIVar(subcom.substring(1), arg);
                 } else {
                     if (subcom.equals("length")) {
-                        base = new MVMCDMArrayLength(base);
-                        if (lastElement)
-                            return new PathSyntax(parentContext, strict, base, base, new MVMCError("Cannot delete array length. Fix your schema."), arg);
+                        MVMCLinear.Step currentGet = new MVMCDMArrayLength();
+                        workingOn = workingOn.withStepRO(currentGet, "Cannot delete array length. Fix your schema.", arg);
                     } else if (subcom.equals("defVal")) {
-                        base = new MVMCDMGetHashDefVal(base);
-                        if (lastElement)
-                            return new PathSyntax(parentContext, strict, base, base, new MVMCError("Cannot delete hash default value. Fix your schema."), arg);
+                        MVMCLinear.Step currentGet = new MVMCDMGetHashDefVal();
+                        workingOn = workingOn.withStepRO(currentGet, "Cannot delete hash default value. Fix your schema.", arg);
                     } else if (subcom.equals("fail")) {
-                        base = new MVMCExpr.Const(null, MVMType.ANY);
-                        if (lastElement)
-                            return new PathSyntax(parentContext, strict, base, base, base, arg);
+                        MVMCLinear.Step currentGet = new MVMCLinear.Const(null, MVMEnvR48.IRIO_TYPE);
+                        workingOn = workingOn.withStep(currentGet, currentGet, currentGet, arg);
                     } else if (subcom.length() != 0) {
                         throw new RuntimeException("$-command must be '$' (self), '${\"someSFormatTextForHVal' (hash string), '${123' (hash number), '$:someIval' ('raw' iVar), '$length', '$fail'");
                     }
                 }
             } else if (f == '@') {
-                queuedIV = "@" + subcom;
+                workingOn = workingOn.withIVar("@" + subcom, arg);
             } else if (f == ']') {
                 final int atl = Integer.parseInt(subcom);
-                base = new MVMCDMArrayGetImm(base, atl);
-                if (lastElement)
-                    return new PathSyntax(parentContext, strict, base, base, new MVMCError("Cannot delete array element. Fix your schema."), arg);
+                MVMCLinear.Step currentGet = new MVMCDMArrayGetImm(atl);
+                workingOn = workingOn.withStepRO(currentGet, "Cannot delete array element. Fix your schema.", arg);
             } else {
                 throw new RuntimeException("Bad pathsynt starter " + f + " (did root get separated properly?) code " + arg);
             }
-            if (queuedIV != null) {
-                final String iv = queuedIV;
-                MVMCExpr currentGet = new MVMCDMGetIVar(base, queuedIV);
-                final MVMCExpr parent = base;
-                if (lastElement)
-                    return new PathSyntax(parentContext, strict, currentGet, new MVMCExpr(MVMEnvR48.IRIO_TYPE) {
-                        @Override
-                        public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-                            IRIO res = (IRIO) parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-                            if (res == null)
-                                return null;
-                            IRIO ivv = res.getIVar(iv);
-                            // As of DM2 this is guaranteed to create a defined value,
-                            //  and setting it to null will break things.
-                            if (ivv == null)
-                                ivv = res.addIVar(iv);
-                            if (ivv == null)
-                                System.err.println("Warning: Failed to create IVar " + iv + " in " + res);
-                            return ivv;
-                        }
-
-                        @Override
-                        public Object disasm() {
-                            return MVMU.l(new DatumSymbol("pathAddIVar"), parent.disasm(), iv);
-                        }
-                    }, new MVMCExpr(MVMEnvR48.IRIO_TYPE) {
-                        @Override
-                        public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-                            IRIO res = (IRIO) parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-                            if (res == null)
-                                return null;
-                            IRIO ivv = res.getIVar(iv);
-                            res.rmIVar(iv);
-                            return ivv;
-                        }
-
-                        @Override
-                        public Object disasm() {
-                            return MVMU.l(new DatumSymbol("pathDelIVar"), parent.disasm(), iv);
-                        }
-                    }, arg);
-                base = currentGet;
-            }
         }
-        return new PathSyntax(parentContext, strict, base, base, new MVMCError("Cannot delete empty/self path. Fix your schema."), arg);
+        return workingOn;
     }
 
     // Used by SDB stuff that generates paths.

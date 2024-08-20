@@ -8,14 +8,20 @@
 package r48.schema.util;
 
 import r48.App;
+import r48.dbs.PathSyntax;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -35,6 +41,8 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class SchemaPath extends App.Svc {
     public final SchemaPath parent;
+    public final int windowDepth, depth;
+
     // Can be null! (A nullable root indicates this isn't directly connected to a branch.)
     public final @Nullable IObjectBackend.ILoadedObject root;
 
@@ -63,9 +71,11 @@ public class SchemaPath extends App.Svc {
 
     public final HashMap<String, SchemaElement> contextualSchemas = new HashMap<String, SchemaElement>();
 
-    private SchemaPath(SchemaPath sp, SchemaElement editor, IRIO targetElement, DMKey lastArrayIndex, String hrIndex) {
+    private SchemaPath(@NonNull SchemaPath sp, SchemaElement editor, IRIO targetElement, DMKey lastArrayIndex, String hrIndex) {
         super(sp.app);
         parent = sp;
+        depth = sp.depth + 1;
+        windowDepth = parent.windowDepth + (editor != null ? 1 : 0);
         root = sp.root;
         this.editor = editor;
         this.targetElement = targetElement;
@@ -83,6 +93,8 @@ public class SchemaPath extends App.Svc {
     public SchemaPath(@NonNull SchemaElement heldElement, @NonNull IObjectBackend.ILoadedObject root, @Nullable Runnable amc) {
         super(heldElement.app);
         parent = null;
+        depth = 0;
+        windowDepth = 1;
         additionalModificationCallback = amc;
         this.root = root;
         String maybeHrIndex = app.odb.getIdByObject(root);
@@ -96,6 +108,8 @@ public class SchemaPath extends App.Svc {
     private SchemaPath(App app, DMKey lai) {
         super(app);
         parent = null;
+        depth = 0;
+        windowDepth = 0;
         root = null;
         editor = null;
         targetElement = null;
@@ -142,6 +156,18 @@ public class SchemaPath extends App.Svc {
         while (root.parent != null)
             root = root.parent;
         return root;
+    }
+
+    /**
+     * Going upward, find the first 'window' SchemaPath.
+     * Returns null if none found.
+     */
+    public @Nullable SchemaPath findFirstEditable() {
+        if (editor != null)
+            return this;
+        if (parent == null)
+            return null;
+        return parent.findFirstEditable();
     }
 
     public SchemaPath findHighestSubwatcher() {
@@ -248,6 +274,10 @@ public class SchemaPath extends App.Svc {
             return parent.hasTempDialog();
         return false;
     }
+
+    /**
+     * Attaches a contextual schema element, which will be used when relevant. 
+     */
     public SchemaPath contextSchema(String contextName, SchemaElement enumSchemaElement) {
         SchemaPath sp = new SchemaPath(this, null, null, lastArrayIndex, null);
         sp.contextualSchemas.put(contextName, enumSchemaElement);
@@ -267,5 +297,120 @@ public class SchemaPath extends App.Svc {
                 return parentSuffix + ":" + attemptedEditorSuffix;
         }
         return parentSuffix;
+    }
+
+    /**
+     * Attempt to get a window SchemaPath for a target object via a set of intermediate objects.
+     * The set of intermediate objects must contain the target.
+     * This is the core of what will probably be a key R48 maintainability feature going forward.
+     * In particular, it helps keep Schema and Java logic decoupled.
+     */
+    public @Nullable SchemaPath traceRoute(RORIO tracertTarget, Set<RORIO> expected) {
+        SchemaPath sp = findFirstEditable();
+        if (sp == null)
+            return null;
+        // RPG_RT.ldb
+        // @common_events:{11@list]5
+        AtomicReference<SchemaPath> path = new AtomicReference<>();
+        // 0: target not found
+        // 1: target found but not as window
+        // 2: target found as window
+        AtomicInteger escalation = new AtomicInteger();
+        sp.editor.visit(sp.targetElement, sp, (vElement, vTarget, vPath) -> {
+            // Make sure we don't go off-track or else we'll visit the entire database.
+            if (!expected.contains(vTarget))
+                return false;
+            SchemaPath oPath = vPath.findFirstEditable();
+            if (oPath == null)
+                return true;
+
+            // Determine our escalation
+            int ourEscalation = 0;
+            if (oPath.editor.declaresSelfEditorOf(oPath.targetElement, tracertTarget)) {
+                // declared by window
+                ourEscalation = 2;
+            } else if (vElement.declaresSelfEditorOf(vTarget, tracertTarget)) {
+                // declared by invocation
+                ourEscalation = 1;
+            }
+
+            // Main check...
+            SchemaPath checkAgainst = path.get();
+            int theirEscalation = escalation.get();
+            if (checkAgainst == null) {
+                path.set(oPath);
+                escalation.set(ourEscalation);
+                return true;
+            }
+            // Sort by best fit: (X > Y) followed by (X < Y)
+            // ---
+            if (ourEscalation > theirEscalation) {
+                path.set(oPath);
+                escalation.set(ourEscalation);
+                return true;
+            } else if (ourEscalation < theirEscalation) {
+                // we do still want to seek out possible alternate methods of accessing the target
+                return true;
+            }
+            // ---
+            if (ourEscalation == 2) {
+                // minimize depth in fully escalated nodes to prevent going into subwindows
+                if (oPath.windowDepth < checkAgainst.windowDepth) {
+                    path.set(oPath);
+                    escalation.set(ourEscalation);
+                    return true;
+                } else if (oPath.windowDepth > checkAgainst.windowDepth) {
+                    return true;
+                }
+                // ---
+                if (oPath.depth < checkAgainst.depth) {
+                    path.set(oPath);
+                    escalation.set(ourEscalation);
+                    return true;
+                }
+                // else unnecessary as this is last clause
+                // ---
+            } else {
+                // both are not tracertTarget, maximize depth
+                if (oPath.windowDepth > checkAgainst.windowDepth) {
+                    path.set(oPath);
+                    escalation.set(ourEscalation);
+                    return true;
+                } else if (oPath.windowDepth < checkAgainst.windowDepth) {
+                    return true;
+                }
+                // ---
+                if (oPath.depth > checkAgainst.depth) {
+                    path.set(oPath);
+                    escalation.set(ourEscalation);
+                    return true;
+                }
+                // else unnecessary as this is last clause
+                // ---
+            }
+            return true;
+        }, true);
+        return path.get();
+    }
+
+    /**
+     * traceRoute for a given PathSyntax target.
+     */
+    public @Nullable SchemaPath tracePathRoute(PathSyntax path) {
+        SchemaPath sp = findFirstEditable();
+        if (sp == null) {
+            System.err.println("tracePathRoute failed: findFirstEditable failed");
+            return null;
+        }
+        RORIO res = path.getRO(sp.targetElement);
+        if (res == null) {
+            System.err.println("tracePathRoute failed: path failed");
+            return null;
+        }
+        HashSet<RORIO> mainSet = path.traceRO(sp.targetElement);
+        // make sure these are here; traceRO misses the first
+        mainSet.add(sp.targetElement);
+        mainSet.add(res);
+        return sp.traceRoute(res, mainSet);
     }
 }

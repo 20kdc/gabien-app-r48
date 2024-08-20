@@ -10,7 +10,6 @@ import static datum.DatumTreeUtils.sym;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMScope;
@@ -18,14 +17,13 @@ import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 
 /**
- * MiniVM path hash stuff
- * Created 26th February 2023.
+ * Pulled out of PathSyntax 20th August 2024
  */
-public final class MVMCPathHashAdd extends MVMCLinear.Step {
-    private final DMKey hashVal;
+public class MVMCDMAddIVar extends MVMCLinear.Step {
+    public final String key;
 
-    public MVMCPathHashAdd(DMKey hashVal) {
-        this.hashVal = hashVal;
+    public MVMCDMAddIVar(String k) {
+        key = k;
     }
 
     @Override
@@ -36,17 +34,21 @@ public final class MVMCPathHashAdd extends MVMCLinear.Step {
 
     @Override
     public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7, Object value) {
-        IRIO root = (IRIO) value;
-        if (root == null)
-            return null;
-        IRIO res = root.getHashVal(hashVal);
+        IRIO res = (IRIO) value;
         if (res == null)
-            res = root.addHashVal(hashVal).setNull();
-        return res;
+            return null;
+        IRIO ivv = res.getIVar(key);
+        // As of DM2 this is guaranteed to create a defined value,
+        //  and setting it to null will break things.
+        if (ivv == null)
+            ivv = res.addIVar(key);
+        if (ivv == null)
+            System.err.println("Warning: Failed to create IVar " + key + " in " + res);
+        return ivv;
     }
 
     @Override
     public Object disasm() {
-        return MVMU.l(sym("pathHashAdd"), MVMU.userStr(hashVal));
+        return MVMU.l(sym("addIVar"), key);
     }
 }

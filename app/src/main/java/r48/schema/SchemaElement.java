@@ -10,6 +10,7 @@ package r48.schema;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
@@ -101,6 +102,17 @@ public abstract class SchemaElement extends App.Svc {
         return null;
     }
 
+    /**
+     * Some elements have an assigned RORIO they're looking for and "really" edit, but they work in the context of a 'wider' object.
+     * This function allows those objects to self-report for use by the path trace logic.
+     * This also allows those objects to disown their editing status of their parent for that logic.
+     * 'target' is the target of the invocation.
+     * 'check' is what is actually being checked.
+     */
+    public boolean declaresSelfEditorOf(RORIO target, RORIO check) {
+        return target == check;
+    }
+
     // Modify target to approach the default value, or to correct errors.
     // The type starts as 0 (not '0', but actual numeric 0) and needs to be modified by something to result in a valid object.
     // Rules in general are documented on buildHoldingEditor.
@@ -134,7 +146,7 @@ public abstract class SchemaElement extends App.Svc {
          * Called from SchemaElement.visit.
          * If this returns true, the children are visited.
          */
-        boolean visit(SchemaElement element, IRIO target, SchemaPath path);
+        boolean visit(@NonNull SchemaElement element, IRIO target, SchemaPath path);
     }
 
     /**

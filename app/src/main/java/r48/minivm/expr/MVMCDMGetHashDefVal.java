@@ -11,24 +11,27 @@ import static datum.DatumTreeUtils.*;
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.IRIO;
+import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 
 /**
  * MiniVM hash stuff
  * Created 14th April 2023.
  */
-public final class MVMCDMGetHashDefVal extends MVMCExpr {
-    private final MVMCExpr addBase;
-
-    public MVMCDMGetHashDefVal(MVMCExpr addBase) {
-        super(addBase.returnType);
-        this.addBase = addBase;
+public final class MVMCDMGetHashDefVal extends MVMCLinear.Step {
+    public MVMCDMGetHashDefVal() {
     }
 
     @Override
-    public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-        IRIO root = (IRIO) addBase.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+    public MVMType getTypeForInput(MVMType inputType) {
+        return MVMEnvR48.irioOrRORIOForAccessor(inputType, this);
+    }
+
+    @Override
+    public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7, Object value) {
+        IRIO root = (IRIO) value;
         if (root == null)
             return null;
         if (root.getType() != '}')
@@ -38,6 +41,6 @@ public final class MVMCDMGetHashDefVal extends MVMCExpr {
 
     @Override
     public Object disasm() {
-        return MVMU.l(sym("hashDefVal"), addBase.disasm());
+        return MVMU.l(sym("hashDefVal"));
     }
 }

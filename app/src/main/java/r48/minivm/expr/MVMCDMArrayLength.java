@@ -12,24 +12,28 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.DMKey;
 import r48.io.data.RORIO;
+import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMScope;
+import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 
 /**
  * MiniVM array stuff
  * Created 26th February 2023.
  */
-public final class MVMCDMArrayLength extends MVMCExpr {
-    private final MVMCExpr addBase;
-
-    public MVMCDMArrayLength(MVMCExpr addBase) {
-        super(addBase.returnType);
-        this.addBase = addBase;
+public final class MVMCDMArrayLength extends MVMCLinear.Step {
+    public MVMCDMArrayLength() {
     }
 
     @Override
-    public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-        RORIO root = (RORIO) addBase.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+    public MVMType getTypeForInput(MVMType inputType) {
+        inputType.assertCanImplicitlyCastTo(MVMEnvR48.RORIO_TYPE, this);
+        return MVMEnvR48.RORIO_TYPE;
+    }
+
+    @Override
+    public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7, Object value) {
+        RORIO root = (RORIO) value;
         if (root == null)
             return null;
         // This is used for length disambiguation.
@@ -40,6 +44,6 @@ public final class MVMCDMArrayLength extends MVMCExpr {
 
     @Override
     public Object disasm() {
-        return MVMU.l(sym("arrayLength"), addBase.disasm());
+        return MVMU.l(sym("arrayLength"));
     }
 }

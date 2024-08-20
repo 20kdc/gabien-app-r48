@@ -20,6 +20,7 @@ import gabien.ui.layouts.UISplitterLayout;
 import r48.*;
 import r48.app.AppMain;
 import r48.dbs.ObjectInfo;
+import r48.dbs.PathSyntax;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
@@ -133,27 +134,19 @@ public class BasicToolset extends App.Svc implements IToolset {
                 T.u.mAllStr,
                 T.u.mLoadIMI,
                 T.u.bts_ramObj,
+                T.u.mSchemaTrace
         }, new Runnable[] {
                 () -> {
                     app.ui.launchPrompt(T.u.prObjectName, (s) -> {
                         final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
-                        if (app.sdb.hasSDBEntry("File." + s)) {
-                            app.ui.launchSchema("File." + s, rio, null);
+                        SchemaElement guess = app.inferSchemaElementForRoot(s);
+                        if (guess != null) {
+                            app.ui.launchSchema(guess, rio, null);
                             return;
                         }
                         if (rio != null) {
-                            IRIO r2 = rio.getObject();
-                            if (r2.getType() == 'o') {
-                                if (app.sdb.hasSDBEntry(r2.getSymbol())) {
-                                    app.ui.launchSchema(r2.getSymbol(), rio, null);
-                                    return;
-                                }
-                            }
-                            app.ui.launchPrompt(T.u.prSchemaID, new Consumer<String>() {
-                                @Override
-                                public void accept(String s) {
-                                    app.ui.launchSchema(s, rio, null);
-                                }
+                            app.ui.launchPrompt(T.u.prSchemaID, (sid) -> {
+                                app.ui.launchSchema(sid, rio, null);
                             });
                         } else {
                             app.ui.launchDialog(T.u.dFileUnreadableNoSchema);
@@ -277,6 +270,24 @@ public class BasicToolset extends App.Svc implements IToolset {
                         SchemaElement se = app.sdb.getSDBEntry(s);
                         SchemaPath.setDefaultValue(tmp, se, DMKey.NULL);
                         app.ui.launchSchema(s, rio, null);
+                    });
+                },
+                () -> {
+                    app.ui.launchPrompt(T.u.prObjectName, (s) -> {
+                        final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
+                        SchemaElement guess = app.inferSchemaElementForRoot(s);
+                        if (rio != null && guess != null) {
+                            app.ui.launchPrompt(T.u.mSchemaTrace, (path) -> {
+                                try {
+                                    PathSyntax ps = PathSyntax.compile(app, path);
+                                    app.ui.launchSchemaTrace(guess, rio, null, ps);
+                                } catch (Exception ex) {
+                                    app.ui.launchDialog(ex);
+                                }
+                            });
+                        } else {
+                            app.ui.launchDialog(T.u.dFileUnreadableNoSchema);
+                        }
                     });
                 }
         }).centred();

@@ -21,6 +21,7 @@ import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.ArrayElementSchemaElement;
 import r48.schema.SchemaElement;
@@ -375,6 +376,11 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     public SchemaElement getElementContextualWindowSchema(final IRIO tracker) {
         EmbedDataKey<Double> ecwsKey = new EmbedDataKey<>();
         return new SchemaElement(app) {
+            @Override
+            public boolean declaresSelfEditorOf(RORIO target, RORIO check) {
+                return check == tracker;
+            }
+
             @Override
             public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
                 int actualStart = findActualStart(target, tracker);

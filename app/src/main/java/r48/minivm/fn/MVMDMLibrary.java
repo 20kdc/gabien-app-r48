@@ -237,11 +237,14 @@ public class MVMDMLibrary {
             if (call.length != 2)
                 throw new RuntimeException(nameHint + " expects exactly 2 args (target path)");
             PathSyntax ps = PathSyntax.compile(cs.context, strict, cs.compile(call[0]), MVMU.coerceToString(call[1]));
+            MVMCExpr res;
             if (mode == 1)
-                return ps.addProgram;
-            if (mode == 2)
-                return ps.delProgram;
-            return ps.getProgram;
+                res = ps.addProgram;
+            else if (mode == 2)
+                res = ps.delProgram;
+            else
+                res = ps.getProgram;
+            return res;
         }
     }
 }

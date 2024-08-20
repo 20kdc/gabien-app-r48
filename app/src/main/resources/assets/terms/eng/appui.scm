@@ -98,6 +98,7 @@
 	(bts_
 		ramObj "Edit RAM Object"
 	)
+	schemaTraceFailure "R48 attempted to open an object, but was unable to find it.\nPerhaps the object was deleted or moved, or perhaps this is a bug."
 	mGetGPUInfo "GPU Information (New API Compatibility Test)"
 	disableMapRendering "Disable rendering (even across maps!)"
 	disableMapAnimation "Disable animation"

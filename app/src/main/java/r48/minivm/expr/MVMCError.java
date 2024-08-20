@@ -16,17 +16,21 @@ import r48.minivm.MVMU;
 
 /**
  * MiniVM error stuff
- * Created 26th February 2023.
+ * Created 26th February 2023, changed to a step 20th August, 2024.
  */
-public final class MVMCError extends MVMCExpr {
+public final class MVMCError extends MVMCLinear.Step {
     public final String message;
     public MVMCError(String err) {
-        super(MVMType.ANY);
         message = err;
     }
 
     @Override
-    public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+    public MVMType getTypeForInput(MVMType inputType) {
+        return MVMType.ANY;
+    }
+
+    @Override
+    public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7, Object value) {
         throw new RuntimeException(message);
     }
 
