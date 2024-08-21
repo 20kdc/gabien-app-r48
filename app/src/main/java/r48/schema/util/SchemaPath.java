@@ -10,6 +10,7 @@ package r48.schema.util;
 import r48.dbs.ObjectRootHandle;
 import r48.dbs.PathSyntax;
 import r48.io.data.DMKey;
+import r48.io.data.DMPath;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
@@ -387,9 +388,9 @@ public class SchemaPath {
     }
 
     /**
-     * traceRoute for a given PathSyntax target.
+     * traceRoute for a given DMPath target.
      */
-    public @Nullable SchemaPath tracePathRoute(PathSyntax path) {
+    public @Nullable SchemaPath tracePathRoute(@NonNull DMPath path) {
         SchemaPath sp = findFirstEditable();
         if (sp == null) {
             System.err.println("tracePathRoute failed: findFirstEditable failed");
@@ -400,7 +401,7 @@ public class SchemaPath {
             System.err.println("tracePathRoute failed: path failed");
             return null;
         }
-        HashSet<RORIO> mainSet = path.traceRO(sp.targetElement);
+        HashSet<RORIO> mainSet = new PathSyntax(path).traceRO(sp.targetElement);
         // make sure these are here; traceRO misses the first
         mainSet.add(sp.targetElement);
         mainSet.add(res);

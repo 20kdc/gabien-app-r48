@@ -9,7 +9,7 @@ package r48.minivm.fn;
 import r48.App;
 import r48.dbs.ObjectInfo;
 import r48.dbs.ObjectRootHandle;
-import r48.dbs.PathSyntax;
+import r48.io.data.DMPath;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMType;
@@ -34,12 +34,12 @@ public class MVMAppUILibrary {
             return text;
         }, "(ui-message VALUE): Displays a message to the user, returns the value you passed in.");
 
-        ctx.defLib("ui-view", MVMType.ANY, MVMType.STR, MVMEnvR48.PATHSYNTAX_TYPE, (text, path) -> {
+        ctx.defLib("ui-view", MVMType.ANY, MVMType.STR, MVMEnvR48.DMPATH_TYPE, (text, path) -> {
             ObjectInfo oi = MVMDMAppLibrary.assertObjectInfo(app, text);
             ObjectRootHandle ilo = oi.getILO(true);
             if (ilo == null)
                 throw new RuntimeException("Unable to create " + text);
-            return app.ui.launchSchemaTrace(ilo, null, (PathSyntax) path);
+            return app.ui.launchSchemaTrace(ilo, null, (DMPath) path);
         }, "(ui-view OID PATH): Opens a view to the given path of the given object. R48 will 'auto-route' to make this path work. The object must be in the objects info table or an error occurs. Object will be created if necessary. Returned value is the schema host handle (target may not exactly match what you wanted!).");
     }
 }

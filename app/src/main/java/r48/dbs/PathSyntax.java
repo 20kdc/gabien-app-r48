@@ -10,28 +10,14 @@ package r48.dbs;
 import java.util.HashSet;
 import java.util.function.Function;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import r48.App;
 import r48.io.data.DMKey;
+import r48.io.data.DMPath;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
-import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
-import r48.minivm.MVMScope;
-import r48.minivm.expr.MVMCDMAddIVar;
-import r48.minivm.expr.MVMCDMArrayGetImm;
-import r48.minivm.expr.MVMCDMArrayLength;
-import r48.minivm.expr.MVMCDMDelIVar;
-import r48.minivm.expr.MVMCError;
-import r48.minivm.expr.MVMCExpr;
-import r48.minivm.expr.MVMCLinear;
-import r48.minivm.expr.MVMCDMGetHashDefVal;
-import r48.minivm.expr.MVMCDMGetHashValImm;
-import r48.minivm.expr.MVMCDMGetIVar;
-import r48.minivm.expr.MVMCPathHashAdd;
-import r48.minivm.expr.MVMCPathHashDel;
 
 /**
  * NOTE: This uses escapes internally to escape from itself.
@@ -39,113 +25,27 @@ import r48.minivm.expr.MVMCPathHashDel;
  */
 public final class PathSyntax implements Function<IRIO, IRIO> {
     /*
-     * MiniVM programs for the various PathSyntax operations.
+     * The actual path.
      */
-    public final MVMCLinear getProgram, addProgram, delProgram;
-    public final String decompiled;
-    public final MVMEnv parentContext;
+    public final DMPath path;
     /**
-     * Used by tests to make sure more issues are caught.
+     * The source to this path, as entered.
+     * Can be DYNAMIC_PLACEHOLDER.
      */
-    public final boolean strict;
+    public final String decompiled;
+
+    public static String DYNAMIC_PLACEHOLDER = "(generated)";
 
     // NOTE: This must not contain anything used in ValueSyntax.
     public static char[] breakersSDB2 = new char[] {':', '@', ']'};
 
-    private PathSyntax(MVMEnv parentContext, boolean strict, MVMCLinear g, MVMCLinear a, MVMCLinear d, String dc) {
-        this.parentContext = parentContext;
-        this.strict = strict;
-        getProgram = g;
-        addProgram = a;
-        delProgram = d;
+    public PathSyntax(DMPath path) {
+        this(path, DYNAMIC_PLACEHOLDER);
+    }
+
+    private PathSyntax(DMPath path, String dc) {
+        this.path = path;
         decompiled = dc;
-    }
-
-    /**
-     * Appends a step onto this PathSyntax, returning a new one.
-     */
-    public PathSyntax withStep(@NonNull MVMCLinear.Step get, @NonNull MVMCLinear.Step add, @NonNull MVMCLinear.Step del, String dc) {
-        // The use of the getProgram as the base is intentional.
-        // The get/add/del differentiation is only for the last step.
-
-        MVMCLinear.Step[] steps = new MVMCLinear.Step[getProgram.steps.length + 1];
-        System.arraycopy(getProgram.steps, 0, steps, 0, getProgram.steps.length);
-
-        steps[steps.length - 1] = get;
-        MVMCLinear getProgram = new MVMCLinear(this.getProgram.source, steps.clone());
-        steps[steps.length - 1] = add;
-        MVMCLinear addProgram = new MVMCLinear(this.getProgram.source, steps.clone());
-        steps[steps.length - 1] = del;
-        MVMCLinear delProgram = new MVMCLinear(this.getProgram.source, steps);
-
-        return new PathSyntax(parentContext, strict, getProgram, addProgram, delProgram, dc);
-    }
-
-    /**
-     * Appends a step onto this PathSyntax, returning a new one.
-     */
-    public PathSyntax withStepRO(@NonNull MVMCLinear.Step get, @NonNull String error, String dc) {
-        return withStep(get, get, new MVMCError(error), dc);
-    }
-
-    /**
-     * With instance variable.
-     */
-    public PathSyntax withIVar(String iv, String arg) {
-        MVMCLinear.Step currentGet = new MVMCDMGetIVar(iv);
-        return withStep(currentGet, new MVMCDMAddIVar(iv), new MVMCDMDelIVar(iv), arg);
-    }
-
-    /**
-     * With hash index.
-     */
-    public PathSyntax withHash(DMKey hashVal, String arg) {
-        return withStep(new MVMCDMGetHashValImm(hashVal), new MVMCPathHashAdd(hashVal), new MVMCPathHashDel(hashVal), arg);
-    }
-
-    /**
-     * With array index.
-     */
-    public PathSyntax withArray(int index, String arg) {
-        MVMCLinear.Step currentGet = new MVMCDMArrayGetImm(index);
-        return withStepRO(currentGet, "Cannot delete array element", arg);
-    }
-
-    /**
-     * With array length.
-     */
-    public PathSyntax withArrayLength(String arg) {
-        MVMCLinear.Step currentGet = new MVMCDMArrayLength();
-        return withStepRO(currentGet, "Cannot delete array length", arg);
-    }
-
-    /**
-     * With default value.
-     */
-    public PathSyntax withDefVal(String arg) {
-        MVMCLinear.Step currentGet = new MVMCDMGetHashDefVal();
-        return withStepRO(currentGet, "Cannot delete hash default value", arg);
-    }
-
-    /**
-     * With failure.
-     */
-    public PathSyntax withFail(String arg) {
-        MVMCLinear.Step currentGet = new MVMCLinear.Const(null, MVMEnvR48.IRIO_TYPE);
-        return withStep(currentGet, currentGet, currentGet, arg);
-    }
-
-    /**
-     * Appends another PathSyntax onto this PathSyntax.
-     * Kind of horrific memory-thrashing-wise but it'll work.
-     * It's intended for very small uses in 'navigate to' buttons, that kinda deal.
-     */
-    public PathSyntax concatWith(@NonNull PathSyntax other) {
-        PathSyntax workingOn = this;
-        String decomp2 = decompiled + other.decompiled;
-        for (int i = 0; i < other.getProgram.steps.length; i++)
-            workingOn = workingOn.withStep(other.getProgram.steps[i], other.addProgram.steps[i], other.delProgram.steps[i], decomp2);
-        return workingOn;
     }
 
     @Override
@@ -157,14 +57,7 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
      * Translates the input IRIO to the target RORIO, or null if an issue was encountered.
      */
     public final RORIO getRO(RORIO v) {
-        try {
-            return (RORIO) getProgram.exc(MVMScope.ROOT, v);
-        } catch (Exception ex) {
-            if (strict)
-                throw ex;
-            ex.printStackTrace();
-            return null;
-        }
+        return path.getRO(v);
     }
 
     /**
@@ -173,32 +66,18 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
      */
     public final @Nullable HashSet<RORIO> traceRO(RORIO v) {
         HashSet<RORIO> set = new HashSet<>();
-        try {
-            Object[] res = getProgram.executeWithIntrospection(MVMScope.ROOT, v, null, null, null, null, null, null, null);
-            for (int i = 0; i < res.length; i++)
-                if (res[i] instanceof RORIO)
-                    set.add((RORIO) res[i]);
-            return set;
-        } catch (Exception ex) {
-            if (strict)
-                throw ex;
-            ex.printStackTrace();
-            return set;
-        }
+        RORIO[] res = path.traceRouteComplete(v);
+        for (int i = 0; i < res.length; i++)
+            if (res[i] instanceof RORIO)
+                set.add((RORIO) res[i]);
+        return set;
     }
 
     /**
      * Translates the input IRIO to the target IRIO, or null if an issue was encountered.
      */
     public final IRIO getRW(IRIO v) {
-        try {
-            return (IRIO) getProgram.exc(MVMScope.ROOT, v);
-        } catch (Exception ex) {
-            if (strict)
-                throw ex;
-            ex.printStackTrace();
-            return null;
-        }
+        return path.getRW(v);
     }
 
     /**
@@ -207,14 +86,7 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
      * Returns null if an issue was encountered.
      */
     public final IRIO add(IRIO v) {
-        try {
-            return (IRIO) addProgram.exc(MVMScope.ROOT, v);
-        } catch (Exception ex) {
-            if (strict)
-                throw ex;
-            ex.printStackTrace();
-            return null;
-        }
+        return path.add(v);
     }
 
     /**
@@ -223,14 +95,7 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
      * Returns null if an issue was encountered.
      */
     public final IRIO del(IRIO v) {
-        try {
-            return (IRIO) delProgram.exc(MVMScope.ROOT, v);
-        } catch (Exception ex) {
-            if (strict)
-                throw ex;
-            ex.printStackTrace();
-            return null;
-        }
+        return path.del(v);
     }
 
     // break to next token.
@@ -271,36 +136,29 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
 
     // Used for missing IV autodetect
     public static String getAbsoluteIVar(PathSyntax iv) {
-        if (iv.getProgram.steps.length != 1)
-            return null;
-        MVMCLinear.Step step = iv.getProgram.steps[0];
-        if (step instanceof MVMCDMGetIVar)
-            return ((MVMCDMGetIVar) step).key;
+        if (iv.path instanceof DMPath.IVar)
+            return ((DMPath.IVar) iv.path).key;
         return null;
     }
 
     public static PathSyntax compile(App parentContext, String arg) {
-        return compile(parentContext.vmCtx, parentContext.ilg.strict, arg);
+        return compile(parentContext.ilg.strict, arg);
     }
 
     public static PathSyntax compile(MVMEnvR48 parentContext, String arg) {
-        return compile(parentContext, parentContext.strict, arg);
+        return compile(parentContext.strict, arg);
     }
 
     public static PathSyntax compile(PathSyntax basePS, String arg) {
-        return compile(basePS.parentContext, basePS.strict, basePS, arg);
+        return new PathSyntax(basePS.path.with(compile(basePS.path.strict, arg).path), basePS.decompiled + arg);
     }
 
-    public static PathSyntax compile(MVMEnv parentContext, boolean strict) {
-        return new PathSyntax(parentContext, strict, new MVMCLinear(MVMCExpr.getL0), new MVMCLinear(MVMCExpr.getL0), new MVMCLinear(MVMCExpr.getL0), "");
+    public static PathSyntax compile(boolean strict) {
+        return new PathSyntax(strict ? DMPath.EMPTY_STRICT : DMPath.EMPTY_RELAXED, "");
     }
 
-    public static PathSyntax compile(MVMEnv parentContext, boolean strict, String arg) {
-        PathSyntax workingOn = compile(parentContext, strict);
-        return compile(parentContext, strict, workingOn, arg);
-    }
-
-    public static PathSyntax compile(MVMEnv parentContext, boolean strict, PathSyntax workingOn, String arg) {
+    public static PathSyntax compile(boolean strict, String arg) {
+        DMPath workingOn = strict ? DMPath.EMPTY_STRICT : DMPath.EMPTY_RELAXED;
         // System.out.println("compiled pathsyntax " + arg);
         String workingArg = arg;
         while (workingArg.length() > 0) {
@@ -313,30 +171,30 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
                 if (subcom.startsWith("{")) {
                     String esc = subcom.substring(1);
                     DMKey hashVal = ValueSyntax.decode(esc);
-                    workingOn = workingOn.withHash(hashVal, arg);
+                    workingOn = workingOn.withHash(hashVal);
                 } else if (subcom.startsWith(".")) {
-                    workingOn = workingOn.withIVar(subcom.substring(1), arg);
+                    workingOn = workingOn.withIVar(subcom.substring(1));
                 } else {
                     if (subcom.equals("length")) {
-                        workingOn = workingOn.withArrayLength(arg);
+                        workingOn = workingOn.withArrayLength();
                     } else if (subcom.equals("defVal")) {
-                        workingOn = workingOn.withDefVal(arg);
+                        workingOn = workingOn.withDefVal();
                     } else if (subcom.equals("fail")) {
-                        workingOn = workingOn.withFail(arg);
+                        workingOn = workingOn.withFail();
                     } else if (subcom.length() != 0) {
                         throw new RuntimeException("$-command must be '$' (self), '${\"someSFormatTextForHVal' (hash string), '${123' (hash number), '$:someIval' ('raw' iVar), '$length', '$fail'");
                     }
                 }
             } else if (f == '@') {
-                workingOn = workingOn.withIVar("@" + subcom, arg);
+                workingOn = workingOn.withIVar("@" + subcom);
             } else if (f == ']') {
                 final int atl = Integer.parseInt(subcom);
-                workingOn = workingOn.withArray(atl, arg);
+                workingOn = workingOn.withArray(atl);
             } else {
                 throw new RuntimeException("Bad pathsynt starter " + f + " (did root get separated properly?) code " + arg);
             }
         }
-        return workingOn;
+        return new PathSyntax(workingOn, arg);
     }
 
     // Used by SDB stuff that generates paths.

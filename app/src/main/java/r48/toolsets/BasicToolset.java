@@ -265,7 +265,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                             app.ui.launchPrompt(T.u.mSchemaTrace, (path) -> {
                                 try {
                                     PathSyntax ps = PathSyntax.compile(app, path);
-                                    app.ui.launchSchemaTrace(rio, null, ps);
+                                    app.ui.launchSchemaTrace(rio, null, ps.path);
                                 } catch (Exception ex) {
                                     app.ui.launchDialog(ex);
                                 }

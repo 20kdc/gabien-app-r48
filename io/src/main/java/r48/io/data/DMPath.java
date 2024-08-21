@@ -26,6 +26,9 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
      */
     public final int traceRouteSize;
 
+    /**
+     * Used by tests to make sure more issues are caught.
+     */
     public final boolean strict;
 
     public DMPath(int trs, boolean strict) {
@@ -81,6 +84,22 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
     }
 
     /**
+     * Writes traceRouteSize encountered elements to elements at offset.
+     * The last element, if any, is the result. This is also returned.
+     * Written elements may be null if an error is encountered along the way or null is passed in.
+     */
+    public final RORIO traceRoute(RORIO target, RORIO[] elements, int offset) {
+        try {
+            return traceRouteImpl(target, elements, offset);
+        } catch (Throwable t) {
+            if (strict)
+                throw t;
+            t.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Executes this path.
      */
     public final @Nullable IRIO getRW(@Nullable IRIO input) {
@@ -111,7 +130,7 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
      * The last element, if any, is the result. This is also returned.
      * Written elements may be null if an error is encountered along the way or null is passed in.
      */
-    public abstract RORIO traceRoute(RORIO target, RORIO[] elements, int offset);
+    protected abstract @Nullable RORIO traceRouteImpl(RORIO target, RORIO[] elements, int offset);
 
     /**
      * Complete traceroute including start element.
@@ -170,14 +189,14 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
     /**
      * With default value.
      */
-    public DMPath withDefVal(String arg) {
+    public DMPath withDefVal() {
         return with(new HashDefaultValue());
     }
 
     /**
      * With failure.
      */
-    public DMPath withFail(String arg) {
+    public DMPath withFail() {
         return with(new Fail());
     }
 
@@ -260,9 +279,9 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
         }
 
         @Override
-        public RORIO traceRoute(RORIO target, RORIO[] elements, int offset) {
+        protected RORIO traceRouteImpl(RORIO target, RORIO[] elements, int offset) {
             for (DMPath dmp : components) {
-                target = dmp.traceRoute(target, elements, offset);
+                target = dmp.traceRouteImpl(target, elements, offset);
                 offset += dmp.traceRouteSize;
             }
             return target;
@@ -293,7 +312,7 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
             return input;
         }
         @Override
-        public RORIO traceRoute(RORIO target, RORIO[] elements, int offset) {
+        protected RORIO traceRouteImpl(RORIO target, RORIO[] elements, int offset) {
             return target;
         }
     }
@@ -304,8 +323,8 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
         }
 
         @Override
-        public RORIO traceRoute(RORIO target, RORIO[] elements, int offset) {
-            return elements[offset] = getRO(target);
+        protected RORIO traceRouteImpl(RORIO target, RORIO[] elements, int offset) {
+            return elements[offset] = getImpl(target);
         }
     }
 
@@ -330,7 +349,7 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
             return null;
         }
         @Override
-        public RORIO traceRoute(RORIO target, RORIO[] elements, int offset) {
+        protected RORIO traceRouteImpl(RORIO target, RORIO[] elements, int offset) {
             return null;
         }
     }

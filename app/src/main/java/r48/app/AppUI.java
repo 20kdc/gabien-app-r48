@@ -36,9 +36,9 @@ import r48.App;
 import r48.IMapContext;
 import r48.dbs.ObjectDB.ODBHandle;
 import r48.dbs.ObjectRootHandle;
-import r48.dbs.PathSyntax;
 import r48.imagefx.ImageFXCache;
 import r48.io.data.DMKey;
+import r48.io.data.DMPath;
 import r48.io.data.IRIO;
 import r48.map.UIMapView;
 import r48.schema.EnumSchemaElement.Prefix;
@@ -473,7 +473,7 @@ public class AppUI extends App.Svc {
      * Launches a schema by starting with a root/path pair.
      * Or tries, anyway.
      */
-    public @Nullable ISchemaHost launchSchemaTrace(@NonNull ObjectRootHandle root, @Nullable UIMapView context, @Nullable PathSyntax goal) {
+    public @Nullable ISchemaHost launchSchemaTrace(@NonNull ObjectRootHandle root, @Nullable UIMapView context, @NonNull DMPath goal) {
         SchemaPath pathRoot = new SchemaPath(root);
         SchemaPath res = pathRoot.tracePathRoute(goal);
         if (res == null) {

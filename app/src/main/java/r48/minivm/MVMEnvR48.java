@@ -23,7 +23,7 @@ import gabienapp.Application;
 import r48.app.Coco;
 import r48.dbs.DatumLoader;
 import r48.dbs.ObjectRootHandle;
-import r48.dbs.PathSyntax;
+import r48.io.data.DMPath;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.tr.DynTrBase;
@@ -40,7 +40,7 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
     public static final MVMType ROOT_TYPE = MVMType.typeOfClass(ObjectRootHandle.class);
     public static final MVMType IRIO_TYPE = MVMType.typeOfClass(IRIO.class);
     public static final MVMType RORIO_TYPE = MVMType.typeOfClass(RORIO.class);
-    public static final MVMType PATHSYNTAX_TYPE = MVMType.typeOfClass(PathSyntax.class);
+    public static final MVMType DMPATH_TYPE = MVMType.typeOfClass(DMPath.class);
     public static final MVMType DYNTRSLOT_TYPE = MVMType.typeOfClass(DynTrSlot.class);
 
     private final Consumer<String> loadProgress, logTrIssues;
@@ -54,7 +54,7 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
         defineType(new DatumSymbol("root"), ROOT_TYPE);
         defineType(new DatumSymbol("rorio"), RORIO_TYPE);
         defineType(new DatumSymbol("irio"), IRIO_TYPE);
-        defineType(new DatumSymbol("path-syntax"), PATHSYNTAX_TYPE);
+        defineType(new DatumSymbol("dm-path"), DMPATH_TYPE);
         this.loadProgress = loadProgress;
         this.logTrIssues = logTrIssues;
         dynMap = new HashMap<>();

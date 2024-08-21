@@ -15,6 +15,7 @@ import r48.dbs.PathSyntax;
 import r48.io.data.DMChangeTracker;
 import r48.io.data.DMContext;
 import r48.io.data.DMKey;
+import r48.io.data.DMPath;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -51,23 +52,23 @@ public class MVMDMLibrary {
             .help("(dm-del-at! TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), deletes entry, #nil on failure");
 
         // path manip
-        ctx.defineSlot(new DatumSymbol("ps-empty"), PathSyntax.compile(ctx, strict), MVMEnvR48.PATHSYNTAX_TYPE)
-            .help("ps-empty : Empty PathSyntax, from which others may be created.");
-        ctx.defLib("ps-a-ref", MVMEnvR48.PATHSYNTAX_TYPE, MVMEnvR48.PATHSYNTAX_TYPE, MVMType.I64, (p, i) -> {
-            return ((PathSyntax) p).withArray(MVMU.cInt(i), "(generated)");
-        }, "(ps-a-ref PATH INDEX) : Extends PathSyntax PATH with an array index operation.");
-        ctx.defLib("ps-h-ref", MVMEnvR48.PATHSYNTAX_TYPE, MVMEnvR48.PATHSYNTAX_TYPE, MVMType.ANY, (p, i) -> {
-            return ((PathSyntax) p).withHash(dmKeyify(i), "(generated)");
-        }, "(ps-h-ref PATH INDEX) : Extends PathSyntax PATH with a hash index operation.");
-        ctx.defLib("ps-i-ref", MVMEnvR48.PATHSYNTAX_TYPE, MVMEnvR48.PATHSYNTAX_TYPE, MVMType.ANY, (p, i) -> {
-            return ((PathSyntax) p).withIVar(MVMU.coerceToString(i), "(generated)");
-        }, "(ps-i-ref PATH INDEX) : Extends PathSyntax PATH with an ivar index operation.");
-        ctx.defLib("ps-a-len", MVMEnvR48.PATHSYNTAX_TYPE, MVMEnvR48.PATHSYNTAX_TYPE, (p) -> {
-            return ((PathSyntax) p).withArrayLength("(generated)");
-        }, "(ps-a-len PATH) : Extends PathSyntax PATH with an array length operation.");
-        ctx.defLib("ps-h-defval", MVMEnvR48.PATHSYNTAX_TYPE, MVMEnvR48.PATHSYNTAX_TYPE, (p) -> {
-            return ((PathSyntax) p).withDefVal("(generated)");
-        }, "(ps-h-defval PATH) : Extends PathSyntax PATH with a hash defval operation.");
+        ctx.defineSlot(new DatumSymbol("dp-empty"), strict ? DMPath.EMPTY_STRICT : DMPath.EMPTY_RELAXED, MVMEnvR48.DMPATH_TYPE)
+            .help("dp-empty : Empty DMPath, from which others may be created.");
+        ctx.defLib("dp-a-ref", MVMEnvR48.DMPATH_TYPE, MVMEnvR48.DMPATH_TYPE, MVMType.I64, (p, i) -> {
+            return ((DMPath) p).withArray(MVMU.cInt(i));
+        }, "(dp-a-ref PATH INDEX) : Extends DMPath PATH with an array index operation.");
+        ctx.defLib("dp-h-ref", MVMEnvR48.DMPATH_TYPE, MVMEnvR48.DMPATH_TYPE, MVMType.ANY, (p, i) -> {
+            return ((DMPath) p).withHash(dmKeyify(i));
+        }, "(dp-h-ref PATH INDEX) : Extends DMPath PATH with a hash index operation.");
+        ctx.defLib("dp-i-ref", MVMEnvR48.DMPATH_TYPE, MVMEnvR48.DMPATH_TYPE, MVMType.ANY, (p, i) -> {
+            return ((DMPath) p).withIVar(MVMU.coerceToString(i));
+        }, "(dp-i-ref PATH INDEX) : Extends DMPath PATH with an ivar index operation.");
+        ctx.defLib("dp-a-len", MVMEnvR48.DMPATH_TYPE, MVMEnvR48.DMPATH_TYPE, (p) -> {
+            return ((DMPath) p).withArrayLength();
+        }, "(dp-a-len PATH) : Extends DMPath PATH with an array length operation.");
+        ctx.defLib("dp-h-defval", MVMEnvR48.DMPATH_TYPE, MVMEnvR48.DMPATH_TYPE, (p) -> {
+            return ((DMPath) p).withDefVal();
+        }, "(dp-h-defval PATH) : Extends DMPath PATH with a hash defval operation.");
 
         // array
         ctx.defLib("dm-a-init", MVMEnvR48.IRIO_TYPE, MVMEnvR48.IRIO_TYPE, (a) -> {
@@ -259,21 +260,27 @@ public class MVMDMLibrary {
         public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
             if (call.length != 2)
                 throw new RuntimeException(nameHint + " expects exactly 2 args (target path)");
-            PathSyntax ps = PathSyntax.compile(cs.context, strict, MVMU.coerceToString(call[1]));
-            MVMCExpr res;
-            if (mode == 1)
-                res = ps.addProgram;
-            else if (mode == 2)
-                res = ps.delProgram;
-            else
-                res = ps.getProgram;
+            PathSyntax ps = PathSyntax.compile(strict, MVMU.coerceToString(call[1]));
+            MVMType res;
             MVMCExpr base = cs.compile(call[0]);
-            return new MVMCExpr(res.returnType) {
+            if (mode != 0) {
+                // modifies, so must be IRIO
+                base.returnType.assertCanImplicitlyCastTo(MVMEnvR48.IRIO_TYPE, base);
+                res = MVMEnvR48.IRIO_TYPE;
+            } else {
+                base.returnType.assertCanImplicitlyCastTo(MVMEnvR48.RORIO_TYPE, base);
+                res = base.returnType.canImplicitlyCastTo(MVMEnvR48.IRIO_TYPE) ? MVMEnvR48.IRIO_TYPE : MVMEnvR48.RORIO_TYPE;
+            }
+            return new MVMCExpr(res) {
                 @Override
                 public Object execute(MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-                    // set things up for the PathSyntax ABI
-                    l0 = base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-                    return res.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+                    Object bval = base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+                    if (mode == 1)
+                        return ps.add((IRIO) bval);
+                    else if (mode == 2)
+                        return ps.del((IRIO) bval);
+                    else
+                        return ps.getRO((RORIO) bval);
                 }
                 
                 @Override
