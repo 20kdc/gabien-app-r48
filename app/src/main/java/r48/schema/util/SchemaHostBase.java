@@ -8,11 +8,13 @@
 package r48.schema.util;
 
 import gabien.ui.*;
+import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -23,6 +25,14 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
     protected SchemaPath innerElem;
+
+    protected Consumer<SchemaPath> nudgeRunnable = new Consumer<SchemaPath>() {
+        @Override
+        public void accept(SchemaPath sp) {
+            nudged = true;
+        }
+    };
+    protected boolean nudged = false;
 
     // Can be null - if not, the renderer is accessible.
     // Note that even if the map view "dies", it's renderer will stay around.
@@ -72,7 +82,7 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
 
     @Override
     public ISchemaHost newBlank() {
-        return new SchemaHostImpl(app, contextView);
+        return new UISchemaHostWindow(app, contextView);
     }
 
     @Override
@@ -100,4 +110,35 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
     public App getApp() {
         return app;
     }
+
+    @Override
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+        super.update(deltaTime, selected, peripherals);
+        if (nudged) {
+            replaceValidity();
+            refreshDisplay();
+            nudged = false;
+        }
+    }
+
+    /**
+     * Implements the actual 'switch' operation.
+     */
+    protected final void switchObject(SchemaPath nextObject) {
+        // switch over listeners, validity, state
+        if (innerElem != null)
+            innerElem.root.deregisterModificationHandler(nudgeRunnable);
+        while (nextObject.editor == null)
+            nextObject = nextObject.parent;
+        nextObject.root.registerModificationHandler(nudgeRunnable);
+        replaceValidity();
+        innerElem = nextObject;
+        // update
+        refreshDisplay();
+    }
+
+    /**
+     * Implements the actual 'switch' operation for the UI.
+     */
+    protected abstract void refreshDisplay();
 }

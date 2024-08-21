@@ -12,7 +12,6 @@ import gabien.ui.dialogs.UIAutoclosingPopupMenu;
 import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UILabel;
 import gabien.uslx.append.*;
-import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.UITest;
 import r48.io.data.IRIO;
@@ -23,21 +22,20 @@ import r48.ui.UIAppendButton;
 import r48.wm.IDuplicatableWindow;
 
 import java.util.Stack;
-import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Created on 12/29/16.
  */
-public class SchemaHostImpl extends SchemaHostBase implements IDuplicatableWindow {
+public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableWindow {
     private UIElement innerElemEditor;
 
     private final Stack<SchemaPath> backStack = new Stack<SchemaPath>();
 
     private UILabel pathLabel = new UILabel("", app.f.schemaPathTH);
     private UIAppendButton toolbarP = new UIAppendButton(Art.Symbol.Back.i(app), pathLabel, () -> {
-        popObject();
+        popObject(false);
     }, app.f.schemaPathTH);
     private UIAppendButton toolbarCp = new UIAppendButton(T.g.bCopy, toolbarP, () -> {
         app.setClipboardFrom(innerElem.targetElement);
@@ -80,18 +78,10 @@ public class SchemaHostImpl extends SchemaHostBase implements IDuplicatableWindo
     // Used so this doesn't require too much changes when moved about
     private UIElement toolbarRoot = toolbarSandwich;
 
-    private Consumer<SchemaPath> nudgeRunnable = new Consumer<SchemaPath>() {
-        @Override
-        public void accept(SchemaPath sp) {
-            nudged = true;
-        }
-    };
-
     public boolean windowOpen = false;
-    public boolean stayClosed = false;
-    private boolean nudged = false;
+    private boolean stayClosed = false;
 
-    public SchemaHostImpl(App app, @Nullable UIMapView rendererSource) {
+    public UISchemaHostWindow(App app, @Nullable UIMapView rendererSource) {
         super(app, rendererSource);
         layoutAddElement(toolbarRoot);
         // Why is this scaled by main window size? Answer: Because the alternative is occasional Android version glitches.
@@ -109,25 +99,22 @@ public class SchemaHostImpl extends SchemaHostBase implements IDuplicatableWindo
     }
 
     @Override
-    public void popObject() {
-        if (backStack.size() > 0)
+    public void popObject(boolean canClose) {
+        // System.out.println("popObject " + backStack.size() + " " + canClose);
+        if (backStack.size() > 0) {
             switchObject(backStack.pop());
+        } else if (canClose) {
+            shutdown();
+        }
     }
 
-    private void switchObject(SchemaPath nextObject) {
-        if (innerElem != null)
-            innerElem.root.deregisterModificationHandler(nudgeRunnable);
-        while (nextObject.editor == null)
-            nextObject = nextObject.parent;
+    @Override
+    protected void refreshDisplay() {
         boolean doLaunch = false;
         if (!(windowOpen || stayClosed))
             doLaunch = true;
 
-        replaceValidity();
-
-        innerElem = nextObject;
         innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
-        innerElem.root.registerModificationHandler(nudgeRunnable);
 
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
@@ -173,20 +160,6 @@ public class SchemaHostImpl extends SchemaHostBase implements IDuplicatableWindo
     }
 
     @Override
-    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
-        super.update(deltaTime, selected, peripherals);
-        if (nudged) {
-            switchObject(innerElem);
-            nudged = false;
-        }
-    }
-
-    @Override
-    public boolean isActive() {
-        return windowOpen;
-    }
-
-    @Override
     public void duplicateThisWindow() {
         if (innerElem.hasTempDialog()) {
             app.ui.launchDialog(T.u.shNoCloneTmp);
@@ -194,11 +167,11 @@ public class SchemaHostImpl extends SchemaHostBase implements IDuplicatableWindo
         }
         // This serves to ensure that cloning a window causes it to retain scroll and such,
         // while still keeping it independent.
-        SchemaHostImpl next = (SchemaHostImpl) newBlank();
+        UISchemaHostWindow next = (UISchemaHostWindow) newBlank();
         next.backStack.addAll(backStack);
         next.backStack.push(innerElem);
         next.embedData = new EmbedDataTracker(next.backStack, embedData);
-        next.popObject();
+        next.popObject(false);
     }
 
     @Override
@@ -215,7 +188,10 @@ public class SchemaHostImpl extends SchemaHostBase implements IDuplicatableWindo
             layoutRemoveElement(uie);
     }
 
-    @Override
+    /**
+     * Used to shutdown all schema hosts during a revert.
+     * No-op if the host isn't active.
+     */
     public void shutdown() {
         stayClosed = true;
     }

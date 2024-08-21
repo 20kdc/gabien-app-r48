@@ -21,8 +21,10 @@ import r48.toolsets.utils.RMTranscriptDumper;
  * Created on 10/06/17.
  */
 public interface IRMMapSystem extends IDynobjMapSystem {
-    // Expects @events containing events with @pages containing @list.
-    // Pages can have null holes in it because R2k.
+    /**
+     * Expects `@events` containing events with `@pages` containing `@list`.
+     * Pages can have null holes in it because R2k.
+     */
     RMMapData[] getAllMaps();
 
     /**
@@ -31,7 +33,7 @@ public interface IRMMapSystem extends IDynobjMapSystem {
     ObjectRootHandle getCommonEventRoot(); 
 
     /**
-     * Expects @name and @list. Note these have to be in order.
+     * Expects `@name` and `@list`. Note these events have to be in order.
      */
     IRIO[] getAllCommonEvents();
 

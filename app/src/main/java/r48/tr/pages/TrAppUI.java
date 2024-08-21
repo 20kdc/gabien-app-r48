@@ -82,7 +82,7 @@ public class TrAppUI extends TrPage {
     public String mDiffObj;
     public String mAllStr;
     public String mLoadIMI;
-    public String mRMTools;
+    public String mEngineTools;
     public String mLocateEventCommand;
     public String mSearchCmdsCEV;
     public String mRunAutoCorrect;
@@ -92,6 +92,7 @@ public class TrAppUI extends TrPage {
     public String mTranscriptDump;
     public String mVirtualMachineManual;
     public String mSchemaTrace;
+    public String mFindCommonEventsWithSwitchID;
 
     public String dClipSaved;
     public String dClipBad;

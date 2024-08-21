@@ -43,7 +43,7 @@ public class EventTileReplacerSchemaElement extends SchemaElement.Leaf {
             charName.getRW(target).setString("");
             charIdx.getRW(target).setFX(r.getSelected());
             path.changeOccurred(false);
-            launcher.popObject();
+            launcher.popObject(true);
         };
         return r;
     }

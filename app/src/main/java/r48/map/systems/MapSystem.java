@@ -9,6 +9,7 @@ package r48.map.systems;
 
 import gabien.uslx.append.*;
 
+import java.util.LinkedList;
 import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -130,6 +131,13 @@ public abstract class MapSystem extends App.Svc {
     // If null, the save explorer is not enabled.
     public UIElement createSaveExplorer(final IMapContext mapBox, String saves) {
         return null;
+    }
+
+    /**
+     * Creates Engine Tools population.
+     */
+    public Consumer<LinkedList<UIPopupMenu.Entry>> createEngineTools() {
+        return (entries) -> {};
     }
 
     public Rect getIdealGridForImage(String path, Size img) {

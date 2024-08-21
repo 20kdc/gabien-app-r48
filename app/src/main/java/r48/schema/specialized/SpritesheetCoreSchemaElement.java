@@ -7,7 +7,6 @@
 
 package r48.schema.specialized;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import gabien.ui.UIElement;
@@ -48,13 +47,10 @@ public class SpritesheetCoreSchemaElement extends SchemaElement.Leaf {
             public void run() {
                 TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, null, path);
                 final SchemaPath innerPath = path.newWindow(temp, target);
-                temp.heldDialog = new UISpritesheetChoice(app, actTarg.getFX(), localProvider, new Consumer<Long>() {
-                    @Override
-                    public void accept(Long integer) {
-                        actTarg.setFX(integer);
-                        innerPath.changeOccurred(false);
-                        launcher.popObject();
-                    }
+                temp.heldDialog = new UISpritesheetChoice(app, actTarg.getFX(), localProvider, (integer) -> {
+                    actTarg.setFX(integer);
+                    innerPath.changeOccurred(false);
+                    launcher.popObject(true);
                 });
                 launcher.pushObject(innerPath);
             }

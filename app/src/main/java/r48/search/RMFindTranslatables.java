@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
 import r48.App;
 import r48.dbs.CMDB;
@@ -24,7 +25,7 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.ISchemaHost;
-import r48.schema.util.SchemaHostImpl;
+import r48.schema.util.UISchemaHostWindow;
 import r48.schema.util.SchemaPath;
 
 /**
@@ -32,15 +33,15 @@ import r48.schema.util.SchemaPath;
  */
 public class RMFindTranslatables extends App.Svc {
     public final @NonNull ObjectRootHandle objRoot;
-    public final LinkedList<CommandSite> sites = new LinkedList<CommandSite>();
+    public final LinkedList<UIElement> sites = new LinkedList<>();
 
     public RMFindTranslatables(App app, final ObjectRootHandle ilo) {
         super(app);
         objRoot = ilo;
     }
 
-    public CommandSite[] toArray() {
-        return sites.toArray(new CommandSite[0]);
+    public UIElement[] toArray() {
+        return sites.toArray(new UIElement[0]);
     }
 
     public void addSitesFromMap(final @Nullable UIMapView ctx, String eventPage, final ICommandClassifier.Instance cf) {
@@ -105,7 +106,7 @@ public class RMFindTranslatables extends App.Svc {
             }
             if (pendingCommandSiteData != null) {
                 if (cf.matches(cmdDetail, cmd)) {
-                    CommandSite tu = siteFromContext(app, cmdbEditor, ctx, eventList, pendingCommandSiteIndex, pendingCommandSiteData, basePath);
+                    UIElement tu = siteFromContext(app, cmdbEditor, ctx, eventList, pendingCommandSiteIndex, pendingCommandSiteData, basePath);
                     sites.add(tu);
                     pendingCommandSiteData = null;
                 }
@@ -117,11 +118,11 @@ public class RMFindTranslatables extends App.Svc {
         return (EventCommandArraySchemaElement) AggregateSchemaElement.extractField(app.sdb.getSDBEntry(cmdbEditor), null);
     }
 
-    public static CommandSite siteFromContext(App app, final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath basePath) {
+    public static UIElement siteFromContext(App app, final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath basePath) {
         final CMDB cmdb = cmdbEditor.database;
         String text = cmdb.buildGroupCodename(listObj, codeIndex, true);
         final UITextButton button = new UITextButton(text, app.f.schemaFieldTH, () -> {
-            ISchemaHost shi = new SchemaHostImpl(app, mapView);
+            ISchemaHost shi = new UISchemaHostWindow(app, mapView);
             SchemaPath sp = basePath;
             // enter list
             sp = sp.tagSEMonitor(listObj, cmdbEditor, false);
@@ -130,16 +131,6 @@ public class RMFindTranslatables extends App.Svc {
             sp = sp.newWindow(cmdbEditor.getElementContextualWindowSchema(command), listObj);
             shi.pushPathTree(sp);
         });
-        return new CommandSite(button) {
-            @Override
-            public void run() {
-                int idx = EventCommandArraySchemaElement.findActualStart(listObj, command);
-                if (idx != -1) {
-                    button.setText(cmdb.buildGroupCodename(listObj, codeIndex, true));
-                } else {
-                    button.setText(cmdb.buildCodename(command, false, true));
-                }
-            }
-        };
+        return button;
     }
 }

@@ -44,7 +44,7 @@ import r48.map.UIMapView;
 import r48.schema.EnumSchemaElement.Prefix;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
-import r48.schema.util.SchemaHostImpl;
+import r48.schema.util.UISchemaHostWindow;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.BasicToolset;
 import r48.toolsets.IToolset;
@@ -66,7 +66,7 @@ import r48.wm.WindowManager;
 public class AppUI extends App.Svc {
     public WindowManager wm;
     // All active schema hosts
-    private LinkedList<ISchemaHost> activeHosts = new LinkedList<ISchemaHost>();
+    private LinkedList<UISchemaHostWindow> activeHosts = new LinkedList<UISchemaHostWindow>();
     // All active image editors
     public LinkedList<ImageEditorController> imgContext;
 
@@ -119,7 +119,7 @@ public class AppUI extends App.Svc {
         final UIIconButton btnRevert = new UIIconButton(Art.Symbol.Back.i(app), app.f.tabTH, createLaunchConfirmation(T.u.revertWarn, () -> {
             AppMain.performSystemDump(app, false, "revert file");
             // Shutdown schema hosts
-            for (ISchemaHost ish : activeHosts)
+            for (UISchemaHostWindow ish : activeHosts)
                 ish.shutdown();
             // We're prepared for revert, do the thing
             app.odb.revertEverything();
@@ -236,14 +236,14 @@ public class AppUI extends App.Svc {
 
         app.odb.runPendingModifications();
 
-        LinkedList<Runnable> runs = new LinkedList<Runnable>(app.uiPendingRunnables);
+        LinkedList<Runnable> runs = new LinkedList<>(app.uiPendingRunnables);
         app.uiPendingRunnables.clear();
         for (Runnable r : runs)
             r.run();
 
-        LinkedList<ISchemaHost> newActive = new LinkedList<ISchemaHost>();
-        for (ISchemaHost ac : activeHosts)
-            if (ac.isActive())
+        LinkedList<UISchemaHostWindow> newActive = new LinkedList<>();
+        for (UISchemaHostWindow ac : activeHosts)
+            if (ac.windowOpen)
                 newActive.add(ac);
         activeHosts = newActive;
 
@@ -385,7 +385,7 @@ public class AppUI extends App.Svc {
         hsc.accept(link);
     }
 
-    public void schemaHostImplRegister(SchemaHostImpl shi) {
+    public void schemaHostImplRegister(UISchemaHostWindow shi) {
         activeHosts.add(shi);
     }
 
@@ -451,7 +451,7 @@ public class AppUI extends App.Svc {
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
     public ISchemaHost launchSchema(SchemaElement s, @NonNull ObjectRootHandle rio, @Nullable UIMapView context) {
         // Responsible for keeping listeners in place so nothing breaks.
-        SchemaHostImpl watcher = new SchemaHostImpl(app, context);
+        UISchemaHostWindow watcher = new UISchemaHostWindow(app, context);
         watcher.pushObject(new SchemaPath(s, rio));
         return watcher;
     }
@@ -480,7 +480,7 @@ public class AppUI extends App.Svc {
             launchDialog(T.u.schemaTraceFailure);
             return null;
         }
-        SchemaHostImpl watcher = new SchemaHostImpl(app, context);
+        UISchemaHostWindow watcher = new UISchemaHostWindow(app, context);
         watcher.pushPathTree(res);
         return watcher;
     }

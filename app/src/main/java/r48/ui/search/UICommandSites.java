@@ -17,27 +17,23 @@ import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.dbs.ObjectRootHandle;
 import r48.schema.util.SchemaPath;
-import r48.search.CommandSite;
 
 /**
  * Created on 17th September 2022
  */
 public class UICommandSites extends App.Prx {
-    private final Supplier<CommandSite[]> refresh;
+    private final Supplier<UIElement[]> refresh;
     private final ObjectRootHandle[] roots;
 
     private final UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
     private boolean needsRefresh = false;
     private String objIdName;
 
-    private final Consumer<SchemaPath> consumer = new Consumer<SchemaPath>() {
-        @Override
-        public void accept(SchemaPath t) {
-            needsRefresh = true;
-        }
+    private final Consumer<SchemaPath> consumer = (t) -> {
+        needsRefresh = true;
     };
 
-    public UICommandSites(App app, String name, Supplier<CommandSite[]> supplier, ObjectRootHandle[] r) {
+    public UICommandSites(App app, String name, Supplier<UIElement[]> supplier, ObjectRootHandle[] r) {
         super(app);
         objIdName = name;
         refresh = supplier;
@@ -59,11 +55,8 @@ public class UICommandSites extends App.Prx {
     }
 
     public void doRefresh() {
-        CommandSite[] sites = refresh.get();
-        UIElement[] siteElements = new UIElement[sites.length];
-        for (int i = 0; i < sites.length; i++)
-            siteElements[i] = sites[i].element;
-        layout.panelsSet(siteElements);
+        UIElement[] sites = refresh.get();
+        layout.panelsSet(sites);
     }
 
     @Override

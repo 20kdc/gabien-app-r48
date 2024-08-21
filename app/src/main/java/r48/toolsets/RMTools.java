@@ -7,7 +7,6 @@
 
 package r48.toolsets;
 
-import gabien.ui.UIElement;
 import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
@@ -26,7 +25,6 @@ import r48.search.CompoundCommandClassifier;
 import r48.search.ICommandClassifier;
 import r48.search.RMFindTranslatables;
 import r48.toolsets.utils.UIIDChanger;
-import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIRMUniversalStringFinder;
 import r48.ui.dialog.UIRMUniversalStringReplacer;
 import r48.ui.dialog.UITranscriptControl;
@@ -48,7 +46,7 @@ import java.util.function.Consumer;
  *
  * Created on 2/12/17.
  */
-public class RMTools extends App.Svc {
+public class RMTools extends App.Svc implements Consumer<LinkedList<UIPopupMenu.Entry>> {
     private final CMDB commandsEvent;
     private final IRMMapSystem mapSystem;
 
@@ -60,8 +58,8 @@ public class RMTools extends App.Svc {
         commandsEvent = ((EventCommandArraySchemaElement) AggregateSchemaElement.extractField(app.sdb.getSDBEntry("EventListEditor"), null)).database;
     }
 
-    public UIElement genButton() {
-        LinkedList<UIPopupMenu.Entry> entries = new LinkedList<>();
+    @Override
+    public void accept(LinkedList<UIPopupMenu.Entry> entries) {
         entries.add(new UIPopupMenu.Entry(T.u.mLocateEventCommand, () -> {
             app.ui.launchPrompt(T.u.rmCmdCodeRequest, (s) -> {
                 int i;
@@ -133,7 +131,7 @@ public class RMTools extends App.Svc {
                     // yup, and throw an exception to give the user an idea of the tree
                     // Note that R48 during an error does NOT write over the main object DB for safety reasons
                     //  (doing so could result in making the situation worse)
-                    // the important thing here is that this means autocorrect testing won't lead to the testing env. being poisoneds
+                    // the important thing here is that this means autocorrect testing won't lead to the testing env. being poisoned
                     throw new RuntimeException("MODIFY " + obj + " " + path);
                 };
                 sp.root.registerModificationHandler(modListen);
@@ -158,6 +156,5 @@ public class RMTools extends App.Svc {
             }
             app.ui.wm.createWindow(new UIIDChanger(app, null));
         }));
-        return new UIMenuButton(app, T.u.mRMTools, app.f.menuTH, null, entries).centred();
     }
 }

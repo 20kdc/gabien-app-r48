@@ -10,6 +10,7 @@ package r48.map.systems;
 import gabien.GaBIEn;
 import gabien.render.IImage;
 import gabien.ui.UIElement;
+import gabien.ui.dialogs.UIPopupMenu.Entry;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import r48.App;
@@ -36,10 +37,13 @@ import r48.map.tiles.LcfTileRenderer;
 import r48.map.tiles.LoopTileAccess;
 import r48.maptools.UIMTBase;
 import r48.maptools.deep.UIMTFtrGdt01;
+import r48.toolsets.R2kTools;
+import r48.toolsets.RMTools;
 import r48.toolsets.utils.RMTranscriptDumper;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -68,6 +72,11 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     @Override
     public UIElement createSaveExplorer(IMapContext mapBox, String saves) {
         return new UISaveScanMapInfos(this::getSaveName, (integer) -> "Save." + integer, 1, 99, mapBox, saves);
+    }
+
+    @Override
+    public Consumer<LinkedList<Entry>> createEngineTools() {
+        return new RMTools(app).andThen(new R2kTools(app));
     }
 
     @Override

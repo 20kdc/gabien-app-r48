@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.render.IImage;
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
+import gabien.ui.dialogs.UIPopupMenu.Entry;
 import r48.App;
 import r48.IMapContext;
 import r48.RubyTableR;
@@ -32,10 +33,12 @@ import r48.map.mapinfos.UIGRMMapInfos;
 import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.TSOAwareTileRenderer;
 import r48.map.tiles.XPTileRenderer;
+import r48.toolsets.RMTools;
 import r48.toolsets.utils.RMTranscriptDumper;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -72,6 +75,11 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     @Override
     public UIElement createMapExplorer(IMapContext mapBox, String mapInfos) {
         return new UIGRMMapInfos(new RXPRMLikeMapInfoBackend(app), mapBox, mapInfos);
+    }
+
+    @Override
+    public Consumer<LinkedList<Entry>> createEngineTools() {
+        return new RMTools(app);
     }
 
     @Override

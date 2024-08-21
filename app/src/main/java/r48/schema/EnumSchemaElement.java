@@ -94,17 +94,14 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
     @Override
     public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIEnumChoice.Option opt = findOption(target);
-        UITextButton button = new UITextButton(viewValue(target, Prefix.Prefix, opt), app.f.schemaFieldTH, new Runnable() {
-            @Override
-            public void run() {
-                liveUpdate();
-                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, makeEnumChoiceDialog((integer) -> {
-                    target.setDeepClone(integer);
-                    path.changeOccurred(false);
-                    // Enums can affect parent format, so deal with that now.
-                    launcher.popObject();
-                }), null, path), target));
-            }
+        UITextButton button = new UITextButton(viewValue(target, Prefix.Prefix, opt), app.f.schemaFieldTH, () -> {
+            liveUpdate();
+            launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, (closeIt) -> makeEnumChoiceDialog((integer) -> {
+                target.setDeepClone(integer);
+                path.changeOccurred(false);
+                // Enums can affect parent format, so deal with that now.
+                closeIt.run();
+            }), null, path), target));
         });
         if (opt != null) {
             if (opt.furtherDataButton != null)

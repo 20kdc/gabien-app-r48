@@ -60,13 +60,10 @@ public class FileSelectorSchemaElement extends SchemaElement.Leaf {
             final String sStripped = stripExt(s);
             if (hitStrs.contains(sStripped))
                 continue;
-            UITextButton selectButton = new UITextButton(sStripped, app.f.schemaFieldTH, new Runnable() {
-                @Override
-                public void run() {
-                    target.setString(sStripped);
-                    path.changeOccurred(false);
-                    launcher.popObject();
-                }
+            UITextButton selectButton = new UITextButton(sStripped, app.f.schemaFieldTH, () -> {
+                target.setString(sStripped);
+                path.changeOccurred(false);
+                launcher.popObject(true);
             });
             UIElement res = null;
             if (mustBeImage != null) {

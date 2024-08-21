@@ -27,7 +27,6 @@ import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
-import r48.map.systems.IRMMapSystem;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
@@ -117,11 +116,10 @@ public class BasicToolset extends App.Svc implements IToolset {
     }
 
     private UIElement createODBRMGestalt() {
-        if (app.system instanceof IRMMapSystem) {
-            return new UISplitterLayout(createODBButton(), new RMTools(app).genButton(), true, 0.5);
-        } else {
-            return createODBButton();
-        }
+        LinkedList<UIPopupMenu.Entry> entries = new LinkedList<>();
+        app.system.createEngineTools().accept(entries);
+        UIElement button = new UIMenuButton(app, T.u.mEngineTools, app.f.menuTH, null, entries).centred();
+        return new UISplitterLayout(createODBButton(), button, true, 0.5);
     }
 
     private UIElement createODBButton() {

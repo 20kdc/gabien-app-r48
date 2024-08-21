@@ -22,8 +22,16 @@ import r48.map.StuffRenderer;
  * Created on 12/29/16.
  */
 public interface ISchemaHost {
+    /**
+     * Navigates to an object, putting it on the history stack.
+     */
     void pushObject(SchemaPath nextObject);
-    void popObject();
+
+    /**
+     * Goes backwards through the stack, navigating to the previous object.
+     * If canClose is true and the stack is empty, the host may be closed.
+     */
+    void popObject(boolean canClose);
 
     default void pushPathTree(SchemaPath nextObject) {
         // "Decompile" the path into a usable forward/back tree.
@@ -45,8 +53,6 @@ public interface ISchemaHost {
     @NonNull StuffRenderer getContextRenderer();
 
     ISchemaHost newBlank();
-
-    boolean isActive();
 
     SchemaPath getCurrentObject();
 
@@ -72,10 +78,6 @@ public interface ISchemaHost {
     }
 
     Supplier<Boolean> getValidity();
-
-    // Used to shutdown all schema hosts during a revert.
-    // No-op if the host isn't active.
-    void shutdown();
 
     // Yet another way to get an App to avoid pipelining
     App getApp();

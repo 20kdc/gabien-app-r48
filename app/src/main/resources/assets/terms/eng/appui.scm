@@ -133,7 +133,7 @@
 	mREPL "REPL..."
 	mLocateEventCommand "Locate EventCommand in all Pages"
 	mSearchCmdsCEV "Search Commands In Common Events..."
-	mRMTools "RM-Tools"
+	mEngineTools "Engine Tools"
 	mRunAutoCorrect "See If Autocorrect Modifies Anything"
 	mR48Version "R48 Version"
 	warnRestoreSafety (..
@@ -155,6 +155,7 @@
 	mTranscriptDump "MEV/CEV Transcript Dump (no Troop/Item/etc.)"
 	mVirtualMachineManual "Create r48-repl-help.html"
 	mSchemaTrace "Edit At Path..."
+	mFindCommonEventsWithSwitchID "Find Common Events with Switch ID..."
 
 	dClipSaved "The clipboard was saved."
 	dClipBad "The clipboard file is invalid or does not exist."
