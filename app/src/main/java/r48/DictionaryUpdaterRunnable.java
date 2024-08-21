@@ -109,7 +109,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
                 try {
                     coreLogic(app, finalMap, iVar, targetILO, dataSchema, target, hash, interpret);
                 } catch (Exception e) {
-                    throw new RuntimeException("During DUR " + dict, e);
+                    throw new RuntimeException("During DUR " + dict + " target " + targetName, e);
                 }
             }
             finalizeVals(finalMap);

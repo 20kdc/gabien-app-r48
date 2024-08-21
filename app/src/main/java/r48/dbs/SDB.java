@@ -118,7 +118,7 @@ public class SDB extends AppCore.Csv {
     public LinkedList<ObjectInfo> listFileDefs() {
         LinkedList<ObjectInfo> fd = new LinkedList<ObjectInfo>();
         for (String s : app.engine.definesObjects)
-            fd.add(new ObjectInfo(app, s, "File." + s));
+            fd.add(new ObjectInfo(app, s));
         return fd;
     }
 

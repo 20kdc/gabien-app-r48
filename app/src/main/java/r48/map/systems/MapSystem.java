@@ -36,6 +36,7 @@ import r48.map.events.IEventAccess;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.LoopTileAccess;
 import r48.map.tiles.NOPWriteTileAccess;
+import r48.schema.SchemaElement;
 
 /**
  * Responsible for creating NSRs and such.
@@ -58,6 +59,29 @@ public abstract class MapSystem extends App.Svc {
         super(app);
         imageLoader = imgLoad;
         enableMapSubsystem = enableSwitch;
+    }
+
+    /**
+     * Maps an object ID to a schema ID.
+     * Notably, can always be overridden by File. schemas.
+     */
+    protected @NonNull String mapObjectIDToSchemaID(String objectID) {
+        return "File." + objectID;
+    }
+
+    /**
+     * Maps an object ID to a schema element.
+     */
+    public final @Nullable SchemaElement mapObjectIDToSchema(String objectID) {
+        String filedot = "File." + objectID;
+        if (app.sdb.hasSDBEntry(filedot))
+            return app.sdb.getSDBEntry(filedot);
+
+        String res = mapObjectIDToSchemaID(objectID);
+        if (app.sdb.hasSDBEntry(res))
+            return app.sdb.getSDBEntry(res);
+
+        return null;
     }
 
     protected static ObjectInfo[] dynamicObjectsFromRM(IRMMapSystem rm) {
@@ -327,17 +351,21 @@ public abstract class MapSystem extends App.Svc {
         // Used for bringing up relevant dialogs & adding listeners.
         // MapViewState really runs the show
         // dictionaryObjectId is used for __MAP__
-        public final String objectId;
-        public final String objectSchema;
+        public final @NonNull String objectId;
+        public final @NonNull SchemaElement objectSchema;
         // NOTE: The main modification listener gets inserted on this root,
         //        and changes to the map cause this root to be modified.
         // Additional modification listeners are inserted on a per-State basis.
         public final ObjectRootHandle object;
 
-        public MapViewDetails(App app, String o, String os) {
+        public MapViewDetails(App app, String o, ObjectRootHandle orh) {
+            final SchemaElement rootSchema2 = orh.rootSchema;
+            // Eclipse check says it has to be done this way despite rootSchema being final
+            if (rootSchema2 == null)
+                throw new RuntimeException("Schema cannot be null for MapViewDetails.");
+            objectSchema = rootSchema2;
             objectId = o;
-            objectSchema = os;
-            object = app.odb.getObject(o, os);
+            object = orh;
         }
 
         /**

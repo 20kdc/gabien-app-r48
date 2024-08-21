@@ -9,6 +9,7 @@ package r48.dbs;
 
 import r48.app.AppCore;
 import r48.app.TimeMachineChangeSource;
+import r48.dbs.ObjectRootHandle.Utils;
 import r48.io.IObjectBackend;
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
@@ -18,7 +19,6 @@ import r48.schema.util.SchemaPath;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -92,9 +92,11 @@ public final class ObjectDB extends AppCore.Csv {
         return riow.get();
     }
 
-    // NOTE: Preferably call the one-parameter version,
-    //  since that tries to create a sensible default.
-    public ObjectRootHandle getObject(String id, String backupSchema) {
+    public ObjectRootHandle getObject(String id) {
+        return getObject(id, true);
+    }
+
+    public ObjectRootHandle getObject(String id, boolean create) {
         ObjectRootHandle omwr = tryGetObjectInternal(id);
         if (omwr != null)
             return omwr;
@@ -105,42 +107,30 @@ public final class ObjectDB extends AppCore.Csv {
             rio = backend.loadObject(id, context);
         }
         ODBHandle rootHandle;
+        SchemaElement ise = app.system.mapObjectIDToSchema(id);
         if (rio == null) {
-            if (backupSchema != null) {
-                if (!app.sdb.hasSDBEntry(backupSchema)) {
-                    System.err.println("Could not find backup schema for object " + id);
-                    return null;
+            if (ise != null) {
+                // Note that the setup of the object counts as part of the object's unpack license.
+                // This is INTENTIONAL. It stops SEVERE crashes when undoing the new map operation.
+                try (Block license = context.changes.openUnpackLicense()) {
+                    rio = backend.newObject(id, context);
+                    if (rio == null)
+                        return null;
+                    rootHandle = new ODBHandle(ise, id, rio);
+                    context.set(DMCONTEXT_LOADED_OBJECT, rootHandle);
+                    SchemaPath.setDefaultValue(rio.getObject(), ise, null);
                 }
-                SchemaElement ise = app.sdb.getSDBEntry(backupSchema);
-                if (ise != null) {
-                    // Note that the setup of the object counts as part of the object's unpack license.
-                    // This is INTENTIONAL. It stops SEVERE crashes when undoing the new map operation.
-                    try (Block license = context.changes.openUnpackLicense()) {
-                        rio = backend.newObject(id, context);
-                        if (rio == null)
-                            return null;
-                        rootHandle = new ODBHandle(id, rio);
-                        context.set(DMCONTEXT_LOADED_OBJECT, rootHandle);
-                        SchemaPath.setDefaultValue(rio.getObject(), ise, null);
-                    }
-                    modifiedObjects.add(rootHandle);
-                    newlyCreatedObjects.add(rootHandle);
-                } else {
-                    return null;
-                }
+                modifiedObjects.add(rootHandle);
+                newlyCreatedObjects.add(rootHandle);
             } else {
                 return null;
             }
         } else {
-            rootHandle = new ODBHandle(id, rio);
+            rootHandle = new ODBHandle(ise, id, rio);
             context.set(DMCONTEXT_LOADED_OBJECT, rootHandle);
         }
         objectMap.put(id, new WeakReference<ODBHandle>(rootHandle));
         return rootHandle;
-    }
-
-    public ObjectRootHandle getObject(String id) {
-        return getObject(id, "File." + id);
     }
 
     public boolean getObjectModified(String id) {
@@ -171,7 +161,7 @@ public final class ObjectDB extends AppCore.Csv {
     }
 
     public void deregisterModificationHandler(String root, Consumer<SchemaPath> handler) {
-        ObjectRootHandle.Isolated.implRemoveFromGOCMH(getOrCreateRootModificationHandlers(root), handler);
+        Utils.implRemoveFromGOCMH(getOrCreateRootModificationHandlers(root), handler);
     }
 
     public void runPendingModifications() {
@@ -181,37 +171,18 @@ public final class ObjectDB extends AppCore.Csv {
             r.run();
     }
 
-    private void handleNotificationList(LinkedList<WeakReference<Consumer<SchemaPath>>> notifyObjectModified, SchemaPath sp) {
-        if (notifyObjectModified == null)
-            return;
-        Iterator<WeakReference<Consumer<SchemaPath>>> it = notifyObjectModified.iterator();
-        while (it.hasNext()) {
-            WeakReference<Consumer<SchemaPath>> spi = it.next();
-            Consumer<SchemaPath> ics = spi.get();
-            if (ics == null)
-                it.remove();
-        }
-        if (sp != null) {
-            for (WeakReference<Consumer<SchemaPath>> spi : new LinkedList<>(notifyObjectModified)) {
-                Consumer<SchemaPath> ics = spi.get();
-                if (ics != null && sp != null)
-                    ics.accept(sp);
-            }
-        }
-    }
-
     public int countModificationListeners(ObjectRootHandle p) {
         if (!(p instanceof ODBHandle))
             return 0;
         ODBHandle rootHandle = (ODBHandle) p;
         int n = 0;
         LinkedList<WeakReference<Consumer<SchemaPath>>> notifyObjectModified = rootHandle.objectListenersMap;
-        handleNotificationList(notifyObjectModified, null);
+        Utils.handleNotificationList(notifyObjectModified, null);
         if (notifyObjectModified != null)
             n += notifyObjectModified.size();
         String r = rootHandle.id;
         notifyObjectModified = objectRootListenersMap.get(r);
-        handleNotificationList(notifyObjectModified, null);
+        Utils.handleNotificationList(notifyObjectModified, null);
         if (notifyObjectModified != null)
             n += notifyObjectModified.size();
         return n;
@@ -267,42 +238,30 @@ public final class ObjectDB extends AppCore.Csv {
     public class ODBHandle extends ObjectRootHandle {
         private final @NonNull IObjectBackend.ILoadedObject ilo;
         private final @NonNull String id;
-        private boolean objectRootModifiedRecursion = false;
 
-        public ODBHandle(@NonNull String id, @NonNull IObjectBackend.ILoadedObject ilo) {
+        public ODBHandle(@Nullable SchemaElement rootSchema, @NonNull String id, @NonNull IObjectBackend.ILoadedObject ilo) {
+            super(rootSchema);
             this.ilo = ilo;
             this.id = id;
         }
-        
+
+        @Override
+        public String toString() {
+            return id;
+        }
+
         @Override
         public IRIO getObject() {
             return ilo.getObject();
         }
 
         @Override
-        public void objectRootModified(SchemaPath path) {
-            if (tryGetObjectInternal(id) != this)
-                throw new RuntimeException("We somehow lost object " + id);
-            if (objectRootModifiedRecursion) {
-                pendingModifications.add(() -> {
-                    // in case of mysterious error
-                    objectRootModifiedRecursion = false;
-                    objectRootModified(path);
-                });
-                return;
+        public void objectRootModifiedPass(SchemaPath path) {
+            super.objectRootModifiedPass(path);
+            if (tryGetObjectInternal(id) == this) {
+                modifiedObjects.add(this);
+                Utils.handleNotificationList(getOrCreateRootModificationHandlers(id), path);
             }
-            objectRootModifiedRecursion = true;
-            // Is this available in ObjectDB? If not, then it shouldn't be locked into permanent memory.
-            // However, if there are modification listeners on this particular object, they get used
-            modifiedObjects.add(this);
-            LinkedList<WeakReference<Consumer<SchemaPath>>> notifyObjectModified = objectListenersMap;
-            handleNotificationList(notifyObjectModified, path);
-            String root = getIdByObject(path.root);
-            if (root != null) {
-                notifyObjectModified = objectRootListenersMap.get(root);
-                handleNotificationList(notifyObjectModified, path);
-            }
-            objectRootModifiedRecursion = false;
         }
 
         @Override

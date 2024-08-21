@@ -49,7 +49,7 @@ public class UIMTPopupButtons extends UIMTBase {
         mainToolButtons.add(new ToolButton(T.g.bProperties) {
             @Override
             public UIMTBase apply(IMapToolContext a) {
-                app.ui.launchSchema(view.map.objectSchema, view.map.object, view);
+                app.ui.launchSchema(view.map.object, view);
                 return null;
             }
         });

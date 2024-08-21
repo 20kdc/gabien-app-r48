@@ -43,7 +43,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
                 // Before doing anything stupid...
                 long mapId = target.getIVar("@party_pos").getIVar("@map").getFX();
                 String mapName = R2kRMLikeMapInfoBackend.sNameFromInt((int) mapId);
-                ObjectRootHandle map = app.odb.getObject(mapName, null);
+                ObjectRootHandle map = app.odb.getObject(mapName, false);
                 if (map == null) {
                     app.ui.launchDialog(T.s.errInvalidMap);
                     return;

@@ -42,8 +42,8 @@ public interface IRMMapSystem extends IDynobjMapSystem {
         public final Supplier<String> nameSupplier;
         public final int id;
 
-        public RMMapData(App app, Supplier<String> n, int i, String iN, String sN) {
-            super(app, iN, sN);
+        public RMMapData(App app, Supplier<String> n, int i, String iN) {
+            super(app, iN);
             nameSupplier = n;
             id = i;
         }
@@ -52,15 +52,12 @@ public interface IRMMapSystem extends IDynobjMapSystem {
             return idName + ": " + getName();
         }
 
-        public static final Comparator<RMMapData> COMPARATOR = new Comparator<RMMapData>() {
-            @Override
-            public int compare(RMMapData arg0, RMMapData arg1) {
-                if (arg0.id < arg1.id)
-                    return -1;
-                if (arg0.id > arg1.id)
-                    return 1;
-                return 0;
-            }
+        public static final Comparator<RMMapData> COMPARATOR = (arg0, arg1) -> {
+            if (arg0.id < arg1.id)
+                return -1;
+            if (arg0.id > arg1.id)
+                return 1;
+            return 0;
         };
 
         public String getName() {

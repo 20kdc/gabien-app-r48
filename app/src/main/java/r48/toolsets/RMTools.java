@@ -96,7 +96,7 @@ public class RMTools extends App.Svc {
                                     found = cod == i;
                                 }
                                 if (found) {
-                                    UIMTEventPicker.showEventDivorced(app, key, ilo, rmd.schemaName, event, "RPG::Event");
+                                    UIMTEventPicker.showEventDivorced(app, key, ilo, event, app.sdb.getSDBEntry("RPG::Event"));
                                     return;
                                 }
                             }

@@ -138,15 +138,8 @@ public class BasicToolset extends App.Svc implements IToolset {
                 () -> {
                     app.ui.launchPrompt(T.u.prObjectName, (s) -> {
                         final ObjectRootHandle rio = app.odb.getObject(s);
-                        SchemaElement guess = app.inferSchemaElementForRoot(s);
-                        if (guess != null) {
-                            app.ui.launchSchema(guess, rio, null);
-                            return;
-                        }
                         if (rio != null) {
-                            app.ui.launchPrompt(T.u.prSchemaID, (sid) -> {
-                                app.ui.launchSchema(sid, rio, null);
-                            });
+                            app.ui.launchSchema(rio, null);
                         } else {
                             app.ui.launchDialog(T.u.dFileUnreadableNoSchema);
                         }
@@ -206,7 +199,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         final DataOutputStream dos = new DataOutputStream(lm);
                         final HashSet<String> text = new HashSet<>();
                         for (String s : app.getAllObjects()) {
-                            ObjectRootHandle obj = app.odb.getObject(s, null);
+                            ObjectRootHandle obj = app.odb.getObject(s, false);
                             if (obj != null) {
                                 locateStrings(app, obj.getObject(), (rubyIO) -> {
                                     text.add(rubyIO.decString());
@@ -257,23 +250,22 @@ public class BasicToolset extends App.Svc implements IToolset {
                     });
                 },
                 () -> {
-                    IRIOGeneric tmp = new IRIOGeneric(app.ctxWorkspaceAppEncoding);
-                    final ObjectRootHandle rio = new ObjectRootHandle.Isolated(tmp);
                     app.ui.launchPrompt(T.u.prSchemaID, (s) -> {
                         SchemaElement se = app.sdb.getSDBEntry(s);
+                        IRIOGeneric tmp = new IRIOGeneric(app.ctxWorkspaceAppEncoding);
+                        final ObjectRootHandle rio = new ObjectRootHandle.Isolated(se, tmp);
                         SchemaPath.setDefaultValue(tmp, se, DMKey.NULL);
-                        app.ui.launchSchema(s, rio, null);
+                        app.ui.launchSchema(rio, null);
                     });
                 },
                 () -> {
                     app.ui.launchPrompt(T.u.prObjectName, (s) -> {
                         final ObjectRootHandle rio = app.odb.getObject(s);
-                        SchemaElement guess = app.inferSchemaElementForRoot(s);
-                        if (rio != null && guess != null) {
+                        if (rio != null) {
                             app.ui.launchPrompt(T.u.mSchemaTrace, (path) -> {
                                 try {
                                     PathSyntax ps = PathSyntax.compile(app, path);
-                                    app.ui.launchSchemaTrace(guess, rio, null, ps);
+                                    app.ui.launchSchemaTrace(rio, null, ps);
                                 } catch (Exception ex) {
                                     app.ui.launchDialog(ex);
                                 }
@@ -451,7 +443,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     if (app.theClipboard == null) {
                         app.ui.launchDialog(T.u.dlgClipEmpty);
                     } else {
-                        app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard, new ObjectRootHandle.Isolated((IRIO) app.theClipboard)));
+                        app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard, new ObjectRootHandle.Isolated(null, (IRIO) app.theClipboard)));
                     }
                 }
         }, app.f.statusBarTH);

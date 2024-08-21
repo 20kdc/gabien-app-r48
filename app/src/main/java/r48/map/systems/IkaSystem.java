@@ -46,12 +46,11 @@ public class IkaSystem extends MapSystem {
 
     @Override
     public MapViewDetails mapViewRequest(final String gum, boolean allowCreate) {
-        if (!allowCreate)
-            if (app.odb.getObject(gum, null) == null)
-                return null;
-        final ObjectRootHandle map = app.odb.getObject(gum);
-        final IEventAccess events = new TraditionalEventAccess(app, gum, "IkachanMap", "@events", 0, "IkachanEvent");
-        return new MapViewDetails(app, gum, "IkachanMap") {
+        final ObjectRootHandle map = app.odb.getObject(gum, allowCreate);
+        if (map == null)
+            return null;
+        final IEventAccess events = new TraditionalEventAccess(app, gum, "@events", 0, "IkachanEvent");
+        return new MapViewDetails(app, gum, map) {
             @Override
             public MapViewState rebuild(String changed) {
                 StuffRenderer sr = rendererGeneral();

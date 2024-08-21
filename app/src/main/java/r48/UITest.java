@@ -18,6 +18,7 @@ import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
+import r48.schema.SchemaElement;
 import r48.ui.UIAppendButton;
 
 import java.io.OutputStream;
@@ -80,10 +81,11 @@ public class UITest extends App.Prx {
         if (rootObj != null) {
             topBar = new UIAppendButton(T.u.test_withSchema, topBar, () -> {
                 app.ui.launchPrompt(T.u.prSchemaID, (res) -> {
+                    SchemaElement se = app.sdb.getSDBEntry(res);
                     if (currentObj == rootObj.getObject()) {
-                        app.ui.launchSchema(res, rootObj, null);
+                        app.ui.launchSchema(se, rootObj, null);
                     } else {
-                        app.ui.launchNonRootSchema(rootObj, "OPAQUE", DMKey.NULL, (IRIO) currentObj, res, "", null);
+                        app.ui.launchDisconnectedSchema(rootObj, DMKey.NULL, (IRIO) currentObj, se, "", null);
                     }
                 });
             }, app.f.inspectorBackTH);

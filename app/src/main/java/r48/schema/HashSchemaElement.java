@@ -62,9 +62,13 @@ public class HashSchemaElement extends SchemaElement {
         }
         final IRIO keyWorkspace = preWorkspace;
 
-        final SchemaPath rioPath = new SchemaPath(keyElem, new ObjectRootHandle.Isolated(keyWorkspace), () -> {
-            // This may occur from a different page (say, an enum selector), so the more complicated form must be used.
-            keyWorkspaceSlot.value = new IRIOGeneric(app.ctxWorkspaceAppEncoding).setDeepClone(keyWorkspace);
+        final SchemaPath rioPath = new SchemaPath(keyElem, new ObjectRootHandle.Isolated(keyElem, keyWorkspace) {
+            @Override
+            public void objectRootModifiedPass(SchemaPath path) {
+                super.objectRootModifiedPass(path);
+                // This may occur from a different page (say, an enum selector).
+                keyWorkspaceSlot.value = new IRIOGeneric(app.ctxWorkspaceAppEncoding).setDeepClone(keyWorkspace);
+            }
         });
 
         if (keyWorkspace.getType() == 'i') {

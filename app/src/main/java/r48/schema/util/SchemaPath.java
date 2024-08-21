@@ -7,7 +7,6 @@
 
 package r48.schema.util;
 
-import r48.App;
 import r48.dbs.ObjectRootHandle;
 import r48.dbs.PathSyntax;
 import r48.io.data.DMKey;
@@ -39,12 +38,15 @@ import org.eclipse.jdt.annotation.Nullable;
  * this makes navigation slightly more user-friendly.
  * Created on 12/29/16.
  */
-public class SchemaPath extends App.Svc {
+public class SchemaPath {
     public final SchemaPath parent;
     public final int windowDepth, depth;
 
-    // Can be null! (A nullable root indicates this isn't directly connected to a branch.)
-    public final @Nullable ObjectRootHandle root;
+    /**
+     * Root handle of the object.
+     * Responsible for managing modification notifications and saving.
+     */
+    public final @NonNull ObjectRootHandle root;
 
     // If editor is null, targetElement must be null, and vice versa.
     // Host may be there or not.
@@ -54,10 +56,6 @@ public class SchemaPath extends App.Svc {
     // Should only ever be set to true by tagSEMonitor.
     // Implies editor and target.
     public boolean monitorsSubelements = false;
-
-    // Should only ever be used by isolated roots such as hashkeys.
-    // Constructor guarantees ensure this.
-    public final Runnable additionalModificationCallback;
 
     // At the root object, this is guaranteed to be null.
     // Otherwise, it should propagate whenever unchanged.
@@ -72,7 +70,6 @@ public class SchemaPath extends App.Svc {
     public final HashMap<String, SchemaElement> contextualSchemas = new HashMap<String, SchemaElement>();
 
     private SchemaPath(@NonNull SchemaPath sp, SchemaElement editor, IRIO targetElement, DMKey lastArrayIndex, String hrIndex) {
-        super(sp.app);
         parent = sp;
         depth = sp.depth + 1;
         windowDepth = parent.windowDepth + (editor != null ? 1 : 0);
@@ -81,45 +78,48 @@ public class SchemaPath extends App.Svc {
         this.targetElement = targetElement;
         this.lastArrayIndex = lastArrayIndex;
         this.hrIndex = hrIndex;
-        additionalModificationCallback = null;
         contextualSchemas.putAll(sp.contextualSchemas);
     }
 
-    public SchemaPath(@NonNull SchemaElement heldElement, @NonNull ObjectRootHandle root) {
-        this(heldElement, root, null);
+    // The basic root constructor.
+    public SchemaPath(@NonNull ObjectRootHandle root) {
+        this(verifyRootHasSchema(root), root);
     }
 
-    // The basic root constructor.
-    public SchemaPath(@NonNull SchemaElement heldElement, @NonNull ObjectRootHandle root, @Nullable Runnable amc) {
-        super(heldElement.app);
+    // The advanced root constructor.
+    public SchemaPath(@NonNull SchemaElement heldElement, @NonNull ObjectRootHandle root) {
+        heldElement = weDoNotTrustOurCallers(heldElement, root);
         parent = null;
         depth = 0;
         windowDepth = 1;
-        additionalModificationCallback = amc;
         this.root = root;
-        String maybeHrIndex = app.odb.getIdByObject(root);
-        hrIndex = maybeHrIndex == null ? "AnonObject" : maybeHrIndex;
+        hrIndex = root.toString();
         editor = heldElement;
         targetElement = root.getObject();
         lastArrayIndex = null;
     }
 
-    // Used for default value setup bootstrapping.
-    private SchemaPath(App app, DMKey lai) {
-        super(app);
-        parent = null;
-        depth = 0;
-        windowDepth = 0;
-        root = null;
-        editor = null;
-        targetElement = null;
-        additionalModificationCallback = null;
-        lastArrayIndex = lai;
-        hrIndex = "AnonObject";
+    private static @NonNull SchemaElement verifyRootHasSchema(@NonNull ObjectRootHandle root) {
+        SchemaElement se = root.rootSchema;
+        if (se == null)
+            throw new NullPointerException("Gah! Creating SchemaPath to " + root + " ; but it has no schema!");
+        return se;
+    }
+    private static @NonNull SchemaElement weDoNotTrustOurCallers(@Nullable SchemaElement he, @NonNull ObjectRootHandle root) {
+        if (he == null) {
+            System.err.println("Gah! Creating SchemaPath to " + root + " with null SchemaElement.");
+            return verifyRootHasSchema(root);
+        }
+        return he;
     }
 
-    public static void setDefaultValue(IRIO target, SchemaElement ise, DMKey arrayIndex) {
-        ise.modifyVal(target, new SchemaPath(ise.app, arrayIndex), true);
+    /**
+     * Sets a default value without (by itself) triggering Schema-level side-effects.
+     * It is best to think of the schema use here as an implementation detail.
+     */
+    public static void setDefaultValue(@NonNull IRIO target, @NonNull SchemaElement ise, @Nullable DMKey arrayIndex) {
+        ObjectRootHandle dvRoot = new ObjectRootHandle.Isolated(ise, target);
+        ise.modifyVal(target, new SchemaPath(ise, dvRoot).arrayHashIndex(arrayIndex, "AnonObject"), true);
     }
 
     public String toString() {
@@ -248,16 +248,9 @@ public class SchemaPath extends App.Svc {
         if (!modifyVal)
             pokeHighestSubwatcherEditor();
 
-        // Now that we've done that...
-        SchemaPath p = findRoot();
-
-        // Used by isolated roots.
-        if (p.additionalModificationCallback != null)
-            p.additionalModificationCallback.run();
-
         // Attempt to set a "changed flag".
         // This will also nudge the observers.
-        p.root.objectRootModified(this);
+        root.objectRootModified(this);
     }
 
     public void pokeHighestSubwatcherEditor() {

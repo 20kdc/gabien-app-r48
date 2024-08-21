@@ -54,7 +54,7 @@ public class UISaveScanMapInfos extends App.Prx {
         for (int i = first; i <= last; i++) {
             final int fi = i;
             try {
-                ObjectRootHandle rio = app.odb.getObject(objectMapping.apply(i), null);
+                ObjectRootHandle rio = app.odb.getObject(objectMapping.apply(i), false);
                 final String gum = gumMapping.apply(i);
                 if (rio != null) {
                     String obj = app.format(rio.getObject());

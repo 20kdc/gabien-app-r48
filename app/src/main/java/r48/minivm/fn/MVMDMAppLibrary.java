@@ -7,6 +7,7 @@
 package r48.minivm.fn;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import datum.DatumSymbol;
 import r48.App;
@@ -29,21 +30,31 @@ public class MVMDMAppLibrary {
         ctx.defineSlot(new DatumSymbol("dm-fmt"), new DMFmt(app))
             .help("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. If the passed-in object is null (say, due to a PathSyntax failure) returns the empty string. Important: Because of schemas and stuff this doesn't exist in the static translation context. PREFIXENUMS can be #f, #t or #nil (default).");
 
-        ctx.defLib("odb-open-for-modify", MVMType.ANY, MVMType.STR, MVMType.Fn.simple(MVMType.ANY, MVMEnvR48.IRIO_TYPE), (text, fn) -> {
+        ctx.defLib("root-modify", MVMType.ANY, MVMType.ANY, MVMType.Fn.simple(MVMType.ANY, MVMEnvR48.IRIO_TYPE), (text, fn) -> {
             MVMFn fn2 = (MVMFn) fn;
-            ObjectInfo oi = assertObjectInfo(app, text);
-            SchemaPath sp = oi.makePath(true);
+            ObjectRootHandle lo = assertObjectRoot(app, text, true);
+            if (lo == null)
+                throw new RuntimeException("Root lookup failed: " + text);
+            SchemaPath sp = new SchemaPath(app.sdb.getSDBEntry("OPAQUE"), lo);
             Object res = fn2.callDirect(sp.targetElement);
             sp.changeOccurred(false);
             return res;
-        }, "(odb-open-for-modify OID RECEIVER): Opens an object to modify. Object MUST be registered in object infos table or an error will be thrown. Modification will be signalled at end of handler; please don't modify outside of that.");
-        ctx.defLib("odb-get", MVMEnvR48.RORIO_TYPE, MVMType.STR, (text) -> {
-            ObjectInfo oi = assertObjectInfo(app, text);
-            ObjectRootHandle ilo = oi.getILO(false);
-            if (ilo == null)
+        }, "(root-modify OID RECEIVER): Opens an object to modify. OID must be a root or (odb-get OID #t) is implicitly run. Modification will be signalled at end of handler; please don't modify outside of that. Throws on failure.");
+        ctx.defLib("root-read", MVMEnvR48.RORIO_TYPE, MVMType.ANY, (text) -> {
+            ObjectRootHandle lo = assertObjectRoot(app, text, false);
+            if (lo == null)
                 return null;
-            return ilo.getObject();
-        }, "(odb-get OID): Gets an object's root RORIO. Object MUST be registered in object infos table or an error will be thrown.");
+            return lo.getObject();
+        }, "(root-read OID): Gets an object's root RORIO. OID must be a root or (odb-get OID #f) is implicitly run. Returns #nil on missing objects; otherwise throws on failure.");
+        ctx.defLib("odb-get", MVMEnvR48.ROOT_TYPE, MVMType.ANY, MVMType.BOOL, (text, create) -> {
+            return assertObjectRoot(app, text, (Boolean) create);
+        }, "(odb-get OID CREATE): Gets an object root handle. OID must either be a root, or a string. If a string, object MUST be registered in object infos table or an error will be thrown. Returns #nil if the object doesn't exist, can't be created, but 'should' exist.");
+    }
+
+    public static @Nullable ObjectRootHandle assertObjectRoot(App app, Object input, boolean create) {
+        if (input instanceof ObjectRootHandle)
+            return (ObjectRootHandle) input;
+        return assertObjectInfo(app, input).getILO(create);
     }
 
     public static @NonNull ObjectInfo assertObjectInfo(App app, Object text) {

@@ -444,8 +444,8 @@ public class AppUI extends App.Svc {
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
-    public ISchemaHost launchSchema(String s, @NonNull ObjectRootHandle rio, @Nullable UIMapView context) {
-        return launchSchema(app.sdb.getSDBEntry(s), rio, context);
+    public ISchemaHost launchSchema(@NonNull ObjectRootHandle rio, @Nullable UIMapView context) {
+        return launchSchema(rio.rootSchema, rio, context);
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
@@ -456,14 +456,14 @@ public class AppUI extends App.Svc {
         return watcher;
     }
 
-    public ISchemaHost launchNonRootSchema(@NonNull ObjectRootHandle root, String rootSchema, DMKey arrayIndex, IRIO element, String elementSchema, String indexText, UIMapView context) {
-        return launchNonRootSchema(root, app.sdb.getSDBEntry(rootSchema), arrayIndex, element, app.sdb.getSDBEntry(elementSchema), indexText, context);
-    }
-
-    public ISchemaHost launchNonRootSchema(@NonNull ObjectRootHandle root, SchemaElement rootSchema, DMKey arrayIndex, IRIO element, SchemaElement elementSchema, String indexText, UIMapView context) {
+    /**
+     * Launches a disconnected schema pointing at a target object.
+     * Try to only use this when absolutely necessary.
+     */
+    public ISchemaHost launchDisconnectedSchema(@NonNull ObjectRootHandle root, DMKey arrayIndex, IRIO element, SchemaElement elementSchema, String indexText, UIMapView context) {
         // produce a valid (and false) parent chain, that handles all required guarantees.
-        ISchemaHost shi = launchSchema(rootSchema, root, context);
-        SchemaPath sp = new SchemaPath(rootSchema, root);
+        ISchemaHost shi = launchSchema(root, context);
+        SchemaPath sp = new SchemaPath(root);
         sp = sp.arrayHashIndex(arrayIndex, indexText);
         shi.pushObject(sp.newWindow(elementSchema, element));
         return shi;
@@ -473,16 +473,8 @@ public class AppUI extends App.Svc {
      * Launches a schema by starting with a root/path pair.
      * Or tries, anyway.
      */
-    public @Nullable ISchemaHost launchSchemaTrace(String s, @NonNull ObjectRootHandle root, @Nullable UIMapView context, @Nullable PathSyntax goal) {
-        return launchSchemaTrace(app.sdb.getSDBEntry(s), root, context, goal);
-    }
-
-    /**
-     * Launches a schema by starting with a root/path pair.
-     * Or tries, anyway.
-     */
-    public @Nullable ISchemaHost launchSchemaTrace(SchemaElement s, @NonNull ObjectRootHandle root, @Nullable UIMapView context, @Nullable PathSyntax goal) {
-        SchemaPath pathRoot = new SchemaPath(s, root);
+    public @Nullable ISchemaHost launchSchemaTrace(@NonNull ObjectRootHandle root, @Nullable UIMapView context, @Nullable PathSyntax goal) {
+        SchemaPath pathRoot = new SchemaPath(root);
         SchemaPath res = pathRoot.tracePathRoute(goal);
         if (res == null) {
             launchDialog(T.u.schemaTraceFailure);

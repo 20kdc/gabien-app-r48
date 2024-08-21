@@ -18,13 +18,13 @@ import datum.DatumReaderTokenSource;
 import datum.DatumSrcLoc;
 import r48.App;
 import r48.dbs.ObjectInfo;
+import r48.dbs.ObjectRootHandle;
 import r48.dbs.IDatabase;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
 import r48.io.data.DMContext;
 import r48.io.data.IDM3Data;
 import r48.io.data.DMChangeTracker;
-import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -110,9 +110,11 @@ public class LocalTestExecutiveTest {
             System.out.print(s);
 
             // 'objectUnderTest' is the reference copy. DO NOT ALTER IT UNTIL THE END.
-            IObjectBackend.ILoadedObject objectUnderTest = app.odb.getObject(s, null);
+            ObjectRootHandle objectUnderTest = app.odb.getObject(s, false);
             if (objectUnderTest == null)
                 throw new RuntimeException("Object get failure: " + s);
+            if (objectUnderTest.rootSchema == null)
+                throw new RuntimeException("Object schema failure: " + s);
 
             DMContext tests = new DMContext(DMChangeTracker.Null.TESTS, app.encoding);
             // Create an internal copy, autocorrect it, save it, and then get rid of it.
@@ -131,9 +133,11 @@ public class LocalTestExecutiveTest {
                         states.add(modifiedData.saveState());
                     }
                 }, app.encoding);
-                IObjectBackend.ILoadedObject objectInternalCopy;
+                ObjectRootHandle objectInternalCopy;
+                IObjectBackend.ILoadedObject objectInternalCopyILO;
                 try (Block license = monitor.changes.openUnpackLicense()) {
-                    objectInternalCopy = app.odb.backend.newObject(s, monitor);
+                    objectInternalCopyILO = app.odb.backend.newObject(s, monitor);
+                    objectInternalCopy = new ObjectRootHandle.Isolated(objectUnderTest.rootSchema, objectInternalCopyILO.getObject());
                 }
 
                 // should trigger lots of savestates which will help debug if there are any exceptions lurking
@@ -141,13 +145,13 @@ public class LocalTestExecutiveTest {
                 int firstStates = states.size();
                 System.out.println(" " + firstStates + " savestates");
 
-                SchemaElement wse = findSchemaFor(app, s, objectUnderTest.getObject());
-                app.odb.registerModificationHandler(objectInternalCopy, (schemaPath) -> {
+                SchemaElement wse = objectUnderTest.rootSchema;
+                objectInternalCopy.registerModificationHandler((schemaPath) -> {
                     throw new RuntimeException("A modification occurred on LTE data. This shouldn't happen: " + schemaPath.toString());
                 });
                 wse.modifyVal(objectInternalCopy.getObject(), new SchemaPath(wse, objectInternalCopy), false);
 
-                objectInternalCopy.save();
+                objectInternalCopyILO.save();
 
                 // now test the states
                 for (Runnable r : states) {
@@ -175,13 +179,4 @@ public class LocalTestExecutiveTest {
             throw new RuntimeException(e);
         }
     }
-
-    private SchemaElement findSchemaFor(App app, String s, IRIO object) {
-        if (app.sdb.hasSDBEntry("File." + s))
-            return app.sdb.getSDBEntry("File." + s);
-        if (object.getType() == 'o')
-            return app.sdb.getSDBEntry(object.getSymbol());
-        throw new RuntimeException("Unable to find schema for tested object " + s + ". Add hard-coded test setup.");
-    }
-
 }

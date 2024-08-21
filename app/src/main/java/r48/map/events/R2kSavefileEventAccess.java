@@ -99,7 +99,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
 
     private IRIO getMap() {
         int mapId = (int) saveFileRoot.getObject().getIVar("@party_pos").getIVar("@map").getFX();
-        ObjectRootHandle ilo = app.odb.getObject(R2kRMLikeMapInfoBackend.sNameFromInt(mapId), null);
+        ObjectRootHandle ilo = app.odb.getObject(R2kRMLikeMapInfoBackend.sNameFromInt(mapId), false);
         if (ilo == null)
             return null;
         return ilo.getObject();

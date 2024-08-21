@@ -36,7 +36,6 @@ import r48.toolsets.utils.RMTranscriptDumper;
 
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -49,6 +48,13 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 new GabienImageLoader(app, ".png"),
                 new GabienImageLoader(app, ".jpg"),
         }))), true);
+    }
+
+    @Override
+    protected String mapObjectIDToSchemaID(String objectID) {
+        if (objectID.startsWith("Map"))
+            return "RPG::Map";
+        return super.mapObjectIDToSchemaID(objectID);
     }
 
     protected static IRIO tsoById(App app, long id) {
@@ -147,13 +153,12 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public MapViewDetails mapViewRequest(final String gum, boolean allowCreate) {
-        if (!allowCreate)
-            if (app.odb.getObject(gum, null) == null)
-                return null;
-        final ObjectRootHandle map = app.odb.getObject(gum, "RPG::Map");
-        final IEventAccess events = new TraditionalEventAccess(app, gum, "RPG::Map", "@events", 1, "RPG::Event");
+        final ObjectRootHandle map = app.odb.getObject(gum, allowCreate);
+        if (map == null)
+            return null;
+        final IEventAccess events = new TraditionalEventAccess(app, gum, "@events", 1, "RPG::Event");
         final TSOAwareTileRenderer tileRenderer = createTileRenderer();
-        return new MapViewDetails(app, gum, "RPG::Map") {
+        return new MapViewDetails(app, gum, map) {
             @Override
             public MapViewState rebuild(String changed) {
                 long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
@@ -181,16 +186,13 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         IRIO mi = app.odb.getObject("MapInfos").getObject();
         for (final DMKey rio : mi.getHashKeys()) {
             int id = (int) rio.getFX();
-            RMMapData rmd = new RMMapData(app, new Supplier<String>() {
-                @Override
-                public String get() {
-                    IRIO miLocal = app.odb.getObject("MapInfos").getObject();
-                    IRIO mapInfo = miLocal.getHashVal(rio);
-                    if (mapInfo == null)
-                        return T.m.mapMissing2k3;
-                    return mapInfo.getIVar("@name").decString();
-                }
-            }, id, RXPRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
+            RMMapData rmd = new RMMapData(app, () -> {
+                IRIO miLocal = app.odb.getObject("MapInfos").getObject();
+                IRIO mapInfo = miLocal.getHashVal(rio);
+                if (mapInfo == null)
+                    return T.m.mapMissing2k3;
+                return mapInfo.getIVar("@name").decString();
+            }, id, RXPRMLikeMapInfoBackend.sNameFromInt(id));
             rmdList.add(rmd);
         }
         Collections.sort(rmdList, RMMapData.COMPARATOR);

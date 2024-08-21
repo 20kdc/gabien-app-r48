@@ -352,7 +352,7 @@ public class UIMapView extends UIPlaneView {
     // Used by tools, after they're done doing whatever.
     // Basically a convenience method.
     public void passModificationNotification() {
-        map.object.objectRootModified(new SchemaPath(app.sdb.getSDBEntry(map.objectSchema), map.object));
+        map.object.objectRootModified(new SchemaPath(map.objectSchema, map.object));
     }
 
     @Override

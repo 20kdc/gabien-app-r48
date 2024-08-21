@@ -34,18 +34,18 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     private final String eventsName, eventName;
     private final PathSyntax propPathX, propPathY, propPathName, eventsPath;
 
-    public TraditionalEventAccess(App app, String mapRootId, String baseSchema, String path, int b, String schema) {
-        this(app, mapRootId, baseSchema, path, b, schema, "@x", "@y", "@name");
+    public TraditionalEventAccess(App app, String mapRootId, String path, int b, String schema) {
+        this(app, mapRootId, path, b, schema, "@x", "@y", "@name");
     }
 
-    public TraditionalEventAccess(App app, String mapRootId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName) {
-        this(app, mapRootId, baseSchema, path, b, schema, pathX, pathY, pathName, app.t.m.events, app.t.m.addEvent);
+    public TraditionalEventAccess(App app, String mapRootId, String path, int b, String schema, String pathX, String pathY, String pathName) {
+        this(app, mapRootId, path, b, schema, pathX, pathY, pathName, app.t.m.events, app.t.m.addEvent);
     }
 
-    public TraditionalEventAccess(App app, String mapRootId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName, String en, String en2) {
+    public TraditionalEventAccess(App app, String mapRootId, String path, int b, String schema, String pathX, String pathY, String pathName, String en, String en2) {
         super(app);
-        mapRootSchema = app.sdb.getSDBEntry(baseSchema);
-        mapRoot = app.odb.getObject(mapRootId, baseSchema);
+        mapRoot = app.odb.getObject(mapRootId);
+        mapRootSchema = mapRoot.rootSchema;
         eventsPath = PathSyntax.compile(app, path);
         eventIdBase = b;
         eventSchema = app.sdb.getSDBEntry(schema);
@@ -96,7 +96,7 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
             // we don't trust this value at all, hold in an intermediary and bash it around a bit
             IRIOGeneric ig = new IRIOGeneric(app.ctxDisposableAppEncoding);
             ig.setDeepClone(eve);
-            new SchemaPath(eventSchema, new ObjectRootHandle.Isolated(ig)).changeOccurred(false);
+            new SchemaPath(eventSchema, new ObjectRootHandle.Isolated(eventSchema, ig)).changeOccurred(false);
             // now we're sure it's safe...
             eveTarget.setDeepClone(ig);
             // and just to be sure

@@ -22,6 +22,7 @@ import gabien.GaBIEn;
 import gabienapp.Application;
 import r48.app.Coco;
 import r48.dbs.DatumLoader;
+import r48.dbs.ObjectRootHandle;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -36,6 +37,7 @@ import r48.tr.NLSTr;
  * Include/loadProgress split from MiniVM core 1st March 2023.
  */
 public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
+    public static final MVMType ROOT_TYPE = MVMType.typeOfClass(ObjectRootHandle.class);
     public static final MVMType IRIO_TYPE = MVMType.typeOfClass(IRIO.class);
     public static final MVMType RORIO_TYPE = MVMType.typeOfClass(RORIO.class);
     public static final MVMType PATHSYNTAX_TYPE = MVMType.typeOfClass(PathSyntax.class);
@@ -49,8 +51,10 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
 
     public MVMEnvR48(Consumer<String> loadProgress, Consumer<String> logTrIssues, String lid, boolean strict) {
         super();
+        defineType(new DatumSymbol("root"), ROOT_TYPE);
         defineType(new DatumSymbol("rorio"), RORIO_TYPE);
         defineType(new DatumSymbol("irio"), IRIO_TYPE);
+        defineType(new DatumSymbol("path-syntax"), PATHSYNTAX_TYPE);
         this.loadProgress = loadProgress;
         this.logTrIssues = logTrIssues;
         dynMap = new HashMap<>();

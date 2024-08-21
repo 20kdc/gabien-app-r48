@@ -39,7 +39,7 @@ public class MVMAppUILibrary {
             ObjectRootHandle ilo = oi.getILO(true);
             if (ilo == null)
                 throw new RuntimeException("Unable to create " + text);
-            return app.ui.launchSchemaTrace(oi.schema, ilo, null, (PathSyntax) path);
+            return app.ui.launchSchemaTrace(ilo, null, (PathSyntax) path);
         }, "(ui-view OID PATH): Opens a view to the given path of the given object. R48 will 'auto-route' to make this path work. The object must be in the objects info table or an error occurs. Object will be created if necessary. Returned value is the schema host handle (target may not exactly match what you wanted!).");
     }
 }

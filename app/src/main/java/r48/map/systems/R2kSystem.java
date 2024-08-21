@@ -98,6 +98,18 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         return "Save" + padme + ".lsd";
     }
 
+    @Override
+    protected String mapObjectIDToSchemaID(String objectID) {
+        if (objectID.endsWith(".lmt"))
+            return "RPG::MapTree";
+        if (objectID.endsWith(".lmu"))
+            return "RPG::Map";
+        if (objectID.endsWith(".ldb"))
+            return "RPG::Database";
+        if (objectID.endsWith(".lsd"))
+            return "RPG::Save";
+        return super.mapObjectIDToSchemaID(objectID);
+    }
 
     private @Nullable IRIO tsoById(long id) {
         return app.odb.getObject("RPG_RT.ldb").getObject().getIVar("@tilesets").getHashVal(DMKey.of(id));
@@ -186,7 +198,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 if (mapInfo == null)
                     return T.m.mapMissing2k3;
                 return mapInfo.getIVar("@name").decString();
-            }, id, R2kRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
+            }, id, R2kRMLikeMapInfoBackend.sNameFromInt(id));
             rmdList.add(rmd);
         }
         return rmdList.toArray(new RMMapData[0]);
@@ -230,12 +242,11 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         final int v = Integer.parseInt(gp[1]);
         if (gp[0].equals("Save")) {
             final String obj = getSaveName(v);
-            if (!allowCreate)
-                if (app.odb.getObject(obj, null) == null)
-                    return null;
-            final ObjectRootHandle root = app.odb.getObject(obj, "RPG::Save");
+            final ObjectRootHandle root = app.odb.getObject(obj, allowCreate);
+            if (root == null)
+                return null;
             final LcfTileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader); 
-            return new MapViewDetails(app, obj, "RPG::Save") {
+            return new MapViewDetails(app, obj, root) {
                 @Override
                 public MapViewState rebuild(String changed) {
                     int mapId = (int) root.getObject().getIVar("@party_pos").getIVar("@map").getFX();
@@ -282,7 +293,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 MapViewDetails mvd = mapViewRequest("Map." + parent, false);
                 if (mvd == null)
                     return null;
-                return new MapViewDetails(app, mvd.objectId, mvd.objectSchema) {
+                return new MapViewDetails(app, mvd.objectId, mvd.object) {
                     @Override
                     public MapViewState rebuild(String changed) {
                         return mvd.rebuild(changed);
@@ -299,13 +310,12 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             throw new RuntimeException(soe);
         }
         final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(v);
-        if (!allowCreate)
-            if (app.odb.getObject(objn, null) == null)
-                return null;
-        final ObjectRootHandle map = app.odb.getObject(objn, "RPG::Map");
-        final IEventAccess iea = new TraditionalEventAccess(app, objn, "RPG::Map", "@events", 1, "RPG::Event");
+        final ObjectRootHandle map = app.odb.getObject(objn, allowCreate);
+        if (map == null)
+            return null;
+        final IEventAccess iea = new TraditionalEventAccess(app, objn, "@events", 1, "RPG::Event");
         final LcfTileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader);
-        return new MapViewDetails(app, objn, "RPG::Map") {
+        return new MapViewDetails(app, objn, map) {
             @Override
             public MapViewState rebuild(String changed) {
                 long currentTsId = map.getObject().getIVar("@tileset_id").getFX();

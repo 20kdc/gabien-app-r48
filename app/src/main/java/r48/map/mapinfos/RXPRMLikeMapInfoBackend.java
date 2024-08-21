@@ -9,6 +9,7 @@ package r48.map.mapinfos;
 
 import r48.App;
 import r48.dbs.ObjectRootHandle;
+import r48.dbs.PathSyntax;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
@@ -82,7 +83,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
 
     @Override
     public void triggerEditInfoOf(long k) {
-        app.ui.launchNonRootSchema(mapInfos, "File.MapInfos", DMKey.of(k), getHashBID(k), "RPG::MapInfo", "M" + k, null);
+        app.ui.launchSchemaTrace(mapInfos, null, PathSyntax.compile(app, "").withHash(DMKey.of(k), "M" + k));
     }
 
     @Override

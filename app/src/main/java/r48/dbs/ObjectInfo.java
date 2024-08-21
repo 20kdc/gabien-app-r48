@@ -22,21 +22,16 @@ public class ObjectInfo extends AppCore.Csv {
      * Object ID
      */
     public final @NonNull String idName;
-    /**
-     * Object Schema
-     */
-    public final @NonNull String schemaName;
 
     /**
      * Object Schema
      */
     public final @Nullable SchemaElement schema;
 
-    public ObjectInfo(@NonNull AppCore app, @NonNull String iN, @NonNull String sN) {
+    public ObjectInfo(@NonNull AppCore app, @NonNull String iN) {
         super(app);
         idName = iN;
-        schemaName = sN;
-        schema = app.sdb.hasSDBEntry(sN) ? app.sdb.getSDBEntry(sN) : null;
+        schema = app.system.mapObjectIDToSchema(iN);
     }
 
     /**
@@ -49,7 +44,7 @@ public class ObjectInfo extends AppCore.Csv {
     }
 
     public @Nullable ObjectRootHandle getILO(boolean create) {
-        return app.odb.getObject(idName, create ? schemaName : null);
+        return app.odb.getObject(idName, create);
     }
 
     public @Nullable SchemaPath makePath(boolean create) {

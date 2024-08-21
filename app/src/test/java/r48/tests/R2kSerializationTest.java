@@ -32,15 +32,15 @@ public class R2kSerializationTest {
                 "you.lsd",
         };
         // Save it, but skip past most of ObjectDB since it will not be queried in future & it uses UI on failure.
-        app.odb.getObject("hello.lmu", "RPG::Map").ensureSaved();
-        app.odb.getObject("world.ldb", "RPG::Database").ensureSaved();
-        app.odb.getObject("and.lmt", "RPG::MapTree").ensureSaved();
-        app.odb.getObject("you.lsd", "RPG::Save").ensureSaved();
+        app.odb.getObject("hello.lmu", true).ensureSaved();
+        app.odb.getObject("world.ldb", true).ensureSaved();
+        app.odb.getObject("and.lmt", true).ensureSaved();
+        app.odb.getObject("you.lsd", true).ensureSaved();
         // Kills off the old ObjectDB
         kick.resetODB(app);
 
         for (String s : fileDefs) {
-            ObjectRootHandle i = app.odb.getObject(s, null);
+            ObjectRootHandle i = app.odb.getObject(s, false);
             Assert.assertNotNull(i);
         }
     }

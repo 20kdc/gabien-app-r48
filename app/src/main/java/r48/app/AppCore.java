@@ -27,7 +27,6 @@ import r48.imageio.ImageIOFormat;
 import r48.io.IObjectBackend;
 import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
-import r48.schema.SchemaElement;
 import r48.tr.pages.TrRoot;
 import r48.ui.Art;
 
@@ -136,17 +135,6 @@ public abstract class AppCore {
         for (ObjectInfo oi : getObjectInfos())
             if (oi.idName.equals(text))
                 return oi;
-        return null;
-    }
-
-    /**
-     * Attempts to infer the schema element for a root object.
-     * Can fail, even for perfectly valid objects.
-     */
-    public @Nullable SchemaElement inferSchemaElementForRoot(String oid) {
-        for (ObjectInfo oi : getObjectInfos())
-            if (oi.idName.equals(oid))
-                return oi.schema;
         return null;
     }
 
