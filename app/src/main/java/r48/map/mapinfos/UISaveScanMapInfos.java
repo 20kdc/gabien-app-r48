@@ -18,7 +18,7 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.IMapContext;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.ui.UIAppendButton;
 
 /**
@@ -54,7 +54,7 @@ public class UISaveScanMapInfos extends App.Prx {
         for (int i = first; i <= last; i++) {
             final int fi = i;
             try {
-                IObjectBackend.ILoadedObject rio = app.odb.getObject(objectMapping.apply(i), null);
+                ObjectRootHandle rio = app.odb.getObject(objectMapping.apply(i), null);
                 final String gum = gumMapping.apply(i);
                 if (rio != null) {
                     String obj = app.format(rio.getObject());

@@ -13,7 +13,7 @@ import java.io.OutputStream;
 import gabien.GaBIEn;
 import gabien.uslx.vfs.FSBackend;
 import r48.App;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement;
 import r48.schema.util.SchemaPath;
@@ -117,9 +117,9 @@ public class AppNewProject extends App.Svc {
         }, new Runnable[] {
                 deploy2k,
                 () -> {
-                    IObjectBackend.ILoadedObject root = app.odb.getObject("RPG_RT.ldb");
+                    ObjectRootHandle root = app.odb.getObject("RPG_RT.ldb");
                     R2kSystemDefaultsInstallerSchemaElement.upgradeDatabase(root.getObject());
-                    app.odb.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(app), root));
+                    root.objectRootModified(new SchemaPath(new OpaqueSchemaElement(app), root));
                     deploy2k.run();
                 }, () -> {
                 }

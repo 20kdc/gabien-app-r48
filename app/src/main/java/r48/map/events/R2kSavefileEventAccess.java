@@ -8,7 +8,7 @@
 package r48.map.events;
 
 import r48.App;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -34,14 +34,14 @@ import static r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement.get
  *  because the ghosts & map events getting merged by the game has similar results to what happens here.
  */
 public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
-    public final IObjectBackend.ILoadedObject saveFileRoot;
+    public final ObjectRootHandle saveFileRoot;
     public final SchemaElement saveFileRootSchema;
 
     // This only contains the living.
     // The ghosts are added dynamically by getEventKeys & getEvent
     public final HashMap<DMKey, IRIO> eventsHash = new HashMap<>();
 
-    public R2kSavefileEventAccess(App app, String rootId, IObjectBackend.ILoadedObject root, String rootSchema) {
+    public R2kSavefileEventAccess(App app, String rootId, ObjectRootHandle root, String rootSchema) {
         super(app);
         saveFileRoot = root;
         saveFileRootSchema = app.sdb.getSDBEntry(rootSchema);
@@ -99,7 +99,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
 
     private IRIO getMap() {
         int mapId = (int) saveFileRoot.getObject().getIVar("@party_pos").getIVar("@map").getFX();
-        IObjectBackend.ILoadedObject ilo = app.odb.getObject(R2kRMLikeMapInfoBackend.sNameFromInt(mapId), null);
+        ObjectRootHandle ilo = app.odb.getObject(R2kRMLikeMapInfoBackend.sNameFromInt(mapId), null);
         if (ilo == null)
             return null;
         return ilo.getObject();
@@ -280,6 +280,6 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     public void pokeHive() {
-        app.odb.objectRootModified(saveFileRoot, new SchemaPath(saveFileRootSchema, saveFileRoot));
+        saveFileRoot.objectRootModified(new SchemaPath(saveFileRootSchema, saveFileRoot));
     }
 }

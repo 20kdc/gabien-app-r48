@@ -19,7 +19,7 @@ import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.dbs.CMDB;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
@@ -132,7 +132,7 @@ public class UITranscriptControl extends App.Prx {
 
         @Override
         public void dump(RMTranscriptDumper dumper) {
-            IObjectBackend.ILoadedObject map = rmd.getILO(false);
+            ObjectRootHandle map = rmd.getILO(false);
             if (map == null)
                 return;
             dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), RMTranscriptDumper.escapeHtml(whatDoWeCallThis));

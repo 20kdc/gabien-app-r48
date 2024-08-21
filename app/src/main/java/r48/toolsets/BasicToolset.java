@@ -20,9 +20,9 @@ import gabien.ui.layouts.UISplitterLayout;
 import r48.*;
 import r48.app.AppMain;
 import r48.dbs.ObjectInfo;
+import r48.dbs.ObjectRootHandle;
 import r48.dbs.PathSyntax;
 import r48.io.IMIUtils;
-import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
@@ -48,7 +48,6 @@ import r48.ui.spacing.UIBorderedSubpanel;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -138,7 +137,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         }, new Runnable[] {
                 () -> {
                     app.ui.launchPrompt(T.u.prObjectName, (s) -> {
-                        final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
+                        final ObjectRootHandle rio = app.odb.getObject(s);
                         SchemaElement guess = app.inferSchemaElementForRoot(s);
                         if (guess != null) {
                             app.ui.launchSchema(guess, rio, null);
@@ -155,7 +154,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 },
                 () -> {
                     app.ui.launchPrompt(T.u.prObjectName, (s) -> {
-                        final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
+                        final ObjectRootHandle rio = app.odb.getObject(s);
                         app.ui.launchPrompt(T.u.prSchemaID, (sid) -> {
                             SchemaElement ise = app.sdb.getSDBEntry(sid);
                             ise.modifyVal(rio.getObject(), new SchemaPath(ise, rio), false);
@@ -165,7 +164,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 },
                 () -> {
                     app.ui.launchPrompt(T.u.prObjectName, (s) -> {
-                        IObjectBackend.ILoadedObject obj = app.odb.getObject(s);
+                        ObjectRootHandle obj = app.odb.getObject(s);
                         if (obj == null) {
                             app.ui.launchDialog(T.u.dFileUnreadable);
                         } else {
@@ -175,9 +174,9 @@ public class BasicToolset extends App.Svc implements IToolset {
                 },
                 () -> {
                     app.ui.launchPrompt(T.u.prObjectSrc, (sA) -> {
-                        final IObjectBackend.ILoadedObject objA = app.odb.getObject(sA);
+                        final ObjectRootHandle objA = app.odb.getObject(sA);
                         app.ui.launchPrompt(T.u.prObjectDst, (sB) -> {
-                            final IObjectBackend.ILoadedObject objB = app.odb.getObject(sB);
+                            final ObjectRootHandle objB = app.odb.getObject(sB);
                             if ((objA == null) || (objB == null)) {
                                 app.ui.launchDialog(T.u.dFileUnreadable);
                             } else {
@@ -207,7 +206,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         final DataOutputStream dos = new DataOutputStream(lm);
                         final HashSet<String> text = new HashSet<>();
                         for (String s : app.getAllObjects()) {
-                            IObjectBackend.ILoadedObject obj = app.odb.getObject(s, null);
+                            ObjectRootHandle obj = app.odb.getObject(s, null);
                             if (obj != null) {
                                 locateStrings(app, obj.getObject(), (rubyIO) -> {
                                     text.add(rubyIO.decString());
@@ -234,7 +233,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 },
                 () -> {
                     app.ui.launchPrompt(T.u.prObjectName, (s) -> {
-                        final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
+                        final ObjectRootHandle rio = app.odb.getObject(s);
                         final InputStream is = GaBIEn.getInFile(UITest.getPrintPath(app));
                         if (rio == null) {
                             app.ui.launchDialog(T.u.dFileUnreadableNoSchema);
@@ -244,7 +243,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                             try {
                                 IRIO irio = rio.getObject();
                                 IMIUtils.runIMISegment(is, irio);
-                                app.odb.objectRootModified(rio, new SchemaPath(new OpaqueSchemaElement(app), rio));
+                                rio.objectRootModified(new SchemaPath(new OpaqueSchemaElement(app), rio));
                                 app.ui.launchDialog(T.u.done);
                             } catch (Exception ioe) {
                                 try {
@@ -259,7 +258,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 },
                 () -> {
                     IRIOGeneric tmp = new IRIOGeneric(app.ctxWorkspaceAppEncoding);
-                    final IObjectBackend.ILoadedObject rio = new IObjectBackend.MockLoadedObject(tmp);
+                    final ObjectRootHandle rio = new ObjectRootHandle.Isolated(tmp);
                     app.ui.launchPrompt(T.u.prSchemaID, (s) -> {
                         SchemaElement se = app.sdb.getSDBEntry(s);
                         SchemaPath.setDefaultValue(tmp, se, DMKey.NULL);
@@ -268,7 +267,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 },
                 () -> {
                     app.ui.launchPrompt(T.u.prObjectName, (s) -> {
-                        final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
+                        final ObjectRootHandle rio = app.odb.getObject(s);
                         SchemaElement guess = app.inferSchemaElementForRoot(s);
                         if (rio != null && guess != null) {
                             app.ui.launchPrompt(T.u.mSchemaTrace, (path) -> {
@@ -452,7 +451,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     if (app.theClipboard == null) {
                         app.ui.launchDialog(T.u.dlgClipEmpty);
                     } else {
-                        app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard, new IObjectBackend.MockLoadedObject((IRIO) app.theClipboard)));
+                        app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard, new ObjectRootHandle.Isolated((IRIO) app.theClipboard)));
                     }
                 }
         }, app.f.statusBarTH);

@@ -8,8 +8,8 @@ package r48.minivm.fn;
 
 import r48.App;
 import r48.dbs.ObjectInfo;
+import r48.dbs.ObjectRootHandle;
 import r48.dbs.PathSyntax;
-import r48.io.IObjectBackend;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMType;
@@ -36,7 +36,7 @@ public class MVMAppUILibrary {
 
         ctx.defLib("ui-view", MVMType.ANY, MVMType.STR, MVMEnvR48.PATHSYNTAX_TYPE, (text, path) -> {
             ObjectInfo oi = MVMDMAppLibrary.assertObjectInfo(app, text);
-            IObjectBackend.ILoadedObject ilo = oi.getILO(true);
+            ObjectRootHandle ilo = oi.getILO(true);
             if (ilo == null)
                 throw new RuntimeException("Unable to create " + text);
             return app.ui.launchSchemaTrace(oi.schema, ilo, null, (PathSyntax) path);

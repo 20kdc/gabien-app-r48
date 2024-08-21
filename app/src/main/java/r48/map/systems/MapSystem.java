@@ -21,9 +21,9 @@ import r48.App;
 import r48.IMapContext;
 import r48.ITileAccess;
 import r48.RubyTable;
+import r48.dbs.ObjectRootHandle;
 import r48.dbs.ObjectInfo;
 import r48.dbs.PathSyntax;
-import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
@@ -332,7 +332,7 @@ public abstract class MapSystem extends App.Svc {
         // NOTE: The main modification listener gets inserted on this root,
         //        and changes to the map cause this root to be modified.
         // Additional modification listeners are inserted on a per-State basis.
-        public final IObjectBackend.ILoadedObject object;
+        public final ObjectRootHandle object;
 
         public MapViewDetails(App app, String o, String os) {
             objectId = o;

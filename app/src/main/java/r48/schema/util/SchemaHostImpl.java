@@ -30,7 +30,7 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * Created on 12/29/16.
  */
-public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDuplicatableWindow {
+public class SchemaHostImpl extends SchemaHostBase implements IDuplicatableWindow {
     private UIElement innerElemEditor;
 
     private final Stack<SchemaPath> backStack = new Stack<SchemaPath>();
@@ -65,7 +65,7 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDupl
                 SchemaPath root = innerElem.findRoot();
                 // perform a final verification of the file, just in case? (NOPE: Causes long save times on, say, LDBs)
                 // root.editor.modifyVal(root.targetElement, root, false);
-                app.odb.ensureSaved(root.hrIndex, root.root);
+                root.root.ensureSaved();
             }),
             new UIPopupMenu.Entry(T.u.shInspect, () -> {
                 app.ui.wm.createWindow(new UITest(app, innerElem.targetElement, innerElem.root));
@@ -116,7 +116,7 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDupl
 
     private void switchObject(SchemaPath nextObject) {
         if (innerElem != null)
-            app.odb.deregisterModificationHandler(innerElem.root, nudgeRunnable);
+            innerElem.root.deregisterModificationHandler(nudgeRunnable);
         while (nextObject.editor == null)
             nextObject = nextObject.parent;
         boolean doLaunch = false;
@@ -127,7 +127,7 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDupl
 
         innerElem = nextObject;
         innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
-        app.odb.registerModificationHandler(innerElem.root, nudgeRunnable);
+        innerElem.root.registerModificationHandler(nudgeRunnable);
 
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
@@ -206,7 +206,7 @@ public class SchemaHostImpl extends SchemaHostBase implements ISchemaHost, IDupl
         windowOpen = false;
         stayClosed = true;
         if (innerElem != null) {
-            app.odb.deregisterModificationHandler(innerElem.findRoot().root, nudgeRunnable);
+            innerElem.findRoot().root.deregisterModificationHandler(nudgeRunnable);
             replaceValidity(); // We're not seeing modifications, so don't check validity.
             innerElem = null;
             innerElemEditor = null;

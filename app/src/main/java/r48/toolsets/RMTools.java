@@ -14,7 +14,7 @@ import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.ObjectInfo;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.systems.IRMMapSystem;
@@ -73,7 +73,7 @@ public class RMTools extends App.Svc {
                 }
                 for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
                     // Find event!
-                    IObjectBackend.ILoadedObject ilo = rmd.getILO(false);
+                    ObjectRootHandle ilo = rmd.getILO(false);
                     if (ilo == null)
                         continue;
                     IRIO mapEvObj = ilo.getObject().getIVar("@events");
@@ -110,12 +110,12 @@ public class RMTools extends App.Svc {
             ICommandClassifier.Instance ccc = CompoundCommandClassifier.I.instance(app);
             UIClassifierishInstanceWidget<ICommandClassifier.Instance> uiccs = new UIClassifierishInstanceWidget<>(app, ccc);
             UISplitterLayout uspl = new UISplitterLayout(uiccs, new UITextButton(T.g.bConfirm, app.f.dialogWindowTH, () -> {
-                final IObjectBackend.ILoadedObject ilo = mapSystem.getCommonEventRoot();
+                final ObjectRootHandle ilo = mapSystem.getCommonEventRoot();
                 UICommandSites ucs = new UICommandSites(app, app.odb.getIdByObject(ilo), () -> {
                     RMFindTranslatables rft = new RMFindTranslatables(app, ilo);
                     rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents(), ccc);
                     return rft.toArray();
-                }, new IObjectBackend.ILoadedObject[] {
+                }, new ObjectRootHandle[] {
                     ilo
                 });
                 ucs.show();
@@ -136,9 +136,9 @@ public class RMTools extends App.Svc {
                     // the important thing here is that this means autocorrect testing won't lead to the testing env. being poisoneds
                     throw new RuntimeException("MODIFY " + obj + " " + path);
                 };
-                app.odb.registerModificationHandler(sp.root, modListen);
+                sp.root.registerModificationHandler(modListen);
                 sp.editor.modifyVal(sp.targetElement, sp, false);
-                app.odb.deregisterModificationHandler(sp.root, modListen);
+                sp.root.deregisterModificationHandler(modListen);
                 System.out.println(obj + " done.");
             }
         }));

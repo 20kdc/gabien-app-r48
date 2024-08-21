@@ -8,8 +8,8 @@
 package r48.schema.util;
 
 import r48.App;
+import r48.dbs.ObjectRootHandle;
 import r48.dbs.PathSyntax;
-import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -44,7 +44,7 @@ public class SchemaPath extends App.Svc {
     public final int windowDepth, depth;
 
     // Can be null! (A nullable root indicates this isn't directly connected to a branch.)
-    public final @Nullable IObjectBackend.ILoadedObject root;
+    public final @Nullable ObjectRootHandle root;
 
     // If editor is null, targetElement must be null, and vice versa.
     // Host may be there or not.
@@ -85,12 +85,12 @@ public class SchemaPath extends App.Svc {
         contextualSchemas.putAll(sp.contextualSchemas);
     }
 
-    public SchemaPath(@NonNull SchemaElement heldElement, @NonNull IObjectBackend.ILoadedObject root) {
+    public SchemaPath(@NonNull SchemaElement heldElement, @NonNull ObjectRootHandle root) {
         this(heldElement, root, null);
     }
 
     // The basic root constructor.
-    public SchemaPath(@NonNull SchemaElement heldElement, @NonNull IObjectBackend.ILoadedObject root, @Nullable Runnable amc) {
+    public SchemaPath(@NonNull SchemaElement heldElement, @NonNull ObjectRootHandle root, @Nullable Runnable amc) {
         super(heldElement.app);
         parent = null;
         depth = 0;
@@ -124,7 +124,7 @@ public class SchemaPath extends App.Svc {
 
     public String toString() {
         SchemaPath measuring = this;
-        LinkedList<SchemaPath> pathOrder = new LinkedList<SchemaPath>();
+        LinkedList<SchemaPath> pathOrder = new LinkedList<>();
         while (measuring != null) {
             pathOrder.addFirst(measuring);
             measuring = measuring.parent;
@@ -138,7 +138,7 @@ public class SchemaPath extends App.Svc {
 
     public String toStringMissingRoot() {
         SchemaPath measuring = this;
-        LinkedList<SchemaPath> pathOrder = new LinkedList<SchemaPath>();
+        LinkedList<SchemaPath> pathOrder = new LinkedList<>();
         while (measuring != null) {
             pathOrder.addFirst(measuring);
             measuring = measuring.parent;
@@ -257,7 +257,7 @@ public class SchemaPath extends App.Svc {
 
         // Attempt to set a "changed flag".
         // This will also nudge the observers.
-        app.odb.objectRootModified(p.root, this);
+        p.root.objectRootModified(this);
     }
 
     public void pokeHighestSubwatcherEditor() {

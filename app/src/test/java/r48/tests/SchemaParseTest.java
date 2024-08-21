@@ -14,8 +14,8 @@ import org.junit.runners.Parameterized;
 
 import r48.App;
 import r48.app.EnginesList;
+import r48.dbs.ObjectRootHandle;
 import r48.dbs.TestDBUtils;
-import r48.io.IObjectBackend;
 import r48.io.data.DMContext;
 import r48.io.data.DMKey;
 import r48.io.data.DMChangeTracker;
@@ -68,7 +68,7 @@ public class SchemaParseTest {
             SchemaPath.setDefaultValue(rio2, st.baseElement, DMKey.of(0));
             for (int i : st.database.knownCommandOrder) {
                 rio2.getIVar("@code").setFX(i);
-                st.baseElement.modifyVal(rio, new SchemaPath(st, new IObjectBackend.MockLoadedObject(rio)), false);
+                st.baseElement.modifyVal(rio, new SchemaPath(st, new ObjectRootHandle.Isolated(rio)), false);
             }
         }
         System.out.println("SchemaParseTest END: " + gamepak);

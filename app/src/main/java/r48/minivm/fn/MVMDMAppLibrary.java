@@ -11,7 +11,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import datum.DatumSymbol;
 import r48.App;
 import r48.dbs.ObjectInfo;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
@@ -39,7 +39,7 @@ public class MVMDMAppLibrary {
         }, "(odb-open-for-modify OID RECEIVER): Opens an object to modify. Object MUST be registered in object infos table or an error will be thrown. Modification will be signalled at end of handler; please don't modify outside of that.");
         ctx.defLib("odb-get", MVMEnvR48.RORIO_TYPE, MVMType.STR, (text) -> {
             ObjectInfo oi = assertObjectInfo(app, text);
-            IObjectBackend.ILoadedObject ilo = oi.getILO(false);
+            ObjectRootHandle ilo = oi.getILO(false);
             if (ilo == null)
                 return null;
             return ilo.getObject();

@@ -7,9 +7,9 @@
 
 package r48;
 
+import r48.dbs.ObjectRootHandle;
 import r48.dbs.SDB;
 import r48.dbs.ValueSyntax;
-import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.EnumSchemaElement;
@@ -59,14 +59,14 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
         dataSchema = ds;
     }
 
-    public boolean actIfRequired(IObjectBackend.ILoadedObject map) {
+    public boolean actIfRequired(ObjectRootHandle map) {
         if (actNow) {
             actNow = false;
 
             // actually update
             LinkedList<UIEnumChoice.Option> finalMap = new LinkedList<UIEnumChoice.Option>();
 
-            final IObjectBackend.ILoadedObject targetILO;
+            final ObjectRootHandle targetILO;
             String targetName;
 
             if (targ.equals("__MAP__")) {
@@ -118,7 +118,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
         return false;
     }
 
-    public static void coreLogic(App app, LinkedList<UIEnumChoice.Option> finalMap, Function<IRIO, IRIO> innerMap, final @Nullable IObjectBackend.ILoadedObject targetILO, @Nullable SchemaElement dataSchema, IRIO target, boolean hash, String interpret) {
+    public static void coreLogic(App app, LinkedList<UIEnumChoice.Option> finalMap, Function<IRIO, IRIO> innerMap, final @Nullable ObjectRootHandle targetILO, @Nullable SchemaElement dataSchema, IRIO target, boolean hash, String interpret) {
         if (hash) {
             for (DMKey key : target.getHashKeys())
                 handleVal(app, finalMap, innerMap, targetILO, dataSchema, target.getHashVal(key), key, interpret);
@@ -137,7 +137,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
         dict.setEntry(ise);
     }
 
-    private static void handleVal(App app, LinkedList<UIEnumChoice.Option> finalMap, Function<IRIO, IRIO> iVar, final @Nullable IObjectBackend.ILoadedObject targetILO, final @Nullable SchemaElement dataSchema, IRIO rio, DMKey k, String interpret) {
+    private static void handleVal(App app, LinkedList<UIEnumChoice.Option> finalMap, Function<IRIO, IRIO> iVar, final @Nullable ObjectRootHandle targetILO, final @Nullable SchemaElement dataSchema, IRIO rio, DMKey k, String interpret) {
         int type = rio.getType();
         if (type != '0') {
             // Key details
@@ -158,7 +158,8 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
                 if (rootSchemaPath != null) {
                     editor = (t) -> {
                         mappedRIO.setString(t);
-                        app.odb.objectRootModified(targetILO, rootSchemaPath);
+                        if (targetILO != null)
+                            targetILO.objectRootModified(rootSchemaPath);
                     };
                 }
             } else {

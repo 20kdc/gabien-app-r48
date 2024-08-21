@@ -15,7 +15,7 @@ import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.UITest;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
@@ -62,7 +62,7 @@ public class HashSchemaElement extends SchemaElement {
         }
         final IRIO keyWorkspace = preWorkspace;
 
-        final SchemaPath rioPath = new SchemaPath(keyElem, new IObjectBackend.MockLoadedObject(keyWorkspace), () -> {
+        final SchemaPath rioPath = new SchemaPath(keyElem, new ObjectRootHandle.Isolated(keyWorkspace), () -> {
             // This may occur from a different page (say, an enum selector), so the more complicated form must be used.
             keyWorkspaceSlot.value = new IRIOGeneric(app.ctxWorkspaceAppEncoding).setDeepClone(keyWorkspace);
         });

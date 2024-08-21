@@ -14,7 +14,7 @@ import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
 import gabien.uslx.append.Rect;
 import r48.App;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.IRIO;
 import r48.maptools.UIMTBase;
 import r48.schema.util.SchemaPath;
@@ -23,12 +23,12 @@ import r48.schema.util.SchemaPath;
  * Created on 11/08/17.
  */
 public class R2kAreaEditingToolbarController extends App.Svc implements IEditingToolbarController {
-    public final IObjectBackend.ILoadedObject mapInfosRoot;
+    public final ObjectRootHandle mapInfosRoot;
     public final IRIO areaInfo;
     public final int tileSize;
     public final IMapToolContext mapToolContext;
 
-    public R2kAreaEditingToolbarController(IMapToolContext mtc, IObjectBackend.ILoadedObject mapInfos, IRIO mapInfo) {
+    public R2kAreaEditingToolbarController(IMapToolContext mtc, ObjectRootHandle mapInfos, IRIO mapInfo) {
         super(mtc.getMapView().app);
         tileSize = mtc.getMapView().tileSize;
         mapToolContext = mtc;
@@ -109,7 +109,7 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
                 r.setFX(Math.max(firstPointX, x) + 1);
                 d.setFX(Math.max(firstPointY, y) + 1);
                 App app = mapToolContext.getMapView().app;
-                app.odb.objectRootModified(mapInfosRoot, new SchemaPath(app.sdb.getSDBEntry("RPG::MapTree"), mapInfosRoot));
+                mapInfosRoot.objectRootModified(new SchemaPath(app.sdb.getSDBEntry("RPG::MapTree"), mapInfosRoot));
                 label.setText(textA);
                 definingPoint2 = false;
             }

@@ -34,9 +34,10 @@ import gabien.uslx.append.Size;
 import gabien.uslx.vfs.FSBackend;
 import r48.App;
 import r48.IMapContext;
+import r48.dbs.ObjectDB.ODBHandle;
+import r48.dbs.ObjectRootHandle;
 import r48.dbs.PathSyntax;
 import r48.imagefx.ImageFXCache;
-import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.UIMapView;
@@ -161,8 +162,8 @@ public class AppUI extends App.Svc {
                 String[] data = new String[keyCount + 1];
                 data[0] = qs;
                 int idx = 1;
-                for (Map.Entry<String, WeakReference<IObjectBackend.ILoadedObject>> s : app.odb.objectMap.entrySet()) {
-                    IObjectBackend.ILoadedObject ilo = s.getValue().get();
+                for (Map.Entry<String, WeakReference<ODBHandle>> s : app.odb.objectMap.entrySet()) {
+                    ObjectRootHandle ilo = s.getValue().get();
                     if (ilo != null) {
                         boolean modified = app.odb.getObjectModified(s.getKey());
                         data[idx++] = s.getKey() + (modified ? "* " : " ") + app.odb.countModificationListeners(ilo) + "ML";
@@ -225,7 +226,7 @@ public class AppUI extends App.Svc {
         redoButtonSym.symbol = (app.timeMachine.canRedo() ? Art.Symbol.Redo : Art.Symbol.RedoDisabled).i(app);
         if (mapContext != null) {
             String mapId = mapContext.getCurrentMapObject();
-            IObjectBackend.ILoadedObject map = null;
+            ObjectRootHandle map = null;
             if (mapId != null)
                 map = app.odb.getObject(mapId);
             app.sdb.updateDictionaries(map);
@@ -443,23 +444,23 @@ public class AppUI extends App.Svc {
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
-    public ISchemaHost launchSchema(String s, @NonNull IObjectBackend.ILoadedObject rio, @Nullable UIMapView context) {
+    public ISchemaHost launchSchema(String s, @NonNull ObjectRootHandle rio, @Nullable UIMapView context) {
         return launchSchema(app.sdb.getSDBEntry(s), rio, context);
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
-    public ISchemaHost launchSchema(SchemaElement s, @NonNull IObjectBackend.ILoadedObject rio, @Nullable UIMapView context) {
+    public ISchemaHost launchSchema(SchemaElement s, @NonNull ObjectRootHandle rio, @Nullable UIMapView context) {
         // Responsible for keeping listeners in place so nothing breaks.
         SchemaHostImpl watcher = new SchemaHostImpl(app, context);
         watcher.pushObject(new SchemaPath(s, rio));
         return watcher;
     }
 
-    public ISchemaHost launchNonRootSchema(@NonNull IObjectBackend.ILoadedObject root, String rootSchema, DMKey arrayIndex, IRIO element, String elementSchema, String indexText, UIMapView context) {
+    public ISchemaHost launchNonRootSchema(@NonNull ObjectRootHandle root, String rootSchema, DMKey arrayIndex, IRIO element, String elementSchema, String indexText, UIMapView context) {
         return launchNonRootSchema(root, app.sdb.getSDBEntry(rootSchema), arrayIndex, element, app.sdb.getSDBEntry(elementSchema), indexText, context);
     }
 
-    public ISchemaHost launchNonRootSchema(@NonNull IObjectBackend.ILoadedObject root, SchemaElement rootSchema, DMKey arrayIndex, IRIO element, SchemaElement elementSchema, String indexText, UIMapView context) {
+    public ISchemaHost launchNonRootSchema(@NonNull ObjectRootHandle root, SchemaElement rootSchema, DMKey arrayIndex, IRIO element, SchemaElement elementSchema, String indexText, UIMapView context) {
         // produce a valid (and false) parent chain, that handles all required guarantees.
         ISchemaHost shi = launchSchema(rootSchema, root, context);
         SchemaPath sp = new SchemaPath(rootSchema, root);
@@ -472,7 +473,7 @@ public class AppUI extends App.Svc {
      * Launches a schema by starting with a root/path pair.
      * Or tries, anyway.
      */
-    public @Nullable ISchemaHost launchSchemaTrace(String s, @NonNull IObjectBackend.ILoadedObject root, @Nullable UIMapView context, @Nullable PathSyntax goal) {
+    public @Nullable ISchemaHost launchSchemaTrace(String s, @NonNull ObjectRootHandle root, @Nullable UIMapView context, @Nullable PathSyntax goal) {
         return launchSchemaTrace(app.sdb.getSDBEntry(s), root, context, goal);
     }
 
@@ -480,7 +481,7 @@ public class AppUI extends App.Svc {
      * Launches a schema by starting with a root/path pair.
      * Or tries, anyway.
      */
-    public @Nullable ISchemaHost launchSchemaTrace(SchemaElement s, @NonNull IObjectBackend.ILoadedObject root, @Nullable UIMapView context, @Nullable PathSyntax goal) {
+    public @Nullable ISchemaHost launchSchemaTrace(SchemaElement s, @NonNull ObjectRootHandle root, @Nullable UIMapView context, @Nullable PathSyntax goal) {
         SchemaPath pathRoot = new SchemaPath(s, root);
         SchemaPath res = pathRoot.tracePathRoute(goal);
         if (res == null) {

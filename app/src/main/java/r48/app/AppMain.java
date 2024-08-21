@@ -10,7 +10,7 @@ package r48.app;
 import gabien.ui.*;
 import r48.AdHocSaveLoad;
 import r48.App;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
@@ -55,7 +55,7 @@ public class AppMain {
     private static void performSystemDumpBodyInto(App app, IRIO n) {
         IRIO h = n.addIVar("@objects");
         h.setHash();
-        for (IObjectBackend.ILoadedObject rio : app.odb.modifiedObjects) {
+        for (ObjectRootHandle rio : app.odb.modifiedObjects) {
             String s = app.odb.getIdByObject(rio);
             if (s != null)
                 h.addHashVal(DMKey.ofStr(s)).setDeepClone(rio.getObject());
@@ -71,10 +71,10 @@ public class AppMain {
         IRIO objs = sysDump.getIVar("@objects");
         for (DMKey rk : objs.getHashKeys()) {
             String name = rk.decString();
-            IObjectBackend.ILoadedObject root = app.odb.getObject(name);
+            ObjectRootHandle root = app.odb.getObject(name);
             if (root != null) {
                 root.getObject().setDeepClone(sysDump.getHashVal(rk));
-                app.odb.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(app), root));
+                root.objectRootModified(new SchemaPath(new OpaqueSchemaElement(app), root));
             }
         }
         if (sysDump.getIVar("@emergency").getType() == 'T') {

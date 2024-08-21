@@ -10,8 +10,6 @@ package r48.dbs;
 import gabien.ui.UIElement;
 import r48.App;
 import r48.app.AppCore;
-import r48.io.IObjectBackend;
-import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.IRIO;
 import r48.schema.*;
 import r48.schema.arrays.*;
@@ -124,7 +122,7 @@ public class SDB extends AppCore.Csv {
         return fd;
     }
 
-    public @Nullable SchemaElement findSchemaFor(@NonNull IObjectBackend.ILoadedObject ilo) {
+    public @Nullable SchemaElement findSchemaFor(@NonNull ObjectRootHandle ilo) {
         return findSchemaFor(app.odb.getIdByObject(ilo), ilo.getObject());
     }
 
@@ -158,7 +156,7 @@ public class SDB extends AppCore.Csv {
         }
     }
 
-    public void updateDictionaries(IObjectBackend.ILoadedObject map) {
+    public void updateDictionaries(ObjectRootHandle map) {
         boolean needsMerge = false;
         for (DynamicSchemaUpdater dur : dictionaryUpdaterRunnables)
             needsMerge |= dur.actIfRequired(map);
@@ -205,7 +203,7 @@ public class SDB extends AppCore.Csv {
          * If required, updates the DUR.
          * Returns true if this is done.
          */
-        boolean actIfRequired(ILoadedObject map);
+        boolean actIfRequired(ObjectRootHandle map);
     }
 
     private static abstract class BaseProxySchemaElement extends SchemaElement implements IProxySchemaElement {

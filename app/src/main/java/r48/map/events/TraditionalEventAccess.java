@@ -8,9 +8,8 @@
 package r48.map.events;
 
 import r48.App;
+import r48.dbs.ObjectRootHandle;
 import r48.dbs.PathSyntax;
-import r48.io.IObjectBackend;
-import r48.io.IObjectBackend.MockLoadedObject;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
@@ -29,7 +28,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * Created on December 15th 2017
  */
 public class TraditionalEventAccess extends App.Svc implements IEventAccess {
-    private final IObjectBackend.ILoadedObject mapRoot;
+    private final ObjectRootHandle mapRoot;
     private final int eventIdBase;
     private final SchemaElement mapRootSchema, eventSchema;
     private final String eventsName, eventName;
@@ -97,7 +96,7 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
             // we don't trust this value at all, hold in an intermediary and bash it around a bit
             IRIOGeneric ig = new IRIOGeneric(app.ctxDisposableAppEncoding);
             ig.setDeepClone(eve);
-            new SchemaPath(eventSchema, new MockLoadedObject(ig)).changeOccurred(false);
+            new SchemaPath(eventSchema, new ObjectRootHandle.Isolated(ig)).changeOccurred(false);
             // now we're sure it's safe...
             eveTarget.setDeepClone(ig);
             // and just to be sure
@@ -181,6 +180,6 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     private void pokeHive() {
-        app.odb.objectRootModified(mapRoot, makeMapRootSchemaPath());
+        mapRoot.objectRootModified(makeMapRootSchemaPath());
     }
 }

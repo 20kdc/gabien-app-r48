@@ -13,7 +13,7 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.RubyTable;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -43,7 +43,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
                 // Before doing anything stupid...
                 long mapId = target.getIVar("@party_pos").getIVar("@map").getFX();
                 String mapName = R2kRMLikeMapInfoBackend.sNameFromInt((int) mapId);
-                IObjectBackend.ILoadedObject map = app.odb.getObject(mapName, null);
+                ObjectRootHandle map = app.odb.getObject(mapName, null);
                 if (map == null) {
                     app.ui.launchDialog(T.s.errInvalidMap);
                     return;

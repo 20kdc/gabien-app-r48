@@ -12,7 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import r48.App;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 
 import java.io.IOException;
 
@@ -32,15 +32,15 @@ public class R2kSerializationTest {
                 "you.lsd",
         };
         // Save it, but skip past most of ObjectDB since it will not be queried in future & it uses UI on failure.
-        app.odb.getObject("hello.lmu", "RPG::Map").save();
-        app.odb.getObject("world.ldb", "RPG::Database").save();
-        app.odb.getObject("and.lmt", "RPG::MapTree").save();
-        app.odb.getObject("you.lsd", "RPG::Save").save();
+        app.odb.getObject("hello.lmu", "RPG::Map").ensureSaved();
+        app.odb.getObject("world.ldb", "RPG::Database").ensureSaved();
+        app.odb.getObject("and.lmt", "RPG::MapTree").ensureSaved();
+        app.odb.getObject("you.lsd", "RPG::Save").ensureSaved();
         // Kills off the old ObjectDB
         kick.resetODB(app);
 
         for (String s : fileDefs) {
-            IObjectBackend.ILoadedObject i = app.odb.getObject(s, null);
+            ObjectRootHandle i = app.odb.getObject(s, null);
             Assert.assertNotNull(i);
         }
     }

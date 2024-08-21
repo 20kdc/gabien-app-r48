@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 import r48.App;
 import r48.dbs.ObjectInfo;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.IRIO;
 import r48.toolsets.utils.RMTranscriptDumper;
 
@@ -28,7 +28,7 @@ public interface IRMMapSystem extends IDynobjMapSystem {
     /**
      * The ILoadedObject that covers all getAllCommonEvents elements.
      */
-    IObjectBackend.ILoadedObject getCommonEventRoot(); 
+    ObjectRootHandle getCommonEventRoot(); 
 
     /**
      * Expects @name and @list. Note these have to be in order.

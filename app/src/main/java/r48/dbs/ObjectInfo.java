@@ -11,8 +11,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import r48.app.AppCore;
-import r48.io.IObjectBackend;
-import r48.io.IObjectBackend.ILoadedObject;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -50,13 +48,13 @@ public class ObjectInfo extends AppCore.Csv {
         return idName;
     }
 
-    public @Nullable IObjectBackend.ILoadedObject getILO(boolean create) {
+    public @Nullable ObjectRootHandle getILO(boolean create) {
         return app.odb.getObject(idName, create ? schemaName : null);
     }
 
     public @Nullable SchemaPath makePath(boolean create) {
         SchemaElement se = schema;
-        ILoadedObject ilo = getILO(create);
+        ObjectRootHandle ilo = getILO(create);
         if (se == null || ilo == null)
             return null;
         return new SchemaPath(se, ilo);

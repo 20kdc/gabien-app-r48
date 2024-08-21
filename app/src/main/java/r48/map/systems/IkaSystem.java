@@ -8,7 +8,7 @@
 package r48.map.systems;
 
 import r48.App;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
@@ -49,7 +49,7 @@ public class IkaSystem extends MapSystem {
         if (!allowCreate)
             if (app.odb.getObject(gum, null) == null)
                 return null;
-        final IObjectBackend.ILoadedObject map = app.odb.getObject(gum);
+        final ObjectRootHandle map = app.odb.getObject(gum);
         final IEventAccess events = new TraditionalEventAccess(app, gum, "IkachanMap", "@events", 0, "IkachanEvent");
         return new MapViewDetails(app, gum, "IkachanMap") {
             @Override

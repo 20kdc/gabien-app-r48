@@ -13,7 +13,7 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.Size;
 import r48.App;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.IMapToolContext;
@@ -194,7 +194,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         map.app.ui.launchNonRootSchema(root.root, root.rootSchema, key, event, root.eventSchema, "E" + key, map);
     }
 
-    public static void showEventDivorced(App app, DMKey key, IObjectBackend.ILoadedObject map, String mapSchema, IRIO event, String eventSchema) {
+    public static void showEventDivorced(App app, DMKey key, ObjectRootHandle map, String mapSchema, IRIO event, String eventSchema) {
         app.ui.launchNonRootSchema(map, mapSchema, key, event, eventSchema, "E" + key, null);
     }
 

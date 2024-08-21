@@ -8,7 +8,7 @@
 package r48.map.mapinfos;
 
 import r48.App;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  */
 public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
     public Consumer<SchemaPath> modHandler;
-    public IObjectBackend.ILoadedObject mapInfos;
+    public ObjectRootHandle mapInfos;
     public RXPRMLikeMapInfoBackend(App app) {
         super(app);
         mapInfos = app.odb.getObject("MapInfos");
@@ -40,7 +40,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     @Override
     public void registerModificationHandler(Consumer<SchemaPath> onMapInfoChange) {
         modHandler = onMapInfoChange;
-        app.odb.registerModificationHandler(mapInfos, onMapInfoChange);
+        mapInfos.registerModificationHandler(onMapInfoChange);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     @Override
     public void complete() {
         SchemaPath fakePath = new SchemaPath(app.sdb.getSDBEntry("File.MapInfos"), mapInfos);
-        app.odb.objectRootModified(mapInfos, fakePath);
+        mapInfos.objectRootModified(fakePath);
         modHandler.accept(fakePath);
     }
 

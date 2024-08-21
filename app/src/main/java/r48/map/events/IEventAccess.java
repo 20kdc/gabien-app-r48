@@ -7,7 +7,7 @@
 
 package r48.map.events;
 
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -57,9 +57,9 @@ public interface IEventAccess {
 
     public static class EventSchema {
         public final SchemaElement rootSchema, eventSchema;
-        public final IObjectBackend.ILoadedObject root;
+        public final ObjectRootHandle root;
         public final DMKey key;
-        public EventSchema(SchemaElement rs, SchemaElement es, IObjectBackend.ILoadedObject r, DMKey key) {
+        public EventSchema(SchemaElement rs, SchemaElement es, ObjectRootHandle r, DMKey key) {
             rootSchema = rs;
             eventSchema = es;
             root = r;

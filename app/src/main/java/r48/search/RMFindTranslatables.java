@@ -15,8 +15,8 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.ui.elements.UITextButton;
 import r48.App;
 import r48.dbs.CMDB;
+import r48.dbs.ObjectRootHandle;
 import r48.dbs.RPGCommand;
-import r48.io.IObjectBackend;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.UIMapView;
@@ -32,10 +32,10 @@ import r48.schema.util.SchemaPath;
  */
 public class RMFindTranslatables extends App.Svc {
     public final @NonNull String objIdName;
-    public final @NonNull IObjectBackend.ILoadedObject objRoot;
+    public final @NonNull ObjectRootHandle objRoot;
     public final LinkedList<CommandSite> sites = new LinkedList<CommandSite>();
 
-    public RMFindTranslatables(App app, final IObjectBackend.ILoadedObject ilo) {
+    public RMFindTranslatables(App app, final ObjectRootHandle ilo) {
         super(app);
         objIdName = app.odb.getIdByObjectOrThrow(ilo);
         objRoot = ilo;

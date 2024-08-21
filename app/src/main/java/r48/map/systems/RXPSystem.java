@@ -15,9 +15,8 @@ import r48.App;
 import r48.IMapContext;
 import r48.RubyTableR;
 import r48.dbs.ObjectInfo;
+import r48.dbs.ObjectRootHandle;
 import r48.imagefx.HueShiftImageEffect;
-import r48.io.IObjectBackend;
-import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -151,7 +150,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         if (!allowCreate)
             if (app.odb.getObject(gum, null) == null)
                 return null;
-        final IObjectBackend.ILoadedObject map = app.odb.getObject(gum, "RPG::Map");
+        final ObjectRootHandle map = app.odb.getObject(gum, "RPG::Map");
         final IEventAccess events = new TraditionalEventAccess(app, gum, "RPG::Map", "@events", 1, "RPG::Event");
         final TSOAwareTileRenderer tileRenderer = createTileRenderer();
         return new MapViewDetails(app, gum, "RPG::Map") {
@@ -199,7 +198,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     }
 
     @Override
-    public ILoadedObject getCommonEventRoot() {
+    public ObjectRootHandle getCommonEventRoot() {
         return app.odb.getObject("CommonEvents");
     }
 
@@ -234,7 +233,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         dumper.endFile();
 
         dumper.startFile("System", T.h.systemDsc);
-        IObjectBackend.ILoadedObject sys = app.odb.getObject("System");
+        ObjectRootHandle sys = app.odb.getObject("System");
 
         dumper.dumpHTML(T.h.systemElab);
         IRIO sys2 = sys.getObject();

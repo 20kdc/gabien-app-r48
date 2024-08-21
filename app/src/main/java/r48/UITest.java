@@ -14,7 +14,7 @@ import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.*;
 import gabien.uslx.vfs.FSBackend;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -52,7 +52,7 @@ public class UITest extends App.Prx {
         return app.gameRoot.into("PRINT.txt");
     }
 
-    public UITest(App app, RORIO obj, final @Nullable IObjectBackend.ILoadedObject rootObj) {
+    public UITest(App app, RORIO obj, final @Nullable ObjectRootHandle rootObj) {
         super(app);
         loadObject(obj);
         UIElement topBar = new UITextButton(T.u.test_back, app.f.inspectorBackTH, () -> {

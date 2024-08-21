@@ -15,7 +15,7 @@ import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.Rect;
 import gabien.wsi.IPeripherals;
 import r48.App;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.schema.util.SchemaPath;
 import r48.search.CommandSite;
 
@@ -24,7 +24,7 @@ import r48.search.CommandSite;
  */
 public class UICommandSites extends App.Prx {
     private final Supplier<CommandSite[]> refresh;
-    private final IObjectBackend.ILoadedObject[] roots;
+    private final ObjectRootHandle[] roots;
 
     private final UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
     private boolean needsRefresh = false;
@@ -37,13 +37,13 @@ public class UICommandSites extends App.Prx {
         }
     };
 
-    public UICommandSites(App app, String name, Supplier<CommandSite[]> supplier, IObjectBackend.ILoadedObject[] r) {
+    public UICommandSites(App app, String name, Supplier<CommandSite[]> supplier, ObjectRootHandle[] r) {
         super(app);
         objIdName = name;
         refresh = supplier;
         roots = r;
-        for (IObjectBackend.ILoadedObject ilo : roots)
-            app.odb.registerModificationHandler(ilo, consumer);
+        for (ObjectRootHandle ilo : roots)
+            ilo.registerModificationHandler(consumer);
         doRefresh();
         proxySetElement(layout, true);
         setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(400), app.f.scaleGuess(300)));
@@ -78,7 +78,7 @@ public class UICommandSites extends App.Prx {
     @Override
     public void onWindowClose() {
         super.onWindowClose();
-        for (IObjectBackend.ILoadedObject ilo : roots)
-            app.odb.deregisterModificationHandler(ilo, consumer);
+        for (ObjectRootHandle ilo : roots)
+            ilo.deregisterModificationHandler(consumer);
     }
 }

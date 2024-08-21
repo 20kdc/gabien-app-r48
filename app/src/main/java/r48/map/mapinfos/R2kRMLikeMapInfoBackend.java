@@ -8,7 +8,7 @@
 package r48.map.mapinfos;
 
 import r48.App;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  */
 public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
     public Consumer<SchemaPath> modHandler;
-    public IObjectBackend.ILoadedObject mapTree = app.odb.getObject("RPG_RT.lmt");
+    public ObjectRootHandle mapTree = app.odb.getObject("RPG_RT.lmt");
     // Note: The orders table is [order] = map.
     // So swapping orders is probably the easiest operation here.
 
@@ -75,7 +75,7 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     @Override
     public void registerModificationHandler(Consumer<SchemaPath> onMapInfoChange) {
         modHandler = onMapInfoChange;
-        app.odb.registerModificationHandler(mapTree, onMapInfoChange);
+        mapTree.registerModificationHandler(onMapInfoChange);
     }
 
     @Override
@@ -163,7 +163,7 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
         }
         // and done!
         SchemaPath fakePath = new SchemaPath(app.sdb.getSDBEntry("File.RPG_RT.lmt"), mapTree);
-        app.odb.objectRootModified(mapTree, fakePath);
+        mapTree.objectRootModified(fakePath);
         modHandler.accept(fakePath);
     }
 

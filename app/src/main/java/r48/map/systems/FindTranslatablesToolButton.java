@@ -9,7 +9,7 @@ package r48.map.systems;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
-import r48.io.IObjectBackend;
+import r48.dbs.ObjectRootHandle;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.UIMapView;
@@ -39,12 +39,12 @@ public final class FindTranslatablesToolButton extends ToolButton {
         UIClassifierishInstanceWidget<ICommandClassifier.Instance> uiccs = new UIClassifierishInstanceWidget<>(app, ccc);
         UISplitterLayout uspl = new UISplitterLayout(uiccs, new UITextButton(app.t.g.bConfirm, app.f.dialogWindowTH, () -> {
             UIMapView umv = a.getMapView();
-            final IObjectBackend.ILoadedObject map = umv.map.object;
+            final ObjectRootHandle map = umv.map.object;
             UICommandSites ucs = new UICommandSites(umv.app, umv.map.objectId, () -> {
                 RMFindTranslatables rft = new RMFindTranslatables(umv.app, map);
                 rft.addSitesFromMap(a.getMapView(), ep, ccc);
                 return rft.toArray();
-            }, new IObjectBackend.ILoadedObject[] {
+            }, new ObjectRootHandle[] {
                 map
             });
             ucs.show();

@@ -17,11 +17,10 @@ import r48.IMapContext;
 import r48.ITileAccess;
 import r48.RubyTableR;
 import r48.dbs.ObjectInfo;
+import r48.dbs.ObjectRootHandle;
 import r48.imageio.BMP8IImageIOFormat;
 import r48.imageio.PNG8IImageIOFormat;
 import r48.imageio.XYZImageIOFormat;
-import r48.io.IObjectBackend;
-import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.*;
@@ -194,7 +193,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     }
 
     @Override
-    public ILoadedObject getCommonEventRoot() {
+    public ObjectRootHandle getCommonEventRoot() {
         return app.odb.getObject("RPG_RT.ldb");
     }
 
@@ -234,7 +233,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             if (!allowCreate)
                 if (app.odb.getObject(obj, null) == null)
                     return null;
-            final IObjectBackend.ILoadedObject root = app.odb.getObject(obj, "RPG::Save");
+            final ObjectRootHandle root = app.odb.getObject(obj, "RPG::Save");
             final LcfTileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader); 
             return new MapViewDetails(app, obj, "RPG::Save") {
                 @Override
@@ -242,7 +241,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     int mapId = (int) root.getObject().getIVar("@party_pos").getIVar("@map").getFX();
 
                     final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(mapId);
-                    IObjectBackend.ILoadedObject map = app.odb.getObject(objn);
+                    ObjectRootHandle map = app.odb.getObject(objn);
                     final IEventAccess events = new R2kSavefileEventAccess(app, obj, root, "RPG::Save");
                     if (map == null)
                         return MapViewState.getBlank(app, null, new String[] {
@@ -272,7 +271,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             };
         }
         // Map, Area
-        final IObjectBackend.ILoadedObject root = app.odb.getObject("RPG_RT.lmt");
+        final ObjectRootHandle root = app.odb.getObject("RPG_RT.lmt");
         final IRIO mapInfos = root.getObject().getIVar("@map_infos");
         final IRIO mapInfo = mapInfos.getHashVal(DMKey.of(v));
         try {
@@ -303,7 +302,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         if (!allowCreate)
             if (app.odb.getObject(objn, null) == null)
                 return null;
-        final IObjectBackend.ILoadedObject map = app.odb.getObject(objn, "RPG::Map");
+        final ObjectRootHandle map = app.odb.getObject(objn, "RPG::Map");
         final IEventAccess iea = new TraditionalEventAccess(app, objn, "RPG::Map", "@events", 1, "RPG::Event");
         final LcfTileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader);
         return new MapViewDetails(app, objn, "RPG::Map") {
