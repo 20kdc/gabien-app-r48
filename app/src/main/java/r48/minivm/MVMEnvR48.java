@@ -38,7 +38,7 @@ import r48.tr.NLSTr;
 public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
     public static final MVMType IRIO_TYPE = MVMType.typeOfClass(IRIO.class);
     public static final MVMType RORIO_TYPE = MVMType.typeOfClass(RORIO.class);
-    public static final MVMType PATH_TYPE = MVMType.typeOfClass(PathSyntax.class);
+    public static final MVMType PATHSYNTAX_TYPE = MVMType.typeOfClass(PathSyntax.class);
     public static final MVMType DYNTRSLOT_TYPE = MVMType.typeOfClass(DynTrSlot.class);
 
     private final Consumer<String> loadProgress, logTrIssues;

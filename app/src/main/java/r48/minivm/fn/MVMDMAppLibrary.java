@@ -6,14 +6,19 @@
  */
 package r48.minivm.fn;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import datum.DatumSymbol;
 import r48.App;
+import r48.dbs.ObjectInfo;
+import r48.io.IObjectBackend;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 import r48.schema.EnumSchemaElement;
+import r48.schema.util.SchemaPath;
 
 /**
  * MiniVM standard library.
@@ -23,7 +28,31 @@ public class MVMDMAppLibrary {
     public static void add(MVMEnv ctx, App app) {
         ctx.defineSlot(new DatumSymbol("dm-fmt"), new DMFmt(app))
             .help("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. If the passed-in object is null (say, due to a PathSyntax failure) returns the empty string. Important: Because of schemas and stuff this doesn't exist in the static translation context. PREFIXENUMS can be #f, #t or #nil (default).");
+
+        ctx.defLib("odb-open-for-modify", MVMType.ANY, MVMType.STR, MVMType.Fn.simple(MVMType.ANY, MVMEnvR48.IRIO_TYPE), (text, fn) -> {
+            MVMFn fn2 = (MVMFn) fn;
+            ObjectInfo oi = assertObjectInfo(app, text);
+            SchemaPath sp = oi.makePath(true);
+            Object res = fn2.callDirect(sp.targetElement);
+            sp.changeOccurred(false);
+            return res;
+        }, "(odb-open-for-modify OID RECEIVER): Opens an object to modify. Object MUST be registered in object infos table or an error will be thrown. Modification will be signalled at end of handler; please don't modify outside of that.");
+        ctx.defLib("odb-get", MVMEnvR48.RORIO_TYPE, MVMType.STR, (text) -> {
+            ObjectInfo oi = assertObjectInfo(app, text);
+            IObjectBackend.ILoadedObject ilo = oi.getILO(false);
+            if (ilo == null)
+                return null;
+            return ilo.getObject();
+        }, "(odb-get OID): Gets an object's root RORIO. Object MUST be registered in object infos table or an error will be thrown.");
     }
+
+    public static @NonNull ObjectInfo assertObjectInfo(App app, Object text) {
+        ObjectInfo oi = app.getObjectInfo((String) text);
+        if (oi == null)
+            throw new RuntimeException("MVM is not allowed to access undefined object info: " + text);
+        return oi;
+    }
+
     public static final class DMFmt extends MVMFn.Fixed {
         public final App app;
         public DMFmt(App app) {

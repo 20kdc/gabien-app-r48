@@ -15,6 +15,9 @@ sticki (
 	odbBackend r48
 	allowIndentControl #t
 	defineIndent #t
+	definesObjects (
+		"Notes"
+	)
 )
 
 ika (
@@ -22,6 +25,9 @@ ika (
 	odbBackend ika
 	mapSystem Ika
 	autoDetectPath "Pbm/Map1.pbm"
+	definesObjects (
+		"Map"
+	)
 )
 
 osLoc (
@@ -30,6 +36,13 @@ osLoc (
 	dataPath "Languages/"
 	dataExt ".loc"
 	autoDetectPath "Languages/en.loc"
+	definesObjects (
+		"en"
+		"es"
+		"fr"
+		"ja"
+		"pt_BR"
+	)
 )
 
 r2k (
@@ -39,6 +52,10 @@ r2k (
 	autoDetectPath "RPG_RT.ldb"
 	allowIndentControl #t
 	defineIndent #t
+	definesObjects (
+		"RPG_RT.ldb"
+		"RPG_RT.lmt"
+	)
 )
 
 rxp (
@@ -50,6 +67,24 @@ rxp (
 	autoDetectPath "Data/MapInfos.rxdata"
 	allowIndentControl #t
 	defineIndent #t
+	definesObjects (
+		"Actors"
+		"Animations"
+		"Armors"
+		"Classes"
+		"CommonEvents"
+		"Enemies"
+		"Items"
+		"MapInfos"
+		"Scripts"
+		"Skills"
+		"States"
+		"System"
+		"Tilesets"
+		"Troops"
+		"Weapons"
+		"xScripts"
+	)
 	mkdirs (
 		"Data"
 		"Graphics"
@@ -83,6 +118,23 @@ rvxa (
 	autoDetectPath "Data/MapInfos.rvdata2"
 	allowIndentControl #t
 	defineIndent #t
+	definesObjects (
+		"Actors"
+		"Animations"
+		"Armors"
+		"Classes"
+		"CommonEvents"
+		"Enemies"
+		"Items"
+		"MapInfos"
+		"Scripts"
+		"Skills"
+		"States"
+		"System"
+		"Tilesets"
+		"Troops"
+		"Weapons"
+	)
 	mkdirs (
 		"Data"
 		"Graphics"

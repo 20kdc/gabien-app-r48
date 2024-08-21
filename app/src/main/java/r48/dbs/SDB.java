@@ -112,11 +112,15 @@ public class SDB extends AppCore.Csv {
         return new HashSet<>(schemaDatabase.keySet());
     }
 
+    /**
+     * Lists defined files.
+     * The list actually comes out of EngineDef to stop MVM defining objects which it can then use to stage attacks on users.
+     * Same rationale as EngineDef having the IO backend config, basically.
+     */
     public LinkedList<ObjectInfo> listFileDefs() {
         LinkedList<ObjectInfo> fd = new LinkedList<ObjectInfo>();
-        for (String s : schemaDatabase.keySet())
-            if (s.startsWith("File."))
-                fd.add(new ObjectInfo(app, s.substring(5), s));
+        for (String s : app.engine.definesObjects)
+            fd.add(new ObjectInfo(app, s, "File." + s));
         return fd;
     }
 
@@ -138,6 +142,20 @@ public class SDB extends AppCore.Csv {
             dur.sanitize();
         for (Runnable merge : mergeRunnables)
             merge.run();
+        for (String s : schemaDatabase.keySet()) {
+            if (s.startsWith("File.")) {
+                boolean exists = false;
+                String comp = s.substring(5);
+                for (String s2 : app.engine.definesObjects) {
+                    if (s2.equals(comp)) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists)
+                    throw new RuntimeException("Schema defined " + s + " but was not authorized by enginedef.");
+            }
+        }
     }
 
     public void updateDictionaries(IObjectBackend.ILoadedObject map) {

@@ -58,6 +58,12 @@ public class EngineDef {
                 c.autoDetectPath = (String) v;
             });
         });
+        map.put("definesObjects", (k, c, gt) -> {
+            return decVisitor((v, srcLoc) -> {
+                List<Object> obj = MVMU.cList(v);
+                c.definesObjects = obj.toArray(new String[0]);
+            });
+        });
         map.put("mkdirs", (k, c, gt) -> {
             return decVisitor((v, srcLoc) -> {
                 List<Object> obj = MVMU.cList(v);
@@ -83,6 +89,7 @@ public class EngineDef {
     public @NonNull String dataExt = "";
     public @NonNull String mapSystem = "null";
     public @Nullable String autoDetectPath = null;
+    public @NonNull String[] definesObjects = new String[0];
     public @NonNull String[] mkdirs = new String[0];
     // SDB flags
     public boolean defineIndent, allowIndentControl;

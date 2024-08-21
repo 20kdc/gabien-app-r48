@@ -51,23 +51,23 @@ public class MVMDMLibrary {
             .help("(dm-del-at! TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), deletes entry, #nil on failure");
 
         // path manip
-        ctx.defineSlot(new DatumSymbol("dm-p-empty"), PathSyntax.compile(ctx, strict), MVMEnvR48.PATH_TYPE)
-            .help("dm-p-empty : Empty PathSyntax, from which others may be created.");
-        ctx.defLib("dm-p-a-ref", MVMEnvR48.PATH_TYPE, MVMEnvR48.PATH_TYPE, MVMType.I64, (p, i) -> {
+        ctx.defineSlot(new DatumSymbol("ps-empty"), PathSyntax.compile(ctx, strict), MVMEnvR48.PATHSYNTAX_TYPE)
+            .help("ps-empty : Empty PathSyntax, from which others may be created.");
+        ctx.defLib("ps-a-ref", MVMEnvR48.PATHSYNTAX_TYPE, MVMEnvR48.PATHSYNTAX_TYPE, MVMType.I64, (p, i) -> {
             return ((PathSyntax) p).withArray(MVMU.cInt(i), "(generated)");
-        }, "(dm-p-a-ref PATH INDEX) : Extends PathSyntax PATH with an array index operation.");
-        ctx.defLib("dm-p-h-ref", MVMEnvR48.PATH_TYPE, MVMEnvR48.PATH_TYPE, MVMEnvR48.RORIO_TYPE, (p, i) -> {
+        }, "(ps-a-ref PATH INDEX) : Extends PathSyntax PATH with an array index operation.");
+        ctx.defLib("ps-h-ref", MVMEnvR48.PATHSYNTAX_TYPE, MVMEnvR48.PATHSYNTAX_TYPE, MVMType.ANY, (p, i) -> {
             return ((PathSyntax) p).withHash(dmKeyify(i), "(generated)");
-        }, "(dm-p-h-ref PATH INDEX) : Extends PathSyntax PATH with a hash index operation.");
-        ctx.defLib("dm-p-i-ref", MVMEnvR48.PATH_TYPE, MVMEnvR48.PATH_TYPE, MVMType.ANY, (p, i) -> {
+        }, "(ps-h-ref PATH INDEX) : Extends PathSyntax PATH with a hash index operation.");
+        ctx.defLib("ps-i-ref", MVMEnvR48.PATHSYNTAX_TYPE, MVMEnvR48.PATHSYNTAX_TYPE, MVMType.ANY, (p, i) -> {
             return ((PathSyntax) p).withIVar(MVMU.coerceToString(i), "(generated)");
-        }, "(dm-p-i-ref PATH INDEX) : Extends PathSyntax PATH with an ivar index operation.");
-        ctx.defLib("dm-p-a-len", MVMEnvR48.PATH_TYPE, MVMEnvR48.PATH_TYPE, (p) -> {
+        }, "(ps-i-ref PATH INDEX) : Extends PathSyntax PATH with an ivar index operation.");
+        ctx.defLib("ps-a-len", MVMEnvR48.PATHSYNTAX_TYPE, MVMEnvR48.PATHSYNTAX_TYPE, (p) -> {
             return ((PathSyntax) p).withArrayLength("(generated)");
-        }, "(dm-p-a-len PATH) : Extends PathSyntax PATH with an array length operation.");
-        ctx.defLib("dm-p-h-defval", MVMEnvR48.PATH_TYPE, MVMEnvR48.PATH_TYPE, (p) -> {
+        }, "(ps-a-len PATH) : Extends PathSyntax PATH with an array length operation.");
+        ctx.defLib("ps-h-defval", MVMEnvR48.PATHSYNTAX_TYPE, MVMEnvR48.PATHSYNTAX_TYPE, (p) -> {
             return ((PathSyntax) p).withDefVal("(generated)");
-        }, "(dm-p-h-defval PATH) : Extends PathSyntax PATH with a hash defval operation.");
+        }, "(ps-h-defval PATH) : Extends PathSyntax PATH with a hash defval operation.");
 
         // array
         ctx.defLib("dm-a-init", MVMEnvR48.IRIO_TYPE, MVMEnvR48.IRIO_TYPE, (a) -> {
@@ -267,10 +267,12 @@ public class MVMDMLibrary {
                 res = ps.delProgram;
             else
                 res = ps.getProgram;
+            MVMCExpr base = cs.compile(call[0]);
             return new MVMCExpr(res.returnType) {
                 @Override
                 public Object execute(MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-                    l0 = cs.compile(call[0]);
+                    // set things up for the PathSyntax ABI
+                    l0 = base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     return res.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                 }
                 

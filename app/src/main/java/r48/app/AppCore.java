@@ -116,7 +116,9 @@ public abstract class AppCore {
         return new LinkedList<String>(mainSet);
     }
 
-    // Attempts to ascertain all known objects
+    /**
+     * Attempts to ascertain all known objects
+     */
     public LinkedList<ObjectInfo> getObjectInfos() {
         LinkedList<ObjectInfo> oi = sdb.listFileDefs();
         if (system instanceof IDynobjMapSystem) {
@@ -125,6 +127,16 @@ public abstract class AppCore {
                 oi.add(dobj);
         }
         return oi;
+    }
+
+    /**
+     * Gets a specific object info.
+     */
+    public @Nullable ObjectInfo getObjectInfo(String text) {
+        for (ObjectInfo oi : getObjectInfos())
+            if (oi.idName.equals(text))
+                return oi;
+        return null;
     }
 
     /**

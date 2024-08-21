@@ -18,5 +18,6 @@ public class MVMR48AppLibraries {
         MVMR48GlobalLibraries.add(ctx);
         MVMDMAppLibrary.add(ctx, app);
         MVMSDBLibrary.add(ctx, app);
+        MVMAppUILibrary.add(ctx, app);
     }
 }

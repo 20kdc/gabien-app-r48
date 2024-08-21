@@ -156,13 +156,10 @@ public class BasicToolset extends App.Svc implements IToolset {
                 () -> {
                     app.ui.launchPrompt(T.u.prObjectName, (s) -> {
                         final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
-                        app.ui.launchPrompt(T.u.prSchemaID, new Consumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                SchemaElement ise = app.sdb.getSDBEntry(s);
-                                ise.modifyVal(rio.getObject(), new SchemaPath(ise, rio), false);
-                                app.ui.launchDialog(T.u.done);
-                            }
+                        app.ui.launchPrompt(T.u.prSchemaID, (sid) -> {
+                            SchemaElement ise = app.sdb.getSDBEntry(sid);
+                            ise.modifyVal(rio.getObject(), new SchemaPath(ise, rio), false);
+                            app.ui.launchDialog(T.u.done);
                         });
                     });
                 },
@@ -208,7 +205,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     try {
                         OutputStream lm = GaBIEn.getOutFile(app.gameRoot.into("locmaps.txt"));
                         final DataOutputStream dos = new DataOutputStream(lm);
-                        final HashSet<String> text = new HashSet<String>();
+                        final HashSet<String> text = new HashSet<>();
                         for (String s : app.getAllObjects()) {
                             IObjectBackend.ILoadedObject obj = app.odb.getObject(s, null);
                             if (obj != null) {
@@ -236,29 +233,26 @@ public class BasicToolset extends App.Svc implements IToolset {
                     }
                 },
                 () -> {
-                    app.ui.launchPrompt(T.u.prObjectName, new Consumer<String>() {
-                        @Override
-                        public void accept(String s) {
-                            final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
-                            final InputStream is = GaBIEn.getInFile(UITest.getPrintPath(app));
-                            if (rio == null) {
-                                app.ui.launchDialog(T.u.dFileUnreadableNoSchema);
-                            } else if (is == null) {
-                                app.ui.launchDialog(T.u.dCannotReadPRINT);
-                            } else {
+                    app.ui.launchPrompt(T.u.prObjectName, (s) -> {
+                        final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
+                        final InputStream is = GaBIEn.getInFile(UITest.getPrintPath(app));
+                        if (rio == null) {
+                            app.ui.launchDialog(T.u.dFileUnreadableNoSchema);
+                        } else if (is == null) {
+                            app.ui.launchDialog(T.u.dCannotReadPRINT);
+                        } else {
+                            try {
+                                IRIO irio = rio.getObject();
+                                IMIUtils.runIMISegment(is, irio);
+                                app.odb.objectRootModified(rio, new SchemaPath(new OpaqueSchemaElement(app), rio));
+                                app.ui.launchDialog(T.u.done);
+                            } catch (Exception ioe) {
                                 try {
-                                    IRIO irio = rio.getObject();
-                                    IMIUtils.runIMISegment(is, irio);
-                                    app.odb.objectRootModified(rio, new SchemaPath(new OpaqueSchemaElement(app), rio));
-                                    app.ui.launchDialog(T.u.done);
-                                } catch (Exception ioe) {
-                                    try {
-                                        is.close();
-                                    } catch (Exception ex) {
-                                    }
-                                    ioe.printStackTrace();
-                                    app.ui.launchDialog(ioe);
+                                    is.close();
+                                } catch (Exception ex) {
                                 }
+                                ioe.printStackTrace();
+                                app.ui.launchDialog(ioe);
                             }
                         }
                     });
@@ -473,8 +467,8 @@ public class BasicToolset extends App.Svc implements IToolset {
         LinkedList<ObjectInfo> s = app.sdb.listFileDefs();
         if (s.size() == 0)
             return null;
-        LinkedList<String> str = new LinkedList<String>();
-        LinkedList<Runnable> r = new LinkedList<Runnable>();
+        LinkedList<String> str = new LinkedList<>();
+        LinkedList<Runnable> r = new LinkedList<>();
         for (final ObjectInfo s2 : s) {
             str.add(s2.toString());
             r.add(() -> {
