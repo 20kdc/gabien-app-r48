@@ -31,13 +31,11 @@ import r48.schema.util.SchemaPath;
  * Created on 14th September 2022 to house findTranslatables code.
  */
 public class RMFindTranslatables extends App.Svc {
-    public final @NonNull String objIdName;
     public final @NonNull ObjectRootHandle objRoot;
     public final LinkedList<CommandSite> sites = new LinkedList<CommandSite>();
 
     public RMFindTranslatables(App app, final ObjectRootHandle ilo) {
         super(app);
-        objIdName = app.odb.getIdByObjectOrThrow(ilo);
         objRoot = ilo;
     }
 
@@ -73,14 +71,16 @@ public class RMFindTranslatables extends App.Svc {
     }
 
     public void addSitesFromCommonEvents(IRIO[] commonEvents, final ICommandClassifier.Instance cf) {
-        SchemaElement sch = app.sdb.findSchemaFor(objIdName, objRoot.getObject());
+        SchemaElement sch = objRoot.rootSchema;
         if (sch == null) {
             app.ui.launchDialog(T.u.cCommonEventsNoSchema);
         } else {
             SchemaPath rootSP = new SchemaPath(sch, objRoot);
             EventCommandArraySchemaElement ecase = RMFindTranslatables.getEventCommandArraySchemaElement(app, "EventListEditor");
             for (IRIO rio : commonEvents) {
-                SchemaElement cevElm = app.sdb.findSchemaFor(null, rio);
+                // It sure would be nice if the common events schema was properly noted down...
+                // Ok a lot of stuff like that could be said honestly about the whole apparatus
+                SchemaElement cevElm = app.sdb.findSchemaFor(rio);
                 if (cevElm == null) {
                     app.ui.launchDialog(T.u.cCommonEventsNoSchema2);
                     return;

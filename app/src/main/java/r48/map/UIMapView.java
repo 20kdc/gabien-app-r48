@@ -74,8 +74,8 @@ public class UIMapView extends UIPlaneView {
     // Used to control shouldDrawAt visuals
     private boolean visCurrentlyDrawing = false;
 
-    // Set a string here to schedule a performRefresh for next update.
-    private @Nullable String scheduledRefresh;
+    // Set this to schedule a performRefresh for next update.
+    private boolean scheduledRefresh = false;
 
     // Regarding how these now work:
     // Modification listeners have to be held by the things that need to be notified.
@@ -83,18 +83,18 @@ public class UIMapView extends UIPlaneView {
     private Consumer<SchemaPath> listener = (sp) -> {
         // this must be deferred until after the actual changes are done to prevent a crash on adding a page to XP events
         // also multiple modifications may happen at the same time, so that would be bad!
-        scheduledRefresh = app.odb.getIdByObject(sp.root);
+        scheduledRefresh = true;
     };
 
     private String[] listenAdditionals = new String[0];
 
-    private void performRefresh(String cause) {
+    private void performRefresh() {
         // Not an incredibly high-cost operation, thankfully,
         //  since it'll have to run on any edits.
         for (String s : listenAdditionals)
             if (!map.objectId.equals(s))
                 app.odb.deregisterModificationHandler(s, listener);
-        mapTable = map.rebuild(cause);
+        mapTable = map.rebuild();
         listenAdditionals = mapTable.refreshOnObjectChange;
         for (String s : listenAdditionals)
             if (!map.objectId.equals(s))
@@ -114,7 +114,7 @@ public class UIMapView extends UIPlaneView {
         map = app.system.mapViewRequest(mapN, true);
         mapGUM = mapN;
         app.odb.registerModificationHandler(map.objectId, listener);
-        performRefresh(null);
+        performRefresh();
 
         tileSize = mapTable.renderer.tileRenderer.tileSize;
         showTile(mapTable.width / 2, mapTable.height / 2);
@@ -145,10 +145,9 @@ public class UIMapView extends UIPlaneView {
 
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
-        if (scheduledRefresh != null) {
-            String cause = scheduledRefresh;
-            scheduledRefresh = null;
-            performRefresh(cause);
+        if (scheduledRefresh) {
+            scheduledRefresh = false;
+            performRefresh();
         }
         shiftDown = false;
         ctrlDown = false;
@@ -382,7 +381,7 @@ public class UIMapView extends UIPlaneView {
         app.stuffRendererIndependent.imageLoader.flushCache();
         if (view != null) {
             view.mapTable.renderer.imageLoader.flushCache();
-            view.performRefresh(null);
+            view.performRefresh();
             view.mapTable.renderer.imageLoader.flushCache();
             view.reinitLayerVis();
         }

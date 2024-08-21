@@ -64,11 +64,6 @@ public final class ObjectDB extends AppCore.Csv {
             return ((ODBHandle) obj).id;
         return null;
     }
-    public @NonNull String getIdByObjectOrThrow(ObjectRootHandle obj) {
-        if (obj instanceof ODBHandle)
-            return ((ODBHandle) obj).id;
-        throw new RuntimeException("Unable to get ID of " + obj.toString());
-    }
 
     private DMContext createDM3Context() {
         AtomicReference<DMContext> dmcx = new AtomicReference<DMContext>();
@@ -109,7 +104,7 @@ public final class ObjectDB extends AppCore.Csv {
         ODBHandle rootHandle;
         SchemaElement ise = app.system.mapObjectIDToSchema(id);
         if (rio == null) {
-            if (ise != null) {
+            if (create && ise != null) {
                 // Note that the setup of the object counts as part of the object's unpack license.
                 // This is INTENTIONAL. It stops SEVERE crashes when undoing the new map operation.
                 try (Block license = context.changes.openUnpackLicense()) {
@@ -131,13 +126,6 @@ public final class ObjectDB extends AppCore.Csv {
         }
         objectMap.put(id, new WeakReference<ODBHandle>(rootHandle));
         return rootHandle;
-    }
-
-    public boolean getObjectModified(String id) {
-        ObjectRootHandle potentiallyModified = tryGetObjectInternal(id);
-        if (potentiallyModified != null)
-            return modifiedObjects.contains(potentiallyModified);
-        return false;
     }
 
     public boolean getObjectNewlyCreated(String id) {
@@ -199,19 +187,16 @@ public final class ObjectDB extends AppCore.Csv {
         // Mark them all down for removal from modifiedObjects later.
         LinkedList<ODBHandle> pokedObjects = new LinkedList<>();
         for (ODBHandle lo : modifiedObjects) {
-            String id = getIdByObject(lo);
-            if (id != null) {
-                DMContext context = createDM3Context();
-                IObjectBackend.ILoadedObject newVal;
-                try (Block license = context.changes.openUnpackLicense()) {
-                    newVal = backend.loadObject(id, context);
-                }
-                if (newVal != null) {
-                    // Try doing things just by overwriting the internals, otherwise deep-clone
-                    if (!lo.ilo.overwriteWith(newVal))
-                        lo.getObject().setDeepClone(newVal.getObject());
-                    pokedObjects.add(lo);
-                }
+            DMContext context = createDM3Context();
+            IObjectBackend.ILoadedObject newVal;
+            try (Block license = context.changes.openUnpackLicense()) {
+                newVal = backend.loadObject(lo.id, context);
+            }
+            if (newVal != null) {
+                // Try doing things just by overwriting the internals, otherwise deep-clone
+                if (!lo.ilo.overwriteWith(newVal))
+                    lo.getObject().setDeepClone(newVal.getObject());
+                pokedObjects.add(lo);
             }
         }
         // Perform modification listeners.

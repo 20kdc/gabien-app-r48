@@ -52,7 +52,7 @@ public class IkaSystem extends MapSystem {
         final IEventAccess events = new TraditionalEventAccess(app, gum, "@events", 0, "IkachanEvent");
         return new MapViewDetails(app, gum, map) {
             @Override
-            public MapViewState rebuild(String changed) {
+            public MapViewState rebuild() {
                 StuffRenderer sr = rendererGeneral();
                 return MapViewState.fromRT(sr, StuffRenderer.prepareTraditional(app, sr, new int[] {0}, map.getObject(), events, "Back", true, true, 0, 0, -1, -1, 1), null, gum, new String[] {}, map.getObject(), "@data", false, events, false, false);
             }

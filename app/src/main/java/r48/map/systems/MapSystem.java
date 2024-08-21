@@ -371,7 +371,7 @@ public abstract class MapSystem extends App.Svc {
         /**
          * Rebuilds the MapViewState on a change.
          */
-        public abstract MapViewState rebuild(String changed);
+        public abstract MapViewState rebuild();
 
         /**
          * Creates a toolbar.

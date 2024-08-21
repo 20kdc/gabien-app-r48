@@ -10,6 +10,7 @@ package r48.app;
 import gabien.ui.*;
 import r48.AdHocSaveLoad;
 import r48.App;
+import r48.dbs.ObjectDB.ODBHandle;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -55,7 +56,7 @@ public class AppMain {
     private static void performSystemDumpBodyInto(App app, IRIO n) {
         IRIO h = n.addIVar("@objects");
         h.setHash();
-        for (ObjectRootHandle rio : app.odb.modifiedObjects) {
+        for (ODBHandle rio : app.odb.modifiedObjects) {
             String s = app.odb.getIdByObject(rio);
             if (s != null)
                 h.addHashVal(DMKey.ofStr(s)).setDeepClone(rio.getObject());

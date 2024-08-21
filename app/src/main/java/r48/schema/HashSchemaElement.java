@@ -62,7 +62,7 @@ public class HashSchemaElement extends SchemaElement {
         }
         final IRIO keyWorkspace = preWorkspace;
 
-        final SchemaPath rioPath = new SchemaPath(keyElem, new ObjectRootHandle.Isolated(keyElem, keyWorkspace) {
+        final SchemaPath rioPath = new SchemaPath(keyElem, new ObjectRootHandle.Isolated(keyElem, keyWorkspace, "KeyWorkspace") {
             @Override
             public void objectRootModifiedPass(SchemaPath path) {
                 super.objectRootModifiedPass(path);

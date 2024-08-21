@@ -66,7 +66,7 @@ public class R2kCommandSchemaTest {
         App app = new TestKickstart().kickstart("RAM/", "UTF-8", "r2k");
         rpgEvInst = new Event(new DMContext(DMChangeTracker.Null.TESTS, StandardCharsets.UTF_8));
         rpgEv = app.sdb.getSDBEntry("RPG::Event");
-        rpgEvP = new SchemaPath(rpgEv, new ObjectRootHandle.Isolated(rpgEv, rpgEvInst));
+        rpgEvP = new SchemaPath(rpgEv, new ObjectRootHandle.Isolated(rpgEv, rpgEvInst, "rpgEvP"));
         rpgEv.modifyVal(rpgEvInst, rpgEvP, true);
         return app;
     }

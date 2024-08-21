@@ -89,12 +89,9 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
     public String toString() {
         if (innerElem == null)
             return "(how'd you manage this then?)";
-        String rootName = app.odb.getIdByObject(innerElem.root);
-        if (rootName == null)
-            rootName = "AnonObject";
-        String name = rootName;
+        String name = innerElem.root.toString();
         name += innerElem.windowTitleSuffix();
-        if (app.odb.getObjectModified(rootName))
+        if (app.odb.modifiedObjects.contains(innerElem.root))
             name += "*";
         return name;
     }

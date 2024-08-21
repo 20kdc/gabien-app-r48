@@ -248,7 +248,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             final LcfTileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader); 
             return new MapViewDetails(app, obj, root) {
                 @Override
-                public MapViewState rebuild(String changed) {
+                public MapViewState rebuild() {
                     int mapId = (int) root.getObject().getIVar("@party_pos").getIVar("@map").getFX();
 
                     final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(mapId);
@@ -295,8 +295,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     return null;
                 return new MapViewDetails(app, mvd.objectId, mvd.object) {
                     @Override
-                    public MapViewState rebuild(String changed) {
-                        return mvd.rebuild(changed);
+                    public MapViewState rebuild() {
+                        return mvd.rebuild();
                     }
                     @Override
                     public IEditingToolbarController makeToolbar(IMapToolContext context) {
@@ -317,7 +317,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         final LcfTileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader);
         return new MapViewDetails(app, objn, map) {
             @Override
-            public MapViewState rebuild(String changed) {
+            public MapViewState rebuild() {
                 long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
                 IRIO lastTileset = tsoById(currentTsId);
                 tileRenderer.checkReloadTSO(lastTileset);

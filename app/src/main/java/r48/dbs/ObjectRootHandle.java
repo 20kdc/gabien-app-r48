@@ -99,9 +99,16 @@ public abstract class ObjectRootHandle {
      */
     public static class Isolated extends ObjectRootHandle {
         private final IRIO object;
-        public Isolated(@Nullable SchemaElement rootSchema, IRIO o) {
+        private final String name;
+        public Isolated(@Nullable SchemaElement rootSchema, IRIO o, String name) {
             super(rootSchema);
             this.object = o;
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
         }
 
         @Override

@@ -165,7 +165,7 @@ public class AppUI extends App.Svc {
                 for (Map.Entry<String, WeakReference<ODBHandle>> s : app.odb.objectMap.entrySet()) {
                     ObjectRootHandle ilo = s.getValue().get();
                     if (ilo != null) {
-                        boolean modified = app.odb.getObjectModified(s.getKey());
+                        boolean modified = app.odb.modifiedObjects.contains(ilo);
                         data[idx++] = s.getKey() + (modified ? "* " : " ") + app.odb.countModificationListeners(ilo) + "ML";
                     }
                 }

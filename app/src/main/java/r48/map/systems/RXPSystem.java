@@ -160,7 +160,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         final TSOAwareTileRenderer tileRenderer = createTileRenderer();
         return new MapViewDetails(app, gum, map) {
             @Override
-            public MapViewState rebuild(String changed) {
+            public MapViewState rebuild() {
                 long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
                 IRIO lastTileset = tsoById(app, currentTsId);
                 tileRenderer.checkReloadTSO(lastTileset);

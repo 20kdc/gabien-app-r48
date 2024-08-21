@@ -119,7 +119,7 @@ public class SchemaPath {
      * It is best to think of the schema use here as an implementation detail.
      */
     public static void setDefaultValue(@NonNull IRIO target, @NonNull SchemaElement ise, @Nullable DMKey arrayIndex) {
-        ObjectRootHandle dvRoot = new ObjectRootHandle.Isolated(ise, target);
+        ObjectRootHandle dvRoot = new ObjectRootHandle.Isolated(ise, target, "setDefaultValue");
         ise.modifyVal(target, new SchemaPath(ise, dvRoot).arrayHashIndex(arrayIndex, "AnonObject"), true);
     }
 

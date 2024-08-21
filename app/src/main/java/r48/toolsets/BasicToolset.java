@@ -253,7 +253,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     app.ui.launchPrompt(T.u.prSchemaID, (s) -> {
                         SchemaElement se = app.sdb.getSDBEntry(s);
                         IRIOGeneric tmp = new IRIOGeneric(app.ctxWorkspaceAppEncoding);
-                        final ObjectRootHandle rio = new ObjectRootHandle.Isolated(se, tmp);
+                        final ObjectRootHandle rio = new ObjectRootHandle.Isolated(se, tmp, "AnonObject");
                         SchemaPath.setDefaultValue(tmp, se, DMKey.NULL);
                         app.ui.launchSchema(rio, null);
                     });
@@ -443,7 +443,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     if (app.theClipboard == null) {
                         app.ui.launchDialog(T.u.dlgClipEmpty);
                     } else {
-                        app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard, new ObjectRootHandle.Isolated(null, (IRIO) app.theClipboard)));
+                        app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard, new ObjectRootHandle.Isolated(null, (IRIO) app.theClipboard, "theClipboard")));
                     }
                 }
         }, app.f.statusBarTH);

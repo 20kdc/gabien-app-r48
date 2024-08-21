@@ -137,7 +137,7 @@ public class LocalTestExecutiveTest {
                 IObjectBackend.ILoadedObject objectInternalCopyILO;
                 try (Block license = monitor.changes.openUnpackLicense()) {
                     objectInternalCopyILO = app.odb.backend.newObject(s, monitor);
-                    objectInternalCopy = new ObjectRootHandle.Isolated(objectUnderTest.rootSchema, objectInternalCopyILO.getObject());
+                    objectInternalCopy = new ObjectRootHandle.Isolated(objectUnderTest.rootSchema, objectInternalCopyILO.getObject(), "objectInternalCopy");
                 }
 
                 // should trigger lots of savestates which will help debug if there are any exceptions lurking

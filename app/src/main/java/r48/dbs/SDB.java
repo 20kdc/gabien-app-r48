@@ -122,14 +122,7 @@ public class SDB extends AppCore.Csv {
         return fd;
     }
 
-    public @Nullable SchemaElement findSchemaFor(@NonNull ObjectRootHandle ilo) {
-        return findSchemaFor(app.odb.getIdByObject(ilo), ilo.getObject());
-    }
-
-    public @Nullable SchemaElement findSchemaFor(@Nullable String objId, @NonNull IRIO object) {
-        if (objId != null)
-            if (hasSDBEntry("File." + objId))
-                return getSDBEntry("File." + objId);
+    public @Nullable SchemaElement findSchemaFor(@NonNull IRIO object) {
         if (object.getType() == 'o')
             return getSDBEntry(object.getSymbol());
         return null;

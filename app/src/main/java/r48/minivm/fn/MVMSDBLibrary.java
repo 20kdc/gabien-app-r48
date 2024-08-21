@@ -13,6 +13,7 @@ import datum.DatumSrcLoc;
 import r48.App;
 import r48.dbs.SDBOldParser;
 import r48.minivm.MVMEnv;
+import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMType;
 import r48.minivm.MVMU;
 import r48.schema.SchemaElement;
@@ -50,11 +51,11 @@ public class MVMSDBLibrary {
             return null;
         }, "(cmdb-load-old ID FILE) : Read old-format CMDB file.");
 
-        ctx.defLib("sdb-get", MVMType.ANY, MVMType.ANY, (a0) -> {
+        ctx.defLib("sdb-get", MVMEnvR48.SCHEMAELEMENT_TYPE, MVMType.ANY, (a0) -> {
             return app.sdb.getSDBEntry(MVMU.coerceToString(a0));
         }, "(sdb-get ID) : Gets a SchemaElement from SDB.");
 
-        ctx.defLib("sdb-set", MVMType.ANY, MVMType.ANY, MVMType.typeOfClass(SchemaElement.class), (a0, a1) -> {
+        ctx.defLib("sdb-set", MVMType.ANY, MVMType.ANY, MVMEnvR48.SCHEMAELEMENT_TYPE, (a0, a1) -> {
             app.sdb.setSDBEntry(MVMU.coerceToString(a0), (SchemaElement) a1);
             return null;
         }, "(sdb-set ID SE) : Puts a SchemaElement into SDB.");
@@ -67,5 +68,11 @@ public class MVMSDBLibrary {
             app.idc.add(new IDChangerEntry((FF0) a0, potential.toArray(new SchemaElement[0])));
             return null;
         }, "(idchanger-add TITLE SCHEMAIDS) : Adds an ID changer to the RMTools ID changer menu.");
+    }
+
+    public static SchemaElement coerceToElement(App app, Object elm) {
+        if (elm instanceof SchemaElement)
+            return (SchemaElement) elm;
+        return app.sdb.getSDBEntry(MVMU.coerceToString(elm));
     }
 }
