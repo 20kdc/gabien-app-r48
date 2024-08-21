@@ -66,13 +66,8 @@ public class MVMSDBElementsLibrary extends App.Svc {
     }
 
     @Defun(n = "se-new-aggregate", r = 0)
-    @Help("Creates a new aggregate from the given elements.")
-    public SchemaElement newAggregate(SchemaElement... elements) {
-        return new AggregateSchemaElement(app, elements);
-    }
-
-    @Defun(n = "se-new-aggregate-list", r = 0)
     @Help("Creates a new aggregate from the given list of elements.")
+    @Example("(ui-test-schema (se-new-aggregate (list (se-new-label (define-tr test1 \"A\")) (se-new-label (define-tr test2 \"B\")) )))")
     public SchemaElement newAggregate(List<SchemaElement> elements) {
         return new AggregateSchemaElement(app, elements.toArray(new SchemaElement[0]));
     }

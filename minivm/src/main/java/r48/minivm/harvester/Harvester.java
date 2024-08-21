@@ -47,17 +47,7 @@ public class Harvester {
                 retTypeReal = MVMType.typeOfClass(retType);
             }
             Parameter[] paramsJ = m.getParameters();
-            MVMType[] paramsV;
-            MVMType paramsVA;
-            if (paramsJ.length > 0 && paramsJ[paramsJ.length - 1].isVarArgs()) {
-                // VA case
-                paramsV = new MVMType[paramsJ.length - 1];
-                paramsVA = MVMType.typeOfClass(paramsJ[paramsJ.length - 1].getType().getComponentType());
-            } else {
-                // Regular case
-                paramsV = new MVMType[paramsJ.length];
-                paramsVA = null;
-            }
+            MVMType[] paramsV = new MVMType[paramsJ.length];
             for (int i = 0; i < paramsV.length; i++)
                 paramsV[i] = MVMType.typeOfClass(paramsJ[i].getType());
 
@@ -67,8 +57,6 @@ public class Harvester {
             for (int i = 0; i < paramsJ.length; i++) {
                 helpBuilder.append(" A");
                 helpBuilder.append(i);
-                if (paramsJ[i].isVarArgs())
-                    helpBuilder.append("...");
             }
             helpBuilder.append("): ");
             if (defH != null) {
@@ -77,48 +65,28 @@ public class Harvester {
                 helpBuilder.append(MVMSlot.DEFAULT_HELP);
             }
 
-            into.defineSlot(new DatumSymbol(def.n()), new MVMFn.VATyped(new MVMType.Fn(retTypeReal, def.r(), paramsV, paramsVA), def.n()) {
+            into.defineSlot(new DatumSymbol(def.n()), new MVMFn.VATyped(new MVMType.Fn(retTypeReal, def.r(), paramsV, null), def.n()) {
                 @Override
                 protected Object callIndirect(Object[] args) {
                     if (args.length < def.r())
                         throw new RuntimeException("under required arg count @ " + this);
-                    if (paramsVA != null) {
-                        int mainArgs = paramsV.length;
-                        if (args.length < mainArgs)
-                            mainArgs = args.length;
-                        int extraVAArgs = args.length - paramsV.length;
-                        if (extraVAArgs < 0)
-                            extraVAArgs = 0;
-                        Object[] cleanup = new Object[extraVAArgs];
-                        if (extraVAArgs != 0)
-                            System.arraycopy(args, paramsV.length, cleanup, 0, cleanup.length);
-                        Object[] finale = new Object[paramsV.length + 1];
-                        System.arraycopy(args, 0, finale, 0, mainArgs);
-                        finale[paramsV.length] = cleanup;
+                    if (args.length > paramsV.length) {
+                        throw new RuntimeException("too many args @ " + this);
+                    } else if (args.length < paramsV.length) {
+                        // pad
+                        Object[] argsPadded = new Object[paramsV.length];
+                        System.arraycopy(args, 0, argsPadded, 0, args.length);
                         try {
-                            return m.invoke(library, finale);
+                            return m.invoke(library, argsPadded);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }
                     } else {
-                        if (args.length > paramsV.length) {
-                            throw new RuntimeException("too many args @ " + this);
-                        } else if (args.length < paramsV.length) {
-                            // pad
-                            Object[] argsPadded = new Object[paramsV.length];
-                            System.arraycopy(args, 0, argsPadded, 0, args.length);
-                            try {
-                                return m.invoke(library, argsPadded);
-                            } catch (Exception ex) {
-                                throw new RuntimeException(ex);
-                            }
-                        } else {
-                            // 1:1 match with paramsV
-                            try {
-                                return m.invoke(library, args);
-                            } catch (Exception ex) {
-                                throw new RuntimeException(ex);
-                            }
+                        // 1:1 match with paramsV
+                        try {
+                            return m.invoke(library, args);
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
                         }
                     }
                 }
