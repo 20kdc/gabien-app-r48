@@ -4,21 +4,22 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.minivm.fn;
+package r48.minivm.harvester;
 
-import r48.App;
-import r48.minivm.MVMEnvR48;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * MiniVM standard library.
- * Created 10th March 2023.
+ * Information about how to use this D/MVM function.
+ * Created 22nd August, 2024.
  */
-public class MVMR48AppLibraries {
-    public static void add(MVMEnvR48 ctx, App app) {
-        MVMR48GlobalLibraries.add(ctx);
-        MVMDMAppLibrary.add(ctx, app);
-        MVMSDBLibrary.add(ctx, app);
-        ctx.install(new MVMSDBElementsLibrary(app));
-        MVMAppUILibrary.add(ctx, app);
-    }
+@Documented
+@Retention(RUNTIME)
+@Target(METHOD)
+public @interface Example {
+    String value();
 }

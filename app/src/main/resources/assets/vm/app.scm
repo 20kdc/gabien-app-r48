@@ -10,3 +10,6 @@
 
 (define-syntax (fmt-at base path) (list dm-fmt (list dm-at base path)))
 (help-set! fmt-at "(fmt-at BASE PATH) : (dm-fmt (dm-at BASE PATH))")
+
+(define (ui-test-schema schema) (ui-view (root-new schema "TestObject") dp-empty))
+(help-set! ui-test-schema "(ui-test-schema SCHEMA) : Show a new disconnected object with this schema.")

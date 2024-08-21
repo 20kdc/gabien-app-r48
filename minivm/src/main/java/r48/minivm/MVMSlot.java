@@ -20,6 +20,11 @@ import r48.minivm.expr.MVMCExpr;
  * Pulled out of MVMEnv 10th March 2023.
  */
 public final class MVMSlot extends MVMCExpr {
+    /**
+     * Default internal help, don't translate (would need context we don't have)
+     */
+    public static final String DEFAULT_HELP = "No help is available for this value at this time.";
+
     public final DatumSymbol s;
     /**
      * Because definitions can be recursive, we might not know the type of a slot at creation time.
@@ -31,7 +36,7 @@ public final class MVMSlot extends MVMCExpr {
     /**
      * Help information. Non-translatable.
      */
-    public @Nullable String help = "No help is available for this value at this time.";
+    public @Nullable String help = DEFAULT_HELP;
 
     public MVMSlot(DatumSymbol s, MVMType t) {
         super(t);

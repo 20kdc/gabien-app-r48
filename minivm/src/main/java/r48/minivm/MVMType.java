@@ -102,6 +102,14 @@ public abstract class MVMType {
      * Gets the MVMType of a class.
      */
     public static MVMType typeOfClass(@NonNull Class<?> cls) {
+        if (cls == boolean.class)
+            return BOOL;
+        if (cls == long.class)
+            return I64;
+        if (cls == double.class)
+            return F64;
+        if (cls == char.class)
+            return CHAR;
         // fast-path
         MVMType typeA = classMap.get(cls);
         if (typeA != null)

@@ -28,6 +28,7 @@ import r48.minivm.compiler.MVMToplevelScope;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.fn.MVMFn;
 import r48.minivm.fn.MVMJLambdaConv;
+import r48.minivm.harvester.Harvester;
 
 /**
  * MiniVM environment.
@@ -208,5 +209,12 @@ public class MVMEnv {
         MVMFn f2 = MVMJLambdaConv.c(s, rt, t0, t1, t2, t3, fn);
         defineSlot(new DatumSymbol(s), f2).help(help);
         return f2;
+    }
+
+    /**
+     * Installs a library using Harvester.
+     */
+    public void install(Object lib) {
+        Harvester.harvest(this, lib);
     }
 }

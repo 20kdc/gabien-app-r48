@@ -104,9 +104,9 @@ public abstract class MVMFn extends MVMHelpable implements IMVMTypable {
     /**
      * Always uses callIndirect.
      */
-    public static abstract class VA extends MVMFn {
-        public VA(String nh) {
-            super(new MVMType.Fn(MVMType.ANY), nh);
+    public static abstract class VATyped extends MVMFn {
+        public VATyped(MVMType.Fn type, String nh) {
+            super(type, nh);
         }
 
         public final Object callDirect() {
@@ -123,6 +123,15 @@ public abstract class MVMFn extends MVMHelpable implements IMVMTypable {
         }
         public final Object callDirect(Object a0, Object a1, Object a2, Object a3) {
             return callIndirect(new Object[] {a0, a1, a2, a3});
+        }
+    }
+
+    /**
+     * Always uses callIndirect.
+     */
+    public static abstract class VA extends VATyped {
+        public VA(String nh) {
+            super(new MVMType.Fn(MVMType.ANY), nh);
         }
     }
 

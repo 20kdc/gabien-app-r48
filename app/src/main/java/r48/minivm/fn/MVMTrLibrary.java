@@ -15,7 +15,9 @@ import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMType;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.expr.MVMCExpr;
+import r48.tr.DynTrBase;
 import r48.tr.DynTrSlot;
+import r48.tr.TrPage.FF1;
 
 /**
  * Translation library.
@@ -79,8 +81,8 @@ public class MVMTrLibrary {
             LinkedList<Object> l = new LinkedList<>();
             for (int i = 1; i < call.length; i++)
                 l.add(call[i]);
-            ((MVMEnvR48) cs.context).dTrName(cs.topLevelSrcLoc, ((DatumSymbol) call[0]).id, l, isNLS);
-            return null;
+            FF1 res = ((MVMEnvR48) cs.context).dTrName(cs.topLevelSrcLoc, ((DatumSymbol) call[0]).id, l, isNLS);
+            return new MVMCExpr.Const(res, MVMType.typeOfClass(FF1.class));
         }
     }
     public static class DefineTr extends MVMMacro {
@@ -95,8 +97,8 @@ public class MVMTrLibrary {
         public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
             if (call.length != 2)
                 throw new RuntimeException("define-tr has a name and a value");
-            ((MVMEnvR48) cs.context).dynTrBase(cs.topLevelSrcLoc, ((DatumSymbol) call[0]).id, mode, call[1], isNLS);
-            return null;
+            DynTrBase res = ((MVMEnvR48) cs.context).dynTrBase(cs.topLevelSrcLoc, ((DatumSymbol) call[0]).id, mode, call[1], isNLS);
+            return new MVMCExpr.Const(res, MVMType.typeOfClass(DynTrBase.class));
         }
     }
 }

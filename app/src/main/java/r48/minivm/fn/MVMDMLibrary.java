@@ -220,7 +220,10 @@ public class MVMDMLibrary {
         // setDeepClone
         // getBuffer
     }
-    private static DMKey dmKeyify(Object v) {
+    /**
+     * Turn a value into a DMKey.
+     */
+    public static DMKey dmKeyify(Object v) {
         if (v == null) {
             return DMKey.NULL;
         } else if (v instanceof DMKey) {
