@@ -11,8 +11,11 @@ import gabien.ui.UIElement;
 import r48.App;
 import r48.app.AppCore;
 import r48.io.data.IRIO;
+import r48.minivm.MVMEnvR48;
+import r48.minivm.MVMSlot;
 import r48.schema.*;
 import r48.schema.arrays.*;
+import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -26,6 +29,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import datum.DatumSrcLoc;
+import datum.DatumSymbol;
 
 /**
  * The ultimate database, more or less, since this houses the data definitions needed to do things like edit Events.
@@ -33,19 +37,10 @@ import datum.DatumSrcLoc;
  * Created on 12/30/16.
  */
 public class SDB extends AppCore.Csv {
-    // The very unsafe option which will turn on all sorts of automatic script helper functions.
-    // Some of which currently WILL destroy scripts. 315, map29
-    // Ok, so I've checked in various ways and done a full restore from virgin copy.
-    // I've used UITest to avoid triggering any potentially destructive Schema code.
-    // The answer is the same:
-    // Entries 9 and 10 of entity 315, in the Map029 file, contain a duplicate Leave Block.
-    // I have no idea how this was managed.
-    // On another note, app.engine.allowIndentControl now contains the option this comment block refers to.
-
-    private HashMap<String, SchemaElement> schemaDatabase = new HashMap<>();
     private LinkedList<DynamicSchemaUpdater> dictionaryUpdaterRunnables = new LinkedList<>();
     private LinkedList<Runnable> mergeRunnables = new LinkedList<>();
     private HashMap<String, DatumSrcLoc> remainingExpected = new HashMap<>();
+    private LinkedList<EventCommandArraySchemaElement> eventCommandArrays = new LinkedList<>();
 
     public final StandardArrayInterface standardArrayUi = new StandardArrayInterface();
 
@@ -58,17 +53,35 @@ public class SDB extends AppCore.Csv {
             throw new RuntimeException("Remaining expectation " + remainingExpected.entrySet().iterator().next());
     }
 
+    private MVMSlot ensureSDBEntrySlot(String text) {
+        MVMSlot slot = app.vmCtx.ensureSlot(new DatumSymbol("SDB." + text));
+        slot.help = null;
+        slot.type = MVMEnvR48.SCHEMAELEMENT_TYPE;
+        return slot;
+    }
+
     public boolean hasSDBEntry(String text) {
-        return schemaDatabase.containsKey(text);
+        return app.vmCtx.getSlot(new DatumSymbol("SDB." + text)) != null;
+    }
+
+    /**
+     * Added for liblcf#245, not really something app should use otherwise
+     */
+    public HashSet<String> getAllSDBEntryIDs() {
+        HashSet<String> res = new HashSet<>();
+        for (MVMSlot slot : app.vmCtx.listSlots())
+            if (slot.s.id.startsWith("SDB."))
+                res.add(slot.s.id.substring(4));
+        return res;
     }
 
     public void setSDBEntry(final String text, SchemaElement ise) {
         remainingExpected.remove(text);
-        SchemaElement se = schemaDatabase.get(text);
-        if (se == null) {
-            schemaDatabase.put(text, ise);
-        } else if (se instanceof NameProxySchemaElement) {
-            ((NameProxySchemaElement) se).cache = ise;
+        MVMSlot ms = ensureSDBEntrySlot(text);
+        if (ms.v == null) {
+            ms.v = ise;
+        } else if (ms.v instanceof NameProxySchemaElement) {
+            ((NameProxySchemaElement) ms.v).cache = ise;
         } else {
             throw new RuntimeException("Cannot override SE " + text);
         }
@@ -79,35 +92,28 @@ public class SDB extends AppCore.Csv {
     }
 
     public SchemaElement getSDBEntry(final String text, final DatumSrcLoc location) {
-        SchemaElement tmp = schemaDatabase.get(text);
-        if (tmp != null)
-            return tmp;
+        MVMSlot ms = ensureSDBEntrySlot(text);
+        if (ms.v != null)
+            return (SchemaElement) ms.v;
         // Notably, the proxy is put in the database so the expectation is only added once.
         remainingExpected.put(text, location);
         SchemaElement ise = new NameProxySchemaElement((App) app, text);
-        schemaDatabase.put(text, ise);
+        ms.v = ise;
         return ise;
     }
 
     // Use if and only if you deliberately need the changing nature of a proxy (this disables the cache)
     public DynamicSchemaElement ensureSDBProxy(String text) {
-        if (schemaDatabase.containsKey(text)) {
-            SchemaElement se = schemaDatabase.get(text);
-            if (!(se instanceof DynamicSchemaElement))
+        MVMSlot ms = ensureSDBEntrySlot(text);
+        if (ms.v != null) {
+            if (!(ms.v instanceof DynamicSchemaElement))
                 throw new RuntimeException("DynamicSchemaElement expected: " + text);
-            return (DynamicSchemaElement) se;
+            return (DynamicSchemaElement) ms.v;
         } else {
             DynamicSchemaElement npse = new DynamicSchemaElement((App) app, text);
-            schemaDatabase.put(text, npse);
+            ms.v = npse;
             return npse;
         }
-    }
-
-    /**
-     * Added for liblcf#245, not really something app should use otherwise
-     */
-    public HashSet<String> getAllSDBEntryIDs() {
-        return new HashSet<>(schemaDatabase.keySet());
     }
 
     /**
@@ -133,7 +139,7 @@ public class SDB extends AppCore.Csv {
             dur.sanitize();
         for (Runnable merge : mergeRunnables)
             merge.run();
-        for (String s : schemaDatabase.keySet()) {
+        for (String s : getAllSDBEntryIDs()) {
             if (s.startsWith("File.")) {
                 boolean exists = false;
                 String comp = s.substring(5);
@@ -175,16 +181,15 @@ public class SDB extends AppCore.Csv {
         });
     }
 
-    public Collection<SchemaElement> getAllEntryValues() {
-        LinkedList<SchemaElement> res = new LinkedList<>();
-        for (SchemaElement se : schemaDatabase.values()) {
-            if (se instanceof BaseProxySchemaElement) {
-                res.add(((BaseProxySchemaElement) se).getEntry());
-            } else {
-                res.add(se);
-            }
-        }
-        return res;
+    public void registerECA(EventCommandArraySchemaElement eventCommandArraySchemaElement) {
+        eventCommandArrays.add(eventCommandArraySchemaElement);
+    }
+
+    /**
+     * Used in tests.
+     */
+    public Collection<EventCommandArraySchemaElement> getECAs() {
+        return new LinkedList<>(eventCommandArrays);
     }
 
     public interface DynamicSchemaUpdater extends Runnable {

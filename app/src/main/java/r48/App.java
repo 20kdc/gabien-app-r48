@@ -40,7 +40,6 @@ import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.map.StuffRenderer;
 import r48.map.systems.MapSystem;
-import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMSlot;
 import r48.minivm.fn.MVMR48AppLibraries;
 import r48.schema.AggregateSchemaElement;
@@ -94,9 +93,6 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
 
     // ID changer entries
     public final LinkedList<IDChangerEntry> idc = new LinkedList<>();
-
-    // VM context
-    public final MVMEnvR48 vmCtx;
 
     public final CMDBDB cmdbs;
 
@@ -159,12 +155,6 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
         sdbHelpers = new SDBHelpers(this);
         cmdbs = new CMDBDB(this);
         system = MapSystem.create(this, engine.mapSystem);
-
-        // Y'know, the VM could really be pushed to AppCore, but hmm.
-        // I will say, in R48, everything is dependent on everything else.
-        vmCtx = new MVMEnvR48((str) -> {
-            loadProgress.accept(t.g.loadingProgress.r(str));
-        }, ilg.logTrIssues, ilg.c.language, ilg.strict);
 
         // Alright, the various bits of SDB are completely present but not yet initialized.
         // Run VM code to fill them with data.

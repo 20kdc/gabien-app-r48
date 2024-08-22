@@ -60,6 +60,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         baseElement = new RPGCommandSchemaElement(app, a, b, db, indentControl, true);
         // gets rid of subwindows & proxies
         database = db;
+        app.sdb.registerECA(this);
     }
 
     @Override

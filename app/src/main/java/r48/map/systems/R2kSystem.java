@@ -52,7 +52,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * ...
  * Created on 03/06/17.
  */
-public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSystem {
+public class R2kSystem extends MapSystem implements IRMMapSystem {
     public R2kSystem(App app) {
         super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "", "", new ChainedImageLoader(new IImageLoader[] {
                 new ImageIOImageLoader(app, new XYZImageIOFormat(app.ilg), ".xyz", true),

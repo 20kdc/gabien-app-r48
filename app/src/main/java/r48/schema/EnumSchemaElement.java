@@ -96,12 +96,14 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
         final UIEnumChoice.Option opt = findOption(target);
         UITextButton button = new UITextButton(viewValue(target, Prefix.Prefix, opt), app.f.schemaFieldTH, () -> {
             liveUpdate();
-            launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, (closeIt) -> makeEnumChoiceDialog((integer) -> {
+            TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, path);
+            temp.heldDialog = makeEnumChoiceDialog((integer) -> {
                 target.setDeepClone(integer);
                 path.changeOccurred(false);
                 // Enums can affect parent format, so deal with that now.
-                closeIt.run();
-            }), null, path), target));
+                temp.pleasePopObject();
+            });
+            launcher.pushObject(path.newWindow(temp, target));
         });
         if (opt != null) {
             if (opt.furtherDataButton != null)

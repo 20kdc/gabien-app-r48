@@ -7,7 +7,6 @@
 
 package r48.schema.specialized;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import gabien.ui.UIElement;
@@ -28,19 +27,23 @@ import r48.schema.util.SchemaPath;
  */
 public class TempDialogSchemaChoice extends SchemaElement.Leaf {
     public UIElement heldDialog;
-    public Runnable pleasePopObject;
+    private Runnable pleasePopObject;
     // Returns false if invalid.
     public Supplier<Boolean> update;
     public SchemaPath hPar;
 
-    public TempDialogSchemaChoice(App app, Function<Runnable, UIElement> held, Supplier<Boolean> updater, SchemaPath hr) {
+    public TempDialogSchemaChoice(App app, Supplier<Boolean> updater, SchemaPath hr) {
         super(app);
-        heldDialog = held.apply(() -> {
-            if (pleasePopObject != null)
-                pleasePopObject.run();
-        });
         update = updater;
         hPar = hr;
+    }
+
+    /**
+     * Tries to pop the dialog.
+     */
+    public final void pleasePopObject() {
+        if (pleasePopObject != null)
+            pleasePopObject.run();
     }
 
     @Override

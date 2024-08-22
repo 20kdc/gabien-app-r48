@@ -161,7 +161,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
         final App app = launcher.getApp();
         final TrRoot T = app.t;
-        return new TempDialogSchemaChoice(app, (closeIt) -> new UIEnumChoice(app, (integer) -> {
+        TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, path);
+        temp.heldDialog = new UIEnumChoice(app, (integer) -> {
             long fnv = integer.getFX();
             // NOTE: This just uses ints for everything.
             RPGCommand rc = database.knownCommands.get((int) fnv);
@@ -189,8 +190,9 @@ public class RPGCommandSchemaElement extends SchemaElement {
             // On the one hand, the elements are stale.
             // On the other hand, the elements will be obliterated anyway before reaching the user.
             // This isn't done automatically by UIEnumChoice.
-            closeIt.run();
-        }, categories, T.s.codeAsInOpcode, UIEnumChoice.EntryMode.INT), null, path);
+            temp.pleasePopObject();
+        }, categories, T.s.codeAsInOpcode, UIEnumChoice.EntryMode.INT);
+        return temp;
     }
 
     public @Nullable RPGCommand getRPGCommand(RORIO target) {

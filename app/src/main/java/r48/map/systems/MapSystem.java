@@ -85,6 +85,14 @@ public abstract class MapSystem extends App.Svc {
         return null;
     }
 
+    /**
+     * Returns all dynamic object IDs that are part of the game.
+     * Object IDs that are not part of the game (save files) do not count.
+     */
+    public @NonNull ObjectInfo[] getDynamicObjects() {
+        return new ObjectInfo[0];
+    }
+
     protected static ObjectInfo[] dynamicObjectsFromRM(IRMMapSystem rm) {
         IRMMapSystem.RMMapData[] maps = rm.getAllMaps();
         ObjectInfo[] dobj = new ObjectInfo[maps.length];

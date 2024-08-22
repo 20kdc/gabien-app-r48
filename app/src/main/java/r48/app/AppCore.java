@@ -25,8 +25,8 @@ import r48.dbs.ObjectInfo;
 import r48.dbs.SDB;
 import r48.imageio.ImageIOFormat;
 import r48.io.IObjectBackend;
-import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
+import r48.minivm.MVMEnvR48;
 import r48.tr.pages.TrRoot;
 import r48.ui.Art;
 
@@ -50,6 +50,8 @@ public abstract class AppCore {
     // Main
     public final @NonNull TimeMachine timeMachine;
     public ObjectDB odb;
+    // VM context
+    public final MVMEnvR48 vmCtx;
     public final SDB sdb;
     public MapSystem system;
     public ImageIOFormat[] imageIOFormats;
@@ -94,6 +96,12 @@ public abstract class AppCore {
         // time machine should be before data, because data uses time machine for management
         timeMachine = new TimeMachine(this);
 
+        // Y'know, the VM could really be pushed to AppCore, but hmm.
+        // I will say, in R48, everything is dependent on everything else.
+        vmCtx = new MVMEnvR48((str) -> {
+            loadProgress.accept(t.g.loadingProgress.r(str));
+        }, ilg.logTrIssues, ilg.c.language, ilg.strict);
+
         sdb = new SDB(this);
 
         // initialize everything else that needs initializing, starting with ObjectDB
@@ -107,11 +115,8 @@ public abstract class AppCore {
         HashSet<String> mainSet = new HashSet<String>(odb.objectMap.keySet());
         for (ObjectInfo oi : sdb.listFileDefs())
             mainSet.add(oi.idName);
-        if (system instanceof IDynobjMapSystem) {
-            IDynobjMapSystem idms = (IDynobjMapSystem) system;
-            for (ObjectInfo dobj : idms.getDynamicObjects())
-                mainSet.add(dobj.idName);
-        }
+        for (ObjectInfo dobj : system.getDynamicObjects())
+            mainSet.add(dobj.idName);
         return new LinkedList<String>(mainSet);
     }
 
@@ -120,11 +125,8 @@ public abstract class AppCore {
      */
     public LinkedList<ObjectInfo> getObjectInfos() {
         LinkedList<ObjectInfo> oi = sdb.listFileDefs();
-        if (system instanceof IDynobjMapSystem) {
-            IDynobjMapSystem idms = (IDynobjMapSystem) system;
-            for (ObjectInfo dobj : idms.getDynamicObjects())
-                oi.add(dobj);
-        }
+        for (ObjectInfo dobj : system.getDynamicObjects())
+            oi.add(dobj);
         return oi;
     }
 

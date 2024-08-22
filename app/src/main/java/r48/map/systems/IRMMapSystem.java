@@ -20,7 +20,7 @@ import r48.toolsets.utils.RMTranscriptDumper;
  * Membership implies being an RM engine and some of the universal constants associated with that.
  * Created on 10/06/17.
  */
-public interface IRMMapSystem extends IDynobjMapSystem {
+public interface IRMMapSystem {
     /**
      * Expects `@events` containing events with `@pages` containing `@list`.
      * Pages can have null holes in it because R2k.

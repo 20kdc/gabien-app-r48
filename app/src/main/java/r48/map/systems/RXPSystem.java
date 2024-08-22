@@ -45,7 +45,7 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Created on 03/06/17.
  */
-public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSystem {
+public class RXPSystem extends MapSystem implements IRMMapSystem {
     public RXPSystem(App app) {
         super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "Graphics/", "", new ChainedImageLoader(new IImageLoader[] {
                 new GabienImageLoader(app, ".png"),

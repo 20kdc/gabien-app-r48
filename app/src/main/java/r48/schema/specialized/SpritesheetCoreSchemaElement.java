@@ -42,18 +42,15 @@ public class SpritesheetCoreSchemaElement extends SchemaElement.Leaf {
     public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final ISpritesheetProvider localProvider = provider.apply(target);
         final IRIO actTarg = numberProvider.apply(target);
-        return new UITextButton(text.apply(actTarg), app.f.schemaFieldTH, new Runnable() {
-            @Override
-            public void run() {
-                TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, null, path);
-                final SchemaPath innerPath = path.newWindow(temp, target);
-                temp.heldDialog = new UISpritesheetChoice(app, actTarg.getFX(), localProvider, (integer) -> {
-                    actTarg.setFX(integer);
-                    innerPath.changeOccurred(false);
-                    launcher.popObject(true);
-                });
-                launcher.pushObject(innerPath);
-            }
+        return new UITextButton(text.apply(actTarg), app.f.schemaFieldTH, () -> {
+            TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, path);
+            final SchemaPath innerPath = path.newWindow(temp, target);
+            temp.heldDialog = new UISpritesheetChoice(app, actTarg.getFX(), localProvider, (integer) -> {
+                actTarg.setFX(integer);
+                innerPath.changeOccurred(false);
+                temp.pleasePopObject();
+            });
+            launcher.pushObject(innerPath);
         });
     }
 
