@@ -7,6 +7,9 @@
  This is getting more and more out of date. Oh goodness.
  I recommend reading `dbloader.md`
 
+ Something else to look at is the R48 REPL help.
+ This contains things that have to be accessed via D/MVM, like: AutoTiles file list
+
  THE GLOBAL SCHEMA FILE (this text moved from RXP schema)
  commands:
   ']' Use only if this object is an array - indexes the array.
@@ -53,8 +56,6 @@
 
      This refers to the instance variable @elements of System, as an array of strings.
 
-  'A' Install AutoTiles files.
-   The autotiles system works with a set of autotiles definitions, which must be installed.
   'C' Random stuff (allowIndentControl, name definitions..., access to the super special schema that only works for a given structure...)
   'vm' Runs regular MVM code.
   <

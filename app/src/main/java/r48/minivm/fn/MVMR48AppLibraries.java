@@ -17,7 +17,7 @@ public class MVMR48AppLibraries {
     public static void add(MVMEnvR48 ctx, App app) {
         MVMR48GlobalLibraries.add(ctx);
         MVMDMAppLibrary.add(ctx, app);
-        MVMSDBLibrary.add(ctx, app);
+        ctx.install(new MVMSDBLibrary(app));
         ctx.install(new MVMSDBElementsLibrary(app));
         MVMAppUILibrary.add(ctx, app);
     }

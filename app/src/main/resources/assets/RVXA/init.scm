@@ -7,6 +7,13 @@
 
 (include "RCOM/common")
 
+; ATDBs
+(atdb-bind (list
+	(atdb-load "RVXA/AutoTiles" "RVXA/AutoTileRules")
+	(atdb-load "RVXA/WallAT" "$WallATs$")
+	(atdb-load "RVXA/WaterfallAT")
+))
+
 (sdb-load-old "RVXA/Schema")
 (sdb-load-old "RVXA/SchemaCommandHelpers")
 (sdb-load-old "RCOM/SchemaScript")

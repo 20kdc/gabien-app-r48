@@ -16,6 +16,12 @@
 (include "R2K/vm/general")
 (include "R2K/vm/itemtext")
 
+; ATDBs
+(atdb-bind (list
+	(atdb-load "R2K/AutoTiles" "R2KXPCOM/AutoTileRules")
+	(atdb-load "R2K/WaterATs" "R2K/WaterATRules")
+))
+
 ; General stuff
 (sdb-load-old "R2K/SchemaGeneral")
 

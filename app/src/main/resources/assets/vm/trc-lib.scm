@@ -44,21 +44,19 @@
 (define (tr-dyni-sat ctx apfx path interp prefix)
 	(append!
 		(tr-dyn-cctx-target ctx)
-		(list
-			(list
-				let
-				(list (list
-					(quote tmp$) (tr-dyni-path ctx path)
-				))
-				(list
-					if
-					(list
+		(quasiquote (
+			(
+				let (
+					(tmp$ (unquote (tr-dyni-path ctx path)))
+				)
+				(if
+					(unquote (list
 						eq?
 						(quote tmp$)
 						#nil
-					)
+					))
 					""
-					(list
+					(unquote (list
 						string-append
 						apfx
 						(list
@@ -71,10 +69,10 @@
 							)
 							prefix
 						)
-					)
+					))
 				)
 			)
-		)
+		))
 	)
 )
 (define (tr-dynx-$ ctx apfx path . extra) (cond

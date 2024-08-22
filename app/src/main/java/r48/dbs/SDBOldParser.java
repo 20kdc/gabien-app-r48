@@ -716,10 +716,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     @Override
     public void execCmd(String c, final String[] args, Object[] argsObj, DatumSrcLoc sl) throws IOException {
         srcLoc = sl;
-        if (c.equals("a")) {
-            if (!sdb.hasSDBEntry(args[0]))
-                throw new RuntimeException("Bad Schema Database: 'a' used to expect item " + args[0] + " that didn't exist.");
-        } else if (c.equals(":")) {
+        if (c.equals(":")) {
             if (args.length == 1) {
                 workingObj = new AggregateSchemaElement(app, new SchemaElement[]{});
                 outerContext = args[0];
@@ -825,20 +822,6 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             }
             final DynamicSchemaElement dict = sdb.ensureSDBProxy(args[0]);
             sdb.addDUR(new DictionaryUpdaterRunnable(app, dict, root[0], compilePS(root[1]), args[3].equals("1"), compilePS(args[4]), Integer.parseInt(args[1]), interpret, dataSchema));
-        } else if (c.equals("A")) {
-            // This is needed so the engine actually understands which autotiles map to what
-            int p = 0;
-            app.autoTiles = new ATDB[args.length / 2];
-            for (int i = 0; i < args.length; i += 2) {
-                app.autoTiles[p] = new ATDB(app, args[i]);
-                // This is needed to make actual autotile *placement* work.
-                // In theory, it's independent of the AutoTiles setup,
-                //  so long as the AutoTiles setup's using the same sprite-sheets.
-                // In practice, it's only been tested with the default AutoTiles.txt setup.
-                if (!args[i + 1].equals("."))
-                    app.autoTiles[p].calculateInverseMap(args[i + 1]);
-                p++;
-            }
         } else if (c.equals("C")) {
             if (args[0].equals("md")) {
                 // This is getting changed over for sanity reasons.

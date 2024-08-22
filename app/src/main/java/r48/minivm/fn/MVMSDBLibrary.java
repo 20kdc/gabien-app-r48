@@ -11,11 +11,14 @@ import java.util.List;
 
 import datum.DatumSrcLoc;
 import r48.App;
+import r48.dbs.ATDB;
 import r48.dbs.SDBOldParser;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMType;
 import r48.minivm.MVMU;
+import r48.minivm.harvester.Defun;
+import r48.minivm.harvester.Help;
 import r48.schema.SchemaElement;
 import r48.search.CommandTag;
 import r48.toolsets.utils.IDChangerEntry;
@@ -26,8 +29,12 @@ import r48.tr.TrPage.FF0;
  * MiniVM standard library.
  * Created 10th March 2023.
  */
-public class MVMSDBLibrary {
-    public static void add(MVMEnv ctx, App app) {
+public class MVMSDBLibrary extends App.Svc {
+    public MVMSDBLibrary(App app) {
+        super(app);
+    }
+
+    public void add(MVMEnv ctx) {
         ctx.defLib("sdb-load-old", MVMType.ANY, MVMType.STR, (a0) -> {
             SDBOldParser.readFile(app, (String) a0);
             return null;
@@ -68,6 +75,22 @@ public class MVMSDBLibrary {
             app.idc.add(new IDChangerEntry((FF0) a0, potential.toArray(new SchemaElement[0])));
             return null;
         }, "(idchanger-add TITLE SCHEMAIDS) : Adds an ID changer to the RMTools ID changer menu.");
+    }
+
+
+    @Defun(n = "atdb-load", r = 1)
+    @Help("Loads an ATDB. A0: Primary rule file A1: Inverse rule file (or \"$WallATs$\")")
+    public ATDB loadATDB(String filename, String inverseRules) {
+        ATDB atdb = new ATDB(app, filename);
+        if (inverseRules != null)
+            atdb.calculateInverseMap(inverseRules);
+        return atdb;
+    }
+
+    @Defun(n = "atdb-bind", r = 1)
+    @Help("Binds ATDBs.")
+    public void loadATDB(List<ATDB> atdbs) {
+        app.autoTiles = atdbs.toArray(new ATDB[0]);
     }
 
     public static SchemaElement coerceToElement(App app, Object elm) {

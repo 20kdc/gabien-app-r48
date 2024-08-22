@@ -7,6 +7,11 @@
 
 (include "RCOM/common")
 
+; ATDBs
+(atdb-bind (list
+	(atdb-load "RXP/AutoTiles" "R2KXPCOM/AutoTileRules")
+))
+
 (sdb-load-old "RXP/Schema")
 
 ; Everything needed for map editing.

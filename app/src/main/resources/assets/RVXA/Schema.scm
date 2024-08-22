@@ -6,8 +6,6 @@
 
 ; VX Ace Schema.
 
-(A RVXA/AutoTiles RVXA/AutoTileRules RVXA/WallAT $WallATs$ RVXA/WaterfallAT .)
-
 (D internal_tilesetDictionary \1 Tilesets \0 @name)
 (D internal_mapDictionary \1 MapInfos \1 @name)
 (D internal_itemDictionary \1 Items \0 @name)

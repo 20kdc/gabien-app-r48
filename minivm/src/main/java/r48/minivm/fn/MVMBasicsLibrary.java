@@ -10,13 +10,17 @@ import r48.minivm.MVMU;
 
 import static datum.DatumTreeUtils.*;
 
+import java.util.List;
+
 import datum.DatumSrcLoc;
+import datum.DatumTreeUtils;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMType;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.expr.MVMCBegin;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCIf;
+import r48.minivm.expr.MVMCList;
 import r48.minivm.expr.MVMCWhile;
 
 /**
@@ -27,7 +31,13 @@ public class MVMBasicsLibrary {
     public static void add(MVMEnv ctx) {
         // Scheme library
         ctx.defineSlot(sym("quote"), new Quote())
-            .help("(quote A) | 'A : A is not evaluated. Allows expressing complex structures inline.");
+            .help("(quote A) | (' A) : A is not evaluated. Allows expressing complex structures inline.");
+        ctx.defineSlot(sym("'"), new Quote())
+            .help("(quote A) | (' A) : A is not evaluated. Allows expressing complex structures inline.");
+        ctx.defineSlot(sym("quasiquote"), new Quasiquote())
+            .help("(quasiquote A) | (` A) : Copies A (sometimes shallowly) without evaluating, except for (unquote X) structures.");
+        ctx.defineSlot(sym("`"), new Quasiquote())
+            .help("(quasiquote A) | (' A) : Copies A (sometimes shallowly) without evaluating, except for (unquote X) structures.");
         ctx.defineSlot(sym("begin"), new Begin())
             .help("(begin ...) : Runs a series of expressions and returns the result from the last.");
         ctx.defineSlot(sym("if"), new If(false))
@@ -95,6 +105,37 @@ public class MVMBasicsLibrary {
             if (call.length != 1)
                 throw new RuntimeException("quote expects exactly 1 arg");
             return new MVMCExpr.Const(call[0], MVMType.typeOf(call[0]));
+        }
+    }
+
+    public static final class Quasiquote extends MVMMacro {
+        public Quasiquote() {
+            super("quasiquote");
+        }
+
+        @Override
+        public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
+            if (call.length != 1)
+                throw new RuntimeException("quasiquote expects exactly 1 arg");
+            if (call[0] instanceof List<?>) {
+                List<?> callContents = (List<?>) call[0];
+                if (callContents.isEmpty())
+                    return new MVMCExpr.Const(call[0], MVMType.typeOf(call[0]));
+                Object first = callContents.get(0);
+                if (DatumTreeUtils.isSym(first, "unquote") || DatumTreeUtils.isSym(first, ",")) {
+                    if (callContents.size() != 2)
+                        throw new RuntimeException("unquote expects exactly 1 arg");
+                    return cs.compile(callContents.get(1));
+                }
+                // ok, focus
+                MVMCExpr[] elements = new MVMCExpr[callContents.size()];
+                int i = 0;
+                for (Object o : callContents)
+                    elements[i++] = compile(cs, new Object[] {o});
+                return new MVMCList(elements);
+            } else {
+                return new MVMCExpr.Const(call[0], MVMType.typeOf(call[0]));
+            }
         }
     }
 

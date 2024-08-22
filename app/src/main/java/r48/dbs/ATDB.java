@@ -131,7 +131,7 @@ public class ATDB extends AppCore.Csv {
     }
 
     public void calculateInverseMapRulesEngine(String file) {
-        final LinkedList<Integer> avoidThese = new LinkedList<Integer>();
+        final LinkedList<Integer> avoidThese = new LinkedList<>();
         DBLoader.readFile(app, file, new IDatabase() {
             @Override
             public void newObj(int objId, String objName, DatumSrcLoc sl) {
