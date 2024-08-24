@@ -9,6 +9,8 @@ package r48.ui.dialog;
 
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.elements.UINumberBox;
@@ -25,7 +27,7 @@ public class UISpritesheetChoice extends UIElement.UIProxy {
     public UISplitterLayout rootLayout;
     public UIGrid spriteGrid;
 
-    public UISpritesheetChoice(App app, long oldVal, final ISpritesheetProvider provider, final Consumer<Long> consumer) {
+    public UISpritesheetChoice(App app, long oldVal, final @NonNull ISpritesheetProvider provider, final @NonNull Consumer<Long> consumer) {
         spriteGrid = new UIGrid(app, provider.itemWidth() * app.f.getSpriteScale(), provider.itemHeight() * app.f.getSpriteScale(), provider.itemCount()) {
             @Override
             protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
@@ -33,11 +35,8 @@ public class UISpritesheetChoice extends UIElement.UIProxy {
             }
         };
         spriteGrid.setSelected(provider.mapValToIdx(oldVal));
-        spriteGrid.onSelectionChange = new Runnable() {
-            @Override
-            public void run() {
-                consumer.accept(provider.mapIdxToVal(spriteGrid.getSelected()));
-            }
+        spriteGrid.onSelectionChange = () -> {
+            consumer.accept(provider.mapIdxToVal(spriteGrid.getSelected()));
         };
         final UINumberBox nb = new UINumberBox(oldVal, app.f.dialogWindowTH);
         UISplitterLayout msp = new UISplitterLayout(nb, new UITextButton(app.t.u.spr_num, app.f.dialogWindowTH, () -> {
