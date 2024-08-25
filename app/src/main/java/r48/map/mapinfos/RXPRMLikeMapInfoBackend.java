@@ -83,7 +83,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
 
     @Override
     public void triggerEditInfoOf(long k) {
-        app.ui.launchSchemaTrace(mapInfos, null, new DMPath.Hash(DMKey.of(k)));
+        app.ui.launchSchemaTrace(mapInfos, null, new DMPath.Hash(DMKey.of(k), false));
     }
 
     @Override

@@ -91,7 +91,7 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
 
     @Override
     public void triggerEditInfoOf(long k) {
-        app.ui.launchSchemaTrace(mapTree, null, new DMPath.IVar("@map_infos").withHash(DMKey.of(k)));
+        app.ui.launchSchemaTrace(mapTree, null, new DMPath.IVar("@map_infos", false).withHash(DMKey.of(k)));
     }
 
     @Override

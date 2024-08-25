@@ -51,7 +51,7 @@ public class Config {
     public int borderTheme;
 
     // Global audio volume
-    public float globalVolume;
+    public float globalVolume = 1.0f;
 
     public Config(boolean isMobile) {
         this.isMobile = isMobile;

@@ -18,7 +18,7 @@ import org.eclipse.jdt.annotation.Nullable;
 public abstract class DMPath implements Function<IRIO, IRIO> {
     public static final Empty EMPTY_RELAXED = new Empty(false);
     public static final Empty EMPTY_STRICT = new Empty(true);
-    public static final Fail FAIL = new Fail();
+    public static final Fail FAIL = new Fail(false);
 
     /**
      * Amount of elements that will be returned in traceRoute.
@@ -49,7 +49,7 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
             return getImpl(input);
         } catch (Throwable t) {
             if (strict)
-                throw t;
+                throw new RuntimeException("DMPath.getRO in strict mode...", t);
             t.printStackTrace();
             return null;
         }
@@ -63,7 +63,7 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
             return addImpl(input);
         } catch (Throwable t) {
             if (strict)
-                throw t;
+                throw new RuntimeException("DMPath.add in strict mode...", t);
             t.printStackTrace();
             return null;
         }
@@ -77,7 +77,7 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
             return delImpl(input);
         } catch (Throwable t) {
             if (strict)
-                throw t;
+                throw new RuntimeException("DMPath.del in strict mode...", t);
             t.printStackTrace();
             return null;
         }
@@ -93,7 +93,7 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
             return traceRouteImpl(target, elements, offset);
         } catch (Throwable t) {
             if (strict)
-                throw t;
+                throw new RuntimeException("DMPath.traceRoute in strict mode...", t);
             t.printStackTrace();
             return null;
         }
@@ -162,42 +162,42 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
      * With instance variable.
      */
     public DMPath withIVar(String iv) {
-        return with(new IVar(iv));
+        return with(new IVar(iv, strict));
     }
 
     /**
      * With hash index.
      */
     public DMPath withHash(DMKey hashVal) {
-        return with(new Hash(hashVal));
+        return with(new Hash(hashVal, strict));
     }
 
     /**
      * With array index.
      */
     public DMPath withArray(int index) {
-        return with(new Array(index));
+        return with(new Array(index, strict));
     }
 
     /**
      * With array length.
      */
     public DMPath withArrayLength() {
-        return with(new ArrayLength());
+        return with(new ArrayLength(strict));
     }
 
     /**
      * With default value.
      */
     public DMPath withDefVal() {
-        return with(new HashDefaultValue());
+        return with(new HashDefaultValue(strict));
     }
 
     /**
      * With failure.
      */
     public DMPath withFail() {
-        return with(new Fail());
+        return with(new Fail(strict));
     }
 
     // --- Central Utilities ---
@@ -228,11 +228,11 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
                 return strict ? EMPTY_STRICT : EMPTY_RELAXED;
             if (res.size() == 1)
                 return res.get(0);
-            return new Concat(res.toArray(new DMPath[0]));
+            return new Concat(strict, res.toArray(new DMPath[0]));
         }
 
-        private Concat(DMPath... contents) {
-            super(totalTraceRouteSize(contents), contents[0].strict);
+        private Concat(boolean strict, DMPath... contents) {
+            super(totalTraceRouteSize(contents), strict);
             if (contents.length <= 1)
                 throw new RuntimeException("invalid length");
             components = contents;
@@ -318,8 +318,8 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
     }
 
     public static abstract class Unit extends DMPath {
-        public Unit() {
-            super(1, true);
+        public Unit(boolean strict) {
+            super(1, strict);
         }
 
         @Override
@@ -331,8 +331,8 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
     // --- With Implementors ---
 
     public static final class Fail extends DMPath {
-        private Fail() {
-            super(0, true);
+        private Fail(boolean strict) {
+            super(0, strict);
         }
 
         @Override
@@ -357,7 +357,8 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
     public static final class IVar extends DMPath.Unit {
         public final String key;
 
-        public IVar(String key) {
+        public IVar(String key, boolean strict) {
+            super(strict);
             this.key = key;
         }
 
@@ -394,7 +395,8 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
     public static final class Hash extends DMPath.Unit {
         public final DMKey key;
 
-        public Hash(DMKey key) {
+        public Hash(DMKey key, boolean strict) {
+            super(strict);
             this.key = key;
         }
 
@@ -407,11 +409,15 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
         protected IRIO addImpl(IRIO input) {
             if (input == null)
                 return null;
+            if (input.getType() != '{' && input.getType() != '}')
+                return null;
             return input.addHashVal(key);
         }
         @Override
         protected IRIO delImpl(IRIO input) {
             if (input == null)
+                return null;
+            if (input.getType() != '{' && input.getType() != '}')
                 return null;
             IRIO old = input.getHashVal(key);
             input.removeHashVal(key);
@@ -421,6 +427,8 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
         protected RORIO getImpl(RORIO input) {
             if (input == null)
                 return null;
+            if (input.getType() != '{' && input.getType() != '}')
+                return null;
             return input.getHashVal(key);
         }
     }
@@ -428,7 +436,8 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
     public static final class Array extends DMPath.Unit {
         public final int index;
 
-        public Array(int index) {
+        public Array(int index, boolean strict) {
+            super(strict);
             this.index = index;
         }
 
@@ -441,18 +450,27 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
         protected IRIO addImpl(IRIO input) {
             if (input == null)
                 return null;
+            if (input.getType() != '[')
+                return null;
+            if (index < 0 || index >= input.getALen())
+                return null;
             return input.getAElem(index);
         }
         @Override
         protected RORIO getImpl(RORIO input) {
             if (input == null)
                 return null;
+            if (input.getType() != '[')
+                return null;
+            if (index < 0 || index >= input.getALen())
+                return null;
             return input.getAElem(index);
         }
     }
 
     public static final class ArrayLength extends DMPath.Unit {
-        public ArrayLength() {
+        public ArrayLength(boolean strict) {
+            super(strict);
         }
 
         @Override
@@ -464,12 +482,15 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
         protected RORIO getImpl(RORIO input) {
             if (input == null)
                 return null;
+            if (input.getType() != '[')
+                return null;
             return DMKey.of(input.getALen());
         }
     }
 
     public static final class HashDefaultValue extends DMPath.Unit {
-        public HashDefaultValue() {
+        public HashDefaultValue(boolean strict) {
+            super(strict);
         }
 
         @Override
@@ -481,12 +502,16 @@ public abstract class DMPath implements Function<IRIO, IRIO> {
         protected RORIO getImpl(RORIO input) {
             if (input == null)
                 return null;
+            if (input.getType() != '}')
+                return null;
             return input.getHashDefVal();
         }
 
         @Override
         protected IRIO addImpl(IRIO input) {
             if (input == null)
+                return null;
+            if (input.getType() != '}')
                 return null;
             return input.getHashDefVal();
         }
