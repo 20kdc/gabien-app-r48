@@ -37,9 +37,7 @@ To start using R48 for independent game development:
 
 ## section 4 : build
 
-Build process is a bit of a mess right now. See gabien-common and take notes from there.
-
-What's definitely worth keeping in mind, however, is that the release scripts assume `gabien-common`, `gabien-android`, and `gabien-app-r48` are all in the same directory.
+See [./BUILD.md](./BUILD.md) for this.
 
 ## section 5 : support
 
