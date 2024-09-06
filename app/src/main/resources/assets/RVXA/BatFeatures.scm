@@ -6,14 +6,6 @@
 
 ; VX Ace Battle Features Helpfile
 
-
-;   /\^.^/\
-;  /__/ \__\
-
-; BatFeatures
-
-; (yes I am awful at ASCII art)
-
 ; "features_pi" multiplies all features with the same code and data_id together.
 ;  So in other words, for a given feature code, the data_id has some feature-specific meaning,
 ;   and the value is the multiplier.
