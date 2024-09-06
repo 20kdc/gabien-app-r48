@@ -9,8 +9,9 @@ package r48.app;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
-import datum.DatumKVDVisitor;
+import datum.DatumSrcLoc;
 import datum.DatumVisitor;
+import gabien.datum.DatumKVDVisitor;
 import r48.dbs.DatumLoader;
 
 /**
@@ -23,7 +24,7 @@ public class EnginesList {
         HashMap<String, EngineDef> hm = new HashMap<>();
         DatumKVDVisitor kvd = new DatumKVDVisitor() {
             @Override
-            public DatumVisitor handle(String key) {
+            public DatumVisitor handle(String key, DatumSrcLoc loc) {
                 EngineDef ed = new EngineDef();
                 // System.out.println("adding engine " + key);
                 hm.put(key, ed);

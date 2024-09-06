@@ -10,7 +10,7 @@ package r48.dbs;
 import java.io.IOException;
 import java.util.List;
 
-import datum.DatumDecToLambdaVisitor;
+import datum.DatumTreeUtils;
 import datum.DatumSrcLoc;
 import r48.minivm.MVMU;
 
@@ -18,7 +18,7 @@ import r48.minivm.MVMU;
  * Called upon by DBLoader to actually implement the database.
  * Created on 12/30/16.
  */
-public interface IDatabase extends DatumDecToLambdaVisitor.Handler {
+public interface IDatabase extends DatumTreeUtils.VisitorLambda {
     @SuppressWarnings("unchecked")
     @Override
     default void handle(Object value, DatumSrcLoc srcLoc) {

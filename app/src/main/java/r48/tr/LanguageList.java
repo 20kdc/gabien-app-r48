@@ -14,12 +14,12 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import datum.DatumDecodingVisitor;
-import datum.DatumKVDVisitor;
+import datum.DatumTreeVisitor;
 import datum.DatumReaderTokenSource;
 import datum.DatumSrcLoc;
 import datum.DatumVisitor;
 import gabien.GaBIEn;
+import gabien.datum.DatumKVDVisitor;
 
 /**
  * Intended to pull even more functionality out of TXDB.
@@ -48,9 +48,9 @@ public class LanguageList {
                 return;
             new DatumReaderTokenSource(fn, isr).visit(new DatumKVDVisitor() {
                 @Override
-                public DatumVisitor handle(String key) {
+                public DatumVisitor handle(String key, DatumSrcLoc loc) {
                     // sure!
-                    return new DatumDecodingVisitor() {
+                    return new DatumTreeVisitor() {
                         @Override
                         public void visitEnd(DatumSrcLoc srcLoc) {
                         }

@@ -25,7 +25,7 @@
 		<dependency>
 			<groupId>t20kdc.datum</groupId>
 			<artifactId>datum</artifactId>
-			<version>0.7-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		<!-- test-only : in particular, we don't want to rely on gabien-javase during normal builds due to Android support -->
 		<dependency>

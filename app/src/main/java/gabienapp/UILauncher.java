@@ -10,9 +10,9 @@ import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.function.Function;
 
-import datum.DatumDecToLambdaVisitor;
+import static datum.DatumTreeUtils.*;
+
 import datum.DatumSrcLoc;
-import datum.DatumTreeUtils;
 import datum.DatumVisitor;
 import datum.DatumWriter;
 import gabien.GaBIEn;
@@ -135,8 +135,8 @@ public class UILauncher extends UIProxy {
 
         tabPane.setForcedBounds(null, new Rect(0, 0, c.f.scaleGuess(640), c.f.scaleGuess(480)));
         // setup initial panel by creating an outer visitor, visiting a list within it, and then continue within that
-        DatumDecToLambdaVisitor visitor = new DatumDecToLambdaVisitor((res, srcLoc) -> {
-            setPanel(LauncherEntry.makeFrom(null, ls, DatumTreeUtils.cList(res)));
+        DatumVisitor visitor = decVisitor((res, srcLoc) -> {
+            setPanel(LauncherEntry.makeFrom(null, ls, cList(res)));
         });
         DatumVisitor visitor2 = visitor.visitList(DatumSrcLoc.NONE);
         DatumLoader.readEssential("gamepaks", null, visitor2);

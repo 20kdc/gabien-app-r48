@@ -13,9 +13,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import datum.DatumDecToLambdaVisitor;
 import datum.DatumReaderTokenSource;
 import datum.DatumSrcLoc;
+import datum.DatumTreeUtils;
 import r48.App;
 import r48.dbs.ObjectInfo;
 import r48.dbs.ObjectRootHandle;
@@ -50,7 +50,7 @@ public class LocalTestExecutiveTest {
             System.out.println("LocalTestExecutive manifest: " + fn);
             try (InputStreamReader ins = new InputStreamReader(new FileInputStream(fn))) {
                 DatumReaderTokenSource drts = new DatumReaderTokenSource(fn, ins);
-                drts.visit(new DatumDecToLambdaVisitor(new IDatabase() {
+                drts.visit(DatumTreeUtils.decVisitor(new IDatabase() {
                     @Override
                     public void newObj(int objId, final String objName, DatumSrcLoc sl) {
                     }

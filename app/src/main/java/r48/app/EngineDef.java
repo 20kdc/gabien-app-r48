@@ -14,10 +14,10 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import datum.DatumExpectListVisitor;
-import datum.DatumKVDHVisitor;
 import datum.DatumSymbol;
 import datum.DatumVisitor;
+import gabien.datum.DatumExpectListVisitor;
+import gabien.datum.DatumKVDHVisitor;
 import r48.minivm.MVMU;
 
 /**

@@ -27,11 +27,12 @@
 			<artifactId>gabien-ui</artifactId>
 			<version>0.666-SNAPSHOT</version>
 		</dependency>
+		<!-- rely on gabien to pull this in w/ right version
 		<dependency>
 			<groupId>t20kdc.datum</groupId>
 			<artifactId>datum</artifactId>
-			<version>0.7-SNAPSHOT</version>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>t20kdc.hs2</groupId>
 			<artifactId>gabien-uslx</artifactId>

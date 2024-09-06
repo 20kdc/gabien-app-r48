@@ -14,7 +14,6 @@ import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import datum.DatumDecToLambdaVisitor;
 import datum.DatumSrcLoc;
 import datum.DatumSymbol;
 import datum.DatumWriter;
@@ -80,12 +79,11 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
      * Loads the given file into this context.
      */
     public void include(String filename, boolean opt) {
-        DatumDecToLambdaVisitor.Handler eval = this::evalObject; 
-        boolean attempt = DatumLoader.read(filename, loadProgress, eval);
+        boolean attempt = DatumLoader.read(filename, loadProgress, this::evalObject);
         if ((!opt) && !attempt)
             throw new RuntimeException("Expected " + filename + ".scm to exist");
         // don't care if this doesn't exist
-        DatumLoader.read(filename + ".aux", loadProgress, eval);
+        DatumLoader.read(filename + ".aux", loadProgress, this::evalObject);
     }
 
     /**

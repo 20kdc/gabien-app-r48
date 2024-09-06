@@ -12,9 +12,11 @@ import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import datum.DatumDecToLambdaVisitor;
+import static datum.DatumTreeUtils.*;
+
 import datum.DatumReaderTokenSource;
 import datum.DatumSrcLoc;
+import datum.DatumTreeUtils;
 import datum.DatumVisitor;
 import gabien.GaBIEn;
 
@@ -44,7 +46,7 @@ public class DatumLoader {
      */
     public static LinkedList<Object> readInlineList(DatumSrcLoc base, String text) {
         LinkedList<Object> result = new LinkedList<>();
-        new DatumReaderTokenSource(base.toString(), text).visit(new DatumDecToLambdaVisitor((obj, srcLoc) -> {
+        new DatumReaderTokenSource(base.toString(), text).visit(decVisitor((obj, srcLoc) -> {
             result.add(obj);
         }));
         return result;
@@ -53,7 +55,7 @@ public class DatumLoader {
     /**
      * Loads an essential Datum file.
      */
-    public static void readEssential(String filename, @Nullable Consumer<String> loadProgress, DatumDecToLambdaVisitor.Handler eval) {
+    public static void readEssential(String filename, @Nullable Consumer<String> loadProgress, DatumTreeUtils.VisitorLambda eval) {
         if (!read(filename, loadProgress, eval))
             throw new RuntimeException("Expected " + filename + " but it did not exist!");
     }
@@ -70,8 +72,8 @@ public class DatumLoader {
      * Loads an optional Datum file.
      * Returns true on success.
      */
-    public static boolean read(String filename, @Nullable Consumer<String> loadProgress, DatumDecToLambdaVisitor.Handler eval) {
-        return read(filename, loadProgress, new DatumDecToLambdaVisitor(eval));
+    public static boolean read(String filename, @Nullable Consumer<String> loadProgress, DatumTreeUtils.VisitorLambda eval) {
+        return read(filename, loadProgress, decVisitor(eval));
     }
 
     /**

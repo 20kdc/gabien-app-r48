@@ -57,6 +57,7 @@ public class ConfigIO {
         // NOTE: Use internal string methods here, this is a game-independent file
         IRIOGeneric dat = AdHocSaveLoad.load("fonts");
         if (dat != null) {
+            c.reset();
             // Compatibility flags
             boolean shouldResetIETH = false;
             boolean shouldResetWSZ = false;
@@ -114,6 +115,7 @@ public class ConfigIO {
             IRIO sys7 = dat.getIVar("@windowing_external");
             if (sys7 != null)
                 c.windowingExternal = sys7.getType() == 'T';
+            c.applyUIGlobals();
             return true;
         } else if (first) {
             c.fontOverride = GaBIEn.getFontOverrides()[0];
