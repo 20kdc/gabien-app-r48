@@ -65,22 +65,26 @@ public class BasicToolset extends App.Svc implements IToolset {
 
     @Override
     public UIElement[] generateTabs() {
-        UIElement menu4 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.mR48Version, app.f.menuTH, () -> {
+        UIElement topRow = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.mR48Version, app.f.menuTH, () -> {
             app.ui.coco.launch();
         }).centred(), app.f.menuTH), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.mHelp, app.f.menuTH, () -> {
             app.ui.startHelp(null, "0");
         }).centred(), app.f.menuTH), new UIBorderedSubpanel(new UITextButton(T.u.mConfiguration, app.f.menuTH, () -> {
             app.ui.wm.createWindow(new UIFontSizeConfigurator(app.c, app.t, app.applyConfigChange));
         }).centred(), app.f.menuTH), false, 0.5), false, 0.333333);
-        UIElement menu5 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.mImgEdit, app.f.menuTH, () -> {
+        UIElement bottomRow = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.mImgEdit, app.f.menuTH, () -> {
             app.ui.startImgedit();
         }).centred(), app.f.menuTH), new UISplitterLayout(new UIBorderedSubpanel(createODBRMGestalt(), app.f.menuTH), new UIBorderedSubpanel(createOtherButton(), app.f.menuTH), false, 0.5), false, 1d / 3d);
 
-        UISplitterLayout menu6 = new UISplitterLayout(menu5, createInitialHelp(), true, 0.5);
+        UISplitterLayout topBottomRowSplit = new UISplitterLayout(topRow, bottomRow, true, 0.5);
 
-        UISplitterLayout menu3 = new UISplitterLayout(menu4, menu6, true, 1d / 3d);
+        UISplitterLayout rowsHintSplit = new UISplitterLayout(topBottomRowSplit, createInitialHelp(), true, 2d / 3d);
 
-        UIBorderedSubpanel menu3b = new UIBorderedSubpanel(menu3, app.f.schemaFieldTH * 4);
+        UILabel engine = new UILabel(app.launchConfigName.r(), app.f.statusBarTH);
+
+        UISplitterLayout engineRowsHintSplit = new UISplitterLayout(engine, rowsHintSplit, true, 0);
+
+        UIBorderedSubpanel menu3b = new UIBorderedSubpanel(engineRowsHintSplit, app.f.schemaFieldTH * 4);
 
         UISplitterLayout menu8 = new UISplitterLayout(menu3b, createStatusBar(app), true, 1) {
             @Override

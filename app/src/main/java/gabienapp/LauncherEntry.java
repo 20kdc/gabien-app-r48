@@ -30,6 +30,7 @@ import r48.ui.dialog.UIReadEvaluatePrintLoop;
 public class LauncherEntry {
     public final FF0 name;
     public final Runnable runnable;
+
     public LauncherEntry(FF0 n, Runnable r) {
         name = n;
         runnable = r;
@@ -87,8 +88,9 @@ public class LauncherEntry {
             String txt = MVMU.coerceToString(entList.get(2));
             String gpSym = MVMU.coerceToString(entList.get(3));
             String encSym = MVMU.coerceToString(entList.get(4));
-            Runnable state = new StartupCause(lm, encSym, gpSym);
-            return new LauncherEntry(lm.dTr(DatumSrcLoc.NONE, TrNames.dynLn(txtSym), txt), state);
+            FF0 entryName = lm.dTr(DatumSrcLoc.NONE, TrNames.dynLn(txtSym), txt);
+            Runnable state = new StartupCause(lm, encSym, gpSym, entryName);
+            return new LauncherEntry(entryName, state);
         }
         throw new RuntimeException("unable to handle " + sym);
     }

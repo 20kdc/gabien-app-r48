@@ -16,6 +16,7 @@ import gabienapp.state.LSMain;
 import r48.App;
 import r48.app.AppMain;
 import r48.app.EngineDef;
+import r48.tr.TrPage.FF0;
 
 /**
  * Separated 5th April 2023.
@@ -23,12 +24,14 @@ import r48.app.EngineDef;
 public class StartupCause implements Runnable {
     private final String box;
     private final String objName;
+    private final FF0 entryName;
     private final LSMain ls;
 
-    public StartupCause(LSMain ls, String box, String objName) {
+    public StartupCause(LSMain ls, String box, String objName, FF0 entryName) {
         this.ls = ls;
         this.box = box;
         this.objName = objName;
+        this.entryName = entryName;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class StartupCause implements Runnable {
                         throw new RuntimeException("EngineDef " + objName + " missing!");
                     // Regarding thread safety, this should be safe enough because app is kept here.
                     // It's then transferred out.
-                    App app = new App(ls.lun.ilg, charset, engine, rootPath, silPath, theKickstart);
+                    App app = new App(ls.lun.ilg, charset, engine, rootPath, silPath, theKickstart, entryName);
                     AppMain.initializeUI(app, ls.lun.uiTicker, ls.lun.isMobile);
                     theKickstart.doneInjector.set(() -> {
                         lia.app = app;

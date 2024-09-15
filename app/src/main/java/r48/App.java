@@ -57,6 +57,7 @@ import r48.toolsets.utils.IDChangerEntry;
 import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
 import r48.tr.TrNames;
+import r48.tr.TrPage.FF0;
 import r48.tr.TrPage.FF1;
 import r48.tr.pages.TrRoot;
 
@@ -68,6 +69,8 @@ import r48.tr.pages.TrRoot;
  * Created 26th February, 2023
  */
 public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrProxy {
+    public final @NonNull FF0 launchConfigName;
+
     public HashMap<Integer, String> osSHESEDB;
     // scheduled tasks for when UI is around, not in UI because it may not init (ever, even!)
     public HashSet<Runnable> uiPendingRunnables = new HashSet<Runnable>();
@@ -140,10 +143,12 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, @NonNull FSBackend rp, @Nullable FSBackend sip, Consumer<String> loadProgress) {
+    public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, @NonNull FSBackend rp, @Nullable FSBackend sip, Consumer<String> loadProgress, @NonNull FF0 launchConfigName) {
         super(ilg, charset, gp, rp, sip, loadProgress);
 
         PleaseFailBrutally.checkFailBrutallyAtAppInit();
+
+        this.launchConfigName = launchConfigName;
 
         // -- OBJECT DATABASE READY --
 

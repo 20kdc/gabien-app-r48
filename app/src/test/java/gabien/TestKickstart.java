@@ -74,7 +74,7 @@ public class TestKickstart {
         EngineDef engine = EnginesList.getEngines(null).get(engineDefId);
         if (engine == null)
             throw new RuntimeException("missing engine def: " + engineDefId);
-        return new App(ilg, charset, engine, GaBIEn.mutableDataFS.intoPath(s2), null, (s) -> {});
+        return new App(ilg, charset, engine, GaBIEn.mutableDataFS.intoPath(s2), null, (s) -> {}, () -> "TEST");
     }
 
     public void kickstartRFS() {
