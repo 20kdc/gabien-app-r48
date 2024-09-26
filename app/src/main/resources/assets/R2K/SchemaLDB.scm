@@ -247,6 +247,7 @@ RM2003: (exp * LVL) + (factorial(LVL) * exp_mul) + (exp_add * LVL)")
 (@ recover_hp int)
 (@ recover_sp_rate int)
 (@ recover_sp int)
+(+ label r2kMedicineHPSP "HP/SP are 'flat' (doesn't scale with actor's max HP/SP), while the 'rate' variables are percentages.")
 (@ medicine_only_on_map boolean)
 
 (. rpg_item_sect3)
