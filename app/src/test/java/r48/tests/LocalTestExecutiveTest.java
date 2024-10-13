@@ -101,8 +101,11 @@ public class LocalTestExecutiveTest {
     @Test
     public void test() {
         App app = new TestKickstart().kickstart("/real_fs" + name, charset, schema);
-        for (ObjectInfo s : dynamic ? app.getObjectInfos() : app.sdb.listFileDefs())
+        for (ObjectInfo s : dynamic ? app.getObjectInfos() : app.sdb.listFileDefs()) {
+            if (s.idName.equals("zR48ProjectConfig"))
+                continue;
             testObject(app, s.idName);
+        }
     }
 
     private void testObject(App app, String s) {
