@@ -19,6 +19,8 @@
 (> int_default_100 int= 100)
 (> int_default_200 int= 200)
 
+(> textbox_string stringConfigLen zR48ProjectConfig@textbox_width)
+
 (e cap_type 0 MaxHP 1 MaxSP 2 Str. 3 Dex. 4 Agi. 5 Int.)
 
 ; Conditional Branch

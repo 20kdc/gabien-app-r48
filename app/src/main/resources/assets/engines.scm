@@ -84,6 +84,7 @@ rxp (
 		"Troops"
 		"Weapons"
 		"xScripts"
+		"zR48ProjectConfig"
 	)
 	mkdirs (
 		"Data"

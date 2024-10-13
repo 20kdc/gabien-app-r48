@@ -32,3 +32,5 @@
 ;  and in this case they are required.
 
 (sdb-load-old "RXP/SchemaFiles")
+
+(sdb-load-old "RXP/ProjectConfig")

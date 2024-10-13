@@ -11,7 +11,7 @@
 (d "Begins showing a message.")
 (C tag translatable sayCmd)
 (C textArg 0)
-(p text string)
+(p text textbox_string)
 (C groupBehavior messagebox 401)
 
 (cmd 401 "Say (cont.)" ($ " " ]0))
@@ -20,7 +20,7 @@
 (C tag translatable sayCmd)
 (C commandSiteAllowed false)
 (C textArg 0)
-(p text string)
+(p text textbox_string)
 
 ; Choices and input moved to RCOM/CommonCommands
 
