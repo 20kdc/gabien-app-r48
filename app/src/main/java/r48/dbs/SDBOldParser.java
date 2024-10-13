@@ -820,7 +820,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
         } else if (c.equals("i")) {
             readFile(app, args[0]);
         } else if (c.equals("D")) {
-            // D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID / empty string] [data schema]
+            // D <name> <default value> <outer path, including root> <'1' means hash> <inner path> <interpretation ID / empty string> <data schema>
             final String[] root = PathSyntax.breakToken(args[2]);
             String interpret = null;
             SchemaElement dataSchema = null;
@@ -829,10 +829,8 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (interpret.length() == 0)
                     interpret = null;
                 dataSchema = getSDBEntry(args[6]);
-            } else if (args.length == 6) {
-                interpret = args[5];
-            } else if (args.length != 5) {
-                throw new RuntimeException("Expects D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID / empty string] [data schema]");
+            } else if (args.length != 7) {
+                throw new RuntimeException("Expects D <name> <default value> <outer path, including root> <'1' means hash> <inner path> <interpretation ID / empty string> <data schema>");
             }
             final DynamicSchemaElement dict = sdb.ensureSDBProxy(args[0]);
             sdb.addDUR(new DictionaryUpdaterRunnable(app, dict, root[0], compilePS(root[1]), args[3].equals("1"), compilePS(args[4]), Integer.parseInt(args[1]), interpret, dataSchema));

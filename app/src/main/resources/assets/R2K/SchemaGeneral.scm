@@ -7,8 +7,8 @@
 (D internal_mapDictionary 1 RPG_RT.lmt@map_infos 1 @name #{}# RPG::MapInfo)
 (D internal_eventDictionary 1 __MAP__@events 1 @name #{}# RPG::Event)
 
-(D internal_variableDictionary 1 RPG_RT.ldb@variables 1 :)
-(D internal_switchDictionary 1 RPG_RT.ldb@switches 1 :)
+(D internal_variableDictionary 1 RPG_RT.ldb@variables 1 : "" string)
+(D internal_switchDictionary 1 RPG_RT.ldb@switches 1 : "" string)
 
 (D internal_tilesetDictionary 1 RPG_RT.ldb@tilesets 1 @name #{}# RPG::Tileset)
 (D internal_terrainDictionary 1 RPG_RT.ldb@terrains 1 @name #{}# RPG::Terrain)

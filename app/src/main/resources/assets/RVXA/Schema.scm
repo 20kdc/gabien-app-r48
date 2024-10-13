@@ -6,31 +6,31 @@
 
 ; VX Ace Schema.
 
-(D internal_tilesetDictionary \1 Tilesets \0 @name)
-(D internal_mapDictionary \1 MapInfos \1 @name)
-(D internal_itemDictionary \1 Items \0 @name)
-(D internal_commevDictionary \1 CommonEvents \0 @name)
-(D internal_animationDictionary \1 Animations \0 @name)
-(D internal_elementDictionary \1 System@elements \0 :)
-(D internal_variableDictionary \1 System@variables \0 :)
-(D internal_switchDictionary \1 System@switches \0 :)
+(D internal_tilesetDictionary \1 Tilesets \0 @name "" RPG::Tileset)
+(D internal_mapDictionary \1 MapInfos \1 @name "" RPG::MapInfo)
+(D internal_itemDictionary \1 Items \0 @name "" RPG::Item)
+(D internal_commevDictionary \1 CommonEvents \0 @name "" RPG::CommonEvent)
+(D internal_animationDictionary \1 Animations \0 @name "" RPG::Animation)
+(D internal_elementDictionary \1 System@elements \0 : "" string)
+(D internal_variableDictionary \1 System@variables \0 : "" string)
+(D internal_switchDictionary \1 System@switches \0 : "" string)
 
-(D internal_actorDictionary \1 Actors \0 @name)
-(D internal_skillDictionary \1 Skills \0 @name)
-(D internal_stateDictionary \1 States \0 @name)
-(D internal_weaponDictionary \1 Weapons \0 @name)
-(D internal_armourDictionary \1 Armors \0 @name)
-(D internal_troopDictionary \1 Troops \0 @name)
-(D internal_classDictionary \1 Classes \0 @name)
+(D internal_actorDictionary \1 Actors \0 @name "" RPG::Actor)
+(D internal_skillDictionary \1 Skills \0 @name "" RPG::Skill)
+(D internal_stateDictionary \1 States \0 @name "" RPG::State)
+(D internal_weaponDictionary \1 Weapons \0 @name "" RPG::Weapon)
+(D internal_armourDictionary \1 Armors \0 @name "" RPG::Armor)
+(D internal_troopDictionary \1 Troops \0 @name "" RPG::Troop)
+(D internal_classDictionary \1 Classes \0 @name "" RPG::Class)
 
-(D internal_enemyDictionary \1 Enemies \0 @name)
+(D internal_enemyDictionary \1 Enemies \0 @name "" RPG::Enemy)
 
-(D internal_atypeDictionary \1 System@armor_types \0 :)
-(D internal_wtypeDictionary \1 System@weapon_types \0 :)
-(D internal_etypeDictionary \1 System@terms@etypes \0 :)
-(D internal_stypeDictionary \1 System@skill_types \0 :)
+(D internal_atypeDictionary \1 System@armor_types \0 : "" string)
+(D internal_wtypeDictionary \1 System@weapon_types \0 : "" string)
+(D internal_etypeDictionary \1 System@terms@etypes \0 : "" string)
+(D internal_stypeDictionary \1 System@skill_types \0 : "" string)
 
-(D internal_eventDictionary \1 __MAP__@events \1 @name)
+(D internal_eventDictionary \1 __MAP__@events \1 @name "" RPG::Event)
 
 (> string_array subwindow array \0 string)
 
