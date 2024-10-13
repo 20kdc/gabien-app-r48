@@ -17,6 +17,8 @@
 (> int_default_100 int= 100)
 (> int_default_200 int= 200)
 
+(> textbox_string stringConfigLen zR48ProjectConfig@textbox_width)
+
 (e conditional_branch_types 0 switch 1 variable 2 selfSwitch 3 timer 4 actor 5 enemy 6 ev/char 7 gold 8 item 9 weapon 10 armour 11 button 12 script 13 vehicle)
 
 (e comparison_type 0 == 1 >= 2 <= 3 > 4 < 5 !=)

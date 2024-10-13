@@ -32,7 +32,8 @@ import r48.schema.integers.*;
 import r48.schema.specialized.*;
 import r48.schema.specialized.cmgb.*;
 import r48.schema.specialized.tbleditors.*;
-import r48.schema.specialized.textboxes.StringLenSchemaElement;
+import r48.schema.specialized.textboxes.StringConfigLenSchemaElement;
+import r48.schema.specialized.textboxes.StringFixedLenSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrNames;
@@ -177,12 +178,25 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 // Before you go using these - They are based on *visual* length, and are not hard limits.
                 if (text.equals("stringLen")) {
                     int l = Integer.parseInt(args[point++]);
-                    return new StringLenSchemaElement(app, () -> "", l);
+                    return new StringFixedLenSchemaElement(app, () -> "", l);
                 }
                 if (text.equals("stringLen=")) {
                     String esc = args[point++];
                     int l = Integer.parseInt(args[point++]);
-                    return new StringLenSchemaElement(app, trAnon(esc), l);
+                    return new StringFixedLenSchemaElement(app, trAnon(esc), l);
+                }
+                if (text.equals("stringConfigLen")) {
+                    final String[] root = PathSyntax.breakToken(args[point++]);
+                    String cfgRoot = root[0];
+                    PathSyntax cfgPath = compilePS(root[1]);
+                    return new StringConfigLenSchemaElement(app, () -> "", cfgRoot, cfgPath);
+                }
+                if (text.equals("stringConfigLen=")) {
+                    String esc = args[point++];
+                    final String[] root = PathSyntax.breakToken(args[point++]);
+                    String cfgRoot = root[0];
+                    PathSyntax cfgPath = compilePS(root[1]);
+                    return new StringConfigLenSchemaElement(app, trAnon(esc), cfgRoot, cfgPath);
                 }
 
                 //

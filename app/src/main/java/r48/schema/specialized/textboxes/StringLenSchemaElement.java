@@ -7,8 +7,6 @@
 
 package r48.schema.specialized.textboxes;
 
-import java.util.function.Function;
-
 import gabien.ui.*;
 import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
@@ -24,31 +22,28 @@ import r48.ui.UIAppendButton;
 /**
  * Created on August 31st 2017.
  */
-public class StringLenSchemaElement extends StringSchemaElement {
+public abstract class StringLenSchemaElement extends StringSchemaElement {
     public final TextRules textRules = new R2kTextRules();
-    public int len;
 
-    public StringLenSchemaElement(App app, FF0 arg, int l) {
+    public StringLenSchemaElement(App app, FF0 arg) {
         super(app, arg, '"');
-        len = l;
     }
+
+    public abstract int getLen();
 
     @Override
     public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UITextBox utb = (UITextBox) super.buildHoldingEditorImpl(target, launcher, path);
-        utb.feedback = new Function<String, String>() {
-            @Override
-            public String apply(String s) {
-                int l1 = textRules.countCells(s);
-                return Integer.toString(len - l1);
-            }
+        utb.feedback = (s) -> {
+            int l1 = textRules.countCells(s);
+            return Integer.toString(getLen() - l1);
         };
         UITextButton uimu = new UITextButton("-00000", app.f.schemaFieldTH, null) {
             @Override
             public void updateContents(double deltaTime, boolean selected, IPeripherals peripherals) {
                 super.updateContents(deltaTime, selected, peripherals);
                 int l1 = textRules.countCells(utb.getText());
-                setText(Integer.toString(len - l1));
+                setText(Integer.toString(getLen() - l1));
             }
         };
         uimu.onClick = () -> {
@@ -61,7 +56,7 @@ public class StringLenSchemaElement extends StringSchemaElement {
                     utb.setText(res[0]);
                     utb.onEdit.run();
                 }
-            }, textRules, len));
+            }, textRules, getLen()));
         };
         return new UIAppendButton(uimu, utb);
     }

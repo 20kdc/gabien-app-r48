@@ -134,6 +134,7 @@ rvxa (
 		"Tilesets"
 		"Troops"
 		"Weapons"
+		"zR48ProjectConfig"
 	)
 	mkdirs (
 		"Data"

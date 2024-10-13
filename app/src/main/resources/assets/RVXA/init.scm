@@ -26,3 +26,5 @@
 
 (sdb-load-old "RVXA/SchemaEditing")
 (sdb-load-old "RVXA/SchemaFiles")
+
+(sdb-load-old "RVXA/project_config")

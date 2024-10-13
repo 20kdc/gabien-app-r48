@@ -27,7 +27,7 @@
 (C tag translatable sayCmd)
 (C commandSiteAllowed false)
 (C textArg 0)
-(p text string)
+(p text textbox_string)
 
 ; Choices and input moved to RCOM/CommonCommands
 
@@ -49,7 +49,7 @@
 (C category 0)
 (d "Continue some scrolling text.")
 (C tag translatable)
-(p text string)
+(p text textbox_string)
 
 ; Comments (108/408) and conditional branch (111/411/412) and loops (112/113/413) and EEP 115 in CommonCommands
 ; CCE 117, LBL 118, JMP 119 in CommonCommands
