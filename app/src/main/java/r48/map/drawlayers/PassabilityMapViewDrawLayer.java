@@ -46,16 +46,16 @@ public class PassabilityMapViewDrawLayer extends App.Svc implements IMapViewDraw
                 // Don't actually bother to draw green.
                 // This gives a much better view of what the "boundaries" are without clutter.
 
-                int tsH = tileSize - 8;
-                int tsQ = (tileSize / 2) - 4;
-                if ((flags & 0x01) == 0)
-                    mvdc.igd.blitImage(16, 0, 8, 8, px + tsQ, py + tsH, app.a.layerTabs);
-                if ((flags & 0x02) == 0)
-                    mvdc.igd.blitImage(8, 0, 8, 8, px + tsH, py + tsQ, app.a.layerTabs);
-                if ((flags & 0x04) == 0)
-                    mvdc.igd.blitImage(24, 0, 8, 8, px, py + tsQ, app.a.layerTabs);
-                if ((flags & 0x08) == 0)
-                    mvdc.igd.blitImage(0, 0, 8, 8, px + tsQ, py, app.a.layerTabs);
+                int tsEnd = tileSize - 8;
+                int tsMid = (tileSize / 2) - 4;
+                if ((flags & IPassabilitySource.PASS_DOWN) == 0)
+                    mvdc.igd.blitImage(16, 0, 8, 8, px + tsMid, py + tsEnd, app.a.layerTabs);
+                if ((flags & IPassabilitySource.PASS_RIGHT) == 0)
+                    mvdc.igd.blitImage(8, 0, 8, 8, px + tsEnd, py + tsMid, app.a.layerTabs);
+                if ((flags & IPassabilitySource.PASS_LEFT) == 0)
+                    mvdc.igd.blitImage(24, 0, 8, 8, px, py + tsMid, app.a.layerTabs);
+                if ((flags & IPassabilitySource.PASS_UP) == 0)
+                    mvdc.igd.blitImage(0, 0, 8, 8, px + tsMid, py, app.a.layerTabs);
             }
         }
     }

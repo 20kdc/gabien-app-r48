@@ -40,19 +40,20 @@ public class R2kPassabilitySource implements IPassabilitySource {
 
         // Somewhere along the line this might have gotten the wrong way around...
         // I believe it is fixed now. Testing on the green road on which the squid sits, in a diary of dreams, confirms this.
+        // ...It was not fixed - left/right was reversed, see #64. Oops.
         boolean down = merge(f0id, f0, f1, 0x01, 0x08, x, y + 1);
-        boolean right = merge(f0id, f0, f1, 0x02, 0x04, x + 1, y);
-        boolean left = merge(f0id, f0, f1, 0x04, 0x02, x - 1, y);
+        boolean left = merge(f0id, f0, f1, 0x02, 0x04, x - 1, y);
+        boolean right = merge(f0id, f0, f1, 0x04, 0x02, x + 1, y);
         boolean up = merge(f0id, f0, f1, 0x08, 0x01, x, y - 1);
         int r = 0;
         if (down)
-            r |= 1;
+            r |= PASS_DOWN;
         if (right)
-            r |= 2;
+            r |= PASS_RIGHT;
         if (left)
-            r |= 4;
+            r |= PASS_LEFT;
         if (up)
-            r |= 8;
+            r |= PASS_UP;
         return r;
     }
 

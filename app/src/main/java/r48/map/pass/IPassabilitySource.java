@@ -11,7 +11,13 @@ package r48.map.pass;
  * Created on 09/06/17.
  */
 public interface IPassabilitySource {
-    // 0x01: down 0x02 right 0x04 left 0x08 up
-    // -1 means don't even bother.
+    public static final int PASS_DOWN = 1;
+    public static final int PASS_RIGHT = 2;
+    public static final int PASS_LEFT = 4;
+    public static final int PASS_UP = 8;
+    /**
+     * See PASS_* flags.
+     * A flag being present means you *can* pass in that direction.
+     */
     int getPassability(int x, int y);
 }
