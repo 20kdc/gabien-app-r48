@@ -14,7 +14,7 @@
 (obj 1 "Tip 1")
 (. Demetrius has been doing a lot of the testing for R48.)
 (, You should probably thank him\; the critical bugs in v1.3 were found by him.)
-(, I\'m trying to add unit testing, but that\'ll take a long time.)
+(, "Since then, I've added unit testing, but that's no guarantee of success...")
 (> \2 Show Another Tip...)
 
 (obj 2 "Tip 2")
@@ -42,8 +42,9 @@
 (> \6 Show Another Tip...)
 
 (obj 6 "Tip 6")
-(. While R48 does not have MIDI support, there is plenty of MIDI-outputting software.)
+(. "While R48 does not have MIDI editing support, there is plenty of MIDI-outputting software (i.e. Rosegarden).")
 (, So don\'t worry too much about it.)
+(, "(Android users may be in a bit of a pickle here, though.)")
 (> \7 Show Another Tip...)
 
 (obj 7 "Tip 7")
@@ -53,11 +54,11 @@
 (> \8 Show Another Tip...)
 
 (obj 8 "Tip 8")
-(. The image editor is now started from the \'Image Editor\' button on this panel.)
-(, Previously, only one image editor could be up at a time.)
+(. "R48's MIDI player is helpful to identify a tune, but will not sound like the MIDI will in-game.")
+(, "Still, it was included as a best-effort attempt.")
 (> \9 Show Another Tip...)
 
 (obj 9 "Tip 9")
-(. Some software supports \'colour management\'.)
-(, Be wary of such software, as importing and exporting data via it may damage the data.)
+(. "The audio player global volume (the speaker icon) is shared between all audio players in R48.")
+(, "In-engine, the audio volume is controlled by various factors, including command settings and game options.")
 (> \0 Show Another Tip...)
