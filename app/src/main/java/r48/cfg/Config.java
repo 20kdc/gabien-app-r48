@@ -66,6 +66,8 @@ public class Config {
         secondaryImageLoadLocationBackup.clear();
         rootPathBackup.clear();
 
+        globalVolume = 1.0f;
+
         language = LanguageList.defaultLang;
 
         // If single-window, assume we're on Android,

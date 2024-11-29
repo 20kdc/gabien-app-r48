@@ -36,6 +36,7 @@ public class ConfigIO {
             setString(prepare.addIVar("@sysfont"), c.fontOverride);
             prepare.addIVar("@sysfont_ue8").setBool(c.fontOverrideUE8);
         }
+        prepare.addIVar("@global_volume").setFX(Math.round(c.globalVolume * 65536.0f));
         prepare.addIVar("@theme_variant").setFX(c.borderTheme);
         prepare.addIVar("@windowing_external").setBool(c.windowingExternal);
         AdHocSaveLoad.save("fonts", prepare);
@@ -109,6 +110,12 @@ public class ConfigIO {
                     c.rootPathBackup.add(rio.decString());
             }
             // ...
+            IRIO globalVolume = dat.getIVar("@global_volume");
+            if (globalVolume != null) {
+                c.globalVolume = globalVolume.getFX() / 65536.0f;
+            } else {
+                c.globalVolume = 1.0f;
+            }
             IRIO sys5 = dat.getIVar("@theme_variant");
             if (sys5 != null)
                 c.borderTheme = (int) sys5.getFX();

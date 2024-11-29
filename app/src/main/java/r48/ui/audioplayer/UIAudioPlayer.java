@@ -29,6 +29,7 @@ import gabien.media.audio.fileio.ReadAnySupportedAudioSource;
 import r48.App;
 import r48.ui.Art;
 import r48.ui.UIDynAppPrx;
+import r48.ui.UIMenuIconButton;
 
 /**
  * Audio player!
@@ -54,6 +55,18 @@ public class UIAudioPlayer extends UIDynAppPrx {
 
     private final UIIconButton loopButton = new UIIconButton(Art.Symbol.Loop.i(app), app.f.schemaFieldTH, null).togglable(false);
 
+    private final UIMenuIconButton volumeButton = new UIMenuIconButton(app, Art.Symbol.Volume.i(app), app.f.schemaFieldTH, () -> {
+        UIScrollbar usb = new UIScrollbar(true, app.f.generalS) {
+            @Override
+            public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+                super.update(deltaTime, selected, peripherals);
+                app.c.globalVolume = (float) (1.0d - scrollPoint);
+            }
+        };
+        usb.scrollPoint = 1.0d - app.c.globalVolume;
+        return usb;
+    });
+
     private final UIScrollbar seeker = new UIScrollbar(false, app.f.generalS);
     private final UIElement innerWithoutWarning;
     private final UILabel warningLabel;
@@ -69,7 +82,7 @@ public class UIAudioPlayer extends UIDynAppPrx {
         UIIconButton toStart = new UIIconButton(Art.Symbol.Back.i(app), app.f.schemaFieldTH, () -> {
             position = 0;
         });
-        UIScrollLayout svl = new UIScrollLayout(false, app.f.mapToolbarS, toStart, playButton, loopButton);
+        UIScrollLayout svl = new UIScrollLayout(false, app.f.mapToolbarS, toStart, playButton, loopButton, volumeButton);
         warningLabel = new UILabel("", app.f.schemaFieldTH);
         innerWithoutWarning = new UISplitterLayout(svl, seeker, false, 0);
         changeInner(innerWithoutWarning, true);
