@@ -20,6 +20,8 @@
 LANG=en_US.UTF-8
 LANGUAGE=en_US:en
 
+. ../../gabien-common/gabien-shell-common.sh
+
 if [ "$#" -ne 5 ]; then
  echo "releaser-core.sh NAME PACKAGE RELEASEID ANDROIDVERSIONCODE DEVFLAG"
  exit 1
