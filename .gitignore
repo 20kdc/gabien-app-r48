@@ -5,11 +5,15 @@
 !CREDITS.txt
 !COPYING.txt
 !.gitignore
-!translation.lua
-!translation-diff.sh
 !releaser
 !releaser/*.sh
 !releaser/icon.png
+
+# Build script
+!build-script
+!build-script/pom.xml
+!build-script/src
+!build-script/src/**
 
 # Other
 !attic
