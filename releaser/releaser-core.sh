@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # gabien-app-r48 - Editing program for various formats
 # Written starting in 2016 by contributors (see CREDITS.txt)
 # To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
@@ -16,15 +16,21 @@
 #  while technically legal, may result in people disliking you.
 # Responsibility for misuse of this tool is on the misuser.
 
+set -e
+
 # Unfortunately LANG has to be something UTF-8
 LANG=en_US.UTF-8
 LANGUAGE=en_US:en
 
-. ../../gabien-common/gabien-shell-common.sh
-
 if [ "$#" -ne 5 ]; then
  echo "releaser-core.sh NAME PACKAGE RELEASEID ANDROIDVERSIONCODE DEVFLAG"
  exit 1
+fi
+
+# auto-activate
+if [ "$GABIEN_HOME" = "" ]; then
+ . ../../gabien-common/bin/activate
+ echo "did auto-activate test $GABIEN_HOME"
 fi
 
 echo
@@ -33,22 +39,22 @@ echo "Name: $1 Package: $2 RID: $3 AVC: $4"
 echo "Dev: $5"
 echo
 echo "Building GaBIEn..."
-(cd ../../gabien-common && ./ready.sh) || exit
+gabien-ready
 echo "Building GaBIEn [OK]"
 echo
 echo "Building R48..."
-./releaser-pre.sh $3 $4 $5 || exit
+./releaser-pre.sh $3 $4 $5
 echo "Building R48 [OK]"
 echo
 echo "Finalizing desktop version..."
-./releaser-desktop.sh $3 || exit
+./releaser-desktop.sh $3
 echo "Finalizing desktop version [OK]"
 echo
 # Android
 echo "Finalizing Android version..."
-cd ../../gabien-common/android || exit
-./releaser.sh $1 $2 $3 $4 ../../gabien-app-r48/releaser/android/target/r48-android-0.666-SNAPSHOT-jar-with-dependencies.jar ../../gabien-app-r48/releaser/icon.png android.permission.WRITE_EXTERNAL_STORAGE || exit
-mv result.apk ../../gabien-app-r48/$3.apk || exit
+cd "$GABIEN_HOME/android"
+./releaser.sh $1 $2 $3 $4 ../../gabien-app-r48/releaser/android/target/r48-android-0.666-SNAPSHOT-jar-with-dependencies.jar ../../gabien-app-r48/releaser/icon.png android.permission.WRITE_EXTERNAL_STORAGE
+mv result.apk ../../gabien-app-r48/$3.apk
 echo "Finalizing Android version [OK]"
 echo
 echo "All builds completed successfully. Please move to testing phase."

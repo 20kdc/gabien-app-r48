@@ -39,13 +39,13 @@ public class MVMTests {
     public void testQuote() {
         // test quoting
         MVMEnv env = prepEnv();
-        assertEquals(Arrays.asList(sym("example"), 1L), env.evalString("'(example 1)"));
+        assertEquals(Arrays.asList(sym("example"), 1L), env.evalString("(quote (example 1))"));
     }
 
     @Test
     public void testTopLevelDefines() {
         MVMEnv env = prepEnv();
-        assertEquals(Arrays.asList(sym("example"), 1L), env.evalString("(define testsym '(example 1))"));
+        assertEquals(Arrays.asList(sym("example"), 1L), env.evalString("(define testsym (quote (example 1)))"));
         assertEquals(Arrays.asList(sym("example"), 1L), env.evalString("testsym"));
     }
 
@@ -54,7 +54,7 @@ public class MVMTests {
         MVMEnv env = prepEnv();
         env.evalString("(define (testsym a) a)");
         disasm(env, "testTopLevelDefinedFunctions", "testsym");
-        assertEquals(Arrays.asList(sym("example"), 1L), env.evalString("(testsym '(example 1))"));
+        assertEquals(Arrays.asList(sym("example"), 1L), env.evalString("(testsym (quote (example 1)))"));
     }
 
     @Test
