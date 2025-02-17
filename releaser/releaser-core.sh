@@ -27,20 +27,10 @@ if [ "$#" -ne 5 ]; then
  exit 1
 fi
 
-# auto-activate
-if [ "$GABIEN_HOME" = "" ]; then
- . ../../gabien-common/bin/activate
- echo "did auto-activate test $GABIEN_HOME"
-fi
-
 echo
 echo "- R48 Release Process -"
 echo "Name: $1 Package: $2 RID: $3 AVC: $4"
 echo "Dev: $5"
-echo
-echo "Building GaBIEn..."
-gabien-ready
-echo "Building GaBIEn [OK]"
 echo
 echo "Building R48..."
 ./releaser-pre.sh $3 $4 $5
