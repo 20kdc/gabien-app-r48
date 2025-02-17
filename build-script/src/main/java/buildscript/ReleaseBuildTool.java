@@ -6,21 +6,22 @@
  */
 package buildscript;
 
-import gabien.builder.api.ToolModule;
-import gabien.builder.api.ToolRegistry;
+import gabien.builder.api.ToolEnvironment;
+import gabien.builder.api.ToolParam;
 
 /**
  * Created 17th February, 2025.
  */
-public class Index implements ToolModule {
-    @Override
-    public String getNamespace() {
-        return "r48";
+public class ReleaseBuildTool extends R48BuildTool {
+    @ToolParam(name = "--android-version-code", desc = "Android version code", optional = false, valueMeaning = "AVC")
+    public int androidVersionCode;
+
+    public ReleaseBuildTool() {
+        super("build-rel", "Creates a release build of R48.");
     }
 
     @Override
-    public void register(ToolRegistry registry) {
-        registry.register(DevBuildTool.class);
-        registry.register(ReleaseBuildTool.class);
+    public void run(ToolEnvironment env) throws Exception {
+        runInnards(env, "R48", "t20kdc.experimental.r48", androidVersionCode, false);
     }
 }

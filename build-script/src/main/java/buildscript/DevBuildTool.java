@@ -6,21 +6,18 @@
  */
 package buildscript;
 
-import gabien.builder.api.ToolModule;
-import gabien.builder.api.ToolRegistry;
+import gabien.builder.api.ToolEnvironment;
 
 /**
  * Created 17th February, 2025.
  */
-public class Index implements ToolModule {
-    @Override
-    public String getNamespace() {
-        return "r48";
+public class DevBuildTool extends R48BuildTool {
+    public DevBuildTool() {
+        super("build-dev", "Creates a dev build of R48.");
     }
 
     @Override
-    public void register(ToolRegistry registry) {
-        registry.register(DevBuildTool.class);
-        registry.register(ReleaseBuildTool.class);
+    public void run(ToolEnvironment env) throws Exception {
+        runInnards(env, "R48-DEV", "t20kdc.experimental.r48dev", 1, true);
     }
 }
