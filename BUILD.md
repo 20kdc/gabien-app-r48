@@ -13,7 +13,7 @@ Datum gets formal binary releases which will be downloaded and used by default. 
 
 Please see <https://github.com/20kdc/gabien-common/blob/master/BUILD.md> for initial instructions.
 
-By the end of that guide, you should have, _at minimum,_ established that the `gabien-ready` script runs properly.
+By the end of that guide, you should have, _at minimum,_ established that `gabien-do ready` runs properly.
 
 ## Step 3: IDE Setup
 
@@ -27,13 +27,11 @@ If you don't want to use an IDE, then you'll either need to use the dev release 
 
 ## Specific Notes For Releases & Android
 
-Releases & Android builds are taped together with a lot of shell script.
+Distribution testing and proper releases are handled with `build-dev` and `build-rel`. In particular all Android testing must be done with `build-dev`, which will auto-install by default. Please see `gabien-do help` for more information.
 
 Some people may ask "why aren't you using Gradle?".
 
 Due to their no-compatibility policy, Gradle is not a reliable piece of software. It cannot be used in a project that needs to be picked up to deal with an issue on short notice with years between contact.
-
-The above steps get you most of the way there. `cd releaser ; ./releaser-dev.sh EXAMPLEID` (supply some name for the release) will get you an Android build and attempt to auto-install it.
 
 ## Some Specific Kinds Of Error
 

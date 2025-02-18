@@ -10,6 +10,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import gabien.builder.api.MajorRoutines;
 import gabien.builder.api.NativesInstallTester;
 import gabien.builder.api.Tool;
 import gabien.builder.api.ToolEnvironment;
@@ -31,8 +32,14 @@ public abstract class R48BuildTool extends Tool {
     }
 
     public void runInnards(ToolEnvironment env, String brand, String androidPackage, int androidVersionCode, boolean isDev) throws Exception {
-        if (!isDev)
+        MajorRoutines.ready(env);
+        if (env.hasAnyErrorOccurred())
+            return;
+        if (!isDev) {
+            env.info("Checking natives...");
             NativesInstallTester.PREREQUISITE.run();
+        }
+        env.info("Building R48...");
         ProcessBuilder pb = new ProcessBuilder("./releaser-core.sh", brand, androidPackage, releaseName, Integer.toString(androidVersionCode), isDev ? "1" : "0");
         if (isDev)
             pb.environment().put("GABIEN_NATIVES_DEV", "1");

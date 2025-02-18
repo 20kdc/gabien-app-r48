@@ -6,12 +6,19 @@
  */
 package buildscript;
 
+import java.io.File;
+
+import gabien.builder.api.Commands;
 import gabien.builder.api.ToolEnvironment;
+import gabien.builder.api.ToolSwitch;
 
 /**
  * Created 17th February, 2025.
  */
 public class DevBuildTool extends R48BuildTool {
+    @ToolSwitch(name = "--no-adb", desc = "Skips attempting to install the APK using ADB.")
+    public boolean noADB;
+
     public DevBuildTool() {
         super("build-dev", "Creates a dev build of R48.");
     }
@@ -19,5 +26,11 @@ public class DevBuildTool extends R48BuildTool {
     @Override
     public void run(ToolEnvironment env) throws Exception {
         runInnards(env, "R48-DEV", "t20kdc.experimental.r48dev", 1, true);
+        if (env.hasAnyErrorOccurred())
+            return;
+        if (!(skipAndroid || noADB)) {
+            env.info("Installing to Android device...");
+            Commands.runOptional(env, new File("."), "adb", "install", "-r", releaseName + ".apk");
+        }
     }
 }
