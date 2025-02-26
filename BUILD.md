@@ -33,6 +33,8 @@ Some people may ask "why aren't you using Gradle?".
 
 Due to their no-compatibility policy, Gradle is not a reliable piece of software. It cannot be used in a project that needs to be picked up to deal with an issue on short notice with years between contact.
 
+**Android builds presently still rely on a shell script and so can't be performed on Windows right now.**
+
 ## Some Specific Kinds Of Error
 
 ### Android D8: `Cannot invoke "String.length()" because "<parameter1>" is null`

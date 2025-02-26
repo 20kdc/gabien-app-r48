@@ -7,7 +7,6 @@
 package buildscript;
 
 import gabien.builder.api.CommandEnv;
-import gabien.builder.api.ToolEnvironment;
 import gabien.builder.api.ToolSwitch;
 
 /**
@@ -22,14 +21,13 @@ public class DevBuildTool extends R48BuildTool {
     }
 
     @Override
-    public void run(ToolEnvironment env) throws Exception {
-        CommandEnv ce = new CommandEnv(env);
-        runInnards(ce, "R48-DEV", "t20kdc.experimental.r48dev", 1, true);
+    public void run(CommandEnv env) throws Exception {
+        runInnards(env, "R48-DEV", "t20kdc.experimental.r48dev", 1, true);
         if (env.hasAnyErrorOccurred())
             return;
         if (!(skipAndroid || noADB)) {
             env.info("Installing to Android device...");
-            ce.runOptional("adb", "install", "-r", releaseName + ".apk");
+            env.runOptional("adb", "install", "-r", releaseName + ".apk");
         }
     }
 }

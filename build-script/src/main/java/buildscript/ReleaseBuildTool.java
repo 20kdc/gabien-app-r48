@@ -7,7 +7,6 @@
 package buildscript;
 
 import gabien.builder.api.CommandEnv;
-import gabien.builder.api.ToolEnvironment;
 import gabien.builder.api.ToolParam;
 
 /**
@@ -22,7 +21,7 @@ public class ReleaseBuildTool extends R48BuildTool {
     }
 
     @Override
-    public void run(ToolEnvironment env) throws Exception {
-        runInnards(new CommandEnv(env), "R48", "t20kdc.experimental.r48", androidVersionCode, false);
+    public void run(CommandEnv env) throws Exception {
+        runInnards(env, "R48", "t20kdc.experimental.r48", androidVersionCode, false);
     }
 }
