@@ -10,10 +10,10 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import gabien.builder.api.CommandEnv;
 import gabien.builder.api.MajorRoutines;
 import gabien.builder.api.NativesInstallTester;
 import gabien.builder.api.Tool;
-import gabien.builder.api.ToolEnvironment;
 import gabien.builder.api.ToolParam;
 import gabien.builder.api.ToolSwitch;
 
@@ -31,21 +31,46 @@ public abstract class R48BuildTool extends Tool {
         super(n, d);
     }
 
-    public void runInnards(ToolEnvironment env, String brand, String androidPackage, int androidVersionCode, boolean isDev) throws Exception {
+    public void runInnards(CommandEnv env, String brand, String androidPackage, int androidVersionCode, boolean isDev) throws Exception {
+        env = env.clone();
+        if (isDev)
+            env.envOverrides.put("GABIEN_NATIVES_DEV", "1");
         MajorRoutines.ready(env);
-        if (env.hasAnyErrorOccurred())
+        if (env.toolEnv.hasAnyErrorOccurred())
             return;
         if (!isDev) {
-            env.info("Checking natives...");
+            env.toolEnv.info("Checking natives...");
             NativesInstallTester.PREREQUISITE.run();
         }
-        env.info("Building R48...");
-        ProcessBuilder pb = new ProcessBuilder("./releaser-core.sh", brand, androidPackage, releaseName, Integer.toString(androidVersionCode), isDev ? "1" : "0");
-        if (isDev)
-            pb.environment().put("GABIEN_NATIVES_DEV", "1");
-        pb.directory(new File("releaser"));
-        pb.inheritIO();
-        if (pb.start().waitFor() != 0)
-            env.error("Error in releaser-core.sh");
+        env.toolEnv.info("");
+        env.toolEnv.info("R48 Release Process");
+        env.toolEnv.info("Name: " + brand + " Package: " + androidPackage + " RID: " + releaseName + " AVC: " + androidVersionCode);
+        env.toolEnv.info("Dev: " + isDev);
+        env.toolEnv.info("");
+        env.toolEnv.info("Building R48...");
+        env.cd("releaser").run("./releaser-pre.sh", releaseName, Integer.toString(androidVersionCode), isDev ? "1" : "0");
+        if (env.toolEnv.hasAnyErrorOccurred())
+            return;
+        env.toolEnv.info("Building R48 [OK]");
+        env.toolEnv.info("");
+        env.toolEnv.info("Finalizing desktop version...");
+        env.cd("releaser").run("./releaser-desktop.sh", releaseName);
+        if (env.toolEnv.hasAnyErrorOccurred())
+            return;
+        env.toolEnv.info("Finalizing desktop version [OK]");
+        env.toolEnv.info("");
+        if (!skipAndroid) {
+            env.toolEnv.info("Finalizing Android version...");
+            env.cd(new File(CommandEnv.GABIEN_HOME, "android")).run("./releaser.sh", brand, androidPackage, releaseName, Integer.toString(androidVersionCode), "../../gabien-app-r48/releaser/android/target/r48-android-0.666-SNAPSHOT-jar-with-dependencies.jar", "../../gabien-app-r48/releaser/icon.png", "android.permission.WRITE_EXTERNAL_STORAGE");
+            if (!env.toolEnv.hasAnyErrorOccurred())
+                new File(CommandEnv.GABIEN_HOME, "android/result.apk").renameTo(new File(releaseName + ".apk"));
+            env.toolEnv.info("Finalizing Android version [OK]");
+            env.toolEnv.info("");
+        }
+        if (!env.toolEnv.hasAnyErrorOccurred()) {
+            env.toolEnv.info("All builds completed successfully. Please move to testing phase.");
+        } else {
+            env.toolEnv.error("An error did occur during R48 build.");
+        }
     }
 }
