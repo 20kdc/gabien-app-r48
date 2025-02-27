@@ -14,6 +14,7 @@ import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import gabien.builder.api.AlreadyReportedRuntimeException;
 import gabien.builder.api.CommandEnv;
 import gabien.builder.api.MajorRoutines;
 import gabien.builder.api.NativesInstallTester;
@@ -80,17 +81,22 @@ public abstract class R48BuildTool extends Tool {
         Files.copy(new File("releaser/javase/target/r48-javase-0.666-SNAPSHOT-jar-with-dependencies.jar").toPath(), new File(releaseName + ".jar").toPath(), StandardCopyOption.REPLACE_EXISTING);
         env.info("Finalizing desktop version [OK]");
         env.info("");
-        if (!skipAndroid) {
-            env.info("Finalizing Android version...");
-            File androidBaseJar = new File("releaser/android/target/r48-android-0.666-SNAPSHOT-jar-with-dependencies.jar").getAbsoluteFile();
-            File androidBaseIcon = new File("releaser/icon.png").getAbsoluteFile();
-            MajorRoutines.androidBuild(env, brand, androidPackage, releaseName, androidVersionCode, androidBaseJar, androidBaseIcon, new String[] {
-                    "android.permission.WRITE_EXTERNAL_STORAGE"
-            });
-            if (!env.hasAnyErrorOccurred())
-                new File(CommandEnv.GABIEN_HOME, "android/result.apk").renameTo(new File(releaseName + ".apk"));
-            env.info("Finalizing Android version [OK]");
-            env.info("");
+        try {
+            if (!skipAndroid) {
+                env.info("Finalizing Android version...");
+                File androidBaseJar = new File("releaser/android/target/r48-android-0.666-SNAPSHOT-jar-with-dependencies.jar").getAbsoluteFile();
+                File androidBaseIcon = new File("releaser/icon.png").getAbsoluteFile();
+                File resAPK = new File(releaseName + ".apk");
+                MajorRoutines.androidBuild(env, brand, androidPackage, releaseName, androidVersionCode, androidBaseJar, androidBaseIcon, new String[] {
+                        "android.permission.WRITE_EXTERNAL_STORAGE"
+                }, resAPK);
+                env.info("Finalizing Android version [OK]");
+                env.info("");
+            }
+        } catch (AlreadyReportedRuntimeException ex) {
+            // do nothing, it's already reported
+        } catch (Exception ex) {
+            env.report("R48 Android build", ex);
         }
         if (!env.hasAnyErrorOccurred()) {
             env.info("All builds completed successfully. Please move to testing phase.");
