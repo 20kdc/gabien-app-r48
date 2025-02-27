@@ -82,7 +82,11 @@ public abstract class R48BuildTool extends Tool {
         env.info("");
         if (!skipAndroid) {
             env.info("Finalizing Android version...");
-            env.cd(new File(CommandEnv.GABIEN_HOME, "android")).run("./releaser.sh", brand, androidPackage, releaseName, Integer.toString(androidVersionCode), "../../gabien-app-r48/releaser/android/target/r48-android-0.666-SNAPSHOT-jar-with-dependencies.jar", "../../gabien-app-r48/releaser/icon.png", "android.permission.WRITE_EXTERNAL_STORAGE");
+            File androidBaseJar = new File("releaser/android/target/r48-android-0.666-SNAPSHOT-jar-with-dependencies.jar").getAbsoluteFile();
+            File androidBaseIcon = new File("releaser/icon.png").getAbsoluteFile();
+            MajorRoutines.androidBuild(env, brand, androidPackage, releaseName, androidVersionCode, androidBaseJar, androidBaseIcon, new String[] {
+                    "android.permission.WRITE_EXTERNAL_STORAGE"
+            });
             if (!env.hasAnyErrorOccurred())
                 new File(CommandEnv.GABIEN_HOME, "android/result.apk").renameTo(new File(releaseName + ".apk"));
             env.info("Finalizing Android version [OK]");
