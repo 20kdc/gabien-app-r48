@@ -44,6 +44,7 @@
 (e change_actor_class_statsfx \0 noChange \1 halfStats \2 lvl1Stats \3 currentLevelStats)
 
 (e camera_pan_control_mode \0 lockCamera \1 unlockCamera \2 linearMoveCamera \3 linearFocusOnPlayer)
+(e camera_pan_control_direction \0 up \1 right \2 down \3 left)
 
 (e forceescape_mode \0 escape \1 instaKillEnemiesAndWin \2 instaKillSingleEnemyAndWin)
 (e change_enemy_hp_mode \0 direct \1 variable \2 currentHp%)
