@@ -148,7 +148,21 @@
 (d "Enters or leaves an airship occupying the same space as the player, or a ship/boat directly in front of the player. It is extremely picky about this.")
 (p _ string)
 
-(cmd 11060 ("Camera Pan" (? ]5 (" " (if-eq ]1 2 ((@ ]2 direction) " " (@ ]3) " tiles speed " (@ ]4)) ((@ ]1 camera_pan_control_mode))) (if-eq ]1 3 (" speed " (@ ]4))) " (" (if-eq ]5 0 ("no ")) "wait)") (" Control"))))
+(cmd 11060 ("Camera Pan"
+	(? ]5
+		(" "
+			(if-eq ]1 2
+				((@ ]2 camera_pan_control_direction) " " (@ ]3) " tiles speed " (@ ]4))
+				((@ ]1 camera_pan_control_mode))
+			)
+			(if-eq ]1 3 (" speed " (@ ]4)))
+			" ("
+			(if-eq ]5 0 ("no "))
+			"wait)"
+		)
+		(" Control")
+	)
+))
 (C category 3)
 (d "Controls where the 'camera' is looking.")
 (p _ string)
