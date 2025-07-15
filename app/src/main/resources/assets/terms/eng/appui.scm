@@ -71,17 +71,22 @@
 		partial "Partial"
 		completeReport (fl2 "Made " a0 " total string adjustments across " a1 " files.")
 		completeReportFind (fl2 "Found " a0 " instances across " a1 " files.")
+		completeReportUSE (fl2 "Exchanged " a0 " strings across " a1 " files to project jsonTextExchange directory.")
 		from "From: "
 		to "To: "
 		addR "Add replacement"
 		confirmReplace "Confirm & Replace"
 		find "Find"
+		saveConfig "Save config."
 		text "Text: "
 		addS "Add search"
 		caseInsensitive "Case Insensitive"
 		detailedInfo "Detailed Info (SLOW, CAN CRASH FOR MANY MATCHES)"
 		modeAll "All"
 		modeCTag (fl1 "Command Tag: " a0)
+		importJSONDir "Import JSON Directory"
+		exportJSONDir "Export JSON Directory"
+		duplicatePath (fl1 "Duplicate path: " a0 "\n")
 	)
 	(tsc_
 		dumpOk "transcript.html was written to the target's folder."
@@ -152,6 +157,7 @@
 	mLoadIMI "PRINT.txt Into Object"
 	mUniversalStringFinder "Universal String Finder"
 	mUniversalStringReplacer "Universal String Replacer"
+	mUniversalStringExportImport "Universal String Export/Import"
 	mTranscriptDump "MEV/CEV Transcript Dump (no Troop/Item/etc.)"
 	mVirtualMachineManual "Create r48-repl-help.html"
 	mSchemaTrace "Edit At Path..."

@@ -34,8 +34,9 @@ public class TrAppUI extends TrPage {
     public String usl_full, usl_partial, usl_from, usl_to, usl_addR, usl_confirmReplace;
     public String usl_find, usl_text, usl_addS, usl_caseInsensitive, usl_detailedInfo;
     public String usl_modeAll;
-    public FF1 usl_modeCTag;
-    public FF2 usl_completeReport, usl_completeReportFind;
+    public FF1 usl_modeCTag, usl_duplicatePath;
+    public FF2 usl_completeReport, usl_completeReportFind, usl_completeReportUSE;
+    public String usl_saveConfig, usl_importJSONDir, usl_exportJSONDir;
     public String tsc_dumpOk, tsc_ctx;
     public FF1 tsc_map;
     public FF3 tsc_ev;
@@ -89,6 +90,7 @@ public class TrAppUI extends TrPage {
     public String mR48Version;
     public String mUniversalStringFinder;
     public String mUniversalStringReplacer;
+    public String mUniversalStringExportImport;
     public String mTranscriptDump;
     public String mVirtualMachineManual;
     public String mSchemaTrace;

@@ -25,6 +25,7 @@ import r48.search.CompoundCommandClassifier;
 import r48.search.ICommandClassifier;
 import r48.search.RMFindTranslatables;
 import r48.toolsets.utils.UIIDChanger;
+import r48.ui.dialog.UIRMUniversalStringExportImport;
 import r48.ui.dialog.UIRMUniversalStringFinder;
 import r48.ui.dialog.UIRMUniversalStringReplacer;
 import r48.ui.dialog.UITranscriptControl;
@@ -145,6 +146,9 @@ public class RMTools extends App.Svc implements Consumer<LinkedList<UIPopupMenu.
         }));
         entries.add(new UIPopupMenu.Entry(T.u.mUniversalStringReplacer, () -> {
             app.ui.wm.createWindow(new UIRMUniversalStringReplacer(app));
+        }));
+        entries.add(new UIPopupMenu.Entry(T.u.mUniversalStringExportImport, () -> {
+            app.ui.wm.createWindow(new UIRMUniversalStringExportImport(app));
         }));
         entries.add(new UIPopupMenu.Entry(T.u.mTranscriptDump, () -> {
             app.ui.wm.createWindow(new UITranscriptControl(app, mapSystem, commandsEvent));

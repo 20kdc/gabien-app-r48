@@ -107,7 +107,7 @@ public class UIRMUniversalStringReplacer extends App.Prx {
         utp.addTab(new Tab(settingsPartial, new TabIcon[0]));
         elms.add(utp);
 
-        elms.add(new UITextButton(T.g.wordSave, app.f.dialogWindowTH, () -> {
+        elms.add(new UITextButton(T.u.usl_saveConfig, app.f.dialogWindowTH, () -> {
             IRIO rio = new IRIOGeneric(app.ilg.adhocIOContext);
             rio.setObject("R48::UniversalStringLocatorSettings");
             settingsFull.saveTo(rio.addIVar("@replacements_full"));

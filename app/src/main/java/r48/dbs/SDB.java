@@ -75,6 +75,25 @@ public class SDB extends AppCore.Csv {
         return res;
     }
 
+    /**
+     * Used by JSON import/export system to give a better idea of what's going on. 
+     */
+    public HashMap<SchemaElement, String> getElementToNameCache() {
+        HashMap<SchemaElement, String> hm = new HashMap<>();
+        for (String id : getAllSDBEntryIDs()) {
+            SchemaElement se = getSDBEntry(id);
+            while (true) {
+                hm.put(se, id);
+                if (se instanceof IProxySchemaElement) {
+                    se = ((IProxySchemaElement) se).getEntry();
+                } else {
+                    break;
+                }
+            }
+        }
+        return hm;
+    }
+
     public void setSDBEntry(final String text, SchemaElement ise) {
         remainingExpected.remove(text);
         MVMSlot ms = ensureSDBEntrySlot(text);
