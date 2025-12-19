@@ -40,10 +40,10 @@ import r48.imagefx.ImageFXCache;
 import r48.io.data.DMKey;
 import r48.io.data.DMPath;
 import r48.io.data.IRIO;
-import r48.map.UIMapView;
 import r48.schema.EnumSchemaElement.Prefix;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
+import r48.schema.util.SchemaDynamicContext;
 import r48.schema.util.UISchemaHostWindow;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.BasicToolset;
@@ -444,12 +444,12 @@ public class AppUI extends App.Svc {
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
-    public ISchemaHost launchSchema(@NonNull ObjectRootHandle rio, @Nullable UIMapView context) {
+    public ISchemaHost launchSchema(@NonNull ObjectRootHandle rio, @Nullable SchemaDynamicContext context) {
         return launchSchema(rio.rootSchema, rio, context);
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
-    public ISchemaHost launchSchema(SchemaElement s, @NonNull ObjectRootHandle rio, @Nullable UIMapView context) {
+    public ISchemaHost launchSchema(SchemaElement s, @NonNull ObjectRootHandle rio, @Nullable SchemaDynamicContext context) {
         // Responsible for keeping listeners in place so nothing breaks.
         UISchemaHostWindow watcher = new UISchemaHostWindow(app, context);
         watcher.pushObject(new SchemaPath(s, rio));
@@ -460,7 +460,7 @@ public class AppUI extends App.Svc {
      * Launches a disconnected schema pointing at a target object.
      * Try to only use this when absolutely necessary.
      */
-    public ISchemaHost launchDisconnectedSchema(@NonNull ObjectRootHandle root, DMKey arrayIndex, IRIO element, SchemaElement elementSchema, String indexText, UIMapView context) {
+    public ISchemaHost launchDisconnectedSchema(@NonNull ObjectRootHandle root, DMKey arrayIndex, IRIO element, SchemaElement elementSchema, String indexText, SchemaDynamicContext context) {
         // produce a valid (and false) parent chain, that handles all required guarantees.
         ISchemaHost shi = launchSchema(root, context);
         SchemaPath sp = new SchemaPath(root);
@@ -473,7 +473,7 @@ public class AppUI extends App.Svc {
      * Launches a schema by starting with a root/path pair.
      * Or tries, anyway.
      */
-    public @Nullable ISchemaHost launchSchemaTrace(@NonNull ObjectRootHandle root, @Nullable UIMapView context, @NonNull DMPath goal) {
+    public @Nullable ISchemaHost launchSchemaTrace(@NonNull ObjectRootHandle root, @Nullable SchemaDynamicContext context, @NonNull DMPath goal) {
         SchemaPath pathRoot = new SchemaPath(root);
         SchemaPath res = pathRoot.tracePathRoute(goal);
         if (res == null) {

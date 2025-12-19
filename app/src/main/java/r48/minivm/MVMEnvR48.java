@@ -26,6 +26,7 @@ import r48.io.data.DMPath;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
+import r48.schema.op.SchemaOp;
 import r48.schema.util.SchemaPath;
 import r48.tr.DynTrBase;
 import r48.tr.DynTrSlot;
@@ -45,6 +46,7 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
     public static final MVMType DYNTRSLOT_TYPE = MVMType.typeOfClass(DynTrSlot.class);
     public static final MVMType SCHEMAELEMENT_TYPE = MVMType.typeOfClass(SchemaElement.class);
     public static final MVMType SCHEMAPATH_TYPE = MVMType.typeOfClass(SchemaPath.class);
+    public static final MVMType SCHEMAOP_TYPE = MVMType.typeOfClass(SchemaOp.class);
 
     private final Consumer<String> loadProgress, logTrIssues;
     private final HashMap<String, DynTrSlot> dynMap;
@@ -60,6 +62,7 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
         defineType(new DatumSymbol("dm-path"), DMPATH_TYPE);
         defineType(new DatumSymbol("schema-element"), SCHEMAELEMENT_TYPE);
         defineType(new DatumSymbol("schema-path"), SCHEMAPATH_TYPE);
+        defineType(new DatumSymbol("schema-op"), SCHEMAOP_TYPE);
         this.loadProgress = loadProgress;
         this.logTrIssues = logTrIssues;
         dynMap = new HashMap<>();

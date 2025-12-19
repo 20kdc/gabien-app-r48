@@ -45,6 +45,7 @@ import r48.minivm.fn.MVMR48AppLibraries;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.op.BaseSchemaOps;
 import r48.schema.op.SchemaOp;
 import r48.search.ByCodeCommandClassifier;
 import r48.search.CommandTag;
@@ -118,12 +119,18 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     /**
      * Operators.
      */
-    public final HashMap<DatumSymbol, SchemaOp> operators = new HashMap<>();
+    public final SchemaOp.OpNamespace operators;
 
     /**
      * Operators by their invoke contexts.
      */
     public final SchemaOp.SiteNamespace opSites;
+
+    /**
+     * 'Copy' and 'Paste' are actually operators.
+     * This is particularly relevant for how the array selection logic interplays with commands these days.
+     */
+    public SchemaOp opCopy, opPaste;
 
     /**
      * Clipboard context in app encoding
@@ -163,6 +170,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
 
         // -- OBJECT DATABASE READY --
 
+        operators = new SchemaOp.OpNamespace(vmCtx);
         opSites = new SchemaOp.SiteNamespace(vmCtx);
 
         deletionButtonsNeedConfirmation = GaBIEn.singleWindowApp();
@@ -182,7 +190,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
         vmCtx.include(engine.initDir + "init", false);
 
         // Operators have to be initialized after the schemas used for their configuration.
-        SchemaOp.defJavasideOperators(this);
+        BaseSchemaOps.defJavasideOperators(this);
 
         // -- VM HAS FULLY INITIALIZED SCHEMA DATABASE --
 

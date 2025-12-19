@@ -19,8 +19,10 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.ArrayElementSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.arrays.IArrayInterface.ArrayPosition;
 import r48.schema.arrays.IArrayInterface.Host;
-import r48.schema.op.SchemaOp;
+import r48.schema.op.BaseSchemaOps;
+import r48.schema.util.EmbedDataDir;
 import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -89,14 +91,45 @@ public abstract class ArraySchemaElement extends SchemaElement {
             public App getApp() {
                 return app;
             }
-        }, launcher.getValidity(), launcher.embedContext(target), () -> getPositions(target, launcher, path));
+        }, launcher.getValidity(), launcher.embedContext(target), new IArrayInterface.Array() {
+            
+            @Override
+            public int resolveTrueSelection(ArrayPosition[] positions, int selection, boolean isEnd) {
+                if (selection < 0)
+                    return -1;
+                if (selection >= positions.length)
+                    return target.getALen();
+                ArrayPosition ap = positions[selection];
+                return isEnd ? ap.trueEnd : ap.trueStart;
+            }
+            
+            @Override
+            public SchemaPath getTrueSchemaPath() {
+                return path;
+            }
+            
+            @Override
+            public ISchemaHost getTrueSchemaHost() {
+                return launcher;
+            }
+            
+            @Override
+            public IRIO getTrueIRIO() {
+                return target;
+            }
+            
+            @Override
+            public ArrayPosition[] getPositions() {
+                return ArraySchemaElement.this.getPositions(target, launcher, path);
+            }
+        });
 
         return uiSVL;
     }
 
     private IArrayInterface.ArrayPosition[] getPositions(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         int nextAdvance;
-        LinkedList<IArrayInterface.ArrayPosition> positions = new LinkedList<IArrayInterface.ArrayPosition>();
+        LinkedList<IArrayInterface.ArrayPosition> positions = new LinkedList<>();
         int alen = target.getALen();
         HashMap<Integer, Integer> indentAnchors = new HashMap<Integer, Integer>();
         for (int i = 0; i < alen; i += nextAdvance) {
@@ -140,14 +173,14 @@ public abstract class ArraySchemaElement extends SchemaElement {
             for (int j = 0; j < copyHelpElems.length; j++)
                 copyHelpElems[j] = target.getAElem(i + j);
 
-            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(i, dispData, copyHelpElems, uie, subelemId, deleter, addition, clipAddition);
+            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(i, i + nextAdvance, dispData, copyHelpElems, uie, subelemId, deleter, addition, clipAddition);
             positions.add(position);
         }
-        // The 4 for-loop is to deal with 1-indexing and such
+        // Append position; quite ugly, really
         int appendIdx = getAppendIdx(target);
         if (elementPermissionsLevel(appendIdx, target) != 0) {
             SchemaPath ind = path.arrayHashIndex(DMKey.of(appendIdx), "[" + (appendIdx + indexDisplayOffset) + "]");
-            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(appendIdx, (appendIdx + indexDisplayOffset) + " ", null, null, 0, null, getAdditionCallback(target, launcher, appendIdx, path, ind), getClipAdditionCallback(target, appendIdx, path));
+            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(appendIdx, appendIdx, (appendIdx + indexDisplayOffset) + " ", null, null, 0, null, getAdditionCallback(target, launcher, appendIdx, path, ind), getClipAdditionCallback(target, appendIdx, path));
             positions.add(position);
         }
         return positions.toArray(new IArrayInterface.ArrayPosition[0]);
@@ -339,13 +372,13 @@ public abstract class ArraySchemaElement extends SchemaElement {
      * That function provides the 'tracking' on array changes.
      * The main thing this function does is account for if the object is no longer part of a group.
      */
-    protected final SchemaElement getElementContextualWindowSchemaUntracked(IRIO arr, final int start, final EmbedDataKey<Double> scrollKey) {
+    protected final SchemaElement getElementContextualWindowSchemaUntracked(IRIO arr, final int start, final EmbedDataDir embedDataDir) {
         GroupInfo gi = getGroupInfo(arr, start, new HashMap<>());
         if (gi == null) {
             SchemaElement elm = getElementSchema(start);
             return new ArrayElementSchemaElement(app, start, () -> "", elm, null, false);
         }
-        return gi.elementContextualUntracked.apply(scrollKey);
+        return gi.elementContextualUntracked.apply(embedDataDir);
     }
 
     /**
@@ -356,42 +389,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
      * The IRIO used for this element is expected to be the list.
      */
     public SchemaElement getGroupTrackedWindowSchema(final IRIO tracker) {
-        EmbedDataKey<Double> ecwsKey = new EmbedDataKey<>();
-        return new SchemaElement(app) {
-            @Override
-            public boolean declaresSelfEditorOf(RORIO target, RORIO check) {
-                return check == tracker;
-            }
-
-            @Override
-            public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
-                int actualStart = findActualStart(target, tracker);
-                if (actualStart == -1)
-                    return new UILabel(T.s.cmdOutOfList, app.f.schemaFieldTH);
-                GroupInfo ec = getGroupInfo(target, actualStart, new HashMap<>());
-                int length = ec == null ? 1 : ec.groupLength;
-                int actualEnd = actualStart + length;
-                launcher.addOperatorContext(target, SchemaOp.CTXPARAM_ARRAYSTART, DMKey.of(actualStart));
-                launcher.addOperatorContext(target, SchemaOp.CTXPARAM_ARRAYEND, DMKey.of(actualEnd));
-                return getElementContextualWindowSchemaUntracked(target, actualStart, ecwsKey).buildHoldingEditor(target, launcher, path);
-            }
-
-            @Override
-            public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-                int actualStart = findActualStart(target, tracker);
-                if (actualStart == -1)
-                    return;
-                getElementContextualWindowSchemaUntracked(target, actualStart, ecwsKey).modifyVal(target, path, setDefault);
-            }
-
-            @Override
-            public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
-                int actualStart = findActualStart(target, tracker);
-                if (actualStart == -1)
-                    return;
-                getElementContextualWindowSchemaUntracked(target, actualStart, ecwsKey).visit(target, path, v, detailedPaths);
-            }
-        };
+        return new TrackingSE(app, this, tracker);
     }
 
     // Used by certain rather complicated array types that want to give the user a *specific* UI on the creation of an element.
@@ -453,21 +451,71 @@ public abstract class ArraySchemaElement extends SchemaElement {
         /**
          * The 'contextual element'; the 'core' of the group.
          * This schema element is attached to the array at an index set when the GroupInfo is returned.
+         * The EmbedDataDir passed in is assumed to be created in getGroupTrackedWindowSchema (or somewhere equivalent).
          * This is used by getElementContextualWindowSchemaUntracked.
          */
-        public Function<EmbedDataKey<Double>, SchemaElement> elementContextualUntracked;
+        public Function<EmbedDataDir, SchemaElement> elementContextualUntracked;
         /**
          * Group length. This must be at least 1.
          */
         public int groupLength;
 
-        public GroupInfo(int id, SchemaElement elem, Function<EmbedDataKey<Double>, SchemaElement> ecu, int gl) {
+        public GroupInfo(int id, SchemaElement elem, Function<EmbedDataDir, SchemaElement> ecu, int gl) {
             indent = id;
             element = elem;
             elementContextualUntracked = ecu;
             groupLength = gl;
             if (gl < 1)
                 throw new IllegalArgumentException("groupLength < 1");
+        }
+    }
+
+    /**
+     * Finds the tracked group in an array, and routes through to getElementContextualWindowSchemaUntracked. 
+     */
+    public static final class TrackingSE extends SchemaElement {
+        public final ArraySchemaElement parentArraySE; 
+        public final IRIO tracker;
+        public final EmbedDataDir ecwsKey = new EmbedDataDir();
+
+        public TrackingSE(App app, ArraySchemaElement ase, IRIO t) {
+            super(app);
+            parentArraySE = ase;
+            tracker = t;
+        }
+
+        @Override
+        public boolean declaresSelfEditorOf(RORIO target, RORIO check) {
+            return check == tracker;
+        }
+
+        @Override
+        public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
+            int actualStart = findActualStart(target, tracker);
+            if (actualStart == -1)
+                return new UILabel(T.s.cmdOutOfList, app.f.schemaFieldTH);
+            GroupInfo ec = parentArraySE.getGroupInfo(target, actualStart, new HashMap<>());
+            int length = ec == null ? 1 : ec.groupLength;
+            int actualEnd = actualStart + length;
+            launcher.addOperatorContext(target, BaseSchemaOps.CTXPARAM_ARRAYSTART, DMKey.of(actualStart));
+            launcher.addOperatorContext(target, BaseSchemaOps.CTXPARAM_ARRAYEND, DMKey.of(actualEnd));
+            return parentArraySE.getElementContextualWindowSchemaUntracked(target, actualStart, ecwsKey).buildHoldingEditor(target, launcher, path);
+        }
+
+        @Override
+        public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+            int actualStart = findActualStart(target, tracker);
+            if (actualStart == -1)
+                return;
+            parentArraySE.getElementContextualWindowSchemaUntracked(target, actualStart, ecwsKey).modifyVal(target, path, setDefault);
+        }
+
+        @Override
+        public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
+            int actualStart = findActualStart(target, tracker);
+            if (actualStart == -1)
+                return;
+            parentArraySE.getElementContextualWindowSchemaUntracked(target, actualStart, ecwsKey).visit(target, path, v, detailedPaths);
         }
     }
 }

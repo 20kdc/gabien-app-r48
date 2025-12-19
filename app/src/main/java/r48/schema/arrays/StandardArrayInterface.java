@@ -19,8 +19,11 @@ import gabien.ui.theming.IIcon;
 import gabien.ui.theming.Theme;
 import gabien.uslx.append.*;
 import r48.App;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
+import r48.schema.op.BaseSchemaOps;
+import r48.schema.op.SchemaOp;
 import r48.schema.util.EmbedDataKey;
 import r48.schema.util.EmbedDataSlot;
 import r48.schema.util.IEmbedDataContext;
@@ -32,6 +35,7 @@ import r48.ui.UIMenuButton;
 import r48.ui.spacing.UIIndentThingy;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.WeakHashMap;
@@ -52,11 +56,11 @@ public class StandardArrayInterface implements IArrayInterface {
     }
     
     @Override
-    public void provideInterfaceFrom(final Host uiSVL, final Supplier<Boolean> valid, final IEmbedDataContext prop, final Array getPositions) {
+    public void provideInterfaceFrom(final Host uiSVL, final Supplier<Boolean> valid, final IEmbedDataContext prop, final Array array) {
         final EmbedDataSlot<WeakHashMap<IRIO, Object>> indentTreeClosedSlot = prop.embedSlot(indentTreeClosedKey, null);
         if (indentTreeClosedSlot.value == null)
             indentTreeClosedSlot.value = new WeakHashMap<>();
-        final ArrayPosition[] positions = getPositions.getPositions();
+        final ArrayPosition[] positions = array.getPositions();
         final App app = uiSVL.getApp();
         final TrRoot T = app.t;
         // this object is needed as a pin to hold things together.
@@ -140,24 +144,25 @@ public class StandardArrayInterface implements IArrayInterface {
                                     }
                                     containerRCL();
                                 };
-                                LinkedList<UIPopupMenu.Entry> menu = new LinkedList<>();
-                                if (positions[fixedStart].execDelete != null) {
-                                    menu.add(new UIPopupMenu.Entry(T.g.bDelete, (button) -> {
-                                        UIMenuButton.corePostHoc(app, button, valid, new UIPopupMenu.Entry[] {
-                                            new UIPopupMenu.Entry(T.g.bConfirm, () -> deleteRange(fixedStart, fixedEnd))
-                                        });
+                                uie = new UIAppendButton(app, Art.Symbol.Operator.i(app), uie, app.f.schemaFieldTH, () -> {
+                                    HashMap<String, DMKey> ctx = new HashMap<>();
+                                    ctx.put(BaseSchemaOps.CTXPARAM_ARRAYSTART, DMKey.of(array.resolveTrueSelection(positions, selectedStart, false)));
+                                    ctx.put(BaseSchemaOps.CTXPARAM_ARRAYEND, DMKey.of(array.resolveTrueSelection(positions, selectedEnd, true)));
+                                    LinkedList<UIPopupMenu.Entry> menu = new LinkedList<>();
+                                    if (positions[fixedStart].execDelete != null) {
+                                        menu.add(new UIPopupMenu.Entry(T.g.bDelete, (button) -> {
+                                            UIMenuButton.corePostHoc(app, button, valid, new UIPopupMenu.Entry[] {
+                                                new UIPopupMenu.Entry(T.g.bConfirm, () -> deleteRange(fixedStart, fixedEnd))
+                                            });
+                                        }));
+                                    }
+                                    menu.add(new UIPopupMenu.Entry(T.s.array_bCutArr, () -> {
+                                        copyRange(fixedStart, fixedEnd);
+                                        deleteRange(fixedStart, fixedEnd);
                                     }));
-                                }
-                                menu.add(new UIPopupMenu.Entry(T.g.bCopy, () -> {
-                                    copyRange(fixedStart, fixedEnd);
-                                    selectedStart = -1;
-                                    containerRCL();
-                                }));
-                                menu.add(new UIPopupMenu.Entry(T.s.array_bCutArr, () -> {
-                                    copyRange(fixedStart, fixedEnd);
-                                    deleteRange(fixedStart, fixedEnd);
-                                }));
-                                uie = new UIAppendButton(app, Art.Symbol.Operator.i(app), uie, app.f.schemaFieldTH, valid, menu);
+                                    SchemaOp.createOperatorMenuEntries(menu, array.getTrueSchemaPath(), app.opSites.ARRAY_SEL, valid, ctx, array.getTrueSchemaHost().getContext());
+                                    return (UIElement) UIMenuButton.coreMenuGen(app, valid, menu);
+                                });
                             } else if ((mi < selectedStart) || (mi > selectedEnd)) {
                                 onClick = () -> {
                                     if (mi < selectedStart)
@@ -295,7 +300,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         break;
                     }
                     term = effectivePositions[fixedStart].execDelete.get();
-                    effectivePositions = getPositions.getPositions();
+                    effectivePositions = array.getPositions();
                 }
                 if (term != null)
                     term.run();

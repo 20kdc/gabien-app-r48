@@ -190,7 +190,7 @@ public class RPGCommand extends App.Svc {
             ig.addIVar("@character_hue").setFX(hue);
             ig.addIVar("@direction").setFX(dir);
             ig.addIVar("@pattern").setFX(pat);
-            elementList.add(EPGDisplaySchemaElement.buildEditorFromObject(launcher.getApp(), launcher.getContextRenderer(), ig));
+            elementList.add(EPGDisplaySchemaElement.buildEditorFromObject(launcher.getApp(), launcher.getContext().getRenderer(), ig));
         }
     }
 

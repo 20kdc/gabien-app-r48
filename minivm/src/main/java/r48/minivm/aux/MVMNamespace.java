@@ -9,6 +9,8 @@ package r48.minivm.aux;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import datum.DatumSymbol;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMSlot;
@@ -25,26 +27,31 @@ import r48.minivm.fn.MVMMacro;
  * Created 19th December, 2025.
  */
 public class MVMNamespace<T> {
-    public final String slotPrefix;
+    public final @Nullable String slotPrefix;
+    public final String noun;
     public final MVMEnv env;
     public final MVMType myType;
     public final HashMap<String, T> values = new HashMap<>();
 
     /**
      * @param slotPrefix The resulting slots have this prefix.
+     * @param apiPrefixBase "-" is added and APIs are prefixed accordingly.
      * @param env The environment this namespace works with.
-     * @param typeName The type name to register.
-     * @param typeClass The type of things in this namespace.
+     * @param noun The noun used where applicable.
+     * @param type The MVMType.
      */
-    public MVMNamespace(String slotPrefix, String noun, MVMEnv env, String typeName, Class<T> typeClass) {
-        myType = MVMType.typeOfClass(typeClass);
-        String apiPrefix = typeName + "-";
-        env.defineType(new DatumSymbol(typeName), myType);
+    public MVMNamespace(String slotPrefix, String apiPrefixBase, MVMEnv env, String noun, MVMType type) {
+        myType = type;
+        this.noun = noun;
+        String apiPrefix = apiPrefixBase + "-";
         this.slotPrefix = slotPrefix;
         this.env = env;
+        String moreInfo = "";
+        if (slotPrefix != null)
+            moreInfo = "The corresponding variables are prefixed with '" + slotPrefix + "'.";
         env.defLib(apiPrefix + "list", MVMType.LIST, () -> {
             return new ArrayList<>(values.keySet());
-        }, "Returns a list of strings, one per " + noun + ". The corresponding variables are prefixed with '" + slotPrefix + "'.");
+        }, "Returns a list of strings, one per " + noun + "." + moreInfo);
         env.defLib(apiPrefix + "get", myType, MVMType.STR, (key) -> {
             return values.get(key);
         }, "Gets the " + noun + " by this name.");
@@ -54,7 +61,7 @@ public class MVMNamespace<T> {
                 add(MVMU.coerceToString(key), thing);
                 return thing;
             }, "Creates a new " + noun + " by the given name (as something string-ish) and registers it.");
-            env.defineSlot(new DatumSymbol(apiPrefix + "define"), new MVMMacro(apiPrefix + "-define") {
+            env.defineSlot(new DatumSymbol(apiPrefix + "define"), new MVMMacro(apiPrefix + "define") {
                 @Override
                 public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
                     if (call.length != 1)
@@ -65,13 +72,13 @@ public class MVMNamespace<T> {
                     });
                 }
             }).help("See " + apiPrefix + "define (but with a constant symbol)");
-        } else {
+        } else if (!selfInstalling()) {
             @SuppressWarnings("unchecked")
             final MVMFn regFn = env.defLib(apiPrefix + "register", myType, MVMType.ANY, myType, (key, thing) -> {
                 add(MVMU.coerceToString(key), (T) thing);
                 return thing;
             }, "Registers a[n] " + noun + " by the given name (as something string-ish)(.");
-            env.defineSlot(new DatumSymbol(apiPrefix + "define"), new MVMMacro(apiPrefix + "-define") {
+            env.defineSlot(new DatumSymbol(apiPrefix + "define"), new MVMMacro(apiPrefix + "define") {
                 @Override
                 public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
                     if (call.length != 2)
@@ -86,18 +93,52 @@ public class MVMNamespace<T> {
         }
     }
 
+    /**
+     * @param slotPrefix The resulting slots have this prefix.
+     * @param apiPrefixBase "-" is added and APIs are prefixed accordingly.
+     * @param env The environment this namespace works with.
+     * @param typeName The type name to register. Also the noun.
+     * @param typeClass The type of things in this namespace.
+     */
+    public MVMNamespace(String slotPrefix, String apiPrefixBase, MVMEnv env, String typeName, Class<T> typeClass) {
+        this(slotPrefix, apiPrefixBase, env, typeName, MVMType.typeOfClass(typeClass));
+        env.defineType(new DatumSymbol(typeName), myType);
+    }
+
+    /**
+     * If your instances install themselves, return true here.
+     * This removes the APIs for registration.
+     * Does not work if supportsNew is true.
+     */
+    protected boolean selfInstalling() {
+        return false;
+    }
+
+    /*
+     * If you implemented createNew, return true here.
+     * This changes the API for registration.
+     */
     protected boolean supportsNew() {
         return false;
     }
+
+    /**
+     * Creates a new Thing.
+     */
     protected T createNew(String name) {
-        throw new RuntimeException("Cannot create new " + name);
+        throw new RuntimeException("Cannot create new " + noun + ": " + name);
     }
 
     /**
      * Adds a Thing.
+     * If no slot prefix is defined, this doesn't return a slot.
      */
     public MVMSlot add(String name, T thing) {
-        MVMSlot res = env.defineSlot(new DatumSymbol(slotPrefix + name), thing, myType);
+        MVMSlot res = null;
+        if (values.containsKey(name))
+            throw new RuntimeException("Cannot define " + noun + ": " + name + " twice.");
+        if (slotPrefix != null)
+            res = env.defineSlot(new DatumSymbol(slotPrefix + name), thing, myType).help(null);
         values.put(name, thing);
         return res;
     }

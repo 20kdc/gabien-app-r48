@@ -27,6 +27,7 @@ import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.arrays.StandardArrayInterface;
 import r48.schema.specialized.textboxes.R2kTextRules;
 import r48.schema.specialized.textboxes.UITextStuffMenu;
+import r48.schema.util.EmbedDataDir;
 import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -51,6 +52,7 @@ import r48.schema.util.SchemaPath;
 public class EventCommandArraySchemaElement extends ArraySchemaElement {
     public final CMDB database;
     public final RPGCommandSchemaElement baseElement;
+    public final EmbedDataKey<Double> eventCommandContextualScrollKey = new EmbedDataKey<>();
 
     public EventCommandArraySchemaElement(App app, SchemaElement a, SchemaElement b, CMDB db, boolean indentControl) {
         super(app, -1, 0, 0, new StandardArrayInterface().withoutIndexLabels());
@@ -198,7 +200,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         return new SubwindowSchemaElement(baseElement, (rubyIO) -> "This text should not be visible. Grouping is used for all commands.");
     }
 
-    protected SchemaElement buildGroupContextualUntracked(IRIO arr, final int start, final int length, boolean addRemove, final EmbedDataKey<Double> scrollKey) {
+    protected SchemaElement buildGroupContextualUntracked(IRIO arr, final int start, final int length, boolean addRemove, final EmbedDataDir embedDataDir) {
+        EmbedDataKey<Double> scrollKey = embedDataDir.key(eventCommandContextualScrollKey);
         // Uhoh.
         boolean canCopyText = false;
         SchemaElement[] group = new SchemaElement[length + 1];
@@ -317,8 +320,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                     st = "@" + lai + " ";
             }
         }
-        return new GroupInfo(indent, getElementContextualSubwindowSchema(tracker, start, st), (scrollKey) -> {
-            return buildGroupContextualUntracked(arr, start, finalLength, addRemove, scrollKey);
+        return new GroupInfo(indent, getElementContextualSubwindowSchema(tracker, start, st), (embedDataDir) -> {
+            return buildGroupContextualUntracked(arr, start, finalLength, addRemove, embedDataDir);
         }, length);
     }
 

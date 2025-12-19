@@ -25,6 +25,7 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.ISchemaHost;
+import r48.schema.util.SchemaDynamicContext;
 import r48.schema.util.UISchemaHostWindow;
 import r48.schema.util.SchemaPath;
 
@@ -122,7 +123,7 @@ public class RMFindTranslatables extends App.Svc {
         final CMDB cmdb = cmdbEditor.database;
         String text = cmdb.buildGroupCodename(listObj, codeIndex, true);
         final UITextButton button = new UITextButton(text, app.f.schemaFieldTH, () -> {
-            ISchemaHost shi = new UISchemaHostWindow(app, mapView);
+            ISchemaHost shi = new UISchemaHostWindow(app, new SchemaDynamicContext(app, mapView));
             SchemaPath sp = basePath;
             // enter list
             sp = sp.tagSEMonitor(listObj, cmdbEditor, false);

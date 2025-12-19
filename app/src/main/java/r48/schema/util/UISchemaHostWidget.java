@@ -10,7 +10,6 @@ import gabien.ui.UIElement;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import r48.App;
-import r48.map.UIMapView;
 
 /**
  * Created 21st August, 2024
@@ -18,7 +17,7 @@ import r48.map.UIMapView;
 public class UISchemaHostWidget extends SchemaHostBase {
     private UIElement innerElemEditor;
 
-    public UISchemaHostWidget(App app, UIMapView rendererSource) {
+    public UISchemaHostWidget(App app, SchemaDynamicContext rendererSource) {
         super(app, rendererSource);
     }
 

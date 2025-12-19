@@ -24,6 +24,7 @@ import r48.App;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.UIMapView;
+import r48.schema.util.SchemaDynamicContext;
 
 import java.io.OutputStream;
 import java.util.LinkedList;
@@ -49,7 +50,7 @@ public class UIMTPopupButtons extends UIMTBase {
         mainToolButtons.add(new ToolButton(T.g.bProperties) {
             @Override
             public UIMTBase apply(IMapToolContext a) {
-                app.ui.launchSchema(view.map.object, view);
+                app.ui.launchSchema(view.map.object, new SchemaDynamicContext(app, view));
                 return null;
             }
         });

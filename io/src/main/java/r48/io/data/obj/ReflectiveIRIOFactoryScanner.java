@@ -10,6 +10,7 @@ package r48.io.data.obj;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -38,6 +39,8 @@ class ReflectiveIRIOFactoryScanner {
             }
             if (m != null) {
                 // if we got this far, it's intended
+                if (!Modifier.isStatic(m.getModifiers()))
+                    throw new RuntimeException("Name-bound lambda " + f.getDeclaringClass() + "." + m.getName() + " is supposed to be static, and it isn't.");
                 return (Consumer<IRIO>) m.get(null);
             }
             Method m2 = null;

@@ -103,4 +103,9 @@ public class TrSchema extends TrPage {
     public String align_button;
     public FF2 objectHasBecomeInvalid;
     public String seInternalError;
+
+    // op
+    public FF1 op_error;
+    public String op_pasteOverwrite;
+    public String op_rmTextManip;
 }

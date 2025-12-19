@@ -35,6 +35,7 @@ public final class MVMSlot extends MVMCExpr {
 
     /**
      * Help information. Non-translatable.
+     * If null, this disappears from the helpfile.
      */
     public @Nullable String help = DEFAULT_HELP;
 

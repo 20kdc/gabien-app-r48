@@ -11,8 +11,6 @@ import gabien.ui.*;
 import gabien.ui.elements.UILabel;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.io.data.IRIO;
-import r48.map.UIMapView;
 import r48.schema.op.SchemaOp;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
@@ -35,24 +33,10 @@ public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableW
         popObject(false);
     }, app.f.schemaPathTH);
     private UIAppendButton toolbarCp = new UIAppendButton(T.g.bCopy, toolbarP, () -> {
-        app.setClipboardFrom(innerElem.targetElement);
+        app.opCopy.invokeUI(innerElem, operatorContext);
     }, app.f.schemaPathTH);
     private UIAppendButton toolbarPs = new UIAppendButton(T.g.bPaste, toolbarCp, () -> {
-        if (app.theClipboard == null) {
-            app.ui.launchDialog(T.u.shcEmpty);
-        } else {
-            if (IRIO.rubyTypeEquals(innerElem.targetElement, app.theClipboard)) {
-                try {
-                    innerElem.targetElement.setDeepClone(app.theClipboard);
-                } catch (Exception e) {
-                    app.ui.launchDialog(T.u.shcIncompatible, e);
-                }
-                innerElem.changeOccurred(false);
-                switchObject(innerElem);
-            } else {
-                app.ui.launchDialog(T.u.shcIncompatible);
-            }
-        }
+        app.opPaste.invokeUI(innerElem, operatorContext);
     }, app.f.schemaPathTH);
     private UIAppendButton toolbarSandwich;
 
@@ -62,10 +46,10 @@ public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableW
     public boolean windowOpen = false;
     private boolean stayClosed = false;
 
-    public UISchemaHostWindow(App app, @Nullable UIMapView rendererSource) {
+    public UISchemaHostWindow(App app, @Nullable SchemaDynamicContext rendererSource) {
         super(app, rendererSource);
         toolbarSandwich = new UIAppendButton(app, Art.Symbol.Operator.i(app), toolbarPs, app.f.schemaPathTH, () -> {
-            return (UIElement) SchemaOp.createOperatorMenu(app, innerElem, app.opSites.SCHEMA_HEADER, getValidity(), operatorContext, rendererSource);
+            return (UIElement) SchemaOp.createOperatorMenu(innerElem, app.opSites.SCHEMA_HEADER, getValidity(), operatorContext, dynContext);
         });
         toolbarRoot = toolbarSandwich;
         layoutAddElement(toolbarRoot);

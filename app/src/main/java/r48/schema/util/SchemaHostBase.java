@@ -12,8 +12,6 @@ import gabien.wsi.IPeripherals;
 import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.map.StuffRenderer;
-import r48.map.UIMapView;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -36,9 +34,7 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
     };
     protected boolean nudged = false;
 
-    // Can be null - if not, the renderer is accessible.
-    // Note that even if the map view "dies", it's renderer will stay around.
-    private final @Nullable UIMapView contextView;
+    public final @NonNull SchemaDynamicContext dynContext;
 
     protected EmbedDataTracker embedData = new EmbedDataTracker();
 
@@ -47,9 +43,14 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
     // Make a copy of this when necessary.
     protected final HashMap<String, DMKey> operatorContext = new HashMap<>();
 
-    public SchemaHostBase(App app, @Nullable UIMapView rendererSource) {
+    public SchemaHostBase(App app, @Nullable SchemaDynamicContext dynContext) {
         super(app);
-        contextView = rendererSource;
+        this.dynContext = dynContext == null ? new SchemaDynamicContext(app, null) : dynContext;
+    }
+
+    @Override
+    public SchemaDynamicContext getContext() {
+        return dynContext;
     }
 
     protected void replaceValidity() {
@@ -59,20 +60,6 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
                 return validitySupplier == this;
             }
         };
-    }
-
-    @Override
-    public @NonNull StuffRenderer getContextRenderer() {
-        if (contextView != null)
-            return contextView.mapTable.renderer;
-        return app.stuffRendererIndependent;
-    }
-
-    @Override
-    public String getContextGUM() {
-        if (contextView != null)
-            return contextView.mapGUM;
-        return null;
     }
 
     @Override
@@ -87,7 +74,7 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
 
     @Override
     public ISchemaHost newBlank() {
-        return new UISchemaHostWindow(app, contextView);
+        return new UISchemaHostWindow(app, dynContext);
     }
 
     @Override

@@ -47,7 +47,7 @@ public class MapPositionHelperSchemaElement extends SchemaElement.Leaf {
         for (int i = (pathA == null ? 1 : 0); i < 3; i++)
             if (abc[i] == null)
                 return new UILabel(T.s.mph_disabled, app.f.schemaFieldTH);
-        String mapGUM = launcher.getContextGUM();
+        String mapGUM = launcher.getContext().getGUM();
         if (abc[0] != null)
             mapGUM = launcher.getApp().system.mapReferentToGUM(abc[0]);
         if (mapGUM == null)

@@ -17,7 +17,6 @@ import gabien.ui.UIElement;
 import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.map.StuffRenderer;
 
 /**
  * Used to make the Schema interface slightly saner to use
@@ -50,15 +49,15 @@ public interface ISchemaHost {
     void launchOther(UIElement uiTest);
 
     /**
-     * The StuffRenderer applicable to this window.
+     * Gets the 'dynamic context'.
+     * This is essentially just a wrapper for UIMapView that makes it clear when this is being passed around.
+     * It also retrieves the StuffRenderer.
      */
-    @NonNull StuffRenderer getContextRenderer();
+    @NonNull SchemaDynamicContext getContext();
 
     ISchemaHost newBlank();
 
     SchemaPath getCurrentObject();
-
-    String getContextGUM();
 
     default <T> EmbedDataSlot<T> embedSlot(IRIO target, EmbedDataKey<T> prop, T def) {
         return embedSlot(getCurrentObject(), target, prop, def);

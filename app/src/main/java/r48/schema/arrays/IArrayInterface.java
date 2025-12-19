@@ -7,13 +7,14 @@
 
 package r48.schema.arrays;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import gabien.ui.*;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.util.IEmbedDataContext;
+import r48.schema.util.ISchemaHost;
+import r48.schema.util.SchemaPath;
 
 /**
  * Simplifies the code involved in an array UI by abstracting away the complicated permissions logic.
@@ -22,6 +23,9 @@ import r48.schema.util.IEmbedDataContext;
  */
 public interface IArrayInterface {
 
+    /**
+     * This covers the UI (mainly so it can be proxied by a pager in array mode).
+     */
     public interface Host {
         void panelsClear();
         void panelsAdd(UIElement element);
@@ -30,7 +34,26 @@ public interface IArrayInterface {
     }
 
     public interface Array {
+        /**
+         * Gets ArrayPositions, an abstraction over the true array.
+         */
         ArrayPosition[] getPositions();
+        /**
+         * Gets the true IRIO of the array.
+         */
+        IRIO getTrueIRIO();
+        /**
+         * Gets the true SchemaPath of the array.
+         */
+        SchemaPath getTrueSchemaPath();
+        /**
+         * Gets the true ISchemaHost.
+         */
+        ISchemaHost getTrueSchemaHost();
+        /**
+         * Resolves a true selection index.
+         */
+        int resolveTrueSelection(ArrayPosition[] positions, int selection, boolean isEnd);
     }
 
     /*
@@ -40,10 +63,6 @@ public interface IArrayInterface {
      * Also note that the positions are invalidated when any exec function is called.
      */
     void provideInterfaceFrom(Host svl, Supplier<Boolean> valid, IEmbedDataContext state, Array positions);
-
-    interface IProperty extends Supplier<Double>, Consumer<Double> {
-        // Get returns 0 if the property doesn't exist, like with the usual double interface
-    }
 
     /**
      * A place in the array.
@@ -61,7 +80,7 @@ public interface IArrayInterface {
      * It's up to the interface to work out how to implement everything it wants to do with these primitives.
      */
     class ArrayPosition {
-        public final int trueIndex;
+        public final int trueStart, trueEnd;
         public final String text;
         // These are only allowed for two purposes:
         // 1. Comparison (for group-deletion algorithm)
@@ -76,8 +95,9 @@ public interface IArrayInterface {
         public final UIElement core;
         public int coreIndent;
 
-        public ArrayPosition(int trueIndex, String txt, IRIO[] elem, UIElement cor, int subelemId, Supplier<Runnable> exeDelete, Runnable exeInsert, Runnable exeInsertCopiedArray) {
-            this.trueIndex = trueIndex;
+        public ArrayPosition(int trueStart, int trueEnd, String txt, IRIO[] elem, UIElement cor, int subelemId, Supplier<Runnable> exeDelete, Runnable exeInsert, Runnable exeInsertCopiedArray) {
+            this.trueStart = trueStart;
+            this.trueEnd = trueEnd;
             text = txt;
             elements = elem;
             core = cor;

@@ -22,6 +22,7 @@ import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
 import r48.map.events.IEventAccess;
 import r48.schema.SchemaElement;
+import r48.schema.util.SchemaDynamicContext;
 import r48.ui.UIAppendButton;
 
 import java.util.HashMap;
@@ -192,7 +193,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         if (root == null)
             return;
         key = root.key;
-        map.app.ui.launchDisconnectedSchema(root.root, key, event, root.eventSchema, "E" + key, map);
+        map.app.ui.launchDisconnectedSchema(root.root, key, event, root.eventSchema, "E" + key, new SchemaDynamicContext(map.app, map));
     }
 
     public static void showEventDivorced(App app, DMKey key, ObjectRootHandle map, IRIO event, SchemaElement eventSchema) {
