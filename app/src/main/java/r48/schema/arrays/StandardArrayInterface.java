@@ -9,6 +9,7 @@ package r48.schema.arrays;
 
 import gabien.GaBIEnUI;
 import gabien.ui.*;
+import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UIBorderedElement;
 import gabien.ui.elements.UIEmpty;
 import gabien.ui.elements.UILabel;
@@ -24,6 +25,7 @@ import r48.schema.util.EmbedDataKey;
 import r48.schema.util.EmbedDataSlot;
 import r48.schema.util.IEmbedDataContext;
 import r48.tr.pages.TrRoot;
+import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 import r48.ui.UIMenuButton;
@@ -128,13 +130,6 @@ public class StandardArrayInterface implements IArrayInterface {
                             if (selectedStart == mi) {
                                 final int fixedStart = selectedStart;
                                 final int fixedEnd = selectedEnd;
-                                if (positions[fixedStart].execDelete != null) {
-                                    uie = new UIAppendButton(app, "Delete", uie, valid, new String[] {T.g.bConfirm}, new Runnable[] {
-                                        () -> {
-                                            deleteRange(fixedStart, fixedEnd);
-                                        }
-                                    }, app.f.schemaFieldTH);
-                                }
                                 onClick = () -> {
                                     int miL = tracePositionEnd(positions, mi);
                                     if (selectedEnd >= miL) {
@@ -145,15 +140,24 @@ public class StandardArrayInterface implements IArrayInterface {
                                     }
                                     containerRCL();
                                 };
-                                uie = new UIAppendButton(T.g.bCopy, uie, () -> {
+                                LinkedList<UIPopupMenu.Entry> menu = new LinkedList<>();
+                                if (positions[fixedStart].execDelete != null) {
+                                    menu.add(new UIPopupMenu.Entry(T.g.bDelete, (button) -> {
+                                        UIMenuButton.corePostHoc(app, button, valid, new UIPopupMenu.Entry[] {
+                                            new UIPopupMenu.Entry(T.g.bConfirm, () -> deleteRange(fixedStart, fixedEnd))
+                                        });
+                                    }));
+                                }
+                                menu.add(new UIPopupMenu.Entry(T.g.bCopy, () -> {
                                     copyRange(fixedStart, fixedEnd);
                                     selectedStart = -1;
                                     containerRCL();
-                                }, app.f.schemaFieldTH);
-                                uie = new UIAppendButton(T.s.array_bCutArr, uie, () -> {
+                                }));
+                                menu.add(new UIPopupMenu.Entry(T.s.array_bCutArr, () -> {
                                     copyRange(fixedStart, fixedEnd);
                                     deleteRange(fixedStart, fixedEnd);
-                                }, app.f.schemaFieldTH);
+                                }));
+                                uie = new UIAppendButton(app, Art.Symbol.Operator.i(app), uie, app.f.schemaFieldTH, valid, menu);
                             } else if ((mi < selectedStart) || (mi > selectedEnd)) {
                                 onClick = () -> {
                                     if (mi < selectedStart)

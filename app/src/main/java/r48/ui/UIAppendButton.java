@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.*;
+import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UIButton;
 import gabien.ui.elements.UIIconButton;
 import gabien.ui.elements.UITextButton;
@@ -42,8 +43,28 @@ public class UIAppendButton extends UIElement.UIPanel {
         this(new UIThemeIconButton(s, h2, runnable), holder);
     }
 
-    public UIAppendButton(App app, String s, UIElement holder, Supplier<Boolean> continued, String[] text, Runnable[] runnables, int h2) {
-        this(new UIMenuButton(app, s, h2, continued, text, runnables), holder);
+    public UIAppendButton(App app, String s, UIElement holder, Supplier<UIElement> runnable, int h2) {
+        this(new UIMenuButton(app, s, h2, runnable), holder);
+    }
+
+    public UIAppendButton(App app, String s, UIElement holder, int h2, Supplier<Boolean> continued, UIPopupMenu.Entry... runnables) {
+        this(new UIMenuButton(app, s, h2, continued, runnables), holder);
+    }
+
+    public UIAppendButton(App app, String s, UIElement holder, int h2, Supplier<Boolean> continued, Iterable<UIPopupMenu.Entry> runnables) {
+        this(new UIMenuButton(app, s, h2, continued, runnables), holder);
+    }
+
+    public UIAppendButton(App app, Function<Boolean, IIcon> s, UIElement holder, int h2, Supplier<UIElement> runnable) {
+        this(new UIMenuIconButton(app, s, h2, runnable), holder);
+    }
+
+    public UIAppendButton(App app, Function<Boolean, IIcon> s, UIElement holder, int h2, Supplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
+        this(new UIMenuIconButton(app, s, h2, continued, runnables), holder);
+    }
+
+    public UIAppendButton(App app, Function<Boolean, IIcon> s, UIElement holder, int h2, Supplier<Boolean> continued, Iterable<UIPopupMenu.Entry> runnables) {
+        this(new UIMenuIconButton(app, s, h2, continued, runnables), holder);
     }
 
     public UIAppendButton(UIButton<?> s, UIElement holder) {

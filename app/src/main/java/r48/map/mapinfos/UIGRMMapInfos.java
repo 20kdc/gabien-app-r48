@@ -9,6 +9,7 @@ package r48.map.mapinfos;
 
 import gabien.GaBIEnUI;
 import gabien.ui.*;
+import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UIBorderedElement;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UINumberBox;
@@ -250,9 +251,8 @@ public class UIGRMMapInfos extends App.Prx {
                     operators.triggerEditInfoOf(k);
                 }
             }, app.f.mapInfosTH);
-            elm = new UIAppendButton(app, T.m.bDelete, elm, null, new String[] {T.g.bConfirm}, new Runnable[] {new Runnable() {
-                @Override
-                public void run() {
+            elm = new UIAppendButton(app, T.m.bDelete, elm, app.f.mapInfosTH, null,
+                new UIPopupMenu.Entry(T.g.bConfirm, () -> {
                     // Orphan/move up child nodes first
                     for (Long rk : operators.getHashKeys()) {
                         IRIO rio = operators.getHashBID(rk);
@@ -262,8 +262,8 @@ public class UIGRMMapInfos extends App.Prx {
                     operators.removeMap(k);
                     operators.complete();
                     rebuildList();
-                }
-            }}, app.f.mapInfosTH);
+                })
+            );
         }
         return elm;
     }

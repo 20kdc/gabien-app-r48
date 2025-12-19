@@ -419,20 +419,16 @@ public class BasicToolset extends App.Svc implements IToolset {
                 app.uiPendingRunnables.add(this);
             }
         });
-        UIAppendButton workspace = new UIAppendButton(app, T.u.mClipboard, uiStatusLabel, null, new String[] {
-                T.u.mClipSave,
-                T.u.mClipLoad,
-                T.u.mClipInspect
-        }, new Runnable[] {
-                () -> {
+        UIAppendButton workspace = new UIAppendButton(app, T.u.mClipboard, uiStatusLabel, app.f.statusBarTH, null,
+                new UIPopupMenu.Entry(T.u.mClipSave, () -> {
                     if (app.theClipboard == null) {
                         app.ui.launchDialog(T.u.dlgClipEmpty);
                     } else {
                         AdHocSaveLoad.save("clip", app.theClipboard);
                         app.ui.launchDialog(T.u.dClipSaved);
                     }
-                },
-                () -> {
+                }),
+                new UIPopupMenu.Entry(T.u.mClipLoad, () -> {
                     IRIOGeneric newClip = AdHocSaveLoad.load("clip");
                     if (newClip == null) {
                         app.ui.launchDialog(T.u.dClipBad);
@@ -440,15 +436,15 @@ public class BasicToolset extends App.Svc implements IToolset {
                         app.theClipboard = newClip;
                         app.ui.launchDialog(T.u.dClipLoaded);
                     }
-                },
-                () -> {
+                }),
+                new UIPopupMenu.Entry(T.u.mClipInspect, () -> {
                     if (app.theClipboard == null) {
                         app.ui.launchDialog(T.u.dlgClipEmpty);
                     } else {
                         app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard, new ObjectRootHandle.Isolated(null, (IRIO) app.theClipboard, "theClipboard")));
                     }
-                }
-        }, app.f.statusBarTH);
+                })
+        );
         workspace = new UIAppendButton(T.g.bQuit, workspace, app.ui.createLaunchConfirmation(T.u.dReturnMenuWarn, () -> {
             app.ui.wm.pleaseShutdown();
         }), app.f.statusBarTH);

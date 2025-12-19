@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 import gabien.ui.UIElement;
 import gabien.ui.dialogs.UIAutoclosingPopupMenu;
 import gabien.ui.dialogs.UIPopupMenu;
+import gabien.ui.elements.UIButton;
 import gabien.ui.elements.UITextButton;
 import r48.App;
 
@@ -24,22 +25,47 @@ import r48.App;
 public class UIMenuButton extends UITextButton {
     public UIMenuButton(App app, String s, int h2, final Supplier<UIElement> runnable) {
         super(s, h2, null);
-        toggle = true;
-        onClick = () -> {
-            state = true;
+        core(app, this, runnable);
+    }
+
+    public UIMenuButton(App app, String s, int h2, final Supplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
+        super(s, h2, null);
+        core(app, this, continued, text, runnables);
+    }
+
+    public UIMenuButton(App app, String s, int h2, final Supplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
+        super(s, h2, null);
+        core(app, this, continued, runnables);
+    }
+
+    public UIMenuButton(App app, String s, int h2, final Supplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
+        super(s, h2, null);
+        core(app, this, continued, runnables);
+    }
+
+    /**
+     * The core of UIMenuButton.
+     */
+    public static void core(final App app, final UIButton<?> button, final Supplier<UIElement> runnable) {
+        button.toggle = true;
+        button.onClick = () -> {
+            button.state = true;
             UIElement basis = runnable.get();
-            app.ui.wm.createMenu(UIMenuButton.this, new UIProxy(basis, false) {
+            app.ui.wm.createMenu(button, new UIProxy(basis, false) {
                 @Override
                 public void onWindowClose() {
                     super.onWindowClose();
-                    state = false;
+                    button.state = false;
                 }
             });
         };
     }
 
-    public UIMenuButton(App app, String s, int h2, final Supplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
-        this(app, s, h2, () -> {
+    /**
+     * The core of UIMenuButton.
+     */
+    public static void core(final App app, final UIButton<?> button, final Supplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
+        core(app, button, () -> {
             return new UIAutoclosingPopupMenu(text, runnables, app.f.menuTH, app.f.menuS, true) {
                 @Override
                 public void optionExecute(int b) {
@@ -52,12 +78,75 @@ public class UIMenuButton extends UITextButton {
         });
     }
 
-    public UIMenuButton(App app, String s, int h2, final Supplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
-        this(app, s, h2, continued, new ArrayIterable<UIPopupMenu.Entry>(runnables));
+    /**
+     * The core of UIMenuButton.
+     */
+    public static void core(final App app, final UIButton<?> button, final Supplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
+        core(app, button, continued, new ArrayIterable<UIPopupMenu.Entry>(runnables));
     }
 
-    public UIMenuButton(App app, String s, int h2, final Supplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
-        this(app, s, h2, () -> {
+    /**
+     * The core of UIMenuButton.
+     */
+    public static void core(final App app, final UIButton<?> button, final Supplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
+        core(app, button, () -> {
+            return new UIAutoclosingPopupMenu(runnables, app.f.menuTH, app.f.menuS, true) {
+                @Override
+                public void optionExecute(int b) {
+                    if (continued != null)
+                        if (!continued.get())
+                            return;
+                    super.optionExecute(b);
+                }
+            };
+        });
+    }
+
+    /**
+     * The core of UIMenuButton; special 'post-hoc' version.
+     */
+    public static void corePostHoc(final App app, final UIButton<?> button, final Supplier<UIElement> runnable) {
+        button.toggle = true;
+        button.state = true;
+        UIElement basis = runnable.get();
+        app.ui.wm.createMenu(button, new UIProxy(basis, false) {
+            @Override
+            public void onWindowClose() {
+                super.onWindowClose();
+                button.state = false;
+            }
+        });
+    }
+
+    /**
+     * The core of UIMenuButton; special 'post-hoc' version.
+     */
+    public static void corePostHoc(final App app, final UIButton<?> button, final Supplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
+        corePostHoc(app, button, () -> {
+            return new UIAutoclosingPopupMenu(text, runnables, app.f.menuTH, app.f.menuS, true) {
+                @Override
+                public void optionExecute(int b) {
+                    if (continued != null)
+                        if (!continued.get())
+                            return;
+                    super.optionExecute(b);
+                }
+            };
+        });
+    }
+
+    /**
+     * The core of UIMenuButton; special 'post-hoc' version.
+     */
+    public static void corePostHoc(final App app, final UIButton<?> button, final Supplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
+        corePostHoc(app, button, continued, new ArrayIterable<UIPopupMenu.Entry>(runnables));
+    }
+
+    /**
+     * The core of UIMenuButton; special 'post-hoc' version.
+     */
+    public static void corePostHoc(final App app, final UIButton<?> button, final Supplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
+        corePostHoc(app, button, () -> {
             return new UIAutoclosingPopupMenu(runnables, app.f.menuTH, app.f.menuS, true) {
                 @Override
                 public void optionExecute(int b) {

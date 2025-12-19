@@ -15,6 +15,7 @@
 	bConfirm "Confirm"
 	bCopy "Copy"
 	bPaste "Paste"
+	bDelete "Delete"
 	bUndo "Undo"
 
 	bContinue "Continue"

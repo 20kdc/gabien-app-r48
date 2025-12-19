@@ -7,13 +7,10 @@
 
 package r48.ui;
 
-import gabien.uslx.append.*;
-
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import gabien.ui.UIElement;
-import gabien.ui.dialogs.UIAutoclosingPopupMenu;
 import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UIIconButton;
 import gabien.ui.theming.IIcon;
@@ -26,49 +23,21 @@ import r48.App;
 public class UIMenuIconButton extends UIIconButton {
     public UIMenuIconButton(App app, Function<Boolean, IIcon> s, int h2, final Supplier<UIElement> runnable) {
         super(s, h2, null);
-        toggle = true;
-        onClick = () -> {
-            state = true;
-            UIElement basis = runnable.get();
-            app.ui.wm.createMenu(UIMenuIconButton.this, new UIProxy(basis, false) {
-                @Override
-                public void onWindowClose() {
-                    super.onWindowClose();
-                    state = false;
-                }
-            });
-        };
+        UIMenuButton.core(app, this, runnable);
     }
 
     public UIMenuIconButton(App app, Function<Boolean, IIcon> s, int h2, final Supplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
-        this(app, s, h2, () -> {
-            return new UIAutoclosingPopupMenu(text, runnables, app.f.menuTH, app.f.menuS, true) {
-                @Override
-                public void optionExecute(int b) {
-                    if (continued != null)
-                        if (!continued.get())
-                            return;
-                    super.optionExecute(b);
-                }
-            };
-        });
+        super(s, h2, null);
+        UIMenuButton.core(app, this, continued, text, runnables);
     }
 
     public UIMenuIconButton(App app, Function<Boolean, IIcon> s, int h2, final Supplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
-        this(app, s, h2, continued, new ArrayIterable<UIPopupMenu.Entry>(runnables));
+        super(s, h2, null);
+        UIMenuButton.core(app, this, continued, runnables);
     }
 
     public UIMenuIconButton(App app, Function<Boolean, IIcon> s, int h2, final Supplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
-        this(app, s, h2, () -> {
-            return new UIAutoclosingPopupMenu(runnables, app.f.menuTH, app.f.menuS, true) {
-                @Override
-                public void optionExecute(int b) {
-                    if (continued != null)
-                        if (!continued.get())
-                            return;
-                    super.optionExecute(b);
-                }
-            };
-        });
+        super(s, h2, null);
+        UIMenuButton.core(app, this, continued, runnables);
     }
 }

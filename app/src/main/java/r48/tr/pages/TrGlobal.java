@@ -17,7 +17,7 @@ public class TrGlobal extends TrPage {
     public String wordLoad, wordSave, wordInvalidFileName;
     // Generic
     public String bContinue, bConfigV;
-    public String bOk, bCancel, bConfirm, bCopy, bPaste, bUndo;
+    public String bOk, bCancel, bConfirm, bCopy, bPaste, bDelete, bUndo;
     public String bConfigN, bQuit, bOpen, bNew, bSaveAs, bFile, bAccept;
     public String bSize, bOffset, bResize, bProperties;
     public String bCredits;
