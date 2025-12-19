@@ -91,7 +91,7 @@ public abstract class USFROperationMode {
                     }
                 }
                 return true;
-            }, false);
+            }, detailedPaths);
         }
     }
 }

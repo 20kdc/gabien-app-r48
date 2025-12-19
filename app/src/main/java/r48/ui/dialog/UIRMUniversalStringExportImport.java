@@ -112,7 +112,7 @@ public class UIRMUniversalStringExportImport extends App.Prx {
         StringBuilder log = new StringBuilder();
         USFROperationMode mode = modeSelector.getSelected();
         for (ObjectInfo objInfo : setSelector.getSet()) {
-            SchemaPath sp = objInfo.makePath(true);
+            SchemaPath sp = objInfo.makePath(false);
             if (sp == null)
                 continue;
             files++;
