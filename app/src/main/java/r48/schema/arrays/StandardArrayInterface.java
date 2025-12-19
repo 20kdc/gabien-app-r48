@@ -76,6 +76,7 @@ public class StandardArrayInterface implements IArrayInterface {
 
             @Override
             public void run() {
+                uiSVL.exposeOperatorInfo(selectedStart, selectedEnd);
                 uiSVL.panelsClear();
                 for (Runnable r : releasers)
                     r.run();

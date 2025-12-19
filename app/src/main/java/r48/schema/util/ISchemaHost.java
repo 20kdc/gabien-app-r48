@@ -8,12 +8,14 @@
 package r48.schema.util;
 
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
 import r48.App;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 
@@ -78,6 +80,13 @@ public interface ISchemaHost {
     }
 
     Supplier<Boolean> getValidity();
+
+    /**
+     * Supplies context for operators.
+     * The operator context is cleared before each buildHoldingEditor.
+     */
+    default void supplyOperatorContext(Map<String, DMKey> context) {
+    }
 
     // Yet another way to get an App to avoid pipelining
     App getApp();

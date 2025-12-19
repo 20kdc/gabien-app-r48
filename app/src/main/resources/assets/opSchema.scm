@@ -3,15 +3,7 @@
 ; To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
 ; A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-; MiniVM app context additions
-
-(include "vm/trc")
-(include "vm/trc-lib")
-
-(define-syntax (fmt-at base path) (list dm-fmt (list dm-at base path)))
-(help-set! fmt-at "(fmt-at BASE PATH) : (dm-fmt (dm-at BASE PATH))")
-
-(define (ui-test-schema schema) (ui-view (root-new schema "TestObject") dp-empty))
-(help-set! ui-test-schema "(ui-test-schema SCHEMA) : Show a new disconnected object with this schema.")
-
-(sdb-load-old "opSchema")
+(: R48::OpCfg::r48core_test_operator)
+(@ test1 int)
+(@ ctx_array_start int)
+(@ ctx_array_end int)

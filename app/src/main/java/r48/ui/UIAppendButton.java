@@ -43,7 +43,7 @@ public class UIAppendButton extends UIElement.UIPanel {
         this(new UIThemeIconButton(s, h2, runnable), holder);
     }
 
-    public UIAppendButton(App app, String s, UIElement holder, Supplier<UIElement> runnable, int h2) {
+    public UIAppendButton(App app, String s, UIElement holder, int h2, Supplier<UIElement> runnable) {
         this(new UIMenuButton(app, s, h2, runnable), holder);
     }
 
@@ -59,7 +59,7 @@ public class UIAppendButton extends UIElement.UIPanel {
         this(new UIMenuIconButton(app, s, h2, runnable), holder);
     }
 
-    public UIAppendButton(App app, Function<Boolean, IIcon> s, UIElement holder, int h2, Supplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
+    public UIAppendButton(App app, Function<Boolean, IIcon> s, UIElement holder, int h2, Supplier<Boolean> continued, UIPopupMenu.Entry... runnables) {
         this(new UIMenuIconButton(app, s, h2, continued, runnables), holder);
     }
 

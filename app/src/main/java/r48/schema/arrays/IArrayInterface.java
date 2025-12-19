@@ -27,6 +27,7 @@ public interface IArrayInterface {
         void panelsAdd(UIElement element);
         App getApp();
         void panelsFinished();
+        void exposeOperatorInfo(int selectedStart, int selectedEnd);
     }
 
     /*

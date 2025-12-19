@@ -18,6 +18,7 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.arrays.IArrayInterface.Host;
+import r48.schema.op.SchemaOp;
 import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -84,6 +85,16 @@ public abstract class ArraySchemaElement extends SchemaElement {
             @Override
             public App getApp() {
                 return app;
+            }
+
+            @Override
+            public void exposeOperatorInfo(int selectedStart, int selectedEnd) {
+                HashMap<String, DMKey> context = new HashMap<>();
+                if (selectedStart < selectedEnd) {
+                    context.put(SchemaOp.CTXPARAM_ARRAYSTART, DMKey.of(selectedStart));
+                    context.put(SchemaOp.CTXPARAM_ARRAYEND, DMKey.of(selectedEnd));
+                }
+                launcher.supplyOperatorContext(context);
             }
         }, launcher.getValidity(), launcher.embedContext(target), () -> getPositions(target, launcher, path));
 

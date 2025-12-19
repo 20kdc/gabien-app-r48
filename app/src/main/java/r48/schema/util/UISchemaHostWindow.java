@@ -8,15 +8,12 @@
 package r48.schema.util;
 
 import gabien.ui.*;
-import gabien.ui.dialogs.UIAutoclosingPopupMenu;
-import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UILabel;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.UITest;
 import r48.io.data.IRIO;
 import r48.map.UIMapView;
-import r48.toolsets.utils.UIIDChanger;
+import r48.schema.op.SchemaOp;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.wm.IDuplicatableWindow;
@@ -57,32 +54,20 @@ public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableW
             }
         }
     }, app.f.schemaPathTH);
-    private UIAppendButton toolbarSandwich = new UIAppendButton("...", toolbarPs, () -> {
-        app.ui.wm.createMenu(this.toolbarSandwich, new UIAutoclosingPopupMenu(new UIPopupMenu.Entry[] {
-            new UIPopupMenu.Entry(T.g.wordSave, () -> {
-                SchemaPath root = innerElem.findRoot();
-                // perform a final verification of the file, just in case? (NOPE: Causes long save times on, say, LDBs)
-                // root.editor.modifyVal(root.targetElement, root, false);
-                root.root.ensureSaved();
-            }),
-            new UIPopupMenu.Entry(T.u.shInspect, () -> {
-                app.ui.wm.createWindow(new UITest(app, innerElem.targetElement, innerElem.root));
-            }),
-            new UIPopupMenu.Entry(T.u.shLIDC, () -> {
-                // innerElem.editor and innerElem.targetElement must exist because SchemaHostImpl uses them.
-                app.ui.wm.createWindow(new UIIDChanger(app, innerElem));
-            })
-        }, app.f.menuTH, app.f.menuS, true));
-    }, app.f.schemaPathTH);
+    private UIAppendButton toolbarSandwich;
 
     // Used so this doesn't require too much changes when moved about
-    private UIElement toolbarRoot = toolbarSandwich;
+    private UIElement toolbarRoot;
 
     public boolean windowOpen = false;
     private boolean stayClosed = false;
 
     public UISchemaHostWindow(App app, @Nullable UIMapView rendererSource) {
         super(app, rendererSource);
+        toolbarSandwich = new UIAppendButton(app, Art.Symbol.Operator.i(app), toolbarPs, app.f.schemaPathTH, () -> {
+            return SchemaOp.createOperatorMenu(app, innerElem, SchemaOp.Site.SCHEMA_HEADER, getValidity(), operatorContext, rendererSource);
+        });
+        toolbarRoot = toolbarSandwich;
         layoutAddElement(toolbarRoot);
         // Why is this scaled by main window size? Answer: Because the alternative is occasional Android version glitches.
         Size rootSize = app.ui.wm.getRootSize();

@@ -77,6 +77,8 @@ public abstract class DMChangeTracker {
         public static final DMChangeTracker WORKSPACE = new Null();
         // DMKey embedded values
         public static final DMChangeTracker DMKEY_EMBEDDED = new Null();
+        // operator config
+        public static final DMChangeTracker OPERATOR_CONFIG = new Null();
         // Tests use this
         public static final DMChangeTracker TESTS = new Null();
 

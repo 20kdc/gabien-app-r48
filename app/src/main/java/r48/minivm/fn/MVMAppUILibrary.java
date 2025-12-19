@@ -13,13 +13,22 @@ import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMType;
 import r48.minivm.MVMU;
+import r48.minivm.harvester.Defun;
+import r48.minivm.harvester.Help;
+import r48.schema.util.ISchemaHost;
+import r48.schema.util.SchemaPath;
+import r48.schema.util.UISchemaHostWindow;
 
 /**
  * The scope creep begins here.
  * Created 21st August 2024, but only just.
  */
-public class MVMAppUILibrary {
-    public static void add(MVMEnv ctx, App app) {
+public class MVMAppUILibrary extends App.Svc {
+    public MVMAppUILibrary(App app) {
+        super(app);
+    }
+
+    public void add(MVMEnv ctx) {
         ctx.defLib("ui-prompt", MVMType.ANY, MVMType.ANY, MVMType.Fn.simple(MVMType.ANY, MVMType.STR), (text, handler) -> {
             MVMFn function = (MVMFn) handler;
             app.ui.launchPrompt(MVMU.coerceToString(text), (res) -> {
@@ -40,5 +49,13 @@ public class MVMAppUILibrary {
                 throw new RuntimeException("Unable to create " + text);
             return app.ui.launchSchemaTrace(ilo, null, (DMPath) path);
         }, "(ui-view OID PATH): Opens a view to the given path of the given object (as if via odb-get). R48 will 'auto-route' to make this path work. Object will be created if necessary. Returned value is the schema host handle (target may not exactly match what you wanted!).");
+    }
+
+    @Defun(n = "ui-view-sp", r = 1)
+    @Help("Opens a view to a schema path. Returned value is the schema host handle. Nulls pass through.")
+    public ISchemaHost uiViewSP(SchemaPath schemaPath) {
+        UISchemaHostWindow watcher = new UISchemaHostWindow(app, null);
+        watcher.pushPathTree(schemaPath);
+        return watcher;
     }
 }

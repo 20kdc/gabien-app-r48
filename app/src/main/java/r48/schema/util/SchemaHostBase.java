@@ -10,10 +10,13 @@ package r48.schema.util;
 import gabien.ui.*;
 import gabien.wsi.IPeripherals;
 import r48.App;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -41,6 +44,9 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
     protected EmbedDataTracker embedData = new EmbedDataTracker();
 
     private Supplier<Boolean> validitySupplier;
+
+    // Make a copy of this when necessary.
+    protected final HashMap<String, DMKey> operatorContext = new HashMap<>();
 
     public SchemaHostBase(App app, @Nullable UIMapView rendererSource) {
         super(app);
@@ -133,6 +139,7 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
         nextObject.root.registerModificationHandler(nudgeRunnable);
         replaceValidity();
         innerElem = nextObject;
+        operatorContext.clear();
         // update
         refreshDisplay();
     }
@@ -141,4 +148,10 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
      * Implements the actual 'switch' operation for the UI.
      */
     protected abstract void refreshDisplay();
+
+    @Override
+    public void supplyOperatorContext(Map<String, DMKey> context) {
+        operatorContext.clear();
+        operatorContext.putAll(context);
+    }
 }

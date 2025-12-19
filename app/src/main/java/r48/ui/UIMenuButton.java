@@ -65,17 +65,7 @@ public class UIMenuButton extends UITextButton {
      * The core of UIMenuButton.
      */
     public static void core(final App app, final UIButton<?> button, final Supplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
-        core(app, button, () -> {
-            return new UIAutoclosingPopupMenu(text, runnables, app.f.menuTH, app.f.menuS, true) {
-                @Override
-                public void optionExecute(int b) {
-                    if (continued != null)
-                        if (!continued.get())
-                            return;
-                    super.optionExecute(b);
-                }
-            };
-        });
+        core(app, button, () -> coreMenuGen(app, continued, text, runnables));
     }
 
     /**
@@ -89,26 +79,15 @@ public class UIMenuButton extends UITextButton {
      * The core of UIMenuButton.
      */
     public static void core(final App app, final UIButton<?> button, final Supplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
-        core(app, button, () -> {
-            return new UIAutoclosingPopupMenu(runnables, app.f.menuTH, app.f.menuS, true) {
-                @Override
-                public void optionExecute(int b) {
-                    if (continued != null)
-                        if (!continued.get())
-                            return;
-                    super.optionExecute(b);
-                }
-            };
-        });
+        core(app, button, () -> coreMenuGen(app, continued, runnables));
     }
 
     /**
      * The core of UIMenuButton; special 'post-hoc' version.
      */
-    public static void corePostHoc(final App app, final UIButton<?> button, final Supplier<UIElement> runnable) {
+    public static void corePostHoc(final App app, final UIButton<?> button, UIElement basis) {
         button.toggle = true;
         button.state = true;
-        UIElement basis = runnable.get();
         app.ui.wm.createMenu(button, new UIProxy(basis, false) {
             @Override
             public void onWindowClose() {
@@ -122,17 +101,7 @@ public class UIMenuButton extends UITextButton {
      * The core of UIMenuButton; special 'post-hoc' version.
      */
     public static void corePostHoc(final App app, final UIButton<?> button, final Supplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
-        corePostHoc(app, button, () -> {
-            return new UIAutoclosingPopupMenu(text, runnables, app.f.menuTH, app.f.menuS, true) {
-                @Override
-                public void optionExecute(int b) {
-                    if (continued != null)
-                        if (!continued.get())
-                            return;
-                    super.optionExecute(b);
-                }
-            };
-        });
+        corePostHoc(app, button, coreMenuGen(app, continued, text, runnables));
     }
 
     /**
@@ -146,16 +115,43 @@ public class UIMenuButton extends UITextButton {
      * The core of UIMenuButton; special 'post-hoc' version.
      */
     public static void corePostHoc(final App app, final UIButton<?> button, final Supplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
-        corePostHoc(app, button, () -> {
-            return new UIAutoclosingPopupMenu(runnables, app.f.menuTH, app.f.menuS, true) {
-                @Override
-                public void optionExecute(int b) {
-                    if (continued != null)
-                        if (!continued.get())
-                            return;
-                    super.optionExecute(b);
-                }
-            };
-        });
+        corePostHoc(app, button, coreMenuGen(app, continued, runnables));
+    }
+
+    /**
+     * Interior core.
+     */
+    public static UIElement coreMenuGen(final App app, final Supplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
+        return new UIAutoclosingPopupMenu(text, runnables, app.f.menuTH, app.f.menuS, true) {
+            @Override
+            public void optionExecute(int b) {
+                if (continued != null)
+                    if (!continued.get())
+                        return;
+                super.optionExecute(b);
+            }
+        };
+    }
+
+    /**
+     * Interior core.
+     */
+    public static UIElement coreMenuGen(final App app, final Supplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
+        return coreMenuGen(app, continued, new ArrayIterable<UIPopupMenu.Entry>(runnables));
+    }
+
+    /**
+     * Interior core.
+     */
+    public static UIElement coreMenuGen(final App app, final Supplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
+        return new UIAutoclosingPopupMenu(runnables, app.f.menuTH, app.f.menuS, true) {
+            @Override
+            public void optionExecute(int b) {
+                if (continued != null)
+                    if (!continued.get())
+                        return;
+                super.optionExecute(b);
+            }
+        };
     }
 }

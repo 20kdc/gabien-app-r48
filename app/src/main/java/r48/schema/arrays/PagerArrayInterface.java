@@ -72,9 +72,15 @@ public class PagerArrayInterface implements IArrayInterface {
                 public App getApp() {
                     return app;
                 }
+
+                @Override
+                public void exposeOperatorInfo(int selectedStart, int selectedEnd) {
+                    svl.exposeOperatorInfo(selectedStart, selectedEnd);
+                }
             }, valid, prop, getPositions);
             return;
         }
+        svl.exposeOperatorInfo(-1, -1);
 
         final ArrayPosition[] positions = getPositions.get();
         LinkedList<UIElement> uie = new LinkedList<UIElement>();
