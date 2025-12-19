@@ -52,11 +52,11 @@ public class StandardArrayInterface implements IArrayInterface {
     }
     
     @Override
-    public void provideInterfaceFrom(final Host uiSVL, final Supplier<Boolean> valid, final IEmbedDataContext prop, final Supplier<ArrayPosition[]> getPositions) {
+    public void provideInterfaceFrom(final Host uiSVL, final Supplier<Boolean> valid, final IEmbedDataContext prop, final Array getPositions) {
         final EmbedDataSlot<WeakHashMap<IRIO, Object>> indentTreeClosedSlot = prop.embedSlot(indentTreeClosedKey, null);
         if (indentTreeClosedSlot.value == null)
             indentTreeClosedSlot.value = new WeakHashMap<>();
-        final ArrayPosition[] positions = getPositions.get();
+        final ArrayPosition[] positions = getPositions.getPositions();
         final App app = uiSVL.getApp();
         final TrRoot T = app.t;
         // this object is needed as a pin to hold things together.
@@ -76,7 +76,6 @@ public class StandardArrayInterface implements IArrayInterface {
 
             @Override
             public void run() {
-                uiSVL.exposeOperatorInfo(selectedStart, selectedEnd);
                 uiSVL.panelsClear();
                 for (Runnable r : releasers)
                     r.run();
@@ -296,7 +295,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         break;
                     }
                     term = effectivePositions[fixedStart].execDelete.get();
-                    effectivePositions = getPositions.get();
+                    effectivePositions = getPositions.getPositions();
                 }
                 if (term != null)
                     term.run();

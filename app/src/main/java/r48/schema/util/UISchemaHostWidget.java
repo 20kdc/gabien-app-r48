@@ -41,6 +41,7 @@ public class UISchemaHostWidget extends SchemaHostBase {
         // just swap this hastily implemented dynamic proxy
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
+        operatorContext.clear();
         innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
         layoutAddElement(innerElemEditor);
         layoutRecalculateMetrics();

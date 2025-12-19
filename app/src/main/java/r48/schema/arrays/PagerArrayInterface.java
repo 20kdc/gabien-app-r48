@@ -35,7 +35,7 @@ public class PagerArrayInterface implements IArrayInterface {
     public final EmbedDataKey<Integer> pageKey = new EmbedDataKey<>();
     public final EmbedDataKey<Double> pageTabScrollKey = new EmbedDataKey<>();
     @Override
-    public void provideInterfaceFrom(final Host svl, final Supplier<Boolean> valid, final IEmbedDataContext prop, final Supplier<ArrayPosition[]> getPositions) {
+    public void provideInterfaceFrom(final Host svl, final Supplier<Boolean> valid, final IEmbedDataContext prop, final Array getPositions) {
         final App app = svl.getApp();
         final TrRoot T = app.t;
         // work out if we want to be in regular array mode
@@ -72,17 +72,11 @@ public class PagerArrayInterface implements IArrayInterface {
                 public App getApp() {
                     return app;
                 }
-
-                @Override
-                public void exposeOperatorInfo(int selectedStart, int selectedEnd) {
-                    svl.exposeOperatorInfo(selectedStart, selectedEnd);
-                }
             }, valid, prop, getPositions);
             return;
         }
-        svl.exposeOperatorInfo(-1, -1);
 
-        final ArrayPosition[] positions = getPositions.get();
+        final ArrayPosition[] positions = getPositions.getPositions();
         LinkedList<UIElement> uie = new LinkedList<UIElement>();
         for (int i = 0; i < positions.length; i++) {
             final String i2 = Integer.toString(i + 1);

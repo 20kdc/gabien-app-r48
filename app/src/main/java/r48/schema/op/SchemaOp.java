@@ -33,6 +33,8 @@ import r48.io.data.DMKey;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.map.UIMapView;
+import r48.minivm.MVMEnv;
+import r48.minivm.aux.MVMNamespace;
 import r48.schema.SchemaElement;
 import r48.schema.displays.LabelSchemaElement;
 import r48.schema.util.SchemaPath;
@@ -94,7 +96,7 @@ public abstract class SchemaOp extends App.Svc {
      */
     public static final int SORT_RMTOOLS = 0x02000000;
 
-    public SchemaOp(App app, DatumSymbol id, FF0 name, Site site, int sort) {
+    public SchemaOp(App app, DatumSymbol id, FF0 name, int sort, SchemaOpSite... sites) {
         super(app);
         this.id = id;
         this.name = name;
@@ -102,11 +104,12 @@ public abstract class SchemaOp extends App.Svc {
         String sdbLookup = "R48::OpCfg::" + id.id;
         this.config = app.sdb.hasSDBEntry(sdbLookup) ? app.sdb.getSDBEntry(sdbLookup) : null;
         app.operators.put(id, this);
-        app.operatorsBySite.get(site).add(this);
+        for (SchemaOpSite site : sites)
+            site.operators.add(this);
     }
 
-    public SchemaOp(App app, DatumSymbol base, String sfx, FF0 name, Site site, int sort) {
-        this(app, new DatumSymbol(base.id + sfx), name, site, sort);
+    public SchemaOp(App app, DatumSymbol base, String sfx, FF0 name, int sort, SchemaOpSite... sites) {
+        this(app, new DatumSymbol(base.id + sfx), name, sort, sites);
     }
 
     /**
@@ -127,8 +130,8 @@ public abstract class SchemaOp extends App.Svc {
     /**
      * Helps with defining the system core operators.
      */
-    private static void sysOperator(App app, String id, FF0 name, Consumer<SchemaPath> handler, Site site, int idx) {
-        new SchemaOp(app, BASE_SYSCORE, id, name, site, SORT_SYSCORE + (idx * 0x10000)) {            
+    private static void sysOperator(App app, String id, FF0 name, Consumer<SchemaPath> handler, int idx, SchemaOpSite... sites) {
+        new SchemaOp(app, BASE_SYSCORE, id, name, SORT_SYSCORE + (idx * 0x10000), sites) {
             @Override
             public void invoke(SchemaPath path, RORIO parameters) {
                 handler.accept(path);
@@ -145,18 +148,18 @@ public abstract class SchemaOp extends App.Svc {
             // perform a final verification of the file, just in case? (NOPE: Causes long save times on, say, LDBs)
             // root.editor.modifyVal(root.targetElement, root, false);
             root.root.ensureSaved();
-        }, Site.SCHEMA_HEADER, 0);
+        }, 0, app.opSites.SCHEMA_HEADER);
         sysOperator(app, "inspect", () -> app.t.u.shInspect, (innerElem) -> {
             app.ui.wm.createWindow(new UITest(app, innerElem.targetElement, innerElem.root));
-        }, Site.SCHEMA_HEADER, 1);
+        }, 1, app.opSites.SCHEMA_HEADER);
         sysOperator(app, "localidchanger", () -> app.t.u.shLIDC, (innerElem) -> {
             // innerElem.editor and innerElem.targetElement must exist because SchemaHostImpl uses them.
             app.ui.wm.createWindow(new UIIDChanger(app, innerElem));
-        }, Site.SCHEMA_HEADER, 2);
-        new SchemaOp(app, BASE_SYSCORE, "test_operator", () -> "TEST OPERATOR", Site.SCHEMA_HEADER, SORT_SYSCORE + (2* 0x10000)) {
+        }, 2, app.opSites.SCHEMA_HEADER);
+
+        new SchemaOp(app, BASE_SYSCORE, "test_operator", () -> "TEST OPERATOR", SORT_SYSCORE + (2 * 0x10000), app.opSites.SCHEMA_HEADER, app.opSites.ARRAY_SEL) {
             @Override
             public void invoke(SchemaPath path, RORIO parameters) {
-                
             }
         };
     }
@@ -179,11 +182,11 @@ public abstract class SchemaOp extends App.Svc {
     /**
      * Builds an operator menu.
      */
-    public static UIElement createOperatorMenu(App app, SchemaPath innerElem, Site site, Supplier<Boolean> validity, Map<String, DMKey> operatorContext, UIMapView rendererSource) {
+    public static UIElement createOperatorMenu(App app, SchemaPath innerElem, SchemaOpSite site, Supplier<Boolean> validity, Map<String, DMKey> operatorContext, UIMapView rendererSource) {
         LinkedList<UIPopupMenu.Entry> entries = new LinkedList<>();
         LinkedList<SchemaOp> ll = new LinkedList<>();
         Function<String, DMKey> contextSupplier = operatorContext::get;
-        for (SchemaOp op : app.operatorsBySite.get(site))
+        for (SchemaOp op : site.operators)
             if (op.shouldDisplay(innerElem, contextSupplier))
                 ll.add(op);
         ll.sort((arg0, arg1) -> {
@@ -226,8 +229,22 @@ public abstract class SchemaOp extends App.Svc {
         return UIMenuButton.coreMenuGen(app, validity, entries);
     }
 
-    public enum Site {
-        SCHEMA_HEADER,
-        ARRAY_SELECTION
+    public final static class SiteNamespace extends MVMNamespace<SchemaOpSite> {
+        public final SchemaOpSite SCHEMA_HEADER;
+        public final SchemaOpSite ARRAY_SEL;
+
+        public SiteNamespace(MVMEnv env) {
+            super("SchemaOpSite.", "sop-site", env, "SchemaOp.Site", SchemaOpSite.class);
+            add("SCHEMA_HEADER", SCHEMA_HEADER = new SchemaOpSite());
+            add("ARRAY_SEL", ARRAY_SEL = new SchemaOpSite());
+        }
+        @Override
+        protected boolean supportsNew() {
+            return true;
+        }
+        @Override
+        protected SchemaOpSite createNew(String name) {
+            return new SchemaOpSite();
+        }
     }
 }

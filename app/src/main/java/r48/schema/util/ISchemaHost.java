@@ -7,8 +7,8 @@
 
 package r48.schema.util;
 
+import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -85,8 +85,13 @@ public interface ISchemaHost {
      * Supplies context for operators.
      * The operator context is cleared before each buildHoldingEditor.
      */
-    default void supplyOperatorContext(Map<String, DMKey> context) {
+    default void addOperatorContext(IRIO target, String key, DMKey value) {
     }
+
+    /**
+     * Copies the operator context for modification and further use.
+     */
+    HashMap<String, DMKey> copyOperatorContext();
 
     // Yet another way to get an App to avoid pipelining
     App getApp();

@@ -27,7 +27,10 @@ public interface IArrayInterface {
         void panelsAdd(UIElement element);
         App getApp();
         void panelsFinished();
-        void exposeOperatorInfo(int selectedStart, int selectedEnd);
+    }
+
+    public interface Array {
+        ArrayPosition[] getPositions();
     }
 
     /*
@@ -36,7 +39,7 @@ public interface IArrayInterface {
      * state is tied to a unique SchemaElement held by the ArraySchemaElement for the purposes of holding extra state.
      * Also note that the positions are invalidated when any exec function is called.
      */
-    void provideInterfaceFrom(Host svl, Supplier<Boolean> valid, IEmbedDataContext state, Supplier<ArrayPosition[]> positions);
+    void provideInterfaceFrom(Host svl, Supplier<Boolean> valid, IEmbedDataContext state, Array positions);
 
     interface IProperty extends Supplier<Double>, Consumer<Double> {
         // Get returns 0 if the property doesn't exist, like with the usual double interface
@@ -58,6 +61,7 @@ public interface IArrayInterface {
      * It's up to the interface to work out how to implement everything it wants to do with these primitives.
      */
     class ArrayPosition {
+        public final int trueIndex;
         public final String text;
         // These are only allowed for two purposes:
         // 1. Comparison (for group-deletion algorithm)
@@ -72,7 +76,8 @@ public interface IArrayInterface {
         public final UIElement core;
         public int coreIndent;
 
-        public ArrayPosition(String txt, IRIO[] elem, UIElement cor, int subelemId, Supplier<Runnable> exeDelete, Runnable exeInsert, Runnable exeInsertCopiedArray) {
+        public ArrayPosition(int trueIndex, String txt, IRIO[] elem, UIElement cor, int subelemId, Supplier<Runnable> exeDelete, Runnable exeInsert, Runnable exeInsertCopiedArray) {
+            this.trueIndex = trueIndex;
             text = txt;
             elements = elem;
             core = cor;

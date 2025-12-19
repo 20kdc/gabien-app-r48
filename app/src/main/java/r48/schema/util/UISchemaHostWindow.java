@@ -65,7 +65,7 @@ public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableW
     public UISchemaHostWindow(App app, @Nullable UIMapView rendererSource) {
         super(app, rendererSource);
         toolbarSandwich = new UIAppendButton(app, Art.Symbol.Operator.i(app), toolbarPs, app.f.schemaPathTH, () -> {
-            return SchemaOp.createOperatorMenu(app, innerElem, SchemaOp.Site.SCHEMA_HEADER, getValidity(), operatorContext, rendererSource);
+            return (UIElement) SchemaOp.createOperatorMenu(app, innerElem, app.opSites.SCHEMA_HEADER, getValidity(), operatorContext, rendererSource);
         });
         toolbarRoot = toolbarSandwich;
         layoutAddElement(toolbarRoot);
@@ -99,6 +99,7 @@ public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableW
         if (!(windowOpen || stayClosed))
             doLaunch = true;
 
+        operatorContext.clear();
         innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
 
         for (UIElement uie : layoutGetElements())

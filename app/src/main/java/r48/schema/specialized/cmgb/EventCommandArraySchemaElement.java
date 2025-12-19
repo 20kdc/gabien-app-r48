@@ -28,6 +28,7 @@ import r48.schema.SchemaElement;
 import r48.schema.SubwindowSchemaElement;
 import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.arrays.StandardArrayInterface;
+import r48.schema.op.SchemaOp;
 import r48.schema.specialized.textboxes.R2kTextRules;
 import r48.schema.specialized.textboxes.UITextStuffMenu;
 import r48.schema.util.EmbedDataKey;
@@ -348,11 +349,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
      * The IRIO used for this element is expected to be the list.
      */
     private SubwindowSchemaElement getElementContextualSubwindowSchema(final IRIO tracker, final int start, final String displayPrefix) {
-        return new SubwindowSchemaElement(getElementContextualWindowSchema(tracker), new Function<IRIO, String>() {
-            @Override
-            public String apply(IRIO rubyIO) {
-                return displayPrefix + database.buildGroupCodename(rubyIO, start, false);
-            }
+        return new SubwindowSchemaElement(getElementContextualWindowSchema(tracker), (rubyIO) -> {
+            return displayPrefix + database.buildGroupCodename(rubyIO, start, false);
         });
     }
 
@@ -387,6 +385,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 int actualStart = findActualStart(target, tracker);
                 if (actualStart == -1)
                     return new UILabel(T.s.cmdOutOfList, app.f.schemaFieldTH);
+                int actualEnd = actualStart + getGroupLength(target, actualStart);
+                launcher.addOperatorContext(target, SchemaOp.CTXPARAM_ARRAYSTART, DMKey.of(actualStart));
+                launcher.addOperatorContext(target, SchemaOp.CTXPARAM_ARRAYEND, DMKey.of(actualEnd));
                 return getGroupElement(target, actualStart, ecwsKey).buildHoldingEditor(target, launcher, path);
             }
 

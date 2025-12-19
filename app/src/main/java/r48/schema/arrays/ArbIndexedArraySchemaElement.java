@@ -52,4 +52,12 @@ public class ArbIndexedArraySchemaElement extends ArraySchemaElement {
             return 0;
         return super.elementPermissionsLevel(i, target);
     }
+
+    @Override
+    protected int getAppendIdx(IRIO target) {
+        int len = target.getALen();
+        if (len < indexOffset)
+            return indexOffset;
+        return len;
+    }
 }

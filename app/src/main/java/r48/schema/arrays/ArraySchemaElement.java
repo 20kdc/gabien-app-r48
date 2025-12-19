@@ -18,7 +18,6 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.arrays.IArrayInterface.Host;
-import r48.schema.op.SchemaOp;
 import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -86,16 +85,6 @@ public abstract class ArraySchemaElement extends SchemaElement {
             public App getApp() {
                 return app;
             }
-
-            @Override
-            public void exposeOperatorInfo(int selectedStart, int selectedEnd) {
-                HashMap<String, DMKey> context = new HashMap<>();
-                if (selectedStart < selectedEnd) {
-                    context.put(SchemaOp.CTXPARAM_ARRAYSTART, DMKey.of(selectedStart));
-                    context.put(SchemaOp.CTXPARAM_ARRAYEND, DMKey.of(selectedEnd));
-                }
-                launcher.supplyOperatorContext(context);
-            }
         }, launcher.getValidity(), launcher.embedContext(target), () -> getPositions(target, launcher, path));
 
         return uiSVL;
@@ -147,18 +136,15 @@ public abstract class ArraySchemaElement extends SchemaElement {
             for (int j = 0; j < copyHelpElems.length; j++)
                 copyHelpElems[j] = target.getAElem(i + j);
 
-            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(dispData, copyHelpElems, uie, subelemId, deleter, addition, clipAddition);
+            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(i, dispData, copyHelpElems, uie, subelemId, deleter, addition, clipAddition);
             positions.add(position);
         }
         // The 4 for-loop is to deal with 1-indexing and such
-        for (int i = 0; i < 4; i++) {
-            int idx = target.getALen() + i;
-            if (elementPermissionsLevel(idx, target) != 0) {
-                SchemaPath ind = path.arrayHashIndex(DMKey.of(idx), "[" + (idx + indexDisplayOffset) + "]");
-                IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition((idx + indexDisplayOffset) + " ", null, null, 0, null, getAdditionCallback(target, launcher, idx, path, ind), getClipAdditionCallback(target, idx, path));
-                positions.add(position);
-                break;
-            }
+        int appendIdx = getAppendIdx(target);
+        if (elementPermissionsLevel(appendIdx, target) != 0) {
+            SchemaPath ind = path.arrayHashIndex(DMKey.of(appendIdx), "[" + (appendIdx + indexDisplayOffset) + "]");
+            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(appendIdx, (appendIdx + indexDisplayOffset) + " ", null, null, 0, null, getAdditionCallback(target, launcher, appendIdx, path, ind), getClipAdditionCallback(target, appendIdx, path));
+            positions.add(position);
         }
         return positions.toArray(new IArrayInterface.ArrayPosition[0]);
     }
@@ -356,20 +342,33 @@ public abstract class ArraySchemaElement extends SchemaElement {
 
     protected abstract SchemaElement getElementSchema(int j);
 
-    // Used to replace groups of elements with a single editor, where this makes sense.
-    // If this is non-zero for a given element, then the element schema is assumed to apply to the array.
-    // Use with care.
+    /*
+     * Used to replace groups of elements with a single editor, where this makes sense.
+     * If this is non-zero for a given element, then the element schema is assumed to apply to the array.
+     * Use with care.
+     */
     protected int getGroupLength(IRIO array, int j) {
         return 0;
     }
 
-    // 0: Do not even show this element.
-    // 1: Show & allow editing of this element, but disallow deletion.
-    // 2: All permissions.
-    // (Used to prevent a user shooting themselves in the foot - should not be considered a serious mechanism.)
+    /**
+     * 0: Do not even show this element.
+     * 1: Show & allow editing of this element, but disallow deletion.
+     * 2: All permissions.
+     * (Used to prevent a user shooting themselves in the foot - should not be considered a serious mechanism.)
+     * If you have start-of-array nulls, you may need to edit getAppendIdx.
+     */
     protected int elementPermissionsLevel(int i, IRIO target) {
         boolean canDelete = (sizeFixed == -1) && (!(target.getALen() <= atLeast));
         return canDelete ? 2 : 1;
+    }
+
+    /**
+     * Gets the append index; where the append button is placed.
+     * This is expected to be at the end of the array.
+     */
+    protected int getAppendIdx(IRIO target) {
+        return target.getALen();
     }
 
     public static class ElementContextual {

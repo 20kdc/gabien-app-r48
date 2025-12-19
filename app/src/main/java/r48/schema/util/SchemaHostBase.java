@@ -16,7 +16,6 @@ import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -139,19 +138,30 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
         nextObject.root.registerModificationHandler(nudgeRunnable);
         replaceValidity();
         innerElem = nextObject;
-        operatorContext.clear();
         // update
         refreshDisplay();
     }
 
     /**
      * Implements the actual 'switch' operation for the UI.
+     * Be sure to clear the operator context!
      */
     protected abstract void refreshDisplay();
 
     @Override
-    public void supplyOperatorContext(Map<String, DMKey> context) {
-        operatorContext.clear();
-        operatorContext.putAll(context);
+    public void addOperatorContext(IRIO target, String key, DMKey value) {
+        // shouldn't happen but,,,
+        if (innerElem == null)
+            return;
+        // this is to catch very obvious subelements trying to pass off their context upwards
+        // we might need some kind of root isolator for this kind of thing... or maybe operator context is overengineered?
+        if (this.innerElem.targetElement != target)
+            return;
+        operatorContext.put(key, value);
+    }
+
+    @Override
+    public HashMap<String, DMKey> copyOperatorContext() {
+        return new HashMap<>(operatorContext);
     }
 }

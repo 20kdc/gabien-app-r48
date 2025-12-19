@@ -8,7 +8,6 @@ package r48;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -47,7 +46,6 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.op.SchemaOp;
-import r48.schema.op.SchemaOp.Site;
 import r48.search.ByCodeCommandClassifier;
 import r48.search.CommandTag;
 import r48.search.CompoundTextAnalyzer;
@@ -125,7 +123,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     /**
      * Operators by their invoke contexts.
      */
-    public final EnumMap<SchemaOp.Site, LinkedList<SchemaOp>> operatorsBySite = new EnumMap<>(Site.class);
+    public final SchemaOp.SiteNamespace opSites;
 
     /**
      * Clipboard context in app encoding
@@ -159,14 +157,13 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, @NonNull FSBackend rp, @Nullable FSBackend sip, Consumer<String> loadProgress, @NonNull FF0 launchConfigName) {
         super(ilg, charset, gp, rp, sip, loadProgress);
 
-        for (SchemaOp.Site site : SchemaOp.Site.values())
-            operatorsBySite.put(site, new LinkedList<>());
-
         PleaseFailBrutally.checkFailBrutallyAtAppInit();
 
         this.launchConfigName = launchConfigName;
 
         // -- OBJECT DATABASE READY --
+
+        opSites = new SchemaOp.SiteNamespace(vmCtx);
 
         deletionButtonsNeedConfirmation = GaBIEn.singleWindowApp();
 
