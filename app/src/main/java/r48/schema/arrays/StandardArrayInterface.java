@@ -314,10 +314,8 @@ public class StandardArrayInterface implements IArrayInterface {
             private UIMenuButton genAdditionButton(boolean clarifyEmpty, final Runnable runnable, final Runnable runnable2) {
                 if (runnable == null)
                     return null;
-                LinkedList<String> optText = new LinkedList<String>();
-                LinkedList<Runnable> optRuns = new LinkedList<Runnable>();
-                // This keeps this string in the translation DB in case it's needed again; stuff should be tested first.
-                // app.fmt.formatExtended(T.s.l193, new RubyIO().setString(text, true))
+                LinkedList<String> optText = new LinkedList<>();
+                LinkedList<Runnable> optRuns = new LinkedList<>();
                 optText.add(clarifyEmpty ? T.s.array_bInsert : T.s.array_bAddNext);
                 optRuns.add(runnable);
                 if (runnable2 != null) {

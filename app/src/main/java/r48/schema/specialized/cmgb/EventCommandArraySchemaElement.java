@@ -10,10 +10,8 @@ package r48.schema.specialized.cmgb;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import gabien.ui.*;
-import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
@@ -21,14 +19,12 @@ import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.ArrayElementSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.SubwindowSchemaElement;
 import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.arrays.StandardArrayInterface;
-import r48.schema.op.SchemaOp;
 import r48.schema.specialized.textboxes.R2kTextRules;
 import r48.schema.specialized.textboxes.UITextStuffMenu;
 import r48.schema.util.EmbedDataKey;
@@ -197,37 +193,14 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         return modified;
     }
 
-    // Note that this always returns != 0, so all schemas are in fact array-based.
-    @Override
-    public int getGroupLength(IRIO arr, int j) {
-        int l = database.getGroupLengthCore(arr, j);
-        if (l == 0)
-            return 1;
-        return l;
-    }
-
     @Override
     protected SchemaElement getElementSchema(int j) {
-        return new SubwindowSchemaElement(baseElement, new Function<IRIO, String>() {
-            @Override
-            public String apply(IRIO rubyIO) {
-                return "This text should not be visible. Grouping is used for all commands.";
-            }
-        });
+        return new SubwindowSchemaElement(baseElement, (rubyIO) -> "This text should not be visible. Grouping is used for all commands.");
     }
 
-    private SchemaElement getGroupElement(IRIO arr, final int start, final EmbedDataKey<Double> scrollKey) {
+    protected SchemaElement buildGroupContextualUntracked(IRIO arr, final int start, final int length, boolean addRemove, final EmbedDataKey<Double> scrollKey) {
         // Uhoh.
-        final int length;
-        boolean addRemove = false;
         boolean canCopyText = false;
-        int p = database.getGroupLengthCore(arr, start);
-        if (p == 0) {
-            length = 1;
-        } else {
-            length = p;
-            addRemove = true;
-        }
         SchemaElement[] group = new SchemaElement[length + 1];
         RPGCommandSchemaElement rcse = baseElement;
         for (int i = 0; i < group.length - 1; i++) {
@@ -311,7 +284,13 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    protected ElementContextual getElementContextualSchema(IRIO arr, final int start, final int length, final HashMap<Integer, Integer> indentAnchors) {
+    protected GroupInfo getGroupInfo(IRIO arr, final int start, final HashMap<Integer, Integer> indentAnchors) {
+        int length = database.getGroupLengthCore(arr, start);
+        final boolean addRemove = length >= 1;
+        if (length < 1)
+            length = 1;
+        final int finalLength = length; 
+
         // Record the first RubyIO of the group.
         // getGroupElement seeks for it now, so it "tracks" the group properly despite array changes.
         final IRIO tracker = arr.getAElem(start);
@@ -338,7 +317,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                     st = "@" + lai + " ";
             }
         }
-        return new ElementContextual(indent, getElementContextualSubwindowSchema(tracker, start, st));
+        return new GroupInfo(indent, getElementContextualSubwindowSchema(tracker, start, st), (scrollKey) -> {
+            return buildGroupContextualUntracked(arr, start, finalLength, addRemove, scrollKey);
+        }, length);
     }
 
     /**
@@ -349,64 +330,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
      * The IRIO used for this element is expected to be the list.
      */
     private SubwindowSchemaElement getElementContextualSubwindowSchema(final IRIO tracker, final int start, final String displayPrefix) {
-        return new SubwindowSchemaElement(getElementContextualWindowSchema(tracker), (rubyIO) -> {
+        return new SubwindowSchemaElement(getGroupTrackedWindowSchema(tracker), (rubyIO) -> {
             return displayPrefix + database.buildGroupCodename(rubyIO, start, false);
         });
-    }
-
-    /**
-     * Finds the instance tracker in target.
-     */
-    public static int findActualStart(IRIO target, IRIO tracker) {
-        if (target.getType() != '[')
-            return -1;
-        int alen = target.getALen();
-        for (int i = 0; i < alen; i++)
-            if (target.getAElem(i) == tracker)
-                return i;
-        return -1;
-    }
-
-    /**
-     * Public because this is used by stuff like Find Translatables to get "access" into editing a command.
-     * Note that this expects the command IRIO (this acts as the "array index").
-     * The IRIO used for this element is expected to be the list.
-     */
-    public SchemaElement getElementContextualWindowSchema(final IRIO tracker) {
-        EmbedDataKey<Double> ecwsKey = new EmbedDataKey<>();
-        return new SchemaElement(app) {
-            @Override
-            public boolean declaresSelfEditorOf(RORIO target, RORIO check) {
-                return check == tracker;
-            }
-
-            @Override
-            public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
-                int actualStart = findActualStart(target, tracker);
-                if (actualStart == -1)
-                    return new UILabel(T.s.cmdOutOfList, app.f.schemaFieldTH);
-                int actualEnd = actualStart + getGroupLength(target, actualStart);
-                launcher.addOperatorContext(target, SchemaOp.CTXPARAM_ARRAYSTART, DMKey.of(actualStart));
-                launcher.addOperatorContext(target, SchemaOp.CTXPARAM_ARRAYEND, DMKey.of(actualEnd));
-                return getGroupElement(target, actualStart, ecwsKey).buildHoldingEditor(target, launcher, path);
-            }
-
-            @Override
-            public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-                int actualStart = findActualStart(target, tracker);
-                if (actualStart == -1)
-                    return;
-                getGroupElement(target, actualStart, ecwsKey).modifyVal(target, path, setDefault);
-            }
-
-            @Override
-            public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
-                int actualStart = findActualStart(target, tracker);
-                if (actualStart == -1)
-                    return;
-                getGroupElement(target, actualStart, ecwsKey).visit(target, path, v, detailedPaths);
-            }
-        };
     }
 
     @Override

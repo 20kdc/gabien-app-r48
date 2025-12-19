@@ -8,6 +8,7 @@
 package r48.schema.arrays;
 
 import gabien.ui.UIElement;
+import gabien.ui.elements.UILabel;
 import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.io.IntUtils;
@@ -15,15 +16,18 @@ import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
+import r48.schema.ArrayElementSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.arrays.IArrayInterface.Host;
+import r48.schema.op.SchemaOp;
 import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -104,12 +108,12 @@ public abstract class ArraySchemaElement extends SchemaElement {
 
             SchemaElement subelem = getElementSchema(i);
             int subelemId = 0;
-            nextAdvance = getGroupLength(target, i);
+            GroupInfo ec = getGroupInfo(target, i, indentAnchors);
             boolean hasNIdxSchema = false;
-            if (nextAdvance == 0) {
+            if (ec == null) {
                 nextAdvance = 1;
             } else {
-                ElementContextual ec = getElementContextualSchema(target, i, nextAdvance, indentAnchors);
+                nextAdvance = ec.groupLength;
                 subelem = ec.element;
                 subelemId = ec.indent;
                 hasNIdxSchema = true;
@@ -271,12 +275,13 @@ public abstract class ArraySchemaElement extends SchemaElement {
             }
             int groupStep;
             for (int j = 0; j < alen; j += groupStep) {
-                groupStep = getGroupLength(target, j);
-                if (groupStep == 0) {
+                GroupInfo ec = getGroupInfo(target, j, indentAnchors);
+                if (ec == null) {
                     groupStep = 1;
                     continue;
                 }
-                getElementContextualSchema(target, j, groupStep, indentAnchors).element.modifyVal(target, path, setDefault);
+                ec.element.modifyVal(target, path, setDefault);
+                groupStep = ec.groupLength;
             }
             boolean aca = autoCorrectArray(target, path);
             if (debugMod && aca)
@@ -293,7 +298,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     @Override
     public void visitChildren(IRIO target, SchemaPath path2, Visitor v, boolean detailedPaths) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
-        HashMap<Integer, Integer> indentAnchors = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> indentAnchors = new HashMap<>();
         int alen = target.getALen();
         for (int j = 0; j < alen; j++) {
             IRIO rio = target.getAElem(j);
@@ -301,18 +306,92 @@ public abstract class ArraySchemaElement extends SchemaElement {
         }
         int groupStep;
         for (int j = 0; j < alen; j += groupStep) {
-            groupStep = getGroupLength(target, j);
-            if (groupStep == 0) {
+            GroupInfo ec = getGroupInfo(target, j, indentAnchors);
+            if (ec == null) {
                 groupStep = 1;
                 continue;
             }
-            getElementContextualSchema(target, j, groupStep, indentAnchors).element.visit(target, path, v, detailedPaths);
+            ec.element.visit(target, path, v, detailedPaths);
+            groupStep = ec.groupLength;
         }
     }
 
     // Used to do the correct tagging so that updates to children will affect the parent
     public boolean monitorsSubelements() {
         return false;
+    }
+
+    /**
+     * Finds the instance tracker in target.
+     */
+    public static int findActualStart(IRIO target, IRIO tracker) {
+        if (target.getType() != '[')
+            return -1;
+        int alen = target.getALen();
+        for (int i = 0; i < alen; i++)
+            if (target.getAElem(i) == tracker)
+                return i;
+        return -1;
+    }
+
+    /**
+     * This provides the 'interior' for getElementContextualWindowSchema.
+     * That function provides the 'tracking' on array changes.
+     * The main thing this function does is account for if the object is no longer part of a group.
+     */
+    protected final SchemaElement getElementContextualWindowSchemaUntracked(IRIO arr, final int start, final EmbedDataKey<Double> scrollKey) {
+        GroupInfo gi = getGroupInfo(arr, start, new HashMap<>());
+        if (gi == null) {
+            SchemaElement elm = getElementSchema(start);
+            return new ArrayElementSchemaElement(app, start, () -> "", elm, null, false);
+        }
+        return gi.elementContextualUntracked.apply(scrollKey);
+    }
+
+    /**
+     * Returns a contextualized schema for the given array element IRIO.
+     * This schema is applied to the array, and tracks the element by its IRIO.
+     * Public because this is used by stuff like Find Translatables to get "access" into editing a command, among other things.
+     * Note that this expects the command IRIO (this acts as the "array index").
+     * The IRIO used for this element is expected to be the list.
+     */
+    public SchemaElement getGroupTrackedWindowSchema(final IRIO tracker) {
+        EmbedDataKey<Double> ecwsKey = new EmbedDataKey<>();
+        return new SchemaElement(app) {
+            @Override
+            public boolean declaresSelfEditorOf(RORIO target, RORIO check) {
+                return check == tracker;
+            }
+
+            @Override
+            public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
+                int actualStart = findActualStart(target, tracker);
+                if (actualStart == -1)
+                    return new UILabel(T.s.cmdOutOfList, app.f.schemaFieldTH);
+                GroupInfo ec = getGroupInfo(target, actualStart, new HashMap<>());
+                int length = ec == null ? 1 : ec.groupLength;
+                int actualEnd = actualStart + length;
+                launcher.addOperatorContext(target, SchemaOp.CTXPARAM_ARRAYSTART, DMKey.of(actualStart));
+                launcher.addOperatorContext(target, SchemaOp.CTXPARAM_ARRAYEND, DMKey.of(actualEnd));
+                return getElementContextualWindowSchemaUntracked(target, actualStart, ecwsKey).buildHoldingEditor(target, launcher, path);
+            }
+
+            @Override
+            public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+                int actualStart = findActualStart(target, tracker);
+                if (actualStart == -1)
+                    return;
+                getElementContextualWindowSchemaUntracked(target, actualStart, ecwsKey).modifyVal(target, path, setDefault);
+            }
+
+            @Override
+            public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
+                int actualStart = findActualStart(target, tracker);
+                if (actualStart == -1)
+                    return;
+                getElementContextualWindowSchemaUntracked(target, actualStart, ecwsKey).visit(target, path, v, detailedPaths);
+            }
+        };
     }
 
     // Used by certain rather complicated array types that want to give the user a *specific* UI on the creation of an element.
@@ -332,24 +411,16 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // Also note that if a modification is performed, another check is done so that things like indent processing can run.
     protected abstract boolean autoCorrectArray(IRIO array, SchemaPath path);
 
-    // Allows using a custom schema for specific elements in specific contexts in subclasses.
-    // Note that this is meant to be used by things messing with getGroupLength, and will not be used otherwise.
-    // Also note that for modifyVal purposes this acts *in addition* to getElementSchema,
-    //  so that getGroupLength can safely assume that getElementSchema is being followed.
-    protected ElementContextual getElementContextualSchema(IRIO arr, int start, int length, final HashMap<Integer, Integer> indentAnchors) {
-        throw new RuntimeException("Group length was used, but no contextual schema was defined for it.");
+    /**
+     * Update 19th Dec. 2025: This is the new home of group control.
+     * This function returns both the length of a group and its element schema, along with indent.
+     * Note that for modifyVal purposes this acts *in addition* to getElementSchema.
+     */
+    protected GroupInfo getGroupInfo(IRIO arr, int start, final HashMap<Integer, Integer> indentAnchors) {
+        return null;
     }
 
     protected abstract SchemaElement getElementSchema(int j);
-
-    /*
-     * Used to replace groups of elements with a single editor, where this makes sense.
-     * If this is non-zero for a given element, then the element schema is assumed to apply to the array.
-     * Use with care.
-     */
-    protected int getGroupLength(IRIO array, int j) {
-        return 0;
-    }
 
     /**
      * 0: Do not even show this element.
@@ -371,13 +442,32 @@ public abstract class ArraySchemaElement extends SchemaElement {
         return target.getALen();
     }
 
-    public static class ElementContextual {
+    public static final class GroupInfo {
         public int indent;
+        /**
+         * The 'outer element'.
+         * This schema element is attached to the array, is presented to the user from the array interface, and participates in modifyVal.
+         * It may or may not attempt to track array index changes.
+         */
         public SchemaElement element;
+        /**
+         * The 'contextual element'; the 'core' of the group.
+         * This schema element is attached to the array at an index set when the GroupInfo is returned.
+         * This is used by getElementContextualWindowSchemaUntracked.
+         */
+        public Function<EmbedDataKey<Double>, SchemaElement> elementContextualUntracked;
+        /**
+         * Group length. This must be at least 1.
+         */
+        public int groupLength;
 
-        public ElementContextual(int id, SchemaElement elem) {
+        public GroupInfo(int id, SchemaElement elem, Function<EmbedDataKey<Double>, SchemaElement> ecu, int gl) {
             indent = id;
             element = elem;
+            elementContextualUntracked = ecu;
+            groupLength = gl;
+            if (gl < 1)
+                throw new IllegalArgumentException("groupLength < 1");
         }
     }
 }

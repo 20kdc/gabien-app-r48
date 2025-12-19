@@ -128,7 +128,7 @@ public class RMFindTranslatables extends App.Svc {
             sp = sp.tagSEMonitor(listObj, cmdbEditor, false);
             // enter command
             sp = sp.arrayHashIndex(DMKey.of(codeIndex), "C" + codeIndex);
-            sp = sp.newWindow(cmdbEditor.getElementContextualWindowSchema(command), listObj);
+            sp = sp.newWindow(cmdbEditor.getGroupTrackedWindowSchema(command), listObj);
             shi.pushPathTree(sp);
         });
         return button;

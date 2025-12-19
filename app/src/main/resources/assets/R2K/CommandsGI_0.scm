@@ -407,7 +407,9 @@
 (p useTiling int_boolean)
 (p font change_sys_gfx_font)
 
-(cmd 10690 "Change Transition")
+(cmd 10690 ("Change Transition"
+	(? ]1 (" " (@ ]1 change_transition_situation #t) " to " (@ ]2 change_transition_type #t)))
+))
 (d "Change a transition used by the system.")
 (p _ string)
 (p situation change_transition_situation)
