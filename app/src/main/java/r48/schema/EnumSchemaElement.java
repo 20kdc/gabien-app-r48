@@ -14,7 +14,6 @@ import r48.dbs.ValueSyntax;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
-import r48.schema.specialized.TempDialogSchemaChoice;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;
@@ -38,9 +37,9 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class EnumSchemaElement extends SchemaElement.Leaf {
     // Maps ValueSyntax strings to option text
-    public final HashMap<String, UIEnumChoice.Option> lookupOptions = new HashMap<String, UIEnumChoice.Option>();
+    public final HashMap<String, UIEnumChoice.Option> lookupOptions = new HashMap<>();
     // Options for use in enum choice dialogs
-    public final LinkedList<UIEnumChoice.Option> viewOptions = new LinkedList<UIEnumChoice.Option>();
+    public final LinkedList<UIEnumChoice.Option> viewOptions = new LinkedList<>();
 
     /**
      * Default prefix disposition.
@@ -94,17 +93,16 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
     @Override
     public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIEnumChoice.Option opt = findOption(target);
-        UITextButton button = new UITextButton(viewValue(target, Prefix.Prefix, opt), app.f.schemaFieldTH, () -> {
+        UITextButton button = new UITextButton(viewValue(target, Prefix.Prefix, opt), app.f.schemaFieldTH, null);
+        button.onClick = () -> {
             liveUpdate();
-            TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, path);
-            temp.heldDialog = makeEnumChoiceDialog((integer) -> {
+            launcher.launchDialogOrMenu(button, target, path, (close) -> makeEnumChoiceDialog((integer) -> {
                 target.setDeepClone(integer);
                 path.changeOccurred(false);
                 // Enums can affect parent format, so deal with that now.
-                temp.pleasePopObject();
-            });
-            launcher.pushObject(path.newWindow(temp, target));
-        });
+                close.run();
+            }));
+        };
         if (opt != null) {
             if (opt.furtherDataButton != null)
                 return new UIAppendButton(Art.Symbol.CloneFrame.i(app), button, () -> {

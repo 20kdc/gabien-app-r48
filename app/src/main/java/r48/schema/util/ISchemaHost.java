@@ -9,14 +9,17 @@ package r48.schema.util;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
+import gabien.ui.elements.UIButton;
 import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.schema.specialized.TempDialogSchemaChoice;
 
 /**
  * Used to make the Schema interface slightly saner to use
@@ -94,4 +97,15 @@ public interface ISchemaHost {
 
     // Yet another way to get an App to avoid pipelining
     App getApp();
+
+    /**
+     * Usually creates a TempDialogSchemaChoice.
+     * However, in some circumstances, it will instead create a menu.
+     * The theoretical ideal here is that this 'replaces' TempDialogSchemaChoice API-wise.
+     */
+    default void launchDialogOrMenu(UIButton<?> button, IRIO target, SchemaPath path, Function<Runnable, UIElement> dialogMaker) {
+        TempDialogSchemaChoice temp = new TempDialogSchemaChoice(getApp(), null, path);
+        temp.heldDialog = dialogMaker.apply(temp::pleasePopObject);
+        pushObject(path.newWindow(temp, target));
+    }
 }

@@ -6,10 +6,15 @@
  */
 package r48.schema.util;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+
 import gabien.ui.UIElement;
+import gabien.ui.elements.UIButton;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import r48.App;
+import r48.io.data.IRIO;
 
 /**
  * Created 21st August, 2024
@@ -73,4 +78,15 @@ public class UISchemaHostWidget extends SchemaHostBase {
             innerElemEditor.setForcedBounds(this, new Rect(getSize()));
     }
 
+    @Override
+    public void launchDialogOrMenu(UIButton<?> button, IRIO target, SchemaPath path, Function<Runnable, UIElement> dialogMaker) {
+        AtomicBoolean ab = new AtomicBoolean();
+        UIProxy proxy = new UIProxy(dialogMaker.apply(() -> ab.set(true)), true) {
+            @Override
+            public boolean requestsUnparenting() {
+                return super.requestsUnparenting() || ab.get();
+            }
+        };
+        app.ui.wm.createMenu(button, proxy);
+    }
 }
