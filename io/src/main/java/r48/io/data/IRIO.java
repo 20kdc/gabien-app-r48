@@ -237,7 +237,10 @@ public abstract class IRIO extends RORIO {
      */
     public final void rmAElemByIRIO(IRIO last) {
         int idx = findAElemByIRIO(last);
-        if (idx >= 0)
+        if (idx >= 0) {
             rmAElem(idx);
+        } else {
+            System.err.println("WARNING: rmAElemByIRIO was called, but we couldn't find the IRIO.");
+        }
     }
 }

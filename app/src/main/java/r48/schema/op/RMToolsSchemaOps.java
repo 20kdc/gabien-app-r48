@@ -43,7 +43,7 @@ public class RMToolsSchemaOps {
                         return null;
                     return app.t.s.op_rmTextManip;
                 }
-                static final boolean DEBUG = true;
+                static final boolean DEBUG = false;
                 @Override
                 public String invoke(SchemaOp.ExpandedCtx parameters) {
                     if (DEBUG)
@@ -54,7 +54,9 @@ public class RMToolsSchemaOps {
                         return null;
                     }
                     long mode = getParamLong(parameters, "@mode", 0);
-                    boolean wrap = getParamLong(parameters, "@wrap", 0) != 0;
+                    boolean ignoreFirst = getParamLong(parameters, "@ignore_first", 0) != 0;
+                    int fieldWidth = (int) getParamLong(parameters, "@wrap_to_limit", 0);
+                    boolean wrap = fieldWidth > 0;
                     // This has to be written in a really specific way, because we insert new commands.
                     int idx = parameters.commandList.startIndex;
                     int endIndex = parameters.commandList.endIndex;
@@ -80,7 +82,6 @@ public class RMToolsSchemaOps {
                             continue;
                         }
                         // ugh
-                        int fieldWidth = 50;
                         int additionCode = rc.additionCode == -1 ? rc.commandId : rc.additionCode;
                         // get the original group length
                         int groupLen = parameters.commandList.cmdb.getGroupLengthCore(cmdArray, idx);
@@ -88,7 +89,11 @@ public class RMToolsSchemaOps {
                             groupLen = 1;
                         if (DEBUG)
                             System.out.println("textmanip root CMD is textmanip, GL " + groupLen);
+                        // These two have to be kept in sync.
+                        // Ugly, I know.
                         LinkedList<IRIO> commandTextIRIOs = new LinkedList<>();
+                        LinkedList<IRIO> commandCmdIRIOs = new LinkedList<>();
+                        boolean ignoreFirstFlag = ignoreFirst;
                         for (int subIdx = 0; subIdx < groupLen; subIdx++) {
                             IRIO subCmd = cmdArray.getAElem(idx + subIdx);
                             RPGCommand subRC = parameters.commandList.cmdb.entryOf(subCmd);
@@ -96,10 +101,18 @@ public class RMToolsSchemaOps {
                                 continue;
                             if (subRC.textArg == -1)
                                 continue;
-                            commandTextIRIOs.add(subCmd.getIVar("@parameters").getAElem(subRC.textArg));
+                            if (!ignoreFirstFlag) {
+                                commandTextIRIOs.add(subCmd.getIVar("@parameters").getAElem(subRC.textArg));
+                                commandCmdIRIOs.add(subCmd);
+                            }
+                            ignoreFirstFlag = false;
                         }
                         IRIO[] commandTextIRIOsArray = commandTextIRIOs.toArray(new IRIO[0]);
                         idx += groupLen;
+                        // This catches if we were told to ignore the first line but there's no other lines.
+                        // Otherwise, we're liable to accidentally generate a blank group.
+                        if (commandTextIRIOsArray.length == 0)
+                            continue;
                         // alright, we're now ready to begin the rewriting process
                         String[] text = new String[commandTextIRIOsArray.length];
                         for (int textIdx = 0; textIdx < text.length; textIdx++)
@@ -110,7 +123,8 @@ public class RMToolsSchemaOps {
                         didModify = true;
                         // adjust
                         while (text.length < commandTextIRIOs.size()) {
-                            cmdArray.rmAElemByIRIO(commandTextIRIOs.getLast());
+                            cmdArray.rmAElemByIRIO(commandCmdIRIOs.removeLast());
+                            commandTextIRIOs.removeLast();
                             idx--;
                             endIndex--;
                         }
@@ -118,6 +132,7 @@ public class RMToolsSchemaOps {
                             IRIO newCmd = cmdArray.addAElem(idx);
                             parameters.commandList.eventCommandArraySchema.initCommand(additionCode, newCmd, idx);
                             commandTextIRIOs.add(newCmd.getIVar("@parameters").getAElem(parameters.commandList.cmdb.knownCommands.get((int) additionCode).textArg));
+                            commandCmdIRIOs.add(newCmd);
                             idx++;
                             endIndex++;
                         }

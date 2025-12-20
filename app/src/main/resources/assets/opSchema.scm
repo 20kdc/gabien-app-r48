@@ -22,5 +22,6 @@
 
 (: R48::OpCfg::r48core_rmtextmanip)
 (@ mode R48::OpCfg::r48core_rmtextmanip.mode)
-(@ wrap int_boolean)
+(@ ignore_first int_boolean)
+(+ optP @wrap_to_limit int= 50)
 (+ opcfg_ctx_array_bounds)

@@ -278,7 +278,7 @@ public class Art {
         Tween, SaveDisabled, Forward, Eyedropper,
         // "Fill" is for a flood fill, so it's a bucket
         Line, Fill, Undo, UndoDisabled,
-        // "Operator" is a magic wand
+        // "Operator" is a cog.
         Redo, RedoDisabled, Volume, Operator;
 
         public Instance i(Art a) {
