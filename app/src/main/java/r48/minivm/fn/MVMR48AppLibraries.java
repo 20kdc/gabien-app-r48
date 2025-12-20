@@ -20,6 +20,7 @@ public class MVMR48AppLibraries {
         ctx.install(new MVMSDBLibrary(app));
         ctx.install(new MVMSDBElementsLibrary(app));
         ctx.install(new MVMSchemaPathLibrary(app));
+        ctx.install(new MVMSchemaOpLibrary(app));
         ctx.install(new MVMAppUILibrary(app));
     }
 }

@@ -93,7 +93,7 @@ public class MVMExtensionsLibrary {
                         ds.add(s.s);
                 return new MVMCExpr.Const(ds, new MVMType.TypedList(MVMType.SYM));
             } else if (call.length == 1) {
-                MVMSlot ds = cs.context.getSlot(new DatumSymbol(MVMU.coerceToString(call[1])));
+                MVMSlot ds = cs.context.getSlot(new DatumSymbol(MVMU.coerceToString(call[0])));
                 if (ds != null)
                     return new MVMCExpr.Const(ds.help, MVMType.STR);
                 return new MVMCExpr.Const(null, MVMType.STR);

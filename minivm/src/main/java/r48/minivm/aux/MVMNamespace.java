@@ -51,16 +51,16 @@ public class MVMNamespace<T> {
             moreInfo = "The corresponding variables are prefixed with '" + slotPrefix + "'.";
         env.defLib(apiPrefix + "list", MVMType.LIST, () -> {
             return new ArrayList<>(values.keySet());
-        }, "Returns a list of strings, one per " + noun + "." + moreInfo);
+        }, "(" + apiPrefix + "list): Returns a list of strings, one per " + noun + "." + moreInfo);
         env.defLib(apiPrefix + "get", myType, MVMType.STR, (key) -> {
             return values.get(key);
-        }, "Gets the " + noun + " by this name.");
+        }, "(" + apiPrefix + "get K): Gets the " + noun + " by this name.");
         if (supportsNew()) {
             final MVMFn newFn = env.defLib(apiPrefix + "new", myType, MVMType.ANY, (key) -> {
                 T thing = createNew((String) key);
                 add(MVMU.coerceToString(key), thing);
                 return thing;
-            }, "Creates a new " + noun + " by the given name (as something string-ish) and registers it.");
+            }, "(" + apiPrefix + "new K): Creates a new " + noun + " by the given name (as something string-ish) and registers it.");
             env.defineSlot(new DatumSymbol(apiPrefix + "define"), new MVMMacro(apiPrefix + "define") {
                 @Override
                 public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
@@ -71,13 +71,13 @@ public class MVMNamespace<T> {
                         MVMU.coerceToString(call[0])
                     });
                 }
-            }).help("See " + apiPrefix + "define (but with a constant symbol)");
+            }).help("(" + apiPrefix + "define K): See " + apiPrefix + "new (but with a constant symbol)");
         } else if (!selfInstalling()) {
             @SuppressWarnings("unchecked")
             final MVMFn regFn = env.defLib(apiPrefix + "register", myType, MVMType.ANY, myType, (key, thing) -> {
                 add(MVMU.coerceToString(key), (T) thing);
                 return thing;
-            }, "Registers a[n] " + noun + " by the given name (as something string-ish)(.");
+            }, "(" + apiPrefix + "register K V): Registers a[n] " + noun + " by the given name (as something string-ish)(.");
             env.defineSlot(new DatumSymbol(apiPrefix + "define"), new MVMMacro(apiPrefix + "define") {
                 @Override
                 public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
@@ -89,7 +89,7 @@ public class MVMNamespace<T> {
                         call[1]
                     });
                 }
-            }).help("See " + apiPrefix + "define (but with a constant symbol)");
+            }).help("(" + apiPrefix + "define K V): See " + apiPrefix + "define (but with a constant symbol)");
         }
     }
 
@@ -141,5 +141,21 @@ public class MVMNamespace<T> {
             res = env.defineSlot(new DatumSymbol(slotPrefix + name), thing, myType).help(null);
         values.put(name, thing);
         return res;
+    }
+
+    /**
+     * If 'o' is a symbol or string, resolves it to the target.
+     * Otherwise, returns whatever it is as-is and relies on the cast to fail.
+     */
+    @SuppressWarnings("unchecked")
+    public T coerce(Object o) {
+        if (o instanceof DatumSymbol)
+            o = ((DatumSymbol) o).id;
+        if (o instanceof String) {
+            T res = values.get(o);
+            if (res == null)
+                throw new RuntimeException("Cannot resolve " + noun + ": " + o);
+        }
+        return (T) o;
     }
 }
