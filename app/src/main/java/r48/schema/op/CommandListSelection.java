@@ -33,12 +33,18 @@ public class CommandListSelection {
     public final CMDB cmdb;
 
     /**
+     * The event command array schema.
+     */
+    public final EventCommandArraySchemaElement eventCommandArraySchema;
+
+    /**
      * Start/end indices. That is to say, before we started messing with things.
      */
     public final int startIndex, endIndex;
 
-    public CommandListSelection(CMDB cmdb, int start, int end) {
-        this.cmdb = cmdb;
+    public CommandListSelection(EventCommandArraySchemaElement eventCommandArraySchema, int start, int end) {
+        this.cmdb = eventCommandArraySchema.database;
+        this.eventCommandArraySchema = eventCommandArraySchema;
         startIndex = start;
         endIndex = end;
     }
@@ -51,15 +57,15 @@ public class CommandListSelection {
         if (path.targetElement.getType() != '[')
             return null;
         // Firstly, figure out the CMDB. This also confirms the array we have is what it's supposed to be.
-        CMDB cmdb = null;
+        EventCommandArraySchemaElement ecas = null;
         SchemaElement se = AggregateSchemaElement.extractField(path.editor, path.targetElement);
         // We may be in the tracking SE of a command; break out if so.
         if (se instanceof ArraySchemaElement.TrackingSE)
             se = ((ArraySchemaElement.TrackingSE) se).parentArraySE;
         // Is this an event command array?
         if (se instanceof EventCommandArraySchemaElement)
-            cmdb = ((EventCommandArraySchemaElement) se).database;
-        if (cmdb == null)
+            ecas = (EventCommandArraySchemaElement) se;
+        if (ecas == null)
             return null;
         // Now for the selection stuff.
         RORIO arrayStartK = getParamOrDMNull(parameters, CTXPARAM_ARRAYSTART);
@@ -72,6 +78,6 @@ public class CommandListSelection {
         }
         if (endIndex < startIndex || startIndex < 0 || endIndex < 0)
             return null;
-        return new CommandListSelection(cmdb, startIndex, endIndex);
+        return new CommandListSelection(ecas, startIndex, endIndex);
     }
 }

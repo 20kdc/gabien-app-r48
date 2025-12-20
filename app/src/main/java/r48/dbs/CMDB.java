@@ -94,6 +94,7 @@ public class CMDB extends App.Svc {
                 // For commands with just one parameter that is a string.
                 if (arg.equals("messagebox")) {
                     final int code = Integer.parseInt(gbStateArgs[gbStatePosition++]);
+                    rc.additionCode = code;
                     return new IGroupBehavior() {
                         @Override
                         public int getGroupLength(IRIO array, int index) {
@@ -110,16 +111,6 @@ public class CMDB extends App.Svc {
                         }
 
                         @Override
-                        public boolean handlesAddition() {
-                            return true;
-                        }
-
-                        @Override
-                        public int getAdditionCode() {
-                            return code;
-                        }
-
-                        @Override
                         public boolean correctElement(IRIO array, int commandIndex, IRIO command) {
                             return false;
                         }
@@ -133,16 +124,6 @@ public class CMDB extends App.Svc {
                     return new IGroupBehavior() {
                         @Override
                         public int getGroupLength(IRIO array, int index) {
-                            return 0;
-                        }
-
-                        @Override
-                        public boolean handlesAddition() {
-                            return false;
-                        }
-
-                        @Override
-                        public int getAdditionCode() {
                             return 0;
                         }
 
@@ -192,16 +173,6 @@ public class CMDB extends App.Svc {
                     return new IGroupBehavior() {
                         @Override
                         public int getGroupLength(IRIO arr, int ind) {
-                            return 0;
-                        }
-
-                        @Override
-                        public boolean handlesAddition() {
-                            return false;
-                        }
-
-                        @Override
-                        public int getAdditionCode() {
                             return 0;
                         }
 
@@ -264,16 +235,6 @@ public class CMDB extends App.Svc {
                     return new IGroupBehavior() {
                         @Override
                         public int getGroupLength(IRIO arr, int ind) {
-                            return 0;
-                        }
-
-                        @Override
-                        public boolean handlesAddition() {
-                            return false;
-                        }
-
-                        @Override
-                        public int getAdditionCode() {
                             return 0;
                         }
 
@@ -345,16 +306,6 @@ public class CMDB extends App.Svc {
                             if (!checkCondition(arr.getAElem(ind)))
                                 return 0;
                             return igb.getGroupLength(arr, ind);
-                        }
-
-                        @Override
-                        public boolean handlesAddition() {
-                            return igb.handlesAddition();
-                        }
-
-                        @Override
-                        public int getAdditionCode() {
-                            return igb.getAdditionCode();
                         }
 
                         @Override

@@ -81,6 +81,13 @@ public class BaseSchemaOps {
         return res;
     }
 
+    public static long getParamLong(Function<String, DMKey> parameters, String iv, long def) {
+        RORIO res = parameters.apply(iv);
+        if (res == null || res.getType() != 'i')
+            return def;
+        return res.getFX();
+    }
+
     /**
      * This is the central list of all built-in (Java-side) operators.
      */

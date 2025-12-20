@@ -84,6 +84,11 @@ public class RPGCommand extends App.Svc {
     // For copy all text
     public int textArg = -1;
 
+    /**
+     * This code can be added to extend the group.
+     */
+    public int additionCode = -1;
+
     public RPGCommand(App app, int objId, DatumSrcLoc srcLoc, String dbId, String nru) {
         super(app);
         commandId = objId;

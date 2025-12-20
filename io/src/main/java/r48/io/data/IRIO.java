@@ -216,4 +216,28 @@ public abstract class IRIO extends RORIO {
         System.arraycopy(iVarKeys, 0, n2, 0, n2.length);
         return iVarKeys;
     }
+
+    /**
+     * Utility function to use an IRIO to reliably get the index of a specific array element.
+     * Returns -1 on failure.
+     */
+    public final int findAElemByIRIO(IRIO irio) {
+        int aLen = getALen();
+        for (int i = 0; i < aLen; i++) {
+            IRIO ref = getAElem(i);
+            if (ref == irio)
+                return i;
+        }
+        return -1;
+    }
+
+    /**
+     * Utility function to use an IRIO to reliably remove a specific array element.
+     * (May do nothing if it isn't found.)
+     */
+    public final void rmAElemByIRIO(IRIO last) {
+        int idx = findAElemByIRIO(last);
+        if (idx >= 0)
+            rmAElem(idx);
+    }
 }

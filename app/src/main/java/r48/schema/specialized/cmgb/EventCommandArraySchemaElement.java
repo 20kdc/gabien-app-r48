@@ -16,6 +16,7 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import r48.App;
 import r48.dbs.CMDB;
+import r48.dbs.ObjectRootHandle;
 import r48.dbs.RPGCommand;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -200,18 +201,19 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         return new SubwindowSchemaElement(baseElement, (rubyIO) -> "This text should not be visible. Grouping is used for all commands.");
     }
 
-    protected SchemaElement buildGroupContextualUntracked(IRIO arr, final int start, final int length, boolean addRemove, final EmbedDataDir embedDataDir) {
+    protected SchemaElement buildGroupContextualUntracked(IRIO arr, final int start, final int length, final EmbedDataDir embedDataDir) {
         EmbedDataKey<Double> scrollKey = embedDataDir.key(eventCommandContextualScrollKey);
         // Uhoh.
         boolean canCopyText = false;
         SchemaElement[] group = new SchemaElement[length + 1];
         RPGCommandSchemaElement rcse = baseElement;
+        int additionCode = -1; 
         for (int i = 0; i < group.length - 1; i++) {
             IRIO commandTarg = arr.getAElem(start + i);
             int code = (int) commandTarg.getIVar("@code").getFX();
             RPGCommand rc = database.knownCommands.get(code);
             // make group element
-            boolean elemAddRemove = addRemove && (i != 0);
+            boolean elemAddRemove = i != 0;
             group[i] = new ArrayElementSchemaElement(app, start + i, () -> "", rcse, elemAddRemove ? (() -> "") : null, elemAddRemove);
             if (i == 0)
                 rcse = rcse.hideHeaderVer();
@@ -219,29 +221,28 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             if (rc != null) {
                 if (rc.textArg != -1)
                     canCopyText = true;
+                if (i == 0 && rc.additionCode != -1)
+                    additionCode = rc.additionCode;
             }
         }
         final String addText = T.s.bAddToGroup;
-        final boolean addRemoveF = addRemove;
+        final int additionCodeF = additionCode;
         final boolean cctF = canCopyText;
         group[group.length - 1] = new SchemaElement.Leaf(app) {
             @Override
             public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
                 LinkedList<UIElement> addons = new LinkedList<>();
-                if (addRemoveF) {
+                if (additionCodeF != -1) {
                     addons.add(new UITextButton(addText, app.f.schemaFieldTH, () -> {
                         IRIO commandTarg = target.getAElem(start);
                         int code = (int) commandTarg.getIVar("@code").getFX();
                         RPGCommand rc = database.knownCommands.get(code);
                         if (rc != null)
-                            for (IGroupBehavior groupBehavior : rc.groupBehaviors) {
-                                if (groupBehavior.handlesAddition()) {
-                                    IRIO ne = target.addAElem(start + length);
-                                    SchemaPath.setDefaultValue(ne, baseElement, null);
-                                    ne.getIVar("@code").setFX(groupBehavior.getAdditionCode());
-                                    path.changeOccurred(false);
-                                    break;
-                                }
+                            if (rc.additionCode != -1) {
+                                IRIO ne = target.addAElem(start + length);
+                                SchemaPath.setDefaultValue(ne, baseElement, null);
+                                ne.getIVar("@code").setFX(rc.additionCode);
+                                path.changeOccurred(false);
                             }
                     }));
                 }
@@ -289,7 +290,6 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     @Override
     protected GroupInfo getGroupInfo(IRIO arr, final int start, final HashMap<Integer, Integer> indentAnchors) {
         int length = database.getGroupLengthCore(arr, start);
-        final boolean addRemove = length >= 1;
         if (length < 1)
             length = 1;
         final int finalLength = length; 
@@ -321,7 +321,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             }
         }
         return new GroupInfo(indent, getElementContextualSubwindowSchema(tracker, start, st), (embedDataDir) -> {
-            return buildGroupContextualUntracked(arr, start, finalLength, addRemove, embedDataDir);
+            return buildGroupContextualUntracked(arr, start, finalLength, embedDataDir);
         }, length);
     }
 
@@ -365,5 +365,15 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             }
         }, path, database), target);
         launcher.pushObject(path);
+    }
+
+    /**
+     * Initializes a command.
+     */
+    public void initCommand(long code, IRIO newCmd, int idx) {
+        SchemaPath.setDefaultValue(newCmd, baseElement, DMKey.of(idx), (correct) -> {
+            newCmd.getIVar("@code").setFX(code);
+            correct.run();
+        });
     }
 }

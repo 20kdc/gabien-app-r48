@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -119,8 +120,21 @@ public class SchemaPath {
      * It is best to think of the schema use here as an implementation detail.
      */
     public static void setDefaultValue(@NonNull IRIO target, @NonNull SchemaElement ise, @Nullable DMKey arrayIndex) {
+        setDefaultValue(target, ise, arrayIndex, null);
+    }
+
+    /**
+     * Sets a default value without (by itself) triggering Schema-level side-effects.
+     * It is best to think of the schema use here as an implementation detail.
+     * Still, the 'adjustments' parameter allows for setting disambiguators and things like that.
+     * It provides a Runnable which runs the autocorrect, so you don't have to manually autocorrect the whole thing.
+     */
+    public static void setDefaultValue(@NonNull IRIO target, @NonNull SchemaElement ise, @Nullable DMKey arrayIndex, @Nullable Consumer<Runnable> adjustments) {
         ObjectRootHandle dvRoot = new ObjectRootHandle.Isolated(ise, target, "setDefaultValue");
-        ise.modifyVal(target, new SchemaPath(ise, dvRoot).arrayHashIndex(arrayIndex, "AnonObject"), true);
+        SchemaPath adjuster = new SchemaPath(ise, dvRoot).arrayHashIndex(arrayIndex, "AnonObject");
+        ise.modifyVal(target, adjuster, true);
+        if (adjustments != null)
+            adjustments.accept(() -> ise.modifyVal(target, adjuster, false));
     }
 
     public String toString() {
