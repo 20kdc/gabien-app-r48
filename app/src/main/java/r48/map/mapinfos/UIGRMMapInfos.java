@@ -106,7 +106,7 @@ public class UIGRMMapInfos extends App.Prx {
 
             String name = map.getIVar("@name").decString();
 
-            if (searching && !name.contains(lastSearchTerm))
+            if (searching && !name.contains(lastSearchTerm) && !(Long.toString(k)).contains(lastSearchTerm))
                 continue;
             
             UIElement elm = extractedElement(k, map, order, parent, name);
