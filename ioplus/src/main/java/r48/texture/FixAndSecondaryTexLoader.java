@@ -5,22 +5,19 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.imaging;
+package r48.texture;
 
 import gabien.render.IImage;
-import r48.App;
-import r48.texture.ITexLoader;
 
 /**
  * The second-to-outermost layer.
  * Written on October 26th 2017.
  */
-public class FixAndSecondaryImageLoader extends App.Svc implements ITexLoader {
+public class FixAndSecondaryTexLoader implements ITexLoader {
     public final String prefix, postfix;
     public final ITexLoader loader;
 
-    public FixAndSecondaryImageLoader(App app, String pre, String post, ITexLoader underlying) {
-        super(app);
+    public FixAndSecondaryTexLoader(String pre, String post, ITexLoader underlying) {
         prefix = pre;
         postfix = post;
         loader = underlying;

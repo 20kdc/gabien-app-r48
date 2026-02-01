@@ -30,7 +30,6 @@ import r48.map.*;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.drawlayers.*;
 import r48.map.events.*;
-import r48.map.imaging.*;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
 import r48.map.mapinfos.UISaveScanMapInfos;
@@ -43,7 +42,10 @@ import r48.maptools.UIMTBase;
 import r48.maptools.deep.UIMTFtrGdt01;
 import r48.texture.CacheTexLoader;
 import r48.texture.ChainedTexLoader;
+import r48.texture.FixAndSecondaryTexLoader;
+import r48.texture.GabienTexLoader;
 import r48.texture.ITexLoader;
+import r48.texture.ImageIOTexLoader;
 import r48.toolsets.R2kTools;
 import r48.toolsets.RMTools;
 import r48.toolsets.utils.RMTranscriptDumper;
@@ -61,13 +63,13 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class R2kSystem extends MapSystem implements IRMMapSystem {
     public R2kSystem(App app) {
-        super(app, new CacheTexLoader(new FixAndSecondaryImageLoader(app, "", "", new ChainedTexLoader(new ITexLoader[] {
-                new ImageIOImageLoader(app, new XYZImageIOFormat(app.t), ".xyz", true),
+        super(app, new CacheTexLoader(new FixAndSecondaryTexLoader("", "", new ChainedTexLoader(new ITexLoader[] {
+                new ImageIOTexLoader(app.gameResources, new XYZImageIOFormat(app.t), ".xyz", true),
                 // This is actually valid, but almost nobody wanted to use BMP over one of PNG or XYZ. Who'd have guessed?
-                new ImageIOImageLoader(app, new BMP8IImageIOFormat(app.t, 8), ".bmp", true),
-                new ImageIOImageLoader(app, new PNG8IImageIOFormat(app.t), ".png", true),
+                new ImageIOTexLoader(app.gameResources, new BMP8IImageIOFormat(app.t, 8), ".bmp", true),
+                new ImageIOTexLoader(app.gameResources, new PNG8IImageIOFormat(app.t), ".png", true),
                 // EasyRPG extension: arbitrary PNGs
-                new GabienImageLoader(app, ".png")
+                new GabienTexLoader(app.gameResources, ".png")
         }))), true);
     }
 

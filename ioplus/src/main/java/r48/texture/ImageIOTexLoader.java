@@ -4,24 +4,24 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.map.imaging;
+package r48.texture;
 
 import gabien.render.IImage;
-import r48.App;
+import gabien.uslx.vfs.FSBackend;
 import r48.imageio.ImageIOFormat;
-import r48.texture.ITexLoader;
 
 /**
  * Uses the 'imageio' stuff to load images in a given format.
  */
-public class ImageIOImageLoader extends App.Svc implements ITexLoader {
+public class ImageIOTexLoader implements ITexLoader {
 
+    public final FSBackend src;
     public final ImageIOFormat format;
     public final String postfix;
     public final boolean firstPalTransparency;
 
-    public ImageIOImageLoader(App app, ImageIOFormat f, String pf, boolean t) {
-        super(app);
+    public ImageIOTexLoader(FSBackend src, ImageIOFormat f, String pf, boolean t) {
+        this.src = src;
         format = f;
         postfix = pf;
         firstPalTransparency = t;
@@ -29,7 +29,7 @@ public class ImageIOImageLoader extends App.Svc implements ITexLoader {
 
     @Override
     public IImage getImage(String name, boolean panorama) {
-        ImageIOFormat.TryToLoadResult im = ImageIOFormat.tryToLoad(app.gameResources.intoPath(name + postfix), new ImageIOFormat[] {format});
+        ImageIOFormat.TryToLoadResult im = ImageIOFormat.tryToLoad(src.intoPath(name + postfix), new ImageIOFormat[] {format});
         if (im != null) {
             if ((!panorama) && firstPalTransparency)
                 if (im.iei.palette != null)

@@ -27,7 +27,6 @@ import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.events.TraditionalEventAccess;
-import r48.map.imaging.*;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
 import r48.map.tiles.TSOAwareTileRenderer;
@@ -37,6 +36,8 @@ import r48.map2d.layers.MapViewDrawLayer;
 import r48.map2d.tiles.TileRenderer;
 import r48.texture.CacheTexLoader;
 import r48.texture.ChainedTexLoader;
+import r48.texture.FixAndSecondaryTexLoader;
+import r48.texture.GabienTexLoader;
 import r48.texture.ITexLoader;
 import r48.toolsets.RMTools;
 import r48.toolsets.utils.RMTranscriptDumper;
@@ -52,9 +53,9 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public class RXPSystem extends MapSystem implements IRMMapSystem {
     public RXPSystem(App app) {
-        super(app, new CacheTexLoader(new FixAndSecondaryImageLoader(app, "Graphics/", "", new ChainedTexLoader(new ITexLoader[] {
-                new GabienImageLoader(app, ".png"),
-                new GabienImageLoader(app, ".jpg"),
+        super(app, new CacheTexLoader(new FixAndSecondaryTexLoader("Graphics/", "", new ChainedTexLoader(new ITexLoader[] {
+                new GabienTexLoader(app.gameResources, ".png"),
+                new GabienTexLoader(app.gameResources, ".jpg"),
         }))), true);
     }
 

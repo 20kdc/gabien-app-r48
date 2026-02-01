@@ -5,15 +5,14 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.imaging;
+package r48.texture;
 
 import java.io.InputStream;
 
 import gabien.GaBIEn;
 import gabien.render.IImage;
 import gabien.render.WSIImage;
-import r48.App;
-import r48.texture.ITexLoader;
+import gabien.uslx.vfs.FSBackend;
 
 /**
  * Does whatever the default can.
@@ -21,13 +20,14 @@ import r48.texture.ITexLoader;
  * unless it's an obscure format (XYZ), then in which case do something else.
  * Created on 29/05/17.
  */
-public class GabienImageLoader extends App.Svc implements ITexLoader {
+public class GabienTexLoader implements ITexLoader {
+    public final FSBackend src;
     public final String postfix;
     public final boolean ck;
     public final int r, g, b;
 
-    public GabienImageLoader(App app, String pp, int cr, int cg, int cb) {
-        super(app);
+    public GabienTexLoader(FSBackend src, String pp, int cr, int cg, int cb) {
+        this.src = src;
         postfix = pp;
         ck = true;
         r = cr;
@@ -35,8 +35,8 @@ public class GabienImageLoader extends App.Svc implements ITexLoader {
         b = cb;
     }
 
-    public GabienImageLoader(App app, String pp) {
-        super(app);
+    public GabienTexLoader(FSBackend src, String pp) {
+        this.src = src;
         postfix = pp;
         ck = false;
         r = 0;
@@ -46,7 +46,7 @@ public class GabienImageLoader extends App.Svc implements ITexLoader {
 
     @Override
     public IImage getImage(String name, boolean panorama) {
-        try (InputStream inp = app.gameResources.intoPath(name + postfix).openRead()) {
+        try (InputStream inp = src.intoPath(name + postfix).openRead()) {
             WSIImage wsi = GaBIEn.decodeWSIImage(inp);
             if (wsi == null)
                 return null;

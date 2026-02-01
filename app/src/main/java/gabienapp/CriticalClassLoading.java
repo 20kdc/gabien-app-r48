@@ -70,8 +70,6 @@ import r48.ioplus.IDatabase;
 import r48.map.AppMapViewDrawContext;
 import r48.map.StuffRenderer;
 import r48.map.events.NullEventGraphicRenderer;
-import r48.map.imaging.FixAndSecondaryImageLoader;
-import r48.map.imaging.GabienImageLoader;
 import r48.map.systems.MapSystem;
 import r48.map.tiles.NullTileRenderer;
 import r48.map2d.layers.MapViewDrawLayer;
@@ -93,6 +91,8 @@ import r48.search.ImmutableTextAnalyzerCommandClassifier;
 import r48.search.TextAnalyzerCommandClassifier;
 import r48.search.TextOperator;
 import r48.texture.CacheTexLoader;
+import r48.texture.FixAndSecondaryTexLoader;
+import r48.texture.GabienTexLoader;
 import r48.toolsets.BasicToolset;
 import r48.toolsets.IToolset;
 import r48.toolsets.utils.UITestGraphicsStuff;
@@ -215,8 +215,8 @@ public class CriticalClassLoading {
             MVMDMAppLibrary.class,
             MVMR48AppLibraries.class,
             NullTileRenderer.class,
-            FixAndSecondaryImageLoader.class,
-            GabienImageLoader.class,
+            FixAndSecondaryTexLoader.class,
+            GabienTexLoader.class,
             CacheTexLoader.class,
             NullTileRenderer.class,
             ICommandClassifier.class,
