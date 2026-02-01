@@ -8,6 +8,7 @@
 package r48.io.data;
 
 import gabien.uslx.io.ByteArrayMemoryish;
+import r48.io.undoredo.IDM3Data;
 
 /**
  * Change-tracked data blob with accessors.

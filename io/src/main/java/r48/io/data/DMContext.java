@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.uslx.append.Entity;
+import r48.io.undoredo.DMChangeTracker;
 
 /**
  * Responsible for setting up initialization of DM2 fields.

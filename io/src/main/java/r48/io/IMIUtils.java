@@ -9,10 +9,10 @@ package r48.io;
 
 import r48.io.data.DMContext;
 import r48.io.data.DMKey;
-import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
+import r48.io.undoredo.DMChangeTracker;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

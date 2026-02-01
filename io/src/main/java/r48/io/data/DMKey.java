@@ -13,6 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.uslx.io.ByteArrayMemoryish;
 import gabien.uslx.io.MemoryishR;
+import r48.io.undoredo.DMChangeTracker;
 
 /**
  * Represents a hash key.

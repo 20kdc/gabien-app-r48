@@ -13,9 +13,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import r48.io.data.DMContext;
-import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
+import r48.io.undoredo.DMChangeTracker;
 
 /**
  * Created on November 19, 2018.

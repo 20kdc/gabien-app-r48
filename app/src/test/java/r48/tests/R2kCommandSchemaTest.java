@@ -18,9 +18,9 @@ import r48.dbs.CMDB;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMContext;
 import r48.io.data.DMKey;
-import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.r2k.obj.Event;
+import r48.io.undoredo.DMChangeTracker;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 

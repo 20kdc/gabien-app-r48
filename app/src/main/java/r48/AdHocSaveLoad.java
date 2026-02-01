@@ -12,9 +12,9 @@ import gabienapp.Application;
 import r48.io.JsonObjectBackend;
 import r48.io.R48ObjectBackend;
 import r48.io.data.DMContext;
-import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
+import r48.io.undoredo.DMChangeTracker;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

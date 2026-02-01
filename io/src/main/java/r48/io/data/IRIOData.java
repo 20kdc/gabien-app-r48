@@ -6,6 +6,8 @@
  */
 package r48.io.data;
 
+import r48.io.undoredo.IDM3Data;
+
 /**
  * Convenience superclass of IRIOs that are also IDM3Data.
  * State saved via cloning.

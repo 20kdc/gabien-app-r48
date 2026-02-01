@@ -22,9 +22,9 @@ import r48.dbs.ObjectRootHandle;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
 import r48.io.data.DMContext;
-import r48.io.data.IDM3Data;
+import r48.io.undoredo.DMChangeTracker;
+import r48.io.undoredo.IDM3Data;
 import r48.ioplus.IDatabase;
-import r48.io.data.DMChangeTracker;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 

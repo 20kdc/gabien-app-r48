@@ -17,9 +17,9 @@ import r48.dbs.ObjectRootHandle;
 import r48.gameinfo.EnginesList;
 import r48.io.data.DMContext;
 import r48.io.data.DMKey;
-import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
+import r48.io.undoredo.DMChangeTracker;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.SchemaPath;
 
