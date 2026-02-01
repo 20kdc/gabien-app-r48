@@ -15,10 +15,10 @@ import java.util.function.Function;
 import gabien.GaBIEn;
 import gabien.GaBIEnUI;
 import gabien.pva.PVARenderer;
+import gabien.render.IDrawable;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.elements.UIBorderedElement;
-import gabien.ui.theming.IIcon;
 import gabien.uslx.append.Block;
 import gabien.uslx.append.Rect;
 import r48.App;
@@ -41,6 +41,11 @@ public class Art extends RenderArt {
     // PVA Animations
     public final PVARenderer r48Logo;
 
+    /**
+     * Symbol instances!
+     */
+    public final Art.Symbol.Instance[] symbolInstances;
+
     public Art() {
         try (InputStream inp = GaBIEn.getResource("animations/logo.pva")) {
             r48Logo = new PVARenderer(inp);
@@ -54,6 +59,10 @@ public class Art extends RenderArt {
             noise[i] = (tmp | (tmp << 8) | (tmp << 16)) | 0xFF000000;
         }
         gNoise = GaBIEn.createImage("r48 noise", noise, 512, 512);
+        Art.Symbol[] syms = Art.Symbol.values();
+        symbolInstances = new Art.Symbol.Instance[syms.length];
+        for (int i = 0; i < syms.length; i++)
+            symbolInstances[i] = new Art.Symbol.Instance(syms[i], this);
     }
 
     // This controls the layout of (in particular) zoom
@@ -238,44 +247,65 @@ public class Art extends RenderArt {
         Redo, RedoDisabled, Volume, Operator;
 
         public Instance i(Art a) {
-            return new Instance(a);
+            return a.symbolInstances[ordinal()];
         }
 
         public Instance i(App a) {
-            return a.ui.symbolInstances[ordinal()];
-        }
-
-        public Instance instanceDirect(App app) {
-            return i(app.a);
+            return i(a.a);
         }
 
         public Instance i(InterlaunchGlobals a) {
             return i(a.a);
         }
 
-        public class Instance implements IIcon, Function<Boolean, IIcon> {
+        public static class Instance implements IDrawable, Function<Boolean, IDrawable> {
+            public final Symbol symbol;
             private final Art a;
-            private final IIcon forLightTheme;
+            private final IDrawable forLightTheme;
 
-            public Instance(Art a) {
+            public Instance(Symbol s, Art a) {
+                symbol = s;
                 this.a = a;
-                forLightTheme = (igd, x, y, size) -> {
-                    a.drawSymbol(igd, Symbol.this, x, y, size, false, true);
+                forLightTheme = new IDrawable() {
+                    @Override
+                    public float getRegionWidth() {
+                        return 16;
+                    }
+                    @Override
+                    public float getRegionHeight() {
+                        return 16;
+                    }
+
+                    @Override
+                    public void drawTo(float x, float y, float w, float h, IGrDriver igd) {
+                        // casting to ints here is bad code
+                        // but IIcon existing was causing worse code
+                        a.drawSymbol(igd, symbol, (int) x, (int) y, (int) w, false, true);
+                    }
                 };
             }
 
             @Override
-            public void draw(IGrDriver igd, int x, int y, int size) {
-                a.drawSymbol(igd, Symbol.this, x, y, size, false, false);
+            public float getRegionWidth() {
+                return 16;
+            }
+            @Override
+            public float getRegionHeight() {
+                return 16;
             }
 
             @Override
-            public IIcon apply(Boolean t) {
+            public void drawTo(float x, float y, float w, float h, IGrDriver igd) {
+                a.drawSymbol(igd, symbol, (int) x, (int) y, (int) w, (int) h, false, false);
+            }
+
+            @Override
+            public IDrawable apply(Boolean t) {
                 return t ? forLightTheme : this;
             }
 
             public String name() {
-                return Symbol.this.name();
+                return symbol.name();
             }
         }
     }

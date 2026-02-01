@@ -86,17 +86,8 @@ public class AppUI extends App.Svc {
 
     public final Coco coco;
 
-    /**
-     * Symbol instances!
-     */
-    public final Art.Symbol.Instance[] symbolInstances;
-
     public AppUI(App app, boolean mobile) {
         super(app);
-        Art.Symbol[] syms = Art.Symbol.values();
-        symbolInstances = new Art.Symbol.Instance[syms.length];
-        for (int i = 0; i < syms.length; i++)
-            symbolInstances[i] = syms[i].instanceDirect(app);
         isMobile = mobile;
         coco = new Coco(app);
     }

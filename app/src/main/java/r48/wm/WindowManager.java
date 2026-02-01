@@ -9,6 +9,7 @@ package r48.wm;
 
 import gabien.*;
 import gabien.natives.BadGPUEnum;
+import gabien.render.IDrawable;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.layouts.UITabBar;
@@ -234,8 +235,8 @@ public class WindowManager {
             // clone frame!
             icons.add(new UITabBar.TabIcon() {
                 @Override
-                public void draw(IGrDriver igd, int x, int y, int size) {
-                    ilg.a.drawSymbol(igd, Art.Symbol.CloneFrame, x, y, size, false, false);
+                public IDrawable getIcon() {
+                    return Art.Symbol.CloneFrame.i(ilg.a);
                 }
 
                 @Override
@@ -246,9 +247,25 @@ public class WindowManager {
         }
         if (tab) {
             icons.addFirst(new UITabBar.TabIcon() {
+                IDrawable icon = new IDrawable() {
+                    @Override
+                    public float getRegionWidth() {
+                        return 0;
+                    }
+                    @Override
+                    public float getRegionHeight() {
+                        return 0;
+                    }
+                    
+                    @Override
+                    public void drawTo(float x, float y, float w, float h, IGrDriver igd) {
+                        Art.windowWindowIcon(igd, (int) x, (int) y, (int) w);
+                    }
+                };
+
                 @Override
-                public void draw(IGrDriver igd, int x, int y, int size) {
-                    Art.windowWindowIcon(igd, x, y, size);
+                public IDrawable getIcon() {
+                    return icon;
                 }
 
                 @Override
@@ -262,8 +279,8 @@ public class WindowManager {
             if (!immortal) {
                 icons.addFirst(new UITabBar.TabIcon() {
                     @Override
-                    public void draw(IGrDriver igd, int x, int y, int size) {
-                        ilg.a.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
+                    public IDrawable getIcon() {
+                        return Art.Symbol.XRed.i(ilg.a);
                     }
 
                     @Override
@@ -296,9 +313,25 @@ public class WindowManager {
                 uiTicker.accept(uwv, false);
             } else {
                 icons.addFirst(new UITabBar.TabIcon() {
+                    IDrawable icon = new IDrawable() {
+                        @Override
+                        public float getRegionWidth() {
+                            return 0;
+                        }
+                        @Override
+                        public float getRegionHeight() {
+                            return 0;
+                        }
+                        
+                        @Override
+                        public void drawTo(float x, float y, float w, float h, IGrDriver igd) {
+                            Art.tabWindowIcon(igd, (int) x, (int) y, (int) w);
+                        }
+                    };
+
                     @Override
-                    public void draw(IGrDriver igd, int x, int y, int size) {
-                        Art.tabWindowIcon(igd, x, y, size);
+                    public IDrawable getIcon() {
+                        return icon;
                     }
 
                     @Override
@@ -310,8 +343,8 @@ public class WindowManager {
                 if (!immortal) {
                     icons.addFirst(new UITabBar.TabIcon() {
                         @Override
-                        public void draw(IGrDriver igd, int x, int y, int size) {
-                            ilg.a.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
+                        public IDrawable getIcon() {
+                            return Art.Symbol.XRed.i(ilg);
                         }
 
                         @Override

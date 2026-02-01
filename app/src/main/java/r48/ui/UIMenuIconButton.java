@@ -10,10 +10,10 @@ package r48.ui;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import gabien.render.IDrawable;
 import gabien.ui.UIElement;
 import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UIIconButton;
-import gabien.ui.theming.IIcon;
 import r48.App;
 
 /**
@@ -21,22 +21,22 @@ import r48.App;
  * Copied from UIMenuButton on November 29, 2024.
  */
 public class UIMenuIconButton extends UIIconButton {
-    public UIMenuIconButton(App app, Function<Boolean, IIcon> s, int h2, final Supplier<UIElement> runnable) {
+    public UIMenuIconButton(App app, Function<Boolean, IDrawable> s, int h2, final Supplier<UIElement> runnable) {
         super(s, h2, null);
         UIMenuButton.core(app, this, runnable);
     }
 
-    public UIMenuIconButton(App app, Function<Boolean, IIcon> s, int h2, final Supplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
+    public UIMenuIconButton(App app, Function<Boolean, IDrawable> s, int h2, final Supplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
         super(s, h2, null);
         UIMenuButton.core(app, this, continued, text, runnables);
     }
 
-    public UIMenuIconButton(App app, Function<Boolean, IIcon> s, int h2, final Supplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
+    public UIMenuIconButton(App app, Function<Boolean, IDrawable> s, int h2, final Supplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
         super(s, h2, null);
         UIMenuButton.core(app, this, continued, runnables);
     }
 
-    public UIMenuIconButton(App app, Function<Boolean, IIcon> s, int h2, final Supplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
+    public UIMenuIconButton(App app, Function<Boolean, IDrawable> s, int h2, final Supplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
         super(s, h2, null);
         UIMenuButton.core(app, this, continued, runnables);
     }
