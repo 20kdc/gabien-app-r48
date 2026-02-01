@@ -5,44 +5,39 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.drawlayers;
+package r48.map2d.layers;
 
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
-import r48.App;
 import r48.ITileAccess;
-import r48.map.tiles.ITileRenderer;
-import r48.render2d.IMapViewCallbacks;
-import r48.render2d.MapViewDrawContext;
+import r48.map2d.IMapViewCallbacks;
+import r48.map2d.MapViewDrawContext;
+import r48.map2d.tiles.TileRenderer;
+import r48.tr.pages.TrRoot;
 
 /**
  * Created on 08/06/17.
  */
-public class TileMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
+public class TileMapViewDrawLayer extends MapViewDrawLayer {
+    public final TrRoot T;
     public final ITileAccess targetTable;
     public final int[] tileLayers;
     public final int[] tileLayersBases;
-    public final ITileRenderer tr;
-    public final String name;
+    public final TileRenderer tr;
 
-    public TileMapViewDrawLayer(App app, ITileAccess table, int i, ITileRenderer itr) {
-        this(app, table, new int[] {i}, itr, app.t.m.l_tile.r(i));
+    public TileMapViewDrawLayer(TrRoot t, ITileAccess table, int i, TileRenderer itr) {
+        this(t, table, new int[] {i}, itr, t.m.l_tile.r(i));
     }
 
-    public TileMapViewDrawLayer(App app, ITileAccess table, int[] i, ITileRenderer itr, String post) {
-        super(app);
+    public TileMapViewDrawLayer(TrRoot t, ITileAccess table, int[] i, TileRenderer itr, String post) {
+        super(post);
+        this.T = t;
         targetTable = table;
         tileLayers = i;
         tileLayersBases = new int[i.length];
         for (int layer = 0; layer < i.length; layer++)
             tileLayersBases[layer] = table.getPBase(tileLayers[layer]);
         tr = itr;
-        name = post;
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     public boolean shouldDraw(int x, int y, int layer, int value) {

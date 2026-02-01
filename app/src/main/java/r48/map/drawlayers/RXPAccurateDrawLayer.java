@@ -7,7 +7,6 @@
 
 package r48.map.drawlayers;
 
-import r48.App;
 import r48.RubyTableR;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -15,6 +14,10 @@ import r48.io.data.RORIO;
 import r48.map.events.IEventAccess;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.tiles.XPTileRenderer;
+import r48.map2d.layers.RMZAccurateDrawLayer;
+import r48.map2d.layers.TileMapViewDrawLayer;
+import r48.map2d.layers.ZSortingDrawLayer;
+import r48.tr.pages.TrRoot;
 
 /**
  * After looking closely at the system as part of the "reimagined-pancake" writeup,
@@ -37,15 +40,15 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
 
     private static final int[] layerPreference = new int[] {0, 1, 2};
 
-    public RXPAccurateDrawLayer(RubyTableR tbl, IEventAccess eventList, XPTileRenderer tils, RMEventGraphicRenderer ev) {
-        super(tbl, tbl.planeCount);
+    public RXPAccurateDrawLayer(TrRoot t, RubyTableR tbl, IEventAccess eventList, XPTileRenderer tils, RMEventGraphicRenderer ev) {
+        super(t.m.l_xpZ, tbl, tbl.planeCount);
         tiles = tils;
         events = ev;
         signals.add(signalLayerEvA);
         signals.add(signalLayerEvB);
         // -1 is the "ground plane".
         for (int i = -1; i < tbl.height + 5; i++)
-            zSorting.add(new RXPPriorityPlane(tils.app, i));
+            zSorting.add(new RXPPriorityPlane(t, i));
         // Very specific choice of algorithm.
         for (DMKey r : eventList.getEventKeys()) {
             IRIO ed = eventList.getEvent(r);
@@ -96,17 +99,12 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
         return rts.getTiletype(tid, 0, 0);
     }
 
-    @Override
-    public String getName() {
-        return T.m.l_xpZ;
-    }
-
     private class RXPPriorityPlane extends TileMapViewDrawLayer implements IZSortedObject {
         // priority + tile Y
         public final int pIndex;
 
-        public RXPPriorityPlane(App app, int p) {
-            super(app, mapTable, layerPreference, tiles, "INTERNAL - YOU SHOULD NOT SEE THIS");
+        public RXPPriorityPlane(TrRoot t, int p) {
+            super(t, mapTable, layerPreference, tiles, "INTERNAL - YOU SHOULD NOT SEE THIS");
             pIndex = p;
         }
 

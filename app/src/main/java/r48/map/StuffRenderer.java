@@ -14,8 +14,11 @@ import r48.io.data.IRIO;
 import r48.map.drawlayers.*;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
-import r48.map.imaging.IImageLoader;
-import r48.map.tiles.ITileRenderer;
+import r48.map2d.layers.GridMapViewDrawLayer;
+import r48.map2d.layers.MapViewDrawLayer;
+import r48.map2d.layers.TileMapViewDrawLayer;
+import r48.map2d.tiles.TileRenderer;
+import r48.texture.ITexLoader;
 import r48.tr.pages.TrRoot;
 
 /**
@@ -24,20 +27,20 @@ import r48.tr.pages.TrRoot;
  */
 public class StuffRenderer {
     public final App app;
-    public final ITileRenderer tileRenderer;
+    public final TileRenderer tileRenderer;
     public final IEventGraphicRenderer eventRenderer;
-    public final IImageLoader imageLoader;
+    public final ITexLoader imageLoader;
 
-    public StuffRenderer(App app, IImageLoader l, ITileRenderer t, IEventGraphicRenderer e) {
+    public StuffRenderer(App app, ITexLoader l, TileRenderer t, IEventGraphicRenderer e) {
         this.app = app;
         tileRenderer = t;
         eventRenderer = e;
         imageLoader = l;
     }
 
-    public static IMapViewDrawLayer[] prepareTraditional(App app, StuffRenderer renderer, int[] tlOrder, IRIO map, IEventAccess events, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
+    public static MapViewDrawLayer[] prepareTraditional(App app, StuffRenderer renderer, int[] tlOrder, IRIO map, IEventAccess events, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
         if (map == null)
-            return new IMapViewDrawLayer[0];
+            return new MapViewDrawLayer[0];
         final TrRoot T = app.t;
         RubyTableR rt = new RubyTableR(map.getIVar("@data").getBuffer());
         // 0: P
@@ -45,18 +48,18 @@ public class StuffRenderer {
         // 2, 3, [4, 5, [[6, 7]...]]]: Ti, Ei
         // E-2: ES
         // E-1: G
-        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[(rt.planeCount * 2) + 5];
+        MapViewDrawLayer[] layers = new MapViewDrawLayer[(rt.planeCount * 2) + 5];
         IImage panoImg = null;
         if (!vxaPano.equals(""))
             panoImg = renderer.imageLoader.getImage(vxaPano, true);
-        layers[0] = new PanoramaMapViewDrawLayer(app, panoImg, lx, ly, alx, aly, rt.width, rt.height, panoSW, panoSH, panoSC);
-        layers[1] = new EventMapViewDrawLayer(app, -1, events, renderer.eventRenderer, T.m.lowest);
+        layers[0] = new PanoramaMapViewDrawLayer(app.t, panoImg, lx, ly, alx, aly, rt.width, rt.height, panoSW, panoSH, panoSC);
+        layers[1] = new EventMapViewDrawLayer(app.a, app.t, -1, events, renderer.eventRenderer, T.m.lowest);
         for (int i = 0; i < rt.planeCount; i++) {
-            layers[(i * 2) + 2] = new TileMapViewDrawLayer(app, rt, tlOrder[i], renderer.tileRenderer);
-            layers[(i * 2) + 3] = new EventMapViewDrawLayer(app, i, events, renderer.eventRenderer, "");
+            layers[(i * 2) + 2] = new TileMapViewDrawLayer(T, rt, tlOrder[i], renderer.tileRenderer);
+            layers[(i * 2) + 3] = new EventMapViewDrawLayer(app.a, app.t, i, events, renderer.eventRenderer, "");
         }
-        layers[layers.length - 3] = new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, renderer.eventRenderer, "");
-        layers[layers.length - 2] = new GridMapViewDrawLayer(app);
+        layers[layers.length - 3] = new EventMapViewDrawLayer(app.a, app.t, 0x7FFFFFFF, events, renderer.eventRenderer, "");
+        layers[layers.length - 2] = new GridMapViewDrawLayer(app.t);
         layers[layers.length - 1] = new BorderMapViewDrawLayer(app, rt.getBounds().multiplied(renderer.tileRenderer.tileSize));
         return layers;
     }

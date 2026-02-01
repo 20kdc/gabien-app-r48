@@ -5,24 +5,19 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.drawlayers;
+package r48.map2d.layers;
 
-import r48.App;
-import r48.render2d.MapViewDrawContext;
+import r48.map2d.MapViewDrawContext;
+import r48.tr.pages.TrRoot;
 
 /**
  * Since this is used everywhere, it's a good indication of where the "global layers" end.
  * Unknown creation date.
  */
-public class GridMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
+public class GridMapViewDrawLayer extends MapViewDrawLayer {
 
-    public GridMapViewDrawLayer(App app) {
-        super(app);
-    }
-
-    @Override
-    public String getName() {
-        return T.m.l_grid;
+    public GridMapViewDrawLayer(TrRoot t) {
+        super(t.m.l_grid);
     }
 
     @Override

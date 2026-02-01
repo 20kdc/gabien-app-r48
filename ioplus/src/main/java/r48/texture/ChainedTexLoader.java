@@ -5,7 +5,7 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.imaging;
+package r48.texture;
 
 import gabien.render.IImage;
 
@@ -16,16 +16,16 @@ import gabien.render.IImage;
  * PNG (32-bit)
  * Created on 30/07/17.
  */
-public class ChainedImageLoader implements IImageLoader {
-    private final IImageLoader[] subLoaders;
+public class ChainedTexLoader implements ITexLoader {
+    private final ITexLoader[] subLoaders;
 
-    public ChainedImageLoader(IImageLoader[] subs) {
+    public ChainedTexLoader(ITexLoader[] subs) {
         subLoaders = subs;
     }
 
     @Override
     public IImage getImage(String name, boolean panorama) {
-        for (IImageLoader iil : subLoaders) {
+        for (ITexLoader iil : subLoaders) {
             IImage im = iil.getImage(name, panorama);
             if (im != null)
                 return im;
@@ -35,7 +35,7 @@ public class ChainedImageLoader implements IImageLoader {
 
     @Override
     public void flushCache() {
-        for (IImageLoader iil : subLoaders)
+        for (ITexLoader iil : subLoaders)
             iil.flushCache();
     }
 }

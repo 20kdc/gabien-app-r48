@@ -7,6 +7,8 @@
 
 package r48.map.tiles;
 
+import java.util.LinkedList;
+
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
@@ -21,15 +23,15 @@ import gabien.uslx.append.DepsLocker;
 import r48.App;
 import r48.RubyTableR;
 import r48.io.data.IRIO;
-import r48.map.imaging.IImageLoader;
-import r48.map.tileedit.AutoTileTypeField;
-import r48.map.tileedit.TileEditingTab;
+import r48.map2d.tiles.AutoTileTypeField;
+import r48.map2d.tiles.TileEditingTab;
+import r48.texture.ITexLoader;
 
 /**
  * Created on 1/27/17.
  */
 public class XPTileRenderer extends TSOAwareTileRenderer {
-    public final IImageLoader imageLoader;
+    public final ITexLoader imageLoader;
 
     public RubyTableR priorities;
 
@@ -40,7 +42,7 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
     private ITexRegion[][][] atFields;
     private AtlasSet atlasSet;
 
-    public XPTileRenderer(App app, IImageLoader imageLoader) {
+    public XPTileRenderer(App app, ITexLoader imageLoader) {
         super(app, 32, 8);
         this.imageLoader = imageLoader;
     }
@@ -156,7 +158,7 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
             tileCount = ((rh / 32) * 8);
         }
         return new TileEditingTab[] {
-                new TileEditingTab(app, "AUTO", false, new int[] {
+                new TileEditingTab(app.autoTiles, "AUTO", false, new int[] {
                         0,
                         48,
                         48 * 2,
@@ -193,7 +195,7 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
     }
 
     @Override
-    public @Nullable AtlasSet getAtlasSet() {
-        return atlasSet;
+    public @Nullable LinkedList<IGrDriver> getAtlasSet() {
+        return atlasSet == null ? null : atlasSet.pages;
     }
 }

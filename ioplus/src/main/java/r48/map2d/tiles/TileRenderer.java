@@ -5,22 +5,20 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.tiles;
+package r48.map2d.tiles;
+
+import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.atlas.AtlasSet;
 import gabien.render.IGrDriver;
 import gabien.uslx.append.Block;
-import r48.App;
-import r48.map.tileedit.AutoTileTypeField;
-import r48.map.tileedit.TileEditingTab;
 
 /**
  * Used because this changes a LOT
  * Created on 1/27/17.
  */
-public abstract class ITileRenderer extends App.Svc {
+public abstract class TileRenderer {
     /**
      * Tile size in pixels.
      */
@@ -32,8 +30,7 @@ public abstract class ITileRenderer extends App.Svc {
      */
     public final int recommendedWidth;
 
-    public ITileRenderer(App app, int ts, int rw) {
-        super(app);
+    public TileRenderer(int ts, int rw) {
         tileSize = ts;
         recommendedWidth = rw;
     }
@@ -69,7 +66,7 @@ public abstract class ITileRenderer extends App.Svc {
     /**
      * Debugging mechanism to get the atlas set of this renderer.
      */
-    public @Nullable AtlasSet getAtlasSet() {
+    public @Nullable LinkedList<IGrDriver> getAtlasSet() {
         return null;
     }
 }

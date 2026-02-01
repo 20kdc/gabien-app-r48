@@ -7,6 +7,8 @@
 
 package r48.map.tiles;
 
+import java.util.LinkedList;
+
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
@@ -17,16 +19,18 @@ import gabien.atlas.SimpleAtlasBuilder;
 import gabien.render.IGrDriver;
 import gabien.render.ITexRegion;
 import gabien.uslx.append.DepsLocker;
-import r48.App;
-import r48.map.imaging.IImageLoader;
-import r48.map.tileedit.AutoTileTypeField;
-import r48.map.tileedit.TileEditingTab;
+import r48.map2d.tiles.AutoTileTypeField;
+import r48.map2d.tiles.TileEditingTab;
+import r48.map2d.tiles.TileRenderer;
+import r48.texture.ITexLoader;
+import r48.tr.pages.TrRoot;
 
 /**
  * Created on 1/27/17.
  */
-public class IkaTileRenderer extends ITileRenderer {
-    private final IImageLoader imageLoader;
+public class IkaTileRenderer extends TileRenderer {
+    public final TrRoot T;
+    private final ITexLoader imageLoader;
     private static final String[] blockTypes = {
         null, null, "filt", null,
         "Item", null, "Dir", null,
@@ -37,8 +41,9 @@ public class IkaTileRenderer extends ITileRenderer {
     private final ITexRegion[] tileSheets = new ITexRegion[16];
     private AtlasSet lastAtlasSet;
 
-    public IkaTileRenderer(App app, IImageLoader il) {
-        super(app, 16, 16);
+    public IkaTileRenderer(TrRoot t, ITexLoader il) {
+        super(16, 16);
+        this.T = t;
         imageLoader = il;
         checkReload();
     }
@@ -106,8 +111,7 @@ public class IkaTileRenderer extends ITileRenderer {
     }
 
     @Override
-    @Nullable
-    public AtlasSet getAtlasSet() {
-        return lastAtlasSet;
+    public @Nullable LinkedList<IGrDriver> getAtlasSet() {
+        return lastAtlasSet == null ? null : lastAtlasSet.pages;
     }
 }

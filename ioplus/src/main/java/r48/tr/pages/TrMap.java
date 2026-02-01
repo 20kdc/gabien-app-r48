@@ -46,7 +46,6 @@ public class TrMap extends TrPage {
     public String toolsAddendum;
 
     public FF1 l_tile;
-    public FF2 l_r2kTile;
     public String l_passability;
     public String l_evLower;
     public String l_evUpper;

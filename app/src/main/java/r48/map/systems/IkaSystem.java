@@ -18,10 +18,10 @@ import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.IkaEventGraphicRenderer;
 import r48.map.events.TraditionalEventAccess;
-import r48.map.imaging.CacheImageLoader;
 import r48.map.imaging.FixAndSecondaryImageLoader;
 import r48.map.imaging.GabienImageLoader;
 import r48.map.tiles.IkaTileRenderer;
+import r48.texture.CacheTexLoader;
 
 /**
  * Created on 03/06/17.
@@ -29,8 +29,8 @@ import r48.map.tiles.IkaTileRenderer;
 public class IkaSystem extends MapSystem {
     public final IkaTileRenderer tileRenderer;
     public IkaSystem(App app) {
-        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "Pbm/", "", new GabienImageLoader(app, ".pbm", 0, 0, 0))), true);
-        tileRenderer = new IkaTileRenderer(app, imageLoader);
+        super(app, new CacheTexLoader(new FixAndSecondaryImageLoader(app, "Pbm/", "", new GabienImageLoader(app, ".pbm", 0, 0, 0))), true);
+        tileRenderer = new IkaTileRenderer(app.t, imageLoader);
     }
 
     public StuffRenderer rendererGeneral() {

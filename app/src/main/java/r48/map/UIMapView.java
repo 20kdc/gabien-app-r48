@@ -21,9 +21,9 @@ import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
 import gabien.ui.*;
 import r48.App;
-import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.systems.MapSystem;
-import r48.render2d.IMapViewCallbacks;
+import r48.map2d.IMapViewCallbacks;
+import r48.map2d.layers.MapViewDrawLayer;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIPlaneView;
 
@@ -328,7 +328,7 @@ public class UIMapView extends UIPlaneView {
         stb[0] = (float) Math.floor(-(iCamX * ratio));
         stb[1] = (float) Math.floor(-(iCamY * ratio));
 
-        IMapViewDrawLayer[] layers = mapTable.layers;
+        MapViewDrawLayer[] layers = mapTable.layers;
 
         // NOTE: Block copy/paste isn't nice this way... add confirmation or something instead?
         // If so, make sure that camDragSwitch still disables this.

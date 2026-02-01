@@ -96,7 +96,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
                 }).togglable(viewGiver.getMasterAnimDisableSwitch()));
                 for (int i = 0; i < view.mapTable.layers.length; i++) {
                     final int fi = i;
-                    UITextButton layerVis = new UITextButton(view.mapTable.layers[i].getName(), app.f.mapLayertabTH, new Runnable() {
+                    UITextButton layerVis = new UITextButton(view.mapTable.layers[i].name, app.f.mapLayertabTH, new Runnable() {
                         @Override
                         public void run() {
                             view.layerVis[fi] = !view.layerVis[fi];

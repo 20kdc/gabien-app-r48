@@ -9,16 +9,17 @@ package r48.map.imaging;
 
 import gabien.render.IImage;
 import r48.App;
+import r48.texture.ITexLoader;
 
 /**
  * The second-to-outermost layer.
  * Written on October 26th 2017.
  */
-public class FixAndSecondaryImageLoader extends App.Svc implements IImageLoader {
+public class FixAndSecondaryImageLoader extends App.Svc implements ITexLoader {
     public final String prefix, postfix;
-    public final IImageLoader loader;
+    public final ITexLoader loader;
 
-    public FixAndSecondaryImageLoader(App app, String pre, String post, IImageLoader underlying) {
+    public FixAndSecondaryImageLoader(App app, String pre, String post, ITexLoader underlying) {
         super(app);
         prefix = pre;
         postfix = post;

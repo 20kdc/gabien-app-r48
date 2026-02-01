@@ -10,7 +10,7 @@ package r48.map;
 import gabien.uslx.append.Rect;
 import r48.App;
 import r48.io.data.IRIO;
-import r48.render2d.MapViewDrawContext;
+import r48.map2d.MapViewDrawContext;
 
 /**
  * A structure that contains the subset of parameters needed for map view draw layers/etc.

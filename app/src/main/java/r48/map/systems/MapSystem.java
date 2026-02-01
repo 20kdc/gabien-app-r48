@@ -30,14 +30,14 @@ import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
 import r48.map.AppMapViewDrawContext;
 import r48.map.StuffRenderer;
-import r48.map.drawlayers.GridMapViewDrawLayer;
-import r48.map.drawlayers.IMapViewDrawLayer;
-import r48.map.drawlayers.PassabilityMapViewDrawLayer;
 import r48.map.events.IEventAccess;
-import r48.map.imaging.IImageLoader;
 import r48.map.tiles.LoopTileAccess;
 import r48.map.tiles.NOPWriteTileAccess;
+import r48.map2d.layers.GridMapViewDrawLayer;
+import r48.map2d.layers.MapViewDrawLayer;
+import r48.map2d.layers.PassabilityMapViewDrawLayer;
 import r48.schema.SchemaElement;
+import r48.texture.ITexLoader;
 
 /**
  * Responsible for creating NSRs and such.
@@ -51,12 +51,12 @@ public abstract class MapSystem extends App.Svc {
 
     // All implementations will probably use a common image loader across the mapsystem.
     // It's not an absolute, but it's pretty likely.
-    protected final IImageLoader imageLoader;
+    protected final ITexLoader imageLoader;
     // If this is off, almost everything here is inaccessible,
     //  apart from the generic StuffRenderers
     public final boolean enableMapSubsystem;
 
-    public MapSystem(App app, IImageLoader imgLoad, boolean enableSwitch) {
+    public MapSystem(App app, ITexLoader imgLoad, boolean enableSwitch) {
         super(app);
         imageLoader = imgLoad;
         enableMapSubsystem = enableSwitch;
@@ -193,7 +193,7 @@ public abstract class MapSystem extends App.Svc {
         /**
          * Map draw layers.
          */
-        public final IMapViewDrawLayer[] layers;
+        public final MapViewDrawLayer[] layers;
         /**
          * Default states of map draw layers.
          */
@@ -223,7 +223,7 @@ public abstract class MapSystem extends App.Svc {
          */
         public final Consumer<int[]> resize;
 
-        public MapViewState(StuffRenderer r, @NonNull IMapViewDrawLayer[] layers, @Nullable boolean[] activeDefault, String usm, String[] exrefresh, ITileAccess.RWBounded tileAccess, Consumer<int[]> rz, IEventAccess iea) {
+        public MapViewState(StuffRenderer r, @NonNull MapViewDrawLayer[] layers, @Nullable boolean[] activeDefault, String usm, String[] exrefresh, ITileAccess.RWBounded tileAccess, Consumer<int[]> rz, IEventAccess iea) {
             renderer = r;
             this.layers = layers;
             if (activeDefault != null) {
@@ -282,7 +282,7 @@ public abstract class MapSystem extends App.Svc {
         }
 
         public static MapViewState getBlank(App app, String underscoreMapObjectId, String[] ex, IEventAccess iea) {
-            return new MapViewState(app.stuffRendererIndependent, new IMapViewDrawLayer[0], null, underscoreMapObjectId, ex, new ITileAccess.RWBounded() {
+            return new MapViewState(app.stuffRendererIndependent, new MapViewDrawLayer[0], null, underscoreMapObjectId, ex, new ITileAccess.RWBounded() {
                 @Override
                 public Rect getBounds() {
                     return Rect.ZERO;
@@ -318,7 +318,7 @@ public abstract class MapSystem extends App.Svc {
             }, iea);
         }
 
-        public static MapViewState fromRT(@NonNull StuffRenderer stuffRenderer, @NonNull IMapViewDrawLayer[] mvdl, @Nullable boolean[] activeDef, String underscoreMapObjectId, String[] ex, final IRIO its, final String str, final boolean readOnly, IEventAccess iea, final boolean loopX, final boolean loopY) {
+        public static MapViewState fromRT(@NonNull StuffRenderer stuffRenderer, @NonNull MapViewDrawLayer[] mvdl, @Nullable boolean[] activeDef, String underscoreMapObjectId, String[] ex, final IRIO its, final String str, final boolean readOnly, IEventAccess iea, final boolean loopX, final boolean loopY) {
             // This happens once in a blue moon, it's fine
             final IRIO sz = PathSyntax.compile(stuffRenderer.app.ilg.strict, str).getRW(its);
             final RubyTable rt = new RubyTable(sz.editUser());

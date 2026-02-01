@@ -10,22 +10,20 @@ package r48.map.drawlayers;
 import gabien.uslx.append.Block;
 import gabien.uslx.append.Rect;
 import r48.App;
-import r48.render2d.MapViewDrawContext;
+import r48.map2d.MapViewDrawContext;
+import r48.map2d.layers.MapViewDrawLayer;
 import r48.ui.Art;
 
 /**
  * Created on 6/16/18.
  */
-public class BorderMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
+public class BorderMapViewDrawLayer extends MapViewDrawLayer {
     public Rect mapBoundsPx;
+    public final App app;
     public BorderMapViewDrawLayer(App app, Rect mapBoundsPx) {
-        super(app);
+        super(app.t.m.l_border);
+        this.app = app;
         this.mapBoundsPx = mapBoundsPx;
-    }
-
-    @Override
-    public String getName() {
-        return T.m.l_border;
     }
 
     @Override

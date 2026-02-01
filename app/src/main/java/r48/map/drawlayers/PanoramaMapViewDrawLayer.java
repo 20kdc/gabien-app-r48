@@ -10,21 +10,22 @@ package r48.map.drawlayers;
 import gabien.GaBIEn;
 import gabien.render.IImage;
 import gabien.ui.UIElement;
-import r48.App;
-import r48.render2d.MapViewDrawContext;
+import r48.map2d.MapViewDrawContext;
+import r48.map2d.layers.MapViewDrawLayer;
+import r48.tr.pages.TrRoot;
 
 /**
  * Used for drawing panoramas.
  * Created on 08/06/17.
  */
-public class PanoramaMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
+public class PanoramaMapViewDrawLayer extends MapViewDrawLayer {
     private final IImage im;
     private boolean loopX, loopY;
     private int autoLoopX, autoLoopY, mapTilesW, mapTilesH, scrW, scrH, panoScale;
     private int parallaxRatioA, parallaxRatioB;
 
-    public PanoramaMapViewDrawLayer(App app, IImage pano, boolean lx, boolean ly, int alx, int aly, int mtx, int mty, int scw, int sch, int pScale) {
-        super(app);
+    public PanoramaMapViewDrawLayer(TrRoot t, IImage pano, boolean lx, boolean ly, int alx, int aly, int mtx, int mty, int scw, int sch, int pScale) {
+        super(t.m.l_panorama);
         im = pano;
         loopX = lx;
         loopY = ly;
@@ -39,8 +40,8 @@ public class PanoramaMapViewDrawLayer extends App.Svc implements IMapViewDrawLay
         parallaxRatioB = 1;
     }
 
-    public PanoramaMapViewDrawLayer(App app, IImage pano, boolean lx, boolean ly, int alx, int aly, int mtx, int mty, int scw, int sch, int pScale, int pra, int prb) {
-        super(app);
+    public PanoramaMapViewDrawLayer(TrRoot t, IImage pano, boolean lx, boolean ly, int alx, int aly, int mtx, int mty, int scw, int sch, int pScale, int pra, int prb) {
+        super(t.m.l_panorama);
         im = pano;
         loopX = lx;
         loopY = ly;
@@ -53,11 +54,6 @@ public class PanoramaMapViewDrawLayer extends App.Svc implements IMapViewDrawLay
         panoScale = pScale;
         parallaxRatioA = pra;
         parallaxRatioB = prb;
-    }
-
-    @Override
-    public String getName() {
-        return T.m.l_panorama;
     }
 
     public void draw(MapViewDrawContext mvdc) {

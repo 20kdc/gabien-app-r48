@@ -4,7 +4,7 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.map.drawlayers;
+package r48.map2d.layers;
 
 import r48.RubyTableR;
 import r48.tr.pages.TrRoot;
@@ -20,7 +20,8 @@ public abstract class RMZAccurateDrawLayer extends ZSortingDrawLayer {
     public SignalMapViewLayer[] tileSignalLayers;
     public TrRoot T;
 
-    public RMZAccurateDrawLayer(RubyTableR tbl, int layers) {
+    public RMZAccurateDrawLayer(String name, RubyTableR tbl, int layers) {
+        super(name);
         mapTable = tbl;
         tileSignalLayers = new SignalMapViewLayer[layers];
         for (int i = 0; i < tileSignalLayers.length; i++) {

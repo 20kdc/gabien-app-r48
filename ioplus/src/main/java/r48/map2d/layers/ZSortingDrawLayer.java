@@ -5,21 +5,22 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.drawlayers;
+package r48.map2d.layers;
 
 import java.util.*;
 
-import r48.render2d.MapViewDrawContext;
+import r48.map2d.MapViewDrawContext;
 
 /**
  * Z-sorts the contents after creation.
  * Created on 28th November 2019.
  */
-public abstract class ZSortingDrawLayer implements IMapViewDrawLayer {
+public class ZSortingDrawLayer extends MapViewDrawLayer {
     protected final LinkedList<IZSortedObject> zSorting = new LinkedList<IZSortedObject>();
     public final HashSet<SignalMapViewLayer> signals = new HashSet<SignalMapViewLayer>();
 
-    public ZSortingDrawLayer() {
+    public ZSortingDrawLayer(String name) {
+        super(name);
     }
 
     protected void completeSetup() {
@@ -37,9 +38,12 @@ public abstract class ZSortingDrawLayer implements IMapViewDrawLayer {
         });
     }
 
-    public interface IZSortedObject extends IMapViewDrawLayer {
-        long getZ();
-        SignalMapViewLayer getControlSignal();
+    /**
+     * Only implement on draw layers!
+     */
+    public abstract interface IZSortedObject {
+        public abstract long getZ();
+        public abstract SignalMapViewLayer getControlSignal();
     }
 
     @Override
@@ -47,23 +51,17 @@ public abstract class ZSortingDrawLayer implements IMapViewDrawLayer {
         for (IZSortedObject obj : zSorting) {
             SignalMapViewLayer controlSignal = obj.getControlSignal();
             if ((controlSignal == null) || controlSignal.active)
-                obj.draw(mvdc);
+                ((MapViewDrawLayer) obj).draw(mvdc);
         }
         for (SignalMapViewLayer signal : signals)
             signal.active = false;
     }
 
-    public static class SignalMapViewLayer implements IMapViewDrawLayer {
-        private final String signalName;
+    public static class SignalMapViewLayer extends MapViewDrawLayer {
         public boolean active;
 
         public SignalMapViewLayer(String sn) {
-            signalName = sn;
-        }
-
-        @Override
-        public String getName() {
-            return signalName;
+            super(sn);
         }
 
         @Override

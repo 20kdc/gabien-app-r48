@@ -5,7 +5,7 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.imaging;
+package r48.texture;
 
 import gabien.GaBIEn;
 import gabien.render.IImage;
@@ -17,11 +17,11 @@ import java.util.HashMap;
  * but XYZ doesn't, and in any case, nulls shouldn't be propagated.
  * Created on 31/05/17.
  */
-public class CacheImageLoader implements IImageLoader {
+public class CacheTexLoader implements ITexLoader {
     public final HashMap<String, IImage> loadedImages = new HashMap<String, IImage>();
-    public final IImageLoader root;
+    public final ITexLoader root;
 
-    public CacheImageLoader(IImageLoader r) {
+    public CacheTexLoader(ITexLoader r) {
         root = r;
     }
 

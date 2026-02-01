@@ -13,6 +13,7 @@ import gabien.GaBIEn;
 import gabien.render.IImage;
 import gabien.render.WSIImage;
 import r48.App;
+import r48.texture.ITexLoader;
 
 /**
  * Does whatever the default can.
@@ -20,7 +21,7 @@ import r48.App;
  * unless it's an obscure format (XYZ), then in which case do something else.
  * Created on 29/05/17.
  */
-public class GabienImageLoader extends App.Svc implements IImageLoader {
+public class GabienImageLoader extends App.Svc implements ITexLoader {
     public final String postfix;
     public final boolean ck;
     public final int r, g, b;

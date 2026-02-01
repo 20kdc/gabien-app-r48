@@ -7,13 +7,16 @@
 
 package r48.map.drawlayers;
 
-import r48.App;
 import r48.RubyTableR;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.map.events.IEventAccess;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.tiles.VXATileRenderer;
+import r48.map2d.layers.RMZAccurateDrawLayer;
+import r48.map2d.layers.TileMapViewDrawLayer;
+import r48.map2d.layers.ZSortingDrawLayer;
+import r48.tr.pages.TrRoot;
 
 /**
  * Despite the name, right now this is stitched together to solve some bugs.
@@ -28,14 +31,14 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
 
     private static final int[] layerPreference = new int[] {0, 1, 3, 2};
 
-    public RVXAAccurateDrawLayer(RubyTableR tbl, IEventAccess eventList, VXATileRenderer tils, RMEventGraphicRenderer ev) {
-        super(tbl, 4);
+    public RVXAAccurateDrawLayer(TrRoot t, RubyTableR tbl, IEventAccess eventList, VXATileRenderer tils, RMEventGraphicRenderer ev) {
+        super(t.m.l_vxaZ, tbl, 4);
         tiles = tils;
         events = ev;
         signals.add(signalLayerEvA);
         // -1 is the "ground plane".
         for (int i = -1; i < tbl.height + 5; i++)
-            zSorting.add(new RVXAPriorityPlane(tils.app, i));
+            zSorting.add(new RVXAPriorityPlane(t, i));
         // Very specific choice of algorithm.
         for (DMKey r : eventList.getEventKeys()) {
             IRIO ed = eventList.getEvent(r);
@@ -53,17 +56,12 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
         completeSetup();
     }
 
-    @Override
-    public String getName() {
-        return T.m.l_vxaZ;
-    }
-
     private class RVXAPriorityPlane extends TileMapViewDrawLayer implements ZSortingDrawLayer.IZSortedObject {
         // priority + tile Y
         public final int pIndex;
 
-        public RVXAPriorityPlane(App app, int p) {
-            super(app, mapTable, layerPreference, tiles, "INTERNAL - YOU SHOULD NOT SEE THIS");
+        public RVXAPriorityPlane(TrRoot t, int p) {
+            super(t, mapTable, layerPreference, tiles, "INTERNAL - YOU SHOULD NOT SEE THIS");
             pIndex = p;
         }
 

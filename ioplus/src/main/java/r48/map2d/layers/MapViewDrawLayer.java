@@ -5,17 +5,20 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.drawlayers;
+package r48.map2d.layers;
 
-import r48.render2d.MapViewDrawContext;
+import r48.map2d.MapViewDrawContext;
 
 /**
  * Responsible for handling the general structure of rendering.
  * Most things can use the Traditional Layer Controller.
  * Created on 08/06/17.
  */
-public interface IMapViewDrawLayer {
-    String getName();
+public abstract class MapViewDrawLayer {
+    public final String name;
+    public MapViewDrawLayer(String name) {
+        this.name = name;
+    }
 
-    void draw(MapViewDrawContext mvdc);
+    public abstract void draw(MapViewDrawContext mvdc);
 }

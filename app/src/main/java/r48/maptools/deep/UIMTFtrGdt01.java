@@ -13,9 +13,9 @@ import gabien.ui.elements.UITextButton;
 import r48.map.IMapToolContext;
 import r48.map.AppMapViewDrawContext;
 import r48.map.UIMapView;
+import r48.map2d.IMapViewCallbacks;
+import r48.map2d.MapViewDrawContext;
 import r48.maptools.UIMTBase;
-import r48.render2d.IMapViewCallbacks;
-import r48.render2d.MapViewDrawContext;
 import r48.ui.UIAppendButton;
 import r48.ui.utilitybelt.FillAlgorithm;
 

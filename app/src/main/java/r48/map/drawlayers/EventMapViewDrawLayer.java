@@ -7,13 +7,15 @@
 
 package r48.map.drawlayers;
 
-import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
+import r48.ioplus.RenderArt;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
-import r48.render2d.MapViewDrawContext;
+import r48.map2d.MapViewDrawContext;
+import r48.map2d.layers.MapViewDrawLayer;
+import r48.tr.pages.TrRoot;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,25 +24,18 @@ import java.util.LinkedList;
 /**
  * Created on 08/06/17.
  */
-public class EventMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
+public class EventMapViewDrawLayer extends MapViewDrawLayer {
     public IEventAccess eventList;
-    public int layer;
+    public final int layer;
     public IEventGraphicRenderer iegr;
-    public String postfix;
+    public final RenderArt art;
 
-    public EventMapViewDrawLayer(App app, int layer2, IEventAccess eventL, IEventGraphicRenderer e, String post) {
-        super(app);
+    public EventMapViewDrawLayer(RenderArt art, TrRoot t, int layer, IEventAccess eventL, IEventGraphicRenderer e, String post) {
+        super(layer == 0x7FFFFFFF ? t.m.l_evSel : (eventL.customEventsName() + post));
+        this.art = art;
         eventList = eventL;
-        layer = layer2;
+        this.layer = layer;
         iegr = e;
-        postfix = post;
-    }
-
-    @Override
-    public String getName() {
-        if (layer == 0x7FFFFFFF)
-            return T.m.l_evSel;
-        return eventList.customEventsName() + postfix;
     }
 
     @Override
@@ -73,7 +68,7 @@ public class EventMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer 
             int py = y * mvdc.tileSize;
             if (layer == 0x7FFFFFFF) {
                 if (mvdc.currentlyOpenInEditor(evI))
-                    app.a.drawSelectionBox(px - 1, py - 1, mvdc.tileSize + 2, mvdc.tileSize + 2, 1, mvdc.igd);
+                    art.drawSelectionBox(px - 1, py - 1, mvdc.tileSize + 2, mvdc.tileSize + 2, 1, mvdc.igd);
             } else {
                 if (iegr.determineEventLayer(evI) != layer)
                     continue;

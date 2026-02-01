@@ -16,9 +16,9 @@ import gabien.uslx.append.Rect;
 import r48.App;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.IRIO;
+import r48.map2d.IMapViewCallbacks;
+import r48.map2d.MapViewDrawContext;
 import r48.maptools.UIMTBase;
-import r48.render2d.IMapViewCallbacks;
-import r48.render2d.MapViewDrawContext;
 import r48.schema.util.SchemaPath;
 
 /**

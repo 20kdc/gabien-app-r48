@@ -7,6 +7,8 @@
 
 package r48.map.tiles;
 
+import java.util.LinkedList;
+
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.GaBIEn;
@@ -24,16 +26,16 @@ import r48.RubyTable;
 import r48.RubyTableR;
 import r48.gameinfo.ATDB;
 import r48.io.data.IRIO;
-import r48.map.imaging.IImageLoader;
-import r48.map.tileedit.AutoTileTypeField;
-import r48.map.tileedit.TileEditingTab;
+import r48.map2d.tiles.AutoTileTypeField;
+import r48.map2d.tiles.TileEditingTab;
+import r48.texture.ITexLoader;
 
 /**
  * This uses a totally different system from XP, based around 5 AT sheets and 4 primary sheets.
  * Created on 1/27/17.
  */
 public class VXATileRenderer extends TSOAwareTileRenderer {
-    private final IImageLoader imageLoader;
+    private final ITexLoader imageLoader;
 
     private IRIO tileset;
 
@@ -48,7 +50,7 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
      */
     private final ExpandedATTF[] preparedATTF;
 
-    public VXATileRenderer(App app, IImageLoader il) {
+    public VXATileRenderer(App app, ITexLoader il) {
         super(app, 32, 8);
         imageLoader = il;
         preparedATTF = prepareATTF();
@@ -296,7 +298,7 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
             for (int i = 0; i < allATs.length; i++)
                 allATs[i] = 0x800 + (i * 48);
             return new TileEditingTab[] {
-                    new TileEditingTab(app, "AT", false, allATs, indicateATs()),
+                    new TileEditingTab(app.autoTiles, "AT", false, allATs, indicateATs()),
 
                     new TileEditingTab("G1", false, true, TileEditingTab.range(0x000, 0x400)),
                     new TileEditingTab("G2", false, true, TileEditingTab.range(0x600, 0x100)),
@@ -332,8 +334,8 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
     }
 
     @Override
-    public @Nullable AtlasSet getAtlasSet() {
-        return atlasSet;
+    public @Nullable LinkedList<IGrDriver> getAtlasSet() {
+        return atlasSet == null ? null : atlasSet.pages;
     }
 
     public static class ExpandedATTF extends AutoTileTypeField {

@@ -9,20 +9,23 @@ package r48.map.tiles;
 
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
-import r48.App;
-import r48.map.tileedit.AutoTileTypeField;
-import r48.map.tileedit.TileEditingTab;
+import r48.map2d.tiles.AutoTileTypeField;
+import r48.map2d.tiles.TileEditingTab;
+import r48.map2d.tiles.TileRenderer;
+import r48.tr.pages.TrRoot;
 
 /**
  * Useful for, say, your average Tiled output.
  * Created on May 11th 2018.
  */
-public class GenericTileRenderer extends ITileRenderer {
+public class GenericTileRenderer extends TileRenderer {
     public final int tileStride, tileCount;
     public final IImage img;
+    public final TrRoot T;
 
-    public GenericTileRenderer(App app, IImage image, int ts, int tw, int count) {
-        super(app, ts, tw);
+    public GenericTileRenderer(TrRoot t, IImage image, int ts, int tw, int count) {
+        super(ts, tw);
+        T = t;
         img = image;
         tileStride = tw;
         tileCount = count;

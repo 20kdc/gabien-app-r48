@@ -24,17 +24,15 @@ import gabien.uslx.append.Rect;
 import r48.App;
 import r48.app.InterlaunchGlobals;
 import r48.imagefx.HueShiftImageEffect;
+import r48.ioplus.RenderArt;
 
 /**
  * Drawing functions for UI resources that vary dependent on resolution or such.
  * Created on 11/08/17.
  */
-public class Art {
-
+public class Art extends RenderArt {
     // Images
-    public IImage layerTabs = GaBIEn.getImageEx("layertab.png", false, true);
     public IImage noMap = GaBIEn.getImageEx("nomad.png", false, true);
-    public IImage symbolic16 = GaBIEn.getImageEx("symbolic16.png", false, true);
 
     // Generated Images
     private IImage colourPal, rainbow;
@@ -42,10 +40,6 @@ public class Art {
 
     // PVA Animations
     public final PVARenderer r48Logo;
-
-    // Must be -dotLineAni
-    private static final int dotLineMetric = 27;
-    private static final int dotLineAni = 2;
 
     public Art() {
         try (InputStream inp = GaBIEn.getResource("animations/logo.pva")) {
@@ -111,44 +105,6 @@ public class Art {
 
         int xd = m;
         drawSymbol(igd, Art.Symbol.Camera, x + m + xd, y + m + xd, size - ((m + xd) * 2), false, select);
-    }
-
-    // this works decently even on high-DPI (with a sufficient thickness)
-    public void drawSelectionBox(int x, int y, int w, int h, int thickness, IGrDriver igd) {
-        int f = ((int) (GaBIEn.getTime() * (dotLineAni + 1))) % (dotLineAni + 1);
-        while (thickness > 0) {
-            drawDotLineV(x, y, h, f, igd);
-            drawDotLineV(x + (w - 1), y, h, dotLineAni - f, igd);
-            drawDotLineH(x, y, w, dotLineAni - f, igd);
-            drawDotLineH(x, y + (h - 1), w, f, igd);
-            thickness--;
-            x++;
-            y++;
-            w -= 2;
-            h -= 2;
-        }
-    }
-
-    private void drawDotLineV(int x, int y, int h, int f, IGrDriver igd) {
-        if (h <= 0)
-            return;
-        while (h > dotLineMetric) {
-            igd.blitImage(32, f, 1, dotLineMetric, x, y, layerTabs);
-            y += dotLineMetric;
-            h -= dotLineMetric;
-        }
-        igd.blitImage(32, f, 1, h, x, y, layerTabs);
-    }
-
-    private void drawDotLineH(int x, int y, int w, int f, IGrDriver igd) {
-        if (w <= 0)
-            return;
-        while (w > dotLineMetric) {
-            igd.blitImage(32 + f, 0, dotLineMetric, 1, x, y, layerTabs);
-            x += dotLineMetric;
-            w -= dotLineMetric;
-        }
-        igd.blitImage(32 + f, 0, w, 1, x, y, layerTabs);
     }
 
     private static IImage genColourPal() {

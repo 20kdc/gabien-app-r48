@@ -5,11 +5,12 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.drawlayers;
+package r48.map2d.layers;
 
-import r48.App;
-import r48.map.pass.IPassabilitySource;
-import r48.render2d.MapViewDrawContext;
+import r48.ioplus.RenderArt;
+import r48.map2d.MapViewDrawContext;
+import r48.map2d.tiles.IPassabilitySource;
+import r48.tr.pages.TrRoot;
 
 import java.util.Random;
 
@@ -17,19 +18,16 @@ import java.util.Random;
  * Draws a passability overlay.
  * Created on 09/06/17.
  */
-public class PassabilityMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
+public class PassabilityMapViewDrawLayer extends MapViewDrawLayer {
+    public final RenderArt art;
     public final IPassabilitySource src;
     public final int tileSize;
 
-    public PassabilityMapViewDrawLayer(App app, IPassabilitySource ips, int ts) {
-        super(app);
+    public PassabilityMapViewDrawLayer(RenderArt art, TrRoot t, IPassabilitySource ips, int ts) {
+        super(t.m.l_passability);
+        this.art = art;
         src = ips;
         tileSize = ts;
-    }
-
-    @Override
-    public String getName() {
-        return T.m.l_passability;
     }
 
     @Override
@@ -49,13 +47,13 @@ public class PassabilityMapViewDrawLayer extends App.Svc implements IMapViewDraw
                 int tsEnd = tileSize - 8;
                 int tsMid = (tileSize / 2) - 4;
                 if ((flags & IPassabilitySource.PASS_DOWN) == 0)
-                    mvdc.igd.blitImage(16, 0, 8, 8, px + tsMid, py + tsEnd, app.a.layerTabs);
+                    mvdc.igd.blitImage(16, 0, 8, 8, px + tsMid, py + tsEnd, art.layerTabs);
                 if ((flags & IPassabilitySource.PASS_RIGHT) == 0)
-                    mvdc.igd.blitImage(8, 0, 8, 8, px + tsEnd, py + tsMid, app.a.layerTabs);
+                    mvdc.igd.blitImage(8, 0, 8, 8, px + tsEnd, py + tsMid, art.layerTabs);
                 if ((flags & IPassabilitySource.PASS_LEFT) == 0)
-                    mvdc.igd.blitImage(24, 0, 8, 8, px, py + tsMid, app.a.layerTabs);
+                    mvdc.igd.blitImage(24, 0, 8, 8, px, py + tsMid, art.layerTabs);
                 if ((flags & IPassabilitySource.PASS_UP) == 0)
-                    mvdc.igd.blitImage(0, 0, 8, 8, px + tsMid, py, app.a.layerTabs);
+                    mvdc.igd.blitImage(0, 0, 8, 8, px + tsMid, py, art.layerTabs);
             }
         }
     }

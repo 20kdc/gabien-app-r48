@@ -12,11 +12,11 @@ import r48.App;
 import r48.imagefx.HueShiftImageEffect;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.map.imaging.IImageLoader;
 import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.SchemaPath;
+import r48.texture.ITexLoader;
 
 /**
  * Created 24th March 2023.
@@ -33,7 +33,7 @@ public class XPTroopGenposFrame extends TroopGenposFrame {
         super(app, t, path, change);
         // Immediately try and get needed resources
         IRIO enemi = app.odb.getObject("Enemies").getObject();
-        IImageLoader img = app.stuffRendererIndependent.imageLoader;
+        ITexLoader img = app.stuffRendererIndependent.imageLoader;
 
         enemies = new IImage[enemi.getALen()];
         for (int i = 0; i < enemies.length; i++) {
@@ -46,7 +46,7 @@ public class XPTroopGenposFrame extends TroopGenposFrame {
         return troop.getType() == 'o';
     }
 
-    private IImage readEnemy(IRIO value, IImageLoader img) {
+    private IImage readEnemy(IRIO value, ITexLoader img) {
         if (SchemaElement.checkType(value, 'o', "RPG::Enemy", false))
             return null;
         IImage im = img.getImage("Battlers/" + value.getIVar("@battler_name").decString(), false);

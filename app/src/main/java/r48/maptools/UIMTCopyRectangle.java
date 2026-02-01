@@ -16,8 +16,8 @@ import r48.RubyTable;
 import r48.io.data.IRIOGeneric;
 import r48.map.IMapToolContext;
 import r48.map.UIMapView;
-import r48.render2d.IMapViewCallbacks;
-import r48.render2d.MapViewDrawContext;
+import r48.map2d.IMapViewCallbacks;
+import r48.map2d.MapViewDrawContext;
 import r48.ui.UIAppendButton;
 
 /**

@@ -5,13 +5,14 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.drawlayers;
+package r48.game.r2k;
 
-import r48.App;
 import r48.ITileAccess;
 import r48.RubyTableR;
 import r48.io.data.IRIO;
-import r48.map.tiles.ITileRenderer;
+import r48.map2d.layers.TileMapViewDrawLayer;
+import r48.map2d.tiles.TileRenderer;
+import r48.tr.pages.TrRoot;
 
 /**
  * Created on 09/06/17, made to extend TMVDL on January 18th 2018.
@@ -21,16 +22,11 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
     public final RubyTableR lowpass;
     public final RubyTableR highpass;
 
-    public R2kTileMapViewDrawLayer(App app, ITileAccess tbl, ITileRenderer tr, int targLayer, boolean targUpper, IRIO ts, String post) {
-        super(app, tbl, new int[] {targLayer}, tr, post);
+    public R2kTileMapViewDrawLayer(TrRoot t, ITileAccess tbl, TileRenderer tr, int targLayer, boolean targUpper, IRIO ts, String post) {
+        super(t, tbl, new int[] {targLayer}, tr, post);
         upper = targUpper;
         lowpass = new RubyTableR(ts.getIVar("@lowpass_data").getBuffer());
         highpass = new RubyTableR(ts.getIVar("@highpass_data").getBuffer());
-    }
-
-    @Override
-    public String getName() {
-        return T.m.l_r2kTile.r(tileLayers[0], upper);
     }
 
     @Override

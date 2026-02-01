@@ -5,12 +5,12 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.pass;
+package r48.game.r2k;
 
 import r48.ITileAccess;
 import r48.RubyTableR;
 import r48.io.data.IRIO;
-import r48.map.drawlayers.R2kTileMapViewDrawLayer;
+import r48.map2d.tiles.IPassabilitySource;
 
 /**
  * Calculates the passability of a given tile.

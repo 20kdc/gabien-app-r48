@@ -5,7 +5,7 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.render2d;
+package r48.map2d;
 
 import gabien.render.IGrDriver;
 import gabien.uslx.append.MathsX;

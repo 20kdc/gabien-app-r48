@@ -13,23 +13,23 @@ import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import r48.App;
 import r48.io.data.RORIO;
-import r48.map.imaging.IImageLoader;
-import r48.map.tiles.ITileRenderer;
+import r48.map2d.tiles.TileRenderer;
+import r48.texture.ITexLoader;
 
 /**
  * An interlude.
  * Created on 31/05/17.
  */
 public class R2kEventGraphicRenderer extends App.Svc implements IEventGraphicRenderer {
-    public final IImageLoader imageLoader;
-    public final ITileRenderer tileRenderer;
+    public final ITexLoader imageLoader;
+    public final TileRenderer tileRenderer;
     // Idea is, if 2x is needed, this is set in the constructor.
     // DO NOT use this for all calculations. This is meant for calculations on the event file,
     //  and it's relation is meant for calculations on the tiles.
     public final int localTileSize = 16;
     private final int remoteTileSize;
 
-    public R2kEventGraphicRenderer(App app, IImageLoader imageLoad, ITileRenderer tr) {
+    public R2kEventGraphicRenderer(App app, ITexLoader imageLoad, TileRenderer tr) {
         super(app);
         tileRenderer = tr;
         imageLoader = imageLoad;

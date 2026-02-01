@@ -12,11 +12,11 @@ import r48.App;
 import r48.imagefx.HueShiftImageEffect;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
-import r48.map.imaging.IImageLoader;
 import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.SchemaPath;
+import r48.texture.ITexLoader;
 
 /**
  * Created on 28/07/17. split 24th March 2023
@@ -40,7 +40,7 @@ public class R2kTroopGenposFrame extends TroopGenposFrame {
         super(app, t, path, change);
         // Immediately try and get needed resources
         IRIO database = app.odb.getObject("RPG_RT.ldb").getObject();
-        IImageLoader img = app.stuffRendererIndependent.imageLoader;
+        ITexLoader img = app.stuffRendererIndependent.imageLoader;
         battleBkg = img.getImage("Backdrop/" + database.getIVar("@system").getIVar("@test_battle_background").decString(), true);
         long max = 0;
 
@@ -58,7 +58,7 @@ public class R2kTroopGenposFrame extends TroopGenposFrame {
         return troop.getType() == 'o';
     }
 
-    private IImage readEnemy(IRIO value, IImageLoader img) {
+    private IImage readEnemy(IRIO value, ITexLoader img) {
         IImage im = img.getImage("Monster/" + value.getIVar("@battler_name").decString(), false);
         return app.ui.imageFXCache.process(im, new HueShiftImageEffect((int) value.getIVar("@battler_hue").getFX()));
     }

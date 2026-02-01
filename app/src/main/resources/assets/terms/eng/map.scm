@@ -39,7 +39,6 @@
 	toolsAddendum "..."
 	(l_
 		tile (fl1 "Tile Layer " a0)
-		r2kTile (fl2 "Tile L" a0 "(" (if a1 "'upper'/'wall' tileset flags" "general") ")")
 		passability "Passability Overlay"
 		evLower "Event Layers (lower)"
 		evUpper "Event Layers (upper)"

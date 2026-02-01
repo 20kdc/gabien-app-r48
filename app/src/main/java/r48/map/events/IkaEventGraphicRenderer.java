@@ -14,7 +14,7 @@ import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import r48.App;
 import r48.io.data.RORIO;
-import r48.map.imaging.IImageLoader;
+import r48.texture.ITexLoader;
 
 /**
  * Ikachan's event graphic renderer
@@ -22,9 +22,9 @@ import r48.map.imaging.IImageLoader;
  */
 public class IkaEventGraphicRenderer extends App.Svc implements IEventGraphicRenderer {
 
-    private final IImageLoader imageLoader;
+    private final ITexLoader imageLoader;
 
-    public IkaEventGraphicRenderer(App app, IImageLoader il) {
+    public IkaEventGraphicRenderer(App app, ITexLoader il) {
         super(app);
         imageLoader = il;
     }

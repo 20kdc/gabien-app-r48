@@ -9,11 +9,12 @@ package r48.map.imaging;
 import gabien.render.IImage;
 import r48.App;
 import r48.imageio.ImageIOFormat;
+import r48.texture.ITexLoader;
 
 /**
  * Uses the 'imageio' stuff to load images in a given format.
  */
-public class ImageIOImageLoader extends App.Svc implements IImageLoader {
+public class ImageIOImageLoader extends App.Svc implements ITexLoader {
 
     public final ImageIOFormat format;
     public final String postfix;

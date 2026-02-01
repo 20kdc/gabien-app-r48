@@ -5,9 +5,9 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.tileedit;
+package r48.map2d.tiles;
 
-import r48.App;
+import r48.gameinfo.ATDB;
 
 /**
  * Created on December 29, 2018.
@@ -28,7 +28,7 @@ public final class TileEditingTab {
         visTilesHover = type;
     }
 
-    public TileEditingTab(App app, String text, boolean dnu, int[] typea, AutoTileTypeField[] attf) {
+    public TileEditingTab(ATDB[] appAutoTiles, String text, boolean dnu, int[] typea, AutoTileTypeField[] attf) {
         int[] typeb = new int[typea.length];
         int[] typec = new int[typea.length];
         for (int i = 0; i < typea.length; i++) {
@@ -39,7 +39,7 @@ public final class TileEditingTab {
                 if (t >= at.start) {
                     if (t < (at.length + at.start)) {
                         typeb[i] += at.represent;
-                        typec[i] += app.autoTiles[at.databaseId].inverseMap[0xFF];
+                        typec[i] += appAutoTiles[at.databaseId].inverseMap[0xFF];
                         break;
                     }
                 }

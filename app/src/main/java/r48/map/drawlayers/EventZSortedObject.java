@@ -10,15 +10,18 @@ package r48.map.drawlayers;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.map.events.IEventGraphicRenderer;
-import r48.render2d.MapViewDrawContext;
+import r48.map2d.MapViewDrawContext;
+import r48.map2d.layers.MapViewDrawLayer;
+import r48.map2d.layers.ZSortingDrawLayer;
 
-public class EventZSortedObject implements ZSortingDrawLayer.IZSortedObject {
+public class EventZSortedObject extends MapViewDrawLayer implements ZSortingDrawLayer.IZSortedObject {
     private final IRIO evI;
     private final long z;
     private final ZSortingDrawLayer.SignalMapViewLayer signal;
     private final IEventGraphicRenderer renderer;
 
     public EventZSortedObject(IRIO event, long z, ZSortingDrawLayer.SignalMapViewLayer sig, IEventGraphicRenderer iegr) {
+        super("INTERNAL YOU SHOULD NOT SEE THIS");
         this.z = z;
         evI = event;
         signal = sig;
@@ -33,11 +36,6 @@ public class EventZSortedObject implements ZSortingDrawLayer.IZSortedObject {
     @Override
     public ZSortingDrawLayer.SignalMapViewLayer getControlSignal() {
         return signal;
-    }
-
-    @Override
-    public String getName() {
-        return "";
     }
 
     @Override

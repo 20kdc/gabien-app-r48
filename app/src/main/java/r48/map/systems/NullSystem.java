@@ -12,11 +12,11 @@ import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.NullEventGraphicRenderer;
-import r48.map.imaging.CacheImageLoader;
 import r48.map.imaging.FixAndSecondaryImageLoader;
 import r48.map.imaging.GabienImageLoader;
-import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.NullTileRenderer;
+import r48.map2d.tiles.TileRenderer;
+import r48.texture.CacheTexLoader;
 
 /**
  * Created on 03/06/17.
@@ -25,12 +25,12 @@ public class NullSystem extends MapSystem {
     public NullSystem(App app) {
         // Redundant cache as error safety net.
         // Having an explicit "ErrorSafetyNetImageLoader" would just complicate things.
-        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "", "", new GabienImageLoader(app, ""))), false);
+        super(app, new CacheTexLoader(new FixAndSecondaryImageLoader(app, "", "", new GabienImageLoader(app, ""))), false);
     }
 
     @Override
     public StuffRenderer rendererFromTso(IRIO target) {
-        ITileRenderer tileRenderer = new NullTileRenderer(app);
+        TileRenderer tileRenderer = new NullTileRenderer();
         IEventGraphicRenderer eventRenderer = new NullEventGraphicRenderer();
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }

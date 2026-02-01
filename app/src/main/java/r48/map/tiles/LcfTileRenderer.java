@@ -19,9 +19,9 @@ import gabien.uslx.append.DepsLocker;
 import r48.App;
 import r48.gameinfo.ATDB;
 import r48.io.data.IRIO;
-import r48.map.imaging.IImageLoader;
-import r48.map.tileedit.AutoTileTypeField;
-import r48.map.tileedit.TileEditingTab;
+import r48.map2d.tiles.AutoTileTypeField;
+import r48.map2d.tiles.TileEditingTab;
+import r48.texture.ITexLoader;
 
 import java.util.LinkedList;
 
@@ -32,7 +32,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * Created on 31/05/17.
  */
 public class LcfTileRenderer extends TSOAwareTileRenderer {
-    public final IImageLoader imageLoader;
+    public final ITexLoader imageLoader;
     public DepsLocker depsLocker = new DepsLocker();
     // "Left": 6x8 section of special tiles that don't fit into terrainATFields
     public ITexRegion chipsetLeft;
@@ -42,7 +42,7 @@ public class LcfTileRenderer extends TSOAwareTileRenderer {
     public ITexRegion[][] terrainATFields;
     public boolean optimizeAway10000;
 
-    public LcfTileRenderer(App app, IImageLoader imageLoader) {
+    public LcfTileRenderer(App app, ITexLoader imageLoader) {
         super(app, 16, 6);
         this.imageLoader = imageLoader;
     }
@@ -279,7 +279,7 @@ public class LcfTileRenderer extends TSOAwareTileRenderer {
             genLcfATs[ia++] = 4000 + (i * 50);
         // On L0, lower layer tiles take priority,
         // on L1, upper layer tiles take priority
-        TileEditingTab atf = new TileEditingTab(app, "ATF", layerIdx != 0, genLcfATs, indicateATs());
+        TileEditingTab atf = new TileEditingTab(app.autoTiles, "ATF", layerIdx != 0, genLcfATs, indicateATs());
         TileEditingTab lwr = new TileEditingTab("LOWER", layerIdx != 0, true, TileEditingTab.range(5000, 144));
         TileEditingTab ani = new TileEditingTab("ANI", layerIdx != 0, false, new int[] {3000, 3050, 3100});
         TileEditingTab tem = new TileEditingTab("TEM", layerIdx != 0, false, TileEditingTab.range(4000, 600));
@@ -339,7 +339,7 @@ public class LcfTileRenderer extends TSOAwareTileRenderer {
     }
 
     @Override
-    public @Nullable AtlasSet getAtlasSet() {
-        return atlasSet;
+    public @Nullable LinkedList<IGrDriver> getAtlasSet() {
+        return atlasSet == null ? null : atlasSet.pages;
     }
 }

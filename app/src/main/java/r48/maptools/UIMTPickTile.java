@@ -14,8 +14,8 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.map.IMapToolContext;
 import r48.map.UIMapView;
-import r48.render2d.IMapViewCallbacks;
-import r48.render2d.MapViewDrawContext;
+import r48.map2d.IMapViewCallbacks;
+import r48.map2d.MapViewDrawContext;
 
 /**
  * Actual tool is just a label saying what to do, these callbacks piggy back on it

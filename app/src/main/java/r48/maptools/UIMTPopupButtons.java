@@ -8,7 +8,6 @@
 package r48.maptools;
 
 import gabien.GaBIEn;
-import gabien.atlas.AtlasSet;
 import gabien.render.IGrDriver;
 import gabien.ui.dialogs.UIAutoclosingPopupMenu;
 import gabien.ui.dialogs.UIPopupMenu;
@@ -93,10 +92,10 @@ public class UIMTPopupButtons extends UIMTBase {
         mainToolButtons.add(new ToolButton(T.m.bShowAtlases) {
             @Override
             public UIMTBase apply(IMapToolContext a) {
-                AtlasSet potential = a.getMapView().mapTable.renderer.tileRenderer.getAtlasSet();
+                LinkedList<IGrDriver> potential = a.getMapView().mapTable.renderer.tileRenderer.getAtlasSet();
                 if (potential == null)
                     return null;
-                for (IGrDriver ap : potential.pages)
+                for (IGrDriver ap : potential)
                     app.ui.wm.createWindow(new UIThumbnail(ap));
                 return null;
             }

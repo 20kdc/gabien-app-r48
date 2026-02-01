@@ -12,8 +12,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.GaBIEn;
 import gabien.ui.elements.UILabel;
 import r48.map.AppMapViewDrawContext;
-import r48.render2d.IMapViewCallbacks;
-import r48.render2d.MapViewDrawContext;
+import r48.map2d.IMapViewCallbacks;
+import r48.map2d.MapViewDrawContext;
 import r48.ui.UIAppendButton;
 
 /**

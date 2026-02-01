@@ -8,16 +8,16 @@
 package r48.map.tiles;
 
 import gabien.render.IGrDriver;
-import r48.App;
-import r48.map.tileedit.AutoTileTypeField;
-import r48.map.tileedit.TileEditingTab;
+import r48.map2d.tiles.AutoTileTypeField;
+import r48.map2d.tiles.TileEditingTab;
+import r48.map2d.tiles.TileRenderer;
 
 /**
  * Created on 1/27/17.
  */
-public class NullTileRenderer extends ITileRenderer {
-    public NullTileRenderer(App app) {
-        super(app, 32, 8);
+public class NullTileRenderer extends TileRenderer {
+    public NullTileRenderer() {
+        super(32, 8);
     }
 
     @Override

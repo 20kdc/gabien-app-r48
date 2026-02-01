@@ -5,7 +5,7 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.imaging;
+package r48.texture;
 
 import gabien.render.IImage;
 
@@ -26,7 +26,7 @@ import gabien.render.IImage;
  * <p/>
  * Created on 29/05/17.
  */
-public interface IImageLoader {
+public interface ITexLoader {
     // Similar to getImage in the old system.
     // On error, returns null, unless a cache.
     // "panorama" indicates if *index-based* transparency should be disabled (R2k panoramas)

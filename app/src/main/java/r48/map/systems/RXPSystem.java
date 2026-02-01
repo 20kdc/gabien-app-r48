@@ -30,9 +30,14 @@ import r48.map.events.TraditionalEventAccess;
 import r48.map.imaging.*;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
-import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.TSOAwareTileRenderer;
 import r48.map.tiles.XPTileRenderer;
+import r48.map2d.layers.GridMapViewDrawLayer;
+import r48.map2d.layers.MapViewDrawLayer;
+import r48.map2d.tiles.TileRenderer;
+import r48.texture.CacheTexLoader;
+import r48.texture.ChainedTexLoader;
+import r48.texture.ITexLoader;
 import r48.toolsets.RMTools;
 import r48.toolsets.utils.RMTranscriptDumper;
 
@@ -47,7 +52,7 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public class RXPSystem extends MapSystem implements IRMMapSystem {
     public RXPSystem(App app) {
-        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "Graphics/", "", new ChainedImageLoader(new IImageLoader[] {
+        super(app, new CacheTexLoader(new FixAndSecondaryImageLoader(app, "Graphics/", "", new ChainedTexLoader(new ITexLoader[] {
                 new GabienImageLoader(app, ".png"),
                 new GabienImageLoader(app, ".jpg"),
         }))), true);
@@ -107,12 +112,12 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         return new XPTileRenderer(app, imageLoader);
     }
 
-    public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events, ITileRenderer tileRenderer) {
+    public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events, TileRenderer tileRenderer) {
         RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, false);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }
 
-    public IMapViewDrawLayer[] createLayersForMap(StuffRenderer renderer, @NonNull IRIO map, IRIO tileset, IEventAccess events) {
+    public MapViewDrawLayer[] createLayersForMap(StuffRenderer renderer, @NonNull IRIO map, IRIO tileset, IEventAccess events) {
         String pano = "";
         int panoHue = 0;
         if (tileset != null) {
@@ -132,10 +137,10 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
             panoImg = imageLoader.getImage(pano, true);
         if (panoImg != null && panoHue != 0)
             panoImg = app.ui.imageFXCache.process(panoImg, new HueShiftImageEffect(panoHue));
-        RXPAccurateDrawLayer accurate = new RXPAccurateDrawLayer(rt, events, (XPTileRenderer) renderer.tileRenderer, (RMEventGraphicRenderer) renderer.eventRenderer);
-        return new IMapViewDrawLayer[] {
+        RXPAccurateDrawLayer accurate = new RXPAccurateDrawLayer(T, rt, events, (XPTileRenderer) renderer.tileRenderer, (RMEventGraphicRenderer) renderer.eventRenderer);
+        return new MapViewDrawLayer[] {
                 // works for green docks
-                new PanoramaMapViewDrawLayer(app, panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
+                new PanoramaMapViewDrawLayer(app.t, panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
                 // Signal layers (controls Z-Emulation)
                 accurate.tileSignalLayers[0],
                 accurate.tileSignalLayers[1],
@@ -145,8 +150,8 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
                 // Z-Emulation
                 accurate,
                 // selection
-                new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, renderer.eventRenderer, ""),
-                new GridMapViewDrawLayer(app),
+                new EventMapViewDrawLayer(app.a, app.t, 0x7FFFFFFF, events, renderer.eventRenderer, ""),
+                new GridMapViewDrawLayer(app.t),
                 new BorderMapViewDrawLayer(app, rt.getBounds().multiplied(renderer.tileRenderer.tileSize))
         };
     }

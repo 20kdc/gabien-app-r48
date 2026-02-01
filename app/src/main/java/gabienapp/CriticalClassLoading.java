@@ -69,13 +69,12 @@ import r48.ioplus.DatumLoader;
 import r48.ioplus.IDatabase;
 import r48.map.AppMapViewDrawContext;
 import r48.map.StuffRenderer;
-import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.NullEventGraphicRenderer;
-import r48.map.imaging.CacheImageLoader;
 import r48.map.imaging.FixAndSecondaryImageLoader;
 import r48.map.imaging.GabienImageLoader;
 import r48.map.systems.MapSystem;
 import r48.map.tiles.NullTileRenderer;
+import r48.map2d.layers.MapViewDrawLayer;
 import r48.minivm.MVMEnv;
 import r48.minivm.fn.MVMDMAppLibrary;
 import r48.minivm.fn.MVMMathsLibrary;
@@ -93,6 +92,7 @@ import r48.search.ITextAnalyzer;
 import r48.search.ImmutableTextAnalyzerCommandClassifier;
 import r48.search.TextAnalyzerCommandClassifier;
 import r48.search.TextOperator;
+import r48.texture.CacheTexLoader;
 import r48.toolsets.BasicToolset;
 import r48.toolsets.IToolset;
 import r48.toolsets.utils.UITestGraphicsStuff;
@@ -217,7 +217,7 @@ public class CriticalClassLoading {
             NullTileRenderer.class,
             FixAndSecondaryImageLoader.class,
             GabienImageLoader.class,
-            CacheImageLoader.class,
+            CacheTexLoader.class,
             NullTileRenderer.class,
             ICommandClassifier.class,
             TextOperator.class,
@@ -234,7 +234,7 @@ public class CriticalClassLoading {
             UITestGraphicsStuff.class,
             ISchemaHost.class,
             StuffRenderer.class,
-            IMapViewDrawLayer.class,
+            MapViewDrawLayer.class,
             Art.Symbol.class,
             DMKey.Subtype.class,
             IDuplicatableWindow.class,
