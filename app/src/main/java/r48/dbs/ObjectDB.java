@@ -7,7 +7,7 @@
 
 package r48.dbs;
 
-import r48.app.AppCore;
+import r48.App;
 import r48.app.TimeMachineChangeSource;
 import r48.dbs.ObjectRootHandle.Utils;
 import r48.io.IObjectBackend;
@@ -32,7 +32,7 @@ import gabien.uslx.append.Block;
  * Not quite a database, but not quite not a database either.
  * Created on 12/29/16.
  */
-public final class ObjectDB extends AppCore.Csv {
+public final class ObjectDB extends App.Svc {
     /**
      * This exists to ensure that IDM3Data keeps the IObjectRootHandle in memory.
      * This ensures we can't lose an object as long as we have undo/redo data for it.
@@ -46,7 +46,7 @@ public final class ObjectDB extends AppCore.Csv {
      */
     public @NonNull Consumer<String> saveHook = (id) -> {};
 
-    public ObjectDB(AppCore app, IObjectBackend b) {
+    public ObjectDB(App app, IObjectBackend b) {
         super(app);
         backend = b;
     }

@@ -11,8 +11,8 @@ import java.util.List;
 
 import datum.DatumSrcLoc;
 import r48.App;
-import r48.dbs.ATDB;
 import r48.dbs.SDBOldParser;
+import r48.gameinfo.ATDB;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMType;
@@ -81,9 +81,9 @@ public class MVMSDBLibrary extends App.Svc {
     @Defun(n = "atdb-load", r = 1)
     @Help("Loads an ATDB. A0: Primary rule file A1: Inverse rule file (or \"$WallATs$\")")
     public ATDB loadATDB(String filename, String inverseRules) {
-        ATDB atdb = new ATDB(app, filename);
+        ATDB atdb = new ATDB(app.loadProgress, filename);
         if (inverseRules != null)
-            atdb.calculateInverseMap(inverseRules);
+            atdb.calculateInverseMap(app.loadProgress, inverseRules);
         return atdb;
     }
 

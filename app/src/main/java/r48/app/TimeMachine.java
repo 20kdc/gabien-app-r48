@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
+import r48.App;
 import r48.io.data.IDM3Data;
 
 /**
@@ -22,7 +23,7 @@ import r48.io.data.IDM3Data;
  *
  * Created 10th May, 2024.
  */
-public final class TimeMachine extends AppCore.Csv {
+public final class TimeMachine extends App.Svc {
     public static final int MAX_STEPS = 4;
 
     /**
@@ -47,7 +48,7 @@ public final class TimeMachine extends AppCore.Csv {
 
     private boolean hasRecordBeenCalledThisCycle = false;
 
-    public TimeMachine(AppCore app) {
+    public TimeMachine(App app) {
         super(app);
     }
 

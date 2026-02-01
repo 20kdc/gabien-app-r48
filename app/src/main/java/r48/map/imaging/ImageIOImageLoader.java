@@ -7,19 +7,19 @@
 package r48.map.imaging;
 
 import gabien.render.IImage;
-import r48.app.AppCore;
+import r48.App;
 import r48.imageio.ImageIOFormat;
 
 /**
  * Uses the 'imageio' stuff to load images in a given format.
  */
-public class ImageIOImageLoader extends AppCore.Csv implements IImageLoader {
+public class ImageIOImageLoader extends App.Svc implements IImageLoader {
 
     public final ImageIOFormat format;
     public final String postfix;
     public final boolean firstPalTransparency;
 
-    public ImageIOImageLoader(AppCore app, ImageIOFormat f, String pf, boolean t) {
+    public ImageIOImageLoader(App app, ImageIOFormat f, String pf, boolean t) {
         super(app);
         format = f;
         postfix = pf;

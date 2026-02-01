@@ -15,8 +15,8 @@ import datum.DatumSrcLoc;
 import gabien.GaBIEn;
 import gabien.ui.elements.UILabel;
 import r48.app.InterlaunchGlobals;
-import r48.dbs.DBLoader;
-import r48.dbs.IDatabase;
+import r48.ioplus.DBLoader;
+import r48.ioplus.IDatabase;
 import r48.tr.LanguageList;
 
 /**

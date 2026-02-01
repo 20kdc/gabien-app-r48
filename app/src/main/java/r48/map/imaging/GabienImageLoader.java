@@ -12,7 +12,7 @@ import java.io.InputStream;
 import gabien.GaBIEn;
 import gabien.render.IImage;
 import gabien.render.WSIImage;
-import r48.app.AppCore;
+import r48.App;
 
 /**
  * Does whatever the default can.
@@ -20,12 +20,12 @@ import r48.app.AppCore;
  * unless it's an obscure format (XYZ), then in which case do something else.
  * Created on 29/05/17.
  */
-public class GabienImageLoader extends AppCore.Csv implements IImageLoader {
+public class GabienImageLoader extends App.Svc implements IImageLoader {
     public final String postfix;
     public final boolean ck;
     public final int r, g, b;
 
-    public GabienImageLoader(AppCore app, String pp, int cr, int cg, int cb) {
+    public GabienImageLoader(App app, String pp, int cr, int cg, int cb) {
         super(app);
         postfix = pp;
         ck = true;
@@ -34,7 +34,7 @@ public class GabienImageLoader extends AppCore.Csv implements IImageLoader {
         b = cb;
     }
 
-    public GabienImageLoader(AppCore app, String pp) {
+    public GabienImageLoader(App app, String pp) {
         super(app);
         postfix = pp;
         ck = false;

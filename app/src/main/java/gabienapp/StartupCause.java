@@ -15,7 +15,7 @@ import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.App;
 import r48.app.AppMain;
-import r48.ioplus.EngineDef;
+import r48.gameinfo.EngineDef;
 import r48.tr.TrPage.FF0;
 
 /**

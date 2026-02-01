@@ -19,11 +19,11 @@ import gabien.ui.layouts.UITabPane;
 import gabien.uslx.append.*;
 import gabien.uslx.io.ByteArrayMemoryish;
 import r48.App;
-import r48.dbs.DBLoader;
-import r48.dbs.IDatabase;
 import r48.imageio.PNG8IImageIOFormat;
 import r48.io.BMPConnection;
 import r48.io.data.IRIOGeneric;
+import r48.ioplus.DBLoader;
+import r48.ioplus.IDatabase;
 import r48.ui.UIAppendButton;
 import r48.ui.UIColourSwatchButton;
 import r48.ui.dialog.UIColourPicker;
@@ -55,7 +55,7 @@ public class CharacterGeneratorController extends App.Svc {
     public CharacterGeneratorController(App app) {
         super(app);
         modes = new UITabPane(app.f.tabTH, true, false);
-        DBLoader.readFile(app, "CharGen/Modes", new IDatabase() {
+        DBLoader.readFile(app.loadProgress, "CharGen/Modes", new IDatabase() {
             private UICharGenView view;
 
             @Override
@@ -81,7 +81,7 @@ public class CharacterGeneratorController extends App.Svc {
             }
         });
         LinkedList<UIElement> availableOpts = new LinkedList<>();
-        DBLoader.readFile(app, "CharGen/Layers", new IDatabase() {
+        DBLoader.readFile(app.loadProgress, "CharGen/Layers", new IDatabase() {
             private Layer target;
             private String mode = "Default";
             private final HashMap<String, LinkedList<Layer>> groupsToLayers = new HashMap<String, LinkedList<Layer>>();

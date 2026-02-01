@@ -15,6 +15,8 @@ import r48.dbs.RPGCommand.XPMoveCommandSetGraphicSpecialTag;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
+import r48.ioplus.DBLoader;
+import r48.ioplus.IDatabase;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.SchemaPath;
@@ -57,7 +59,7 @@ public class CMDB extends App.Svc {
      */
     public void load(String readFile) {
         final SDB sdb = app.sdb;
-        DBLoader.readFile(app, readFile, new IDatabase() {
+        DBLoader.readFile(app.loadProgress, readFile, new IDatabase() {
             RPGCommand rc;
             int workingCmdId = 0;
             LinkedList<RPGCommand.SpecialTag> nextTag = null;
@@ -486,7 +488,7 @@ public class CMDB extends App.Svc {
                 } else if (c.equals("#")) {
                     String oldFile = baseFile;
                     baseFile = args[0];
-                    DBLoader.readFile(app, args[0], this);
+                    DBLoader.readFile(app.loadProgress, args[0], this);
                     baseFile = oldFile;
                 } else {
                     throw new RuntimeException("Unknown command '" + c + "'.");

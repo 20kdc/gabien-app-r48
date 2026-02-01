@@ -5,12 +5,16 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.dbs;
+package r48.gameinfo;
 
 import java.util.LinkedList;
+import java.util.function.Consumer;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import datum.DatumSrcLoc;
-import r48.app.AppCore;
+import r48.ioplus.DBLoader;
+import r48.ioplus.IDatabase;
 
 /**
  * Autotile Database, used to deal with those pesky AutoTile issues
@@ -21,7 +25,7 @@ import r48.app.AppCore;
  * <p/>
  * Created on 12/28/16.
  */
-public class ATDB extends AppCore.Csv {
+public class ATDB {
     public final String loadFile;
     // 50 is the biggest seen so far.
     public Autotile[] entries = new Autotile[50];
@@ -55,10 +59,9 @@ public class ATDB extends AppCore.Csv {
         return 0;
     }
 
-    public ATDB(AppCore app, String file) {
-        super(app);
+    public ATDB(@Nullable Consumer<String> loadProgress, String file) {
         loadFile = file;
-        DBLoader.readFile(app, file, new IDatabase() {
+        DBLoader.readFile(loadProgress, file, new IDatabase() {
             Autotile current = null;
             // for 'x'-type one-line-space-delimited entries
             int autoIncrementingId = 0;
@@ -99,7 +102,7 @@ public class ATDB extends AppCore.Csv {
         });
     }
 
-    public void calculateInverseMap(String file) {
+    public void calculateInverseMap(@Nullable Consumer<String> loadProgress, String file) {
         if (file.equals("$WallATs$")) {
             // This is wrong, but it works okayish.
             // I haven't been able to get full information on this.
@@ -127,12 +130,12 @@ public class ATDB extends AppCore.Csv {
             }
             return;
         }
-        calculateInverseMapRulesEngine(file);
+        calculateInverseMapRulesEngine(loadProgress, file);
     }
 
-    public void calculateInverseMapRulesEngine(String file) {
+    public void calculateInverseMapRulesEngine(@Nullable Consumer<String> loadProgress, String file) {
         final LinkedList<Integer> avoidThese = new LinkedList<>();
-        DBLoader.readFile(app, file, new IDatabase() {
+        DBLoader.readFile(loadProgress, file, new IDatabase() {
             @Override
             public void newObj(int objId, String objName, DatumSrcLoc sl) {
                 boolean[] mustTrue = new boolean[8];

@@ -23,23 +23,34 @@ import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIPanel;
 import gabien.ui.UIElement.UIProxy;
 import gabien.uslx.vfs.FSBackend;
+import gabien.uslx.vfs.impl.DodgyInputWorkaroundFSBackend;
+import gabien.uslx.vfs.impl.UnionFSBackend;
 import gabienapp.PleaseFailBrutally;
-import r48.app.AppCore;
 import r48.app.AppNewProject;
 import r48.app.AppUI;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
+import r48.app.TimeMachine;
+import r48.cfg.Config;
+import r48.cfg.FontSizes;
 import r48.dbs.CMDBDB;
+import r48.dbs.ObjectDB;
+import r48.dbs.ObjectInfo;
 import r48.dbs.RPGCommand;
+import r48.dbs.SDB;
 import r48.dbs.SDBHelpers;
+import r48.gameinfo.ATDB;
+import r48.gameinfo.EngineDef;
+import r48.imageio.ImageIOFormat;
 import r48.io.data.DMContext;
+import r48.io.IObjectBackend;
 import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
-import r48.ioplus.EngineDef;
 import r48.map.StuffRenderer;
 import r48.map.systems.MapSystem;
+import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMSlot;
 import r48.minivm.fn.MVMR48AppLibraries;
 import r48.schema.AggregateSchemaElement;
@@ -62,6 +73,7 @@ import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 import r48.tr.TrPage.FF1;
 import r48.tr.pages.TrRoot;
+import r48.ui.Art;
 
 /**
  * An attempt to move as much as possible out of static variables.
@@ -70,7 +82,105 @@ import r48.tr.pages.TrRoot;
  *  App won't
  * Created 26th February, 2023
  */
-public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrProxy {
+public final class App implements IAppAsSeenByLauncher, IDynTrProxy {
+    /**
+     * Inter-launch globals (art, config, etc.)
+     */
+    @NonNull
+    public final InterlaunchGlobals ilg;
+
+    /**
+     * 'Art' (logos, symbols, etc.)
+     */
+    @NonNull
+    public final Art a;
+
+    /**
+     * Configuration
+     */
+    @NonNull
+    public final Config c;
+
+    /**
+     * Font sizes
+     */
+    @NonNull
+    public final FontSizes f;
+
+    /**
+     * Translation root page (copied from ILG)
+     */
+    @NonNull
+    public final TrRoot t;
+
+    /**
+     * Engine definition
+     */
+    @NonNull
+    public final EngineDef engine;
+
+    /**
+     * Game's encoding
+     */
+    @NonNull
+    public final Charset encoding;
+
+    /**
+     * The time machine
+     */
+    @NonNull
+    public final TimeMachine timeMachine;
+
+    /**
+     * Object database
+     */
+    public ObjectDB odb;
+
+    /**
+     * Primary D/MVM virtual machine (in-app REPL, Schema, etc.)
+     */
+    public final MVMEnvR48 vmCtx;
+
+    /**
+     * Schema database - the most important thing
+     */
+    public final SDB sdb;
+
+    /**
+     * Map system - defines maps, etc.
+     */
+    public MapSystem system;
+
+    /**
+     * ImageIO formats
+     */
+    public ImageIOFormat[] imageIOFormats;
+
+    /**
+     * Autotile fields
+     */
+    public ATDB[] autoTiles = new ATDB[0];
+
+    /**
+     * This is the root FS for the game being worked on.
+     * All game-related writing should go here!
+     * (This is important in case Android starts getting particularly aggressive.)
+     */
+    @NonNull
+    public final FSBackend gameRoot;
+
+    /**
+     * UnionFS of all game resource directories.
+     */
+    @NonNull
+    public final UnionFSBackend gameResources;
+
+    /**
+     * Load progress reporting (for during load)
+     */
+    @NonNull
+    public final Consumer<String> loadProgress;
+
     public final @NonNull FF0 launchConfigName;
 
     public HashMap<Integer, String> osSHESEDB;
@@ -89,9 +199,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
 
     // State for in-system copy/paste
     public RORIO theClipboard = null;
-    public final Runnable applyConfigChange = () -> {
-        c.applyUIGlobals();
-    };
+    public final Runnable applyConfigChange;
 
     // configuration
     public final boolean deletionButtonsNeedConfirmation;
@@ -133,19 +241,9 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     public SchemaOp opCopy, opPaste;
 
     /**
-     * Clipboard context in app encoding
-     */
-    public final DMContext ctxClipboardAppEncoding = new DMContext(DMChangeTracker.Null.CLIPBOARD, encoding);
-
-    /**
      * Clipboard context in UTF-8
      */
     public final DMContext ctxClipboardUTF8Encoding = new DMContext(DMChangeTracker.Null.CLIPBOARD, StandardCharsets.UTF_8);
-
-    /**
-     * Workspace context in app encoding
-     */
-    public final DMContext ctxWorkspaceAppEncoding = new DMContext(DMChangeTracker.Null.WORKSPACE, encoding);
 
     /**
      * Disposable context in UTF-8
@@ -153,16 +251,63 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
     public final DMContext ctxDisposableUTF8Encoding = new DMContext(DMChangeTracker.Null.DISPOSABLE, StandardCharsets.UTF_8);
 
     /**
+     * Clipboard context in app encoding
+     */
+    public final DMContext ctxClipboardAppEncoding;
+
+    /**
+     * Workspace context in app encoding
+     */
+    public final DMContext ctxWorkspaceAppEncoding;
+
+    /**
      * Disposable context in app encoding
      */
-    public final DMContext ctxDisposableAppEncoding = new DMContext(DMChangeTracker.Null.DISPOSABLE, encoding);
+    public final DMContext ctxDisposableAppEncoding;
 
     /**
      * Initialize App.
      * Warning: Occurs off main thread.
      */
     public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, @NonNull FSBackend rp, @Nullable FSBackend sip, Consumer<String> loadProgress, @NonNull FF0 launchConfigName) {
-        super(ilg, charset, gp, rp, sip, loadProgress);
+        this.ilg = ilg;
+        this.encoding = charset;
+        a = ilg.a;
+        c = ilg.c;
+        applyConfigChange = () -> {
+            c.applyUIGlobals();
+        };
+        f = c.f;
+        t = ilg.t;
+        this.engine = gp;
+
+        ctxClipboardAppEncoding = new DMContext(DMChangeTracker.Null.CLIPBOARD, encoding);
+        ctxWorkspaceAppEncoding = new DMContext(DMChangeTracker.Null.WORKSPACE, encoding);
+        ctxDisposableAppEncoding = new DMContext(DMChangeTracker.Null.DISPOSABLE, encoding);
+
+        gameRoot = new DodgyInputWorkaroundFSBackend(rp);
+        if (sip != null) {
+            gameResources = new UnionFSBackend(gameRoot, new DodgyInputWorkaroundFSBackend(sip));
+        } else {
+            gameResources = new UnionFSBackend(gameRoot);
+        }
+        this.loadProgress = loadProgress;
+        imageIOFormats = ImageIOFormat.initializeFormats(t);
+
+        // time machine should be before data, because data uses time machine for management
+        timeMachine = new TimeMachine(this);
+
+        // Y'know, the VM could really be pushed to AppCore, but hmm.
+        // I will say, in R48, everything is dependent on everything else.
+        vmCtx = new MVMEnvR48((str) -> {
+            loadProgress.accept(t.g.loadingProgress.r(str));
+        }, ilg.logTrIssues, ilg.c.language, ilg.strict);
+
+        sdb = new SDB(this);
+
+        // initialize everything else that needs initializing, starting with ObjectDB
+        IObjectBackend backend = IObjectBackend.Factory.create(gameRoot, engine.odbBackend, engine.dataPath, engine.dataExt);
+        odb = new ObjectDB(this, backend);
 
         PleaseFailBrutally.checkFailBrutallyAtAppInit();
 
@@ -327,9 +472,39 @@ public final class App extends AppCore implements IAppAsSeenByLauncher, IDynTrPr
         GaBIEn.hintFlushAllTheCaches();
     }
 
-    @Override
     public void reportNonCriticalErrorToUser(String r, Throwable ioe) {
         ui.launchDialog(r, ioe);
+    }
+
+    public LinkedList<String> getAllObjects() {
+        // anything loaded gets added (this allows some bypass of the mechanism)
+        HashSet<String> mainSet = new HashSet<String>(odb.objectMap.keySet());
+        for (ObjectInfo oi : sdb.listFileDefs())
+            mainSet.add(oi.idName);
+        for (ObjectInfo dobj : system.getDynamicObjects())
+            mainSet.add(dobj.idName);
+        return new LinkedList<String>(mainSet);
+    }
+
+    /**
+     * Attempts to ascertain all known objects
+     */
+    public LinkedList<ObjectInfo> getObjectInfos() {
+        LinkedList<ObjectInfo> oi = sdb.listFileDefs();
+        for (ObjectInfo dobj : system.getDynamicObjects())
+            oi.add(dobj);
+        return oi;
+    }
+
+    /**
+     * Gets a specific object info.
+     */
+    @Nullable
+    public ObjectInfo getObjectInfo(String text) {
+        for (ObjectInfo oi : getObjectInfos())
+            if (oi.idName.equals(text))
+                return oi;
+        return null;
     }
 
     public static class Svc {

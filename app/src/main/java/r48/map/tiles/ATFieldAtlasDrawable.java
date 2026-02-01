@@ -11,7 +11,7 @@ import gabien.atlas.AtlasDrawable;
 import gabien.atlas.SimpleAtlasBuilder;
 import gabien.render.IGrDriver;
 import gabien.render.ITexRegion;
-import r48.dbs.ATDB;
+import r48.gameinfo.ATDB;
 
 /**
  * Created 22nd July 2023.

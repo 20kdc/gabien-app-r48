@@ -12,6 +12,8 @@ import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.render.ITexRegion;
 import r48.App;
+import r48.ioplus.DBLoader;
+import r48.ioplus.IDatabase;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -34,7 +36,7 @@ public class TSDB extends App.Svc {
 
     public TSDB(App app, String arg) {
         super(app);
-        DBLoader.readFile(app, arg, new IDatabase() {
+        DBLoader.readFile(app.loadProgress, arg, new IDatabase() {
 
             public Function<Integer, Boolean> acceptable = (integer) -> {
                 return true;
@@ -89,7 +91,7 @@ public class TSDB extends App.Svc {
                 } else if (c.equals("i")) {
                     mapping[Integer.parseInt(args[0])] = Integer.parseInt(args[1]);
                 } else if (c.equals(">")) {
-                    DBLoader.readFile(app, args[0], this);
+                    DBLoader.readFile(app.loadProgress, args[0], this);
                 } else if (c.equals("r")) {
                     int ofs1 = Integer.parseInt(args[0]);
                     int ofs2 = Integer.parseInt(args[1]);

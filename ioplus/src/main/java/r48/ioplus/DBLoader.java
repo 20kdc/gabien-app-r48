@@ -5,10 +5,9 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.dbs;
+package r48.ioplus;
 
-import r48.app.AppCore;
-import r48.ioplus.DatumLoader;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -19,8 +18,8 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class DBLoader {
 
-    public static void readFile(@Nullable AppCore app, @NonNull String s, @NonNull IDatabase db) {
-        DatumLoader.readEssential(s, app != null ? app.loadProgress : null, db);
+    public static void readFile(@Nullable Consumer<String> loadProgress, @NonNull String s, @NonNull IDatabase db) {
+        DatumLoader.readEssential(s, loadProgress, db);
     }
 
     public static void readFile(String fn, IDatabase db) {

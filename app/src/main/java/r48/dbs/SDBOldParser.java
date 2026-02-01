@@ -23,7 +23,9 @@ import r48.DictionaryUpdaterRunnable;
 import r48.dbs.SDB.DynamicSchemaElement;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.ioplus.DBLoader;
 import r48.ioplus.DatumLoader;
+import r48.ioplus.IDatabase;
 import r48.minivm.MVMU;
 import r48.minivm.fn.MVMFn;
 import r48.schema.*;
@@ -92,7 +94,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     }
 
     public static void readFile(App app, final String fName) {
-        DBLoader.readFile(app, fName, new SDBOldParser(app, fName));
+        DBLoader.readFile(app.loadProgress, fName, new SDBOldParser(app, fName));
     }
 
     private @NonNull FF0 trAnon(String text) {

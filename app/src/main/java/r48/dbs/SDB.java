@@ -9,7 +9,6 @@ package r48.dbs;
 
 import gabien.ui.UIElement;
 import r48.App;
-import r48.app.AppCore;
 import r48.io.data.IRIO;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMSlot;
@@ -36,7 +35,7 @@ import datum.DatumSymbol;
  * Kinda required for reading maps.
  * Created on 12/30/16.
  */
-public class SDB extends AppCore.Csv {
+public class SDB extends App.Svc {
     private LinkedList<DynamicSchemaUpdater> dictionaryUpdaterRunnables = new LinkedList<>();
     private LinkedList<Runnable> mergeRunnables = new LinkedList<>();
     private HashMap<String, DatumSrcLoc> remainingExpected = new HashMap<>();
@@ -44,7 +43,7 @@ public class SDB extends AppCore.Csv {
 
     public final StandardArrayInterface standardArrayUi = new StandardArrayInterface();
 
-    public SDB(AppCore app) {
+    public SDB(App app) {
         super(app);
     }
 

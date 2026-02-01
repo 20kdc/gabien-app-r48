@@ -22,7 +22,7 @@ import gabien.uslx.append.Rect;
 import r48.App;
 import r48.RubyTable;
 import r48.RubyTableR;
-import r48.dbs.ATDB;
+import r48.gameinfo.ATDB;
 import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;
 import r48.map.tileedit.AutoTileTypeField;
