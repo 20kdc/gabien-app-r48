@@ -69,7 +69,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
     }
 
     private PathSyntax compilePS(String text) {
-        return PathSyntax.compile(app, text);
+        return PathSyntax.compile(app.ilg.strict, text);
     }
 
     private Function<IRIO, String> getFunctionToReturn(final String s) {
@@ -525,7 +525,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                         }
 
                         private SchemaElement getSchema(SchemaPath path) {
-                            SchemaElement se = path.contextualSchemas.get(idx);
+                            SchemaElement se = SchemaElement.cast(path.contextualSchemas.get(idx));
                             if (se == null)
                                 return insideThat;
                             return se;

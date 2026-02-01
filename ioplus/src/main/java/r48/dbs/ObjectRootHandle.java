@@ -15,7 +15,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import r48.io.data.IRIO;
-import r48.schema.SchemaElement;
+import r48.schema.SchemaElementIOP;
 import r48.schema.util.SchemaPath;
 
 /**
@@ -29,9 +29,9 @@ public abstract class ObjectRootHandle {
     /**
      * Finally solving the question of "what's the canonical root schema for this object handle?"
      */
-    public final @Nullable SchemaElement rootSchema;
+    public final @Nullable SchemaElementIOP rootSchema;
 
-    public ObjectRootHandle(@Nullable SchemaElement rootSchema) {
+    public ObjectRootHandle(@Nullable SchemaElementIOP rootSchema) {
         this.rootSchema = rootSchema;
     }
 
@@ -100,7 +100,7 @@ public abstract class ObjectRootHandle {
     public static class Isolated extends ObjectRootHandle {
         private final IRIO object;
         private final String name;
-        public Isolated(@Nullable SchemaElement rootSchema, IRIO o, String name) {
+        public Isolated(@Nullable SchemaElementIOP rootSchema, IRIO o, String name) {
             super(rootSchema);
             this.object = o;
             this.name = name;

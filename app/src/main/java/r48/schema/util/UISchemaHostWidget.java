@@ -15,6 +15,7 @@ import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import r48.App;
 import r48.io.data.IRIO;
+import r48.schema.SchemaElement;
 
 /**
  * Created 21st August, 2024
@@ -46,7 +47,7 @@ public class UISchemaHostWidget extends SchemaHostBase {
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
         operatorContext.clear();
-        innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
+        innerElemEditor = SchemaElement.cast(innerElem.editor).buildHoldingEditor(innerElem.targetElement, this, innerElem);
         layoutAddElement(innerElemEditor);
         layoutRecalculateMetrics();
     }

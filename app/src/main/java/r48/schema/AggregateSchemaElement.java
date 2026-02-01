@@ -66,7 +66,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
         return AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target, uiSVLList);
     }
 
-    public static SchemaElement extractField(SchemaElement ise, @Nullable RORIO rio) {
+    public static SchemaElement extractField(SchemaElementIOP ise, @Nullable RORIO rio) {
         boolean continuing = true;
         while (continuing) {
             continuing = false;
@@ -81,7 +81,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
                 }
             }
         }
-        return ise;
+        return SchemaElement.cast(ise);
     }
 
     @Override

@@ -289,9 +289,9 @@ public class CMDB extends App.Svc {
                     final PathSyntax idx;
                     final boolean inv;
                     if (inv = s.startsWith("!")) {
-                        idx = PathSyntax.compile(app.vmCtx, s.substring(1));
+                        idx = PathSyntax.compile(app.ilg.strict, s.substring(1));
                     } else {
-                        idx = PathSyntax.compile(app.vmCtx, s);
+                        idx = PathSyntax.compile(app.ilg.strict, s);
                     }
                     final DMKey v = ValueSyntax.decode(gbStateArgs[gbStatePosition++]);
                     final IGroupBehavior igb = getGroupBehavior();

@@ -64,4 +64,9 @@ public class TempDialogSchemaChoice extends SchemaElement.Leaf {
         if (update != null)
             update.get();
     }
+
+    @Override
+    public boolean isTempDialog() {
+        return true;
+    }
 }

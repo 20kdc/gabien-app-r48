@@ -30,7 +30,7 @@ import r48.io.data.DMContext;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
-import r48.schema.SchemaElement;
+import r48.schema.SchemaElementIOP;
 import r48.schema.specialized.cmgb.RPGCommandSchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.search.USFROperationMode;
@@ -105,7 +105,7 @@ public class UIRMUniversalStringExportImport extends App.Prx {
         JsonObjectBackend exchange = new JsonObjectBackend(jsonDir, "", ".json");
         DMContext exchangeCtx = AdHocSaveLoad.newContext();
         HashSet<String> paths = new HashSet<>();
-        HashMap<SchemaElement, String> elemToName = app.sdb.getElementToNameCache();
+        HashMap<SchemaElementIOP, String> elemToName = app.sdb.getElementToNameCache();
         // continue...
         int total = 0;
         int files = 0;
@@ -168,14 +168,14 @@ public class UIRMUniversalStringExportImport extends App.Prx {
         app.ui.launchDialog(T.u.usl_completeReportUSE.r(total, files) + log);
     }
 
-    private void reifyPath(IRIO target, @Nullable SchemaPath path, HashMap<SchemaElement, String> elemToName) {
+    private void reifyPath(IRIO target, @Nullable SchemaPath path, HashMap<SchemaElementIOP, String> elemToName) {
         target.setArray();
         while (path != null) {
             reifyPathCrumb(target.addAElem(0), path, elemToName);
             path = path.parent;
         }
     }
-    private void reifyPathCrumb(IRIO target, @NonNull SchemaPath path, HashMap<SchemaElement, String> elemToName) {
+    private void reifyPathCrumb(IRIO target, @NonNull SchemaPath path, HashMap<SchemaElementIOP, String> elemToName) {
         target.setArray(3);
         reifyPathElement(target.getAElem(0), path, elemToName);
         if (path.hrIndex != null) {
@@ -189,8 +189,8 @@ public class UIRMUniversalStringExportImport extends App.Prx {
             target.getAElem(2).setNull();
         }
     }
-    private void reifyPathElement(IRIO target, @NonNull SchemaPath path, HashMap<SchemaElement, String> elemToName) {
-        SchemaElement se = path.editor;
+    private void reifyPathElement(IRIO target, @NonNull SchemaPath path, HashMap<SchemaElementIOP, String> elemToName) {
+        SchemaElementIOP se = path.editor;
         if (se == null) {
             target.setNull();
             return;

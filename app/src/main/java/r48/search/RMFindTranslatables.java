@@ -73,7 +73,7 @@ public class RMFindTranslatables extends App.Svc {
     }
 
     public void addSitesFromCommonEvents(IRIO[] commonEvents, final ICommandClassifier.Instance cf) {
-        SchemaElement sch = objRoot.rootSchema;
+        SchemaElement sch = SchemaElement.cast(objRoot.rootSchema);
         if (sch == null) {
             app.ui.launchDialog(T.u.cCommonEventsNoSchema);
         } else {

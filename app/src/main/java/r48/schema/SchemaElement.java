@@ -10,9 +10,6 @@ package r48.schema;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-
 import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
 import gabien.ui.layouts.UIScrollLayout;
@@ -21,15 +18,20 @@ import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.tr.pages.TrRoot;
 
 /**
  * Acts as a bridge so that backbone code can be switched to IRIOs.
  * (Oh dear it had to be merged to prevent typing issues systemwide)
  * Created on November 21, 2018.
  */
-public abstract class SchemaElement extends App.Svc {
+public abstract class SchemaElement extends SchemaElementIOP {
+    public final App app;
+    public final TrRoot T;
+
     public SchemaElement(App app) {
-        super(app);
+        this.app = app;
+        this.T = app.t;
     }
 
     // For lack of a better place.
@@ -92,64 +94,6 @@ public abstract class SchemaElement extends App.Svc {
     protected abstract UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path);
 
     /**
-     * Gets the window title suffix for this schema element.
-     * This is done by schema element as it allows specifying custom logic for specific elements.
-     * Note that this should NOT generate sub-paths.
-     * But going "sideways" (passing the element to parts of an aggregate/etc. in the same object) is fine.
-     * It's important to return null on failure.
-     */
-    public @Nullable String windowTitleSuffix(SchemaPath path) {
-        return null;
-    }
-
-    /**
-     * Some elements have an assigned RORIO they're looking for and "really" edit, but they work in the context of a 'wider' object.
-     * This function allows those objects to self-report for use by the path trace logic.
-     * This also allows those objects to disown their editing status of their parent for that logic.
-     * 'target' is the target of the invocation.
-     * 'check' is what is actually being checked.
-     */
-    public boolean declaresSelfEditorOf(RORIO target, RORIO check) {
-        return target == check;
-    }
-
-    // Modify target to approach the default value, or to correct errors.
-    // The type starts as 0 (not '0', but actual numeric 0) and needs to be modified by something to result in a valid object.
-    // Rules in general are documented on buildHoldingEditor.
-    // -- Additional notes as of NYE
-    // "Primary" types will completely wipe the slate if they're invalid.
-    // This means any "annotations" (IVars) will be destroyed, so ensure those are *after* the primary in an aggregate.
-    // Hopefully this situation should never affect anything.
-    public abstract void modifyVal(IRIO target, SchemaPath path, boolean setDefault);
-
-    /**
-     * Visits everything.
-     * This is to be used in global operations.
-     */
-    public final void visit(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
-        if (v.visit(this, target, path))
-            visitChildren(target, path, v, detailedPaths);
-    }
-
-    /**
-     * Visits all sub-paths of this path.
-     * This must only have one reference (visit above).
-     * detailedPaths controls if the path should be generating newWindow elements and descriptives or not.
-     */
-    public abstract void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths);
-
-    /**
-     * Visits each SchemaPath.
-     */
-    public interface Visitor {
-        /**
-         * Called from SchemaElement.visit.
-         * If this returns true, the children are visited.
-         */
-        boolean visit(@NonNull SchemaElement element, IRIO target, SchemaPath path);
-    }
-
-    /**
      * Has no sub-paths.
      */
     public static abstract class Leaf extends SchemaElement {
@@ -160,5 +104,12 @@ public abstract class SchemaElement extends App.Svc {
         @Override
         public final void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
         }
+    }
+
+    /**
+     * This function is kept static so it's easy to find calls. 
+     */
+    public static SchemaElement cast(SchemaElementIOP ise) {
+        return (SchemaElement) ise;
     }
 }

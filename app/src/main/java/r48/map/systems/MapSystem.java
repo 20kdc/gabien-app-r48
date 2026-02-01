@@ -320,7 +320,7 @@ public abstract class MapSystem extends App.Svc {
 
         public static MapViewState fromRT(@NonNull StuffRenderer stuffRenderer, @NonNull IMapViewDrawLayer[] mvdl, @Nullable boolean[] activeDef, String underscoreMapObjectId, String[] ex, final IRIO its, final String str, final boolean readOnly, IEventAccess iea, final boolean loopX, final boolean loopY) {
             // This happens once in a blue moon, it's fine
-            final IRIO sz = PathSyntax.compile(stuffRenderer.app, str).getRW(its);
+            final IRIO sz = PathSyntax.compile(stuffRenderer.app.ilg.strict, str).getRW(its);
             final RubyTable rt = new RubyTable(sz.editUser());
             ITileAccess.RWBounded rtLooped = LoopTileAccess.of(rt, loopX, loopY);
             ITileAccess.RWBounded tar = rtLooped;
@@ -375,7 +375,7 @@ public abstract class MapSystem extends App.Svc {
         public final ObjectRootHandle object;
 
         public MapViewDetails(App app, String o, ObjectRootHandle orh) {
-            final SchemaElement rootSchema2 = orh.rootSchema;
+            final SchemaElement rootSchema2 = SchemaElement.cast(orh.rootSchema);
             // Eclipse check says it has to be done this way despite rootSchema being final
             if (rootSchema2 == null)
                 throw new RuntimeException("Schema cannot be null for MapViewDetails.");

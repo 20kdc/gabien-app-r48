@@ -11,6 +11,7 @@ import gabien.ui.*;
 import gabien.ui.elements.UILabel;
 import gabien.uslx.append.*;
 import r48.App;
+import r48.schema.SchemaElement;
 import r48.schema.op.SchemaOp;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
@@ -84,7 +85,7 @@ public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableW
             doLaunch = true;
 
         operatorContext.clear();
-        innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
+        innerElemEditor = SchemaElement.cast(innerElem.editor).buildHoldingEditor(innerElem.targetElement, this, innerElem);
 
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);

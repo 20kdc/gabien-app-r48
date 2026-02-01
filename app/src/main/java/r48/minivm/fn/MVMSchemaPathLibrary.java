@@ -57,7 +57,7 @@ public class MVMSchemaPathLibrary extends App.Svc {
     public SchemaElement spEditor(@Nullable SchemaPath sp) {
         if (sp == null)
             return null;
-        return sp.editor;
+        return SchemaElement.cast(sp.editor);
     }
 
     @Defun(n = "sp-target", r = 1)

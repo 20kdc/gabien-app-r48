@@ -13,8 +13,7 @@ import r48.io.data.DMKey;
 import r48.io.data.DMPath;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
-import r48.schema.SchemaElement;
-import r48.schema.specialized.TempDialogSchemaChoice;
+import r48.schema.SchemaElementIOP;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,7 +51,7 @@ public class SchemaPath {
 
     // If editor is null, targetElement must be null, and vice versa.
     // Host may be there or not.
-    public final @Nullable SchemaElement editor;
+    public final @Nullable SchemaElementIOP editor;
     public final @Nullable IRIO targetElement;
 
     // Should only ever be set to true by tagSEMonitor.
@@ -69,9 +68,9 @@ public class SchemaPath {
     // The root is the intended ObjectID index, but this is a visual property only.
     public final String hrIndex;
 
-    public final HashMap<String, SchemaElement> contextualSchemas = new HashMap<String, SchemaElement>();
+    public final HashMap<String, SchemaElementIOP> contextualSchemas = new HashMap<>();
 
-    private SchemaPath(@NonNull SchemaPath sp, SchemaElement editor, IRIO targetElement, DMKey lastArrayIndex, String hrIndex) {
+    private SchemaPath(@NonNull SchemaPath sp, SchemaElementIOP editor, IRIO targetElement, DMKey lastArrayIndex, String hrIndex) {
         parent = sp;
         depth = sp.depth + 1;
         windowDepth = parent.windowDepth + (editor != null ? 1 : 0);
@@ -89,7 +88,7 @@ public class SchemaPath {
     }
 
     // The advanced root constructor.
-    public SchemaPath(@NonNull SchemaElement heldElement, @NonNull ObjectRootHandle root) {
+    public SchemaPath(@NonNull SchemaElementIOP heldElement, @NonNull ObjectRootHandle root) {
         heldElement = weDoNotTrustOurCallers(heldElement, root);
         parent = null;
         depth = 0;
@@ -101,13 +100,13 @@ public class SchemaPath {
         lastArrayIndex = null;
     }
 
-    private static @NonNull SchemaElement verifyRootHasSchema(@NonNull ObjectRootHandle root) {
-        SchemaElement se = root.rootSchema;
+    private static @NonNull SchemaElementIOP verifyRootHasSchema(@NonNull ObjectRootHandle root) {
+        SchemaElementIOP se = root.rootSchema;
         if (se == null)
             throw new NullPointerException("Gah! Creating SchemaPath to " + root + " ; but it has no schema!");
         return se;
     }
-    private static @NonNull SchemaElement weDoNotTrustOurCallers(@Nullable SchemaElement he, @NonNull ObjectRootHandle root) {
+    private static @NonNull SchemaElementIOP weDoNotTrustOurCallers(@Nullable SchemaElementIOP he, @NonNull ObjectRootHandle root) {
         if (he == null) {
             System.err.println("Gah! Creating SchemaPath to " + root + " with null SchemaElement.");
             return verifyRootHasSchema(root);
@@ -119,7 +118,7 @@ public class SchemaPath {
      * Sets a default value without (by itself) triggering Schema-level side-effects.
      * It is best to think of the schema use here as an implementation detail.
      */
-    public static void setDefaultValue(@NonNull IRIO target, @NonNull SchemaElement ise, @Nullable DMKey arrayIndex) {
+    public static void setDefaultValue(@NonNull IRIO target, @NonNull SchemaElementIOP ise, @Nullable DMKey arrayIndex) {
         setDefaultValue(target, ise, arrayIndex, null);
     }
 
@@ -129,7 +128,7 @@ public class SchemaPath {
      * Still, the 'adjustments' parameter allows for setting disambiguators and things like that.
      * It provides a Runnable which runs the autocorrect, so you don't have to manually autocorrect the whole thing.
      */
-    public static void setDefaultValue(@NonNull IRIO target, @NonNull SchemaElement ise, @Nullable DMKey arrayIndex, @Nullable Consumer<Runnable> adjustments) {
+    public static void setDefaultValue(@NonNull IRIO target, @NonNull SchemaElementIOP ise, @Nullable DMKey arrayIndex, @Nullable Consumer<Runnable> adjustments) {
         ObjectRootHandle dvRoot = new ObjectRootHandle.Isolated(ise, target, "setDefaultValue");
         SchemaPath adjuster = new SchemaPath(ise, dvRoot).arrayHashIndex(arrayIndex, "AnonObject");
         ise.modifyVal(target, adjuster, true);
@@ -204,7 +203,7 @@ public class SchemaPath {
 
     // -- Display Stuff (used in buildHoldingEditor) --
 
-    public SchemaPath newWindow(SchemaElement heldElement, IRIO target) {
+    public SchemaPath newWindow(SchemaElementIOP heldElement, IRIO target) {
         return new SchemaPath(this, heldElement, target, lastArrayIndex, null);
     }
 
@@ -214,7 +213,7 @@ public class SchemaPath {
         return new SchemaPath(this, null, null, lastArrayIndex, index);
     }
 
-    public SchemaPath tagSEMonitor(IRIO target, SchemaElement ise, boolean upwards) {
+    public SchemaPath tagSEMonitor(IRIO target, SchemaElementIOP ise, boolean upwards) {
         if (upwards) {
             // This is for DisambiguatorSchemaElement to make sure the entire structure containing a disambiguator gets the tag.
             // This is so that edits to the thing being disambiguated on get caught properly.
@@ -276,7 +275,7 @@ public class SchemaPath {
 
     // If this is true, a temp dialog (unique UIElement) is in use and thus this can't be cloned.
     public boolean hasTempDialog() {
-        if (editor instanceof TempDialogSchemaChoice)
+        if (editor != null && editor.isTempDialog())
             return true;
         if (parent != null)
             return parent.hasTempDialog();
@@ -286,7 +285,7 @@ public class SchemaPath {
     /**
      * Attaches a contextual schema element, which will be used when relevant. 
      */
-    public SchemaPath contextSchema(String contextName, SchemaElement enumSchemaElement) {
+    public SchemaPath contextSchema(String contextName, SchemaElementIOP enumSchemaElement) {
         SchemaPath sp = new SchemaPath(this, null, null, lastArrayIndex, null);
         sp.contextualSchemas.put(contextName, enumSchemaElement);
         return sp;

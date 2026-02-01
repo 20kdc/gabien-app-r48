@@ -12,12 +12,10 @@ import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import r48.App;
 import r48.io.data.DMKey;
 import r48.io.data.DMPath;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
-import r48.minivm.MVMEnvR48;
 
 /**
  * NOTE: This uses escapes internally to escape from itself.
@@ -139,14 +137,6 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
         if (iv.path instanceof DMPath.IVar)
             return ((DMPath.IVar) iv.path).key;
         return null;
-    }
-
-    public static PathSyntax compile(App parentContext, String arg) {
-        return compile(parentContext.ilg.strict, arg);
-    }
-
-    public static PathSyntax compile(MVMEnvR48 parentContext, String arg) {
-        return compile(parentContext.strict, arg);
     }
 
     public static PathSyntax compile(PathSyntax basePS, String arg) {

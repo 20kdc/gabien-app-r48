@@ -45,15 +45,15 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     public TraditionalEventAccess(App app, String mapRootId, String path, int b, String schema, String pathX, String pathY, String pathName, String en, String en2) {
         super(app);
         mapRoot = app.odb.getObject(mapRootId);
-        mapRootSchema = mapRoot.rootSchema;
-        eventsPath = PathSyntax.compile(app, path);
+        mapRootSchema = SchemaElement.cast(mapRoot.rootSchema);
+        eventsPath = PathSyntax.compile(app.ilg.strict, path);
         eventIdBase = b;
         eventSchema = app.sdb.getSDBEntry(schema);
         eventsName = en;
         eventName = en2;
-        propPathX = PathSyntax.compile(app, pathX);
-        propPathY = PathSyntax.compile(app, pathY);
-        propPathName = PathSyntax.compile(app, pathName);
+        propPathX = PathSyntax.compile(app.ilg.strict, pathX);
+        propPathY = PathSyntax.compile(app.ilg.strict, pathY);
+        propPathName = PathSyntax.compile(app.ilg.strict, pathName);
     }
 
     @Override

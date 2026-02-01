@@ -10,6 +10,7 @@ import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.SchemaElementIOP;
 import r48.tr.TrPage.FF0;
 
 /**
@@ -41,7 +42,7 @@ public final class IDChangerEntry {
      * This is probably the biggest gamble of them all...
      * That this function will match every variable reference...
      */
-    public static boolean match(SchemaElement a, RORIO rio, SchemaElement[] resolved) {
+    public static boolean match(SchemaElementIOP a, RORIO rio, SchemaElement[] resolved) {
         SchemaElement b = AggregateSchemaElement.extractField(a, null);
         SchemaElement c = AggregateSchemaElement.extractField(a, rio);
         for (SchemaElement se : resolved)

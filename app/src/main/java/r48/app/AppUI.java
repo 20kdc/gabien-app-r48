@@ -445,7 +445,7 @@ public class AppUI extends App.Svc {
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
     public ISchemaHost launchSchema(@NonNull ObjectRootHandle rio, @Nullable SchemaDynamicContext context) {
-        return launchSchema(rio.rootSchema, rio, context);
+        return launchSchema(SchemaElement.cast(rio.rootSchema), rio, context);
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.

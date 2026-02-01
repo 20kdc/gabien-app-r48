@@ -77,8 +77,8 @@ public class SDB extends App.Svc {
     /**
      * Used by JSON import/export system to give a better idea of what's going on. 
      */
-    public HashMap<SchemaElement, String> getElementToNameCache() {
-        HashMap<SchemaElement, String> hm = new HashMap<>();
+    public HashMap<SchemaElementIOP, String> getElementToNameCache() {
+        HashMap<SchemaElementIOP, String> hm = new HashMap<>();
         for (String id : getAllSDBEntryIDs()) {
             SchemaElement se = getSDBEntry(id);
             while (true) {

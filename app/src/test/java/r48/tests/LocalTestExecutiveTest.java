@@ -148,7 +148,7 @@ public class LocalTestExecutiveTest {
                 int firstStates = states.size();
                 System.out.println(" " + firstStates + " savestates");
 
-                SchemaElement wse = objectUnderTest.rootSchema;
+                SchemaElement wse = SchemaElement.cast(objectUnderTest.rootSchema);
                 objectInternalCopy.registerModificationHandler((schemaPath) -> {
                     throw new RuntimeException("A modification occurred on LTE data. This shouldn't happen: " + schemaPath.toString());
                 });

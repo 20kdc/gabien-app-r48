@@ -148,7 +148,7 @@ public class RPGCommand extends App.Svc {
         @Override
         public void applyTo(int idx, LinkedList<UIElement> elementList, IRIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
             App app = launcher.getApp();
-            SchemaElement scse = app.sdbHelpers.makeSpriteSelector(PathSyntax.compile(app, "]" + idx), PathSyntax.compile(app, "]" + spritesheetTargstr), spritesheetId);
+            SchemaElement scse = app.sdbHelpers.makeSpriteSelector(PathSyntax.compile(app.ilg.strict, "]" + idx), PathSyntax.compile(app.ilg.strict, "]" + spritesheetTargstr), spritesheetId);
             elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
         }
     }
@@ -168,7 +168,7 @@ public class RPGCommand extends App.Svc {
         @Override
         public void applyTo(int idx, LinkedList<UIElement> elementList, IRIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
             App app = launcher.getApp();
-            SchemaElement scse = new TonePickerSchemaElement(launcher.getApp(), PathSyntax.compile(app, "]" + tpA), PathSyntax.compile(app, "]" + tpB), PathSyntax.compile(app, "]" + tpC), PathSyntax.compile(app, "]" + tpD), tpBase);
+            SchemaElement scse = new TonePickerSchemaElement(launcher.getApp(), PathSyntax.compile(app.ilg.strict, "]" + tpA), PathSyntax.compile(app.ilg.strict, "]" + tpB), PathSyntax.compile(app.ilg.strict, "]" + tpC), PathSyntax.compile(app.ilg.strict, "]" + tpD), tpBase);
             elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
         }
     }

@@ -17,6 +17,7 @@ import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
 import r48.App;
+import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
@@ -61,7 +62,7 @@ public class UICellEditingPanel extends App.Pan {
         if (cellSelectionPanel.cellNumber != -1) {
             SchemaPath sp = root.frame.getCellProp(cellSelectionPanel.cellNumber, i);
             // Used to have to 'correct host' here, but host's very existence was bad for window cloning and also totally unnecessary
-            UIElement uie = sp.editor.buildHoldingEditor(sp.targetElement, root.hostLauncher, sp);
+            UIElement uie = SchemaElement.cast(sp.editor).buildHoldingEditor(sp.targetElement, root.hostLauncher, sp);
             if (root.tweening != null) {
                 if (root.frame.getCellPropTweening(cellSelectionPanel.cellNumber, i) != null) {
                     final IGenposTweeningManagement.KeyTrack keytrack = root.tweening.propertyKeytrack(i);

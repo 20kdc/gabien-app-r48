@@ -14,8 +14,8 @@ import gabien.ui.UIElement;
 import r48.App;
 import r48.dbs.RPGCommand;
 import r48.io.data.IRIO;
-import r48.schema.SchemaElement;
-import r48.schema.SchemaElement.Visitor;
+import r48.schema.SchemaElementIOP;
+import r48.schema.SchemaElementIOP.Visitor;
 import r48.schema.specialized.cmgb.RPGCommandSchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -56,7 +56,7 @@ public abstract class USFROperationMode {
         public static Visitor makeMyVisitor(final Visitor base) {
             return new Visitor() {
                 @Override
-                public boolean visit(SchemaElement element, IRIO target, SchemaPath path) {
+                public boolean visit(SchemaElementIOP element, IRIO target, SchemaPath path) {
                     if (target.getType() == '"') {
                         return base.visit(element, target, path);
                     } else {
