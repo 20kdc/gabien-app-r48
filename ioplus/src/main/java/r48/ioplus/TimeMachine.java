@@ -4,14 +4,13 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.app;
+package r48.ioplus;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
-import r48.App;
 import r48.io.data.IDM3Data;
 
 /**
@@ -23,7 +22,9 @@ import r48.io.data.IDM3Data;
  *
  * Created 10th May, 2024.
  */
-public final class TimeMachine extends App.Svc {
+public final class TimeMachine {
+    public final TimeMachine.Host host;
+
     public static final int MAX_STEPS = 4;
 
     /**
@@ -48,8 +49,8 @@ public final class TimeMachine extends App.Svc {
 
     private boolean hasRecordBeenCalledThisCycle = false;
 
-    public TimeMachine(App app) {
-        super(app);
+    public TimeMachine(Host host) {
+        this.host = host;
     }
 
     /**
@@ -170,7 +171,7 @@ public final class TimeMachine extends App.Svc {
     private void updateRestOfWorld(HashSet<TimeMachineChangeSource> sources) {
         for (TimeMachineChangeSource tmcs : sources)
             tmcs.onTimeTravel();
-        app.sdb.kickAllDictionariesForMapChange();
+        host.timeMachineHostOnTimeTravel();
     }
 
     private static class Recording {
@@ -208,5 +209,15 @@ public final class TimeMachine extends App.Svc {
         public boolean isEmpty() {
             return data.isEmpty();
         }
+    }
+
+    /**
+     * Host proxy for TimeMachine.
+     */
+    public static interface Host {
+        /**
+         * Should do things like kicking all dictionaries.
+         */
+        void timeMachineHostOnTimeTravel();
     }
 }

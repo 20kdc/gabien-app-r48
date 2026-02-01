@@ -30,7 +30,6 @@ import r48.app.AppNewProject;
 import r48.app.AppUI;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
-import r48.app.TimeMachine;
 import r48.cfg.Config;
 import r48.cfg.FontSizes;
 import r48.dbs.CMDBDB;
@@ -48,6 +47,7 @@ import r48.io.data.DMChangeTracker;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
+import r48.ioplus.TimeMachine;
 import r48.map.StuffRenderer;
 import r48.map.systems.MapSystem;
 import r48.minivm.MVMEnvR48;
@@ -82,7 +82,7 @@ import r48.ui.Art;
  *  App won't
  * Created 26th February, 2023
  */
-public final class App implements IAppAsSeenByLauncher, IDynTrProxy {
+public final class App implements IAppAsSeenByLauncher, IDynTrProxy, TimeMachine.Host {
     /**
      * Inter-launch globals (art, config, etc.)
      */
@@ -505,6 +505,13 @@ public final class App implements IAppAsSeenByLauncher, IDynTrProxy {
             if (oi.idName.equals(text))
                 return oi;
         return null;
+    }
+
+    // -- TimeMachine.Host --
+
+    @Override
+    public void timeMachineHostOnTimeTravel() {
+        sdb.kickAllDictionariesForMapChange();
     }
 
     public static class Svc {

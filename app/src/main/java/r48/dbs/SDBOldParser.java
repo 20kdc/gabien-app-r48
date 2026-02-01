@@ -693,7 +693,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     PathSyntax name = getPathSyntax();
                     String layer = args[point++];
                     String tsdb = args[point++];
-                    return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(app, tsdb), Integer.parseInt(layer), idx, name), getFunctionToReturn(T.s.selectTileGraphic));
+                    return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(app, new TSDB(app, tsdb), Integer.parseInt(layer), idx, name), getFunctionToReturn(T.s.selectTileGraphic));
                 }
                 if (text.equals("windowTitleAttachment")) {
                     String tmpStr = args[point++];

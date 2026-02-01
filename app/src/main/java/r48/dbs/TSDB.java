@@ -17,6 +17,7 @@ import r48.ioplus.IDatabase;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -26,7 +27,7 @@ import datum.DatumSrcLoc;
 /**
  * Created on 04/06/17.
  */
-public class TSDB extends App.Svc {
+public class TSDB {
     public LinkedList<TSPicture> pictures = new LinkedList<TSPicture>();
     public int[] mapping;
     public int xorDoubleclick = 0;
@@ -35,8 +36,8 @@ public class TSDB extends App.Svc {
     public boolean tileWHSet;
 
     public TSDB(App app, String arg) {
-        super(app);
-        DBLoader.readFile(app.loadProgress, arg, new IDatabase() {
+        Consumer<String> loadProgress = app.loadProgress;
+        DBLoader.readFile(loadProgress, arg, new IDatabase() {
 
             public Function<Integer, Boolean> acceptable = (integer) -> {
                 return true;
@@ -91,7 +92,7 @@ public class TSDB extends App.Svc {
                 } else if (c.equals("i")) {
                     mapping[Integer.parseInt(args[0])] = Integer.parseInt(args[1]);
                 } else if (c.equals(">")) {
-                    DBLoader.readFile(app.loadProgress, args[0], this);
+                    DBLoader.readFile(loadProgress, args[0], this);
                 } else if (c.equals("r")) {
                     int ofs1 = Integer.parseInt(args[0]);
                     int ofs2 = Integer.parseInt(args[1]);
