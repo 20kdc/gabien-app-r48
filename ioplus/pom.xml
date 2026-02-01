@@ -4,10 +4,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>r48-app</artifactId>
+	<artifactId>r48-ioplus</artifactId>
 
-	<name>R48 Application</name>
-	<description>R48 main application</description>
+	<name>R48 IO Plus</name>
+	<description>R48 'IO plus' - Requires engine but not UI</description>
 
 	<parent>
 		<groupId>t20kdc.hs2</groupId>
@@ -22,17 +22,6 @@
 			<artifactId>gabien-common</artifactId>
 			<version>0.666-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>t20kdc.hs2</groupId>
-			<artifactId>gabien-ui</artifactId>
-			<version>0.666-SNAPSHOT</version>
-		</dependency>
-		<!-- rely on gabien to pull this in w/ right version
-		<dependency>
-			<groupId>t20kdc.datum</groupId>
-			<artifactId>datum</artifactId>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>t20kdc.hs2</groupId>
 			<artifactId>gabien-uslx</artifactId>
@@ -51,11 +40,6 @@
 		<dependency>
 			<groupId>t20kdc.hs2</groupId>
 			<artifactId>r48-minivm</artifactId>
-			<version>0.666-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>t20kdc.hs2</groupId>
-			<artifactId>r48-ioplus</artifactId>
 			<version>0.666-SNAPSHOT</version>
 		</dependency>
 		<!-- JUnit is of course testing-only. gabien-javase used to be here in

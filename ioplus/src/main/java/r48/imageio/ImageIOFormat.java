@@ -10,7 +10,7 @@ package r48.imageio;
 import gabien.GaBIEn;
 import gabien.render.WSIImage;
 import gabien.uslx.vfs.FSBackend;
-import r48.app.InterlaunchGlobals;
+import r48.tr.pages.TrRoot;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,11 +22,11 @@ import java.io.InputStream;
  * Created on April 13th 2018
  */
 public abstract class ImageIOFormat {
-    public final InterlaunchGlobals ilg;
+    public final TrRoot tr;
     public final boolean knowsColourKey;
 
-    public ImageIOFormat(InterlaunchGlobals ilg, boolean ck) {
-        this.ilg = ilg;
+    public ImageIOFormat(TrRoot tr, boolean ck) {
+        this.tr = tr;
         knowsColourKey = ck;
     }
 
@@ -40,14 +40,14 @@ public abstract class ImageIOFormat {
     // gInput is null (rather than the error image reference) or the system image loader output.
     public abstract ImageIOImage loadFile(byte[] s, WSIImage gInput) throws IOException;
 
-    public static ImageIOFormat[] initializeFormats(InterlaunchGlobals app) {
+    public static ImageIOFormat[] initializeFormats(TrRoot tr) {
         return new ImageIOFormat[] {
-                new XYZImageIOFormat(app),
-                new PNG8IImageIOFormat(app),
-                new BMP8IImageIOFormat(app, 8),
-                new BMP8IImageIOFormat(app, 4),
-                new BMP8IImageIOFormat(app, 1),
-                new GabienImageIOFormat(app),
+                new XYZImageIOFormat(tr),
+                new PNG8IImageIOFormat(tr),
+                new BMP8IImageIOFormat(tr, 8),
+                new BMP8IImageIOFormat(tr, 4),
+                new BMP8IImageIOFormat(tr, 1),
+                new GabienImageIOFormat(tr),
         };
     }
 

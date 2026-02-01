@@ -6,22 +6,21 @@
  */
 package r48.imageio;
 
-import r48.app.InterlaunchGlobals;
-
 import java.io.*;
 import java.util.LinkedList;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterOutputStream;
 
 import gabien.render.WSIImage;
+import r48.tr.pages.TrRoot;
 
 /**
  * 8-bit indexed PNG loader.
  * Created on April 14th 2018.
  */
 public class PNG8IImageIOFormat extends ImageIOFormat {
-    public PNG8IImageIOFormat(InterlaunchGlobals app) {
-        super(app, true);
+    public PNG8IImageIOFormat(TrRoot tr) {
+        super(tr, true);
     }
     
     public static boolean supports(ImageIOImage img) {
@@ -45,7 +44,7 @@ public class PNG8IImageIOFormat extends ImageIOFormat {
     @Override
     public String saveName(ImageIOImage img) {
         if (supports(img))
-            return ilg.t.g.img_png8;
+            return tr.g.img_png8;
         return null;
     }
 

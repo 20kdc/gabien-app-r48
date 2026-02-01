@@ -6,8 +6,8 @@
  */
 package r48.imageio;
 
-import r48.app.InterlaunchGlobals;
 import r48.io.IntUtils;
+import r48.tr.pages.TrRoot;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,8 +23,8 @@ import gabien.render.WSIImage;
  * Created on 31/05/17.
  */
 public class XYZImageIOFormat extends ImageIOFormat {
-    public XYZImageIOFormat(InterlaunchGlobals ilg) {
-        super(ilg, false);
+    public XYZImageIOFormat(TrRoot tr) {
+        super(tr, false);
     }
 
     public static boolean supports(ImageIOImage img) {
@@ -36,7 +36,7 @@ public class XYZImageIOFormat extends ImageIOFormat {
     @Override
     public String saveName(ImageIOImage img) {
         if (supports(img))
-            return ilg.t.g.img_xyz;
+            return tr.g.img_xyz;
         return null;
     }
 

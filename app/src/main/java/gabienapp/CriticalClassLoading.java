@@ -125,7 +125,7 @@ public class CriticalClassLoading {
         MVMEnv me = new MVMEnv();
         MVMMathsLibrary.add(me);
         me.evalString("(+ 1 2)");
-        ImageIOFormat.initializeFormats(ilg);
+        ImageIOFormat.initializeFormats(ilg.t);
     }
 
     private static Class<?>[] getRoots() {

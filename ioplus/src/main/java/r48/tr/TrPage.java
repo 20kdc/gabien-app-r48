@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 import java.util.function.Consumer;
 
 import datum.DatumSymbol;
-import r48.minivm.MVMEnvR48;
+import r48.minivm.MVMEnv;
 import r48.minivm.MVMSlot;
 import r48.minivm.fn.MVMFn;
 
@@ -20,7 +20,7 @@ import r48.minivm.fn.MVMFn;
  * Created 2nd March 2023.
  */
 public class TrPage {
-    public final void fillFromVM(MVMEnvR48 env, Consumer<String> logTrIssues) {
+    public final void fillFromVM(MVMEnv env, Consumer<String> logTrIssues) {
         for (Field f : getClass().getFields()) {
             try {
                 Type ty = f.getGenericType();
@@ -39,7 +39,7 @@ public class TrPage {
         }
     }
 
-    private final Object calculateValueFor(MVMEnvR48 env, String cName, String name, Type type, Consumer<String> logTrIssues) {
+    private final Object calculateValueFor(MVMEnv env, String cName, String name, Type type, Consumer<String> logTrIssues) {
         name = cName + "." + name;
         String errMsg = "!!!" + name + "!!!";
         MVMSlot s = env.getSlot(new DatumSymbol(name));

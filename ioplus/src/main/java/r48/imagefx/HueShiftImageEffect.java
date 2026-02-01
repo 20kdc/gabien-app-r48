@@ -9,7 +9,7 @@ package r48.imagefx;
 
 import gabien.GaBIEn;
 import gabien.render.IImage;
-import gabien.ui.UIElement;
+import gabien.uslx.append.MathsX;
 
 /**
  * Hue changing. If you're wondering why a family member seems a little blue, now you know.
@@ -26,7 +26,7 @@ public class HueShiftImageEffect implements IImageEffect {
     public final int shift;
 
     public HueShiftImageEffect(int i) {
-        i = UIElement.sensibleCellMod(i, 360);
+        i = MathsX.seqModulo(i, 360);
         shift = i;
         // 120
         int[] baseA, baseB, baseC;

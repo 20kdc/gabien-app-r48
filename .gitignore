@@ -35,6 +35,12 @@
 !io/src
 !io/src/**
 
+# IO+ library
+!ioplus
+!ioplus/pom.xml
+!ioplus/src
+!ioplus/src/**
+
 # MiniVM library
 !minivm
 !minivm/pom.xml

@@ -6,19 +6,18 @@
  */
 package r48.imageio;
 
-import r48.app.InterlaunchGlobals;
-
 import java.io.IOException;
 
 import gabien.render.WSIImage;
+import r48.tr.pages.TrRoot;
 
 /**
  * ImageIOFormat for the gabien system PNG writer (but not the loader, since this API uses byte[])
  * Created on April 14th 2018.
  */
 public class GabienImageIOFormat extends ImageIOFormat {
-    public GabienImageIOFormat(InterlaunchGlobals app) {
-        super(app, true);
+    public GabienImageIOFormat(TrRoot tr) {
+        super(tr, true);
     }
 
     @Override
@@ -26,7 +25,7 @@ public class GabienImageIOFormat extends ImageIOFormat {
         // Don't recommend saving in this format if indexed is possible.
         if (PNG8IImageIOFormat.supports(img))
             return null;
-        return ilg.t.g.img_png32;
+        return tr.g.img_png32;
     }
 
     @Override

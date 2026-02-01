@@ -11,7 +11,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import datum.DatumSrcLoc;
 import datum.DatumSymbol;
 import datum.DatumWriter;
-import r48.minivm.MVMEnvR48;
+import r48.minivm.MVMEnv;
 
 /**
  * Dynamic translation slot.
@@ -21,14 +21,14 @@ public final class DynTrSlot extends DynTrBase {
     public static final DatumSymbol DYNTR_FF1 = new DatumSymbol("tr-dyn-compiler-ff1");
     public static final DatumSymbol DYNTR_FF2 = new DatumSymbol("tr-dyn-compiler-ff2");
 
-    public final MVMEnvR48 env;
+    public final MVMEnv env;
     public final String originalSrc;
     public final @Nullable DatumSymbol mode;
     // The source of the value is cached so that dynamic translation can work properly.
     private String valueSrc;
     private Object valueCompiled;
 
-    public DynTrSlot(MVMEnvR48 e, DatumSrcLoc sl, String i, @Nullable DatumSymbol m, Object base) {
+    public DynTrSlot(MVMEnv e, DatumSrcLoc sl, String i, @Nullable DatumSymbol m, Object base) {
         super(i, sl);
         env = e;
         mode = m;

@@ -6,8 +6,8 @@
  */
 package r48.imageio;
 
-import r48.app.InterlaunchGlobals;
 import r48.io.BMPConnection;
+import r48.tr.pages.TrRoot;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -22,8 +22,8 @@ import gabien.uslx.io.ByteArrayMemoryish;
 public class BMP8IImageIOFormat extends ImageIOFormat {
     public int actuallyBits;
 
-    public BMP8IImageIOFormat(InterlaunchGlobals app, int actuallyB) {
-        super(app, false);
+    public BMP8IImageIOFormat(TrRoot tr, int actuallyB) {
+        super(tr, false);
         actuallyBits = actuallyB;
     }
 
@@ -36,7 +36,7 @@ public class BMP8IImageIOFormat extends ImageIOFormat {
             return null;
         if (img.palette.size() > (1 << actuallyBits))
             return null;
-        return ilg.t.g.img_bmpX.r(actuallyBits);
+        return tr.g.img_bmpX.r(actuallyBits);
     }
 
     @Override

@@ -20,6 +20,7 @@
 	<modules>
 		<module>app</module>
 		<module>io</module>
+		<module>ioplus</module>
 		<module>minivm</module>
 		<module>releaser/android</module>
 		<module>releaser/javase</module>

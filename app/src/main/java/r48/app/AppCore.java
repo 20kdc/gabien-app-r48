@@ -91,7 +91,7 @@ public abstract class AppCore {
             gameResources = new UnionFSBackend(gameRoot);
         }
         loadProgress = lp;
-        imageIOFormats = ImageIOFormat.initializeFormats(ilg);
+        imageIOFormats = ImageIOFormat.initializeFormats(t);
 
         // time machine should be before data, because data uses time machine for management
         timeMachine = new TimeMachine(this);
