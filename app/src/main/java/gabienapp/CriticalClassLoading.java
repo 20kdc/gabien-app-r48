@@ -67,7 +67,7 @@ import r48.io.undoredo.TimeMachineChangeSource;
 import r48.ioplus.DBLoader;
 import r48.ioplus.DatumLoader;
 import r48.ioplus.IDatabase;
-import r48.map.MapViewDrawContext;
+import r48.map.AppMapViewDrawContext;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.NullEventGraphicRenderer;
@@ -143,7 +143,7 @@ public class CriticalClassLoading {
             IProxySchemaElement.class,
             RPGCommand.class,
             TempDialogSchemaChoice.class,
-            MapViewDrawContext.class,
+            AppMapViewDrawContext.class,
             DMContext.class,
             TimeMachine.class,
             TimeMachineChangeSource.class,

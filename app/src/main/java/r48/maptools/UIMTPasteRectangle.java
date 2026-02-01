@@ -14,9 +14,10 @@ import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import r48.RubyTableR;
 import r48.map.IMapToolContext;
-import r48.map.IMapViewCallbacks;
-import r48.map.MapViewDrawContext;
+import r48.map.AppMapViewDrawContext;
 import r48.map.UIMapView;
+import r48.render2d.IMapViewCallbacks;
+import r48.render2d.MapViewDrawContext;
 import r48.ui.UIAppendButton;
 
 /**
@@ -53,7 +54,7 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public int shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {
+    public int shouldDrawAt(AppMapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {
         int cx;
         int cy;
         if (confirming) {

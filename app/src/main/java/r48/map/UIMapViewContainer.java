@@ -19,6 +19,7 @@ import gabien.ui.layouts.UISplitterLayout;
 import r48.App;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTBase;
+import r48.render2d.IMapViewCallbacks;
 
 /**
  * WARNING: May Contain Minigame.

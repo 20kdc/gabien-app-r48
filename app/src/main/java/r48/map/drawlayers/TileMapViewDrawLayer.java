@@ -11,9 +11,9 @@ import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import r48.App;
 import r48.ITileAccess;
-import r48.map.IMapViewCallbacks;
-import r48.map.MapViewDrawContext;
 import r48.map.tiles.ITileRenderer;
+import r48.render2d.IMapViewCallbacks;
+import r48.render2d.MapViewDrawContext;
 
 /**
  * Created on 08/06/17.

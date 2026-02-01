@@ -11,8 +11,9 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.GaBIEn;
 import gabien.ui.elements.UILabel;
-import r48.map.IMapViewCallbacks;
-import r48.map.MapViewDrawContext;
+import r48.map.AppMapViewDrawContext;
+import r48.render2d.IMapViewCallbacks;
+import r48.render2d.MapViewDrawContext;
 import r48.ui.UIAppendButton;
 
 /**
@@ -43,7 +44,7 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
     }
 
     @Override
-    public int shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {
+    public int shouldDrawAt(AppMapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {
         if (mouse != null) {
             int minX = Math.min(startX, mouse.x);
             int maxX = Math.max(startX, mouse.x);

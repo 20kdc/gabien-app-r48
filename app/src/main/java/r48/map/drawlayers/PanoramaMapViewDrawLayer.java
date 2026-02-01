@@ -11,7 +11,7 @@ import gabien.GaBIEn;
 import gabien.render.IImage;
 import gabien.ui.UIElement;
 import r48.App;
-import r48.map.MapViewDrawContext;
+import r48.render2d.MapViewDrawContext;
 
 /**
  * Used for drawing panoramas.

@@ -23,6 +23,7 @@ import gabien.ui.*;
 import r48.App;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.systems.MapSystem;
+import r48.render2d.IMapViewCallbacks;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIPlaneView;
 
@@ -314,7 +315,7 @@ public class UIMapView extends UIPlaneView {
         // As of R48 v1.5, map rendering always renders to a surface the size of the map view.
         // This changes a lot of semantics, but mainly it optimizes in favour of zooming out a map.
         boolean atOrBelowHalfSize = planeZoomDiv >= (planeZoomMul * 2);
-        MapViewDrawContext mvdc = new MapViewDrawContext(app, new Rect((int) iCamX, (int) iCamY, camR.width, camR.height), tileSize, atOrBelowHalfSize);
+        AppMapViewDrawContext mvdc = new AppMapViewDrawContext(app, new Rect((int) iCamX, (int) iCamY, camR.width, camR.height), tileSize, atOrBelowHalfSize);
 
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);
@@ -331,7 +332,7 @@ public class UIMapView extends UIPlaneView {
 
         // NOTE: Block copy/paste isn't nice this way... add confirmation or something instead?
         // If so, make sure that camDragSwitch still disables this.
-        mvdc.mouseStatus = app.ui.isMobile ? null : new MapViewDrawContext.MouseStatus(visCurrentlyDrawing, mouseXT, mouseYT);
+        mvdc.mouseStatus = app.ui.isMobile ? null : new AppMapViewDrawContext.MouseStatus(visCurrentlyDrawing, mouseXT, mouseYT);
 
         mvdc.callbacks = callbacks;
         mvdc.currentLayer = currentLayer;

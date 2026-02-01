@@ -6,8 +6,8 @@
  */
 package r48.map.drawlayers;
 
-import r48.App;
 import r48.RubyTableR;
+import r48.tr.pages.TrRoot;
 
 import java.util.Collections;
 
@@ -15,12 +15,12 @@ import java.util.Collections;
  * for the record this is 'RM Z Accurate', not 'RM MZ Accurate'
  * Copied from RXPAccurateDrawLayer on November 28th 2019.
  */
-public class RMZAccurateDrawLayer extends ZSortingDrawLayer {
+public abstract class RMZAccurateDrawLayer extends ZSortingDrawLayer {
     public final RubyTableR mapTable;
     public SignalMapViewLayer[] tileSignalLayers;
+    public TrRoot T;
 
-    public RMZAccurateDrawLayer(App app, RubyTableR tbl, int layers) {
-        super(app);
+    public RMZAccurateDrawLayer(RubyTableR tbl, int layers) {
         mapTable = tbl;
         tileSignalLayers = new SignalMapViewLayer[layers];
         for (int i = 0; i < tileSignalLayers.length; i++) {

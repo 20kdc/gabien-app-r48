@@ -14,9 +14,10 @@ import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UINumberBox;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.map.IMapToolContext;
-import r48.map.IMapViewCallbacks;
-import r48.map.MapViewDrawContext;
+import r48.map.AppMapViewDrawContext;
 import r48.map.UIMapView;
+import r48.render2d.IMapViewCallbacks;
+import r48.render2d.MapViewDrawContext;
 
 /**
  * UIMTAutotile isn't flexible enough for this.
@@ -33,7 +34,7 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public int shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {
+    public int shouldDrawAt(AppMapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {
         /*
         if (mouse)
             if (cx == tx)

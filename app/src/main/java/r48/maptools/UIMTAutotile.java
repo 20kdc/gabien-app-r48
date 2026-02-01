@@ -15,11 +15,12 @@ import gabien.ui.layouts.UITabBar;
 import gabien.ui.layouts.UITabPane;
 import gabien.uslx.append.*;
 import r48.map.IMapToolContext;
-import r48.map.IMapViewCallbacks;
-import r48.map.MapViewDrawContext;
+import r48.map.AppMapViewDrawContext;
 import r48.map.UIMapView;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
+import r48.render2d.IMapViewCallbacks;
+import r48.render2d.MapViewDrawContext;
 import r48.ui.UIAppendButton;
 import r48.ui.UITileGrid;
 import r48.ui.utilitybelt.FillAlgorithm;
@@ -181,7 +182,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public int shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {
+    public int shouldDrawAt(AppMapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {
         if (layer != currentLayer)
             return there;
         if (mouse == null)

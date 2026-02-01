@@ -38,7 +38,7 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
     private static final int[] layerPreference = new int[] {0, 1, 2};
 
     public RXPAccurateDrawLayer(RubyTableR tbl, IEventAccess eventList, XPTileRenderer tils, RMEventGraphicRenderer ev) {
-        super(tils.app, tbl, tbl.planeCount);
+        super(tbl, tbl.planeCount);
         tiles = tils;
         events = ev;
         signals.add(signalLayerEvA);

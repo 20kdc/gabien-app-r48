@@ -5,19 +5,17 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map;
+package r48.render2d;
 
 import gabien.render.IGrDriver;
-import gabien.ui.UIElement;
+import gabien.uslx.append.MathsX;
 import gabien.uslx.append.Rect;
-import r48.App;
+import r48.io.data.IRIO;
 
 /**
- * A structure that contains the subset of parameters needed for map view draw layers/etc.
- * Created on November 15, 2018.
+ * Pulled out of what became AppMapViewDrawContext, 1st February 2026.
  */
-public class MapViewDrawContext {
-    public final App app;
+public abstract class MapViewDrawContext {
     public final int tileSize;
     public final Rect cam;
     public final Rect camT;
@@ -27,36 +25,30 @@ public class MapViewDrawContext {
     public IMapViewCallbacks callbacks;
     public boolean debugToggle;
     public IGrDriver igd;
-    // Null if the mouse doesn't exist.
     public MouseStatus mouseStatus;
 
-    public MapViewDrawContext(App app, Rect camera, int ts, boolean atOrBelowHalfSize) {
-        this.app = app;
-        tileSize = ts;
+    public MapViewDrawContext(int tileSize, Rect cam, boolean atOrBelowHalfSize) {
+        super();
+
+        int camTR = MathsX.seqDiv(cam.x + cam.width, tileSize) + 1;
+        int camTB = MathsX.seqDiv(cam.y + cam.height, tileSize) + 1;
+        int camTX = MathsX.seqDiv(cam.x, tileSize);
+        int camTY = MathsX.seqDiv(cam.y, tileSize);
+
+        this.tileSize = tileSize;
+        this.cam = cam;
+        this.camT = new Rect(camTX, camTY, camTR - camTX, camTB - camTY);
+        this.camTMargin = new Rect(camTX - 2, camTY - 2, camT.width + 4, camT.height + 4);
         this.atOrBelowHalfSize = atOrBelowHalfSize;
-        cam = camera;
-        int camTR = UIElement.sensibleCellDiv(cam.x + cam.width, tileSize) + 1;
-        int camTB = UIElement.sensibleCellDiv(cam.y + cam.height, tileSize) + 1;
-        int camTX = UIElement.sensibleCellDiv(cam.x, tileSize);
-        int camTY = UIElement.sensibleCellDiv(cam.y, tileSize);
-        camT = new Rect(camTX, camTY, camTR - camTX, camTB - camTY);
-        camTMargin = new Rect(camTX - 2, camTY - 2, camT.width + 4, camT.height + 4);
     }
+
+    public abstract void drawIndicator(int tx, int ty, IndicatorStyle solid);
+
+    public abstract boolean currentlyOpenInEditor(IRIO evI);
 
     public void drawMouseIndicator() {
         if (mouseStatus != null)
             drawIndicator(mouseStatus.x, mouseStatus.y, IndicatorStyle.Selection);
-    }
-    public void drawIndicator(int tx, int ty, IndicatorStyle solid) {
-        int px = tx * tileSize;
-        int py = ty * tileSize;
-        if (solid == IndicatorStyle.SolidBlue) {
-            igd.clearRect(0, 0, 255, px, py, tileSize, tileSize);
-        } else if (solid == IndicatorStyle.Target) {
-            app.a.drawTarget(px, py, tileSize, igd, atOrBelowHalfSize);
-        } else {
-            app.a.drawSelectionBox(px, py, tileSize, tileSize, 1, igd);
-        }
     }
 
     public enum IndicatorStyle {
@@ -69,7 +61,7 @@ public class MapViewDrawContext {
         public final boolean pressed;
         // In tiles.
         public final int x, y;
-
+    
         public MouseStatus(boolean pressed, int x, int y) {
             this.pressed = pressed;
             this.x = x;

@@ -15,9 +15,9 @@ import gabien.uslx.io.ByteArrayMemoryish;
 import r48.RubyTable;
 import r48.io.data.IRIOGeneric;
 import r48.map.IMapToolContext;
-import r48.map.IMapViewCallbacks;
-import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
+import r48.render2d.IMapViewCallbacks;
+import r48.render2d.MapViewDrawContext;
 import r48.ui.UIAppendButton;
 
 /**

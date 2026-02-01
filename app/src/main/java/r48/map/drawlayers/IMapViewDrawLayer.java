@@ -7,7 +7,7 @@
 
 package r48.map.drawlayers;
 
-import r48.map.MapViewDrawContext;
+import r48.render2d.MapViewDrawContext;
 
 /**
  * Responsible for handling the general structure of rendering.

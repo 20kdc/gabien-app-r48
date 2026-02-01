@@ -8,7 +8,7 @@
 package r48.map.drawlayers;
 
 import r48.App;
-import r48.map.MapViewDrawContext;
+import r48.render2d.MapViewDrawContext;
 
 /**
  * Since this is used everywhere, it's a good indication of where the "global layers" end.

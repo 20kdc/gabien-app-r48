@@ -56,6 +56,7 @@ import r48.minivm.fn.MVMR48AppLibraries;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.SchemaElementIOP;
 import r48.schema.op.BaseSchemaOps;
 import r48.schema.op.SchemaOp;
 import r48.search.ByCodeCommandClassifier;
@@ -82,7 +83,7 @@ import r48.ui.Art;
  *  App won't
  * Created 26th February, 2023
  */
-public final class App implements IAppAsSeenByLauncher, IDynTrProxy, TimeMachine.Host {
+public final class App implements IAppAsSeenByLauncher, IDynTrProxy, TimeMachine.Host, ObjectDB.Host {
     /**
      * Inter-launch globals (art, config, etc.)
      */
@@ -513,6 +514,40 @@ public final class App implements IAppAsSeenByLauncher, IDynTrProxy, TimeMachine
     public void timeMachineHostOnTimeTravel() {
         sdb.kickAllDictionariesForMapChange();
     }
+
+    // -- ObjectDB.Host --
+
+    @Override
+    public Charset odbHostGetEncoding() {
+        return encoding;
+    }
+
+    @Override
+    public TimeMachine odbHostGetTimeMachine() {
+        return timeMachine;
+    }
+
+    @Override
+    public void odbHostObjectLoadMsg(String objectId) {
+        loadProgress.accept(t.u.odb_loadObj.r(objectId));
+    }
+
+    @Override
+    public void odbHostReportSaveError(String id, Exception ioe) {
+        reportNonCriticalErrorToUser(t.u.odb_saveErr.r(id), ioe);        
+    }
+
+    @Override
+    public SchemaElementIOP odbHostGetOpaqueSE() {
+        return sdb.getSDBEntry("OPAQUE");
+    }
+
+    @Override
+    public SchemaElementIOP odbHostMapObjectIDToSchema(String id) {
+        return system.mapObjectIDToSchema(id);
+    }
+
+    // Svc
 
     public static class Svc {
         public final @NonNull App app;

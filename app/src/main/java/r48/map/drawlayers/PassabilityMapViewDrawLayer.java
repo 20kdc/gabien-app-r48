@@ -8,8 +8,8 @@
 package r48.map.drawlayers;
 
 import r48.App;
-import r48.map.MapViewDrawContext;
 import r48.map.pass.IPassabilitySource;
+import r48.render2d.MapViewDrawContext;
 
 import java.util.Random;
 

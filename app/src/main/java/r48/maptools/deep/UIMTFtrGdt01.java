@@ -11,10 +11,11 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.elements.UITextButton;
 import r48.map.IMapToolContext;
-import r48.map.IMapViewCallbacks;
-import r48.map.MapViewDrawContext;
+import r48.map.AppMapViewDrawContext;
 import r48.map.UIMapView;
 import r48.maptools.UIMTBase;
+import r48.render2d.IMapViewCallbacks;
+import r48.render2d.MapViewDrawContext;
 import r48.ui.UIAppendButton;
 import r48.ui.utilitybelt.FillAlgorithm;
 
@@ -56,7 +57,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public int shouldDrawAt(MapViewDrawContext.MouseStatus mouseAllowed, int tx, int ty, int there, int layer, int currentLayer) {
+    public int shouldDrawAt(AppMapViewDrawContext.MouseStatus mouseAllowed, int tx, int ty, int there, int layer, int currentLayer) {
         if (layer != currentLayer)
             return there;
         TOutline mo = workspace.getOutlineForTile(tx, ty);

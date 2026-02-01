@@ -12,9 +12,9 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.ui.elements.UILabel;
 import r48.io.data.DMKey;
 import r48.map.IMapToolContext;
-import r48.map.IMapViewCallbacks;
-import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
+import r48.render2d.IMapViewCallbacks;
+import r48.render2d.MapViewDrawContext;
 
 /**
  * Created on 1/1/17.

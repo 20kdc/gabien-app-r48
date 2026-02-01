@@ -14,9 +14,10 @@ import gabien.ui.elements.UILabel;
 import r48.App;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
-import r48.map.IMapViewCallbacks;
-import r48.map.MapViewDrawContext;
+import r48.map.AppMapViewDrawContext;
 import r48.map.UIMapView;
+import r48.render2d.IMapViewCallbacks;
+import r48.render2d.MapViewDrawContext;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -60,7 +61,7 @@ public class MapPositionHelperSchemaElement extends SchemaElement.Leaf {
         final UIMapView umv = new UIMapView(launcher.getApp(), mapGUM, 320, app.f.scaleGuess(192));
         umv.callbacks = new IMapViewCallbacks() {
             @Override
-            public int shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {
+            public int shouldDrawAt(AppMapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {
                 return there;
             }
 

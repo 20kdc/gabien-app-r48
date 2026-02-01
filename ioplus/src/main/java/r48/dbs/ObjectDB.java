@@ -7,16 +7,17 @@
 
 package r48.dbs;
 
-import r48.App;
 import r48.dbs.ObjectRootHandle.Utils;
 import r48.io.IObjectBackend;
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
+import r48.io.undoredo.TimeMachine;
 import r48.io.undoredo.TimeMachineChangeSource;
-import r48.schema.SchemaElement;
+import r48.schema.SchemaElementIOP;
 import r48.schema.util.SchemaPath;
 
 import java.lang.ref.WeakReference;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -32,7 +33,9 @@ import gabien.uslx.append.Block;
  * Not quite a database, but not quite not a database either.
  * Created on 12/29/16.
  */
-public final class ObjectDB extends App.Svc {
+public final class ObjectDB {
+    public final ObjectDB.Host host;
+
     /**
      * This exists to ensure that IDM3Data keeps the IObjectRootHandle in memory.
      * This ensures we can't lose an object as long as we have undo/redo data for it.
@@ -46,8 +49,8 @@ public final class ObjectDB extends App.Svc {
      */
     public @NonNull Consumer<String> saveHook = (id) -> {};
 
-    public ObjectDB(App app, IObjectBackend b) {
-        super(app);
+    public ObjectDB(Host host, IObjectBackend b) {
+        this.host = host;
         backend = b;
     }
 
@@ -67,12 +70,12 @@ public final class ObjectDB extends App.Svc {
 
     private DMContext createDM3Context() {
         AtomicReference<DMContext> dmcx = new AtomicReference<DMContext>();
-        DMContext dmc = new DMContext(new TimeMachineChangeSource(app.timeMachine) {
+        DMContext dmc = new DMContext(new TimeMachineChangeSource(host.odbHostGetTimeMachine()) {
             @Override
             public void onTimeTravel() {
                 markObjectAsAmbiguouslyModified(dmcx.get().get(DMCONTEXT_LOADED_OBJECT));
             }
-        }, app.encoding);
+        }, host.odbHostGetEncoding());
         dmcx.set(dmc);
         return dmc;
     }
@@ -95,14 +98,14 @@ public final class ObjectDB extends App.Svc {
         ObjectRootHandle omwr = tryGetObjectInternal(id);
         if (omwr != null)
             return omwr;
-        app.loadProgress.accept(T.u.odb_loadObj.r(id));
+        host.odbHostObjectLoadMsg(id);
         DMContext context = createDM3Context();
         IObjectBackend.ILoadedObject rio;
         try (Block license = context.changes.openUnpackLicense()) {
             rio = backend.loadObject(id, context);
         }
         ODBHandle rootHandle;
-        SchemaElement ise = app.system.mapObjectIDToSchema(id);
+        SchemaElementIOP ise = host.odbHostMapObjectIDToSchema(id);
         if (rio == null) {
             if (create && ise != null) {
                 // Note that the setup of the object counts as part of the object's unpack license.
@@ -182,7 +185,7 @@ public final class ObjectDB extends App.Svc {
     }
 
     public void revertEverything() {
-        app.timeMachine.clearUndoRedo();
+        host.odbHostGetTimeMachine().clearUndoRedo();
         // Any object that can be reverted, revert it.
         // Mark them all down for removal from modifiedObjects later.
         LinkedList<ODBHandle> pokedObjects = new LinkedList<>();
@@ -214,7 +217,7 @@ public final class ObjectDB extends App.Svc {
     private void markObjectAsAmbiguouslyModified(ObjectRootHandle lo) {
         // Use an opaque schema element because we really don't have a good one here.
         // We don't use changeOccurred because that would activate schema processing, which is also undesired here.
-        lo.objectRootModified(new SchemaPath(app.sdb.getSDBEntry("OPAQUE"), lo));
+        lo.objectRootModified(new SchemaPath(host.odbHostGetOpaqueSE(), lo));
     }
 
     /**
@@ -224,7 +227,7 @@ public final class ObjectDB extends App.Svc {
         private final @NonNull IObjectBackend.ILoadedObject ilo;
         private final @NonNull String id;
 
-        public ODBHandle(@Nullable SchemaElement rootSchema, @NonNull String id, @NonNull IObjectBackend.ILoadedObject ilo) {
+        public ODBHandle(@Nullable SchemaElementIOP rootSchema, @NonNull String id, @NonNull IObjectBackend.ILoadedObject ilo) {
             super(rootSchema);
             this.ilo = ilo;
             this.id = id;
@@ -259,11 +262,43 @@ public final class ObjectDB extends App.Svc {
                 newlyCreatedObjects.remove(this);
             } catch (Exception ioe) {
                 // ERROR!
-                app.reportNonCriticalErrorToUser(T.u.odb_saveErr.r(id), ioe);
+                host.odbHostReportSaveError(id, ioe);
                 ioe.printStackTrace();
                 return;
             }
             saveHook.accept(id);
         }
+    }
+
+    public static interface Host {
+        /**
+         * Gets the time machine. This must be static.
+         */
+        TimeMachine odbHostGetTimeMachine();
+
+        /**
+         * Gets OPAQUE.
+         */
+        SchemaElementIOP odbHostGetOpaqueSE();
+
+        /**
+         * Proxy for MapSystem.
+         */
+        SchemaElementIOP odbHostMapObjectIDToSchema(String id);
+
+        /**
+         * Gets the ODB encoding. This must be static.
+         */
+        Charset odbHostGetEncoding();
+
+        /**
+         * Reports object load (i.e. in a loading screen)
+         */
+        void odbHostObjectLoadMsg(String objectId);
+
+        /**
+         * Reports an error saving the given object with the given exception.
+         */
+        void odbHostReportSaveError(String id, Exception ioe);
     }
 }

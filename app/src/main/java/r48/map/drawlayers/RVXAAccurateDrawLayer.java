@@ -29,7 +29,7 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
     private static final int[] layerPreference = new int[] {0, 1, 3, 2};
 
     public RVXAAccurateDrawLayer(RubyTableR tbl, IEventAccess eventList, VXATileRenderer tils, RMEventGraphicRenderer ev) {
-        super(tils.app, tbl, 4);
+        super(tbl, 4);
         tiles = tils;
         events = ev;
         signals.add(signalLayerEvA);

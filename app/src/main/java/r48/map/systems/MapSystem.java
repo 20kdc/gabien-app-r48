@@ -28,7 +28,7 @@ import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
-import r48.map.MapViewDrawContext;
+import r48.map.AppMapViewDrawContext;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.GridMapViewDrawLayer;
 import r48.map.drawlayers.IMapViewDrawLayer;
@@ -270,7 +270,7 @@ public abstract class MapSystem extends App.Svc {
         public void renderCore(IGrDriver igd, int vCX, int vCY, boolean[] layerVis, int currentLayer, boolean debugToggle) {
             int tileSize = renderer.tileRenderer.tileSize;
 
-            MapViewDrawContext mvdc = new MapViewDrawContext(renderer.app, new Rect(vCX, vCY, igd.getWidth(), igd.getHeight()), tileSize, false);
+            AppMapViewDrawContext mvdc = new AppMapViewDrawContext(renderer.app, new Rect(vCX, vCY, igd.getWidth(), igd.getHeight()), tileSize, false);
 
             mvdc.currentLayer = currentLayer;
             mvdc.debugToggle = debugToggle;

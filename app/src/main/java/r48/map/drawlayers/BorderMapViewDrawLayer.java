@@ -10,7 +10,7 @@ package r48.map.drawlayers;
 import gabien.uslx.append.Block;
 import gabien.uslx.append.Rect;
 import r48.App;
-import r48.map.MapViewDrawContext;
+import r48.render2d.MapViewDrawContext;
 import r48.ui.Art;
 
 /**
