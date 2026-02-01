@@ -25,6 +25,7 @@ import r48.dbs.ObjectInfo;
 import r48.dbs.SDB;
 import r48.imageio.ImageIOFormat;
 import r48.io.IObjectBackend;
+import r48.ioplus.EngineDef;
 import r48.map.systems.MapSystem;
 import r48.minivm.MVMEnvR48;
 import r48.tr.pages.TrRoot;

@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import r48.app.InterlaunchGlobals;
-import r48.dbs.DatumLoader;
+import r48.ioplus.DatumLoader;
 import r48.ui.help.HelpFile;
 
 import java.util.Collection;

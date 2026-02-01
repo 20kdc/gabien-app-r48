@@ -17,6 +17,8 @@ import gabien.GaBIEn;
 import r48.AdHocSaveLoad;
 import r48.cfg.Config;
 import r48.io.data.DMContext;
+import r48.ioplus.EngineDef;
+import r48.ioplus.EnginesList;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMR48GlobalLibraries;

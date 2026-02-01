@@ -37,7 +37,7 @@ import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
-import r48.dbs.DatumLoader;
+import r48.ioplus.DatumLoader;
 import r48.tr.LanguageList;
 import r48.tr.pages.TrGlobal;
 import r48.ui.UIAppendButton;

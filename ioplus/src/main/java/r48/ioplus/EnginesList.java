@@ -4,7 +4,7 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.app;
+package r48.ioplus;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -12,7 +12,6 @@ import java.util.function.Consumer;
 import datum.DatumSrcLoc;
 import datum.DatumVisitor;
 import gabien.datum.DatumKVDVisitor;
-import r48.dbs.DatumLoader;
 
 /**
  * Engine definitions list.
@@ -28,7 +27,7 @@ public class EnginesList {
                 EngineDef ed = new EngineDef();
                 // System.out.println("adding engine " + key);
                 hm.put(key, ed);
-                return ed.newVisitor();
+                return ed.newListWrappedVisitor(null);
             }
         };
         DatumLoader.read("engines", loadProgress, kvd);

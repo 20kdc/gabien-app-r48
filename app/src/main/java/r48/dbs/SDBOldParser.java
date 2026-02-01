@@ -23,6 +23,7 @@ import r48.DictionaryUpdaterRunnable;
 import r48.dbs.SDB.DynamicSchemaElement;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.ioplus.DatumLoader;
 import r48.minivm.MVMU;
 import r48.minivm.fn.MVMFn;
 import r48.schema.*;
