@@ -21,7 +21,6 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.elements.UIThemeIconButton;
 import gabien.ui.theming.Theme;
 import gabien.uslx.append.*;
-import r48.App;
 
 /**
  * Just a useful tool for constructing UI stuff.
@@ -43,27 +42,27 @@ public class UIAppendButton extends UIElement.UIPanel {
         this(new UIThemeIconButton(s, h2, runnable), holder);
     }
 
-    public UIAppendButton(App app, String s, UIElement holder, int h2, Supplier<UIElement> runnable) {
+    public UIAppendButton(AppUI app, String s, UIElement holder, int h2, Supplier<UIElement> runnable) {
         this(new UIMenuButton(app, s, h2, runnable), holder);
     }
 
-    public UIAppendButton(App app, String s, UIElement holder, int h2, Supplier<Boolean> continued, UIPopupMenu.Entry... runnables) {
+    public UIAppendButton(AppUI app, String s, UIElement holder, int h2, Supplier<Boolean> continued, UIPopupMenu.Entry... runnables) {
         this(new UIMenuButton(app, s, h2, continued, runnables), holder);
     }
 
-    public UIAppendButton(App app, String s, UIElement holder, int h2, Supplier<Boolean> continued, Iterable<UIPopupMenu.Entry> runnables) {
+    public UIAppendButton(AppUI app, String s, UIElement holder, int h2, Supplier<Boolean> continued, Iterable<UIPopupMenu.Entry> runnables) {
         this(new UIMenuButton(app, s, h2, continued, runnables), holder);
     }
 
-    public UIAppendButton(App app, Function<Boolean, IDrawable> s, UIElement holder, int h2, Supplier<UIElement> runnable) {
+    public UIAppendButton(AppUI app, Function<Boolean, IDrawable> s, UIElement holder, int h2, Supplier<UIElement> runnable) {
         this(new UIMenuIconButton(app, s, h2, runnable), holder);
     }
 
-    public UIAppendButton(App app, Function<Boolean, IDrawable> s, UIElement holder, int h2, Supplier<Boolean> continued, UIPopupMenu.Entry... runnables) {
+    public UIAppendButton(AppUI app, Function<Boolean, IDrawable> s, UIElement holder, int h2, Supplier<Boolean> continued, UIPopupMenu.Entry... runnables) {
         this(new UIMenuIconButton(app, s, h2, continued, runnables), holder);
     }
 
-    public UIAppendButton(App app, Function<Boolean, IDrawable> s, UIElement holder, int h2, Supplier<Boolean> continued, Iterable<UIPopupMenu.Entry> runnables) {
+    public UIAppendButton(AppUI app, Function<Boolean, IDrawable> s, UIElement holder, int h2, Supplier<Boolean> continued, Iterable<UIPopupMenu.Entry> runnables) {
         this(new UIMenuIconButton(app, s, h2, continued, runnables), holder);
     }
 

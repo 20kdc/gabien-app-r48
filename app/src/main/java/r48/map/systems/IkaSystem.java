@@ -7,7 +7,7 @@
 
 package r48.map.systems;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
@@ -28,7 +28,7 @@ import r48.texture.GabienTexLoader;
  */
 public class IkaSystem extends MapSystem {
     public final IkaTileRenderer tileRenderer;
-    public IkaSystem(App app) {
+    public IkaSystem(R48 app) {
         super(app, new CacheTexLoader(new FixAndSecondaryTexLoader("Pbm/", "", new GabienTexLoader(app.gameResources, ".pbm", 0, 0, 0))), true);
         tileRenderer = new IkaTileRenderer(app.t, imageLoader);
     }

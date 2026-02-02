@@ -8,7 +8,7 @@ package r48.search;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.RPGCommand;
 import r48.io.data.RORIO;
 
@@ -20,19 +20,19 @@ public enum CompoundCommandClassifier implements ICommandClassifier {
     I;
 
     @Override
-    public String getName(App app) {
+    public String getName(R48 app) {
         return "Compound classifier [INTERNAL]";
     }
 
     @Override
-    public Instance instance(App app) {
+    public Instance instance(R48 app) {
         final ICommandClassifier[] ents = app.cmdClassifiers.toArray(new ICommandClassifier[0]);
         ICommandClassifier de = app.commandTags.get("translatable");        
         return new CCCI(app, ents, de);
     }
 
     private final class CCCI extends CompoundClassifierish<ICommandClassifier, ICommandClassifier.Instance> implements ICommandClassifier.Instance {
-        private CCCI(App ac, ICommandClassifier[] e, ICommandClassifier de) {
+        private CCCI(R48 ac, ICommandClassifier[] e, ICommandClassifier de) {
             super(ac, e, de, true, BooleanChainOperator.And);
         }
 

@@ -16,10 +16,11 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UIButton;
-import r48.App;
+import r48.R48;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.specialized.TempDialogSchemaChoice;
+import r48.ui.AppUI;
 
 /**
  * Used to make the Schema interface slightly saner to use
@@ -95,8 +96,13 @@ public interface ISchemaHost {
      */
     HashMap<String, DMKey> copyOperatorContext();
 
+    // Yet another way to get AppUI to avoid pipelining
+    @NonNull AppUI getAppUI();
+
     // Yet another way to get an App to avoid pipelining
-    App getApp();
+    default @NonNull R48 getApp() {
+        return getAppUI().app;
+    }
 
     /**
      * Usually creates a TempDialogSchemaChoice.

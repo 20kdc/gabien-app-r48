@@ -10,7 +10,7 @@ package r48.schema.specialized;
 import java.util.function.Supplier;
 
 import gabien.ui.UIElement;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -32,7 +32,7 @@ public class TempDialogSchemaChoice extends SchemaElement.Leaf {
     public Supplier<Boolean> update;
     public SchemaPath hPar;
 
-    public TempDialogSchemaChoice(App app, Supplier<Boolean> updater, SchemaPath hr) {
+    public TempDialogSchemaChoice(R48 app, Supplier<Boolean> updater, SchemaPath hr) {
         super(app);
         update = updater;
         hPar = hr;

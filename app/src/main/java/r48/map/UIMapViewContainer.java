@@ -16,16 +16,16 @@ import gabien.render.IGrDriver;
 import gabien.ui.UIElement;
 import gabien.ui.UILayer;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
 import r48.map2d.IMapViewCallbacks;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTBase;
+import r48.ui.AppUI;
 
 /**
  * WARNING: May Contain Minigame.
  * Created on 1/1/17.
  */
-public class UIMapViewContainer extends App.Pan {
+public class UIMapViewContainer extends AppUI.Pan {
     public UIMapView view;
     private UISplitterLayout viewToolbarSplit;
     // Use when mapTool is being set to null.
@@ -49,7 +49,7 @@ public class UIMapViewContainer extends App.Pan {
     private boolean masterAnimDisableSwitch = false;
     private boolean pickTileSwitch = true;
 
-    public UIMapViewContainer(App app) {
+    public UIMapViewContainer(AppUI app) {
         super(app);
         timeWaster = new TimeWaster(app);
     }
@@ -125,7 +125,7 @@ public class UIMapViewContainer extends App.Pan {
                     if (nextMapTool instanceof IMapViewCallbacks)
                         view.callbacks = (IMapViewCallbacks) nextMapTool;
                     mapTool = nextMapTool;
-                    app.ui.wm.createWindow(mapTool);
+                    U.wm.createWindow(mapTool);
                 }
             } else {
                 if (mapTool != null) {
@@ -168,7 +168,7 @@ public class UIMapViewContainer extends App.Pan {
         Size b = getSize();
         // Creating the MapView and such causes quite a few side-effects (specifically global StuffRenderer kick-in-the-pants).
         // Also kick the dictionaries because of the event dictionary.
-        view = new UIMapView(app, gum, b.width, b.height);
+        view = new UIMapView(U, gum, b.width, b.height);
         view.viewRenderDisableSwitch = masterRenderDisableSwitch;
         view.viewAnimDisableSwitch = masterAnimDisableSwitch;
         final IMapToolContext mtc = new IMapToolContext() {
@@ -179,7 +179,7 @@ public class UIMapViewContainer extends App.Pan {
 
             @Override
             public void createWindow(UIElement window) {
-                app.ui.wm.createWindow(window);
+                U.wm.createWindow(window);
             }
 
             @Override

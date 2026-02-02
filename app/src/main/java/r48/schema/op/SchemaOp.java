@@ -23,7 +23,7 @@ import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UIPublicPanel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMContext;
 import r48.io.data.DMKey;
@@ -38,14 +38,16 @@ import r48.schema.displays.LabelSchemaElement;
 import r48.schema.util.SchemaDynamicContext;
 import r48.schema.util.SchemaPath;
 import r48.schema.util.UISchemaHostWidget;
+import r48.ui.AppUI;
 import r48.ui.UIMenuButton;
+import r48.ui.UIReporter;
 
 /**
  * Somewhat of a compromise between different design philosophies.
  * R48 operators are found by the UI and then attached into the operators panel.
  * Created 19th December, 2025.
  */
-public abstract class SchemaOp extends App.Svc {
+public abstract class SchemaOp extends R48.Svc {
 
     /**
      * Operator ID. This may be used in future to allow triggering the operator from D/MVM.
@@ -62,7 +64,7 @@ public abstract class SchemaOp extends App.Svc {
      */
     public final @Nullable SchemaElement config;
 
-    public SchemaOp(App app, DatumSymbol id, int sort, SchemaOpSite... sites) {
+    public SchemaOp(@NonNull R48 app, @NonNull DatumSymbol id, int sort, SchemaOpSite... sites) {
         super(app);
         this.id = id;
         this.sort = sort;
@@ -73,7 +75,7 @@ public abstract class SchemaOp extends App.Svc {
             site.operators.add(this);
     }
 
-    public SchemaOp(App app, DatumSymbol base, String sfx, int sort, SchemaOpSite... sites) {
+    public SchemaOp(@NonNull R48 app, DatumSymbol base, String sfx, int sort, SchemaOpSite... sites) {
         this(app, new DatumSymbol(base.id + sfx), sort, sites);
     }
 
@@ -82,7 +84,7 @@ public abstract class SchemaOp extends App.Svc {
      * Note that this is not a total ban on invoking the operator.
      * The idea is that this allows the UI to target operators to where they're desired.
      */
-    public String shouldDisplay(ExpandedCtx context) {
+    public @Nullable String shouldDisplay(ExpandedCtx context) {
         return null;
     }
 
@@ -97,22 +99,22 @@ public abstract class SchemaOp extends App.Svc {
      * Invokes the operator, guarding against errors by showing an error message.
      * Also shows regular messages.
      */
-    public void invokeUI(ExpandedCtx context) {
+    public void invokeUI(@NonNull AppUI appUI, ExpandedCtx context) {
         try {
             String v = invoke(context);
             if (v != null)
-                app.ui.launchDialog(v);
+                appUI.launchDialog(v);
         } catch (Exception ex) {
             ex.printStackTrace();
-            app.ui.launchDialog(app.t.s.op_error.r(id), ex);
+            appUI.launchDialog(app.t.s.op_error.r(id), ex);
         }
     }
 
     /**
      * See the other definition, but this one runs the full expansion from no configuration first.
      */
-    public void invokeUI(SchemaPath path, Map<String, DMKey> context) {
-        invokeUI(new SchemaOp.ExpandedCtx(path, createOperatorConfig(context).getObject()));
+    public void invokeUI(@NonNull AppUI appUI, SchemaPath path, Map<String, DMKey> context) {
+        invokeUI(appUI, new SchemaOp.ExpandedCtx(path, createOperatorConfig(context).getObject(), app, appUI));
     }
 
     /**
@@ -136,10 +138,10 @@ public abstract class SchemaOp extends App.Svc {
     /**
      * Builds an operator menu.
      */
-    public static void createOperatorMenuEntries(LinkedList<UIPopupMenu.Entry> entries, SchemaPath innerElem, SchemaOpSite site, Supplier<Boolean> validity, Map<String, DMKey> operatorContext, SchemaDynamicContext rendererSource) {
-        App app = rendererSource.app;
+    public static void createOperatorMenuEntries(AppUI U, LinkedList<UIPopupMenu.Entry> entries, SchemaPath innerElem, SchemaOpSite site, Supplier<Boolean> validity, Map<String, DMKey> operatorContext, SchemaDynamicContext rendererSource) {
+        R48 app = U.app;
         LinkedList<SchemaOp> ll = new LinkedList<>();
-        ExpandedCtx ctx1 = new ExpandedCtx(innerElem, operatorContext::get);
+        ExpandedCtx ctx1 = new ExpandedCtx(innerElem, operatorContext::get, app, rendererSource.appUI);
         for (SchemaOp op : site.operators)
             if (op.shouldDisplay(ctx1) != null)
                 ll.add(op);
@@ -158,12 +160,12 @@ public abstract class SchemaOp extends App.Svc {
                 ObjectRootHandle cfg = op.createOperatorConfig(operatorContext);
                 // and now for the rest...
                 if (op.config != null) {
-                    UISchemaHostWidget wdg = new UISchemaHostWidget(app, rendererSource);
+                    UISchemaHostWidget wdg = new UISchemaHostWidget(U, rendererSource);
                     wdg.pushObject(new SchemaPath(cfg));
                     AtomicBoolean invalidator = new AtomicBoolean(false);
                     UITextButton confirmButton = new UITextButton(app.t.g.bConfirm, app.f.schemaFieldTH, () -> {
                         if (validity.get() && !invalidator.get())
-                            op.invokeUI(new ExpandedCtx(innerElem, cfg.getObject()));
+                            op.invokeUI(U, new ExpandedCtx(innerElem, cfg.getObject(), app, U));
                         invalidator.set(true);
                     });  
                     UISplitterLayout confirmBar = new UISplitterLayout(new UIPublicPanel(0, 0), confirmButton, false, 1);
@@ -174,9 +176,9 @@ public abstract class SchemaOp extends App.Svc {
                             return invalidator.get() || !validity.get();
                         }
                     };  
-                    UIMenuButton.corePostHoc(app, button, wdgAndConfirm);
+                    UIMenuButton.corePostHoc(U, button, wdgAndConfirm);
                 } else {
-                    op.invokeUI(new ExpandedCtx(innerElem, cfg.getObject()));
+                    op.invokeUI(U, new ExpandedCtx(innerElem, cfg.getObject(), app, U));
                 }
             }));
         }
@@ -185,11 +187,10 @@ public abstract class SchemaOp extends App.Svc {
     /**
      * Builds an operator menu.
      */
-    public static UIElement createOperatorMenu(SchemaPath innerElem, SchemaOpSite site, Supplier<Boolean> validity, Map<String, DMKey> operatorContext, SchemaDynamicContext rendererSource) {
-        App app = rendererSource.app;
+    public static UIElement createOperatorMenu(AppUI U, SchemaPath innerElem, SchemaOpSite site, Supplier<Boolean> validity, Map<String, DMKey> operatorContext, SchemaDynamicContext rendererSource) {
         LinkedList<UIPopupMenu.Entry> entries = new LinkedList<>();
-        createOperatorMenuEntries(entries, innerElem, site, validity, operatorContext, rendererSource);
-        return UIMenuButton.coreMenuGen(app, validity, entries);
+        createOperatorMenuEntries(U, entries, innerElem, site, validity, operatorContext, rendererSource);
+        return UIMenuButton.coreMenuGen(U, validity, entries);
     }
 
     /**
@@ -199,25 +200,33 @@ public abstract class SchemaOp extends App.Svc {
         public final SchemaPath path;
         public final Function<String, DMKey> context;
         public final CommandListSelection commandList;
+        public final @NonNull R48 app;
+        public final @Nullable AppUI appUI;
 
-        public ExpandedCtx(SchemaPath path, Function<String, DMKey> ctx) {
+        public ExpandedCtx(SchemaPath path, Function<String, DMKey> ctx, @NonNull R48 app, @Nullable AppUI appUI) {
             this.path = path;
             this.context = ctx;
             this.commandList = CommandListSelection.extractSelection(path, ctx);
+            this.app = app;
+            this.appUI = appUI;
         }
 
-        public ExpandedCtx(SchemaPath path, RORIO ctx) {
+        public ExpandedCtx(SchemaPath path, RORIO ctx, @NonNull R48 app, @Nullable AppUI appUI) {
             this(path, (s) -> {
                 RORIO tmp = ctx.getIVar(s);
                 if (tmp == null)
                     return null;
                 return tmp.asKey();
-            });
+            }, app, appUI);
         }
 
         @Override
         public DMKey apply(String t) {
             return context.apply(t);
+        }
+
+        public UIReporter makeReporter() {
+            return appUI == null ? new UIReporter(app) : new UIReporter(appUI);
         }
     }
 

@@ -14,7 +14,7 @@ import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.ui.layouts.UITabBar;
 import gabien.ui.layouts.UITabPane;
-import r48.App;
+import r48.R48;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
@@ -38,7 +38,7 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
     public final EmbedDataKey<Integer> tabKey = new EmbedDataKey<>();
     public final EmbedDataKey<UITileGrid> tabCopyKey = new EmbedDataKey<>();
 
-    public FancyCategorizedTilesetRubyTableSchemaElement(App app, int dw, int dh, int p, int d, PathSyntax iV, int[] defaults, ITableCellEditor editor) {
+    public FancyCategorizedTilesetRubyTableSchemaElement(R48 app, int dw, int dh, int p, int d, PathSyntax iV, int[] defaults, ITableCellEditor editor) {
         super(app, dw, dh, p, d, iV, defaults);
         this.editor = editor;
     }

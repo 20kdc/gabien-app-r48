@@ -19,7 +19,7 @@ import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Size;
 import gabien.uslx.io.ByteArrayMemoryish;
 import gabien.wsi.IPeripherals;
-import r48.App;
+import r48.R48;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
@@ -55,7 +55,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
     public boolean allowResize = true;
 
     // NOTE: Doesn't need SDB2-PS compat because it only just started using PS, thankfully
-    public RubyTableSchemaElement(App app, PathSyntax iVar, PathSyntax wVar, PathSyntax hVar, int dim, int dw, int dh, int defL, ITableCellEditor tcl, int[] defV) {
+    public RubyTableSchemaElement(R48 app, PathSyntax iVar, PathSyntax wVar, PathSyntax hVar, int dim, int dw, int dh, int defL, ITableCellEditor tcl, int[] defV) {
         super(app, dw, dh, defL, dim, iVar, defV);
         widthVar = wVar;
         heightVar = hVar;

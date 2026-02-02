@@ -16,9 +16,9 @@ import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
-import r48.App;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
@@ -26,7 +26,7 @@ import r48.ui.UIAppendButton;
  * The system for editing a given cell.
  * Created on 2/17/17.
  */
-public class UICellEditingPanel extends App.Pan {
+public class UICellEditingPanel extends AppUI.Pan {
     public UICellSelectionPanel cellSelectionPanel;
     public GenposFramePanelController root;
     public UISplitterLayout[] halfsplits;
@@ -36,7 +36,7 @@ public class UICellEditingPanel extends App.Pan {
     public int lastCCN = -1;
 
     public UICellEditingPanel(UICellSelectionPanel csp, GenposFramePanelController rmAnimRootPanel) {
-        super(csp.app);
+        super(csp.U);
         root = rmAnimRootPanel;
         cellSelectionPanel = csp;
         String[] properties = root.frame.getCellProps();

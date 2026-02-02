@@ -10,7 +10,7 @@ package r48.schema.specialized;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
-import r48.App;
+import r48.R48;
 import r48.dbs.PathSyntax;
 import r48.dbs.TSDB;
 import r48.io.data.IRIO;
@@ -27,7 +27,7 @@ public class EventTileReplacerSchemaElement extends SchemaElement.Leaf {
     public final int layer;
     public final PathSyntax charName, charIdx;
 
-    public EventTileReplacerSchemaElement(App app, @NonNull TSDB dmap, int l, PathSyntax idx, PathSyntax n) {
+    public EventTileReplacerSchemaElement(R48 app, @NonNull TSDB dmap, int l, PathSyntax idx, PathSyntax n) {
         super(app);
         displayMap = dmap;
         layer = l;

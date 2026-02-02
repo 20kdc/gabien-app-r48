@@ -28,7 +28,7 @@ public class UICharGenView extends UIPlaneView {
     private boolean dragLock = true;
 
     public UICharGenView(String t, final int w, final int h, CharacterGeneratorController control) {
-        super(control.app);
+        super(control.U);
         this.genWidth = w;
         this.genHeight = h;
         mode = text = t;
@@ -73,7 +73,7 @@ public class UICharGenView extends UIPlaneView {
                     int b = l.swatch.col & 0xFF;
 
                     IImage im = GaBIEn.getImage(li.img);
-                    im = ctrl.app.ui.imageFXCache.process(im, new MultiplyImageEffect(a, r, g, b));
+                    im = app.imageFXCache.process(im, new MultiplyImageEffect(a, r, g, b));
                     int imw = im.getWidth();
                     int imh = im.getHeight();
                     int smw = (imw * w) / genWidth;

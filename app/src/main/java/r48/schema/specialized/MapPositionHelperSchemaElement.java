@@ -11,7 +11,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
-import r48.App;
+import r48.R48;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.map.AppMapViewDrawContext;
@@ -28,7 +28,7 @@ import r48.schema.util.SchemaPath;
 public class MapPositionHelperSchemaElement extends SchemaElement.Leaf {
     public final PathSyntax pathA, pathB, pathC;
 
-    public MapPositionHelperSchemaElement(App app, PathSyntax a, PathSyntax b, PathSyntax c) {
+    public MapPositionHelperSchemaElement(R48 app, PathSyntax a, PathSyntax b, PathSyntax c) {
         super(app);
         pathA = a;
         pathB = b;
@@ -58,7 +58,7 @@ public class MapPositionHelperSchemaElement extends SchemaElement.Leaf {
             return new UILabel(T.s.mph_mapFail, app.f.schemaFieldTH);
         final long x = abc[1].getFX();
         final long y = abc[2].getFX();
-        final UIMapView umv = new UIMapView(launcher.getApp(), mapGUM, 320, app.f.scaleGuess(192));
+        final UIMapView umv = new UIMapView(launcher.getAppUI(), mapGUM, 320, app.f.scaleGuess(192));
         umv.callbacks = new IMapViewCallbacks() {
             @Override
             public int shouldDrawAt(AppMapViewDrawContext.MouseStatus mouse, int tx, int ty, int there, int layer, int currentLayer) {

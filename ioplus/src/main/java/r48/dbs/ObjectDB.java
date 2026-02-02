@@ -13,6 +13,7 @@ import r48.io.data.DMContext;
 import r48.io.data.IRIO;
 import r48.io.undoredo.TimeMachine;
 import r48.io.undoredo.TimeMachineChangeSource;
+import r48.ioplus.Reporter;
 import r48.schema.SchemaElementIOP;
 import r48.schema.util.SchemaPath;
 
@@ -179,9 +180,9 @@ public final class ObjectDB {
         return n;
     }
 
-    public void ensureAllSaved() {
+    public void ensureAllSaved(@NonNull Reporter reporter) {
         for (ObjectRootHandle rio : new LinkedList<>(modifiedObjects))
-            rio.ensureSaved();
+            rio.ensureSaved(reporter);
     }
 
     public void revertEverything() {
@@ -253,7 +254,7 @@ public final class ObjectDB {
         }
 
         @Override
-        public void ensureSaved() {
+        public boolean ensureSaved(Reporter rep) {
             try {
                 if (tryGetObjectInternal(id) != this)
                     throw new RuntimeException("We somehow lost object " + id);
@@ -262,11 +263,12 @@ public final class ObjectDB {
                 newlyCreatedObjects.remove(this);
             } catch (Exception ioe) {
                 // ERROR!
-                host.odbHostReportSaveError(id, ioe);
+                rep.report(rep.t.u.odb_saveErr.r(id), ioe);
                 ioe.printStackTrace();
-                return;
+                return false;
             }
             saveHook.accept(id);
+            return true;
         }
     }
 
@@ -295,10 +297,5 @@ public final class ObjectDB {
          * Reports object load (i.e. in a loading screen)
          */
         void odbHostObjectLoadMsg(String objectId);
-
-        /**
-         * Reports an error saving the given object with the given exception.
-         */
-        void odbHostReportSaveError(String id, Exception ioe);
     }
 }

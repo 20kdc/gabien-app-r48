@@ -11,7 +11,7 @@ import gabien.GaBIEn;
 import gabien.audio.IRawAudioDriver.IRawAudioSource;
 import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IGrInDriver;
-import r48.App;
+import r48.ui.AppUI;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -24,11 +24,11 @@ import org.eclipse.jdt.annotation.NonNull;
  * Manager for easter egg of unspecified origin response.
  * Created on 07/06/17.
  */
-public class Coco extends App.Svc implements Consumer<IDesktopPeripherals> {
+public class Coco extends AppUI.Svc implements Consumer<IDesktopPeripherals> {
     private char[] combuf = new char[10];
     public int helpDisplayMode;
 
-    public Coco(App app) {
+    public Coco(AppUI app) {
         super(app);
     }
 
@@ -60,7 +60,7 @@ public class Coco extends App.Svc implements Consumer<IDesktopPeripherals> {
         if (r.equals("UUDDLRUDUD"))
             helpDisplayMode = (helpDisplayMode + 1) % 3;
         if (r.equals("UUDDLRLRUI")) {
-            app.ui.copyUITree();
+            U.copyUITree();
             // Acknowledge without disturbing UI state using an audio cue.
             // Sorry! If it's any consolation, this is a debug tool *ONLY*.
             // There's a menu to access it but that doesn't work so well when you have a modal on-screen
@@ -114,10 +114,10 @@ public class Coco extends App.Svc implements Consumer<IDesktopPeripherals> {
                         bb += "\n";
                     bb += br.readLine();
                 }
-                app.ui.launchDialog(bb);
+                U.launchDialog(bb);
                 br.close();
             } else {
-                app.ui.launchDialog(T.u.notRelease);
+                U.launchDialog(T.u.notRelease);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

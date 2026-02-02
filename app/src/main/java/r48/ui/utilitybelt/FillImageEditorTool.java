@@ -14,7 +14,7 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.*;
-import r48.App;
+import r48.R48;
 
 /**
  * Created on October 09, 2018.
@@ -22,7 +22,7 @@ import r48.App;
 public class FillImageEditorTool extends ImageEditorTool {
     public boolean autoshade, autoshadeLRX, autoshadeUDX;
 
-    public FillImageEditorTool(App app) {
+    public FillImageEditorTool(R48 app) {
         super(app);
     }
 
@@ -111,7 +111,7 @@ public class FillImageEditorTool extends ImageEditorTool {
 
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
-        App app = uiev.app;
+        R48 app = uiev.app;
         UIElement uie = RootImageEditorTool.createToolPalette(uiev, FillImageEditorTool.class);
         UIElement bAS = new UITextButton(T.ie.autoshade, app.f.imageEditorTH, new Runnable() {
             @Override

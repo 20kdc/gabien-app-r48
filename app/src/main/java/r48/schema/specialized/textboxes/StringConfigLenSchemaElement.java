@@ -7,7 +7,7 @@
 
 package r48.schema.specialized.textboxes;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectRootHandle;
 import r48.dbs.PathSyntax;
 import r48.tr.TrPage.FF0;
@@ -19,7 +19,7 @@ public class StringConfigLenSchemaElement extends StringLenSchemaElement {
     public String lenRoot;
     public PathSyntax lenPath;
 
-    public StringConfigLenSchemaElement(App app, FF0 arg, String lenRoot, PathSyntax lenPath) {
+    public StringConfigLenSchemaElement(R48 app, FF0 arg, String lenRoot, PathSyntax lenPath) {
         super(app, arg);
         this.lenRoot = lenRoot;
         this.lenPath = lenPath;

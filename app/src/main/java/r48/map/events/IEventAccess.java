@@ -11,9 +11,11 @@ import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
+import r48.ioplus.Reporter;
 import r48.schema.SchemaElement;
 
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -34,7 +36,7 @@ public interface IEventAccess {
 
     // Should do nothing on event not available
     // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
-    void delEvent(DMKey key);
+    void delEvent(DMKey key, Reporter reporter);
 
     // Returns the "add event" strings (strings may or may not be null, but the array must not be null)
     String[] eventTypes();
@@ -47,7 +49,7 @@ public interface IEventAccess {
      * The implementation is also expected to check value compatibility itself.
      * Note that implementations are expected to launch dialogs to report errors.
      */
-    @Nullable DMKey addEvent(@Nullable RORIO eve, int type);
+    @Nullable DMKey addEvent(@Nullable RORIO eve, int type, Reporter reporter);
 
     /**
      * Event schema details.
@@ -75,7 +77,7 @@ public interface IEventAccess {
     // If this returns something, then the event is read-only, but has a button marked "Sync" which is expected to cause modifications
     // Yes, this is a cop-out because I can't think of a better design r/n
     // everything else I thought up was just hacky or overabstracting
-    Runnable hasSync(DMKey evK);
+    Consumer<Reporter> hasSync(DMKey evK);
 
     // Name of "Events" panel. Cannot be null
     String customEventsName();
@@ -91,7 +93,7 @@ public interface IEventAccess {
     // Given an event key, set XY.
     // Does nothing if the event does not exist.
     // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
-    void setEventXY(DMKey key, long x, long y);
+    void setEventXY(DMKey key, long x, long y, Reporter reporter);
 
     // Given an event key, return a name or null.
     // Can error if the event does not exist.

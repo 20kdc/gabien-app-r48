@@ -22,7 +22,6 @@ import gabien.ui.elements.UILabel;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.Rect;
 import r48.AdHocSaveLoad;
-import r48.App;
 import r48.app.AppMain;
 import r48.app.Coco;
 import r48.app.IAppAsSeenByLauncher;
@@ -63,7 +62,7 @@ public class ErrorHandler {
                     } catch (Exception e2) {
                         sw.append("\n(exception during exception print)\n");
                     }
-                    AppMain.performSystemDump((App) app, true, "exception: " + sw.toString());
+                    AppMain.performSystemDump(app.getTrueApp(), true, "exception: " + sw.toString());
                 } catch (Exception finalErr) {
                     System.err.println("Failed to backup:");
                     finalErr.printStackTrace();

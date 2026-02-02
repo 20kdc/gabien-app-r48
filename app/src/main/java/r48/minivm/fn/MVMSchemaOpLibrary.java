@@ -8,7 +8,7 @@ package r48.minivm.fn;
 
 import java.util.HashMap;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.minivm.MVMEnv;
@@ -21,8 +21,8 @@ import r48.schema.util.SchemaPath;
  * Schema Op library.
  * Created 20th December, 2025.
  */
-public class MVMSchemaOpLibrary extends App.Svc {
-    public MVMSchemaOpLibrary(App app) {
+public class MVMSchemaOpLibrary extends R48.Svc {
+    public MVMSchemaOpLibrary(R48 app) {
         super(app);
     }
 
@@ -40,13 +40,6 @@ public class MVMSchemaOpLibrary extends App.Svc {
     @Help("Invokes the given Schema Operator on the given path with the given parameters root. Results are reported via the returned string.")
     public String sopInvoke(Object op, SchemaPath path, ObjectRootHandle parameters) {
         SchemaOp operator = app.operators.coerce(op);
-        return operator.invoke(new SchemaOp.ExpandedCtx(path, parameters.getObject()));
-    }
-
-    @Defun(n = "sop-invoke-ui", r = 3)
-    @Help("Invokes the given Schema Operator on the given path with the given parameters root. Results are reported via UI.")
-    public void sopInvokeUI(Object op, SchemaPath path, ObjectRootHandle parameters) {
-        SchemaOp operator = app.operators.coerce(op);
-        operator.invokeUI(new SchemaOp.ExpandedCtx(path, parameters.getObject()));
+        return operator.invoke(new SchemaOp.ExpandedCtx(path, parameters.getObject(), app, app.uiAttachmentPoint));
     }
 }

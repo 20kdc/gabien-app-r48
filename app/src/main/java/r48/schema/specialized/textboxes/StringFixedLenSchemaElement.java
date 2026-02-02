@@ -7,7 +7,7 @@
 
 package r48.schema.specialized.textboxes;
 
-import r48.App;
+import r48.R48;
 import r48.tr.TrPage.FF0;
 
 /**
@@ -16,7 +16,7 @@ import r48.tr.TrPage.FF0;
 public class StringFixedLenSchemaElement extends StringLenSchemaElement {
     public int len;
 
-    public StringFixedLenSchemaElement(App app, FF0 arg, int l) {
+    public StringFixedLenSchemaElement(R48 app, FF0 arg, int l) {
         super(app, arg);
         len = l;
     }

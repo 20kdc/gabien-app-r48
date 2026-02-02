@@ -12,7 +12,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
-import r48.App;
+import r48.R48;
 import r48.io.data.RORIO;
 import r48.texture.ITexLoader;
 
@@ -20,11 +20,11 @@ import r48.texture.ITexLoader;
  * Ikachan's event graphic renderer
  * Created on 1/27/17.
  */
-public class IkaEventGraphicRenderer extends App.Svc implements IEventGraphicRenderer {
+public class IkaEventGraphicRenderer extends R48.Svc implements IEventGraphicRenderer {
 
     private final ITexLoader imageLoader;
 
-    public IkaEventGraphicRenderer(App app, ITexLoader il) {
+    public IkaEventGraphicRenderer(R48 app, ITexLoader il) {
         super(app);
         imageLoader = il;
     }

@@ -13,9 +13,9 @@ import gabien.ui.UIElement;
 import gabien.ui.elements.UIButton;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
-import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
+import r48.ui.AppUI;
 
 /**
  * Created 21st August, 2024
@@ -23,7 +23,7 @@ import r48.schema.SchemaElement;
 public class UISchemaHostWidget extends SchemaHostBase {
     private UIElement innerElemEditor;
 
-    public UISchemaHostWidget(App app, SchemaDynamicContext rendererSource) {
+    public UISchemaHostWidget(AppUI app, SchemaDynamicContext rendererSource) {
         super(app, rendererSource);
     }
 
@@ -88,6 +88,6 @@ public class UISchemaHostWidget extends SchemaHostBase {
                 return super.requestsUnparenting() || ab.get();
             }
         };
-        app.ui.wm.createMenu(button, proxy);
+        U.wm.createMenu(button, proxy);
     }
 }

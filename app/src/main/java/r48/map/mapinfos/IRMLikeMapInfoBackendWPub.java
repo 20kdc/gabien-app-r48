@@ -10,6 +10,7 @@ package r48.map.mapinfos;
 import java.util.function.Consumer;
 
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 import r48.ui.Art;
 
 /**
@@ -40,7 +41,7 @@ public interface IRMLikeMapInfoBackendWPub extends IRMLikeMapInfoBackend {
     // Returned is the new index, in case it differs.
     int relocateInOrder(int orderFrom, int orderTo);
 
-    void triggerEditInfoOf(long k);
+    void triggerEditInfoOf(AppUI U, long k);
 
     // It is assumed that any children have been reparented before you use this.
     void removeMap(long k);

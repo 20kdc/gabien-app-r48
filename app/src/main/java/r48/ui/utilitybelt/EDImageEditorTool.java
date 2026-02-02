@@ -9,14 +9,14 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.UIElement;
 import gabien.uslx.append.Rect;
-import r48.App;
+import r48.R48;
 
 /**
  * Created on 16th July 2018
  */
 public class EDImageEditorTool extends ImageEditorTool {
 
-    public EDImageEditorTool(App app) {
+    public EDImageEditorTool(R48 app) {
         super(app);
     }
 

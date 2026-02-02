@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 import gabien.render.IImage;
 import gabien.ui.elements.UIPublicPanel;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.R48;
 import r48.imagefx.HueShiftImageEffect;
 import r48.schema.integers.IntegerSchemaElement;
 
@@ -20,7 +20,7 @@ import r48.schema.integers.IntegerSchemaElement;
  * Created on 7/31/17.
  */
 public class HuePickerSchemaElement extends IntegerSchemaElement {
-    public HuePickerSchemaElement(App app) {
+    public HuePickerSchemaElement(R48 app) {
         super(app, 0);
     }
 

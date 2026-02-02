@@ -18,7 +18,7 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.ui.theming.Theme;
 import gabien.uslx.append.*;
-import r48.App;
+import r48.R48;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
@@ -28,6 +28,7 @@ import r48.schema.util.EmbedDataKey;
 import r48.schema.util.EmbedDataSlot;
 import r48.schema.util.IEmbedDataContext;
 import r48.tr.pages.TrRoot;
+import r48.ui.AppUI;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
@@ -61,7 +62,8 @@ public class StandardArrayInterface implements IArrayInterface {
         if (indentTreeClosedSlot.value == null)
             indentTreeClosedSlot.value = new WeakHashMap<>();
         final ArrayPosition[] positions = array.getPositions();
-        final App app = uiSVL.getApp();
+        final R48 app = uiSVL.getApp();
+        final AppUI U = uiSVL.getAppUI();
         final TrRoot T = app.t;
         // this object is needed as a pin to hold things together.
         // It used to be kind of redundant, but now with the selection stuff...
@@ -144,14 +146,14 @@ public class StandardArrayInterface implements IArrayInterface {
                                     }
                                     containerRCL();
                                 };
-                                uie = new UIAppendButton(app, Art.Symbol.Operator.i(app), uie, app.f.schemaFieldTH, () -> {
+                                uie = new UIAppendButton(U, Art.Symbol.Operator.i(app), uie, app.f.schemaFieldTH, () -> {
                                     HashMap<String, DMKey> ctx = new HashMap<>();
                                     ctx.put(BaseSchemaOps.CTXPARAM_ARRAYSTART, DMKey.of(array.resolveTrueSelection(positions, selectedStart, false)));
                                     ctx.put(BaseSchemaOps.CTXPARAM_ARRAYEND, DMKey.of(array.resolveTrueSelection(positions, selectedEnd, true)));
                                     LinkedList<UIPopupMenu.Entry> menu = new LinkedList<>();
                                     if (positions[fixedStart].execDelete != null) {
                                         menu.add(new UIPopupMenu.Entry(T.g.bDelete, (button) -> {
-                                            UIMenuButton.corePostHoc(app, button, valid, new UIPopupMenu.Entry[] {
+                                            UIMenuButton.corePostHoc(U, button, valid, new UIPopupMenu.Entry[] {
                                                 new UIPopupMenu.Entry(T.g.bConfirm, () -> deleteRange(fixedStart, fixedEnd))
                                             });
                                         }));
@@ -160,8 +162,8 @@ public class StandardArrayInterface implements IArrayInterface {
                                         copyRange(fixedStart, fixedEnd);
                                         deleteRange(fixedStart, fixedEnd);
                                     }));
-                                    SchemaOp.createOperatorMenuEntries(menu, array.getTrueSchemaPath(), app.opSites.ARRAY_SEL, valid, ctx, array.getTrueSchemaHost().getContext());
-                                    return (UIElement) UIMenuButton.coreMenuGen(app, valid, menu);
+                                    SchemaOp.createOperatorMenuEntries(U, menu, array.getTrueSchemaPath(), app.opSites.ARRAY_SEL, valid, ctx, array.getTrueSchemaHost().getContext());
+                                    return (UIElement) UIMenuButton.coreMenuGen(U, valid, menu);
                                 });
                             } else if ((mi < selectedStart) || (mi > selectedEnd)) {
                                 onClick = () -> {
@@ -327,7 +329,7 @@ public class StandardArrayInterface implements IArrayInterface {
                     optText.add(T.s.array_bPasteArr);
                     optRuns.add(runnable2);
                 }
-                return new UIMenuButton(uiSVL.getApp(), T.s.array_bAdd, app.f.schemaArrayAddTH, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
+                return new UIMenuButton(uiSVL.getAppUI(), T.s.array_bAdd, app.f.schemaArrayAddTH, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
             }
 
             // This assumes it's being placed on a button 'before' the position

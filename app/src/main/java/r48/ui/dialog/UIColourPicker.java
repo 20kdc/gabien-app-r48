@@ -28,7 +28,8 @@ import gabien.ui.layouts.UITabPane;
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
-import r48.App;
+import r48.R48;
+import r48.ui.AppUI;
 import r48.ui.Art;
 import r48.ui.UIColourSwatch;
 
@@ -43,7 +44,7 @@ import r48.ui.UIColourSwatch;
  * +--+--+
  * Remade on August 12th, 2018
  */
-public class UIColourPicker extends App.Prx {
+public class UIColourPicker extends AppUI.Prx {
     private final String wTitle;
 
     // This is the colour that we agree every ColourPickerPanel has.
@@ -55,8 +56,9 @@ public class UIColourPicker extends App.Prx {
     private boolean shuttingDown = false;
 
     @SuppressWarnings("unchecked")
-    public UIColourPicker(App app, String purpose, int baseCol, final Consumer<Integer> iConsumer, boolean alpha) {
-        super(app);
+    public UIColourPicker(AppUI aui, String purpose, int baseCol, final Consumer<Integer> iConsumer, boolean alpha) {
+        super(aui);
+        R48 app = aui.app;
         currentColour = new UIColourSwatch(baseCol);
         wTitle = purpose;
         tabPane = new UITabPane(app.f.imageEditorTH, false, true);
@@ -148,7 +150,7 @@ public class UIColourPicker extends App.Prx {
 
         @Override
         protected @Nullable Size layoutRecalculateMetricsImpl() {
-            Size size = super.layoutRecalculateMetricsImpl();
+            Size size = contents.getWantedSize();
             if ((size.width < numberBoxMinimumSize.width) || (size.height < numberBoxMinimumSize.height))
                 return new Size(Math.max(size.width, numberBoxMinimumSize.width), Math.max(size.height, numberBoxMinimumSize.height));
             return size;
@@ -156,7 +158,7 @@ public class UIColourPicker extends App.Prx {
     }
 
     private static class UIChannelLabel extends UILabel {
-        public UIChannelLabel(App app, String txt) {
+        public UIChannelLabel(R48 app, String txt) {
             super(txt, app.f.imageEditorTH);
         }
 
@@ -167,13 +169,13 @@ public class UIColourPicker extends App.Prx {
         }
     }
 
-    private static class UIPickCoordinator extends App.Elm {
+    private static class UIPickCoordinator extends AppUI.Elm {
         public IImage baseImage;
         private final int baseW, baseH, targetScale;
         public Size targetSize;
         private final Consumer<Size> resultConsumer;
 
-        public UIPickCoordinator(App app, int bw, int bh, int sc, Consumer<Size> setter) {
+        public UIPickCoordinator(AppUI app, int bw, int bh, int sc, Consumer<Size> setter) {
             super(app, bw * sc, bh * sc);
             targetScale = sc;
             baseW = bw;
@@ -362,10 +364,10 @@ public class UIColourPicker extends App.Prx {
         public final UIPickCoordinator svCoordinator, hCoordinator;
 
         public UIHSVColourView(int sc) {
-            svCoordinator = new UIPickCoordinator(app, 256, 256, sc, (size) -> {
+            svCoordinator = new UIPickCoordinator(U, 256, 256, sc, (size) -> {
                 performSendStuff();
             });
-            hCoordinator = new UIPickCoordinator(app, 256, 16, sc, (size) -> {
+            hCoordinator = new UIPickCoordinator(U, 256, 16, sc, (size) -> {
                 svCoordinator.baseImage = app.a.getColourPal(app, Art.getRainbowHue(size.width));
                 performSendStuff();
             });

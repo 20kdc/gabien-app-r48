@@ -12,7 +12,7 @@ import java.util.function.Function;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.*;
-import r48.App;
+import r48.R48;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.specialized.genpos.IGenposFrame;
@@ -22,13 +22,13 @@ import r48.schema.util.SchemaPath;
 /**
  * Extracted from what became R2kTroopGenposFrame, 24th March 2023.
  */
-public abstract class TroopGenposFrame extends App.Svc implements IGenposFrame {
+public abstract class TroopGenposFrame extends R48.Svc implements IGenposFrame {
     public final IRIO troop;
     public final SchemaPath troopPath;
     public final Runnable changed;
     public IImage[] enemies;
 
-    public TroopGenposFrame(App app, IRIO t, SchemaPath path, Runnable change) {
+    public TroopGenposFrame(R48 app, IRIO t, SchemaPath path, Runnable change) {
         super(app);
         troop = t;
         troopPath = path;

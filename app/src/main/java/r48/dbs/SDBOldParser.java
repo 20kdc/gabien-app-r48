@@ -18,8 +18,8 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import datum.DatumSrcLoc;
 import gabien.ui.UIElement;
-import r48.App;
 import r48.DictionaryUpdaterRunnable;
+import r48.R48;
 import r48.dbs.SDB.DynamicSchemaElement;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -50,7 +50,7 @@ import r48.ui.dialog.UIEnumChoice.EntryMode;
  * Responsible for SDB's syntax so that SDB.java becomes a much smaller file.
  * Separated out from SDB, 8th March 2023.
  */
-public class SDBOldParser extends App.Svc implements IDatabase {
+public class SDBOldParser extends R48.Svc implements IDatabase {
     public final SDB sdb;
 
     public AggregateSchemaElement workingObj;
@@ -62,7 +62,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
 
     public DatumSrcLoc srcLoc = DatumSrcLoc.NONE;
 
-    public SDBOldParser(App app, String fName) {
+    public SDBOldParser(R48 app, String fName) {
         super(app);
         sdb = app.sdb;
         outerContext = "NONE";
@@ -93,7 +93,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
         return sdb.getSDBEntry(id, srcLoc);
     }
 
-    public static void readFile(App app, final String fName) {
+    public static void readFile(R48 app, final String fName) {
         DBLoader.readFile(app.loadProgress, fName, new SDBOldParser(app, fName));
     }
 

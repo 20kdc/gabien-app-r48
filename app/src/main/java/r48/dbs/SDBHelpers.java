@@ -9,7 +9,7 @@ package r48.dbs;
 
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
-import r48.App;
+import r48.R48;
 import r48.schema.*;
 import r48.schema.displays.EPGDisplaySchemaElement;
 import r48.schema.displays.HuePickerSchemaElement;
@@ -37,10 +37,10 @@ import datum.DatumSrcLoc;
  * for creating schema elements
  * Created on Sunday September 17th, 2017
  */
-public class SDBHelpers extends App.Svc {
+public class SDBHelpers extends R48.Svc {
     public final OpaqueSchemaElement opaque;
 
-    public SDBHelpers(App app) {
+    public SDBHelpers(R48 app) {
         super(app);
         opaque = new OpaqueSchemaElement(app);
 
@@ -101,9 +101,6 @@ public class SDBHelpers extends App.Svc {
 
             @Override
             public int itemCount() {
-                // Use this to inform the user of image issues
-                if (imgTxt.equals(""))
-                    app.ui.launchDialog(T.u.spr_msgNoImage);
                 if (countOvr != -1)
                     return countOvr;
                 return ((img.getHeight() + (cellH - 1)) / cellH) * rowCells;
@@ -124,6 +121,14 @@ public class SDBHelpers extends App.Svc {
                 int row = ((int) t) / rowCells;
                 int col = ((int) t) % rowCells;
                 igd.blitScaledImage((col * cellW) + useX, (row * cellH) + useY, useW, useH, x, y, useW * spriteScale, useH * spriteScale, img);
+            }
+
+            @Override
+            public String getMessage() {
+                // Use this to inform the user of image issues
+                if (imgTxt.equals(""))
+                    return T.u.spr_msgNoImage;
+                return null;
             }
         };
     }

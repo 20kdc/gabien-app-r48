@@ -9,9 +9,10 @@ package r48.schema.util;
 
 import gabien.ui.*;
 import gabien.wsi.IPeripherals;
-import r48.App;
+import r48.R48;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.ui.AppUI;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -23,7 +24,7 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * Extracted from SchemaHostImpl, 17th July, 2023.
  */
-public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
+public abstract class SchemaHostBase extends AppUI.Pan implements ISchemaHost {
     protected SchemaPath innerElem;
 
     protected Consumer<SchemaPath> nudgeRunnable = new Consumer<SchemaPath>() {
@@ -43,9 +44,9 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
     // Make a copy of this when necessary.
     protected final HashMap<String, DMKey> operatorContext = new HashMap<>();
 
-    public SchemaHostBase(App app, @Nullable SchemaDynamicContext dynContext) {
-        super(app);
-        this.dynContext = dynContext == null ? new SchemaDynamicContext(app, null) : dynContext;
+    public SchemaHostBase(@NonNull AppUI appUI, @Nullable SchemaDynamicContext dynContext) {
+        super(appUI);
+        this.dynContext = dynContext == null ? new SchemaDynamicContext(app, null, appUI) : dynContext;
     }
 
     @Override
@@ -74,7 +75,7 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
 
     @Override
     public ISchemaHost newBlank() {
-        return new UISchemaHostWindow(app, dynContext);
+        return new UISchemaHostWindow(U, dynContext);
     }
 
     @Override
@@ -84,7 +85,7 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
 
     @Override
     public void launchOther(UIElement uiTest) {
-        app.ui.wm.createWindow(uiTest);
+        U.wm.createWindow(uiTest);
     }
 
     @Override
@@ -99,8 +100,13 @@ public abstract class SchemaHostBase extends App.Pan implements ISchemaHost {
     }
 
     @Override
-    public App getApp() {
+    public R48 getApp() {
         return app;
+    }
+
+    @Override
+    public AppUI getAppUI() {
+        return U;
     }
 
     @Override

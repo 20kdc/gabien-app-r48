@@ -12,7 +12,7 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.IGetSet;
 import gabien.wsi.IPointer;
-import r48.App;
+import r48.R48;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -36,13 +36,13 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     private int overrideFW = -1;
     private boolean overrideSet = false;
 
-    public AggregateSchemaElement(App app, SchemaElement[] ag) {
+    public AggregateSchemaElement(R48 app, SchemaElement[] ag) {
         super(app);
         Collections.addAll(aggregate, ag);
         scrollPointKey = new EmbedDataKey<>();
     }
 
-    public AggregateSchemaElement(App app, SchemaElement[] ag, EmbedDataKey<Double> fake) {
+    public AggregateSchemaElement(R48 app, SchemaElement[] ag, EmbedDataKey<Double> fake) {
         super(app);
         Collections.addAll(aggregate, ag);
         scrollPointKey = fake;
@@ -102,7 +102,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     // PREFERABLY avoid regeneration of schema objects that are reusable (RPGCommandSchemaElement was fixed this way)
     public static UIScrollLayout createScrollSavingSVL(final ISchemaHost host, final EmbedDataKey<Double> key, final IRIO target) {
         final IGetSet<Double> savedPoint = host.embedSlot(target, key, 0.0d);
-        final App app = host.getApp();
+        final R48 app = host.getApp();
         final UIScrollLayout uiSVL = new UIScrollLayout(true, app.f.generalS) {
             @Override
             public void handleMousewheel(int x, int y, boolean north) {

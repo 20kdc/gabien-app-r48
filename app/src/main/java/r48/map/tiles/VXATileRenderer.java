@@ -21,7 +21,7 @@ import gabien.render.IImage;
 import gabien.render.ITexRegion;
 import gabien.uslx.append.DepsLocker;
 import gabien.uslx.append.Rect;
-import r48.App;
+import r48.R48;
 import r48.RubyTable;
 import r48.RubyTableR;
 import r48.gameinfo.ATDB;
@@ -50,7 +50,7 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
      */
     private final ExpandedATTF[] preparedATTF;
 
-    public VXATileRenderer(App app, ITexLoader il) {
+    public VXATileRenderer(R48 app, ITexLoader il) {
         super(app, 32, 8);
         imageLoader = il;
         preparedATTF = prepareATTF();

@@ -15,13 +15,13 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
-import r48.App;
+import r48.ui.AppUI;
 
 /**
  * Handles drawing for a single-frame editor.
  * Created on 2/17/17.
  */
-public class UISingleFrameView extends App.Elm implements OldMouseEmulator.IOldMouseReceiver {
+public class UISingleFrameView extends AppUI.Elm implements OldMouseEmulator.IOldMouseReceiver {
     public GenposFramePanelController basePanelAccess;
 
     private int lastMX, lastMY, lossX, lossY;
@@ -30,7 +30,7 @@ public class UISingleFrameView extends App.Elm implements OldMouseEmulator.IOldM
 
     public OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
 
-    public UISingleFrameView(App app, GenposFramePanelController rmAnimRootPanel) {
+    public UISingleFrameView(AppUI app, GenposFramePanelController rmAnimRootPanel) {
         super(app);
         basePanelAccess = rmAnimRootPanel;
     }

@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.genpos.GenposAnimRootPanel;
@@ -32,7 +32,7 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
     private String genposType, a1, a2, b1, b2;
     private int framerate;
 
-    public GenposSchemaElement(App app, String type, String arg, String arg1, String arg2, String arg3, int fps) {
+    public GenposSchemaElement(R48 app, String type, String arg, String arg1, String arg2, String arg3, int fps) {
         super(app);
         genposType = type;
         a1 = arg;
@@ -44,7 +44,7 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
 
     @Override
     public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost lBase, final SchemaPath pBase) {
-        final App app = lBase.getApp();
+        final R48 app = lBase.getApp();
         return new UITextButton(T.s.gpBeginButton, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {

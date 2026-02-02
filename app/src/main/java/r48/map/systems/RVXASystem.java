@@ -10,7 +10,7 @@ package r48.map.systems;
 import gabien.render.IImage;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
-import r48.App;
+import r48.R48;
 import r48.RubyTableR;
 import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
@@ -34,7 +34,7 @@ import r48.maptools.UIMTShadowLayer;
  * Created on 03/06/17.
  */
 public class RVXASystem extends RXPSystem {
-    public RVXASystem(App app) {
+    public RVXASystem(R48 app) {
         super(app);
     }
 

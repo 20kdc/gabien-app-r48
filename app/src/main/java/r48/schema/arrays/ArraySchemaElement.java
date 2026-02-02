@@ -10,7 +10,7 @@ package r48.schema.arrays;
 import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
 import gabien.ui.layouts.UIScrollLayout;
-import r48.App;
+import r48.R48;
 import r48.io.IntUtils;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -26,6 +26,7 @@ import r48.schema.util.EmbedDataDir;
 import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -47,7 +48,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // Used for pager state
     public final EmbedDataKey<Double> scrollPointKey = new EmbedDataKey<>();
 
-    public ArraySchemaElement(App app, int fixedSize, int al1, int ido, IArrayInterface uiHelp) {
+    public ArraySchemaElement(R48 app, int fixedSize, int al1, int ido, IArrayInterface uiHelp) {
         super(app);
         sizeFixed = fixedSize;
         atLeast = al1;
@@ -55,7 +56,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
         uiHelper = uiHelp;
     }
 
-    public ArraySchemaElement(App app, int fixedSize, int al1, int ido, IArrayInterface uiHelp, SchemaElement enumer) {
+    public ArraySchemaElement(R48 app, int fixedSize, int al1, int ido, IArrayInterface uiHelp, SchemaElement enumer) {
         this(app, fixedSize, al1, ido, uiHelp);
         possibleEnumElement = enumer;
     }
@@ -66,7 +67,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
             return objectHasBecomeInvalidScreen(path2);
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
-        final App app = launcher.getApp();
+        final R48 app = launcher.getApp();
 
         uiHelper.provideInterfaceFrom(new Host() {
             LinkedList<UIElement> uie = new LinkedList<>();
@@ -88,8 +89,13 @@ public abstract class ArraySchemaElement extends SchemaElement {
             }
 
             @Override
-            public App getApp() {
+            public R48 getApp() {
                 return app;
+            }
+
+            @Override
+            public AppUI getAppUI() {
+                return launcher.getAppUI();
             }
         }, launcher.getValidity(), launcher.embedContext(target), new IArrayInterface.Array() {
             
@@ -128,6 +134,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     }
 
     private IArrayInterface.ArrayPosition[] getPositions(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+        AppUI U = launcher.getAppUI();
         int nextAdvance;
         LinkedList<IArrayInterface.ArrayPosition> positions = new LinkedList<>();
         int alen = target.getALen();
@@ -154,7 +161,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
 
             Supplier<Runnable> deleter = getRemovalCallback(pLevel, target, launcher, i, nextAdvance, path, ind);
             Runnable addition = getAdditionCallback(target, launcher, i, path, ind);
-            Runnable clipAddition = getClipAdditionCallback(target, i, path);
+            Runnable clipAddition = getClipAdditionCallback(launcher.getAppUI(), target, i, path);
 
             UIElement uie;
             if (hasNIdxSchema) {
@@ -180,7 +187,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
         int appendIdx = getAppendIdx(target);
         if (elementPermissionsLevel(appendIdx, target) != 0) {
             SchemaPath ind = path.arrayHashIndex(DMKey.of(appendIdx), "[" + (appendIdx + indexDisplayOffset) + "]");
-            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(appendIdx, appendIdx, (appendIdx + indexDisplayOffset) + " ", null, null, 0, null, getAdditionCallback(target, launcher, appendIdx, path, ind), getClipAdditionCallback(target, appendIdx, path));
+            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(appendIdx, appendIdx, (appendIdx + indexDisplayOffset) + " ", null, null, 0, null, getAdditionCallback(target, launcher, appendIdx, path, ind), getClipAdditionCallback(U, target, appendIdx, path));
             positions.add(position);
         }
         return positions.toArray(new IArrayInterface.ArrayPosition[0]);
@@ -238,7 +245,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
         };
     }
 
-    private Runnable getClipAdditionCallback(final IRIO target, final int i, final SchemaPath path) {
+    private Runnable getClipAdditionCallback(final AppUI U, final IRIO target, final int i, final SchemaPath path) {
         if (sizeFixed != -1)
             return null;
         return new Runnable() {
@@ -254,15 +261,15 @@ public abstract class ArraySchemaElement extends SchemaElement {
                             for (int j = roLen - 1; j >= 0; j--)
                                 target.addAElem(i).setDeepClone(ro.getAElem(j));
                         } catch (Exception e) {
-                            app.ui.launchDialog(T.s.array_dCFCompat, e);
+                            U.launchDialog(T.s.array_dCFCompat, e);
                         }
                         // whack the UI
                         path.changeOccurred(false);
                     } else {
-                        app.ui.launchDialog(T.s.array_dCFNotArray);
+                        U.launchDialog(T.s.array_dCFNotArray);
                     }
                 } else {
-                    app.ui.launchDialog(T.s.array_dCFEmpty);
+                    U.launchDialog(T.s.array_dCFEmpty);
                 }
             }
         };
@@ -478,7 +485,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
         public final IRIO tracker;
         public final EmbedDataDir ecwsKey = new EmbedDataDir();
 
-        public TrackingSE(App app, ArraySchemaElement ase, IRIO t) {
+        public TrackingSE(R48 app, ArraySchemaElement ase, IRIO t) {
             super(app);
             parentArraySE = ase;
             tracker = t;

@@ -7,7 +7,7 @@
 
 package r48.schema.arrays;
 
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
@@ -18,22 +18,22 @@ import r48.schema.util.SchemaPath;
 public class StandardArraySchemaElement extends ArraySchemaElement {
     public SchemaElement subelems;
 
-    public StandardArraySchemaElement(App app, SchemaElement s, int fixedSize, boolean al1, int ido, IArrayInterface uiHelper) {
+    public StandardArraySchemaElement(R48 app, SchemaElement s, int fixedSize, boolean al1, int ido, IArrayInterface uiHelper) {
         super(app, fixedSize, al1 ? 1 : 0, ido, uiHelper);
         subelems = s;
     }
-    public StandardArraySchemaElement(App app, SchemaElement s, int fixedSize, boolean al1, int ido, IArrayInterface uiHelper, SchemaElement enumer) {
+    public StandardArraySchemaElement(R48 app, SchemaElement s, int fixedSize, boolean al1, int ido, IArrayInterface uiHelper, SchemaElement enumer) {
         super(app, fixedSize, al1 ? 1 : 0, ido, uiHelper, enumer);
         subelems = s;
     }
 
     // Integer AL variants
-    public StandardArraySchemaElement(App app, SchemaElement s, int fixedSize, int al1, int ido, IArrayInterface uiHelper) {
+    public StandardArraySchemaElement(R48 app, SchemaElement s, int fixedSize, int al1, int ido, IArrayInterface uiHelper) {
         super(app, fixedSize, al1, ido, uiHelper);
         subelems = s;
     }
 
-    public StandardArraySchemaElement(App app, SchemaElement s, int fixedSize, int al1, int ido, IArrayInterface uiHelper, SchemaElement enumer) {
+    public StandardArraySchemaElement(R48 app, SchemaElement s, int fixedSize, int al1, int ido, IArrayInterface uiHelper, SchemaElement enumer) {
         super(app, fixedSize, al1, ido, uiHelper, enumer);
         subelems = s;
     }

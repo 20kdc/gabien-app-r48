@@ -13,10 +13,11 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
-import r48.App;
+import r48.R48;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.io.data.RORIO;
+import r48.ui.AppUI;
 import r48.ui.UIChoiceButton;
 import r48.ui.dialog.UIEnumChoice;
 
@@ -27,19 +28,19 @@ import r48.ui.dialog.UIEnumChoice;
 public class ByCodeCommandClassifier implements ICommandClassifier {
     @Override
     @NonNull
-    public String getName(App app) {
+    public String getName(R48 app) {
         return app.t.u.ccs_byCode;
     }
 
     @Override
     @NonNull
-    public Instance instance(App app) {
+    public Instance instance(R48 app) {
         final CMDB[] cmdbs = app.cmdbs.getAllCMDBs();
         if (cmdbs.length == 0) {
             // Uhhhh
             return new Instance() {
                 @Override
-                public void setupEditor(@NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit) {
+                public void setupEditor(@NonNull AppUI U, @NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit) {
                 }
 
                 @Override
@@ -52,8 +53,8 @@ public class ByCodeCommandClassifier implements ICommandClassifier {
             public @NonNull CMDB cmdb = cmdbs[0];
             public @Nullable RPGCommand rpgCommand;
             @Override
-            public void setupEditor(@NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit) {
-                UIChoiceButton<CMDB> whichDB = new UIChoiceButton<CMDB>(app, app.f.dialogWindowTH, cmdb, cmdbs) {
+            public void setupEditor(@NonNull AppUI U, @NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit) {
+                UIChoiceButton<CMDB> whichDB = new UIChoiceButton<CMDB>(U, app.f.dialogWindowTH, cmdb, cmdbs) {
                     @Override
                     public String choiceToText(CMDB choice) {
                         return choice.dbId;
@@ -70,7 +71,7 @@ public class ByCodeCommandClassifier implements ICommandClassifier {
                 String buttonText = rpgCommand != null ? rpgCommand.formatName(null) : "";
                 UITextButton utb = new UITextButton(buttonText, app.f.dialogWindowTH, null);
                 utb.onClick = () -> {
-                    app.ui.wm.createMenu(utb, new UIEnumChoice(app, (res) -> {
+                    U.wm.createMenu(utb, new UIEnumChoice(U, (res) -> {
                         rpgCommand = cmdb.knownCommands.get((int) res.getFX());
                         onEdit.run();
                     }, cmdb.buildEnum(), buttonText, UIEnumChoice.EntryMode.INT));

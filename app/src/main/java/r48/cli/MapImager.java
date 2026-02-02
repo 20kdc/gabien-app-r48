@@ -4,24 +4,14 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.app;
 
-import r48.R48;
+package r48.cli;
 
 /**
- * App as seen by the launcher.
- * App is created off-thread, then these functions are called on main thread.
- * Created 28th February, 2023
+ * Dummy for now
+ * Created 2nd February, 2026
  */
-public interface IAppAsSeenByLauncher {
-    void finishInitOnMainThread();
-
-    void tick(double dT);
-
-    void shutdown();
-
-    /**
-     * Solely for use by the error handler and test framework
-     */
-    R48 getTrueApp();
+public class MapImager {
+    public static void main(String[] args) {
+    }
 }

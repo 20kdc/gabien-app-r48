@@ -12,13 +12,13 @@ import java.util.LinkedList;
 import gabien.ui.*;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
-import r48.App;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
 
 /**
  * Created on 2/17/17.
  */
-public class UICellSelectionPanel extends App.Prx {
+public class UICellSelectionPanel extends AppUI.Prx {
     // Instead, using getCell will ensure it gets corrected.
     public int cellNumber = -1;
     public int cellChangeNotificationNumber = 0;
@@ -27,7 +27,7 @@ public class UICellSelectionPanel extends App.Prx {
 
     public UIScrollLayout selectionPanel = new UIScrollLayout(true, app.f.cellSelectS);
 
-    public UICellSelectionPanel(App app, IGenposFrame rmAnimRootPanel) {
+    public UICellSelectionPanel(AppUI app, IGenposFrame rmAnimRootPanel) {
         super(app);
         root = rmAnimRootPanel;
         proxySetElement(selectionPanel, true);

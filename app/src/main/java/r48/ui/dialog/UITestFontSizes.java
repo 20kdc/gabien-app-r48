@@ -12,7 +12,7 @@ import gabien.ui.UIDynamicProxy;
 import gabien.ui.UIElement;
 import gabien.ui.elements.UIAdjuster;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.R48;
 
 /**
  * For testing
@@ -23,7 +23,7 @@ public class UITestFontSizes extends UIDynamicProxy {
     private UISplitterLayout lastSplitter;
     private int currentSize = 32;
     private final Function<Integer, UIElement> maker;
-    public UITestFontSizes(App app, Function<Integer, UIElement> maker) {
+    public UITestFontSizes(R48 app, Function<Integer, UIElement> maker) {
         this.maker = maker;
         adj = new UIAdjuster(app.f.dialogWindowTH, 32, (value) -> {
             currentSize = (int) (long) value;

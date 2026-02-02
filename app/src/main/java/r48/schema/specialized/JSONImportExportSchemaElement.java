@@ -12,7 +12,7 @@ import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
 import r48.AdHocSaveLoad;
-import r48.App;
+import r48.R48;
 import r48.io.JsonObjectBackend;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
@@ -23,6 +23,7 @@ import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;
+import r48.ui.AppUI;
 
 import java.io.*;
 
@@ -35,7 +36,7 @@ public class JSONImportExportSchemaElement extends SchemaElement.Leaf {
     public final MVMFn importFn, exportFn;
     public final EmbedDataKey<Boolean> buttonEDKey = new EmbedDataKey<>();
 
-    public JSONImportExportSchemaElement(App app, FF0 iT, MVMFn iF, FF0 eT, MVMFn eF) {
+    public JSONImportExportSchemaElement(R48 app, FF0 iT, MVMFn iF, FF0 eT, MVMFn eF) {
         super(app);
         importText = iT;
         importFn = iF;
@@ -45,6 +46,7 @@ public class JSONImportExportSchemaElement extends SchemaElement.Leaf {
 
     @Override
     public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+        final AppUI U = launcher.getAppUI();
 
         final UITextButton importer = new UITextButton(importText.r(), app.f.schemaFieldTH, () -> {
             GaBIEn.startFileBrowser(importText.r(), false, "", (fn) -> {
@@ -53,7 +55,8 @@ public class JSONImportExportSchemaElement extends SchemaElement.Leaf {
                         importFn.clDirect(target, JsonObjectBackend.loadJSONFromStream(AdHocSaveLoad.newContext(), inp));
                         path.changeOccurred(false);
                     } catch (Exception ioe) {
-                        app.ui.launchDialog(ioe);
+                        U.launchDialog(ioe);
+                        ioe.printStackTrace();
                     }
                 }
             });
@@ -67,7 +70,8 @@ public class JSONImportExportSchemaElement extends SchemaElement.Leaf {
                         exportFn.clDirect(target, tmp);
                         JsonObjectBackend.saveJSONToStream(oup, tmp);
                     } catch (Exception ioe) {
-                        app.ui.launchDialog(ioe);
+                        U.launchDialog(ioe);
+                        ioe.printStackTrace();
                     }
                 }
             });

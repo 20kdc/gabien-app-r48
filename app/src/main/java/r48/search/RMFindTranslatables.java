@@ -14,7 +14,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
-import r48.App;
+import r48.R48;
 import r48.dbs.CMDB;
 import r48.dbs.ObjectRootHandle;
 import r48.dbs.RPGCommand;
@@ -27,16 +27,17 @@ import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaDynamicContext;
 import r48.schema.util.UISchemaHostWindow;
+import r48.ui.AppUI;
 import r48.schema.util.SchemaPath;
 
 /**
  * Created on 14th September 2022 to house findTranslatables code.
  */
-public class RMFindTranslatables extends App.Svc {
+public class RMFindTranslatables extends AppUI.Svc {
     public final @NonNull ObjectRootHandle objRoot;
     public final LinkedList<UIElement> sites = new LinkedList<>();
 
-    public RMFindTranslatables(App app, final ObjectRootHandle ilo) {
+    public RMFindTranslatables(AppUI app, final ObjectRootHandle ilo) {
         super(app);
         objRoot = ilo;
     }
@@ -75,7 +76,7 @@ public class RMFindTranslatables extends App.Svc {
     public void addSitesFromCommonEvents(IRIO[] commonEvents, final ICommandClassifier.Instance cf) {
         SchemaElement sch = SchemaElement.cast(objRoot.rootSchema);
         if (sch == null) {
-            app.ui.launchDialog(T.u.cCommonEventsNoSchema);
+            U.launchDialog(T.u.cCommonEventsNoSchema);
         } else {
             SchemaPath rootSP = new SchemaPath(sch, objRoot);
             EventCommandArraySchemaElement ecase = RMFindTranslatables.getEventCommandArraySchemaElement(app, "EventListEditor");
@@ -84,7 +85,7 @@ public class RMFindTranslatables extends App.Svc {
                 // Ok a lot of stuff like that could be said honestly about the whole apparatus
                 SchemaElement cevElm = app.sdb.findSchemaFor(rio);
                 if (cevElm == null) {
-                    app.ui.launchDialog(T.u.cCommonEventsNoSchema2);
+                    U.launchDialog(T.u.cCommonEventsNoSchema2);
                     return;
                 }
                 SchemaPath commonEventSP = rootSP.newWindow(cevElm, rio);
@@ -107,7 +108,7 @@ public class RMFindTranslatables extends App.Svc {
             }
             if (pendingCommandSiteData != null) {
                 if (cf.matches(cmdDetail, cmd)) {
-                    UIElement tu = siteFromContext(app, cmdbEditor, ctx, eventList, pendingCommandSiteIndex, pendingCommandSiteData, basePath);
+                    UIElement tu = siteFromContext(U, cmdbEditor, ctx, eventList, pendingCommandSiteIndex, pendingCommandSiteData, basePath);
                     sites.add(tu);
                     pendingCommandSiteData = null;
                 }
@@ -115,15 +116,15 @@ public class RMFindTranslatables extends App.Svc {
         }
     }
 
-    public static EventCommandArraySchemaElement getEventCommandArraySchemaElement(App app, String cmdbEditor) {
+    public static EventCommandArraySchemaElement getEventCommandArraySchemaElement(R48 app, String cmdbEditor) {
         return (EventCommandArraySchemaElement) AggregateSchemaElement.extractField(app.sdb.getSDBEntry(cmdbEditor), null);
     }
 
-    public static UIElement siteFromContext(App app, final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath basePath) {
+    public static UIElement siteFromContext(@NonNull AppUI aui, final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath basePath) {
         final CMDB cmdb = cmdbEditor.database;
         String text = cmdb.buildGroupCodename(listObj, codeIndex, true);
-        final UITextButton button = new UITextButton(text, app.f.schemaFieldTH, () -> {
-            ISchemaHost shi = new UISchemaHostWindow(app, new SchemaDynamicContext(app, mapView));
+        final UITextButton button = new UITextButton(text, aui.f.schemaFieldTH, () -> {
+            ISchemaHost shi = new UISchemaHostWindow(aui, new SchemaDynamicContext(aui.app, mapView, aui));
             SchemaPath sp = basePath;
             // enter list
             sp = sp.tagSEMonitor(listObj, cmdbEditor, false);

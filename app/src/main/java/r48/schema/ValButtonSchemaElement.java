@@ -11,7 +11,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
-import r48.App;
+import r48.R48;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -27,7 +27,7 @@ public class ValButtonSchemaElement extends SchemaElement.Leaf {
     private final FF0 text;
     private final DMKey value;
 
-    public ValButtonSchemaElement(App app, @NonNull FF0 text2, @NonNull DMKey value) {
+    public ValButtonSchemaElement(R48 app, @NonNull FF0 text2, @NonNull DMKey value) {
         super(app);
         text = text2;
         this.value = value;

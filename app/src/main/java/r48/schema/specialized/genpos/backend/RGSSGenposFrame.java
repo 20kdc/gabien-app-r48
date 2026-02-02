@@ -14,7 +14,7 @@ import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.*;
 import gabien.uslx.io.ByteArrayMemoryish;
-import r48.App;
+import r48.R48;
 import r48.RubyTable;
 import r48.RubyTableR;
 import r48.io.data.IRIO;
@@ -33,7 +33,7 @@ import r48.ui.dialog.ISpritesheetProvider;
  * while keeping this unreusable code here.
  * Created on 29/07/17.
  */
-public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
+public class RGSSGenposFrame extends R48.Svc implements IGenposFrame {
     public SpriteCache spriteCache;
 
     // used for indicator setup
@@ -45,7 +45,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
     // Must be initialized before this is used...
     public Supplier<IRIO> frameSource;
 
-    public RGSSGenposFrame(App app, SpriteCache sc, SchemaPath basePath, boolean vxaAnimation, Runnable runnable) {
+    public RGSSGenposFrame(R48 app, SpriteCache sc, SchemaPath basePath, boolean vxaAnimation, Runnable runnable) {
         super(app);
         updateNotify = runnable;
         vxaAnim = vxaAnimation;

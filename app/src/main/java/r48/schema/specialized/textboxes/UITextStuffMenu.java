@@ -6,7 +6,7 @@
  */
 package r48.schema.specialized.textboxes;
 
-import r48.App;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
 
 import java.util.function.Consumer;
@@ -21,15 +21,15 @@ import gabien.ui.layouts.UIScrollLayout;
 /**
  * Created 29th July, 2023.
  */
-public class UITextStuffMenu extends App.Prx {
+public class UITextStuffMenu extends AppUI.Prx {
     private final Supplier<String[]> getter;
     private final Consumer<String[]> editor;
     private final TextRules textRules;
     private final int fieldWidth;
     private boolean didAnything = false;
 
-    public UITextStuffMenu(App app, Supplier<String[]> getter, Consumer<String[]> editor, TextRules textRules, int fw) {
-        super(app);
+    public UITextStuffMenu(AppUI aui, Supplier<String[]> getter, Consumer<String[]> editor, TextRules textRules, int fw) {
+        super(aui);
         this.getter = getter;
         this.editor = editor;
         this.textRules = textRules;

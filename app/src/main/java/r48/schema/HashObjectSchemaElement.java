@@ -9,7 +9,7 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UIEmpty;
-import r48.App;
+import r48.R48;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -27,7 +27,7 @@ public class HashObjectSchemaElement extends SchemaElement.Leaf {
     // disables setDefault
     public final boolean inner;
 
-    public HashObjectSchemaElement(App app, HashSet<DMKey> allowedKey, boolean hashObjectInner) {
+    public HashObjectSchemaElement(R48 app, HashSet<DMKey> allowedKey, boolean hashObjectInner) {
         super(app);
         allowedKeys = allowedKey;
         inner = hashObjectInner;

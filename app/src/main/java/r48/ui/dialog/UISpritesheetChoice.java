@@ -10,13 +10,15 @@ package r48.ui.dialog;
 import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.render.IGrDriver;
 import gabien.ui.*;
+import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UINumberBox;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.R48;
 import r48.ui.UIGrid;
 
 /**
@@ -27,7 +29,8 @@ public class UISpritesheetChoice extends UIElement.UIProxy {
     public UISplitterLayout rootLayout;
     public UIGrid spriteGrid;
 
-    public UISpritesheetChoice(App app, long oldVal, final @NonNull ISpritesheetProvider provider, final @NonNull Consumer<Long> consumer) {
+    public UISpritesheetChoice(R48 app, long oldVal, final @NonNull ISpritesheetProvider provider, final @NonNull Consumer<Long> consumer) {
+        @Nullable String message = provider.getMessage();
         spriteGrid = new UIGrid(app, provider.itemWidth() * app.f.getSpriteScale(), provider.itemHeight() * app.f.getSpriteScale(), provider.itemCount()) {
             @Override
             protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
@@ -42,7 +45,7 @@ public class UISpritesheetChoice extends UIElement.UIProxy {
         UISplitterLayout msp = new UISplitterLayout(nb, new UITextButton(app.t.u.spr_num, app.f.dialogWindowTH, () -> {
             consumer.accept(nb.getNumber());
         }), false, 1);
-        rootLayout = new UISplitterLayout(spriteGrid, msp, true, 1);
+        rootLayout = new UISplitterLayout(message != null ? new UILabel(message, app.f.dialogWindowTH) : spriteGrid, msp, true, 1);
         proxySetElement(rootLayout, true);
     }
 }

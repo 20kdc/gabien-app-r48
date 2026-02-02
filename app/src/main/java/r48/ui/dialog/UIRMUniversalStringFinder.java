@@ -14,32 +14,33 @@ import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
 import r48.dbs.ObjectInfo;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 import r48.search.CompoundTextAnalyzer;
 import r48.search.ITextAnalyzer;
 import r48.search.USFROperationMode;
+import r48.ui.AppUI;
 import r48.ui.search.UIUSFROperationModeSelector;
 
 /**
  * Universal string locator fun, part 2 (almost a year after the first!)
  * Created on 11th August 2023.
  */
-public class UIRMUniversalStringFinder extends App.Prx {
-    private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
+public class UIRMUniversalStringFinder extends AppUI.Prx {
+    private UIScrollLayout layout;
 
     private ITextAnalyzer.Instance taInstance;
     private UIObjectInfoSetSelector setSelector;
     private UIUSFROperationModeSelector modeSelector;
     private boolean detailedInfo = false;
 
-    public UIRMUniversalStringFinder(App app) {
-        super(app);
+    public UIRMUniversalStringFinder(AppUI aui) {
+        super(aui);
+        layout = new UIScrollLayout(true, app.f.generalS);
         taInstance = CompoundTextAnalyzer.I.instance(app);
-        setSelector = new UIObjectInfoSetSelector(app);
-        modeSelector = new UIUSFROperationModeSelector(app, app.f.dialogWindowTH);
+        setSelector = new UIObjectInfoSetSelector(U);
+        modeSelector = new UIUSFROperationModeSelector(aui, app.f.dialogWindowTH);
 
         refreshContents();
 
@@ -50,7 +51,7 @@ public class UIRMUniversalStringFinder extends App.Prx {
         LinkedList<UIElement> elms = new LinkedList<>();
         elms.add(modeSelector);
 
-        taInstance.setupEditor(elms, this::refreshContents);
+        taInstance.setupEditor(U, elms, this::refreshContents);
 
         elms.add(new UITextButton(T.u.usl_detailedInfo, app.f.dialogWindowTH, () -> {
             detailedInfo = !detailedInfo;
@@ -87,7 +88,7 @@ public class UIRMUniversalStringFinder extends App.Prx {
                             log.append("\n" + objInfo.toString() + ": " + count);
                 }
             }
-            app.ui.launchDialog(T.u.usl_completeReportFind.r(total, files) + log);
+            U.launchDialog(T.u.usl_completeReportFind.r(total, files) + log);
         }));
         layout.panelsSet(elms);
     }

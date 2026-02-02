@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.InflaterInputStream;
 
-import r48.App;
+import r48.R48;
 
 /**
  * Kind of hacky that it calls straight out to Desktop,
@@ -24,7 +24,7 @@ import r48.App;
  */
 public class ZLibBlobSchemaElement extends StringBlobSchemaElement {
 
-    public ZLibBlobSchemaElement(App app) {
+    public ZLibBlobSchemaElement(R48 app) {
         super(app);
     }
 

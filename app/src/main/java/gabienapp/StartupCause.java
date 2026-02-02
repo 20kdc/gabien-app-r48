@@ -13,10 +13,10 @@ import gabien.GaBIEn;
 import gabien.uslx.vfs.FSBackend;
 import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
-import r48.App;
-import r48.app.AppMain;
+import r48.R48;
 import r48.gameinfo.EngineDef;
 import r48.tr.TrPage.FF0;
+import r48.ui.AppUI;
 
 /**
  * Separated 5th April 2023.
@@ -62,11 +62,12 @@ public class StartupCause implements Runnable {
                         throw new RuntimeException("EngineDef " + objName + " missing!");
                     // Regarding thread safety, this should be safe enough because app is kept here.
                     // It's then transferred out.
-                    App app = new App(ls.lun.ilg, charset, engine, rootPath, silPath, theKickstart, entryName);
-                    AppMain.initializeUI(app, ls.lun.uiTicker, ls.lun.isMobile);
+                    R48 app = new R48(ls.lun.ilg, charset, engine, rootPath, silPath, theKickstart, entryName);
+                    AppUI aui = new AppUI(app, ls.lun.isMobile);
+                    aui.initialize(ls.lun.uiTicker);
                     theKickstart.doneInjector.set(() -> {
-                        lia.app = app;
-                        app.ui.finishInitialization();
+                        lia.app = aui;
+                        aui.finishInitOnMainThread();
                     });
                 } catch (final RuntimeException e) {
                     theKickstart.doneInjector.set(() -> {

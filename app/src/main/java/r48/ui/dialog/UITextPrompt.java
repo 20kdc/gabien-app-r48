@@ -15,17 +15,17 @@ import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.ui.AppUI;
 
 /**
  * Created on 12/31/16.
  */
-public class UITextPrompt extends App.Prx {
+public class UITextPrompt extends AppUI.Prx {
 
     public UITextBox utb = new UITextBox("", app.f.textDialogFieldTH);
     public boolean wantClose = false;
 
-    public UITextPrompt(App app, final String s, final Consumer<String> iConsumer) {
+    public UITextPrompt(AppUI app, final String s, final Consumer<String> iConsumer) {
         super(app);
         UILabel label = new UILabel(s, app.f.textDialogDescTH);
         UIElement mainLayout = new UISplitterLayout(utb, new UITextButton(T.g.bOk, app.f.textDialogFieldTH, () -> {

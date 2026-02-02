@@ -9,7 +9,7 @@ package r48.schema.specialized;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import r48.App;
+import r48.R48;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
@@ -29,7 +29,7 @@ public abstract class BaseRubyTableSchemaElement extends SchemaElement.Leaf {
     public final @Nullable PathSyntax iVar;
     public final int[] defVals;
 
-    public BaseRubyTableSchemaElement(App app, int dw, int dh, int p, int d, @Nullable PathSyntax iV, int[] defaults) {
+    public BaseRubyTableSchemaElement(R48 app, int dw, int dh, int p, int d, @Nullable PathSyntax iV, int[] defaults) {
         super(app);
         defW = dw;
         defH = dh;

@@ -10,9 +10,9 @@ package r48.schema.util;
 import gabien.ui.*;
 import gabien.ui.elements.UILabel;
 import gabien.uslx.append.*;
-import r48.App;
 import r48.schema.SchemaElement;
 import r48.schema.op.SchemaOp;
+import r48.ui.AppUI;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.wm.IDuplicatableWindow;
@@ -34,10 +34,10 @@ public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableW
         popObject(false);
     }, app.f.schemaPathTH);
     private UIAppendButton toolbarCp = new UIAppendButton(T.g.bCopy, toolbarP, () -> {
-        app.opCopy.invokeUI(innerElem, operatorContext);
+        app.opCopy.invokeUI(U, innerElem, operatorContext);
     }, app.f.schemaPathTH);
     private UIAppendButton toolbarPs = new UIAppendButton(T.g.bPaste, toolbarCp, () -> {
-        app.opPaste.invokeUI(innerElem, operatorContext);
+        app.opPaste.invokeUI(U, innerElem, operatorContext);
     }, app.f.schemaPathTH);
     private UIAppendButton toolbarSandwich;
 
@@ -47,15 +47,15 @@ public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableW
     public boolean windowOpen = false;
     private boolean stayClosed = false;
 
-    public UISchemaHostWindow(App app, @Nullable SchemaDynamicContext rendererSource) {
-        super(app, rendererSource);
-        toolbarSandwich = new UIAppendButton(app, Art.Symbol.Operator.i(app), toolbarPs, app.f.schemaPathTH, () -> {
-            return (UIElement) SchemaOp.createOperatorMenu(innerElem, app.opSites.SCHEMA_HEADER, getValidity(), operatorContext, dynContext);
+    public UISchemaHostWindow(AppUI aui, @Nullable SchemaDynamicContext rendererSource) {
+        super(aui, rendererSource);
+        toolbarSandwich = new UIAppendButton(U, Art.Symbol.Operator.i(app), toolbarPs, app.f.schemaPathTH, () -> {
+            return (UIElement) SchemaOp.createOperatorMenu(aui, innerElem, app.opSites.SCHEMA_HEADER, getValidity(), operatorContext, dynContext);
         });
         toolbarRoot = toolbarSandwich;
         layoutAddElement(toolbarRoot);
         // Why is this scaled by main window size? Answer: Because the alternative is occasional Android version glitches.
-        Size rootSize = app.ui.wm.getRootSize();
+        Size rootSize = U.wm.getRootSize();
         Rect r = new Rect(0, 0, rootSize.width / 2, (rootSize.height / 3) * 2);
         setForcedBounds(null, r);
         setWantedSize(r);
@@ -100,8 +100,8 @@ public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableW
 
         if (doLaunch) {
             windowOpen = true;
-            app.ui.wm.createWindow(this);
-            app.ui.schemaHostImplRegister(this);
+            U.wm.createWindow(this);
+            U.schemaHostImplRegister(this);
         }
     }
 
@@ -133,7 +133,7 @@ public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableW
     @Override
     public void duplicateThisWindow() {
         if (innerElem.hasTempDialog()) {
-            app.ui.launchDialog(T.u.shNoCloneTmp);
+            U.launchDialog(T.u.shNoCloneTmp);
             return;
         }
         // This serves to ensure that cloning a window causes it to retain scroll and such,
@@ -173,7 +173,7 @@ public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableW
     }
 
     @Override
-    public App getApp() {
-        return app;
+    public AppUI getAppUI() {
+        return U;
     }
 }

@@ -14,7 +14,7 @@ import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.ui.AppUI;
 
 /**
  * Builds simple choice dialogs along the lines of:
@@ -25,11 +25,11 @@ import r48.App;
  * <p>
  * Created on July 14th, 2018
  */
-public class UIChoicesMenu extends App.Prx {
+public class UIChoicesMenu extends AppUI.Prx {
     private boolean selfClose = false;
 
-    public UIChoicesMenu(App app, String s, String[] strings, final Runnable[] runnables) {
-        super(app);
+    public UIChoicesMenu(AppUI aui, String s, String[] strings, final Runnable[] runnables) {
+        super(aui);
         UILabel topLabel = new UILabel(s, app.f.dialogWindowTH);
         UIScrollLayout label = new UIScrollLayout(true, app.f.menuS, topLabel);
         LinkedList<UIElement> elms = new LinkedList<>();

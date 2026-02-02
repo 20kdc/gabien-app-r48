@@ -14,8 +14,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIProxy;
 import gabien.ui.layouts.UIScrollLayout;
-import r48.App;
 import r48.search.IClassifierish;
+import r48.ui.AppUI;
 
 /**
  * Created 19th August, 2023
@@ -26,12 +26,12 @@ public class UIClassifierishInstanceWidget<I extends IClassifierish.BaseInstance
     public final I instance;
     public Runnable onEdit;
 
-    public UIClassifierishInstanceWidget(App app, @NonNull I inst) {
+    public UIClassifierishInstanceWidget(AppUI app, @NonNull I inst) {
         this.instance = inst;
         usl = new UIScrollLayout(true, app.f.generalS);
         onEdit = () -> {
             LinkedList<UIElement> elms = new LinkedList<>();
-            instance.setupEditor(elms, onEdit);
+            instance.setupEditor(app, elms, onEdit);
             usl.panelsSet(elms);
         };
         onEdit.run();

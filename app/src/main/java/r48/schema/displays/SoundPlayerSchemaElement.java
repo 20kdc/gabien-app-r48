@@ -10,13 +10,14 @@ package r48.schema.displays;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
-import r48.App;
+import r48.R48;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 import r48.ui.audioplayer.UIAudioPlayer;
 
 /**
@@ -30,7 +31,7 @@ public class SoundPlayerSchemaElement extends SchemaElement.Leaf {
     public final @Nullable PathSyntax tempoPath;
     public final @Nullable PathSyntax balancePath;
 
-    public SoundPlayerSchemaElement(App app, String pfx, PathSyntax nP, @Nullable PathSyntax vP, @Nullable PathSyntax tP, @Nullable PathSyntax bP) {
+    public SoundPlayerSchemaElement(R48 app, String pfx, PathSyntax nP, @Nullable PathSyntax vP, @Nullable PathSyntax tP, @Nullable PathSyntax bP) {
         super(app);
         prefix = pfx;
         namePath = nP;
@@ -41,12 +42,13 @@ public class SoundPlayerSchemaElement extends SchemaElement.Leaf {
 
     @Override
     public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
+        final AppUI U = launcher.getAppUI();
         RORIO nameObj = namePath.getRO(target);
         RORIO tempoObj = tempoPath == null ? null : tempoPath.getRO(target);
         double tempo = 1;
         if (tempoObj != null)
             tempo = tempoObj.getFX() / 100d;
-        return UIAudioPlayer.create(app, prefix + nameObj.decString(), tempo);
+        return UIAudioPlayer.create(U, prefix + nameObj.decString(), tempo);
     }
 
     @Override

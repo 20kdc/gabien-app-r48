@@ -13,9 +13,9 @@ import gabien.ui.UIElement;
 import gabien.ui.dialogs.UIPopupMenu.Entry;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
-import r48.App;
 import r48.IMapContext;
 import r48.ITileAccess;
+import r48.R48;
 import r48.RubyTableR;
 import r48.dbs.ObjectInfo;
 import r48.dbs.ObjectRootHandle;
@@ -49,6 +49,7 @@ import r48.texture.ImageIOTexLoader;
 import r48.toolsets.R2kTools;
 import r48.toolsets.RMTools;
 import r48.toolsets.utils.RMTranscriptDumper;
+import r48.ui.AppUI;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -62,7 +63,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * Created on 03/06/17.
  */
 public class R2kSystem extends MapSystem implements IRMMapSystem {
-    public R2kSystem(App app) {
+    public R2kSystem(R48 app) {
         super(app, new CacheTexLoader(new FixAndSecondaryTexLoader("", "", new ChainedTexLoader(new ITexLoader[] {
                 new ImageIOTexLoader(app.gameResources, new XYZImageIOFormat(app.t), ".xyz", true),
                 // This is actually valid, but almost nobody wanted to use BMP over one of PNG or XYZ. Who'd have guessed?
@@ -84,8 +85,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public Consumer<LinkedList<Entry>> createEngineTools() {
-        return new RMTools(app).andThen(new R2kTools(app));
+    public Consumer<LinkedList<Entry>> createEngineTools(@NonNull AppUI U) {
+        return new RMTools(U).andThen(new R2kTools(U));
     }
 
     @Override

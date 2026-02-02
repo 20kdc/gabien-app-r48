@@ -8,7 +8,7 @@ package r48.minivm.fn;
 
 import java.util.List;
 
-import r48.App;
+import r48.R48;
 import r48.minivm.MVMU;
 import r48.minivm.harvester.Defun;
 import r48.minivm.harvester.Example;
@@ -27,8 +27,8 @@ import r48.tr.TrPage.FF1;
  * MiniVM standard library.
  * Created 21st August 2024.
  */
-public class MVMSDBElementsLibrary extends App.Svc {
-    public MVMSDBElementsLibrary(App app) {
+public class MVMSDBElementsLibrary extends R48.Svc {
+    public MVMSDBElementsLibrary(R48 app) {
         super(app);
     }
 
@@ -72,7 +72,7 @@ public class MVMSDBElementsLibrary extends App.Svc {
         return new AggregateSchemaElement(app, elements.toArray(new SchemaElement[0]));
     }
 
-    public static SchemaElement coerceToElement(App app, Object elm) {
+    public static SchemaElement coerceToElement(R48 app, Object elm) {
         if (elm instanceof SchemaElement)
             return (SchemaElement) elm;
         return app.sdb.getSDBEntry(MVMU.coerceToString(elm));

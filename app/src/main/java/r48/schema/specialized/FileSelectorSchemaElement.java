@@ -16,13 +16,14 @@ import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.elements.UIThumbnail;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 import r48.ui.spacing.UIBorderedSubpanel;
 
 import java.util.Arrays;
@@ -40,7 +41,7 @@ public class FileSelectorSchemaElement extends SchemaElement.Leaf {
     public final String mustBeImage;
     public final EmbedDataKey<Double> scrollPointKey = new EmbedDataKey<>();
 
-    public FileSelectorSchemaElement(App app, String ext, String img) {
+    public FileSelectorSchemaElement(R48 app, String ext, String img) {
         super(app);
         pathExtender = ext;
         mustBeImage = img;
@@ -48,7 +49,8 @@ public class FileSelectorSchemaElement extends SchemaElement.Leaf {
 
     @Override
     public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        app.ui.performFullImageFlush();
+        AppUI U = launcher.getAppUI();
+        U.performFullImageFlush();
         String[] strs = GaBIEn.listEntries(app.gameResources.intoPath(pathExtender));
         if (strs == null)
             return new UILabel("The folder does not exist or was not accessible.", app.f.schemaFieldTH);
@@ -86,7 +88,7 @@ public class FileSelectorSchemaElement extends SchemaElement.Leaf {
         }
         if (waitingLeft != null)
             uiSVL.add(new UISplitterLayout(waitingLeft, new UIEmpty(), false, 0.5d));
-        app.ui.performFullImageFlush();
+        U.performFullImageFlush();
         return AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target, uiSVL);
     }
 

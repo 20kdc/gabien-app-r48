@@ -12,7 +12,8 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextBox;
-import r48.App;
+import r48.R48;
+import r48.ui.AppUI;
 
 /**
  * This is definitely a good idea. Yup.
@@ -27,7 +28,7 @@ public enum TextOperator implements ITextAnalyzer {
 
     @Override
     @NonNull
-    public String getName(App app) {
+    public String getName(R48 app) {
         switch (this) {
         case Contains:
             return app.t.u.ccs_tContains;
@@ -44,13 +45,13 @@ public enum TextOperator implements ITextAnalyzer {
 
     @Override
     @NonNull
-    public Instance instance(App app) {
+    public Instance instance(R48 app) {
         return new Instance() {
             String needle = "";
             String needleTLC = "";
 
             @Override
-            public void setupEditor(@NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit) {
+            public void setupEditor(@NonNull AppUI U, @NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit) {
                 UITextBox uil = new UITextBox(needle, app.f.dialogWindowTH);
                 uil.onEdit = () -> {
                     needle = uil.getText();

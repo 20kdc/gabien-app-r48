@@ -13,14 +13,17 @@ import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.vfs.FSBackend;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
+import r48.ioplus.Reporter;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
+import r48.ui.UIReporter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +32,8 @@ import java.util.zip.DeflaterInputStream;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Using the mkxp-oneshot 'standard', imports and exports RGSS scripts.
  * Created on January 28th, 2018.
@@ -36,24 +41,25 @@ import java.util.zip.InflaterInputStream;
 public class ScriptControlSchemaElement extends SchemaElement.Leaf {
     public final EmbedDataKey<Boolean> buttonEDKey = new EmbedDataKey<>();
 
-    public ScriptControlSchemaElement(App app) {
+    public ScriptControlSchemaElement(R48 app) {
         super(app);
     }
 
     @Override
     public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+        final AppUI U = launcher.getAppUI();
 
         final UITextButton importer = new UITextButton(T.s.bImportOS, app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
-                try {
-                    IRIO scripts = importScripts();
+                try (UIReporter reporter = new UIReporter(U)) {
+                    IRIO scripts = importScripts(reporter);
                     if (scripts != null) {
                         target.setDeepClone(scripts);
                         path.changeOccurred(true);
                     }
                 } catch (Exception ioe) {
-                    app.ui.launchDialog(ioe);
+                    U.launchDialog(ioe);
                 }
             }
         });
@@ -129,9 +135,9 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
                         sb.append("\n");
                     }
                     ps.close();
-                    app.ui.launchDialog(sb.toString());
+                    U.launchDialog(sb.toString());
                 } catch (Exception ioe) {
-                    app.ui.launchDialog(ioe);
+                    U.launchDialog(ioe);
                 }
             }
             private boolean tryWrite(String name, byte[] inflated, HashSet<String> used, PrintStream ps) throws IOException {
@@ -184,19 +190,19 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
                         results.append("\n");
                     }
                 }
-                app.ui.launchDialog(results.toString());
+                U.launchDialog(results.toString());
             }
         }), true, 0);
         return new UISplitterLayout(impExp, search, true, 0);
     }
 
-    private IRIO importScripts() throws IOException {
+    private IRIO importScripts(@NonNull Reporter reporter) throws IOException {
         // A particular difference that's going to show up here is that empty-named or #-prefixed files won't get removed.
         // This way, the conversion is bi-directional.
         IRIO scripts = new IRIOGeneric(app.ctxDisposableAppEncoding).setArray();
         InputStream inp = GaBIEn.getInFile(app.gameResources.into("scripts", "_scripts.txt"));
         if (inp == null) {
-            app.ui.launchDialog(T.s.scx_noIdx);
+            reporter.report(T.s.scx_noIdx);
             return null;
         }
         BufferedReader br = new BufferedReader(new InputStreamReader(inp, "UTF-8"));
@@ -224,7 +230,7 @@ public class ScriptControlSchemaElement extends SchemaElement.Leaf {
             if (ok) {
                 byte[] data = loadScript(s);
                 if (data == null) {
-                    app.ui.launchDialog(T.s.scx_miss + s);
+                    reporter.report(T.s.scx_miss + s);
                     return null;
                 }
                 scr.getAElem(2).putBuffer(data);

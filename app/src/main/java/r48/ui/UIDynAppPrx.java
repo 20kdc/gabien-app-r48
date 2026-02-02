@@ -12,20 +12,18 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.ui.UIElement;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
-import r48.App;
-import r48.App.Pan;
 
 /**
  * Split out from UIMTBase 13th March 2023 to get rid of those pesky "no real map context" uses of UIMTBase
  */
-public class UIDynAppPrx extends Pan {
+public class UIDynAppPrx extends AppUI.Pan {
 
     private UIElement innerElem = null;
     public boolean selfClose = false;
     public boolean hasClosed = false;
     public String titleOverride;
 
-    public UIDynAppPrx(@NonNull App app) {
+    public UIDynAppPrx(@NonNull AppUI app) {
         super(app);
     }
 
@@ -95,7 +93,7 @@ public class UIDynAppPrx extends Pan {
         return super.toString();
     }
 
-    public static UIDynAppPrx wrap(@NonNull App app, @NonNull UIElement svl) {
+    public static UIDynAppPrx wrap(@NonNull AppUI app, @NonNull UIElement svl) {
         UIDynAppPrx r = new UIDynAppPrx(app);
         r.changeInner(svl, true);
         return r;

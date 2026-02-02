@@ -7,7 +7,7 @@
 
 package r48.toolsets.utils;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.CMDB;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -19,13 +19,13 @@ import java.util.LinkedList;
  * For documentation purposes.
  * Created on 2/12/17.
  */
-public class RMTranscriptDumper extends App.Svc {
+public class RMTranscriptDumper extends R48.Svc {
     private final PrintStream output;
 
     private LinkedList<String> tableOfContents = new LinkedList<String>();
     private LinkedList<String> tableOfContentsIID = new LinkedList<String>();
 
-    public RMTranscriptDumper(App app, PrintStream ps) {
+    public RMTranscriptDumper(R48 app, PrintStream ps) {
         super(app);
         output = ps;
     }

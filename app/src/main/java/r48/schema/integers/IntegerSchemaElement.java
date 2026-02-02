@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 import gabien.ui.UIElement;
 import gabien.ui.elements.UINumberBox;
 import gabien.ui.layouts.UIScrollLayout;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
@@ -29,7 +29,7 @@ public class IntegerSchemaElement extends SchemaElement.Leaf {
     public long defaultInt;
     public final EmbedDataKey<Double> scrollPointKey = new EmbedDataKey<>();
 
-    public IntegerSchemaElement(App app, long i) {
+    public IntegerSchemaElement(R48 app, long i) {
         super(app);
         defaultInt = i;
     }

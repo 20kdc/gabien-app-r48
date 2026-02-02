@@ -14,13 +14,14 @@ import gabien.ui.layouts.UISplitterLayout;
 import gabien.ui.layouts.UITabBar;
 import gabien.ui.layouts.UITabPane;
 import gabien.wsi.IPeripherals;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.util.EmbedDataKey;
 import r48.schema.util.EmbedDataSlot;
 import r48.schema.util.IEmbedDataContext;
 import r48.tr.pages.TrRoot;
+import r48.ui.AppUI;
 
 import java.util.LinkedList;
 import java.util.function.Supplier;
@@ -36,7 +37,8 @@ public class PagerArrayInterface implements IArrayInterface {
     public final EmbedDataKey<Double> pageTabScrollKey = new EmbedDataKey<>();
     @Override
     public void provideInterfaceFrom(final Host svl, final Supplier<Boolean> valid, final IEmbedDataContext prop, final Array getPositions) {
-        final App app = svl.getApp();
+        final R48 app = svl.getApp();
+        final AppUI U = svl.getAppUI();
         final TrRoot T = app.t;
         // work out if we want to be in regular array mode
         final EmbedDataSlot<Boolean> regularArrayMode = prop.embedSlot(regularArrayModeKey, false);
@@ -69,8 +71,13 @@ public class PagerArrayInterface implements IArrayInterface {
                 }
 
                 @Override
-                public App getApp() {
+                public R48 getApp() {
                     return app;
+                }
+
+                @Override
+                public AppUI getAppUI() {
+                    return U;
                 }
             }, valid, prop, getPositions);
             return;
@@ -101,7 +108,7 @@ public class PagerArrayInterface implements IArrayInterface {
                 final String posText = positions[i].text;
                 UITextButton button = new UITextButton("-", app.f.schemaFieldTH, null);
                 button.onClick = () -> {
-                    app.ui.confirmDeletion(false, posText, button, () -> r.get().run());
+                    U.confirmDeletion(false, posText, button, () -> r.get().run());
                 };
                 barLayoutList.add(button);
             }

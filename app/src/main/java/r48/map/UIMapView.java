@@ -20,11 +20,12 @@ import gabien.wsi.IGrInDriver;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
 import gabien.ui.*;
-import r48.App;
+import r48.R48;
 import r48.map.systems.MapSystem;
 import r48.map2d.IMapViewCallbacks;
 import r48.map2d.layers.MapViewDrawLayer;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 import r48.ui.UIPlaneView;
 
 /**
@@ -106,8 +107,8 @@ public class UIMapView extends UIPlaneView {
 
     public boolean[] layerVis;
 
-    public UIMapView(App app, String mapN, int i, int i1) {
-        super(app);
+    public UIMapView(AppUI aui, String mapN, int i, int i1) {
+        super(aui);
         Rect fakeWorldRect = new Rect(0, 0, i, i1);
         setWantedSize(fakeWorldRect);
         setForcedBounds(null, fakeWorldRect);
@@ -165,7 +166,7 @@ public class UIMapView extends UIPlaneView {
         if (camDragSwitch) {
             shortcuts = T.m.stCamera;
         } else if (callbacks == null) {
-            if ((pickTileHelper != null) && (!app.ui.isMobile)) {
+            if ((pickTileHelper != null) && (!U.isMobile)) {
                 shortcuts = T.m.stPicker;
             } else {
                 shortcuts = T.m.stDragToPan;
@@ -315,7 +316,7 @@ public class UIMapView extends UIPlaneView {
         // As of R48 v1.5, map rendering always renders to a surface the size of the map view.
         // This changes a lot of semantics, but mainly it optimizes in favour of zooming out a map.
         boolean atOrBelowHalfSize = planeZoomDiv >= (planeZoomMul * 2);
-        AppMapViewDrawContext mvdc = new AppMapViewDrawContext(app, new Rect((int) iCamX, (int) iCamY, camR.width, camR.height), tileSize, atOrBelowHalfSize);
+        AppMapViewDrawContext mvdc = new AppMapViewDrawContext(app, U, new Rect((int) iCamX, (int) iCamY, camR.width, camR.height), tileSize, atOrBelowHalfSize);
 
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);
@@ -332,7 +333,7 @@ public class UIMapView extends UIPlaneView {
 
         // NOTE: Block copy/paste isn't nice this way... add confirmation or something instead?
         // If so, make sure that camDragSwitch still disables this.
-        mvdc.mouseStatus = app.ui.isMobile ? null : new AppMapViewDrawContext.MouseStatus(visCurrentlyDrawing, mouseXT, mouseYT);
+        mvdc.mouseStatus = U.isMobile ? null : new AppMapViewDrawContext.MouseStatus(visCurrentlyDrawing, mouseXT, mouseYT);
 
         mvdc.callbacks = callbacks;
         mvdc.currentLayer = currentLayer;
@@ -378,7 +379,7 @@ public class UIMapView extends UIPlaneView {
     }
 
     // Safe to pass null here.
-    public static void performFullCacheFlush(@NonNull App app, @Nullable UIMapView view) {
+    public static void performFullCacheFlush(@NonNull R48 app, @Nullable UIMapView view) {
         app.stuffRendererIndependent.imageLoader.flushCache();
         if (view != null) {
             view.mapTable.renderer.imageLoader.flushCache();

@@ -9,7 +9,7 @@ package r48.schema.specialized.genpos.backend;
 
 import gabien.GaBIEn;
 import gabien.render.IImage;
-import r48.App;
+import r48.R48;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
 import r48.imagefx.MirrorSubspritesImageEffect;
@@ -23,7 +23,7 @@ import java.util.function.Function;
  * RMAnimRootPanel stuff that doesn't fit in IGenposFrame R/N
  * Created on 28/07/17.
  */
-public class SpriteCache extends App.Svc {
+public class SpriteCache extends R48.Svc {
     public IRIO target;
     public String framesetALoc, framesetAHue, framesetBLoc, framesetBHue;
     public Function<IRIO, Integer> spsDeterminant;
@@ -32,7 +32,7 @@ public class SpriteCache extends App.Svc {
     private IImage framesetCacheA, framesetCacheB;
     public int spriteSize;
 
-    public SpriteCache(App app, IRIO targ, String fal, String fah, String fbl, String fbh, Function<IRIO, Integer> spriteSizeDeterminant, Function<IRIO, String> prefixDeterminant) {
+    public SpriteCache(R48 app, IRIO targ, String fal, String fah, String fbl, String fbh, Function<IRIO, Integer> spriteSizeDeterminant, Function<IRIO, String> prefixDeterminant) {
         super(app);
         target = targ;
         framesetALoc = fal;
@@ -57,7 +57,7 @@ public class SpriteCache extends App.Svc {
             if (nameA.length() != 0)
                 framesetCacheA = app.stuffRendererIndependent.imageLoader.getImage(pfxDeterminant.apply(target) + nameA, false);
             if (framesetAHue != null)
-                framesetCacheA = app.ui.imageFXCache.process(framesetCacheA, new HueShiftImageEffect((int) target.getIVar(framesetAHue).getFX()));
+                framesetCacheA = app.imageFXCache.process(framesetCacheA, new HueShiftImageEffect((int) target.getIVar(framesetAHue).getFX()));
         }
         framesetCacheB = GaBIEn.getErrorImage();
         if (framesetBLoc != null) {
@@ -65,7 +65,7 @@ public class SpriteCache extends App.Svc {
             if (nameB.length() != 0)
                 framesetCacheB = app.stuffRendererIndependent.imageLoader.getImage(pfxDeterminant.apply(target) + nameB, false);
             if (framesetBHue != null)
-                framesetCacheB = app.ui.imageFXCache.process(framesetCacheB, new HueShiftImageEffect((int) target.getIVar(framesetBHue).getFX()));
+                framesetCacheB = app.imageFXCache.process(framesetCacheB, new HueShiftImageEffect((int) target.getIVar(framesetBHue).getFX()));
         }
     }
 
@@ -75,6 +75,6 @@ public class SpriteCache extends App.Svc {
             effectList.add(new MirrorSubspritesImageEffect(spriteSize, 5, 6));
         if (opacity != 255)
             effectList.add(new MultiplyImageEffect(opacity, 255, 255, 255));
-        return app.ui.imageFXCache.process(b ? framesetCacheB : framesetCacheA, effectList);
+        return app.imageFXCache.process(b ? framesetCacheB : framesetCacheA, effectList);
     }
 }

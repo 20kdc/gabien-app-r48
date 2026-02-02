@@ -12,7 +12,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UILayer;
 import gabien.uslx.append.Size;
 import gabien.wsi.IPeripherals;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.map.StuffRenderer;
@@ -25,7 +25,7 @@ import r48.schema.util.SchemaPath;
  * Created on 12/29/16.
  */
 public class EPGDisplaySchemaElement extends SchemaElement.Leaf {
-    public EPGDisplaySchemaElement(App app) {
+    public EPGDisplaySchemaElement(R48 app) {
         super(app);
     }
 
@@ -38,7 +38,7 @@ public class EPGDisplaySchemaElement extends SchemaElement.Leaf {
     /**
      * Used for simulated objects
      */
-    public static UIElement buildEditorFromObject(App app, StuffRenderer r, RORIO target) {
+    public static UIElement buildEditorFromObject(R48 app, StuffRenderer r, RORIO target) {
         final int sprScale = app.f.getSpriteScale();
         UIElement display = new UIElement(64, 96 * sprScale) {
             @Override

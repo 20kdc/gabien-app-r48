@@ -14,14 +14,14 @@ import gabien.ui.UIElement;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.Rect;
 import gabien.wsi.IPeripherals;
-import r48.App;
 import r48.dbs.ObjectRootHandle;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 
 /**
  * Created on 17th September 2022
  */
-public class UICommandSites extends App.Prx {
+public class UICommandSites extends AppUI.Prx {
     private final Supplier<UIElement[]> refresh;
     private final ObjectRootHandle[] roots;
 
@@ -33,7 +33,7 @@ public class UICommandSites extends App.Prx {
         needsRefresh = true;
     };
 
-    public UICommandSites(App app, String name, Supplier<UIElement[]> supplier, ObjectRootHandle[] r) {
+    public UICommandSites(AppUI app, String name, Supplier<UIElement[]> supplier, ObjectRootHandle[] r) {
         super(app);
         objIdName = name;
         refresh = supplier;
@@ -46,7 +46,7 @@ public class UICommandSites extends App.Prx {
     }
 
     public void show() {
-        app.ui.wm.createWindow(this, "findTranslatables");
+        U.wm.createWindow(this, "findTranslatables");
     }
 
     @Override

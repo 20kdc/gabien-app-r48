@@ -9,12 +9,14 @@ package r48.search;
 
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
-import r48.App;
+import r48.R48;
 import r48.dbs.RPGCommand;
 import r48.io.data.RORIO;
+import r48.ui.AppUI;
 
 /**
  * Generic classifier of which CommandTag is a kind.
@@ -37,11 +39,11 @@ public interface ICommandClassifier extends IClassifierish<ICommandClassifier.In
      */
     interface Immutable extends ICommandClassifier, Instance {
         @Override
-        default void setupEditor(LinkedList<UIElement> usl, Runnable onEdit) {
+        default void setupEditor(@NonNull AppUI U, LinkedList<UIElement> usl, Runnable onEdit) {
         }
 
         @Override
-        default Instance instance(App app) {
+        default Instance instance(R48 app) {
             return this;
         }
     }

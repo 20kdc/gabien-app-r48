@@ -7,7 +7,7 @@
 
 package r48.schema.integers;
 
-import r48.App;
+import r48.R48;
 
 /**
  * Useful for hash keys.
@@ -16,7 +16,7 @@ import r48.App;
 public class LowerBoundIntegerSchemaElement extends IntegerSchemaElement {
     public int lowerBound;
 
-    public LowerBoundIntegerSchemaElement(App app, int bound, int i) {
+    public LowerBoundIntegerSchemaElement(R48 app, int bound, int i) {
         super(app, i);
         lowerBound = bound;
     }

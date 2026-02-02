@@ -13,7 +13,7 @@ import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
 import gabien.uslx.io.ByteArrayMemoryish;
-import r48.App;
+import r48.R48;
 import r48.io.BMPConnection;
 import r48.io.data.RORIO;
 
@@ -26,7 +26,7 @@ public class PasteImageEditorTool extends ImageEditorTool {
     public boolean flipX, flipY, swapXY;
     public boolean rawCopy = true;
 
-    public PasteImageEditorTool(App app) {
+    public PasteImageEditorTool(R48 app) {
         super(app);
     }
 
@@ -56,7 +56,7 @@ public class PasteImageEditorTool extends ImageEditorTool {
         }
 
         if (result == null) {
-            app.ui.launchDialog(T.ie.badClipboard);
+            view.U.launchDialog(T.ie.badClipboard);
             return;
         }
 

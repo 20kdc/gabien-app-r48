@@ -7,13 +7,14 @@
 
 package r48.map.mapinfos;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.DMPath;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 import r48.tr.pages.TrRoot;
+import r48.ui.AppUI;
 import r48.ui.Art;
 
 import java.util.*;
@@ -23,10 +24,10 @@ import java.util.function.Consumer;
  * Going to have to move it over here
  * Created on 02/06/17.
  */
-public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
+public class RXPRMLikeMapInfoBackend extends R48.Svc implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
     public Consumer<SchemaPath> modHandler;
     public ObjectRootHandle mapInfos;
-    public RXPRMLikeMapInfoBackend(App app) {
+    public RXPRMLikeMapInfoBackend(R48 app) {
         super(app);
         mapInfos = app.odb.getObject("MapInfos");
     }
@@ -82,8 +83,8 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     }
 
     @Override
-    public void triggerEditInfoOf(long k) {
-        app.ui.launchSchemaTrace(mapInfos, null, new DMPath.Hash(DMKey.of(k), false));
+    public void triggerEditInfoOf(AppUI U, long k) {
+        U.launchSchemaTrace(mapInfos, null, new DMPath.Hash(DMKey.of(k), false));
     }
 
     @Override
@@ -153,7 +154,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
         return errorsToStringOrNull(app, errors);
     }
 
-    public static void standardCalculateIndentsAndGetErrors(App app, final IRMLikeMapInfoBackend backend, HashMap<Long, Integer> id, StringBuilder errors, int standardIndentOffset) {
+    public static void standardCalculateIndentsAndGetErrors(R48 app, final IRMLikeMapInfoBackend backend, HashMap<Long, Integer> id, StringBuilder errors, int standardIndentOffset) {
         LinkedList<Long> maps = new LinkedList<Long>();
         maps.addAll(backend.getHashKeys());
 
@@ -205,7 +206,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
         }
     }
 
-    public static String errorsToStringOrNull(App app, StringBuilder errors) {
+    public static String errorsToStringOrNull(R48 app, StringBuilder errors) {
         if (errors.length() == 0)
             return null;
         errors.append(app.t.m.resolveManually);

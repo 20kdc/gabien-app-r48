@@ -10,7 +10,7 @@ package r48.schema.integers;
 import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
 import gabien.ui.layouts.UIScrollLayout;
-import r48.App;
+import r48.R48;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 
 import java.util.LinkedList;
@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 public class BitfieldSchemaElement extends IntegerSchemaElement {
     public final String[] flags;
 
-    public BitfieldSchemaElement(App app, int def, String[] f) {
+    public BitfieldSchemaElement(R48 app, int def, String[] f) {
         super(app, def);
         flags = f;
     }

@@ -30,7 +30,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * Used to build convenient dictionaries for selecting things.
  * Created on 1/3/17.
  */
-public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSchemaUpdater {
+public class DictionaryUpdaterRunnable extends R48.Svc implements SDB.DynamicSchemaUpdater {
     // act soon after init.
     private boolean actNow = true;
     public final SDB.DynamicSchemaElement dict;
@@ -46,7 +46,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
     public final SchemaElement dataSchema;
 
     // NOTE: targetDictionary must always be referenced by proxy to ensure setSDBEntry works later.
-    public DictionaryUpdaterRunnable(App app, SDB.DynamicSchemaElement targetDictionary, String target, Function<IRIO, IRIO> iFunction, boolean b, Function<IRIO, IRIO> ivar, int def, String ip, SchemaElement ds) {
+    public DictionaryUpdaterRunnable(R48 app, SDB.DynamicSchemaElement targetDictionary, String target, Function<IRIO, IRIO> iFunction, boolean b, Function<IRIO, IRIO> ivar, int def, String ip, SchemaElement ds) {
         super(app);
         dict = targetDictionary;
         targ = target;
@@ -118,7 +118,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
         return false;
     }
 
-    public static void coreLogic(App app, LinkedList<UIEnumChoice.Option> finalMap, Function<IRIO, IRIO> innerMap, final @Nullable ObjectRootHandle targetILO, @Nullable SchemaElement dataSchema, IRIO target, boolean hash, String interpret) {
+    public static void coreLogic(R48 app, LinkedList<UIEnumChoice.Option> finalMap, Function<IRIO, IRIO> innerMap, final @Nullable ObjectRootHandle targetILO, @Nullable SchemaElement dataSchema, IRIO target, boolean hash, String interpret) {
         if (hash) {
             for (DMKey key : target.getHashKeys())
                 handleVal(app, finalMap, innerMap, targetILO, dataSchema, target.getHashVal(key), key, interpret);
@@ -137,7 +137,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements SDB.DynamicSch
         dict.setEntry(ise);
     }
 
-    private static void handleVal(App app, LinkedList<UIEnumChoice.Option> finalMap, Function<IRIO, IRIO> iVar, final @Nullable ObjectRootHandle targetILO, final @Nullable SchemaElement dataSchema, IRIO rio, DMKey k, String interpret) {
+    private static void handleVal(R48 app, LinkedList<UIEnumChoice.Option> finalMap, Function<IRIO, IRIO> iVar, final @Nullable ObjectRootHandle targetILO, final @Nullable SchemaElement dataSchema, IRIO rio, DMKey k, String interpret) {
         int type = rio.getType();
         if (type != '0') {
             // Key details

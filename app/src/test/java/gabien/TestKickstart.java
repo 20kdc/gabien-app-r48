@@ -17,7 +17,7 @@ import gabien.wsi.IGrInDriver;
 import gabien.wsi.IPointer;
 import gabien.wsi.ITextEditingSession;
 import gabien.wsi.WindowSpecs;
-import r48.App;
+import r48.R48;
 import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
 import r48.dbs.ObjectDB;
@@ -60,7 +60,7 @@ public class TestKickstart {
 
     public GrandWindowManagerUtils gwmu;
 
-    public App kickstart(final String s2, final String encoding, final String engineDefId) {
+    public R48 kickstart(final String s2, final String encoding, final String engineDefId) {
         currentTestPhase = "Initial Phase";
         kickstartRFS();
         // In case unset.
@@ -74,7 +74,7 @@ public class TestKickstart {
         EngineDef engine = EnginesList.getEngines(null).get(engineDefId);
         if (engine == null)
             throw new RuntimeException("missing engine def: " + engineDefId);
-        return new App(ilg, charset, engine, GaBIEn.mutableDataFS.intoPath(s2), null, (s) -> {}, () -> "TEST");
+        return new R48(ilg, charset, engine, GaBIEn.mutableDataFS.intoPath(s2), null, (s) -> {}, () -> "TEST");
     }
 
     public void kickstartRFS() {
@@ -133,7 +133,7 @@ public class TestKickstart {
         }, true);
     }
 
-    public void resetODB(App app) {
+    public void resetODB(R48 app) {
         IObjectBackend backend = IObjectBackend.Factory.create(app.gameRoot, app.engine.odbBackend, app.engine.dataPath, app.engine.dataExt);
         app.odb = new ObjectDB(app, backend);
     }

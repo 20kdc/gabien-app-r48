@@ -24,13 +24,13 @@ import gabien.ui.layouts.UITabBar.Tab;
 import gabien.ui.layouts.UITabBar.TabIcon;
 import gabien.ui.UIElement;
 import r48.AdHocSaveLoad;
-import r48.App;
 import r48.dbs.ObjectInfo;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.util.SchemaPath;
 import r48.search.USFROperationMode;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
 import r48.ui.search.UIUSFROperationModeSelector;
 
@@ -38,16 +38,18 @@ import r48.ui.search.UIUSFROperationModeSelector;
  * Universal string locator fun
  * Created on 13th August 2022.
  */
-public class UIRMUniversalStringReplacer extends App.Prx {
+public class UIRMUniversalStringReplacer extends AppUI.Prx {
     private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
-    private RListPanel settingsFull = new RListPanel(app, T.u.usl_full);
-    private RListPanel settingsPartial = new RListPanel(app, T.u.usl_partial);
+    private RListPanel settingsFull;
+    private RListPanel settingsPartial;
 
     private UIObjectInfoSetSelector setSelector;
     private UIUSFROperationModeSelector modeSelector;
 
-    public UIRMUniversalStringReplacer(App app) {
+    public UIRMUniversalStringReplacer(AppUI app) {
         super(app);
+        settingsFull = new RListPanel(app, T.u.usl_full);
+        settingsPartial = new RListPanel(app, T.u.usl_partial);
         setSelector = new UIObjectInfoSetSelector(app);
         modeSelector = new UIUSFROperationModeSelector(app, app.f.dialogWindowTH);
         Set<ObjectInfo> setCopy = setSelector.getSet();
@@ -202,13 +204,13 @@ public class UIRMUniversalStringReplacer extends App.Prx {
                             log += "\n" + objInfo.toString() + ": " + count;
                     }
                 }
-                app.ui.launchDialog(T.u.usl_completeReport.r(total, files) + log);
+                U.launchDialog(T.u.usl_completeReport.r(total, files) + log);
             }
         }));
         layout.panelsSet(elms);
     }
 
-    public static class RListPanel extends App.Prx {
+    public static class RListPanel extends AppUI.Prx {
         private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
         private LinkedList<Replacement> settings = new LinkedList<Replacement>();
 
@@ -227,7 +229,7 @@ public class UIRMUniversalStringReplacer extends App.Prx {
 
         private final String title;
 
-        public RListPanel(App app, String string) {
+        public RListPanel(AppUI app, String string) {
             super(app);
             title = string;
             refreshContents();

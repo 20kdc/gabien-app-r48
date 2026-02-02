@@ -7,7 +7,7 @@
 
 package r48.schema.specialized.genpos.backend;
 
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -39,7 +39,7 @@ import r48.schema.util.SchemaPath;
  * <p/>
  * Created on 2/17/17.
  */
-public class RMGenposAnim extends App.Svc implements IGenposAnim {
+public class RMGenposAnim extends R48.Svc implements IGenposAnim {
     // NOTE: This can be updated, and this is relied upon for cases where a magical binding is closely linked.
     public IRIO target;
     public IGenposFrame perFrame;
@@ -47,7 +47,7 @@ public class RMGenposAnim extends App.Svc implements IGenposAnim {
     public int frameIdx;
     public boolean ix1;
 
-    public RMGenposAnim(App app, IRIO t, IGenposFrame frameHandler, Runnable runnable, boolean index) {
+    public RMGenposAnim(R48 app, IRIO t, IGenposFrame frameHandler, Runnable runnable, boolean index) {
         super(app);
         perFrame = frameHandler;
         target = t;

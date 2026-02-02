@@ -20,9 +20,10 @@ import gabien.ui.layouts.UITabBar;
 import gabien.ui.layouts.UITabPane;
 import gabien.ui.layouts.UIWindowView;
 import gabien.uslx.append.Rect;
-import r48.App;
+import r48.R48;
 import r48.tests.grand.GrandExecutionError;
 import r48.tests.grand.GrandTestBuilder;
+import r48.ui.AppUI;
 import r48.ui.Art;
 
 import java.io.FileOutputStream;
@@ -37,13 +38,18 @@ import java.util.Set;
 public class GrandWindowManagerUtils {
     public final TestKickstart kick;
     public final GrandTestBuilder gtb;
+
     public GrandWindowManagerUtils(GrandTestBuilder k) {
         gtb = k;
         kick = k.kick;
     }
 
-    public App getApp() {
+    public R48 getApp() {
         return gtb.lUtils.getApp();
+    }
+
+    public AppUI getAppUI() {
+        return gtb.lUtils.getAppUI();
     }
 
     public WindowCreatingUIElementConsumer getTicker() {
@@ -51,17 +57,18 @@ public class GrandWindowManagerUtils {
     }
 
     public UIElement[] getAllWindows() {
-        App app = getApp();
+        R48 app = getApp();
+        AppUI U = getAppUI();
         LinkedList<UIElement> ll = new LinkedList<UIElement>();
         if (app == null)
             throw new GrandExecutionError("No App");
-        if (app.ui == null)
+        if (U == null)
             throw new GrandExecutionError("No AppUI");
-        if (app.ui.wm == null)
+        if (U.wm == null)
             throw new GrandExecutionError("No window manager");
-        for (UITabBar.Tab uww : app.ui.wm.tabPane.getTabs())
+        for (UITabBar.Tab uww : U.wm.tabPane.getTabs())
             ll.add(uww.contents);
-        for (UIWindowView uww : app.ui.wm.allWindowViews)
+        for (UIWindowView uww : U.wm.allWindowViews)
             for (UIWindowView.IShell sh : uww.getShells())
                 if (sh instanceof UIWindowView.TabShell)
                     ll.add(((UIWindowView.TabShell) sh).contents);
@@ -69,14 +76,14 @@ public class GrandWindowManagerUtils {
     }
 
     public void clickIcon(UIElement e, int ico) {
-        App app = getApp();
-        if (app.ui.wm == null)
+        AppUI U = getAppUI();
+        if (U.wm == null)
             throw new GrandExecutionError("No window manager");
-        for (UITabBar.Tab tx : app.ui.wm.tabPane.getTabs()) {
+        for (UITabBar.Tab tx : U.wm.tabPane.getTabs()) {
             if (tx.contents == e)
                 clickIcon(tx, ico);
         }
-        for (UIWindowView uww : app.ui.wm.allWindowViews) {
+        for (UIWindowView uww : U.wm.allWindowViews) {
             for (UIWindowView.IShell sh : uww.getShells()) {
                 if (sh instanceof UIWindowView.TabShell) {
                     if (((UIWindowView.TabShell) sh).contents == e) {
@@ -93,8 +100,8 @@ public class GrandWindowManagerUtils {
     }
 
     public void selectTab(UIElement element) {
-        App app = getApp();
-        app.ui.wm.tabPane.selectTab(element);
+        AppUI U = getAppUI();
+        U.wm.tabPane.selectTab(element);
     }
 
     // --- Control-Finding-based access. ---

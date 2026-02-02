@@ -17,7 +17,6 @@ import gabien.GaBIEn;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
@@ -25,12 +24,13 @@ import r48.io.data.IRIO;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.systems.IRMMapSystem;
 import r48.toolsets.utils.RMTranscriptDumper;
+import r48.ui.AppUI;
 import r48.ui.UISetSelector;
 
 /**
  * Created 23rd October 2022.
  */
-public class UITranscriptControl extends App.Prx {
+public class UITranscriptControl extends AppUI.Prx {
     private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
     private boolean done = false;
 
@@ -40,7 +40,7 @@ public class UITranscriptControl extends App.Prx {
     private final IRMMapSystem mapSystem;
     private final CMDB commandsEvent;
 
-    public UITranscriptControl(App app, IRMMapSystem ms, CMDB ce) {
+    public UITranscriptControl(AppUI app, IRMMapSystem ms, CMDB ce) {
         super(app);
         mapSystem = ms;
         commandsEvent = ce;
@@ -93,7 +93,7 @@ public class UITranscriptControl extends App.Prx {
 
                 dumper.end();
                 ps.close();
-                app.ui.launchDialog(app.t.u.tsc_dumpOk);
+                U.launchDialog(app.t.u.tsc_dumpOk);
                 done = true;
             }
         }));

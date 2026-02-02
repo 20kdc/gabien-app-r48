@@ -15,13 +15,14 @@ import gabien.ui.UIElement;
 import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UILabel;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOTypedMask;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;
+import r48.ui.AppUI;
 import r48.ui.UIMenuButton;
 
 /**
@@ -31,7 +32,7 @@ import r48.ui.UIMenuButton;
 public class NamespacedIntegerSchemaElement extends SchemaElement {
     private final Namespace[] namespaces;
 
-    public NamespacedIntegerSchemaElement(App app, Namespace... namespaces) {
+    public NamespacedIntegerSchemaElement(R48 app, Namespace... namespaces) {
         super(app);
         this.namespaces = namespaces;
         // sanity check
@@ -49,6 +50,7 @@ public class NamespacedIntegerSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditorImpl(IRIO target, ISchemaHost launcher, SchemaPath path) {
+        final AppUI U = launcher.getAppUI();
         Namespace ns = namespaceOf(target.getFX());
         LinkedList<UIPopupMenu.Entry> mapped = new LinkedList<>();
         for (final Namespace ns2 : namespaces) {
@@ -57,7 +59,7 @@ public class NamespacedIntegerSchemaElement extends SchemaElement {
                 path.changeOccurred(false);
             }));
         }
-        UIElement nsPanel = new UIMenuButton(app, ns.name.r(), app.f.schemaFieldTH, launcher.getValidity(), mapped);
+        UIElement nsPanel = new UIMenuButton(U, ns.name.r(), app.f.schemaFieldTH, launcher.getValidity(), mapped);
         UIElement valuePanel = ns.editor.buildHoldingEditor(new NamespacingMask(target, ns.base), launcher, path);
         if (ns.explain != null) {
             UIElement explainPanel = new UILabel(ns.explain.r(), app.f.schemaFieldTH);

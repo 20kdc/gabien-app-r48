@@ -8,7 +8,7 @@
 package r48.ui.utilitybelt;
 
 import gabien.uslx.append.Rect;
-import r48.App;
+import r48.R48;
 
 /**
  * Created on October 09, 2018.
@@ -17,7 +17,7 @@ public abstract class StagedImageEditorTool extends ImageEditorTool {
     protected int[] stageXs, stageYs;
     protected int stage;
 
-    public StagedImageEditorTool(App app, int stageCount) {
+    public StagedImageEditorTool(R48 app, int stageCount) {
         super(app);
         stageXs = new int[stageCount];
         stageYs = new int[stageCount];

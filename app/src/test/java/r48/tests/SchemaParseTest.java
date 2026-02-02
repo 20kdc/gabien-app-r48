@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectRootHandle;
 import r48.gameinfo.EnginesList;
 import r48.io.data.DMContext;
@@ -57,7 +57,7 @@ public class SchemaParseTest {
     public void testParses() {
         System.out.println("SchemaParseTest START: " + gamepak);
         DMContext tests = new DMContext(DMChangeTracker.Null.TESTS, StandardCharsets.UTF_8);
-        App app = new TestKickstart().kickstart("RAM/", "UTF-8", gamepak);
+        R48 app = new TestKickstart().kickstart("RAM/", "UTF-8", gamepak);
         // ... Also does this.
         // Not really parsing, but a good safety measure none-the-less.
         for (EventCommandArraySchemaElement st : app.sdb.getECAs()) {

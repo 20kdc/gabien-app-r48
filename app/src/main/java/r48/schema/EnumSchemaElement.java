@@ -9,7 +9,7 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
-import r48.App;
+import r48.R48;
 import r48.dbs.ValueSyntax;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -17,6 +17,7 @@ import r48.io.data.RORIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;
+import r48.ui.AppUI;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.dialog.UIEnumChoice;
@@ -28,6 +29,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
@@ -50,7 +52,7 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
     public UIEnumChoice.EntryMode entryMode;
     public DMKey defaultVal;
 
-    public EnumSchemaElement(App app, HashMap<String, FF0> o, DMKey def, UIEnumChoice.EntryMode em, FF0 bt) {
+    public EnumSchemaElement(R48 app, HashMap<String, FF0> o, DMKey def, UIEnumChoice.EntryMode em, FF0 bt) {
         super(app);
         for (Map.Entry<String, FF0> mapping : o.entrySet())
             lookupOptions.put(mapping.getKey(), makeStandardOption(ValueSyntax.decode(mapping.getKey()), mapping.getValue(), null, null));
@@ -61,7 +63,7 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
         defaultVal = def;
     }
 
-    public EnumSchemaElement(App app, Collection<UIEnumChoice.Option> opts, DMKey def, UIEnumChoice.EntryMode em, FF0 bt) {
+    public EnumSchemaElement(R48 app, Collection<UIEnumChoice.Option> opts, DMKey def, UIEnumChoice.EntryMode em, FF0 bt) {
         super(app);
         viewOptions.addAll(opts);
         Collections.sort(viewOptions, UIEnumChoice.COMPARATOR_OPTION);
@@ -96,7 +98,7 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
         UITextButton button = new UITextButton(viewValue(target, Prefix.Prefix, opt), app.f.schemaFieldTH, null);
         button.onClick = () -> {
             liveUpdate();
-            launcher.launchDialogOrMenu(button, target, path, (close) -> makeEnumChoiceDialog((integer) -> {
+            launcher.launchDialogOrMenu(button, target, path, (close) -> makeEnumChoiceDialog(launcher.getAppUI(), (integer) -> {
                 target.setDeepClone(integer);
                 path.changeOccurred(false);
                 // Enums can affect parent format, so deal with that now.
@@ -112,8 +114,8 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
         return button;
     }
 
-    public UIEnumChoice makeEnumChoiceDialog(Consumer<DMKey> result) {
-        return new UIEnumChoice(app, result, viewOptions, buttonText.r(), entryMode);
+    public UIEnumChoice makeEnumChoiceDialog(@NonNull AppUI aui, Consumer<DMKey> result) {
+        return new UIEnumChoice(aui, result, viewOptions, buttonText.r(), entryMode);
     }
 
     public static UIEnumChoice.Option makeStandardOption(DMKey val, FF0 text, @Nullable Consumer<String> edit, @Nullable SchemaPath fdb) {

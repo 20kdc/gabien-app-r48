@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.*;
-import r48.App;
+import r48.R48;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.BooleanSchemaElement;
@@ -29,13 +29,13 @@ import r48.ui.dialog.ISpritesheetProvider;
 /**
  * Created on 29/07/17.
  */
-public class R2kGenposFrame extends App.Svc implements IGenposFrame {
+public class R2kGenposFrame extends R48.Svc implements IGenposFrame {
     public Supplier<IRIO> frameSource;
     public SpriteCache cache;
     public SchemaPath rootPath;
     public Runnable updateNotify;
 
-    public R2kGenposFrame(App app, SpriteCache spriteCache, SchemaPath path, Runnable updater) {
+    public R2kGenposFrame(R48 app, SpriteCache spriteCache, SchemaPath path, Runnable updater) {
         super(app);
         cache = spriteCache;
         rootPath = path;

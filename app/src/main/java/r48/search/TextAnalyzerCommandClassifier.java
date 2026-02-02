@@ -13,9 +13,10 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
-import r48.App;
+import r48.R48;
 import r48.dbs.RPGCommand;
 import r48.io.data.RORIO;
+import r48.ui.AppUI;
 
 /**
  * UNDERSTAND: These are estimates ONLY, intended to aid in translation.
@@ -29,18 +30,18 @@ public class TextAnalyzerCommandClassifier implements ICommandClassifier {
     }
 
     @Override
-    public String getName(App app) {
+    public String getName(R48 app) {
         return analyzer.getName(app);
     }
 
     @Override
     @NonNull
-    public Instance instance(App app) {
+    public Instance instance(R48 app) {
         final ITextAnalyzer.Instance instance = analyzer.instance(app);
         return new Instance() {
             @Override
-            public void setupEditor(@NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit) {
-                instance.setupEditor(usl, onEdit);
+            public void setupEditor(@NonNull AppUI U, @NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit) {
+                instance.setupEditor(U, usl, onEdit);
             }
 
             @Override

@@ -9,7 +9,7 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -20,7 +20,7 @@ import r48.schema.util.SchemaPath;
 public class BooleanSchemaElement extends SchemaElement.Leaf {
     public boolean defaultVal = false;
 
-    public BooleanSchemaElement(App app, boolean defVal) {
+    public BooleanSchemaElement(R48 app, boolean defVal) {
         super(app);
         defaultVal = defVal;
     }

@@ -9,7 +9,7 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextBox;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -22,7 +22,7 @@ public class StringSchemaElement extends SchemaElement.Leaf {
     public final FF0 defaultStr;
     public final char type;
 
-    public StringSchemaElement(App app, FF0 arg, char t) {
+    public StringSchemaElement(R48 app, FF0 arg, char t) {
         super(app);
         defaultStr = arg;
         type = t;

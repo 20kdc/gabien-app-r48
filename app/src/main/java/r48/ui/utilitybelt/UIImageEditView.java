@@ -13,7 +13,7 @@ import gabien.render.*;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import gabien.wsi.*;
-import r48.App;
+import r48.ui.AppUI;
 import r48.ui.UIPlaneView;
 
 /**
@@ -36,7 +36,7 @@ public class UIImageEditView extends UIPlaneView {
 
     public Runnable newToolCallback;
 
-    public UIImageEditView(App app, ImageEditorTool rootTool, Runnable updatePal) {
+    public UIImageEditView(AppUI app, ImageEditorTool rootTool, Runnable updatePal) {
         super(app);
         planeZoomMul = app.f.getSpriteScale() * 16;
         eds.currentImage = image;

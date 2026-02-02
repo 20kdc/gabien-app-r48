@@ -10,14 +10,14 @@ package r48.ui.utilitybelt;
 import java.util.function.Function;
 
 import gabien.ui.UIElement;
-import r48.App;
+import r48.R48;
 
 /**
  * Created on October 09, 2018.
  */
 public class LineImageEditorTool extends StagedImageEditorTool {
 
-    public LineImageEditorTool(App app) {
+    public LineImageEditorTool(R48 app) {
         super(app, 2);
     }
 

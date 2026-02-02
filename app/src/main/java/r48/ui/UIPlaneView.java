@@ -13,14 +13,14 @@ import gabien.ui.elements.UILabel;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import gabien.wsi.IPointer;
-import r48.App;
+
 import java.util.HashMap;
 
 /**
  * A new base class for all of the UI code that I keep replicating between UIMapView & UIImageEditView.
  * Created on November 18, 2018.
  */
-public abstract class UIPlaneView extends App.Elm {
+public abstract class UIPlaneView extends AppUI.Elm {
 
     private final UILabel.StatusLine planeStatusLine = new UILabel.StatusLine();
 
@@ -32,8 +32,8 @@ public abstract class UIPlaneView extends App.Elm {
     private HashMap<IPointer, Size> dragPointers = new HashMap<IPointer, Size>();
     private double dragNexusX, dragNexusY, firstDragDist, firstDragZoom, dragAvgDist;
 
-    public UIPlaneView(App app) {
-        super(app, app.f.scaleGuess(320), app.f.scaleGuess(200));
+    public UIPlaneView(AppUI app) {
+        super(app, app.app.f.scaleGuess(320), app.app.f.scaleGuess(200));
     }
 
     protected abstract String planeGetStatus();

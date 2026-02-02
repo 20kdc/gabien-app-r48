@@ -15,7 +15,7 @@ import gabien.ui.elements.UIBorderedElement;
 import gabien.ui.elements.UIEmpty;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
-import r48.App;
+import r48.R48;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -40,7 +40,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     private boolean fieldWidthOverride = false;
     private int fieldWidth;
 
-    public ArrayElementSchemaElement(App app, int ind, @Nullable FF0 niceName, SchemaElement ise, @Nullable FF0 opt, boolean dr) {
+    public ArrayElementSchemaElement(R48 app, int ind, @Nullable FF0 niceName, SchemaElement ise, @Nullable FF0 opt, boolean dr) {
         super(app);
         index = ind;
         alias = niceName;

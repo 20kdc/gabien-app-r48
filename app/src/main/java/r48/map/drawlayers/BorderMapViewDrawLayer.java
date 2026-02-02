@@ -9,7 +9,7 @@ package r48.map.drawlayers;
 
 import gabien.uslx.append.Block;
 import gabien.uslx.append.Rect;
-import r48.App;
+import r48.R48;
 import r48.map2d.MapViewDrawContext;
 import r48.map2d.layers.MapViewDrawLayer;
 import r48.ui.Art;
@@ -19,8 +19,8 @@ import r48.ui.Art;
  */
 public class BorderMapViewDrawLayer extends MapViewDrawLayer {
     public Rect mapBoundsPx;
-    public final App app;
-    public BorderMapViewDrawLayer(App app, Rect mapBoundsPx) {
+    public final R48 app;
+    public BorderMapViewDrawLayer(R48 app, Rect mapBoundsPx) {
         super(app.t.m.l_border);
         this.app = app;
         this.mapBoundsPx = mapBoundsPx;

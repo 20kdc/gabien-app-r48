@@ -8,7 +8,7 @@
 package r48.map;
 
 import gabien.render.IImage;
-import r48.App;
+import r48.R48;
 import r48.RubyTableR;
 import r48.io.data.IRIO;
 import r48.map.drawlayers.*;
@@ -26,19 +26,19 @@ import r48.tr.pages.TrRoot;
  * Created on 03/06/17.
  */
 public class StuffRenderer {
-    public final App app;
+    public final R48 app;
     public final TileRenderer tileRenderer;
     public final IEventGraphicRenderer eventRenderer;
     public final ITexLoader imageLoader;
 
-    public StuffRenderer(App app, ITexLoader l, TileRenderer t, IEventGraphicRenderer e) {
+    public StuffRenderer(R48 app, ITexLoader l, TileRenderer t, IEventGraphicRenderer e) {
         this.app = app;
         tileRenderer = t;
         eventRenderer = e;
         imageLoader = l;
     }
 
-    public static MapViewDrawLayer[] prepareTraditional(App app, StuffRenderer renderer, int[] tlOrder, IRIO map, IEventAccess events, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
+    public static MapViewDrawLayer[] prepareTraditional(R48 app, StuffRenderer renderer, int[] tlOrder, IRIO map, IEventAccess events, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
         if (map == null)
             return new MapViewDrawLayer[0];
         final TrRoot T = app.t;

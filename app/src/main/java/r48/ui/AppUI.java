@@ -4,7 +4,7 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.app;
+package r48.ui;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -20,6 +20,8 @@ import datum.DatumWriter;
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.WindowCreatingUIElementConsumer;
+import gabien.ui.UIElement.UIPanel;
+import gabien.ui.UIElement.UIProxy;
 import gabien.ui.dialogs.UIAutoclosingPopupMenu;
 import gabien.ui.dialogs.UICredits;
 import gabien.ui.elements.UIEmpty;
@@ -32,11 +34,14 @@ import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
 import gabien.uslx.vfs.FSBackend;
-import r48.App;
 import r48.IMapContext;
+import r48.R48;
+import r48.app.AppMain;
+import r48.app.Coco;
+import r48.app.IAppAsSeenByLauncher;
+import r48.cfg.FontSizes;
 import r48.dbs.ObjectDB.ODBHandle;
 import r48.dbs.ObjectRootHandle;
-import r48.imagefx.ImageFXCache;
 import r48.io.data.DMKey;
 import r48.io.data.DMPath;
 import r48.io.data.IRIO;
@@ -49,9 +54,7 @@ import r48.schema.util.SchemaPath;
 import r48.toolsets.BasicToolset;
 import r48.toolsets.IToolset;
 import r48.toolsets.MapToolset;
-import r48.ui.Art;
-import r48.ui.UIAppendButton;
-import r48.ui.UIDynAppPrx;
+import r48.tr.pages.TrRoot;
 import r48.ui.dialog.UITextPrompt;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
@@ -63,7 +66,7 @@ import r48.wm.WindowManager;
  * An attempt to move as much as possible out of static variables.
  * Created 26th February, 2023
  */
-public class AppUI extends App.Svc {
+public class AppUI extends R48.Svc implements IAppAsSeenByLauncher {
     public WindowManager wm;
     // All active schema hosts
     private LinkedList<UISchemaHostWindow> activeHosts = new LinkedList<UISchemaHostWindow>();
@@ -74,9 +77,6 @@ public class AppUI extends App.Svc {
     // In this event, adjusts UI to be more touch-friendly.
     public final boolean isMobile;
 
-    // Image cache
-    public ImageFXCache imageFXCache;
-
     // This is the main map context. Expect this to randomly be null and try to avoid accessing it.
     public IMapContext mapContext;
 
@@ -86,10 +86,15 @@ public class AppUI extends App.Svc {
 
     public final Coco coco;
 
-    public AppUI(App app, boolean mobile) {
+    public final FontSizes f;
+    public final AppNewProject np;
+
+    public AppUI(R48 app, boolean mobile) {
         super(app);
+        f = app.f;
+        np = new AppNewProject(this);
         isMobile = mobile;
-        coco = new Coco(app);
+        coco = new Coco(this);
     }
 
     public void initialize(WindowCreatingUIElementConsumer uiTicker) {
@@ -97,13 +102,7 @@ public class AppUI extends App.Svc {
 
         GaBIEn.setBrowserDirectory(app.gameRoot.getAbsolutePath());
 
-        // Initialize imageFX before doing anything graphical
-        imageFXCache = new ImageFXCache();
-
         imgContext = new LinkedList<ImageEditorController>();
-
-        // Set up a default stuffRenderer for things to use.
-        app.stuffRendererIndependent = app.system.rendererFromTso(null);
 
         // initialize UI
         saveButtonSym = new UIIconButton(Art.Symbol.Save.i(app), app.f.tabTH, this::saveAllModified);
@@ -180,6 +179,9 @@ public class AppUI extends App.Svc {
 
         initializeTabs();
 
+        // We've initialized all UI that stuff cares about, attach.
+        app.uiAttachmentPoint = this;
+
         app.loadProgress.accept(T.u.init2);
 
         // start possible recommended directory nagger
@@ -207,10 +209,29 @@ public class AppUI extends App.Svc {
         }
     }
 
-    public void finishInitialization() {
+
+    /**
+     * Finishes initialization on main thread just before ticking begins.
+     */
+    @Override
+    public void finishInitOnMainThread() {
         wm.finishInitialization();
     }
 
+    @Override
+    public R48 getTrueApp() {
+        return app;
+    }
+
+    @Override
+    public void shutdown() {
+        if (mapContext != null)
+            mapContext.freeOsbResources();
+        mapContext = null;
+        GaBIEn.hintFlushAllTheCaches();
+    }
+
+    @Override
     public void tick(double dT) {
         saveButtonSym.symbol = (hasModified() ? Art.Symbol.Save : Art.Symbol.SaveDisabled).i(app);
         undoButtonSym.symbol = (app.timeMachine.canUndo() ? Art.Symbol.Undo : Art.Symbol.UndoDisabled).i(app);
@@ -227,10 +248,10 @@ public class AppUI extends App.Svc {
 
         app.odb.runPendingModifications();
 
-        LinkedList<Runnable> runs = new LinkedList<>(app.uiPendingRunnables);
+        LinkedList<Consumer<AppUI>> runs = new LinkedList<>(app.uiPendingRunnables);
         app.uiPendingRunnables.clear();
-        for (Runnable r : runs)
-            r.run();
+        for (Consumer<AppUI> r : runs)
+            r.accept(this);
 
         LinkedList<UISchemaHostWindow> newActive = new LinkedList<>();
         for (UISchemaHostWindow ac : activeHosts)
@@ -244,11 +265,11 @@ public class AppUI extends App.Svc {
     private void initializeTabs() {
         LinkedList<IToolset> toolsets = new LinkedList<IToolset>();
 
-        toolsets.add(new BasicToolset(app));
+        toolsets.add(new BasicToolset(this));
 
         if (app.system.enableMapSubsystem) {
             app.loadProgress.accept(T.u.initMapScan);
-            MapToolset mapController = new MapToolset(app);
+            MapToolset mapController = new MapToolset(this);
             // Really just restricts access to prevent a hax pileup
             mapContext = mapController.getContext();
             toolsets.add(mapController);
@@ -271,7 +292,7 @@ public class AppUI extends App.Svc {
 
     public void startImgedit() {
         // Registers & unregisters self
-        app.ui.wm.createWindowSH(new ImageEditorController(app).rootView);
+        wm.createWindowSH(new ImageEditorController(this).rootView);
     }
 
     public void confirmDeletion(boolean mobileOnly, IRIO irio, SchemaElement se, final @Nullable UIElement menuBasis, final Runnable runnable) {
@@ -292,7 +313,7 @@ public class AppUI extends App.Svc {
         UITextButton cancel = new UITextButton(T.u.confirm_cancel, app.f.dialogWindowTH, null).centred();
         UIElement uie = new UISplitterLayout(new UILabel(s, app.f.dialogWindowTH),
                 new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
-        final UIDynAppPrx mtb = UIDynAppPrx.wrap(app, uie);
+        final UIDynAppPrx mtb = UIDynAppPrx.wrap(this, uie);
         mtb.titleOverride = T.t.confirm;
         accept.onClick = () -> {
             runnable.run();
@@ -301,11 +322,11 @@ public class AppUI extends App.Svc {
         cancel.onClick = () -> {
             mtb.selfClose = true;
         };
-        app.ui.wm.adjustWindowSH(mtb);
+        wm.adjustWindowSH(mtb);
         if (menuBasis != null) {
-            app.ui.wm.createMenu(menuBasis, mtb);
+            wm.createMenu(menuBasis, mtb);
         } else {
-            app.ui.wm.createWindow(mtb);
+            wm.createWindow(mtb);
         }
     }
 
@@ -315,7 +336,7 @@ public class AppUI extends App.Svc {
             UITextButton cancel = new UITextButton(T.u.confirm_cancel, app.f.dialogWindowTH, null).centred();
             UIElement uie = new UISplitterLayout(new UILabel(s, app.f.dialogWindowTH),
                     new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
-            final UIDynAppPrx mtb = UIDynAppPrx.wrap(app, uie);
+            final UIDynAppPrx mtb = UIDynAppPrx.wrap(this, uie);
             mtb.titleOverride = T.t.confirm;
             accept.onClick = () -> {
                 runnable.run();
@@ -324,7 +345,7 @@ public class AppUI extends App.Svc {
             cancel.onClick = () -> {
                 mtb.selfClose = true;
             };
-            app.ui.wm.createWindowSH(mtb);
+            wm.createWindowSH(mtb);
         };
     }
 
@@ -381,10 +402,12 @@ public class AppUI extends App.Svc {
     }
 
     public void saveAllModified() {
-        app.odb.ensureAllSaved();
-        for (ImageEditorController iec : imgContext)
-            if (iec.imageModified())
-                iec.save();
+        try (UIReporter reporter = new UIReporter(this)) {
+            app.odb.ensureAllSaved(reporter);
+            for (ImageEditorController iec : imgContext)
+                if (iec.imageModified())
+                    iec.save();
+        }
     }
 
     public boolean hasModified() {
@@ -431,7 +454,7 @@ public class AppUI extends App.Svc {
     }
 
     public void launchPrompt(String text, Consumer<String> consumer) {
-        wm.createWindow(new UITextPrompt(app, text, consumer));
+        wm.createWindow(new UITextPrompt(this, text, consumer));
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
@@ -442,7 +465,7 @@ public class AppUI extends App.Svc {
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
     public ISchemaHost launchSchema(SchemaElement s, @NonNull ObjectRootHandle rio, @Nullable SchemaDynamicContext context) {
         // Responsible for keeping listeners in place so nothing breaks.
-        UISchemaHostWindow watcher = new UISchemaHostWindow(app, context);
+        UISchemaHostWindow watcher = new UISchemaHostWindow(this, context);
         watcher.pushObject(new SchemaPath(s, rio));
         return watcher;
     }
@@ -471,7 +494,7 @@ public class AppUI extends App.Svc {
             launchDialog(T.u.schemaTraceFailure);
             return null;
         }
-        UISchemaHostWindow watcher = new UISchemaHostWindow(app, context);
+        UISchemaHostWindow watcher = new UISchemaHostWindow(this, context);
         watcher.pushPathTree(res);
         return watcher;
     }
@@ -479,7 +502,61 @@ public class AppUI extends App.Svc {
     public void copyUITree() {
         StringWriter sw = new StringWriter();
         DatumWriter dw = new DatumWriter(sw);
-        app.ui.wm.debugDumpUITree(dw);
+        wm.debugDumpUITree(dw);
         GaBIEn.clipboard.copyText(sw.toString());
+    }
+
+    public static class Svc {
+        public final @NonNull R48 app;
+        public final @NonNull AppUI U;
+        /**
+         * This is a special exception to the usual style rules.
+         */
+        public final @NonNull TrRoot T;
+        public Svc(@NonNull AppUI aui) {
+            this.U = aui;
+            this.app = aui.app;
+            T = app.t;
+        }
+    }
+
+    public static class Prx extends UIProxy {
+        public final @NonNull R48 app;
+        public final @NonNull AppUI U;
+        public final @NonNull TrRoot T;
+        public Prx(@NonNull AppUI aui) {
+            this.U = aui;
+            this.app = aui.app;
+            T = app.t;
+        }
+    }
+
+    public static abstract class Pan extends UIPanel {
+        public final @NonNull R48 app;
+        public final @NonNull AppUI U;
+        public final @NonNull TrRoot T;
+        public Pan(@NonNull AppUI aui) {
+            this.U = aui;
+            this.app = aui.app;
+            T = app.t;
+        }
+    }
+
+    public static abstract class Elm extends UIElement {
+        public final @NonNull R48 app;
+        public final @NonNull AppUI U;
+        public final @NonNull TrRoot T;
+        public Elm(@NonNull AppUI aui) {
+            this.U = aui;
+            this.app = aui.app;
+            T = app.t;
+        }
+
+        public Elm(@NonNull AppUI aui, int i, int j) {
+            super(i, j);
+            this.U = aui;
+            this.app = aui.app;
+            T = app.t;
+        }
     }
 }

@@ -10,7 +10,6 @@ package r48.toolsets;
 import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.ObjectInfo;
 import r48.dbs.ObjectRootHandle;
@@ -25,6 +24,7 @@ import r48.search.CompoundCommandClassifier;
 import r48.search.ICommandClassifier;
 import r48.search.RMFindTranslatables;
 import r48.toolsets.utils.UIIDChanger;
+import r48.ui.AppUI;
 import r48.ui.dialog.UIRMUniversalStringExportImport;
 import r48.ui.dialog.UIRMUniversalStringFinder;
 import r48.ui.dialog.UIRMUniversalStringReplacer;
@@ -47,12 +47,12 @@ import java.util.function.Consumer;
  *
  * Created on 2/12/17.
  */
-public class RMTools extends App.Svc implements Consumer<LinkedList<UIPopupMenu.Entry>> {
+public class RMTools extends AppUI.Svc implements Consumer<LinkedList<UIPopupMenu.Entry>> {
     private final CMDB commandsEvent;
     private final IRMMapSystem mapSystem;
 
-    public RMTools(App app) {
-        super(app);
+    public RMTools(AppUI aui) {
+        super(aui);
         // If this errors, then this shouldn't have been constructed.
         mapSystem = (IRMMapSystem) app.system;
 
@@ -62,12 +62,12 @@ public class RMTools extends App.Svc implements Consumer<LinkedList<UIPopupMenu.
     @Override
     public void accept(LinkedList<UIPopupMenu.Entry> entries) {
         entries.add(new UIPopupMenu.Entry(T.u.mLocateEventCommand, () -> {
-            app.ui.launchPrompt(T.u.rmCmdCodeRequest, (s) -> {
+            U.launchPrompt(T.u.rmCmdCodeRequest, (s) -> {
                 int i;
                 try {
                     i = Integer.parseInt(s);
                 } catch (Exception e) {
-                    app.ui.launchDialog(T.u.dlgBadNum);
+                    U.launchDialog(T.u.dlgBadNum);
                     return;
                 }
                 for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
@@ -95,23 +95,23 @@ public class RMTools extends App.Svc implements Consumer<LinkedList<UIPopupMenu.
                                     found = cod == i;
                                 }
                                 if (found) {
-                                    UIMTEventPicker.showEventDivorced(app, key, ilo, event, app.sdb.getSDBEntry("RPG::Event"));
+                                    UIMTEventPicker.showEventDivorced(U, key, ilo, event, app.sdb.getSDBEntry("RPG::Event"));
                                     return;
                                 }
                             }
                         }
                     }
                 }
-                app.ui.launchDialog(T.u.notFound);
+                U.launchDialog(T.u.notFound);
             });
         }));
         entries.add(new UIPopupMenu.Entry(T.u.mSearchCmdsCEV, () -> {
             ICommandClassifier.Instance ccc = CompoundCommandClassifier.I.instance(app);
-            UIClassifierishInstanceWidget<ICommandClassifier.Instance> uiccs = new UIClassifierishInstanceWidget<>(app, ccc);
+            UIClassifierishInstanceWidget<ICommandClassifier.Instance> uiccs = new UIClassifierishInstanceWidget<>(U, ccc);
             UISplitterLayout uspl = new UISplitterLayout(uiccs, new UITextButton(T.g.bConfirm, app.f.dialogWindowTH, () -> {
                 final ObjectRootHandle ilo = mapSystem.getCommonEventRoot();
-                UICommandSites ucs = new UICommandSites(app, app.odb.getIdByObject(ilo), () -> {
-                    RMFindTranslatables rft = new RMFindTranslatables(app, ilo);
+                UICommandSites ucs = new UICommandSites(U, app.odb.getIdByObject(ilo), () -> {
+                    RMFindTranslatables rft = new RMFindTranslatables(U, ilo);
                     rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents(), ccc);
                     return rft.toArray();
                 }, new ObjectRootHandle[] {
@@ -119,7 +119,7 @@ public class RMTools extends App.Svc implements Consumer<LinkedList<UIPopupMenu.
                 });
                 ucs.show();
             }), true, 1);
-            app.ui.wm.createWindow(uspl, "mSearchCmds");
+            U.wm.createWindow(uspl, "mSearchCmds");
         }));
         entries.add(new UIPopupMenu.Entry(T.u.mRunAutoCorrect, () -> {
             LinkedList<ObjectInfo> objects = app.getObjectInfos();
@@ -142,23 +142,23 @@ public class RMTools extends App.Svc implements Consumer<LinkedList<UIPopupMenu.
             }
         }));
         entries.add(new UIPopupMenu.Entry(T.u.mUniversalStringFinder, () -> {
-            app.ui.wm.createWindow(new UIRMUniversalStringFinder(app));
+            U.wm.createWindow(new UIRMUniversalStringFinder(U));
         }));
         entries.add(new UIPopupMenu.Entry(T.u.mUniversalStringReplacer, () -> {
-            app.ui.wm.createWindow(new UIRMUniversalStringReplacer(app));
+            U.wm.createWindow(new UIRMUniversalStringReplacer(U));
         }));
         entries.add(new UIPopupMenu.Entry(T.u.mUniversalStringExportImport, () -> {
-            app.ui.wm.createWindow(new UIRMUniversalStringExportImport(app));
+            U.wm.createWindow(new UIRMUniversalStringExportImport(U));
         }));
         entries.add(new UIPopupMenu.Entry(T.u.mTranscriptDump, () -> {
-            app.ui.wm.createWindow(new UITranscriptControl(app, mapSystem, commandsEvent));
+            U.wm.createWindow(new UITranscriptControl(U, mapSystem, commandsEvent));
         }));
         entries.add(new UIPopupMenu.Entry(T.u.mIDChanger, () -> {
             if (app.idc.size() == 0) {
-                app.ui.launchDialog(T.u.idc_unavailable);
+                U.launchDialog(T.u.idc_unavailable);
                 return;
             }
-            app.ui.wm.createWindow(new UIIDChanger(app, null));
+            U.wm.createWindow(new UIIDChanger(U, null));
         }));
     }
 }

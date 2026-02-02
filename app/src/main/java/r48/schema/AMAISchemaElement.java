@@ -7,7 +7,7 @@
 
 package r48.schema;
 
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 
@@ -17,7 +17,7 @@ import r48.schema.util.SchemaPath;
  * Created on 12/29/16.
  */
 public class AMAISchemaElement extends OpaqueSchemaElement {
-    public AMAISchemaElement(App app) {
+    public AMAISchemaElement(R48 app) {
         super(app);
     }
 

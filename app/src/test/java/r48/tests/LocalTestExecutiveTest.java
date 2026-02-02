@@ -16,7 +16,7 @@ import org.junit.runners.Parameterized;
 import datum.DatumReaderTokenSource;
 import datum.DatumSrcLoc;
 import datum.DatumTreeUtils;
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectInfo;
 import r48.dbs.ObjectRootHandle;
 import r48.io.IMIUtils;
@@ -100,7 +100,7 @@ public class LocalTestExecutiveTest {
 
     @Test
     public void test() {
-        App app = new TestKickstart().kickstart("/real_fs" + name, charset, schema);
+        R48 app = new TestKickstart().kickstart("/real_fs" + name, charset, schema);
         for (ObjectInfo s : dynamic ? app.getObjectInfos() : app.sdb.listFileDefs()) {
             if (s.idName.equals("zR48ProjectConfig"))
                 continue;
@@ -108,7 +108,7 @@ public class LocalTestExecutiveTest {
         }
     }
 
-    private void testObject(App app, String s) {
+    private void testObject(R48 app, String s) {
         try {
             System.out.print(s);
 

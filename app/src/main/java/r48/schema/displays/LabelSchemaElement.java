@@ -9,7 +9,7 @@ package r48.schema.displays;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -24,7 +24,7 @@ import r48.tr.TrPage.FF0;
 public class LabelSchemaElement extends SchemaElement.Leaf {
     public final FF0 text;
 
-    public LabelSchemaElement(App app, FF0 t) {
+    public LabelSchemaElement(R48 app, FF0 t) {
         super(app);
         text = t;
     }

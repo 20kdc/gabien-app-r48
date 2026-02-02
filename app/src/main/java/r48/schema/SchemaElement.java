@@ -13,7 +13,7 @@ import java.io.StringWriter;
 import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
 import gabien.ui.layouts.UIScrollLayout;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.util.ISchemaHost;
@@ -26,10 +26,10 @@ import r48.tr.pages.TrRoot;
  * Created on November 21, 2018.
  */
 public abstract class SchemaElement extends SchemaElementIOP {
-    public final App app;
+    public final R48 app;
     public final TrRoot T;
 
-    public SchemaElement(App app) {
+    public SchemaElement(R48 app) {
         this.app = app;
         this.T = app.t;
     }
@@ -97,7 +97,7 @@ public abstract class SchemaElement extends SchemaElementIOP {
      * Has no sub-paths.
      */
     public static abstract class Leaf extends SchemaElement {
-        public Leaf(App app) {
+        public Leaf(R48 app) {
             super(app);
         }
 

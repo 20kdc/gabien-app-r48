@@ -19,19 +19,18 @@ import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
 import r48.ui.spacing.UIIndentThingy;
 
 /**
  * Set selector given toStringable targets
  * Created on 13th August 2022.
  */
-public class UISetSelector<T> extends App.Prx {
+public class UISetSelector<T> extends AppUI.Prx {
     private HashSet<T> set = new HashSet<T>();
     private HashMap<T, UIIndentThingy> setButtons = new HashMap<T, UIIndentThingy>();
     private HashMap<T, UILabel> setLabels = new HashMap<T, UILabel>();
     private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
-    public UISetSelector(App app, final Iterable<T> entries) {
+    public UISetSelector(AppUI app, final Iterable<T> entries) {
         super(app);
         LinkedList<UIElement> elms = new LinkedList<>();
         elms.add(new UITextButton(T.u.set_selAll, app.f.dialogWindowTH, () -> {

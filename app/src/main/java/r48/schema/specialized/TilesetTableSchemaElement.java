@@ -9,7 +9,7 @@ package r48.schema.specialized;
 
 import gabien.render.IGrDriver;
 import gabien.uslx.append.Size;
-import r48.App;
+import r48.R48;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
@@ -20,7 +20,7 @@ import r48.schema.specialized.tbleditors.ITableCellEditor;
  * Created on 1/4/17.
  */
 public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRenderer> {
-    public TilesetTableSchemaElement(App app, PathSyntax iVar, PathSyntax wVar, PathSyntax hVar, int dc, int dw, int dh, int defL, ITableCellEditor itce, int[] defVal) {
+    public TilesetTableSchemaElement(R48 app, PathSyntax iVar, PathSyntax wVar, PathSyntax hVar, int dc, int dw, int dh, int defL, ITableCellEditor itce, int[] defVal) {
         super(app, iVar, wVar, hVar, dc, dw, dh, defL, itce, defVal);
     }
 

@@ -15,6 +15,7 @@ import r48.map.IMapToolContext;
 import r48.map.UIMapView;
 import r48.map2d.IMapViewCallbacks;
 import r48.map2d.MapViewDrawContext;
+import r48.ui.UIReporter;
 
 /**
  * Created on 1/1/17.
@@ -45,7 +46,9 @@ public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
     public void confirmAt(int x, int y, int pixx, int pixy, int layer, boolean first) {
         if (!first)
             return;
-        mapView.mapTable.eventAccess.setEventXY(targetEventKey, x, y);
+        try (UIReporter reporter = new UIReporter(U)) {
+            mapView.mapTable.eventAccess.setEventXY(targetEventKey, x, y, reporter);
+        }
         mapToolContext.accept(new UIMTEventPicker(mapToolContext));
     }
 

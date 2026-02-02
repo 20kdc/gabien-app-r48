@@ -10,7 +10,7 @@ package r48.toolsets.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.dbs.RPGCommand.Param;
@@ -32,11 +32,11 @@ import r48.ui.dialog.UIEnumChoice;
  * Hopefully should help.
  * Created 4th September 2023.
  */
-public class LibLCF245Dumper extends App.Svc {
+public class LibLCF245Dumper extends R48.Svc {
     public final IRIO root;
     public final IRIO sdbNodes;
     public final HashMap<SchemaElement, Integer> seGraph = new HashMap<>();
-    public LibLCF245Dumper(App app) {
+    public LibLCF245Dumper(R48 app) {
         super(app);
         root = new IRIOGeneric(app.ilg.adhocIOContext).setHash();
         sdbNodes = root.addHashVal(DMKey.ofStr("sdbNodes")).setArray();

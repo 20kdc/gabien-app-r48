@@ -16,16 +16,16 @@ import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
-import r48.App;
 import r48.IMapContext;
 import r48.dbs.ObjectRootHandle;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
 
 /**
  * A 'flat' explorer showing just map information.
  * Created sometime in December 2017 (whoops!)
  */
-public class UISaveScanMapInfos extends App.Prx {
+public class UISaveScanMapInfos extends AppUI.Prx {
     public final UIScrollLayout mainLayout = new UIScrollLayout(true, app.f.generalS);
     public final Function<Integer, String> objectMapping, gumMapping;
     public final IMapContext context;

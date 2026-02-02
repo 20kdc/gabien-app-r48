@@ -8,7 +8,7 @@
 package r48.schema.specialized.genpos.backend;
 
 import gabien.render.IImage;
-import r48.App;
+import r48.R48;
 import r48.imagefx.HueShiftImageEffect;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
@@ -36,7 +36,7 @@ public class R2kTroopGenposFrame extends TroopGenposFrame {
 
     public IImage battleBkg;
 
-    public R2kTroopGenposFrame(App app, IRIO t, SchemaPath path, Runnable change) {
+    public R2kTroopGenposFrame(R48 app, IRIO t, SchemaPath path, Runnable change) {
         super(app, t, path, change);
         // Immediately try and get needed resources
         IRIO database = app.odb.getObject("RPG_RT.ldb").getObject();
@@ -60,7 +60,7 @@ public class R2kTroopGenposFrame extends TroopGenposFrame {
 
     private IImage readEnemy(IRIO value, ITexLoader img) {
         IImage im = img.getImage("Monster/" + value.getIVar("@battler_name").decString(), false);
-        return app.ui.imageFXCache.process(im, new HueShiftImageEffect((int) value.getIVar("@battler_hue").getFX()));
+        return app.imageFXCache.process(im, new HueShiftImageEffect((int) value.getIVar("@battler_hue").getFX()));
     }
 
     @Override

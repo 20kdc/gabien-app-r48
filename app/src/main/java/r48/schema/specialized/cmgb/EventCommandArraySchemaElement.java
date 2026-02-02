@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import gabien.ui.*;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
-import r48.App;
+import r48.R48;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.io.data.DMKey;
@@ -31,6 +31,7 @@ import r48.schema.util.EmbedDataDir;
 import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 
 /**
  * ArraySchemaElement + some eventcommand specific stuff to automatically correct issues.
@@ -54,7 +55,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     public final RPGCommandSchemaElement baseElement;
     public final EmbedDataKey<Double> eventCommandContextualScrollKey = new EmbedDataKey<>();
 
-    public EventCommandArraySchemaElement(App app, SchemaElement a, SchemaElement b, CMDB db, boolean indentControl) {
+    public EventCommandArraySchemaElement(R48 app, SchemaElement a, SchemaElement b, CMDB db, boolean indentControl) {
         super(app, -1, 0, 0, new StandardArrayInterface().withoutIndexLabels());
         baseElement = new RPGCommandSchemaElement(app, a, b, db, indentControl, true);
         // gets rid of subwindows & proxies
@@ -230,6 +231,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         group[group.length - 1] = new SchemaElement.Leaf(app) {
             @Override
             public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+                AppUI U = launcher.getAppUI();
                 LinkedList<UIElement> addons = new LinkedList<>();
                 if (additionCodeF != -1) {
                     addons.add(new UITextButton(addText, app.f.schemaFieldTH, () -> {
@@ -248,7 +250,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 if (cctF) {
                     UITextButton alignMenuButton = new UITextButton(T.s.align_button, app.f.schemaFieldTH, null);
                     alignMenuButton.onClick = () -> {
-                        UITextStuffMenu tsm = new UITextStuffMenu(app, () -> {
+                        UITextStuffMenu tsm = new UITextStuffMenu(U, () -> {
                             LinkedList<String> total = new LinkedList<>();
                             for (int i = 0; i < length; i++) {
                                 IRIO commandTarg = target.getAElem(start + i);
@@ -272,7 +274,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                             }
                             path.changeOccurred(false);
                         }, new R2kTextRules(), 50);
-                        app.ui.wm.createMenu(alignMenuButton, tsm);
+                        U.wm.createMenu(alignMenuButton, tsm);
                     };
                     addons.add(alignMenuButton);
                 }

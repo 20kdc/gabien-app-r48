@@ -10,6 +10,7 @@ package r48.map;
 import gabien.ui.UIElement;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTBase;
+import r48.ui.AppUI;
 
 /**
  * Created on August 14th 2017, #blameIDEA, etcetc.
@@ -31,4 +32,8 @@ public interface IMapToolContext {
 
     boolean getPickTileSwitch();
     void setPickTileSwitch(boolean value);
+
+    default AppUI getAppUI() {
+        return getMapView().U;
+    }
 }

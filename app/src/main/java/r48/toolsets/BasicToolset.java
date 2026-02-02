@@ -33,6 +33,7 @@ import r48.schema.util.SchemaPath;
 import r48.toolsets.utils.LibLCF245Dumper;
 import r48.toolsets.utils.UITestGraphicsStuff;
 import r48.tr.pages.TrRoot;
+import r48.ui.AppUI;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UIMenuButton;
@@ -47,6 +48,7 @@ import r48.ui.spacing.UIBorderedSubpanel;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -57,23 +59,23 @@ import java.util.function.Function;
  * that is, until shutdown is called on AppMain which disconnects everything that could possibly cause such a leak.
  * Created on 04/06/17.
  */
-public class BasicToolset extends App.Svc implements IToolset {
+public class BasicToolset extends AppUI.Svc implements IToolset {
 
-    public BasicToolset(App app) {
+    public BasicToolset(AppUI app) {
         super(app);
     }
 
     @Override
     public UIElement[] generateTabs() {
         UIElement topRow = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.mR48Version, app.f.menuTH, () -> {
-            app.ui.coco.launch();
+            U.coco.launch();
         }).centred(), app.f.menuTH), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.mHelp, app.f.menuTH, () -> {
-            app.ui.startHelp(null, "0");
+            U.startHelp(null, "0");
         }).centred(), app.f.menuTH), new UIBorderedSubpanel(new UITextButton(T.u.mConfiguration, app.f.menuTH, () -> {
-            app.ui.wm.createWindow(new UIFontSizeConfigurator(app.c, app.t, app.applyConfigChange));
+            U.wm.createWindow(new UIFontSizeConfigurator(app.c, app.t, app.applyConfigChange));
         }).centred(), app.f.menuTH), false, 0.5), false, 0.333333);
         UIElement bottomRow = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(T.u.mImgEdit, app.f.menuTH, () -> {
-            app.ui.startImgedit();
+            U.startImgedit();
         }).centred(), app.f.menuTH), new UISplitterLayout(new UIBorderedSubpanel(createODBRMGestalt(), app.f.menuTH), new UIBorderedSubpanel(createOtherButton(), app.f.menuTH), false, 0.5), false, 1d / 3d);
 
         UISplitterLayout topBottomRowSplit = new UISplitterLayout(topRow, bottomRow, true, 0.5);
@@ -86,14 +88,14 @@ public class BasicToolset extends App.Svc implements IToolset {
 
         UIBorderedSubpanel menu3b = new UIBorderedSubpanel(engineRowsHintSplit, app.f.schemaFieldTH * 4);
 
-        UISplitterLayout menu8 = new UISplitterLayout(menu3b, createStatusBar(app), true, 1) {
+        UISplitterLayout menu8 = new UISplitterLayout(menu3b, createStatusBar(U), true, 1) {
             @Override
             public String toString() {
                 return T.t.sysTools;
             }
         };
 
-        UIElement fl = makeFileList(app);
+        UIElement fl = makeFileList(U);
         if (fl != null)
             return new UIElement[] {
                     menu8,
@@ -121,13 +123,13 @@ public class BasicToolset extends App.Svc implements IToolset {
 
     private UIElement createODBRMGestalt() {
         LinkedList<UIPopupMenu.Entry> entries = new LinkedList<>();
-        app.system.createEngineTools().accept(entries);
-        UIElement button = new UIMenuButton(app, T.u.mEngineTools, app.f.menuTH, null, entries).centred();
+        app.system.createEngineTools(U).accept(entries);
+        UIElement button = new UIMenuButton(U, T.u.mEngineTools, app.f.menuTH, null, entries).centred();
         return new UISplitterLayout(createODBButton(), button, true, 0.5);
     }
 
     private UIElement createODBButton() {
-        return new UIMenuButton(app, T.u.mObjA, app.f.menuTH, null, new String[] {
+        return new UIMenuButton(U, T.u.mObjA, app.f.menuTH, null, new String[] {
                 T.u.mEditObj,
                 T.u.mCorrectObj,
                 T.u.mInspectObj,
@@ -138,42 +140,42 @@ public class BasicToolset extends App.Svc implements IToolset {
                 T.u.mSchemaTrace
         }, new Runnable[] {
                 () -> {
-                    app.ui.launchPrompt(T.u.prObjectName, (s) -> {
+                    U.launchPrompt(T.u.prObjectName, (s) -> {
                         final ObjectRootHandle rio = app.odb.getObject(s);
                         if (rio != null) {
-                            app.ui.launchSchema(rio, null);
+                            U.launchSchema(rio, null);
                         } else {
-                            app.ui.launchDialog(T.u.dFileUnreadableNoSchema);
+                            U.launchDialog(T.u.dFileUnreadableNoSchema);
                         }
                     });
                 },
                 () -> {
-                    app.ui.launchPrompt(T.u.prObjectName, (s) -> {
+                    U.launchPrompt(T.u.prObjectName, (s) -> {
                         final ObjectRootHandle rio = app.odb.getObject(s);
-                        app.ui.launchPrompt(T.u.prSchemaID, (sid) -> {
+                        U.launchPrompt(T.u.prSchemaID, (sid) -> {
                             SchemaElement ise = app.sdb.getSDBEntry(sid);
                             ise.modifyVal(rio.getObject(), new SchemaPath(ise, rio), false);
-                            app.ui.launchDialog(T.u.done);
+                            U.launchDialog(T.u.done);
                         });
                     });
                 },
                 () -> {
-                    app.ui.launchPrompt(T.u.prObjectName, (s) -> {
+                    U.launchPrompt(T.u.prObjectName, (s) -> {
                         ObjectRootHandle obj = app.odb.getObject(s);
                         if (obj == null) {
-                            app.ui.launchDialog(T.u.dFileUnreadable);
+                            U.launchDialog(T.u.dFileUnreadable);
                         } else {
-                            app.ui.wm.createWindow(new UITest(app, obj.getObject(), obj));
+                            U.wm.createWindow(new UITest(U, obj.getObject(), obj));
                         }
                     });
                 },
                 () -> {
-                    app.ui.launchPrompt(T.u.prObjectSrc, (sA) -> {
+                    U.launchPrompt(T.u.prObjectSrc, (sA) -> {
                         final ObjectRootHandle objA = app.odb.getObject(sA);
-                        app.ui.launchPrompt(T.u.prObjectDst, (sB) -> {
+                        U.launchPrompt(T.u.prObjectDst, (sB) -> {
                             final ObjectRootHandle objB = app.odb.getObject(sB);
                             if ((objA == null) || (objB == null)) {
-                                app.ui.launchDialog(T.u.dFileUnreadable);
+                                U.launchDialog(T.u.dFileUnreadable);
                             } else {
                                 try {
                                     OutputStream os = GaBIEn.getOutFile(app.gameRoot.into("objcompareAB.txt"));
@@ -186,10 +188,10 @@ public class BasicToolset extends App.Svc implements IToolset {
                                     if (cid != null)
                                         os.write(cid);
                                     os.close();
-                                    app.ui.launchDialog(T.u.dObjCompare);
+                                    U.launchDialog(T.u.dObjCompare);
                                     return;
                                 } catch (Exception e) {
-                                    app.ui.launchDialog(e);
+                                    U.launchDialog(e);
                                 }
                             }
                         });
@@ -218,69 +220,69 @@ public class BasicToolset extends App.Svc implements IToolset {
                         dos.write('\n');
                         dos.close();
                         if (app.engine.dataPath.equals("Languages/")) {
-                            app.ui.launchDialog(T.u.osLocmapsWarn);
+                            U.launchDialog(T.u.osLocmapsWarn);
                         } else {
-                            app.ui.launchDialog(T.u.osLocmapsGen);
+                            U.launchDialog(T.u.osLocmapsGen);
                         }
                     } catch (IOException ioe) {
                         throw new RuntimeException(ioe);
                     }
                 },
                 () -> {
-                    app.ui.launchPrompt(T.u.prObjectName, (s) -> {
+                    U.launchPrompt(T.u.prObjectName, (s) -> {
                         final ObjectRootHandle rio = app.odb.getObject(s);
                         final InputStream is = GaBIEn.getInFile(UITest.getPrintPath(app));
                         if (rio == null) {
-                            app.ui.launchDialog(T.u.dFileUnreadableNoSchema);
+                            U.launchDialog(T.u.dFileUnreadableNoSchema);
                         } else if (is == null) {
-                            app.ui.launchDialog(T.u.dCannotReadPRINT);
+                            U.launchDialog(T.u.dCannotReadPRINT);
                         } else {
                             try {
                                 IRIO irio = rio.getObject();
                                 IMIUtils.runIMISegment(is, irio);
                                 rio.objectRootModified(new SchemaPath(new OpaqueSchemaElement(app), rio));
-                                app.ui.launchDialog(T.u.done);
+                                U.launchDialog(T.u.done);
                             } catch (Exception ioe) {
                                 try {
                                     is.close();
                                 } catch (Exception ex) {
                                 }
                                 ioe.printStackTrace();
-                                app.ui.launchDialog(ioe);
+                                U.launchDialog(ioe);
                             }
                         }
                     });
                 },
                 () -> {
-                    app.ui.launchPrompt(T.u.prSchemaID, (s) -> {
+                    U.launchPrompt(T.u.prSchemaID, (s) -> {
                         SchemaElement se = app.sdb.getSDBEntry(s);
                         IRIOGeneric tmp = new IRIOGeneric(app.ctxWorkspaceAppEncoding);
                         final ObjectRootHandle rio = new ObjectRootHandle.Isolated(se, tmp, "AnonObject");
                         SchemaPath.setDefaultValue(tmp, se, DMKey.NULL);
-                        app.ui.launchSchema(rio, null);
+                        U.launchSchema(rio, null);
                     });
                 },
                 () -> {
-                    app.ui.launchPrompt(T.u.prObjectName, (s) -> {
+                    U.launchPrompt(T.u.prObjectName, (s) -> {
                         final ObjectRootHandle rio = app.odb.getObject(s);
                         if (rio != null) {
-                            app.ui.launchPrompt(T.u.mSchemaTrace, (path) -> {
+                            U.launchPrompt(T.u.mSchemaTrace, (path) -> {
                                 try {
                                     PathSyntax ps = PathSyntax.compile(app.ilg.strict, path);
-                                    app.ui.launchSchemaTrace(rio, null, ps.path);
+                                    U.launchSchemaTrace(rio, null, ps.path);
                                 } catch (Exception ex) {
-                                    app.ui.launchDialog(ex);
+                                    U.launchDialog(ex);
                                 }
                             });
                         } else {
-                            app.ui.launchDialog(T.u.dFileUnreadableNoSchema);
+                            U.launchDialog(T.u.dFileUnreadableNoSchema);
                         }
                     });
                 }
         }).centred();
     }
     
-    private static int locateStrings(App app, IRIO rio, Function<IRIO, Integer> string) {
+    private static int locateStrings(R48 app, IRIO rio, Function<IRIO, Integer> string) {
         // NOTE: Hash keys, ivar keys are not up for modification.
         int total = 0;
         int type = rio.getType();
@@ -300,7 +302,7 @@ public class BasicToolset extends App.Svc implements IToolset {
     }
 
     private UIElement createOtherButton() {
-        return new UIMenuButton(app, T.u.mOther, app.f.menuTH, null, new String[] {
+        return new UIMenuButton(U, T.u.mOther, app.f.menuTH, null, new String[] {
                 T.u.mTestFonts,
                 T.u.mTestIcons,
                 T.u.mTestGraphics,
@@ -323,7 +325,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         "Failing to properly separate paragraphs will lead to incorrect output.\n" +
                         "Secondly, there are a number of attributes one can use within a paragraph to format text. The example previously went over a few of them, but here's a somewhat more detailed list:\n"
                     );
-                    app.ui.wm.createWindow(new UITestFontSizes(app, (fs) -> {
+                    U.wm.createWindow(new UITestFontSizes(app, (fs) -> {
                         UITextBox utb = new UITextBox(lastText.get(), fs).setMultiLine();
                         utb.onEdit = () -> {
                             lastText.set(utb.getText());
@@ -332,7 +334,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     }));
                 },
                 () -> {
-                    app.ui.wm.createWindow(new UITestFontSizes(app, (fs) -> {
+                    U.wm.createWindow(new UITestFontSizes(app, (fs) -> {
                         Art.Symbol[] syms = Art.Symbol.values();
                         UIElement[] icons = new UIElement[syms.length];
                         for (int i = 0; i < syms.length; i++)
@@ -341,7 +343,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     }));
                 },
                 () -> {
-                    app.ui.wm.createWindow(new UITestGraphicsStuff(app));
+                    U.wm.createWindow(new UITestGraphicsStuff(app));
                 },
                 () -> {
                     StringBuilder sb = new StringBuilder();
@@ -357,13 +359,13 @@ public class BasicToolset extends App.Svc implements IToolset {
                         ex.printStackTrace();
                         sb.append(ex.toString());
                     }
-                    app.ui.launchDialog(sb.toString());
+                    U.launchDialog(sb.toString());
                 },
                 () -> {
-                    app.ui.copyUITree();
+                    U.copyUITree();
                 },
                 () -> {
-                    app.ui.wm.toggleFullscreen();
+                    U.wm.toggleFullscreen();
                 },
                 () -> {
                     GaBIEn.startFileBrowser(T.u.mSchemaTranslator, true, "", (str) -> {
@@ -373,26 +375,26 @@ public class BasicToolset extends App.Svc implements IToolset {
                     });
                 },
                 () -> {
-                    app.ui.launchPrompt(T.t.restoreSafetyConfirm, (s) -> {
+                    U.launchPrompt(T.t.restoreSafetyConfirm, (s) -> {
                         // Don't translate this, don't lax the restrictions.
                         // If they aren't willing to put in the effort to type it, whatever that effort may be,
                         //  then they won't be careful enough using this - and will probably ruin even more of their data.
                         if (s.equals("I understand."))
-                            AppMain.reloadSystemDump(app);
+                            AppMain.reloadSystemDump(U);
                     });
-                    app.ui.launchDialog(T.u.warnRestoreSafety);
+                    U.launchDialog(T.u.warnRestoreSafety);
                 },
                 () -> {
                     GaBIEn.startFileBrowser(T.u.openAud, false, "", (res) -> {
                         if (res == null)
                             return;
-                        app.ui.wm.createWindow(UIAudioPlayer.createAbsoluteName(app, res, 1));
+                        U.wm.createWindow(UIAudioPlayer.createAbsoluteName(U, res, 1));
                     });
                 },
                 () -> {
                     String title = T.t.appREPL;
                     UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(app.c, app.vmCtx, title);
-                    app.ui.wm.createWindow(repl);
+                    U.wm.createWindow(repl);
                 },
                 () -> {
                     RORIO res = new LibLCF245Dumper(app).dumpRoot();
@@ -405,13 +407,14 @@ public class BasicToolset extends App.Svc implements IToolset {
         }).centred();
     }
 
-    private static UIElement createStatusBar(App app) {
+    private static UIElement createStatusBar(AppUI aui) {
+        R48 app = aui.app;
         final TrRoot T = app.t;
         final UILabel uiStatusLabel = new UILabel("", app.f.statusBarTH);
         // second time I've tried to lambda this - you can't because of the repetition
-        app.uiPendingRunnables.add(new Runnable() {
+        app.uiPendingRunnables.add(new Consumer<AppUI>() {
             @Override
-            public void run() {
+            public void accept(AppUI u) {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
                 RORIO clipGet = (app.theClipboard == null) ? DMKey.NULL : app.theClipboard;
                 String clipText = app.format(clipGet);
@@ -419,39 +422,40 @@ public class BasicToolset extends App.Svc implements IToolset {
                 app.uiPendingRunnables.add(this);
             }
         });
-        UIAppendButton workspace = new UIAppendButton(app, T.u.mClipboard, uiStatusLabel, app.f.statusBarTH, null,
+        UIAppendButton workspace = new UIAppendButton(aui, T.u.mClipboard, uiStatusLabel, app.f.statusBarTH, null,
                 new UIPopupMenu.Entry(T.u.mClipSave, () -> {
                     if (app.theClipboard == null) {
-                        app.ui.launchDialog(T.u.dlgClipEmpty);
+                        aui.launchDialog(T.u.dlgClipEmpty);
                     } else {
                         AdHocSaveLoad.save("clip", app.theClipboard);
-                        app.ui.launchDialog(T.u.dClipSaved);
+                        aui.launchDialog(T.u.dClipSaved);
                     }
                 }),
                 new UIPopupMenu.Entry(T.u.mClipLoad, () -> {
                     IRIOGeneric newClip = AdHocSaveLoad.load("clip");
                     if (newClip == null) {
-                        app.ui.launchDialog(T.u.dClipBad);
+                        aui.launchDialog(T.u.dClipBad);
                     } else {
                         app.theClipboard = newClip;
-                        app.ui.launchDialog(T.u.dClipLoaded);
+                        aui.launchDialog(T.u.dClipLoaded);
                     }
                 }),
                 new UIPopupMenu.Entry(T.u.mClipInspect, () -> {
                     if (app.theClipboard == null) {
-                        app.ui.launchDialog(T.u.dlgClipEmpty);
+                        aui.launchDialog(T.u.dlgClipEmpty);
                     } else {
-                        app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard, new ObjectRootHandle.Isolated(null, (IRIO) app.theClipboard, "theClipboard")));
+                        aui.wm.createWindow(new UITest(aui, (IRIO) app.theClipboard, new ObjectRootHandle.Isolated(null, (IRIO) app.theClipboard, "theClipboard")));
                     }
                 })
         );
-        workspace = new UIAppendButton(T.g.bQuit, workspace, app.ui.createLaunchConfirmation(T.u.dReturnMenuWarn, () -> {
-            app.ui.wm.pleaseShutdown();
+        workspace = new UIAppendButton(T.g.bQuit, workspace, aui.createLaunchConfirmation(T.u.dReturnMenuWarn, () -> {
+            aui.wm.pleaseShutdown();
         }), app.f.statusBarTH);
         return workspace;
     }
 
-    private static UIElement makeFileList(App app) {
+    private static UIElement makeFileList(AppUI aui) {
+        R48 app = aui.app;
         final TrRoot T = app.t;
         LinkedList<ObjectInfo> s = app.sdb.listFileDefs();
         if (s.size() == 0)
@@ -461,7 +465,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         for (final ObjectInfo s2 : s) {
             str.add(s2.toString());
             r.add(() -> {
-                app.ui.launchSchema(s2.schema, app.odb.getObject(s2.idName), null);
+                aui.launchSchema(s2.schema, app.odb.getObject(s2.idName), null);
             });
         }
         return new UIPopupMenu(str.toArray(new String[0]), r.toArray(new Runnable[0]), app.f.menuTH, app.f.menuS, false) {

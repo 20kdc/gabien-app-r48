@@ -8,7 +8,7 @@
 package r48.dbs;
 
 import gabien.ui.UIElement;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMSlot;
@@ -35,7 +35,7 @@ import datum.DatumSymbol;
  * Kinda required for reading maps.
  * Created on 12/30/16.
  */
-public class SDB extends App.Svc {
+public class SDB extends R48.Svc {
     private LinkedList<DynamicSchemaUpdater> dictionaryUpdaterRunnables = new LinkedList<>();
     private LinkedList<Runnable> mergeRunnables = new LinkedList<>();
     private HashMap<String, DatumSrcLoc> remainingExpected = new HashMap<>();
@@ -43,7 +43,7 @@ public class SDB extends App.Svc {
 
     public final StandardArrayInterface standardArrayUi = new StandardArrayInterface();
 
-    public SDB(App app) {
+    public SDB(R48 app) {
         super(app);
     }
 
@@ -115,7 +115,7 @@ public class SDB extends App.Svc {
             return (SchemaElement) ms.v;
         // Notably, the proxy is put in the database so the expectation is only added once.
         remainingExpected.put(text, location);
-        SchemaElement ise = new NameProxySchemaElement((App) app, text);
+        SchemaElement ise = new NameProxySchemaElement((R48) app, text);
         ms.v = ise;
         return ise;
     }
@@ -128,7 +128,7 @@ public class SDB extends App.Svc {
                 throw new RuntimeException("DynamicSchemaElement expected: " + text);
             return (DynamicSchemaElement) ms.v;
         } else {
-            DynamicSchemaElement npse = new DynamicSchemaElement((App) app, text);
+            DynamicSchemaElement npse = new DynamicSchemaElement((R48) app, text);
             ms.v = npse;
             return npse;
         }
@@ -225,7 +225,7 @@ public class SDB extends App.Svc {
     private static abstract class BaseProxySchemaElement extends SchemaElement implements IProxySchemaElement {
         protected SchemaElement cache = null;
 
-        public BaseProxySchemaElement(App app) {
+        public BaseProxySchemaElement(R48 app) {
             super(app);
         }
 
@@ -260,7 +260,7 @@ public class SDB extends App.Svc {
     private class NameProxySchemaElement extends BaseProxySchemaElement {
         private final String tx;
 
-        public NameProxySchemaElement(App app, String text) {
+        public NameProxySchemaElement(R48 app, String text) {
             super(app);
             tx = text;
         }
@@ -274,7 +274,7 @@ public class SDB extends App.Svc {
     public class DynamicSchemaElement extends BaseProxySchemaElement {
         private final String tx;
 
-        private DynamicSchemaElement(App app, String text) {
+        private DynamicSchemaElement(R48 app, String text) {
             super(app);
             tx = text;
         }

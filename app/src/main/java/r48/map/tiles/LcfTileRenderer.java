@@ -16,7 +16,7 @@ import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.render.ITexRegion;
 import gabien.uslx.append.DepsLocker;
-import r48.App;
+import r48.R48;
 import r48.gameinfo.ATDB;
 import r48.io.data.IRIO;
 import r48.map2d.tiles.AutoTileTypeField;
@@ -42,7 +42,7 @@ public class LcfTileRenderer extends TSOAwareTileRenderer {
     public ITexRegion[][] terrainATFields;
     public boolean optimizeAway10000;
 
-    public LcfTileRenderer(App app, ITexLoader imageLoader) {
+    public LcfTileRenderer(R48 app, ITexLoader imageLoader) {
         super(app, 16, 6);
         this.imageLoader = imageLoader;
     }

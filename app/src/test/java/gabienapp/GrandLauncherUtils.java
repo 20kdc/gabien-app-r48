@@ -9,7 +9,8 @@ package gabienapp;
 
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabienapp.state.LSInApp;
-import r48.App;
+import r48.R48;
+import r48.ui.AppUI;
 
 /**
  * Created on April 18, 2019.
@@ -24,10 +25,17 @@ public class GrandLauncherUtils {
         return launcher.uiTicker;
     }
 
-    public App getApp() {
+    public R48 getApp() {
         Launcher.State cs = launcher.currentState;
         if (cs instanceof LSInApp)
-            return (App) ((LSInApp) cs).app;
+            return ((LSInApp) cs).app.getTrueApp();
+        return null;
+    }
+
+    public AppUI getAppUI() {
+        Launcher.State cs = launcher.currentState;
+        if (cs instanceof LSInApp)
+            return ((LSInApp) cs).app.getTrueApp().uiAttachmentPoint;
         return null;
     }
 }

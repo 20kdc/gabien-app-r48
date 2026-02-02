@@ -10,11 +10,12 @@ package r48.schema.arrays;
 import java.util.function.Supplier;
 
 import gabien.ui.*;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.util.IEmbedDataContext;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 
 /**
  * Simplifies the code involved in an array UI by abstracting away the complicated permissions logic.
@@ -29,7 +30,8 @@ public interface IArrayInterface {
     public interface Host {
         void panelsClear();
         void panelsAdd(UIElement element);
-        App getApp();
+        R48 getApp();
+        AppUI getAppUI();
         void panelsFinished();
     }
 

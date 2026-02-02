@@ -13,7 +13,7 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.EmptyLambdas;
-import r48.App;
+import r48.R48;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.TSDBChoiceIntegerSchemaElement;
 
@@ -27,10 +27,10 @@ import java.util.function.Consumer;
  * (As of sep-19-2017, has static methods for use by BitfieldSchemaElement, which uses the same syntax)
  * Created on 2/18/17.
  */
-public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor {
+public class BitfieldTableCellEditor extends R48.Svc implements ITableCellEditor {
     public final String[] flags;
 
-    public BitfieldTableCellEditor(App app, String[] strings) {
+    public BitfieldTableCellEditor(R48 app, String[] strings) {
         super(app);
         flags = strings;
     }
@@ -55,7 +55,7 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
 
     // Returns 'update' runnable (which you should immediately run when ready).
     // Calls callbacks for various reasons.
-    public static Consumer<Integer> installEditor(App app, final String[] flags, final Consumer<UIElement> panelAdder, final AtomicReference<Consumer<Integer>> set) {
+    public static Consumer<Integer> installEditor(R48 app, final String[] flags, final Consumer<UIElement> panelAdder, final AtomicReference<Consumer<Integer>> set) {
         int bit = 1;
         // When the value changes, all of these are called.
         final Runnable[] flagStates = new Runnable[flags.length];

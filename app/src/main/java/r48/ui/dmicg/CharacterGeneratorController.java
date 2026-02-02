@@ -18,12 +18,12 @@ import gabien.ui.layouts.UITabBar;
 import gabien.ui.layouts.UITabPane;
 import gabien.uslx.append.*;
 import gabien.uslx.io.ByteArrayMemoryish;
-import r48.App;
 import r48.imageio.PNG8IImageIOFormat;
 import r48.io.BMPConnection;
 import r48.io.data.IRIOGeneric;
 import r48.ioplus.DBLoader;
 import r48.ioplus.IDatabase;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
 import r48.ui.UIColourSwatchButton;
 import r48.ui.dialog.UIColourPicker;
@@ -44,7 +44,7 @@ import datum.DatumSrcLoc;
  * Demetrius wants this, so I'm doing this.
  * Created on December 16, 2018.
  */
-public class CharacterGeneratorController extends App.Svc {
+public class CharacterGeneratorController extends AppUI.Svc {
     public UIElement rootView;
     public HashMap<String, Layer> charCfg = new HashMap<String, Layer>();
     public LinkedList<LayerImage> charLay = new LinkedList<LayerImage>();
@@ -52,8 +52,8 @@ public class CharacterGeneratorController extends App.Svc {
     private final UITabPane modes;
     private LinkedList<UICharGenView> views = new LinkedList<UICharGenView>();
 
-    public CharacterGeneratorController(App app) {
-        super(app);
+    public CharacterGeneratorController(AppUI aui) {
+        super(aui);
         modes = new UITabPane(app.f.tabTH, true, false);
         DBLoader.readFile(app.loadProgress, "CharGen/Modes", new IDatabase() {
             private UICharGenView view;
@@ -113,7 +113,7 @@ public class CharacterGeneratorController extends App.Svc {
                     }).togglable(l.enabled);
                     l.swatch = new UIColourSwatchButton((int) Long.parseLong(args[1], 16), app.f.schemaFieldTH, null);
                     l.swatch.onClick = () -> {
-                        app.ui.wm.createMenu(l.swatch, new UIColourPicker(app, l.naming.getText(), l.swatch.col, (integer) -> {
+                        U.wm.createMenu(l.swatch, new UIColourPicker(U, l.naming.getText(), l.swatch.col, (integer) -> {
                             if (integer != null)
                                 l.swatch.col = integer;
                         }, true));
@@ -174,7 +174,7 @@ public class CharacterGeneratorController extends App.Svc {
                         os.close();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        app.ui.launchDialog(e);
+                        aui.launchDialog(e);
                     }
                 }
             });
@@ -186,7 +186,7 @@ public class CharacterGeneratorController extends App.Svc {
                 return T.t.charGen;
             }
         };
-        Size sz = app.ui.wm.getRootSize();
+        Size sz = aui.wm.getRootSize();
         rootView.setForcedBounds(null, new Rect(0, 0, sz.width / 2, sz.height / 2));
         Collections.sort(charLay, new Comparator<LayerImage>() {
             @Override

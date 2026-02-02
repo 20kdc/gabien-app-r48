@@ -7,9 +7,8 @@
 
 package r48.app;
 
-import gabien.ui.*;
 import r48.AdHocSaveLoad;
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectDB.ODBHandle;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
@@ -17,6 +16,7 @@ import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 
 /**
  * Used to contain static variables, now just initialization routines.
@@ -24,15 +24,10 @@ import r48.schema.util.SchemaPath;
  * Created on 12/27/16. Being phased out as of 26th February 2023, reduced to static methods as of the 28th.
  */
 public class AppMain {
-    public static void initializeUI(App app, final WindowCreatingUIElementConsumer uiTicker, boolean mobile) {
-        app.np = new AppNewProject(app);
-        app.ui = new AppUI(app, mobile);
-        app.ui.initialize(uiTicker);
-    }
 
     // Is this messy? Yes. Is it required? After someone lost some work to R48? YES IT DEFINITELY IS.
     // Later: I've reduced the amount of backups performed because it appears spikes were occurring all the time.
-    public static void performSystemDump(App app, boolean emergency, String addendumData) {
+    public static void performSystemDump(R48 app, boolean emergency, String addendumData) {
         IRIO n = new IRIOGeneric(app.ilg.adhocIOContext);
         n.setObject("R48::Backup");
         n.addIVar("@emergency").setBool(emergency);
@@ -53,7 +48,7 @@ public class AppMain {
         if (emergency)
             System.err.println("emergency dump is complete.");
     }
-    private static void performSystemDumpBodyInto(App app, IRIO n) {
+    private static void performSystemDumpBodyInto(R48 app, IRIO n) {
         IRIO h = n.addIVar("@objects");
         h.setHash();
         for (ODBHandle rio : app.odb.modifiedObjects) {
@@ -63,25 +58,25 @@ public class AppMain {
         }
     }
 
-    public static void reloadSystemDump(App app) {
+    public static void reloadSystemDump(AppUI aui) {
         IRIOGeneric sysDump = AdHocSaveLoad.load("r48.error.YOUR_SAVED_DATA");
         if (sysDump == null) {
-            app.ui.launchDialog(app.t.g.dlgNoSysDump);
+            aui.launchDialog(aui.T.g.dlgNoSysDump);
             return;
         }
         IRIO objs = sysDump.getIVar("@objects");
         for (DMKey rk : objs.getHashKeys()) {
             String name = rk.decString();
-            ObjectRootHandle root = app.odb.getObject(name);
+            ObjectRootHandle root = aui.app.odb.getObject(name);
             if (root != null) {
                 root.getObject().setDeepClone(sysDump.getHashVal(rk));
-                root.objectRootModified(new SchemaPath(new OpaqueSchemaElement(app), root));
+                root.objectRootModified(new SchemaPath(new OpaqueSchemaElement(aui.app), root));
             }
         }
         if (sysDump.getIVar("@emergency").getType() == 'T') {
-            app.ui.launchDialog(app.t.g.dlgReloadED);
+            aui.launchDialog(aui.T.g.dlgReloadED);
         } else {
-            app.ui.launchDialog(app.t.g.dlgReloadPFD);
+            aui.launchDialog(aui.T.g.dlgReloadPFD);
         }
     }
 }

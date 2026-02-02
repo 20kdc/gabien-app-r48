@@ -19,7 +19,7 @@ import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
-import r48.App;
+import r48.R48;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.UIMapView;
@@ -36,7 +36,7 @@ public class UIMTPopupButtons extends UIMTBase {
         super(mtc);
 
         final UIMapView view = mtc.getMapView();
-        final App app = view.app;
+        final R48 app = view.app;
 
         final LinkedList<ToolButton> mainToolButtons = new LinkedList<>();
         mainToolButtons.add(new ToolButton(T.m.bReloadPanoramaTS) {
@@ -49,7 +49,7 @@ public class UIMTPopupButtons extends UIMTBase {
         mainToolButtons.add(new ToolButton(T.g.bProperties) {
             @Override
             public UIMTBase apply(IMapToolContext a) {
-                app.ui.launchSchema(view.map.object, new SchemaDynamicContext(app, view));
+                U.launchSchema(view.map.object, new SchemaDynamicContext(app, view, U));
                 return null;
             }
         });
@@ -63,20 +63,19 @@ public class UIMTPopupButtons extends UIMTBase {
         mainToolButtons.add(new ToolButton(T.m.bExportShot) {
             @Override
             public UIMTBase apply(IMapToolContext a) {
-                IGrDriver igd = GaBIEn.makeOffscreenBuffer(view.tileSize * view.mapTable.width, view.tileSize * view.mapTable.height);
-                view.mapTable.renderCore(igd, 0, 0, view.layerVis, view.currentLayer, view.debugToggle);
+                IGrDriver igd = view.mapTable.renderMapShot(view.layerVis, view.currentLayer, view.debugToggle);
                 AdHocSaveLoad.prepare();
                 OutputStream os = GaBIEn.getOutFile(Application.BRAND + "/shot.png");
                 if (os != null) {
                     try {
                         os.write(igd.createPNG());
                         os.close();
-                        app.ui.launchDialog(T.m.dlgWroteShot);
+                        U.launchDialog(T.m.dlgWroteShot);
                     } catch (Exception e) {
-                        app.ui.launchDialog(e);
+                        U.launchDialog(e);
                     }
                 } else {
-                    app.ui.launchDialog(T.m.dlgFailedToOpenFile);
+                    U.launchDialog(T.m.dlgFailedToOpenFile);
                 }
                 igd.shutdown();
                 return null;
@@ -96,7 +95,7 @@ public class UIMTPopupButtons extends UIMTBase {
                 if (potential == null)
                     return null;
                 for (IGrDriver ap : potential)
-                    app.ui.wm.createWindow(new UIThumbnail(ap));
+                    U.wm.createWindow(new UIThumbnail(ap));
                 return null;
             }
         });

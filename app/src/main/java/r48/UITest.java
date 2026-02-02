@@ -19,6 +19,7 @@ import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
 
 import java.io.OutputStream;
@@ -37,7 +38,7 @@ import datum.DatumSymbol;
  * ...which is why it's now missing the useful left/right scroll control and the "DS" (save currently viewed object) button.
  * Created on 12/27/16.
  */
-public class UITest extends App.Prx {
+public class UITest extends AppUI.Prx {
     public static final Comparator<String> COMPARATOR_NATSTRCOMP = UITest::natStrComp;
     
     public RORIO currentObj;
@@ -49,12 +50,12 @@ public class UITest extends App.Prx {
     //                      -> innerPanel
     public UIScrollLayout innerPanel = new UIScrollLayout(true, app.f.generalS);
 
-    public static FSBackend getPrintPath(App app) {
+    public static FSBackend getPrintPath(R48 app) {
         return app.gameRoot.into("PRINT.txt");
     }
 
-    public UITest(App app, RORIO obj, final @Nullable ObjectRootHandle rootObj) {
-        super(app);
+    public UITest(AppUI aui, RORIO obj, final @Nullable ObjectRootHandle rootObj) {
+        super(aui);
         loadObject(obj);
         UIElement topBar = new UITextButton(T.u.test_back, app.f.inspectorBackTH, () -> {
             if (back.size() > 0)
@@ -66,26 +67,26 @@ public class UITest extends App.Prx {
                 PrintStream ps = new PrintStream(fos);
                 ps.print(currentObj.toStringLong(""));
                 fos.close();
-                app.ui.launchDialog(T.u.test_prOk);
+                U.launchDialog(T.u.test_prOk);
             } catch (Exception e) {
-                app.ui.launchDialog(T.u.test_prFail, e);
+                U.launchDialog(T.u.test_prFail, e);
             }
         }, app.f.inspectorBackTH);
         topBar = new UIAppendButton(T.u.test_PTS, topBar, () -> {
-            app.ui.launchDialog(currentObj.toStringLong(""));
+            U.launchDialog(currentObj.toStringLong(""));
         }, app.f.inspectorBackTH);
         topBar = new UIAppendButton(T.u.test_toREPL, topBar, () -> {
             app.vmCtx.ensureSlot(new DatumSymbol("$obj")).v = currentObj;
-            app.ui.launchDialog(T.u.test_toREPLOk);
+            U.launchDialog(T.u.test_toREPLOk);
         }, app.f.inspectorBackTH);
         if (rootObj != null) {
             topBar = new UIAppendButton(T.u.test_withSchema, topBar, () -> {
-                app.ui.launchPrompt(T.u.prSchemaID, (res) -> {
+                U.launchPrompt(T.u.prSchemaID, (res) -> {
                     SchemaElement se = app.sdb.getSDBEntry(res);
                     if (currentObj == rootObj.getObject()) {
-                        app.ui.launchSchema(se, rootObj, null);
+                        U.launchSchema(se, rootObj, null);
                     } else {
-                        app.ui.launchDisconnectedSchema(rootObj, DMKey.NULL, (IRIO) currentObj, se, "", null);
+                        U.launchDisconnectedSchema(rootObj, DMKey.NULL, (IRIO) currentObj, se, "", null);
                     }
                 });
             }, app.f.inspectorBackTH);

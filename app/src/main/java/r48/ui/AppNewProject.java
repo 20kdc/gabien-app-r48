@@ -4,7 +4,7 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.app;
+package r48.ui;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,6 @@ import java.io.OutputStream;
 
 import gabien.GaBIEn;
 import gabien.uslx.vfs.FSBackend;
-import r48.App;
 import r48.dbs.ObjectRootHandle;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement;
@@ -23,8 +22,8 @@ import r48.ui.dialog.UIChoicesMenu;
  * An attempt to move as much as possible out of static variables.
  * Created 27th February, 2023
  */
-public class AppNewProject extends App.Svc {
-    public AppNewProject(App app) {
+public class AppNewProject extends AppUI.Svc {
+    public AppNewProject(AppUI app) {
         super(app);
     }
 
@@ -106,11 +105,14 @@ public class AppNewProject extends App.Svc {
             };
             fileCopier(mkdirs, fileCopies);
             // Load map 1, save everything
-            app.ui.mapContext.loadMap("Map.1");
-            app.odb.ensureAllSaved();
-            app.ui.launchDialog(T.u.np_synthOk);
+            U.mapContext.loadMap("Map.1");
+            try (UIReporter reporter = new UIReporter(U)) {
+                app.odb.ensureAllSaved(reporter);
+                if (reporter.nothingToReport)
+                    U.launchDialog(T.u.np_synthOk);
+            }
         };
-        app.ui.wm.createWindowSH(new UIChoicesMenu(app, T.u.np_synth2kQ, new String[] {
+        U.wm.createWindowSH(new UIChoicesMenu(U, T.u.np_synth2kQ, new String[] {
                 T.u.np_r2k0,
                 T.u.np_r2k3,
                 T.u.np_nothing

@@ -13,7 +13,7 @@ import gabien.ui.elements.UINumberBox;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.io.ByteArrayMemoryish;
 import gabien.uslx.io.MemoryishRW;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
@@ -29,7 +29,7 @@ public class CTNativeSchemaElement extends SchemaElement.Leaf {
     public final String cls;
     public final EmbedDataKey<Double> scrollPointKey = new EmbedDataKey<>();
 
-    public CTNativeSchemaElement(App app, String c) {
+    public CTNativeSchemaElement(R48 app, String c) {
         super(app);
         cls = c;
     }

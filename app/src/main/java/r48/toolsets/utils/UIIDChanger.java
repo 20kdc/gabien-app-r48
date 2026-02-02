@@ -17,19 +17,19 @@ import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.Rect;
-import r48.App;
 import r48.dbs.ObjectInfo;
 import r48.io.data.DMKey;
 import r48.io.data.RORIO;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 
 /**
  * ID changer
  * Created 17th July, 2023.
  */
-public class UIIDChanger extends App.Prx {
+public class UIIDChanger extends AppUI.Prx {
     public @Nullable SchemaPath fixedPath;
 
     public IDChangerEntry entry;
@@ -40,10 +40,10 @@ public class UIIDChanger extends App.Prx {
     public final UITextButton swapModeButton;
     public DMKey fromValue, toValue;
 
-    public UIIDChanger(App app, @Nullable SchemaPath sp) {
+    public UIIDChanger(AppUI app, @Nullable SchemaPath sp) {
         super(app);
         fixedPath = sp;
-        entry = app.idc.getFirst();
+        entry = app.app.idc.getFirst();
         fromValue = toValue = entry.extractEnum().defaultVal;
         chooseButton = new UITextButton("", app.f.dialogWindowTH, this::createCBM);
         fromButton = new UITextButton("", app.f.dialogWindowTH, this::fromButton);
@@ -76,7 +76,7 @@ public class UIIDChanger extends App.Prx {
             }));
         }
         UIAutoclosingPopupMenu amp = new UIAutoclosingPopupMenu(ll, app.f.menuTH, app.f.menuS, true);
-        app.ui.wm.createMenu(chooseButton, amp);
+        U.wm.createMenu(chooseButton, amp);
     }
 
     private void updateText() {
@@ -86,14 +86,14 @@ public class UIIDChanger extends App.Prx {
     }
 
     private void fromButton() {
-        app.ui.wm.createMenu(fromButton, entry.extractEnum().makeEnumChoiceDialog((res) -> {
+        U.wm.createMenu(fromButton, entry.extractEnum().makeEnumChoiceDialog(U, (res) -> {
             fromValue = res;
             updateText();
         }));
     }
 
     private void toButton() {
-        app.ui.wm.createMenu(toButton, entry.extractEnum().makeEnumChoiceDialog((res) -> {
+        U.wm.createMenu(toButton, entry.extractEnum().makeEnumChoiceDialog(U, (res) -> {
             toValue = res;
             updateText();
         }));
@@ -132,7 +132,7 @@ public class UIIDChanger extends App.Prx {
         for (SchemaPath sp : updates)
             sp.changeOccurred(false);
         // Report what horrors have been committed back to the user.
-        app.ui.launchDialog(T.u.idc_fridge.r(updates.size()));
+        U.launchDialog(T.u.idc_fridge.r(updates.size()));
     }
 
     @Override

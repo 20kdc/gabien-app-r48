@@ -15,12 +15,13 @@ import java.util.function.Consumer;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.dialogs.UIPopupMenu;
-import r48.App;
 import r48.IMapContext;
 import r48.ITileAccess;
+import r48.R48;
 import r48.RubyTable;
 import r48.dbs.ObjectRootHandle;
 import r48.dbs.ObjectInfo;
@@ -38,6 +39,7 @@ import r48.map2d.layers.MapViewDrawLayer;
 import r48.map2d.layers.PassabilityMapViewDrawLayer;
 import r48.schema.SchemaElement;
 import r48.texture.ITexLoader;
+import r48.ui.AppUI;
 
 /**
  * Responsible for creating NSRs and such.
@@ -47,7 +49,7 @@ import r48.texture.ITexLoader;
  * ...if it's a good idea is not my place to say. :)
  * Created on 03/06/17.
  */
-public abstract class MapSystem extends App.Svc {
+public abstract class MapSystem extends R48.Svc {
 
     // All implementations will probably use a common image loader across the mapsystem.
     // It's not an absolute, but it's pretty likely.
@@ -56,7 +58,7 @@ public abstract class MapSystem extends App.Svc {
     //  apart from the generic StuffRenderers
     public final boolean enableMapSubsystem;
 
-    public MapSystem(App app, ITexLoader imgLoad, boolean enableSwitch) {
+    public MapSystem(R48 app, ITexLoader imgLoad, boolean enableSwitch) {
         super(app);
         imageLoader = imgLoad;
         enableMapSubsystem = enableSwitch;
@@ -101,7 +103,7 @@ public abstract class MapSystem extends App.Svc {
         return dobj;
     }
 
-    public static @NonNull MapSystem create(App app, String sysBackend) {
+    public static @NonNull MapSystem create(R48 app, String sysBackend) {
         if (sysBackend.equals("null")) {
             return new NullSystem(app);
         } else if (sysBackend.equals("RXP")) {
@@ -144,7 +146,7 @@ public abstract class MapSystem extends App.Svc {
     /**
      * Creates Engine Tools population.
      */
-    public Consumer<LinkedList<UIPopupMenu.Entry>> createEngineTools() {
+    public Consumer<LinkedList<UIPopupMenu.Entry>> createEngineTools(@NonNull AppUI U) {
         return (entries) -> {};
     }
 
@@ -189,15 +191,15 @@ public abstract class MapSystem extends App.Svc {
         /**
          * Customized renderer.
          */
-        public final StuffRenderer renderer;
+        public final @NonNull StuffRenderer renderer;
         /**
          * Map draw layers.
          */
-        public final MapViewDrawLayer[] layers;
+        public final @NonNull MapViewDrawLayer[] layers;
         /**
          * Default states of map draw layers.
          */
-        public final boolean[] activeDef;
+        public final @NonNull boolean[] activeDef;
         /**
          * Used for __MAP__ dictionaries
          */
@@ -223,7 +225,7 @@ public abstract class MapSystem extends App.Svc {
          */
         public final Consumer<int[]> resize;
 
-        public MapViewState(StuffRenderer r, @NonNull MapViewDrawLayer[] layers, @Nullable boolean[] activeDefault, String usm, String[] exrefresh, ITileAccess.RWBounded tileAccess, Consumer<int[]> rz, IEventAccess iea) {
+        public MapViewState(@NonNull StuffRenderer r, @NonNull MapViewDrawLayer[] layers, @Nullable boolean[] activeDefault, String usm, String[] exrefresh, ITileAccess.RWBounded tileAccess, Consumer<int[]> rz, IEventAccess iea) {
             renderer = r;
             this.layers = layers;
             if (activeDefault != null) {
@@ -265,12 +267,22 @@ public abstract class MapSystem extends App.Svc {
         }
 
         /**
+         * 'Example-ish' mapshot code. Also generally useful.
+         */
+        public IGrDriver renderMapShot(boolean[] layerVis, int currentLayer, boolean debugToggle) {
+            int tileSize = renderer.tileRenderer.tileSize;
+            IGrDriver igd = GaBIEn.makeOffscreenBuffer(tileSize * width, tileSize * height);
+            renderCore(null, igd, 0, 0, layerVis, currentLayer, debugToggle);
+            return igd;
+        }
+
+        /**
          * Renderer for mapshots/etc.
          */
-        public void renderCore(IGrDriver igd, int vCX, int vCY, boolean[] layerVis, int currentLayer, boolean debugToggle) {
+        public void renderCore(@Nullable AppUI uiInfo, IGrDriver igd, int vCX, int vCY, boolean[] layerVis, int currentLayer, boolean debugToggle) {
             int tileSize = renderer.tileRenderer.tileSize;
 
-            AppMapViewDrawContext mvdc = new AppMapViewDrawContext(renderer.app, new Rect(vCX, vCY, igd.getWidth(), igd.getHeight()), tileSize, false);
+            AppMapViewDrawContext mvdc = new AppMapViewDrawContext(renderer.app, uiInfo, new Rect(vCX, vCY, igd.getWidth(), igd.getHeight()), tileSize, false);
 
             mvdc.currentLayer = currentLayer;
             mvdc.debugToggle = debugToggle;
@@ -281,7 +293,7 @@ public abstract class MapSystem extends App.Svc {
                     layers[i].draw(mvdc);
         }
 
-        public static MapViewState getBlank(App app, String underscoreMapObjectId, String[] ex, IEventAccess iea) {
+        public static MapViewState getBlank(@NonNull R48 app, String underscoreMapObjectId, String[] ex, IEventAccess iea) {
             return new MapViewState(app.stuffRendererIndependent, new MapViewDrawLayer[0], null, underscoreMapObjectId, ex, new ITileAccess.RWBounded() {
                 @Override
                 public Rect getBounds() {
@@ -374,7 +386,7 @@ public abstract class MapSystem extends App.Svc {
         // Additional modification listeners are inserted on a per-State basis.
         public final ObjectRootHandle object;
 
-        public MapViewDetails(App app, String o, ObjectRootHandle orh) {
+        public MapViewDetails(R48 app, String o, ObjectRootHandle orh) {
             final SchemaElement rootSchema2 = SchemaElement.cast(orh.rootSchema);
             // Eclipse check says it has to be done this way despite rootSchema being final
             if (rootSchema2 == null)

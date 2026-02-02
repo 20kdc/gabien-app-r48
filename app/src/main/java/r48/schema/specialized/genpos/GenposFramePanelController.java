@@ -12,9 +12,10 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.render.IImage;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.R48;
 import r48.schema.util.ISchemaHost;
 import r48.tr.pages.TrRoot;
+import r48.ui.AppUI;
 
 /**
  * Part of genpos.
@@ -38,18 +39,19 @@ public class GenposFramePanelController {
     public UITextButton gridToggleButton;
 
     public GenposFramePanelController(IGenposFrame rootForNow, IGenposTweeningManagement gtm, @NonNull ISchemaHost launcher) {
-        App app = launcher.getApp();
+        R48 app = launcher.getApp();
+        AppUI U = launcher.getAppUI();
         final TrRoot T = app.t;
         tweening = gtm;
         hostLauncher = launcher;
         frame = rootForNow;
-        editor = new UISingleFrameView(app, this);
+        editor = new UISingleFrameView(U, this);
         IImage bkg = rootForNow.getBackground();
         if (bkg != null) {
             editor.camX = bkg.getWidth() / 2;
             editor.camY = bkg.getHeight() / 2;
         }
-        cellSelection = new UICellSelectionPanel(launcher.getApp(), rootForNow);
+        cellSelection = new UICellSelectionPanel(launcher.getAppUI(), rootForNow);
 
         editingPanel = new UICellEditingPanel(cellSelection, this);
         gridToggleButton = new UITextButton(T.s.bGrid8px, app.f.rmaCellTH, () -> {

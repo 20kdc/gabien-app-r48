@@ -9,7 +9,7 @@ package r48.search;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.RPGCommand;
 import r48.io.data.RORIO;
 
@@ -25,7 +25,7 @@ public class ImmutableTextAnalyzerCommandClassifier implements ICommandClassifie
     }
 
     @Override
-    public String getName(App app) {
+    public String getName(R48 app) {
         return instance.getName(app);
     }
 

@@ -12,10 +12,10 @@ import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.Size;
-import r48.App;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.ioplus.Reporter;
 import r48.map.IMapToolContext;
 import r48.map.UIMapView;
 import r48.map.events.IEventAccess;
@@ -23,10 +23,13 @@ import r48.map2d.IMapViewCallbacks;
 import r48.map2d.MapViewDrawContext;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaDynamicContext;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
+import r48.ui.UIReporter;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -78,7 +81,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                     if (eventName != null)
                         nam = eventName;
 
-                    Runnable r = mapView.mapTable.eventAccess.hasSync(evK);
+                    Consumer<Reporter> r = mapView.mapTable.eventAccess.hasSync(evK);
                     if (r == null) {
                         // Note the checks in case of out of date panel.
                         UIElement button = new UITextButton(nam, app.f.eventPickerEntryTH, () -> {
@@ -119,7 +122,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                         }, app.f.eventPickerEntryTH);
                         UIAppendButton delAppend = new UIAppendButton(T.m.bDel, button, null, app.f.eventPickerEntryTH);
                         delAppend.button.onClick = () -> {
-                            app.ui.confirmDeletion(false, eventName, delAppend, () -> {
+                            U.confirmDeletion(false, eventName, delAppend, () -> {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
                                     confirmAt(x, y, 123, 123, layer, true);
                                     return;
@@ -129,8 +132,10 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     confirmAt(x, y, 123, 123, layer, true);
                                     return;
                                 }
-                                mapView.mapTable.eventAccess.delEvent(evK);
-                                confirmAt(x, y, 123, 123, layer, true);
+                                try (UIReporter reporter = new UIReporter(U)) {
+                                    mapView.mapTable.eventAccess.delEvent(evK, reporter);
+                                    confirmAt(x, y, 123, 123, layer, true);
+                                }
                             });
                         };
                         button = delAppend;
@@ -140,9 +145,12 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                         button = new UIAppendButton(T.m.bSync, button, () -> {
                             // It's possible (if unlikely) that this action actually became invalid.
                             // Consider: confirmAt -> object change -> click Sync
-                            Runnable syncCB = mapView.mapTable.eventAccess.hasSync(evK);
-                            if (syncCB != null)
-                                syncCB.run();
+                            Consumer<Reporter> syncCB = mapView.mapTable.eventAccess.hasSync(evK);
+                            if (syncCB != null) {
+                                try (UIReporter reporter = new UIReporter(U)) {
+                                    syncCB.accept(reporter);
+                                }
+                            }
                             confirmAt(x, y, 123, 123, layer, true);
                         }, app.f.eventPickerEntryTH);
                         elms.add(button);
@@ -155,28 +163,32 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
             if (types[i] == null)
                 continue;
             UIElement pan = new UITextButton(types[i], app.f.eventPickerEntryTH, () -> {
-                DMKey k = mapView.mapTable.eventAccess.addEvent(null, i2);
-                if (k == null)
-                    return;
-                IRIO v = mapView.mapTable.eventAccess.getEvent(k);
-                if (v == null)
-                    throw new RuntimeException("IEventAccess implementation not sane.");
-                IRIO evName = v.getIVar("@name");
-                if (evName != null) {
-                    String n = Integer.toString((int) k.getFX());
-                    while (n.length() < 4)
-                        n = "0" + n;
-                    evName.setString("EV" + n);
+                try (UIReporter reporter = new UIReporter(U)) {
+                    DMKey k = mapView.mapTable.eventAccess.addEvent(null, i2, reporter);
+                    if (k == null)
+                        return;
+                    IRIO v = mapView.mapTable.eventAccess.getEvent(k);
+                    if (v == null)
+                        throw new RuntimeException("IEventAccess implementation not sane.");
+                    IRIO evName = v.getIVar("@name");
+                    if (evName != null) {
+                        String n = Integer.toString((int) k.getFX());
+                        while (n.length() < 4)
+                            n = "0" + n;
+                        evName.setString("EV" + n);
+                    }
+                    mapView.mapTable.eventAccess.setEventXY(k, x, y, reporter);
+                    showEvent(k, mapView, v);
                 }
-                mapView.mapTable.eventAccess.setEventXY(k, x, y);
-                showEvent(k, mapView, v);
             });
             pan = new UIAppendButton(T.g.bPaste, pan, () -> {
-                DMKey k = mapView.mapTable.eventAccess.addEvent(app.theClipboard, i2);
-                if (k == null)
-                    return;
-                mapView.mapTable.eventAccess.setEventXY(k, x, y);
-                mapToolContext.accept(new UIMTEventMover(mapToolContext, k));
+                try (UIReporter reporter = new UIReporter(U)) {
+                    DMKey k = mapView.mapTable.eventAccess.addEvent(app.theClipboard, i2, reporter);
+                    if (k == null)
+                        return;
+                    mapView.mapTable.eventAccess.setEventXY(k, x, y, reporter);
+                    mapToolContext.accept(new UIMTEventMover(mapToolContext, k));
+                }
             }, app.f.eventPickerEntryTH);
             elms.add(pan);
         }
@@ -193,11 +205,11 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         if (root == null)
             return;
         key = root.key;
-        map.app.ui.launchDisconnectedSchema(root.root, key, event, root.eventSchema, "E" + key, new SchemaDynamicContext(map.app, map));
+        map.U.launchDisconnectedSchema(root.root, key, event, root.eventSchema, "E" + key, new SchemaDynamicContext(map.app, map, map.U));
     }
 
-    public static void showEventDivorced(App app, DMKey key, ObjectRootHandle map, IRIO event, SchemaElement eventSchema) {
-        app.ui.launchDisconnectedSchema(map, key, event, eventSchema, "E" + key, null);
+    public static void showEventDivorced(AppUI aui, DMKey key, ObjectRootHandle map, IRIO event, SchemaElement eventSchema) {
+        aui.launchDisconnectedSchema(map, key, event, eventSchema, "E" + key, null);
     }
 
     @Override

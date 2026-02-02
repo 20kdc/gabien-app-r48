@@ -6,7 +6,7 @@
  */
 package r48.schema.op;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.RPGCommand;
 import r48.io.data.IRIO;
 import r48.schema.specialized.textboxes.R2kTextRules;
@@ -30,7 +30,7 @@ public class RMToolsSchemaOps {
     /**
      * This contains the RMTools operators.
      */
-    public static void defJavasideOperators(App app) {
+    public static void defJavasideOperators(R48 app) {
         int catIdx = 0;
         int sortRTM = sortIdx(SORT_RMTOOLS, catIdx++);
         CommandTag rmTextManipTag = app.commandTags.get("sayCmd");

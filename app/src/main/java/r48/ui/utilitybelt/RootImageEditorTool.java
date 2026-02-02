@@ -14,7 +14,7 @@ import gabien.ui.elements.UIIconButton;
 import gabien.ui.layouts.UIListLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.append.Rect;
-import r48.App;
+import r48.R48;
 import r48.ui.Art.Symbol;
 
 /**
@@ -23,12 +23,12 @@ import r48.ui.Art.Symbol;
 public class RootImageEditorTool extends ImageEditorTool {
     private boolean activeSection = false;
 
-    public RootImageEditorTool(App app) {
+    public RootImageEditorTool(R48 app) {
         super(app);
     }
 
     public static UIElement createToolPalette(final UIImageEditView uiev, Class<?> oneTool) {
-        App app = uiev.app;
+        R48 app = uiev.app;
         @SuppressWarnings("rawtypes")
         final Class[] toolClasses = new Class[] {
                 RootImageEditorTool.class,
@@ -57,7 +57,7 @@ public class RootImageEditorTool extends ImageEditorTool {
             @SuppressWarnings("unchecked")
             UIElement nx = new UIIconButton(toolSymbol[i].i(app), app.f.schemaFieldTH, () -> {
                 try {
-                    uiev.currentTool = (ImageEditorTool) (toolClasses[ic].getConstructor(App.class).newInstance(app));
+                    uiev.currentTool = (ImageEditorTool) (toolClasses[ic].getConstructor(R48.class).newInstance(app));
                     uiev.newToolCallback.run();
                 } catch (Exception e) {
                     e.printStackTrace();

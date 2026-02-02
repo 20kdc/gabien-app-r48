@@ -14,7 +14,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gabien.TestKickstart;
-import r48.App;
+import r48.R48;
 import r48.imageio.ImageIOFormat;
 import r48.imageio.ImageIOImage;
 import r48.imageio.PNG8IImageIOFormat;
@@ -26,12 +26,12 @@ import r48.imageio.XYZImageIOFormat;
 public class ImageIOTest {
     @Test
     public void testXYZ() throws IOException {
-        App app = new TestKickstart().kickstart("RAM/", "UTF-8", "r2k");
+        R48 app = new TestKickstart().kickstart("RAM/", "UTF-8", "r2k");
         testFormat(new XYZImageIOFormat(app.t), true);
     }
     @Test
     public void testPNG8I() throws IOException {
-        App app = new TestKickstart().kickstart("RAM/", "UTF-8", "r2k");
+        R48 app = new TestKickstart().kickstart("RAM/", "UTF-8", "r2k");
         testFormat(new PNG8IImageIOFormat(app.t), false);
     }
 

@@ -9,7 +9,7 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.UIElement;
 import gabien.uslx.append.Rect;
-import r48.App;
+import r48.R48;
 
 /**
  * Created on 16th July 2018
@@ -18,7 +18,7 @@ public class RectangleImageEditorTool extends ImageEditorTool {
     public boolean stage2;
     public int aX, aY;
 
-    public RectangleImageEditorTool(App app) {
+    public RectangleImageEditorTool(R48 app) {
         super(app);
     }
 

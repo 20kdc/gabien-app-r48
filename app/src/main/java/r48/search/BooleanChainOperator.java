@@ -6,7 +6,7 @@
  */
 package r48.search;
 
-import r48.App;
+import r48.R48;
 
 /**
  * This is definitely a good idea. Yup.
@@ -18,7 +18,7 @@ public enum BooleanChainOperator {
     private BooleanChainOperator() {
     }
 
-    public String getTranslatedName(App app) {
+    public String getTranslatedName(R48 app) {
         switch (this) {
         case And:
             return app.t.u.ccs_and;

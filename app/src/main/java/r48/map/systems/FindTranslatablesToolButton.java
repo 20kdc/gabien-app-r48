@@ -8,7 +8,7 @@ package r48.map.systems;
 
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectRootHandle;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController.ToolButton;
@@ -17,6 +17,7 @@ import r48.maptools.UIMTBase;
 import r48.search.CompoundCommandClassifier;
 import r48.search.ICommandClassifier;
 import r48.search.RMFindTranslatables;
+import r48.ui.AppUI;
 import r48.ui.search.UIClassifierishInstanceWidget;
 import r48.ui.search.UICommandSites;
 
@@ -25,23 +26,23 @@ import r48.ui.search.UICommandSites;
  * Extracted from R2kSystem on 30th September 2022
  */
 public final class FindTranslatablesToolButton extends ToolButton {
-    public final App app;
     public final String ep;
-    public FindTranslatablesToolButton(App app, String e) {
+    public FindTranslatablesToolButton(R48 app, String e) {
         super(app.t.m.bSearchCmds);
-        this.app = app;
         ep = e;
     }
 
     @Override
     public UIMTBase apply(final IMapToolContext a) {
+        final AppUI U = a.getAppUI();
+        final R48 app = U.app;
         ICommandClassifier.Instance ccc = CompoundCommandClassifier.I.instance(app);
-        UIClassifierishInstanceWidget<ICommandClassifier.Instance> uiccs = new UIClassifierishInstanceWidget<>(app, ccc);
+        UIClassifierishInstanceWidget<ICommandClassifier.Instance> uiccs = new UIClassifierishInstanceWidget<>(U, ccc);
         UISplitterLayout uspl = new UISplitterLayout(uiccs, new UITextButton(app.t.g.bConfirm, app.f.dialogWindowTH, () -> {
             UIMapView umv = a.getMapView();
             final ObjectRootHandle map = umv.map.object;
-            UICommandSites ucs = new UICommandSites(umv.app, umv.map.objectId, () -> {
-                RMFindTranslatables rft = new RMFindTranslatables(umv.app, map);
+            UICommandSites ucs = new UICommandSites(U, umv.map.objectId, () -> {
+                RMFindTranslatables rft = new RMFindTranslatables(U, map);
                 rft.addSitesFromMap(a.getMapView(), ep, ccc);
                 return rft.toArray();
             }, new ObjectRootHandle[] {
@@ -49,7 +50,7 @@ public final class FindTranslatablesToolButton extends ToolButton {
             });
             ucs.show();
         }), true, 1);
-        app.ui.wm.createWindow(uspl, "mSearchCmds");
+        U.wm.createWindow(uspl, "mSearchCmds");
         return null;
     }
 }

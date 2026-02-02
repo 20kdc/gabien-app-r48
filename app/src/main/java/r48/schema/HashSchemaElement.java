@@ -13,7 +13,7 @@ import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.R48;
 import r48.UITest;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
@@ -25,6 +25,7 @@ import r48.schema.util.EmbedDataKey;
 import r48.schema.util.EmbedDataSlot;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 
@@ -42,7 +43,7 @@ public class HashSchemaElement extends SchemaElement {
     public final EmbedDataKey<IRIO> keyWorkspaceKey = new EmbedDataKey<>();
     public final EmbedDataKey<String> searchTermKey = new EmbedDataKey<>();
 
-    public HashSchemaElement(App app, SchemaElement keySE, SchemaElement opaqueSE, boolean flexible) {
+    public HashSchemaElement(R48 app, SchemaElement keySE, SchemaElement opaqueSE, boolean flexible) {
         super(app);
         keyElem = keySE;
         valElem = opaqueSE;
@@ -51,6 +52,7 @@ public class HashSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+        AppUI U = launcher.getAppUI();
         final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target);
         EmbedDataSlot<IRIO> keyWorkspaceSlot = launcher.embedSlot(target, keyWorkspaceKey, null);
         IRIO preWorkspace = keyWorkspaceSlot.value;
@@ -133,7 +135,7 @@ public class HashSchemaElement extends SchemaElement {
                     }
                     UIAppendButton append = new UIAppendButton("-", hs, null, app.f.schemaFieldTH);
                     append.button.onClick = () -> {
-                        app.ui.confirmDeletion(false, value, valElem, append, () -> {
+                        U.confirmDeletion(false, value, valElem, append, () -> {
                             // remove
                             target.removeHashVal(kss);
                             path.changeOccurred(false);

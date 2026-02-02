@@ -14,7 +14,6 @@ import gabien.uslx.append.*;
 import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
-import r48.App;
 
 import java.util.HashSet;
 import java.util.function.Consumer;
@@ -25,7 +24,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * NOTE: This must be recreated every time it needs to be reloaded, and needs to be contained in a UIScrollViewLayout to work properly.
  * Created on 11/08/17.
  */
-public class UITreeView extends App.Pan implements OldMouseEmulator.IOldMouseReceiver {
+public class UITreeView extends AppUI.Pan implements OldMouseEmulator.IOldMouseReceiver {
     private TreeElement[] elements = new TreeElement[0];
     private OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
     private final int nodeWidth;
@@ -34,7 +33,7 @@ public class UITreeView extends App.Pan implements OldMouseEmulator.IOldMouseRec
     private Art.Symbol dragCursorSymbol = null;
     private int dragBase = -1;
 
-    public UITreeView(App app, int nw) {
+    public UITreeView(AppUI app, int nw) {
         super(app);
         nodeWidth = nw;
     }

@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import r48.App;
+import r48.R48;
 
 /**
  * CMDB can't be pushed into AppCore so push it outwards instead
  */
-public class CMDBDB extends App.Svc {
-    public CMDBDB(App app) {
+public class CMDBDB extends R48.Svc {
+    public CMDBDB(R48 app) {
         super(app);
     }
 

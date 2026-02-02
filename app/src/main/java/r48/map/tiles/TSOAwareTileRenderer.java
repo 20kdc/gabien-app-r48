@@ -8,7 +8,7 @@ package r48.map.tiles;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.map2d.tiles.TileRenderer;
 
@@ -16,8 +16,8 @@ import r48.map2d.tiles.TileRenderer;
  * Created 24th July, 2023, so RXPSystem and RVXASystem will stop fighting.
  */
 public abstract class TSOAwareTileRenderer extends TileRenderer {
-    public final App app;
-    public TSOAwareTileRenderer(App app, int ts, int rw) {
+    public final R48 app;
+    public TSOAwareTileRenderer(R48 app, int ts, int rw) {
         super(ts, rw);
         this.app = app;
     }

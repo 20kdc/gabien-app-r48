@@ -12,8 +12,8 @@ import gabien.render.IImage;
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.dialogs.UIPopupMenu.Entry;
-import r48.App;
 import r48.IMapContext;
+import r48.R48;
 import r48.RubyTableR;
 import r48.dbs.ObjectInfo;
 import r48.dbs.ObjectRootHandle;
@@ -41,6 +41,7 @@ import r48.texture.GabienTexLoader;
 import r48.texture.ITexLoader;
 import r48.toolsets.RMTools;
 import r48.toolsets.utils.RMTranscriptDumper;
+import r48.ui.AppUI;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -52,7 +53,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * Created on 03/06/17.
  */
 public class RXPSystem extends MapSystem implements IRMMapSystem {
-    public RXPSystem(App app) {
+    public RXPSystem(R48 app) {
         super(app, new CacheTexLoader(new FixAndSecondaryTexLoader("Graphics/", "", new ChainedTexLoader(new ITexLoader[] {
                 new GabienTexLoader(app.gameResources, ".png"),
                 new GabienTexLoader(app.gameResources, ".jpg"),
@@ -66,7 +67,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         return super.mapObjectIDToSchemaID(objectID);
     }
 
-    protected static IRIO tsoById(App app, long id) {
+    protected static IRIO tsoById(R48 app, long id) {
         IRIO tileset = null;
         int tid = (int) id;
         IRIO tilesets = app.odb.getObject("Tilesets").getObject();
@@ -84,8 +85,8 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public Consumer<LinkedList<Entry>> createEngineTools() {
-        return new RMTools(app);
+    public Consumer<LinkedList<Entry>> createEngineTools(@NonNull AppUI U) {
+        return new RMTools(U);
     }
 
     @Override
@@ -137,7 +138,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         if (!pano.equals(""))
             panoImg = imageLoader.getImage(pano, true);
         if (panoImg != null && panoHue != 0)
-            panoImg = app.ui.imageFXCache.process(panoImg, new HueShiftImageEffect(panoHue));
+            panoImg = app.imageFXCache.process(panoImg, new HueShiftImageEffect(panoHue));
         RXPAccurateDrawLayer accurate = new RXPAccurateDrawLayer(T, rt, events, (XPTileRenderer) renderer.tileRenderer, (RMEventGraphicRenderer) renderer.eventRenderer);
         return new MapViewDrawLayer[] {
                 // works for green docks

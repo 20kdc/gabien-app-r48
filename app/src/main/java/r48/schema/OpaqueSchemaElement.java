@@ -9,7 +9,7 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
-import r48.App;
+import r48.R48;
 import r48.UITest;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -19,7 +19,7 @@ import r48.schema.util.SchemaPath;
  * Created on 12/28/16.
  */
 public class OpaqueSchemaElement extends SchemaElement.Leaf {
-    public OpaqueSchemaElement(App app) {
+    public OpaqueSchemaElement(R48 app) {
         super(app);
     }
 
@@ -31,7 +31,7 @@ public class OpaqueSchemaElement extends SchemaElement.Leaf {
         return new UITextButton(getMessage(target), app.f.schemaFieldTH, new Runnable() {
             @Override
             public void run() {
-                launcher.launchOther(new UITest(launcher.getApp(), target, path.root));
+                launcher.launchOther(new UITest(launcher.getAppUI(), target, path.root));
             }
         });
     }

@@ -22,7 +22,6 @@ import gabien.ui.layouts.UISplitterLayout;
 import gabien.uslx.vfs.FSBackend;
 import gabien.ui.UIElement;
 import r48.AdHocSaveLoad;
-import r48.App;
 import r48.dbs.ObjectInfo;
 import r48.dbs.RPGCommand;
 import r48.io.JsonObjectBackend;
@@ -34,13 +33,14 @@ import r48.schema.SchemaElementIOP;
 import r48.schema.specialized.cmgb.RPGCommandSchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.search.USFROperationMode;
+import r48.ui.AppUI;
 import r48.ui.search.UIUSFROperationModeSelector;
 
 /**
  * Universal string locator fun
  * Created on 15th July, 2025.
  */
-public class UIRMUniversalStringExportImport extends App.Prx {
+public class UIRMUniversalStringExportImport extends AppUI.Prx {
     private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalS);
 
     private UIObjectInfoSetSelector setSelector;
@@ -49,10 +49,10 @@ public class UIRMUniversalStringExportImport extends App.Prx {
     private static final DMKey fieldText = DMKey.ofStr("text");
     private static final DMKey fieldPath = DMKey.ofStr("path");
 
-    public UIRMUniversalStringExportImport(App app) {
-        super(app);
-        setSelector = new UIObjectInfoSetSelector(app);
-        modeSelector = new UIUSFROperationModeSelector(app, app.f.dialogWindowTH);
+    public UIRMUniversalStringExportImport(AppUI aui) {
+        super(aui);
+        setSelector = new UIObjectInfoSetSelector(U);
+        modeSelector = new UIUSFROperationModeSelector(aui, app.f.dialogWindowTH);
         Set<ObjectInfo> setCopy = setSelector.getSet();
 
         // load config if possible
@@ -160,12 +160,12 @@ public class UIRMUniversalStringExportImport extends App.Prx {
                 try {
                     exchange.saveObjectToFile(objInfo.idName, jsonFileFinal);
                 } catch (IOException e) {
-                    app.ui.launchDialog(e);
+                    U.launchDialog(e);
                 }
             int count = finds.get();
             total += count;
         }
-        app.ui.launchDialog(T.u.usl_completeReportUSE.r(total, files) + log);
+        U.launchDialog(T.u.usl_completeReportUSE.r(total, files) + log);
     }
 
     private void reifyPath(IRIO target, @Nullable SchemaPath path, HashMap<SchemaElementIOP, String> elemToName) {

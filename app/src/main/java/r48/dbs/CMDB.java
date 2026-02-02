@@ -7,7 +7,7 @@
 
 package r48.dbs;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.RPGCommand.PDyn;
 import r48.dbs.RPGCommand.SpritesheetSpecialTag;
 import r48.dbs.RPGCommand.TonepickerSpecialTag;
@@ -36,7 +36,7 @@ import datum.DatumWriter;
 /**
  * Created on 12/30/16.
  */
-public class CMDB extends App.Svc {
+public class CMDB extends R48.Svc {
     /**
      * DB ID for use in internationalization
      */

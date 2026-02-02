@@ -12,7 +12,8 @@ import java.util.LinkedList;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
-import r48.App;
+import r48.R48;
+import r48.ui.AppUI;
 
 /**
  * Generic classifier of which CommandTag is a kind.
@@ -22,12 +23,12 @@ public interface IClassifierish<T extends IClassifierish.BaseInstance> {
     /**
      * Returns a localized name for this classifier.
      */
-    @NonNull String getName(App app);
+    @NonNull String getName(R48 app);
 
     /**
      * Creates an instance of this classifier.
      */
-    @NonNull T instance(App app);
+    @NonNull T instance(R48 app);
 
     /**
      * Instance of a classifier. Immutable Instances need not be unique.
@@ -37,6 +38,6 @@ public interface IClassifierish<T extends IClassifierish.BaseInstance> {
          * Installs an editor for this classifier instance, if possible.
          * Only one editor should be present at a given time for this instance.
          */
-        void setupEditor(@NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit);
+        void setupEditor(@NonNull AppUI U, @NonNull LinkedList<UIElement> usl, @NonNull Runnable onEdit);
     }
 }

@@ -7,6 +7,8 @@
 
 package r48.ui.dialog;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.render.IGrDriver;
 
 /**
@@ -24,4 +26,11 @@ public interface ISpritesheetProvider {
     long mapIdxToVal(int idx);
 
     void drawItem(long t, int x, int y, int spriteScale, IGrDriver igd);
+
+    /**
+     * In UISpritesheetChoice, an error message can be displayed.
+     */
+    default @Nullable String getMessage() {
+        return null;
+    }
 }

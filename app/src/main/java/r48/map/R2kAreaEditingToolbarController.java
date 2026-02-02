@@ -13,7 +13,7 @@ import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.elements.UILabel;
 import gabien.uslx.append.Rect;
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.IRIO;
 import r48.map2d.IMapViewCallbacks;
@@ -24,7 +24,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 11/08/17.
  */
-public class R2kAreaEditingToolbarController extends App.Svc implements IEditingToolbarController {
+public class R2kAreaEditingToolbarController extends R48.Svc implements IEditingToolbarController {
     public final ObjectRootHandle mapInfosRoot;
     public final IRIO areaInfo;
     public final int tileSize;
@@ -110,7 +110,7 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
                 u.setFX(Math.min(firstPointY, y));
                 r.setFX(Math.max(firstPointX, x) + 1);
                 d.setFX(Math.max(firstPointY, y) + 1);
-                App app = mapToolContext.getMapView().app;
+                R48 app = mapToolContext.getMapView().app;
                 mapInfosRoot.objectRootModified(new SchemaPath(app.sdb.getSDBEntry("RPG::MapTree"), mapInfosRoot));
                 label.setText(textA);
                 definingPoint2 = false;

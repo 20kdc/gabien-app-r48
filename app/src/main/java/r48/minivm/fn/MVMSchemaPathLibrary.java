@@ -8,7 +8,7 @@ package r48.minivm.fn;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMPath;
 import r48.io.data.IRIO;
@@ -22,8 +22,8 @@ import r48.schema.util.SchemaPath;
  * Schema Path library.
  * Created 19th December, 2025.
  */
-public class MVMSchemaPathLibrary extends App.Svc {
-    public MVMSchemaPathLibrary(App app) {
+public class MVMSchemaPathLibrary extends R48.Svc {
+    public MVMSchemaPathLibrary(R48 app) {
         super(app);
     }
 

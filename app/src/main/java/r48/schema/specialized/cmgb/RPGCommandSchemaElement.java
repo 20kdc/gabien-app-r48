@@ -11,7 +11,7 @@ import gabien.ui.*;
 import gabien.ui.elements.UILabel;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.R48;
 import r48.dbs.CMDB;
 import r48.dbs.PathSyntax;
 import r48.dbs.RPGCommand;
@@ -33,6 +33,7 @@ import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.pages.TrRoot;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 import r48.ui.dialog.UIEnumChoice;
@@ -63,7 +64,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
     public final EmbedDataKey<Double> scrollPointKey = new EmbedDataKey<>();
 
-    public RPGCommandSchemaElement(App app, SchemaElement ise, SchemaElement mos, CMDB db, boolean allowIndentControl, boolean showHdr) {
+    public RPGCommandSchemaElement(R48 app, SchemaElement ise, SchemaElement mos, CMDB db, boolean allowIndentControl, boolean showHdr) {
         super(app);
         actualSchema = ise;
         mostOfSchema = mos;
@@ -84,6 +85,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         // They're tags for stuff done inside the schema, not part of the schema itself.
 
         final SchemaPath path = path2.tagSEMonitor(target, this, false);
+        final AppUI U = launcher.getAppUI();
 
         if (showHeader) {
             UIElement chooseCode = new UIAppendButton(T.s.cmdHelp, new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTH, () -> {
@@ -106,7 +108,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 } else {
                     title += T.s.cmdUnkName;
                 }
-                app.ui.launchDialog(title + "\n" + result);
+                U.launchDialog(title + "\n" + result);
             }, app.f.schemaFieldTH);
 
             return new UISplitterLayout(chooseCode, buildSubElem(target, launcher, path), true, 0);
@@ -159,10 +161,11 @@ public class RPGCommandSchemaElement extends SchemaElement {
     protected static TempDialogSchemaChoice navigateToCode(final ISchemaHost launcher, final IRIO target, final Consumer<int[]> templateAndConfirm, final SchemaPath path, final CMDB database) {
         UIEnumChoice.Category[] categories = database.buildEnum();
 
-        final App app = launcher.getApp();
+        final R48 app = launcher.getApp();
+        final AppUI U = launcher.getAppUI();
         final TrRoot T = app.t;
         TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, path);
-        temp.heldDialog = new UIEnumChoice(app, (integer) -> {
+        temp.heldDialog = new UIEnumChoice(U, (integer) -> {
             long fnv = integer.getFX();
             // NOTE: This just uses ints for everything.
             RPGCommand rc = database.knownCommands.get((int) fnv);

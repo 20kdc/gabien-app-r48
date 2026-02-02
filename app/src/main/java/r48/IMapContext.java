@@ -7,6 +7,8 @@
 
 package r48;
 
+import r48.ui.AppUI;
+
 /**
  * Ties together the Map tab and everything related.
  * Here's how it'll work from now on.
@@ -35,5 +37,5 @@ public interface IMapContext {
     void performIRIOFlush();
 
     // Helps prevent an awful lot of object pipelining.
-    App getApp();
+    AppUI getApp();
 }

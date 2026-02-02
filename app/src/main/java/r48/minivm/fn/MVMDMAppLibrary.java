@@ -12,7 +12,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import datum.DatumSymbol;
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectInfo;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMContext;
@@ -32,7 +32,7 @@ import r48.schema.util.SchemaPath;
  * Created 8th March 2023.
  */
 public class MVMDMAppLibrary {
-    public static void add(MVMEnv ctx, App app) {
+    public static void add(MVMEnv ctx, R48 app) {
         ctx.defineSlot(new DatumSymbol("dm-fmt"), new DMFmt(app))
             .help("(dm-fmt TARGET [NAME/#nil [PREFIXENUMS]]) : Passes to FormatSyntax.interpretParameter. If the passed-in object is null (say, due to a PathSyntax failure) returns the empty string. Important: Because of schemas and stuff this doesn't exist in the static translation context. PREFIXENUMS can be #f, #t or #nil (default).");
 
@@ -64,13 +64,13 @@ public class MVMDMAppLibrary {
         }, "(odb-get OID CREATE): Gets an object root handle. OID must either be a root (passthrough), or a string. If a string, object MUST be registered in object infos table or an error will be thrown. Returns #nil if the object doesn't exist, can't be created, but 'should' exist.");
     }
 
-    public static @Nullable ObjectRootHandle assertObjectRoot(App app, Object input, boolean create) {
+    public static @Nullable ObjectRootHandle assertObjectRoot(R48 app, Object input, boolean create) {
         if (input instanceof ObjectRootHandle)
             return (ObjectRootHandle) input;
         return assertObjectInfo(app, input).getILO(create);
     }
 
-    public static @NonNull ObjectInfo assertObjectInfo(App app, Object text) {
+    public static @NonNull ObjectInfo assertObjectInfo(R48 app, Object text) {
         ObjectInfo oi = app.getObjectInfo((String) text);
         if (oi == null)
             throw new RuntimeException("MVM is not allowed to access undefined object info: " + text);
@@ -78,8 +78,8 @@ public class MVMDMAppLibrary {
     }
 
     public static final class DMFmt extends MVMFn.Fixed {
-        public final App app;
-        public DMFmt(App app) {
+        public final R48 app;
+        public DMFmt(R48 app) {
             super(new MVMType.Fn(MVMType.STR, 1, new MVMType[] {MVMEnvR48.RORIO_TYPE, MVMType.STR, MVMType.ANY}, null), "dm-fmt");
             this.app = app;
         }

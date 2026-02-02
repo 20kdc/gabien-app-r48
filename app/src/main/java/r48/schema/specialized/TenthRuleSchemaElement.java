@@ -9,7 +9,7 @@ package r48.schema.specialized;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.minivm.fn.MVMFn;
 import r48.schema.AggregateSchemaElement;
@@ -28,7 +28,7 @@ public class TenthRuleSchemaElement extends SchemaElement.Leaf {
     public final MVMFn executeFn;
     public final EmbedDataKey<Boolean> buttonEDKey = new EmbedDataKey<>();
 
-    public TenthRuleSchemaElement(App app, FF1 iT, MVMFn iF) {
+    public TenthRuleSchemaElement(R48 app, FF1 iT, MVMFn iF) {
         super(app);
         text = iT;
         executeFn = iF;
@@ -40,7 +40,7 @@ public class TenthRuleSchemaElement extends SchemaElement.Leaf {
             try {
                 executeFn.clDirect(target, launcher, path);
             } catch (Exception ioe) {
-                app.ui.launchDialog(ioe);
+                launcher.getAppUI().launchDialog(ioe);
             }
         });
 

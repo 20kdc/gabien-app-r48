@@ -23,7 +23,7 @@ public class UIMTBase extends UIDynAppPrx {
     public final IMapToolContext mapToolContext;
 
     public UIMTBase(@NonNull IMapToolContext mtc) {
-        super(mtc.getMapView().app);
+        super(mtc.getMapView().U);
         mapToolContext = mtc;
     }
 

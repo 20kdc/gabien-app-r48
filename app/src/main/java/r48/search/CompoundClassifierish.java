@@ -8,12 +8,15 @@ package r48.search;
 
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
 import r48.ui.Art.Symbol;
+import r48.R48;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
 import r48.ui.UIChoiceButton;
 
@@ -21,13 +24,13 @@ import r48.ui.UIChoiceButton;
  * Used as the root command classifier.
  * Created October 25th, 2023.
  */
-public abstract class CompoundClassifierish<C extends IClassifierish<I>, I extends IClassifierish.BaseInstance> extends App.Svc implements IClassifierish.BaseInstance {
+public abstract class CompoundClassifierish<C extends IClassifierish<I>, I extends IClassifierish.BaseInstance> extends R48.Svc implements IClassifierish.BaseInstance {
     private final C[] ents;
     public final C defaultEntry;
     public Entry[] entries;
     public final BooleanChainOperator defaultBCO;
 
-    public CompoundClassifierish(App ac, final C[] e, C de, boolean hasFirst, BooleanChainOperator db) {
+    public CompoundClassifierish(R48 ac, final C[] e, C de, boolean hasFirst, BooleanChainOperator db) {
         super(ac);
         ents = e;
         defaultEntry = de;
@@ -40,13 +43,13 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
 
     @SuppressWarnings("unchecked")
     @Override
-    public void setupEditor(LinkedList<UIElement> usl, Runnable onEdit) {
+    public void setupEditor(@NonNull AppUI U, LinkedList<UIElement> usl, Runnable onEdit) {
         final Entry[] currentEntriesArray = entries;
         for (int i = 0; i < entries.length; i++) {
             final Entry ent = entries[i];
             final int iFinal = i;
             // header row
-            UIChoiceButton<C> ccs = new UIChoiceButton<C>(app, app.f.dialogWindowTH, (C) entries[i].cType, ents) {
+            UIChoiceButton<C> ccs = new UIChoiceButton<C>(U, app.f.dialogWindowTH, (C) entries[i].cType, ents) {
                 @Override
                 public String choiceToText(C choice) {
                     return choice.getName(app);
@@ -63,10 +66,10 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
             };
             LinkedList<UIElement> interiorList = new LinkedList<>();
             interiorList.add(ccs);
-            entries[i].cInstance.setupEditor(interiorList, onEdit);
+            entries[i].cInstance.setupEditor(U, interiorList, onEdit);
             UIScrollLayout interiorScrollLayout = new UIScrollLayout(true, app.f.generalS, interiorList);
             // wrapping & such
-            UIChoiceButton<BooleanChainOperator> bco = new UIChoiceButton<BooleanChainOperator>(app, app.f.dialogWindowTH, ent.chain, BooleanChainOperator.values()) {
+            UIChoiceButton<BooleanChainOperator> bco = new UIChoiceButton<BooleanChainOperator>(U, app.f.dialogWindowTH, ent.chain, BooleanChainOperator.values()) {
                 @Override
                 public String choiceToText(BooleanChainOperator choice) {
                     return choice.getTranslatedName(app);
@@ -114,7 +117,7 @@ public abstract class CompoundClassifierish<C extends IClassifierish<I>, I exten
         public IClassifierish.BaseInstance cInstance;
         public BooleanChainOperator chain = BooleanChainOperator.And;
 
-        public Entry(App app, IClassifierish<?> ct, BooleanChainOperator bco) {
+        public Entry(R48 app, IClassifierish<?> ct, BooleanChainOperator bco) {
             chain = bco;
             cType = ct;
             cInstance = cType.instance(app);

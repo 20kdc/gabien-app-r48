@@ -7,7 +7,7 @@
 
 package r48.map.systems;
 
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.events.IEventGraphicRenderer;
@@ -22,7 +22,7 @@ import r48.texture.GabienTexLoader;
  * Created on 03/06/17.
  */
 public class NullSystem extends MapSystem {
-    public NullSystem(App app) {
+    public NullSystem(R48 app) {
         // Redundant cache as error safety net.
         // Having an explicit "ErrorSafetyNetImageLoader" would just complicate things.
         super(app, new CacheTexLoader(new FixAndSecondaryTexLoader("", "", new GabienTexLoader(app.gameResources, ""))), false);

@@ -9,8 +9,11 @@ package r48.search;
 
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.UIElement;
-import r48.App;
+import r48.R48;
+import r48.ui.AppUI;
 
 /**
  * Just get this here.
@@ -34,11 +37,11 @@ public interface ITextAnalyzer extends IClassifierish<ITextAnalyzer.Instance> {
      */
     interface Immutable extends ITextAnalyzer, Instance {
         @Override
-        default void setupEditor(LinkedList<UIElement> usl, Runnable onEdit) {
+        default void setupEditor(@NonNull AppUI U, LinkedList<UIElement> usl, Runnable onEdit) {
         }
 
         @Override
-        default Instance instance(App app) {
+        default Instance instance(R48 app) {
             return this;
         }
     }
@@ -67,7 +70,7 @@ public interface ITextAnalyzer extends IClassifierish<ITextAnalyzer.Instance> {
         I;
 
         @Override
-        public String getName(App app) {
+        public String getName(R48 app) {
             return app.t.u.ccs_cjk;
         }
 
@@ -106,7 +109,7 @@ public interface ITextAnalyzer extends IClassifierish<ITextAnalyzer.Instance> {
         I;
 
         @Override
-        public String getName(App app) {
+        public String getName(R48 app) {
             return app.t.u.ccs_latin1Only;
         }
 
@@ -124,7 +127,7 @@ public interface ITextAnalyzer extends IClassifierish<ITextAnalyzer.Instance> {
         I;
 
         @Override
-        public String getName(App app) {
+        public String getName(R48 app) {
             return app.t.u.ccs_latin1AndFullwidthOnly;
         }
 

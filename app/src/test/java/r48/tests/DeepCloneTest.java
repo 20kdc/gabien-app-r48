@@ -10,7 +10,7 @@ package r48.tests;
 import gabien.TestKickstart;
 import org.junit.Test;
 
-import r48.App;
+import r48.R48;
 import r48.io.IMIUtils;
 import r48.io.data.DMContext;
 import r48.io.data.IRIO;
@@ -28,7 +28,7 @@ public class DeepCloneTest {
     @Test
     public void testDeepCloneRPGMap() {
         DMContext tests = new DMContext(DMChangeTracker.Null.TESTS, StandardCharsets.UTF_8);
-        App app = new TestKickstart().kickstart("RAM/", "UTF-8", "rxp");
+        R48 app = new TestKickstart().kickstart("RAM/", "UTF-8", "rxp");
         IRIO newObj = new IRIOGeneric(tests);
         SchemaPath.setDefaultValue(newObj, app.sdb.getSDBEntry("RPG::Map"), null);
         IRIO newObj2 = new IRIOGeneric(tests).setDeepClone(newObj);

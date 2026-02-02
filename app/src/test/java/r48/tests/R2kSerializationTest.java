@@ -11,8 +11,9 @@ import gabien.TestKickstart;
 import org.junit.Assert;
 import org.junit.Test;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectRootHandle;
+import r48.ioplus.Reporter;
 
 import java.io.IOException;
 
@@ -23,7 +24,7 @@ public class R2kSerializationTest {
     @Test
     public void testFullIOStack() throws IOException {
         TestKickstart kick = new TestKickstart();
-        App app = kick.kickstart("RAM/", "UTF-8", "r2k");
+        R48 app = kick.kickstart("RAM/", "UTF-8", "r2k");
 
         String[] fileDefs = new String[] {
                 "hello.lmu",
@@ -32,10 +33,11 @@ public class R2kSerializationTest {
                 "you.lsd",
         };
         // Save it, but skip past most of ObjectDB since it will not be queried in future & it uses UI on failure.
-        app.odb.getObject("hello.lmu", true).ensureSaved();
-        app.odb.getObject("world.ldb", true).ensureSaved();
-        app.odb.getObject("and.lmt", true).ensureSaved();
-        app.odb.getObject("you.lsd", true).ensureSaved();
+        Reporter dummy = new Reporter.Dummy(app.t);
+        app.odb.getObject("hello.lmu", true).ensureSaved(dummy);
+        app.odb.getObject("world.ldb", true).ensureSaved(dummy);
+        app.odb.getObject("and.lmt", true).ensureSaved(dummy);
+        app.odb.getObject("you.lsd", true).ensureSaved(dummy);
         // Kills off the old ObjectDB
         kick.resetODB(app);
 

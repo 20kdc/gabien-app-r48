@@ -88,7 +88,7 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
     public void confirmAt(final int x, final int y, int pixx, int pixy, final int layer, boolean first) {
         if (!first)
             return;
-        if (app.ui.isMobile && !confirming) {
+        if (U.isMobile && !confirming) {
             // Need to absolutely confirm.
             confirmX = x;
             confirmY = y;

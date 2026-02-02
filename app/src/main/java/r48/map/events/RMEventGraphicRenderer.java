@@ -11,7 +11,7 @@ import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.MathsX;
-import r48.App;
+import r48.R48;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
 import r48.io.data.RORIO;
@@ -25,14 +25,14 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * Created on 1/27/17.
  */
-public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRenderer {
+public class RMEventGraphicRenderer extends R48.Svc implements IEventGraphicRenderer {
 
     private int patternCount = 4;
     private boolean useVXAExtensionScheme = false;
     public final ITexLoader imageLoader;
     private final TileRenderer tileRenderer;
 
-    public RMEventGraphicRenderer(App app, ITexLoader img, TileRenderer tile, boolean vxa) {
+    public RMEventGraphicRenderer(R48 app, ITexLoader img, TileRenderer tile, boolean vxa) {
         super(app);
         imageLoader = img;
         tileRenderer = tile;
@@ -135,7 +135,7 @@ public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRend
                 if (hue != 0)
                     hsie.add(new HueShiftImageEffect(hue));
             }
-            i = app.ui.imageFXCache.process(i, hsie);
+            i = app.imageFXCache.process(i, hsie);
             int blendMode = IGrDriver.BLEND_NORMAL;
             if (blendType == 1)
                 blendMode = IGrDriver.BLEND_ADD;

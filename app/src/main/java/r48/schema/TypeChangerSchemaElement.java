@@ -8,7 +8,7 @@
 package r48.schema;
 
 import gabien.ui.UIElement;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -21,7 +21,7 @@ public class TypeChangerSchemaElement extends SchemaElement {
     public SchemaElement[] targets;
     public String[] typeString;
 
-    public TypeChangerSchemaElement(App app, String[] types, SchemaElement[] tgt) {
+    public TypeChangerSchemaElement(R48 app, String[] types, SchemaElement[] tgt) {
         super(app);
         typeString = types;
         targets = tgt;

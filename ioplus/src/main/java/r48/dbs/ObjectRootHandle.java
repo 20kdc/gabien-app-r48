@@ -15,6 +15,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import r48.io.data.IRIO;
+import r48.ioplus.Reporter;
 import r48.schema.SchemaElementIOP;
 import r48.schema.util.SchemaPath;
 
@@ -92,7 +93,7 @@ public abstract class ObjectRootHandle {
     /**
      * Attempts to ensure this root has been saved. (Might not be possible.)
      */
-    public abstract void ensureSaved();
+    public abstract boolean ensureSaved(Reporter rep);
 
     /**
      * Isolated object.
@@ -117,7 +118,8 @@ public abstract class ObjectRootHandle {
         }
 
         @Override
-        public void ensureSaved() {
+        public boolean ensureSaved(Reporter rep) {
+            return false;
         }
     }
 

@@ -7,7 +7,7 @@
 
 package r48.schema;
 
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 
 /**
@@ -16,7 +16,7 @@ import r48.io.data.IRIO;
  * Created on 12/30/16.
  */
 public class IntBooleanSchemaElement extends BooleanSchemaElement {
-    public IntBooleanSchemaElement(App app, boolean defaultVal) {
+    public IntBooleanSchemaElement(R48 app, boolean defaultVal) {
         super(app, defaultVal);
     }
 

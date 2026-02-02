@@ -7,7 +7,7 @@
 
 package r48.toolsets.utils;
 
-import r48.App;
+import r48.R48;
 import r48.schema.displays.TonePickerSchemaElement;
 import gabien.GaBIEn;
 import gabien.natives.BadGPU;
@@ -21,13 +21,13 @@ import gabien.wsi.IPeripherals;
  * Created 17th February 2023
  */
 public class UITestGraphicsStuff extends UIElement {
-    public final App app;
+    public final R48 app;
     private static final int[] blendModes = {
         IGrDriver.BLEND_NORMAL,
         IGrDriver.BLEND_ADD,
         IGrDriver.BLEND_SUB
     };
-    public UITestGraphicsStuff(App app) {
+    public UITestGraphicsStuff(R48 app) {
         this.app = app;
     }
 

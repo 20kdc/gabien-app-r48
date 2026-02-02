@@ -7,20 +7,25 @@
 
 package r48.map;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.uslx.append.Rect;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.map2d.MapViewDrawContext;
+import r48.ui.AppUI;
 
 /**
  * A structure that contains the subset of parameters needed for map view draw layers/etc.
  * Created on November 15, 2018.
  */
 public class AppMapViewDrawContext extends MapViewDrawContext {
-    public final App app;
-    public AppMapViewDrawContext(App app, Rect camera, int ts, boolean atOrBelowHalfSize) {
+    public final R48 app;
+    private final @Nullable AppUI appUI;
+    public AppMapViewDrawContext(R48 app, @Nullable AppUI appUI, Rect camera, int ts, boolean atOrBelowHalfSize) {
         super(ts, camera, atOrBelowHalfSize);
         this.app = app;
+        this.appUI = appUI;
     }
 
     @Override
@@ -38,6 +43,8 @@ public class AppMapViewDrawContext extends MapViewDrawContext {
 
     @Override
     public boolean currentlyOpenInEditor(IRIO evI) {
-        return app.ui.currentlyOpenInEditor(evI);
+        if (appUI != null)
+            return appUI.currentlyOpenInEditor(evI);
+        return false;
     }
 }

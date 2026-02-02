@@ -20,7 +20,7 @@ import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.render.ITexRegion;
 import gabien.uslx.append.DepsLocker;
-import r48.App;
+import r48.R48;
 import r48.RubyTableR;
 import r48.io.data.IRIO;
 import r48.map2d.tiles.AutoTileTypeField;
@@ -42,7 +42,7 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
     private ITexRegion[][][] atFields;
     private AtlasSet atlasSet;
 
-    public XPTileRenderer(App app, ITexLoader imageLoader) {
+    public XPTileRenderer(R48 app, ITexLoader imageLoader) {
         super(app, 32, 8);
         this.imageLoader = imageLoader;
     }

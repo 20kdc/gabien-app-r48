@@ -10,10 +10,11 @@ package r48.map;
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
-import r48.App;
+import r48.R48;
 import r48.RubyTableR;
 import r48.io.data.RORIO;
 import r48.maptools.*;
+import r48.ui.AppUI;
 
 import java.util.LinkedList;
 import java.util.function.Function;
@@ -22,7 +23,7 @@ import java.util.function.Function;
  * The standard map editing toolbar is the responsibility of this class.
  * Created on 11/08/17.
  */
-public class MapEditingToolbarController extends App.Svc implements IEditingToolbarController {
+public class MapEditingToolbarController extends R48.Svc implements IEditingToolbarController {
     private UIScrollLayout rootLayout = new UIScrollLayout(false, app.f.mapToolbarS);
     private final LinkedList<UITextButton> tools = new LinkedList<UITextButton>();
     private final boolean readonlyTiles;
@@ -40,6 +41,7 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
         readonlyTiles = rd;
 
         final UIMapView view = viewGiver.getMapView();
+        final AppUI U = viewGiver.getAppUI();
 
         // -- Kind of a monolith here. Map tools ALWAYS go first, and must be togglables.
         // It is assumed that this is the only class capable of causing tool changes (unless noTool is called)
@@ -138,16 +140,16 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
                 public void run() {
                     RORIO ro = app.theClipboard;
                     if (ro == null) {
-                        app.ui.launchDialog(T.m.mp_noClip);
+                        U.launchDialog(T.m.mp_noClip);
                         return;
                     }
                     if (ro.getType() != 'u' || !ro.getSymbol().equals("Table")) {
-                        app.ui.launchDialog(T.m.mp_notTable);
+                        U.launchDialog(T.m.mp_notTable);
                         return;
                     }
                     RubyTableR rt = new RubyTableR(ro.getBuffer());
                     if (rt.planeCount != viewGiver.getMapView().mapTable.planeCount) {
-                        app.ui.launchDialog(T.m.mp_layersMismatch);
+                        U.launchDialog(T.m.mp_layersMismatch);
                         return;
                     }
                     clearTools(thisButton);

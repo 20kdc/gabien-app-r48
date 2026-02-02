@@ -6,19 +6,19 @@
  */
 package r48.ui.search;
 
-import r48.App;
 import r48.search.USFROperationMode;
+import r48.ui.AppUI;
 import r48.ui.UIChoiceButton;
 
 /**
  * Created 18th August, 2023.
  */
 public class UIUSFROperationModeSelector extends UIChoiceButton<USFROperationMode> {
-    public UIUSFROperationModeSelector(App app, int h2) {
-        this(app, h2, USFROperationMode.listForApp(app));
+    public UIUSFROperationModeSelector(AppUI app, int h2) {
+        this(app, h2, USFROperationMode.listForApp(app.app));
     }
 
-    private UIUSFROperationModeSelector(App app, int h2, USFROperationMode[] b) {
+    private UIUSFROperationModeSelector(AppUI app, int h2, USFROperationMode[] b) {
         super(app, h2, b[0], b);
     }
 

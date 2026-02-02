@@ -6,19 +6,24 @@
  */
 package r48.schema.op;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import datum.DatumSymbol;
-import r48.App;
+import r48.R48;
 import r48.UITest;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
+import r48.ioplus.Reporter;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.utils.UIIDChanger;
 import r48.tr.TrPage.FF0;
+import r48.ui.AppUI;
+import r48.ui.UIReporter;
 
 /**
  * Created 19th December, 2025.
@@ -56,7 +61,7 @@ public class BaseSchemaOps {
     /**
      * Helps with defining the system core operators.
      */
-    private static SchemaOp sysOperator(App app, String id, FF0 name, Consumer<SchemaPath> handler, int idx, SchemaOpSite... sites) {
+    private static SchemaOp sysOperator(R48 app, String id, FF0 name, SysOperatorInternal handler, int idx, SchemaOpSite... sites) {
         return new SchemaOp(app, BASE_SYSCORE, id, sortIdx(SORT_SYSCORE, idx), sites) {
             @Override
             public String shouldDisplay(SchemaOp.ExpandedCtx context) {
@@ -65,7 +70,9 @@ public class BaseSchemaOps {
             @Override
             public String invoke(SchemaOp.ExpandedCtx parameters) {
                 SchemaPath path = parameters.path;
-                handler.accept(path);
+                try (UIReporter uir = (parameters.appUI == null ? new UIReporter(app) : new UIReporter(parameters.appUI))) {
+                    handler.run(path, uir, parameters.appUI);
+                }
                 return null;
             }
         };
@@ -91,7 +98,7 @@ public class BaseSchemaOps {
     /**
      * This is the central list of all built-in (Java-side) operators.
      */
-    public static void defJavasideOperators(App app) {
+    public static void defJavasideOperators(R48 app) {
         int catIdx = 0;
         app.opCopy = new SchemaOp(app, BASE_SYSCORE, "copy", sortIdx(SORT_SYSCORE, catIdx++), app.opSites.ARRAY_SEL) {
             @Override
@@ -165,7 +172,9 @@ public class BaseSchemaOps {
                         try {
                             path.targetElement.setDeepClone(app.theClipboard);
                         } catch (Exception e) {
-                            app.ui.launchDialog(T.u.shcIncompatible, e);
+                            try (UIReporter r = parameters.makeReporter()) {
+                                r.report(T.u.shcIncompatible, e);
+                            }
                         }
                         path.changeOccurred(false);
                     } else {
@@ -175,18 +184,22 @@ public class BaseSchemaOps {
                 return null;
             }
         };
-        sysOperator(app, "save", () -> app.t.g.wordSave, (innerElem) -> {
+        sysOperator(app, "save", () -> app.t.g.wordSave, (innerElem, reporter, appUI) -> {
             SchemaPath root = innerElem.findRoot();
             // perform a final verification of the file, just in case? (NOPE: Causes long save times on, say, LDBs)
             // root.editor.modifyVal(root.targetElement, root, false);
-            root.root.ensureSaved();
+            try (UIReporter uir = (appUI == null ? new UIReporter(app) : new UIReporter(appUI))) {
+                root.root.ensureSaved(uir);
+            }
         }, catIdx++, app.opSites.SCHEMA_HEADER);
-        sysOperator(app, "inspect", () -> app.t.u.shInspect, (innerElem) -> {
-            app.ui.wm.createWindow(new UITest(app, innerElem.targetElement, innerElem.root));
+        sysOperator(app, "inspect", () -> app.t.u.shInspect, (innerElem, reporter, appUI) -> {
+            if (appUI != null)
+                appUI.wm.createWindow(new UITest(appUI, innerElem.targetElement, innerElem.root));
         }, catIdx++, app.opSites.SCHEMA_HEADER);
-        sysOperator(app, "localidchanger", () -> app.t.u.shLIDC, (innerElem) -> {
+        sysOperator(app, "localidchanger", () -> app.t.u.shLIDC, (innerElem, reporter, appUI) -> {
             // innerElem.editor and innerElem.targetElement must exist because SchemaHostImpl uses them.
-            app.ui.wm.createWindow(new UIIDChanger(app, innerElem));
+            if (appUI != null)
+                appUI.wm.createWindow(new UIIDChanger(appUI, innerElem));
         }, catIdx++, app.opSites.SCHEMA_HEADER);
 
         new SchemaOp(app, BASE_SYSCORE, "test_operator", sortIdx(SORT_SYSCORE, catIdx++), app.opSites.SCHEMA_HEADER, app.opSites.ARRAY_SEL) {
@@ -204,4 +217,7 @@ public class BaseSchemaOps {
         RMToolsSchemaOps.defJavasideOperators(app);
     }
 
+    public interface SysOperatorInternal {
+        void run(@NonNull SchemaPath innerElem, @NonNull Reporter rep, @Nullable AppUI ui);
+    }
 }

@@ -14,13 +14,14 @@ import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.EmbedDataKey;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 
 import java.io.*;
 import java.util.function.Supplier;
@@ -32,12 +33,13 @@ import java.util.function.Supplier;
 public class StringBlobSchemaElement extends SchemaElement.Leaf {
     public final EmbedDataKey<Boolean> buttonEDKey = new EmbedDataKey<>();
 
-    public StringBlobSchemaElement(App app) {
+    public StringBlobSchemaElement(R48 app) {
         super(app);
     }
 
     @Override
     public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+        final AppUI U = launcher.getAppUI();
         final String fpath = Application.BRAND + "/r48.edit.txt";
 
         UITextButton importer = new UITextButton(T.s.bImport, app.f.blobTH, () -> {
@@ -49,7 +51,7 @@ public class StringBlobSchemaElement extends SchemaElement.Leaf {
                 path.changeOccurred(false);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
-                app.ui.launchDialog(T.s.scx_impFail + "\n" + ioe);
+                U.launchDialog(T.s.scx_impFail + "\n" + ioe);
             }
         });
         AggregateSchemaElement.hookButtonForPressPreserve(launcher, target, importer, buttonEDKey);
@@ -62,10 +64,10 @@ public class StringBlobSchemaElement extends SchemaElement.Leaf {
                 dis.close();
                 os.close();
                 if (!GaBIEn.tryStartTextEditor(fpath))
-                    app.ui.launchDialog(T.s.scx_editorFail);
+                    U.launchDialog(T.s.scx_editorFail);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
-                app.ui.launchDialog(T.s.scx_fail + "\n" + ioe);
+                U.launchDialog(T.s.scx_fail + "\n" + ioe);
             }
         }), importer, false, 0.5d); 
         return new UISplitterLayout(usl, new UITextButton(T.s.bEditHere, app.f.blobTH, () -> {
@@ -74,7 +76,7 @@ public class StringBlobSchemaElement extends SchemaElement.Leaf {
                 try {
                     utb.setText(readContentString(target));
                 } catch (IOException e) {
-                    app.ui.launchDialog(T.s.dErrNoRead, e);
+                    U.launchDialog(T.s.dErrNoRead, e);
                 }
                 return true;
             };
@@ -83,7 +85,7 @@ public class StringBlobSchemaElement extends SchemaElement.Leaf {
                 try {
                     writeContentString(target, utb.getText());
                 } catch (IOException e) {
-                    app.ui.launchDialog(T.s.dErrNoWrite, e);
+                    U.launchDialog(T.s.dErrNoWrite, e);
                     return;
                 }
                 path.changeOccurred(false);

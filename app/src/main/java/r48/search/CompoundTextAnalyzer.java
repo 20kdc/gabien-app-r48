@@ -6,7 +6,7 @@
  */
 package r48.search;
 
-import r48.App;
+import r48.R48;
 
 /**
  * Used as the root text analyzer.
@@ -16,18 +16,18 @@ public enum CompoundTextAnalyzer implements ITextAnalyzer {
     I;
 
     @Override
-    public String getName(App app) {
+    public String getName(R48 app) {
         return app.t.u.ccs_textAnalyzer;
     }
 
     @Override
-    public Instance instance(App app) {
+    public Instance instance(R48 app) {
         final ITextAnalyzer[] ents = app.textAnalyzers.toArray(new ITextAnalyzer[0]);
         return new CCCI(app, ents, ents[0]);
     }
 
     private final class CCCI extends CompoundClassifierish<ITextAnalyzer, ITextAnalyzer.Instance> implements ITextAnalyzer.Instance {
-        private CCCI(App ac, ITextAnalyzer[] e, ITextAnalyzer de) {
+        private CCCI(R48 ac, ITextAnalyzer[] e, ITextAnalyzer de) {
             super(ac, e, de, false, BooleanChainOperator.Or);
         }
 

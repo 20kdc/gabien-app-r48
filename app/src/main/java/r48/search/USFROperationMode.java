@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
-import r48.App;
+import r48.R48;
 import r48.dbs.RPGCommand;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElementIOP;
@@ -23,15 +23,15 @@ import r48.schema.util.SchemaPath;
  * Operational mode for universal string finder/universal string replacer
  */
 public abstract class USFROperationMode {
-    public abstract String translate(App app);
+    public abstract String translate(R48 app);
 
     public @Nullable UIElement makeEditor() {
         return null;
     }
 
-    public abstract void locate(App app, SchemaPath root, Visitor visitor, boolean detailedPaths);
+    public abstract void locate(R48 app, SchemaPath root, Visitor visitor, boolean detailedPaths);
 
-    public static USFROperationMode[] listForApp(App app) {
+    public static USFROperationMode[] listForApp(R48 app) {
         LinkedList<USFROperationMode> lls = new LinkedList<>();
         lls.add(All.INSTANCE);
         for (ICommandClassifier icc : app.cmdClassifiers)
@@ -44,12 +44,12 @@ public abstract class USFROperationMode {
         public static final All INSTANCE = new All();
 
         @Override
-        public String translate(App app) {
+        public String translate(R48 app) {
             return app.t.u.usl_modeAll;
         }
 
         @Override
-        public void locate(App app, SchemaPath root, Visitor visitor, boolean detailedPaths) {
+        public void locate(R48 app, SchemaPath root, Visitor visitor, boolean detailedPaths) {
             root.editor.visit(root.targetElement, root, makeMyVisitor(visitor), detailedPaths);
         }
 
@@ -75,12 +75,12 @@ public abstract class USFROperationMode {
         }
 
         @Override
-        public String translate(App app) {
+        public String translate(R48 app) {
             return app.t.u.usl_modeCTag.r(base.getName(app));
         }
 
         @Override
-        public void locate(App app, SchemaPath root, Visitor visitor, boolean detailedPaths) {
+        public void locate(R48 app, SchemaPath root, Visitor visitor, boolean detailedPaths) {
             Visitor mod = All.makeMyVisitor(visitor);
             root.editor.visit(root.targetElement, root, (element, target, path) -> {
                 if (element instanceof RPGCommandSchemaElement) {

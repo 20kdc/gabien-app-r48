@@ -8,11 +8,11 @@
 package r48.ui.utilitybelt;
 
 import gabien.uslx.append.*;
+import r48.R48;
 
 import java.util.function.Consumer;
 
 import gabien.ui.UIElement;
-import r48.App;
 
 /**
  * Created on 16th July 2018
@@ -20,7 +20,7 @@ import r48.App;
 public class AddColourFromImageEditorTool extends ImageEditorTool {
     public final Consumer<Integer> result;
 
-    public AddColourFromImageEditorTool(App a, Consumer<Integer> finished) {
+    public AddColourFromImageEditorTool(R48 a, Consumer<Integer> finished) {
         super(a);
         result = finished;
     }

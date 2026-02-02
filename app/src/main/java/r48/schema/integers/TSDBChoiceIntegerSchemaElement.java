@@ -11,7 +11,7 @@ import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.uslx.append.*;
-import r48.App;
+import r48.R48;
 import r48.dbs.TSDB;
 import r48.ui.UIGrid;
 
@@ -24,7 +24,7 @@ public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
     public int maxCount;
     public int tileSize;
 
-    public TSDBChoiceIntegerSchemaElement(App app, long i, String substring, int pwr) {
+    public TSDBChoiceIntegerSchemaElement(R48 app, long i, String substring, int pwr) {
         super(app, i);
         tileSize = 16;
         tsdb = new TSDB(app, substring).compileSheet(pwr, tileSize);

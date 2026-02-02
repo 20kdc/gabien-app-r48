@@ -7,17 +7,19 @@
 
 package r48.map.events;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
+import r48.ioplus.Reporter;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -33,7 +35,7 @@ import static r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement.get
  * An additional benefit of this is that it's bascally behavior-accurate,
  *  because the ghosts & map events getting merged by the game has similar results to what happens here.
  */
-public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
+public class R2kSavefileEventAccess extends R48.Svc implements IEventAccess {
     public final ObjectRootHandle saveFileRoot;
     public final SchemaElement saveFileRootSchema;
 
@@ -41,7 +43,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     // The ghosts are added dynamically by getEventKeys & getEvent
     public final HashMap<DMKey, IRIO> eventsHash = new HashMap<>();
 
-    public R2kSavefileEventAccess(App app, String rootId, ObjectRootHandle root, String rootSchema) {
+    public R2kSavefileEventAccess(R48 app, String rootId, ObjectRootHandle root, String rootSchema) {
         super(app);
         saveFileRoot = root;
         saveFileRootSchema = app.sdb.getSDBEntry(rootSchema);
@@ -110,24 +112,24 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public void delEvent(DMKey key) {
+    public void delEvent(DMKey key, Reporter reporter) {
         if (key.getType() == '"') {
             if (key.decString().equals("Player")) {
-                app.ui.launchDialog(T.m.r2kSavefile_errPlyDel);
+                reporter.report(T.m.r2kSavefile_errPlyDel);
             } else {
                 IRIO rio = getEvent(key);
                 if (rio == null) {
-                    app.ui.launchDialog(T.m.r2kSavefile_errGone);
+                    reporter.report(T.m.r2kSavefile_errGone);
                 } else {
                     rio.getIVar("@map").setFX(0);
-                    app.ui.launchDialog(T.m.r2kSavefile_plyMap0);
+                    reporter.report(T.m.r2kSavefile_plyMap0);
                     pokeHive();
                 }
             }
         } else {
             IRIO se = getSaveEvents();
             if (se.getHashVal(key) == null) {
-                app.ui.launchDialog(T.m.r2kSavefile_errAlreadyGhost);
+                reporter.report(T.m.r2kSavefile_errAlreadyGhost);
             } else {
                 se.removeHashVal(key);
                 IRIO map = getMap();
@@ -136,9 +138,9 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
                     if (getSaveCount(map).getFX() != saveFileRoot.getObject().getIVar("@party_pos").getIVar("@map_save_count").getFX())
                         ghost = true;
                 if (ghost) {
-                    app.ui.launchDialog(T.m.r2kSavefile_evGhosted);
+                    reporter.report(T.m.r2kSavefile_evGhosted);
                 } else {
-                    app.ui.launchDialog(T.m.r2kSavefile_evRemovalOk);
+                    reporter.report(T.m.r2kSavefile_evRemovalOk);
                 }
                 pokeHive();
             }
@@ -152,12 +154,12 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public @Nullable DMKey addEvent(@Nullable RORIO eve, int type) {
-        app.ui.launchDialog(T.m.r2kSavefile_cantAddEvents);
+    public @Nullable DMKey addEvent(@Nullable RORIO eve, int type, Reporter reporter) {
+        reporter.report(T.m.r2kSavefile_cantAddEvents);
         return null;
     }
 
-    public static void eventAsSaveEvent(App app, IRIO rMap, long mapId, DMKey key, IRIO event) {
+    public static void eventAsSaveEvent(R48 app, IRIO rMap, long mapId, DMKey key, IRIO event) {
         IRIO rio = rMap.addHashVal(key);
         SchemaPath.setDefaultValue(rio, app.sdb.getSDBEntry("RPG::SaveMapEvent"), key);
         rio.getIVar("@map").setFX(mapId);
@@ -217,23 +219,23 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public Runnable hasSync(final DMKey evK) {
+    public Consumer<Reporter> hasSync(final DMKey evK) {
         // Ghost...!
         if (eventsHash.get(evK) == null)
-            return () -> {
+            return (reporter) -> {
                 // "Naw! Ghostie want biscuits!"
                 if (eventsHash.get(evK) != null) {
                     // "Dere's already a ghostie here, and 'e's nomming on biscuits!"
-                    app.ui.launchDialog(T.m.r2kSavefile_evAppearedInCB);
+                    reporter.report(T.m.r2kSavefile_evAppearedInCB);
                 } else {
                     IRIO map = getMap();
                     if (map == null) {
-                        app.ui.launchDialog(T.m.r2kSavefile_noEvMap);
+                        reporter.report(T.m.r2kSavefile_noEvMap);
                         return;
                     }
                     IRIO ev = map.getIVar("@events").getHashVal(evK);
                     if (ev == null) {
-                        app.ui.launchDialog(T.m.r2kSavefile_errUserIsAToaster);
+                        reporter.report(T.m.r2kSavefile_errUserIsAToaster);
                         return;
                     }
                     eventAsSaveEvent(app, getSaveEvents(), getMapId(), evK, ev);
@@ -267,11 +269,11 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public void setEventXY(DMKey a, long x, long y) {
+    public void setEventXY(DMKey a, long x, long y, Reporter reporter) {
         IRIO se = getSaveEvents();
         IRIO ev = se.getHashVal(a);
         if (ev == null) {
-            app.ui.launchDialog(T.m.r2kSavefile_errGhostUnmovable);
+            reporter.report(T.m.r2kSavefile_errGhostUnmovable);
             return;
         }
         ev.getIVar("@x").setFX(x);

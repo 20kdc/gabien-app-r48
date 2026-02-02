@@ -12,7 +12,8 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
-import r48.App;
+import r48.ui.AppUI;
+import r48.R48;
 
 /**
  * SchemaDynamicContext associates various stuff with the 'origin window'.
@@ -20,10 +21,11 @@ import r48.App;
  * The need for a 'current map' schema that applies to common events kind of burned a hole in the original plan. 
  * Created 19th December, 2025.
  */
-public final class SchemaDynamicContext extends App.Svc {
-    public UIMapView mapView;
+public final class SchemaDynamicContext extends R48.Svc {
+    public @Nullable UIMapView mapView;
+    public @Nullable AppUI appUI;
 
-    public SchemaDynamicContext(App app, @Nullable UIMapView mapView) {
+    public SchemaDynamicContext(@NonNull R48 app, @Nullable UIMapView mapView, @Nullable AppUI appUI) {
         super(app);
         this.mapView = mapView;
     }

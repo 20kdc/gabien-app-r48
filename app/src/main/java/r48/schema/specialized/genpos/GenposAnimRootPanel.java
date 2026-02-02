@@ -9,9 +9,10 @@ package r48.schema.specialized.genpos;
 
 import gabien.ui.UIElement;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.R48;
 import r48.io.data.RORIO;
 import r48.schema.util.ISchemaHost;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
 import r48.ui.UITimeframeControl;
 
@@ -29,7 +30,7 @@ import java.util.HashMap;
  * C: Cell Editor
  * Created on 2/17/17.
  */
-public class GenposAnimRootPanel extends App.Prx {
+public class GenposAnimRootPanel extends AppUI.Prx {
     public final IGenposAnim target;
     public final GenposAnimTweening tweening;
     public final GenposFramePanelController framePanelController;
@@ -38,7 +39,7 @@ public class GenposAnimRootPanel extends App.Prx {
     private final HashMap<String, IGenposTweeningManagement.KeyTrack> propTracks = new HashMap<String, IGenposTweeningManagement.KeyTrack>();
 
     public GenposAnimRootPanel(IGenposAnim t, ISchemaHost launcher, int recommendedFramerate) {
-        super(launcher.getApp());
+        super(launcher.getAppUI());
         target = t;
         IGenposFrame frame = target.getFrameDisplay();
         // NOTE: This does a scan of the frames without calling frameChanged to run interpolation implication
@@ -65,7 +66,7 @@ public class GenposAnimRootPanel extends App.Prx {
                 tweening.disablePropertyKey(target.getFrameIdx(), framePanelController.cellSelection.cellNumber, prop, track);
             }
         }, launcher);
-        timeframe = new UITimeframeControl(app, target::getFrameIdx, target::getFrameCount, (integer) -> {
+        timeframe = new UITimeframeControl(U, target::getFrameIdx, target::getFrameCount, (integer) -> {
             target.setFrameIdx(integer);
             frameChanged();
         }, recommendedFramerate);

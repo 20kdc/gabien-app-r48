@@ -18,7 +18,7 @@ import gabien.uslx.append.Size;
 import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
-import r48.App;
+import r48.R48;
 
 /**
  * Notably, despite the name of "uiGridScaleTenths", this does NOT actually do the grid size adjustment.
@@ -46,9 +46,9 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
     public Runnable onSelectionChange = null;
     public OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
 
-    public final App app;
+    public final R48 app;
 
-    public UIGrid(App app, int tSizeW, int tSizeH, int tCount) {
+    public UIGrid(R48 app, int tSizeW, int tSizeH, int tCount) {
         super(app.f.scaleGuess(320), app.f.scaleGuess(200));
         this.app = app;
         uivScrollbar = new UIScrollbar(true, app.f.gridS);

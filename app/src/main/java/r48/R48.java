@@ -19,16 +19,10 @@ import org.eclipse.jdt.annotation.Nullable;
 import datum.DatumSrcLoc;
 import datum.DatumSymbol;
 import gabien.GaBIEn;
-import gabien.ui.UIElement;
-import gabien.ui.UIElement.UIPanel;
-import gabien.ui.UIElement.UIProxy;
 import gabien.uslx.vfs.FSBackend;
 import gabien.uslx.vfs.impl.DodgyInputWorkaroundFSBackend;
 import gabien.uslx.vfs.impl.UnionFSBackend;
 import gabienapp.PleaseFailBrutally;
-import r48.app.AppNewProject;
-import r48.app.AppUI;
-import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
 import r48.cfg.FontSizes;
@@ -40,6 +34,7 @@ import r48.dbs.SDB;
 import r48.dbs.SDBHelpers;
 import r48.gameinfo.ATDB;
 import r48.gameinfo.EngineDef;
+import r48.imagefx.ImageFXCache;
 import r48.imageio.ImageIOFormat;
 import r48.io.data.DMContext;
 import r48.io.IObjectBackend;
@@ -74,16 +69,18 @@ import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
 import r48.tr.TrPage.FF1;
 import r48.tr.pages.TrRoot;
+import r48.ui.AppUI;
 import r48.ui.Art;
 
 /**
  * An attempt to move as much as possible out of static variables.
- * The distinction here is that when possible:
- *  AppCore would hypothetically work without a UI
- *  App won't
+ * As of 1st Feb. 2026:
+ * 'R48': Everything except that surrounding 'The Window'
+ * 'AppUI': 'The Window', etc.
+ *
  * Created 26th February, 2023
  */
-public final class App implements IAppAsSeenByLauncher, IDynTrProxy, TimeMachine.Host, ObjectDB.Host {
+public final class R48 implements IDynTrProxy, TimeMachine.Host, ObjectDB.Host {
     /**
      * Inter-launch globals (art, config, etc.)
      */
@@ -152,6 +149,9 @@ public final class App implements IAppAsSeenByLauncher, IDynTrProxy, TimeMachine
      */
     public MapSystem system;
 
+    // Image cache
+    public ImageFXCache imageFXCache;
+
     /**
      * ImageIO formats
      */
@@ -185,18 +185,19 @@ public final class App implements IAppAsSeenByLauncher, IDynTrProxy, TimeMachine
     public final @NonNull FF0 launchConfigName;
 
     public HashMap<Integer, String> osSHESEDB;
-    // scheduled tasks for when UI is around, not in UI because it may not init (ever, even!)
-    public HashSet<Runnable> uiPendingRunnables = new HashSet<Runnable>();
+
+    /**
+     * Scheduled tasks for when UI is around.
+     * An important detail of this is that if we don't actually intend to initialize the UI (headless), we leave this alone.
+     * Operations that 'shouldn't' touch the UI, but do anyway, may dump their requests here.
+     */
+    public HashSet<Consumer<AppUI>> uiPendingRunnables = new HashSet<>();
 
     // this inits SDB's initial schemas, etc.
     public final SDBHelpers sdbHelpers;
 
-    // these init during UI init!
-    public AppUI ui;
-    public AppNewProject np;
-
     // The global context-independent stuffRenderer. *Only use outside of maps.*
-    public StuffRenderer stuffRendererIndependent;
+    public @NonNull StuffRenderer stuffRendererIndependent;
 
     // State for in-system copy/paste
     public RORIO theClipboard = null;
@@ -267,10 +268,17 @@ public final class App implements IAppAsSeenByLauncher, IDynTrProxy, TimeMachine
     public final DMContext ctxDisposableAppEncoding;
 
     /**
+     * BE CAREFUL WITH THIS!!!
+     * This is really for MVM ops only, ideally.
+     * Audit the hell out of this; all code that uses it is suspicious.
+     */
+    public @Nullable AppUI uiAttachmentPoint;
+
+    /**
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public App(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, @NonNull FSBackend rp, @Nullable FSBackend sip, Consumer<String> loadProgress, @NonNull FF0 launchConfigName) {
+    public R48(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, @NonNull FSBackend rp, @Nullable FSBackend sip, Consumer<String> loadProgress, @NonNull FF0 launchConfigName) {
         this.ilg = ilg;
         this.encoding = charset;
         a = ilg.a;
@@ -328,6 +336,12 @@ public final class App implements IAppAsSeenByLauncher, IDynTrProxy, TimeMachine
         cmdbs = new CMDBDB(this);
         system = MapSystem.create(this, engine.mapSystem);
 
+        // Initialize imageFX before doing anything graphical
+        imageFXCache = new ImageFXCache();
+
+        // Set up a default stuffRenderer for things to use.
+        stuffRendererIndependent = system.rendererFromTso(null);
+
         // Alright, the various bits of SDB are completely present but not yet initialized.
         // Run VM code to fill them with data.
         MVMR48AppLibraries.add(vmCtx, this);
@@ -358,7 +372,7 @@ public final class App implements IAppAsSeenByLauncher, IDynTrProxy, TimeMachine
         // setup command classifiers
         cmdClassifiers.add(new ICommandClassifier.Immutable() {
             @Override
-            public String getName(App app) {
+            public String getName(R48 app) {
                 return ilg.t.u.ccAll;
             }
             @Override
@@ -453,30 +467,6 @@ public final class App implements IAppAsSeenByLauncher, IDynTrProxy, TimeMachine
         return r;
     }
 
-    /**
-     * Finishes initialization on main thread just before ticking begins.
-     */
-    public void finishInitOnMainThread() {
-        ui.finishInitialization();
-    }
-
-    public void tick(double dT) {
-        ui.tick(dT);
-    }
-
-    public void shutdown() {
-        if (ui != null) {
-            if (ui.mapContext != null)
-                ui.mapContext.freeOsbResources();
-            ui.mapContext = null;
-        }
-        GaBIEn.hintFlushAllTheCaches();
-    }
-
-    public void reportNonCriticalErrorToUser(String r, Throwable ioe) {
-        ui.launchDialog(r, ioe);
-    }
-
     public LinkedList<String> getAllObjects() {
         // anything loaded gets added (this allows some bypass of the mechanism)
         HashSet<String> mainSet = new HashSet<String>(odb.objectMap.keySet());
@@ -533,11 +523,6 @@ public final class App implements IAppAsSeenByLauncher, IDynTrProxy, TimeMachine
     }
 
     @Override
-    public void odbHostReportSaveError(String id, Exception ioe) {
-        reportNonCriticalErrorToUser(t.u.odb_saveErr.r(id), ioe);        
-    }
-
-    @Override
     public SchemaElementIOP odbHostGetOpaqueSE() {
         return sdb.getSDBEntry("OPAQUE");
     }
@@ -550,45 +535,12 @@ public final class App implements IAppAsSeenByLauncher, IDynTrProxy, TimeMachine
     // Svc
 
     public static class Svc {
-        public final @NonNull App app;
+        public final @NonNull R48 app;
         /**
          * This is a special exception to the usual style rules.
          */
         public final @NonNull TrRoot T;
-        public Svc(@NonNull App app) {
-            this.app = app;
-            T = app.t;
-        }
-    }
-
-    public static class Prx extends UIProxy {
-        public final @NonNull App app;
-        public final @NonNull TrRoot T;
-        public Prx(@NonNull App app) {
-            this.app = app;
-            T = app.t;
-        }
-    }
-
-    public static abstract class Pan extends UIPanel {
-        public final @NonNull App app;
-        public final @NonNull TrRoot T;
-        public Pan(@NonNull App app) {
-            this.app = app;
-            T = app.t;
-        }
-    }
-
-    public static abstract class Elm extends UIElement {
-        public final @NonNull App app;
-        public final @NonNull TrRoot T;
-        public Elm(@NonNull App app) {
-            this.app = app;
-            T = app.t;
-        }
-
-        public Elm(@NonNull App app, int i, int j) {
-            super(i, j);
+        public Svc(@NonNull R48 app) {
             this.app = app;
             T = app.t;
         }

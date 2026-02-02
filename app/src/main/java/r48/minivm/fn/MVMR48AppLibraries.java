@@ -6,7 +6,9 @@
  */
 package r48.minivm.fn;
 
-import r48.App;
+import org.eclipse.jdt.annotation.NonNull;
+
+import r48.R48;
 import r48.minivm.MVMEnvR48;
 
 /**
@@ -14,7 +16,7 @@ import r48.minivm.MVMEnvR48;
  * Created 10th March 2023.
  */
 public class MVMR48AppLibraries {
-    public static void add(MVMEnvR48 ctx, App app) {
+    public static void add(MVMEnvR48 ctx, R48 app) {
         MVMR48GlobalLibraries.add(ctx);
         MVMDMAppLibrary.add(ctx, app);
         ctx.install(new MVMSDBLibrary(app));

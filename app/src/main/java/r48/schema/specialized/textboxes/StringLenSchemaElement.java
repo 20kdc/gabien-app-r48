@@ -11,12 +11,13 @@ import gabien.ui.*;
 import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
 import gabien.wsi.IPeripherals;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.StringSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
 
 /**
@@ -25,7 +26,7 @@ import r48.ui.UIAppendButton;
 public abstract class StringLenSchemaElement extends StringSchemaElement {
     public final TextRules textRules = new R2kTextRules();
 
-    public StringLenSchemaElement(App app, FF0 arg) {
+    public StringLenSchemaElement(R48 app, FF0 arg) {
         super(app, arg, '"');
     }
 
@@ -33,6 +34,7 @@ public abstract class StringLenSchemaElement extends StringSchemaElement {
 
     @Override
     public UIElement buildHoldingEditorImpl(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+        AppUI U = launcher.getAppUI();
         final UITextBox utb = (UITextBox) super.buildHoldingEditorImpl(target, launcher, path);
         utb.feedback = (s) -> {
             int l1 = textRules.countCells(s);
@@ -47,7 +49,7 @@ public abstract class StringLenSchemaElement extends StringSchemaElement {
             }
         };
         uimu.onClick = () -> {
-            app.ui.wm.createMenu(uimu, new UITextStuffMenu(app, () -> {
+            U.wm.createMenu(uimu, new UITextStuffMenu(U, () -> {
                 return new String[] {utb.getText()};
             }, (res) -> {
                 if (res.length < 1) {

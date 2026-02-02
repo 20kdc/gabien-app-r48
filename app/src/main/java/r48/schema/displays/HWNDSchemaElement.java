@@ -10,7 +10,7 @@ package r48.schema.displays;
 import java.util.function.Consumer;
 
 import gabien.ui.UIElement;
-import r48.App;
+import r48.R48;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
@@ -29,7 +29,7 @@ public class HWNDSchemaElement extends SchemaElement.Leaf {
     public final PathSyntax ivar;
     public final String file;
 
-    public HWNDSchemaElement(App app, PathSyntax iv, String f) {
+    public HWNDSchemaElement(R48 app, PathSyntax iv, String f) {
         super(app);
         ivar = iv;
         file = f;
@@ -42,7 +42,7 @@ public class HWNDSchemaElement extends SchemaElement.Leaf {
         uhs.onLinkClick = new Consumer<String>() {
             @Override
             public void accept(String integer) {
-                launcher.getApp().ui.startHelp(file, integer);
+                launcher.getAppUI().startHelp(file, integer);
             }
         };
         if (ivar != null) {

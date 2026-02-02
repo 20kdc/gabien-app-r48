@@ -11,7 +11,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UIEmpty;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -24,7 +24,7 @@ import r48.tr.TrPage.FF2;
 public class WindowTitleAttachmentSchemaElement extends SchemaElement.Leaf {
     public final FF2 suffixRoutine;
 
-    public WindowTitleAttachmentSchemaElement(App app, FF2 sr) {
+    public WindowTitleAttachmentSchemaElement(R48 app, FF2 sr) {
         super(app);
         suffixRoutine = sr;
     }

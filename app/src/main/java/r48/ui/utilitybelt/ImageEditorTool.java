@@ -9,13 +9,13 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.UIElement;
 import gabien.uslx.append.Rect;
-import r48.App;
+import r48.R48;
 
 /**
  * Created on 13th July 2018. Abstract-class 9th March 2023.
  */
-public abstract class ImageEditorTool extends App.Svc {
-    public ImageEditorTool(App a) {
+public abstract class ImageEditorTool extends R48.Svc {
+    public ImageEditorTool(R48 a) {
         super(a);
     }
 

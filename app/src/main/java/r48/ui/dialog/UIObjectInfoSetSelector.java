@@ -9,9 +9,9 @@ package r48.ui.dialog;
 import java.util.function.Consumer;
 
 import gabien.wsi.IPeripherals;
-import r48.App;
 import r48.dbs.ObjectInfo;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 import r48.ui.UISetSelector;
 
 /**
@@ -23,10 +23,10 @@ public class UIObjectInfoSetSelector extends UISetSelector<ObjectInfo> {
         scheduleSetSelectorUpdate = true;
     };
 
-    public UIObjectInfoSetSelector(App app) {
-        super(app, app.getObjectInfos());
+    public UIObjectInfoSetSelector(AppUI app) {
+        super(app, app.app.getObjectInfos());
         for (ObjectInfo ii : getSet())
-            app.odb.registerModificationHandler(ii.idName, refreshOnObjectChange);
+            app.app.odb.registerModificationHandler(ii.idName, refreshOnObjectChange);
     }
 
     @Override

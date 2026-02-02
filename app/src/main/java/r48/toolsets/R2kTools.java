@@ -9,7 +9,6 @@ package r48.toolsets;
 import java.util.LinkedList;
 import java.util.function.Consumer;
 
-import r48.App;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.DMPath;
@@ -18,6 +17,7 @@ import r48.io.data.IRIOGeneric;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.schema.util.UISchemaHostWidget;
+import r48.ui.AppUI;
 import r48.ui.UIDynAppPrx;
 import r48.ui.search.UICommandSites;
 import gabien.ui.UIElement;
@@ -30,8 +30,8 @@ import gabien.uslx.append.Rect;
  * R2k-specific tools.
  * Created 21st August, 2024.
  */
-public class R2kTools extends App.Svc implements Consumer<LinkedList<UIPopupMenu.Entry>> {
-    public R2kTools(App app) {
+public class R2kTools extends AppUI.Svc implements Consumer<LinkedList<UIPopupMenu.Entry>> {
+    public R2kTools(AppUI app) {
         super(app);
     }
 
@@ -43,13 +43,13 @@ public class R2kTools extends App.Svc implements Consumer<LinkedList<UIPopupMenu
             SchemaElement se = app.sdb.getSDBEntry("switch_id");
             ObjectRootHandle orh = new ObjectRootHandle.Isolated(se, ig, T.u.mFindCommonEventsWithSwitchID);
             UITextButton ok = new UITextButton(T.g.bConfirm, app.f.dialogWindowTH, null);
-            UISchemaHostWidget w = new UISchemaHostWidget(app, null);
+            UISchemaHostWidget w = new UISchemaHostWidget(U, null);
             w.pushObject(new SchemaPath(orh));
-            UIDynAppPrx prx = UIDynAppPrx.wrap(app, new UISplitterLayout(w, ok, false, 1));
+            UIDynAppPrx prx = UIDynAppPrx.wrap(U, new UISplitterLayout(w, ok, false, 1));
             ok.onClick = () -> {
                 ObjectRootHandle database = app.odb.getObject("RPG_RT.ldb");
                 long fx = ig.getFX();
-                UICommandSites ucs = new UICommandSites(app, T.u.mFindCommonEventsWithSwitchID, () -> {
+                UICommandSites ucs = new UICommandSites(U, T.u.mFindCommonEventsWithSwitchID, () -> {
                     LinkedList<UIElement> sites = new LinkedList<>();
                     // alright, now get ahold of the common events...
                     IRIO cevs = database.getObject().getIVar("@common_events");
@@ -62,7 +62,7 @@ public class R2kTools extends App.Svc implements Consumer<LinkedList<UIPopupMenu
                             continue;
                         DMPath targetPath = cevsPath.withHash(key);
                         sites.add(new UITextButton(key + ": " + app.format(target), app.f.schemaFieldTH, () -> {
-                            app.ui.launchSchemaTrace(database, null, targetPath);
+                            U.launchSchemaTrace(database, null, targetPath);
                         }));
                     }
                     // we're done!
@@ -72,7 +72,7 @@ public class R2kTools extends App.Svc implements Consumer<LinkedList<UIPopupMenu
                 prx.selfClose = true;
             };
             prx.setForcedBounds(null, new Rect(0, 0, prx.getWantedSize().width * 2, prx.getWantedSize().height));
-            app.ui.wm.createWindow(prx);
+            U.wm.createWindow(prx);
         }));
     }
 }

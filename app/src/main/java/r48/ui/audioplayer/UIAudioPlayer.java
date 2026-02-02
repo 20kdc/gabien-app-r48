@@ -26,7 +26,8 @@ import gabien.wsi.IPeripherals;
 import gabien.media.audio.*;
 import gabien.media.audio.fileio.MIDISynthesizerSource;
 import gabien.media.audio.fileio.ReadAnySupportedAudioSource;
-import r48.App;
+import r48.R48;
+import r48.ui.AppUI;
 import r48.ui.Art;
 import r48.ui.UIDynAppPrx;
 import r48.ui.UIMenuIconButton;
@@ -55,7 +56,7 @@ public class UIAudioPlayer extends UIDynAppPrx {
 
     private final UIIconButton loopButton = new UIIconButton(Art.Symbol.Loop.i(app), app.f.schemaFieldTH, null).togglable(false);
 
-    private final UIMenuIconButton volumeButton = new UIMenuIconButton(app, Art.Symbol.Volume.i(app), app.f.schemaFieldTH, () -> {
+    private final UIMenuIconButton volumeButton = new UIMenuIconButton(U, Art.Symbol.Volume.i(app), app.f.schemaFieldTH, () -> {
         UIScrollbar usb = new UIScrollbar(true, app.f.generalS) {
             @Override
             public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
@@ -75,8 +76,8 @@ public class UIAudioPlayer extends UIDynAppPrx {
     private double lastSeekerScrollPoint = -1;
     private double speed;
 
-    public UIAudioPlayer(App app, Supplier<AudioIOSource> dataSupplier, double spd) {
-        super(app);
+    public UIAudioPlayer(AppUI aui, Supplier<AudioIOSource> dataSupplier, double spd) {
+        super(aui);
         this.dataSupplier = dataSupplier;
         speed = spd;
         UIIconButton toStart = new UIIconButton(Art.Symbol.Back.i(app), app.f.schemaFieldTH, () -> {
@@ -191,7 +192,8 @@ public class UIAudioPlayer extends UIDynAppPrx {
             ".mid"
     };
 
-    public static UIElement create(App app, String filename, double speed) {
+    public static UIElement create(AppUI aui, String filename, double speed) {
+        R48 app = aui.app;
         InputStream theInputStream = null;
         // try root first before we try resources
         for (String mnt : extensionsWeWillTry) {
@@ -206,17 +208,17 @@ public class UIAudioPlayer extends UIDynAppPrx {
                     break;
             }
         }
-        return create(app, theInputStream, speed);
+        return create(aui, theInputStream, speed);
     }
 
-    public static UIElement createAbsoluteName(App app, String filename, double speed) {
+    public static UIElement createAbsoluteName(AppUI app, String filename, double speed) {
         return create(app, GaBIEn.getInFile(filename), speed);
     }
 
-    public static UIElement create(App app, final InputStream tryWav, double speed) {
+    public static UIElement create(AppUI aui, final InputStream tryWav, double speed) {
         if (tryWav != null) {
             try {
-                return new UIAudioPlayer(app, () -> {
+                return new UIAudioPlayer(aui, () -> {
                     try {
                         return ReadAnySupportedAudioSource.open(tryWav, true);
                     } catch (Exception e) {
@@ -227,7 +229,7 @@ public class UIAudioPlayer extends UIDynAppPrx {
                 e.printStackTrace();
             }
         }
-        return new UILabel(app.t.u.soundFailFileNotFound, app.f.schemaFieldTH);
+        return new UILabel(aui.T.u.soundFailFileNotFound, aui.f.schemaFieldTH);
     }
 
     @Override

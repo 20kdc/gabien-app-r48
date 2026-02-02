@@ -7,13 +7,13 @@
 
 package r48.schema.integers;
 
-import r48.App;
+import r48.R48;
 
 /**
  * Created on 12/29/16.
  */
 public class ROIntegerSchemaElement extends IntegerSchemaElement {
-    public ROIntegerSchemaElement(App app, int i) {
+    public ROIntegerSchemaElement(R48 app, int i) {
         super(app, i);
     }
 

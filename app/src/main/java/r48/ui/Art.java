@@ -21,7 +21,7 @@ import gabien.render.IImage;
 import gabien.ui.elements.UIBorderedElement;
 import gabien.uslx.append.Block;
 import gabien.uslx.append.Rect;
-import r48.App;
+import r48.R48;
 import r48.app.InterlaunchGlobals;
 import r48.imagefx.HueShiftImageEffect;
 import r48.ioplus.RenderArt;
@@ -66,15 +66,15 @@ public class Art extends RenderArt {
     }
 
     // This controls the layout of (in particular) zoom
-    public static int getZIconSize(App app) {
+    public static int getZIconSize(R48 app) {
         return UIBorderedElement.getBorderedTextHeight(GaBIEnUI.sysThemeRoot.getTheme(), app.f.mapPositionTH);
     }
 
-    public static int getZIconMargin(App app) {
+    public static int getZIconMargin(R48 app) {
         return app.f.scaleGuess(4);
     }
 
-    public static Rect getZIconRect(App app, boolean click, int x) {
+    public static Rect getZIconRect(R48 app, boolean click, int x) {
         int zbs = getZIconSize(app);
         int zbm = getZIconMargin(app);
         int ry = (x * ((zbm * 2) + zbs));
@@ -132,10 +132,10 @@ public class Art extends RenderArt {
         return GaBIEn.createImage(img, 256, 256);
     }
 
-    public IImage getColourPal(App app, int hue) {
+    public IImage getColourPal(R48 app, int hue) {
         if (colourPal == null)
             colourPal = genColourPal();
-        return app.ui.imageFXCache.process(colourPal, new HueShiftImageEffect(hue));
+        return app.imageFXCache.process(colourPal, new HueShiftImageEffect(hue));
     }
 
     public static int getRainbowHue(int x) {
@@ -250,7 +250,7 @@ public class Art extends RenderArt {
             return a.symbolInstances[ordinal()];
         }
 
-        public Instance i(App a) {
+        public Instance i(R48 a) {
             return i(a.a);
         }
 

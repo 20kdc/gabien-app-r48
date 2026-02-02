@@ -13,7 +13,6 @@ import java.util.function.Supplier;
 import gabien.ui.*;
 import gabien.ui.elements.UILabel;
 import gabien.wsi.IPeripherals;
-import r48.App;
 
 /**
  * Handles frame management, copy/paste, etc.
@@ -21,7 +20,7 @@ import r48.App;
  * Notably, the actual current frame number is stored by the Root Panel since everything needs that.
  * Created on 2/17/17.
  */
-public class UITimeframeControl extends App.Prx {
+public class UITimeframeControl extends AppUI.Prx {
     public final Supplier<Integer> getFrameIdx, getFrameCount;
     public final Consumer<Integer> setFrameIdx;
 
@@ -38,7 +37,7 @@ public class UITimeframeControl extends App.Prx {
     // The rest of the toolbar is constructed in the constructor
     public UIElement toolbar = tsController;
 
-    public UITimeframeControl(App app, Supplier<Integer> gfi, Supplier<Integer> gfc, Consumer<Integer> sfi, int framerate) {
+    public UITimeframeControl(AppUI app, Supplier<Integer> gfi, Supplier<Integer> gfc, Consumer<Integer> sfi, int framerate) {
         super(app);
         getFrameIdx = gfi;
         getFrameCount = gfc;

@@ -11,7 +11,7 @@ import gabien.ui.UIElement;
 import gabien.ui.elements.UIEmpty;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
+import r48.R48;
 import r48.RubyTable;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
@@ -22,6 +22,7 @@ import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 
 /**
  * Installs a set of sensible defaults on command.
@@ -31,13 +32,14 @@ import r48.schema.util.SchemaPath;
 public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf {
     public int mode = 0;
 
-    public R2kSystemDefaultsInstallerSchemaElement(App app, int i) {
+    public R2kSystemDefaultsInstallerSchemaElement(R48 app, int i) {
         super(app);
         mode = i;
     }
 
     @Override
     public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+        AppUI U = launcher.getAppUI();
         if (mode == 3) {
             UITextButton utb1 = new UITextButton(T.s.svDoReset, app.f.schemaFieldTH, () -> {
                 // Before doing anything stupid...
@@ -45,7 +47,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
                 String mapName = R2kRMLikeMapInfoBackend.sNameFromInt((int) mapId);
                 ObjectRootHandle map = app.odb.getObject(mapName, false);
                 if (map == null) {
-                    app.ui.launchDialog(T.s.errInvalidMap);
+                    U.launchDialog(T.s.errInvalidMap);
                     return;
                 }
                 IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");
@@ -65,7 +67,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
                 initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
 
                 path.changeOccurred(false);
-                app.ui.launchDialog(T.s.svDidTheReset);
+                U.launchDialog(T.s.svDidTheReset);
             });
             UITextButton utb2 = new UITextButton(T.s.svCauseReset, app.f.schemaFieldTH, () -> {
                 IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");
@@ -75,7 +77,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
                 initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
 
                 path.changeOccurred(false);
-                app.ui.launchDialog(T.s.svCausedTheReset);
+                U.launchDialog(T.s.svCausedTheReset);
             });
             return new UISplitterLayout(utb1, utb2, true, 0.5d);
         } else {
@@ -140,7 +142,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
 
                     // Prepare.
                     // This needs to be a bit indirect since app.np might not have inited yet
-                    app.uiPendingRunnables.add(() -> app.np.r2kProjectCreationHelperFunction());
+                    app.uiPendingRunnables.add((ui) -> ui.np.r2kProjectCreationHelperFunction());
                     break;
                 case 1:
                     // 1. Fix root

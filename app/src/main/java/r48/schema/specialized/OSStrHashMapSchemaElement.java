@@ -10,7 +10,7 @@ package r48.schema.specialized;
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextBox;
-import r48.App;
+import r48.R48;
 import r48.io.IMIUtils;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
@@ -19,6 +19,7 @@ import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.tr.pages.TrRoot;
+import r48.ui.AppUI;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -29,15 +30,16 @@ import java.util.HashMap;
  * Written on December 1st, 2017.
  */
 public class OSStrHashMapSchemaElement extends SchemaElement.Leaf {
-    public OSStrHashMapSchemaElement(App app) {
+    public OSStrHashMapSchemaElement(R48 app) {
         super(app);
     }
     @Override
     public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
-        App app = launcher.getApp();
+        R48 app = launcher.getApp();
+        AppUI U = launcher.getAppUI();
         tryInitOSSHESEDB(app);
         if (app.osSHESEDB == null)
-            app.ui.launchDialog(T.s.dOSLocUseless);
+            U.launchDialog(T.s.dOSLocUseless);
         final UITextBox utb = new UITextBox("", app.f.schemaFieldTH);
         utb.onEdit = new Runnable() {
             @Override
@@ -53,7 +55,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement.Leaf {
         return utb;
     }
 
-    public static void tryInitOSSHESEDB(App app) {
+    public static void tryInitOSSHESEDB(R48 app) {
         InputStream inp = null;
         try {
             inp = GaBIEn.getInFile(app.gameRoot.into("locmaps.txt"));
@@ -112,7 +114,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement.Leaf {
         }
     }
 
-    public static String decode(App app, RORIO v) {
+    public static String decode(R48 app, RORIO v) {
         if (app.osSHESEDB == null)
             tryInitOSSHESEDB(app);
         int type = v.getType();
@@ -133,7 +135,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement.Leaf {
         return v.toString();
     }
 
-    private static String mainDecode(App app, int fixnumVal) {
+    private static String mainDecode(R48 app, int fixnumVal) {
         final TrRoot T = app.t;
         if (app.osSHESEDB == null)
             return T.s.oslocErrNoDB;

@@ -7,12 +7,13 @@
 
 package r48.map.mapinfos;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.DMPath;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 import r48.ui.Art;
 
 import java.util.*;
@@ -23,13 +24,13 @@ import java.util.function.Consumer;
  * (As of midnight between December 4th & December 5th 2018, this is now kind of type-reliant for sanity reasons.)
  * Created on 02/06/17.
  */
-public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
+public class R2kRMLikeMapInfoBackend extends R48.Svc implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
     public Consumer<SchemaPath> modHandler;
     public ObjectRootHandle mapTree = app.odb.getObject("RPG_RT.lmt");
     // Note: The orders table is [order] = map.
     // So swapping orders is probably the easiest operation here.
 
-    public R2kRMLikeMapInfoBackend(App app) {
+    public R2kRMLikeMapInfoBackend(R48 app) {
         super(app);
         mapTree = app.odb.getObject("RPG_RT.lmt");
     }
@@ -65,7 +66,7 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
         return "Map" + m + ".lmu";
     }
 
-    public static String sTranslateToGUM(App app, long k) {
+    public static String sTranslateToGUM(R48 app, long k) {
         final IRIO map = app.odb.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos").getHashVal(DMKey.of(k));
         if (map == null)
             return null;
@@ -90,8 +91,8 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     }
 
     @Override
-    public void triggerEditInfoOf(long k) {
-        app.ui.launchSchemaTrace(mapTree, null, new DMPath.IVar("@map_infos", false).withHash(DMKey.of(k)));
+    public void triggerEditInfoOf(AppUI U, long k) {
+        U.launchSchemaTrace(mapTree, null, new DMPath.IVar("@map_infos", false).withHash(DMKey.of(k)));
     }
 
     @Override

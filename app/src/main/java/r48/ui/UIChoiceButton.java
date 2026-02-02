@@ -11,20 +11,20 @@ import gabien.ui.UIElement;
 import gabien.ui.dialogs.UIAutoclosingPopupMenu;
 import gabien.ui.dialogs.UIPopupMenu;
 import gabien.ui.elements.UITextButton;
-import r48.App;
+import r48.R48;
 
 /**
  * Combo button!
  * Created 18th August, 2023.
  */
 public abstract class UIChoiceButton<T> extends UITextButton {
-    public final App app;
+    public final R48 app;
     private T currentChoice;
     private T[] choices;
 
-    public UIChoiceButton(App app, int h2, T defChoice, T[] choices) {
+    public UIChoiceButton(AppUI U, int h2, T defChoice, T[] choices) {
         super("", h2, null);
-        this.app = app;
+        this.app = U.app;
         setText(choiceToText(defChoice));
         forceToRecommended();
         currentChoice = defChoice;
@@ -33,7 +33,7 @@ public abstract class UIChoiceButton<T> extends UITextButton {
         onClick = () -> {
             state = true;
             UIElement basis = genMenu();
-            app.ui.wm.createMenu(UIChoiceButton.this, new UIProxy(basis, false) {
+            U.wm.createMenu(UIChoiceButton.this, new UIProxy(basis, false) {
                 @Override
                 public void onWindowClose() {
                     super.onWindowClose();

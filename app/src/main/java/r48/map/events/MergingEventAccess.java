@@ -11,8 +11,10 @@ import r48.dbs.ValueSyntax;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
+import r48.ioplus.Reporter;
 
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -73,10 +75,10 @@ public class MergingEventAccess implements IEventAccess {
     }
 
     @Override
-    public void delEvent(DMKey key) {
+    public void delEvent(DMKey key, Reporter reporter) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
-        accesses[in].delEvent(ValueSyntax.decode(ks.substring(1)));
+        accesses[in].delEvent(ValueSyntax.decode(ks.substring(1)), reporter);
     }
 
     @Override
@@ -85,11 +87,11 @@ public class MergingEventAccess implements IEventAccess {
     }
 
     @Override
-    public @Nullable DMKey addEvent(@Nullable RORIO eve, int type) {
+    public @Nullable DMKey addEvent(@Nullable RORIO eve, int type, Reporter reporter) {
         int accessId = eventTypesToAccess[type];
         IEventAccess iea = accesses[accessId];
         type -= accessEVTBases[accessId];
-        DMKey res = iea.addEvent(eve, type);
+        DMKey res = iea.addEvent(eve, type, reporter);
         if (res == null)
             return null;
         return convertEventKey(accessId, res);
@@ -110,7 +112,7 @@ public class MergingEventAccess implements IEventAccess {
     }
 
     @Override
-    public Runnable hasSync(DMKey key) {
+    public Consumer<Reporter> hasSync(DMKey key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
         return accesses[in].hasSync(ValueSyntax.decode(ks.substring(1)));
@@ -136,10 +138,10 @@ public class MergingEventAccess implements IEventAccess {
     }
 
     @Override
-    public void setEventXY(DMKey a, long x, long y) {
+    public void setEventXY(DMKey a, long x, long y, Reporter reporter) {
         String ks = a.decString();
         int in = ks.charAt(0) - '0';
-        accesses[in].setEventXY(ValueSyntax.decode(ks.substring(1)), x, y);
+        accesses[in].setEventXY(ValueSyntax.decode(ks.substring(1)), x, y, reporter);
     }
 
     @Override

@@ -15,11 +15,11 @@ import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
 import gabien.ui.layouts.UITabBar;
 import gabien.ui.layouts.UITabPane;
-import r48.App;
 import r48.UITest;
 import r48.io.data.DMKey;
 import r48.schema.util.SchemaPath;
 import r48.tr.TrPage.FF0;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
 
 import java.util.Comparator;
@@ -33,17 +33,17 @@ import org.eclipse.jdt.annotation.Nullable;
  * Used for RPG Command Selection.
  * Created on 12/30/16.
  */
-public class UIEnumChoice extends App.Prx {
+public class UIEnumChoice extends AppUI.Prx {
     private final UIScrollLayout[] categoryPanels;
     private final UITabPane mainPanel;
     private boolean wantsSelfClose = false;
 
     // entryText defaults to "Manual."
-    public UIEnumChoice(App app, final Consumer<DMKey> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
-        this(app, result, new Category[] {new Category(app.t.u.enumOptions, options)}, entryText, entryType);
+    public UIEnumChoice(AppUI app, final Consumer<DMKey> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
+        this(app, result, new Category[] {new Category(app.app.t.u.enumOptions, options)}, entryText, entryType);
     }
 
-    public UIEnumChoice(App app, final Consumer<DMKey> result, final Category[] order, String entryText, EntryMode entryType) {
+    public UIEnumChoice(AppUI app, final Consumer<DMKey> result, final Category[] order, String entryText, EntryMode entryType) {
         super(app);
 
         if (entryText == null)

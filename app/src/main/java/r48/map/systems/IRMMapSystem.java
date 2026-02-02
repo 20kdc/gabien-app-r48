@@ -10,7 +10,7 @@ package r48.map.systems;
 import java.util.Comparator;
 import java.util.function.Supplier;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectInfo;
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.IRIO;
@@ -44,7 +44,7 @@ public interface IRMMapSystem {
         public final Supplier<String> nameSupplier;
         public final int id;
 
-        public RMMapData(App app, Supplier<String> n, int i, String iN) {
+        public RMMapData(R48 app, Supplier<String> n, int i, String iN) {
             super(app, iN);
             nameSupplier = n;
             id = i;

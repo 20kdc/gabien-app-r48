@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextButton;
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.SchemaElement;
@@ -30,7 +30,7 @@ public class SpritesheetCoreSchemaElement extends SchemaElement.Leaf {
     public Function<IRIO, IRIO> numberProvider;
     public Function<RORIO, ISpritesheetProvider> provider;
 
-    public SpritesheetCoreSchemaElement(App app, Function<RORIO, String> propTranslated, int def, Function<IRIO, IRIO> nprov, Function<RORIO, ISpritesheetProvider> core) {
+    public SpritesheetCoreSchemaElement(R48 app, Function<RORIO, String> propTranslated, int def, Function<IRIO, IRIO> nprov, Function<RORIO, ISpritesheetProvider> core) {
         super(app);
         text = propTranslated;
         defaultVal = def;

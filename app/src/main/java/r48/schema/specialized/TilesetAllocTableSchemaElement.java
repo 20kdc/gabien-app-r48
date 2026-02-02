@@ -9,7 +9,7 @@ package r48.schema.specialized;
 
 import gabien.render.IGrDriver;
 import gabien.uslx.append.Size;
-import r48.App;
+import r48.R48;
 import r48.RubyTableR;
 import r48.dbs.PathSyntax;
 import r48.dbs.TSDB;
@@ -24,7 +24,7 @@ import r48.schema.specialized.tbleditors.ITableCellEditor;
 public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<StuffRenderer> {
     public final TSDB allocSource;
 
-    public TilesetAllocTableSchemaElement(App app, TSDB source, PathSyntax iVar, PathSyntax wVar, PathSyntax hVar, int dc, int dw, int dh, int defL, ITableCellEditor itce, int[] defVal) {
+    public TilesetAllocTableSchemaElement(R48 app, TSDB source, PathSyntax iVar, PathSyntax wVar, PathSyntax hVar, int dc, int dw, int dh, int defL, ITableCellEditor itce, int[] defVal) {
         super(app, iVar, wVar, hVar, dc, dw, dh, defL, itce, defVal);
         allocSource = source;
         allowResize = allocSource.mapping == null;

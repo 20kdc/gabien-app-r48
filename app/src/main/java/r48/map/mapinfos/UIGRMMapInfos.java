@@ -17,10 +17,10 @@ import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
-import r48.App;
 import r48.IMapContext;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
+import r48.ui.AppUI;
 import r48.ui.UIAppendButton;
 import r48.ui.UITreeView;
 
@@ -35,7 +35,7 @@ import java.util.function.Consumer;
  * <p/>
  * Created on 1/1/17. Copied for Generic RM Map Infos on Jun 2 2017.
  */
-public class UIGRMMapInfos extends App.Prx {
+public class UIGRMMapInfos extends AppUI.Prx {
     private final IRMLikeMapInfoBackendWPub operators;
     private final UIScrollLayout uiSVL = new UIScrollLayout(true, app.f.generalS);
     private final UITreeView utv;
@@ -57,7 +57,7 @@ public class UIGRMMapInfos extends App.Prx {
 
     public UIGRMMapInfos(final IRMLikeMapInfoBackendWPub b, IMapContext context, String mapInfos) {
         super(context.getApp());
-        utv = new UITreeView(app, UIBorderedElement.getBorderedTextHeight(GaBIEnUI.sysThemeRoot.getTheme(), app.f.mapInfosTH));
+        utv = new UITreeView(U, UIBorderedElement.getBorderedTextHeight(GaBIEnUI.sysThemeRoot.getTheme(), app.f.mapInfosTH));
         operators = b;
         mapContext = context;
         toStringRes = mapInfos;
@@ -160,7 +160,7 @@ public class UIGRMMapInfos extends App.Prx {
                     public void run() {
                         long i = num.getNumber();
                         if (operators.getHashBID(i) != null) {
-                            app.ui.launchDialog(T.m.dIDInUse);
+                            U.launchDialog(T.m.dIDInUse);
                             return;
                         }
                         selectedOrder = operators.createNewMap(i);
@@ -181,7 +181,7 @@ public class UIGRMMapInfos extends App.Prx {
                         return close.get();
                     }
                 };
-                mapContext.getApp().ui.wm.createWindow(dialog);
+                mapContext.getApp().wm.createWindow(dialog);
             }
         });
 
@@ -248,10 +248,10 @@ public class UIGRMMapInfos extends App.Prx {
             elm = new UIAppendButton(T.m.bEditInfo, elm, new Runnable() {
                 @Override
                 public void run() {
-                    operators.triggerEditInfoOf(k);
+                    operators.triggerEditInfoOf(U, k);
                 }
             }, app.f.mapInfosTH);
-            elm = new UIAppendButton(app, T.m.bDelete, elm, app.f.mapInfosTH, null,
+            elm = new UIAppendButton(U, T.m.bDelete, elm, app.f.mapInfosTH, null,
                 new UIPopupMenu.Entry(T.g.bConfirm, () -> {
                     // Orphan/move up child nodes first
                     for (Long rk : operators.getHashKeys()) {

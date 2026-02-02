@@ -11,7 +11,7 @@ import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.render.ITexRegion;
-import r48.App;
+import r48.R48;
 import r48.ioplus.DBLoader;
 import r48.ioplus.IDatabase;
 
@@ -35,7 +35,7 @@ public class TSDB {
     public int tileW = 0, tileH = 0;
     public boolean tileWHSet;
 
-    public TSDB(App app, String arg) {
+    public TSDB(R48 app, String arg) {
         Consumer<String> loadProgress = app.loadProgress;
         DBLoader.readFile(loadProgress, arg, new IDatabase() {
 

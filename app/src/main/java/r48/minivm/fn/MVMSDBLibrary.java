@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import datum.DatumSrcLoc;
-import r48.App;
+import r48.R48;
 import r48.dbs.SDBOldParser;
 import r48.gameinfo.ATDB;
 import r48.minivm.MVMEnv;
@@ -29,8 +29,8 @@ import r48.tr.TrPage.FF0;
  * MiniVM standard library.
  * Created 10th March 2023.
  */
-public class MVMSDBLibrary extends App.Svc {
-    public MVMSDBLibrary(App app) {
+public class MVMSDBLibrary extends R48.Svc {
+    public MVMSDBLibrary(R48 app) {
         super(app);
     }
 
@@ -93,7 +93,7 @@ public class MVMSDBLibrary extends App.Svc {
         app.autoTiles = atdbs.toArray(new ATDB[0]);
     }
 
-    public static SchemaElement coerceToElement(App app, Object elm) {
+    public static SchemaElement coerceToElement(R48 app, Object elm) {
         if (elm instanceof SchemaElement)
             return (SchemaElement) elm;
         return app.sdb.getSDBEntry(MVMU.coerceToString(elm));

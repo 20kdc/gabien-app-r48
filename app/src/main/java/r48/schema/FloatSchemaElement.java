@@ -9,7 +9,7 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UITextBox;
-import r48.App;
+import r48.R48;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -23,7 +23,7 @@ public class FloatSchemaElement extends SchemaElement.Leaf {
     public boolean jsonCoerce;
     public String def;
 
-    public FloatSchemaElement(App app, String arg, boolean json) {
+    public FloatSchemaElement(R48 app, String arg, boolean json) {
         super(app);
         def = arg;
         jsonCoerce = json;

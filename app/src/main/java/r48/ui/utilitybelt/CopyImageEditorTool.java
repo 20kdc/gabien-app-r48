@@ -7,7 +7,7 @@
 
 package r48.ui.utilitybelt;
 
-import r48.App;
+import r48.R48;
 import r48.io.BMPConnection;
 import r48.io.data.IRIOGeneric;
 
@@ -20,7 +20,7 @@ import gabien.uslx.io.ByteArrayMemoryish;
  * Created on December 15, 2018.
  */
 public class CopyImageEditorTool extends RectangleImageEditorTool {
-    public CopyImageEditorTool(App app) {
+    public CopyImageEditorTool(R48 app) {
         super(app);
     }
 

@@ -7,7 +7,7 @@
 
 package r48.schema.arrays;
 
-import r48.App;
+import r48.R48;
 import r48.io.data.IRIO;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
@@ -21,13 +21,13 @@ public class ArbIndexedArraySchemaElement extends ArraySchemaElement {
     public SchemaElement subelems;
     public int indexOffset;
 
-    public ArbIndexedArraySchemaElement(App app, SchemaElement s, int io, int atLeast, int fixedSize, IArrayInterface uiHelper) {
+    public ArbIndexedArraySchemaElement(R48 app, SchemaElement s, int io, int atLeast, int fixedSize, IArrayInterface uiHelper) {
         super(app, fixedSize, (atLeast > -1) ? (atLeast + io) : 0, 0, uiHelper);
         subelems = s;
         indexOffset = io;
     }
 
-    public ArbIndexedArraySchemaElement(App app, SchemaElement s, int io, int atLeast, int fixedSize, IArrayInterface uiHelper, SchemaElement o) {
+    public ArbIndexedArraySchemaElement(R48 app, SchemaElement s, int io, int atLeast, int fixedSize, IArrayInterface uiHelper, SchemaElement o) {
         super(app, fixedSize, (atLeast > -1) ? (atLeast + io) : 0, 0, uiHelper, o);
         subelems = s;
         indexOffset = io;

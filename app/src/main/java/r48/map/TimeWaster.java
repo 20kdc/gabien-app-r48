@@ -7,26 +7,25 @@
 
 package r48.map;
 
-import r48.App;
-
 import java.util.Random;
 
 import gabien.render.IGrDriver;
+import r48.ui.AppUI;
 
 /**
  * For once, a simple to describe class.
  * Created on 1/2/17.
  */
-public class TimeWaster extends App.Svc {
+public class TimeWaster extends AppUI.Svc {
     private double moveTime = 16;
     private int iconPlanX = 0;
     private int iconPlanY = 0;
     private final int iconSize;
     private Random madness = new Random();
 
-    public TimeWaster(App app) {
+    public TimeWaster(AppUI app) {
         super(app);
-        iconSize = 64 * app.f.getSpriteScale();
+        iconSize = 64 * app.app.f.getSpriteScale();
     }
 
     public void draw(IGrDriver igd, double deltaTime, int sw, int sh) {

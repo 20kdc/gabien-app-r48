@@ -11,13 +11,13 @@ import java.util.LinkedList;
 
 import gabien.ui.UIElement;
 import gabien.ui.elements.UINumberBox;
-import r48.App;
+import r48.R48;
 
 /**
  * Created on 18/2/17.
  */
-public class DefaultTableCellEditor extends App.Svc implements ITableCellEditor {
-    public DefaultTableCellEditor(App app) {
+public class DefaultTableCellEditor extends R48.Svc implements ITableCellEditor {
+    public DefaultTableCellEditor(R48 app) {
         super(app);
     }
     @Override

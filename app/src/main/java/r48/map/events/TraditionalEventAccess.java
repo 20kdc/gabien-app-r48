@@ -7,18 +7,20 @@
 
 package r48.map.events;
 
-import r48.App;
+import r48.R48;
 import r48.dbs.ObjectRootHandle;
 import r48.dbs.PathSyntax;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
+import r48.ioplus.Reporter;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -27,22 +29,22 @@ import org.eclipse.jdt.annotation.Nullable;
  * This instance can be reused.
  * Created on December 15th 2017
  */
-public class TraditionalEventAccess extends App.Svc implements IEventAccess {
+public class TraditionalEventAccess extends R48.Svc implements IEventAccess {
     private final ObjectRootHandle mapRoot;
     private final int eventIdBase;
     private final SchemaElement mapRootSchema, eventSchema;
     private final String eventsName, eventName;
     private final PathSyntax propPathX, propPathY, propPathName, eventsPath;
 
-    public TraditionalEventAccess(App app, String mapRootId, String path, int b, String schema) {
+    public TraditionalEventAccess(R48 app, String mapRootId, String path, int b, String schema) {
         this(app, mapRootId, path, b, schema, "@x", "@y", "@name");
     }
 
-    public TraditionalEventAccess(App app, String mapRootId, String path, int b, String schema, String pathX, String pathY, String pathName) {
+    public TraditionalEventAccess(R48 app, String mapRootId, String path, int b, String schema, String pathX, String pathY, String pathName) {
         this(app, mapRootId, path, b, schema, pathX, pathY, pathName, app.t.m.events, app.t.m.addEvent);
     }
 
-    public TraditionalEventAccess(App app, String mapRootId, String path, int b, String schema, String pathX, String pathY, String pathName, String en, String en2) {
+    public TraditionalEventAccess(R48 app, String mapRootId, String path, int b, String schema, String pathX, String pathY, String pathName, String en, String en2) {
         super(app);
         mapRoot = app.odb.getObject(mapRootId);
         mapRootSchema = SchemaElement.cast(mapRoot.rootSchema);
@@ -71,7 +73,7 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public void delEvent(DMKey key) {
+    public void delEvent(DMKey key, Reporter reporter) {
         IRIO mapEvents = getMapEvents();
         mapEvents.removeHashVal(key);
         pokeHive();
@@ -85,7 +87,7 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public @Nullable DMKey addEvent(@Nullable RORIO eve, int type) {
+    public @Nullable DMKey addEvent(@Nullable RORIO eve, int type, Reporter reporter) {
         DMKey key = getFreeIndex();
         IRIO mapEvents = getMapEvents();
         IRIO eveTarget = mapEvents.addHashVal(key);
@@ -116,7 +118,7 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public Runnable hasSync(DMKey evK) {
+    public Consumer<Reporter> hasSync(DMKey evK) {
         return null;
     }
 
@@ -136,7 +138,7 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     @Override
-    public void setEventXY(DMKey a, long x, long y) {
+    public void setEventXY(DMKey a, long x, long y, Reporter reporter) {
         IRIO ev = getEvent(a);
         if (ev == null)
             return;

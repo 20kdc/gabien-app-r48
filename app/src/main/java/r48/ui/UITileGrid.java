@@ -8,7 +8,7 @@
 package r48.ui;
 
 import gabien.render.IGrDriver;
-import r48.App;
+import r48.R48;
 import r48.map.StuffRenderer;
 
 /**
@@ -26,15 +26,15 @@ public class UITileGrid extends UIGrid {
 
     private final String toStringRes;
 
-    public UITileGrid(App app, StuffRenderer sr, int l, boolean at, int[] mapN, int[] mapH, String tiles, int sprScale) {
+    public UITileGrid(R48 app, StuffRenderer sr, int l, boolean at, int[] mapN, int[] mapH, String tiles, int sprScale) {
         this(app, sr, at ? sprScale : 0, l, !at, mapN, mapH, tiles, sprScale);
     }
 
-    public UITileGrid(App app, StuffRenderer sr, int l, int[] remap, int sprScale) {
+    public UITileGrid(R48 app, StuffRenderer sr, int l, int[] remap, int sprScale) {
         this(app, sr, 0, l, false, remap, remap, "Nts/UITileGrid", sprScale);
     }
 
-    public UITileGrid(App app, StuffRenderer sr, int bs, int l, boolean cms, int[] mapN, int[] mapH, String tiles, int sprScale) {
+    public UITileGrid(R48 app, StuffRenderer sr, int bs, int l, boolean cms, int[] mapN, int[] mapH, String tiles, int sprScale) {
         super(app, 1337, 1337, mapN.length);
         if (mapN.length != mapH.length)
             throw new IndexOutOfBoundsException("n!=Ir2");
