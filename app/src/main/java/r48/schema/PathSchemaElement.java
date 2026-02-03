@@ -58,11 +58,12 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
                 createIVar(rio, path, false);
             });
         } else {
-            e2 = subElem.buildHoldingEditor(tgo, launcher, path.otherIndex(alias.r()));
+            SchemaPath sp2 = doOtherIndex(path);
+            e2 = subElem.buildHoldingEditor(tgo, launcher, path);
             if (optional)
                 e2 = new UIAppendButton("-", e2, () -> {
                     if (pStr.del(target) != null)
-                        path.changeOccurred(false);
+                        sp2.changeOccurred(false);
                 }, app.f.schemaFieldTH);
         }
         if (uil != null) {
@@ -73,10 +74,18 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
         return e2;
     }
 
+    private SchemaPath doOtherIndex(SchemaPath sp2) {
+        if (alias != null)
+            sp2 = sp2.otherIndex(alias.r());
+        return sp2;
+    }
+
     @Override
     public int getDefaultFieldWidth(IRIO target) {
-        if (alias != null)
-            return UIBorderedElement.getRecommendedTextSize(GaBIEnUI.sysThemeRoot.getTheme(), alias.r() + " ", app.f.schemaFieldTH).width;
+        if (alias != null) {
+            String aliasRead = alias.r();
+            return UIBorderedElement.getRecommendedTextSize(GaBIEnUI.sysThemeRoot.getTheme(), aliasRead + " ", app.f.schemaFieldTH).width;
+        }
         return 0;
     }
 
@@ -90,7 +99,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         IRIO r = pStr.getRW(target);
         if (r != null) {
-            subElem.modifyVal(r, path.otherIndex(alias.r()), setDefault);
+            subElem.modifyVal(r, doOtherIndex(path), setDefault);
         } else {
             if (!optional) {
                 IRIO rio = pStr.add(target);
@@ -105,12 +114,12 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     public void visitChildren(IRIO target, SchemaPath path, Visitor v, boolean detailedPaths) {
         IRIO r = pStr.getRW(target);
         if (r != null)
-            subElem.visit(r, detailedPaths ? path.otherIndex(alias.r()) : path, v, detailedPaths);
+            subElem.visit(r, detailedPaths ? doOtherIndex(path) : path, v, detailedPaths);
     }
 
     private void createIVar(IRIO r, SchemaPath targetPath, boolean mv) {
         // being created, so create from scratch no matter what.
-        subElem.modifyVal(r, targetPath.otherIndex(alias.r()), mv);
+        subElem.modifyVal(r, doOtherIndex(targetPath), mv);
         targetPath.changeOccurred(mv);
     }
 }

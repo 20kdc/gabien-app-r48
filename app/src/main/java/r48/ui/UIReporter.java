@@ -30,6 +30,11 @@ public class UIReporter extends Reporter implements AutoCloseable {
         U = aui;
     }
 
+    public UIReporter(@NonNull R48 app, @Nullable AppUI aui) {
+        super(app.t);
+        U = aui;
+    }
+
     @Override
     public void report(String msg) {
         if (U != null)

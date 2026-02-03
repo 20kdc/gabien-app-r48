@@ -27,6 +27,7 @@ import r48.dbs.ObjectRootHandle;
 import r48.dbs.ObjectInfo;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
 import r48.map.AppMapViewDrawContext;
@@ -158,7 +159,7 @@ public abstract class MapSystem extends R48.Svc {
 
     // Converts "map_id"-style elements to their GUM strings
     // Returns null if the reference doesn't exist.
-    public String mapReferentToGUM(IRIO mapReferent) {
+    public String mapReferentToGUM(RORIO mapReferent) {
         return "Map";
     }
 

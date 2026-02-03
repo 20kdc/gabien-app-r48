@@ -226,7 +226,7 @@ public abstract class SchemaOp extends R48.Svc {
         }
 
         public UIReporter makeReporter() {
-            return appUI == null ? new UIReporter(app) : new UIReporter(appUI);
+            return new UIReporter(app, appUI);
         }
     }
 

@@ -51,6 +51,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
 
     @Override
     public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+        FF0 alias = this.alias;
         if (alias == null)
             return new UIEmpty();
         if (target.getType() != '[')
@@ -91,6 +92,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
 
     @Override
     public int getDefaultFieldWidth(IRIO target) {
+        FF0 alias = this.alias;
         if (alias == null)
             return 0;
         return UIBorderedElement.getRecommendedTextSize(GaBIEnUI.sysThemeRoot.getTheme(), alias.r() + " ", app.f.schemaFieldTH).width;

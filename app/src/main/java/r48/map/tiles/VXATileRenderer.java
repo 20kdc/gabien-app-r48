@@ -335,7 +335,8 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
 
     @Override
     public @Nullable LinkedList<IGrDriver> getAtlasSet() {
-        return atlasSet == null ? null : atlasSet.pages;
+        AtlasSet set = atlasSet;
+        return set == null ? null : set.pages;
     }
 
     public static class ExpandedATTF extends AutoTileTypeField {

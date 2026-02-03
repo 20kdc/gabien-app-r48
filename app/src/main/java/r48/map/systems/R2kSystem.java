@@ -26,6 +26,7 @@ import r48.imageio.PNG8IImageIOFormat;
 import r48.imageio.XYZImageIOFormat;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 import r48.map.*;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.drawlayers.*;
@@ -251,7 +252,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public String mapReferentToGUM(IRIO mapReferent) {
+    public String mapReferentToGUM(RORIO mapReferent) {
         return R2kRMLikeMapInfoBackend.sTranslateToGUM(app, (int) mapReferent.getFX());
     }
 

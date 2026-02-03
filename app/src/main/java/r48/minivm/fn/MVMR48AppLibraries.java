@@ -6,8 +6,6 @@
  */
 package r48.minivm.fn;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import r48.R48;
 import r48.minivm.MVMEnvR48;
 

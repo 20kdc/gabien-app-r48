@@ -262,7 +262,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public String mapReferentToGUM(IRIO mapReferent) {
+    public String mapReferentToGUM(RORIO mapReferent) {
         return RXPRMLikeMapInfoBackend.sNameFromInt((int) mapReferent.getFX());
     }
 

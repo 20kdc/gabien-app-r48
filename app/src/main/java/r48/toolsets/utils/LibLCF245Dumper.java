@@ -10,6 +10,8 @@ package r48.toolsets.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import r48.R48;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
@@ -44,6 +46,15 @@ public class LibLCF245Dumper extends R48.Svc {
 
     private static IRIO putProp(IRIO root, String string) {
         return root.addHashVal(DMKey.ofStr(string));
+    }
+
+    private static void putNullableFF0Prop(IRIO root, String string, @Nullable FF0 ns) {
+        IRIO i = root.addHashVal(DMKey.ofStr(string));
+        if (ns == null) {
+            i.setNull();
+        } else {
+            i.setString(ns.r());
+        }
     }
 
     public RORIO dumpRoot() {
@@ -108,11 +119,7 @@ public class LibLCF245Dumper extends R48.Svc {
             RPGCommand.PStatic r = (RPGCommand.PStatic) param;
             target.setHash();
             putProp(target, "type").setString("static");
-            if (r.name != null) {
-                putProp(target, "name").setString(r.name.r());
-            } else {
-                putProp(target, "name").setNull();
-            }
+            putNullableFF0Prop(target, "name", r.name);
             putProp(target, "se").setFX(dumpSDBNode(r.se));
         } else if (param instanceof RPGCommand.PDyn) {
             RPGCommand.PDyn r = (RPGCommand.PDyn) param;
@@ -156,11 +163,7 @@ public class LibLCF245Dumper extends R48.Svc {
             PathSchemaElement ese = (PathSchemaElement) se;
             putProp(newSDBNode, "pStr").setString(ese.pStr.decompiled);
             putProp(newSDBNode, "subElem").setFX(dumpSDBNode(ese.subElem));
-            if (ese.alias != null) {
-                putProp(newSDBNode, "alias").setString(ese.alias.r());
-            } else {
-                putProp(newSDBNode, "alias").setNull();
-            }
+            putNullableFF0Prop(newSDBNode, "alias", ese.alias);
             putProp(newSDBNode, "optional").setBool(ese.optional);
         } else if (se instanceof ArrayElementSchemaElement) {
             newSDBNode.setHash();
@@ -168,11 +171,7 @@ public class LibLCF245Dumper extends R48.Svc {
             ArrayElementSchemaElement ese = (ArrayElementSchemaElement) se;
             putProp(newSDBNode, "index").setFX(ese.index);
             putProp(newSDBNode, "subElem").setFX(dumpSDBNode(ese.subElem));
-            if (ese.alias != null) {
-                putProp(newSDBNode, "alias").setString(ese.alias.r());
-            } else {
-                putProp(newSDBNode, "alias").setNull();
-            }
+            putNullableFF0Prop(newSDBNode, "alias", ese.alias);
             putProp(newSDBNode, "optional").setBool(ese.optional != null);
         } else if (se instanceof EnumSchemaElement) {
             newSDBNode.setHash();

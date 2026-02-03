@@ -70,7 +70,7 @@ public class BaseSchemaOps {
             @Override
             public String invoke(SchemaOp.ExpandedCtx parameters) {
                 SchemaPath path = parameters.path;
-                try (UIReporter uir = (parameters.appUI == null ? new UIReporter(app) : new UIReporter(parameters.appUI))) {
+                try (UIReporter uir = parameters.makeReporter()) {
                     handler.run(path, uir, parameters.appUI);
                 }
                 return null;
