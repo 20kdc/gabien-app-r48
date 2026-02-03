@@ -87,7 +87,8 @@ public class LSSplashScreen extends State {
             System.err.println("R48: Splash: Took " + GaBIEn.getTime() + " seconds to get here");
             // This is kept separate from Art so that Art can be initialized off-thread
             try (InputStream inp = GaBIEn.getResource("animations/logo.pva")) {
-                r48Logo = new PVARenderer(inp);
+                if (inp != null)
+                    r48Logo = new PVARenderer(inp);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -112,7 +113,7 @@ public class LSSplashScreen extends State {
         }
 
         if (err != null) {
-            RenderedTextChunk rtc = TextTools.renderString(err, GaBIEn.getNativeFont(16, null, true), true);
+            RenderedTextChunk rtc = TextTools.renderString(err, GaBIEn.getNativeFontFallback(16, null), true);
             rtc.backgroundRootAutoOffset(bb, 4, 4, 255, 255, 255, 255);
             rtc.renderRootAutoOffset(bb, 4, 4);
         }

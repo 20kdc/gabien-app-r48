@@ -139,7 +139,7 @@ public final class MVMEnvR48 extends MVMEnv implements IDynTrProxy {
     }
 
     public void dynTrDump(String fn) {
-        try (OutputStream os = GaBIEn.getOutFile(fn)) {
+        try (OutputStream os = GaBIEn.getOutFileOrThrow(fn)) {
             StringBuilder sb = new StringBuilder();
             // we're not actually in even an ILG context, so we can't translate this
             new DatumWriter(sb).visitComment(Application.BRAND_C + " Version: " + Coco.getVersion() + ", Language: " + langID);

@@ -220,6 +220,7 @@ public class RPGCommand extends R48.Svc {
 
         @Override
         public @Nullable String getName(RORIO paramsObj) {
+            FF0 name = this.name;
             if (name == null)
                 return null;
             return name.r();

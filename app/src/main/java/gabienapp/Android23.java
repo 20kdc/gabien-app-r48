@@ -19,6 +19,7 @@ import gabien.wsi.WindowSpecs;
  * Created 23rd April, 2024.
  */
 public class Android23 {
+    @SuppressWarnings("null")
     public static void run() {
         int globalMS = 50;
         double compensationDT = 0.0d;

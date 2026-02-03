@@ -99,10 +99,8 @@ public class ErrorHandler {
             e.printStackTrace(ps);
             ps.flush();
             System.err.println("Prepared contents...");
-            try {
-                OutputStream fos = GaBIEn.getOutFile(AdHocSaveLoad.PREFIX + "r48.error.txt");
+            try (OutputStream fos = GaBIEn.getOutFileOrThrow(AdHocSaveLoad.PREFIX + "r48.error.txt")) {
                 baos.writeTo(fos);
-                fos.close();
                 System.err.println("Save OK!");
             } catch (Exception ioe) {
                 ps.println("The error could not be saved.");

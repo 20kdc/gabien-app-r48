@@ -32,7 +32,7 @@ import r48.io.data.RORIO;
 import r48.io.undoredo.DMChangeTracker;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
-import r48.minivm.aux.MVMNamespace;
+import r48.minivm.append.MVMNamespace;
 import r48.schema.SchemaElement;
 import r48.schema.displays.LabelSchemaElement;
 import r48.schema.util.SchemaDynamicContext;

@@ -4,11 +4,12 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.minivm.aux;
+package r48.minivm.append;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import datum.DatumSymbol;
@@ -28,10 +29,10 @@ import r48.minivm.fn.MVMMacro;
  */
 public class MVMNamespace<T> {
     public final @Nullable String slotPrefix;
-    public final String noun;
-    public final MVMEnv env;
-    public final MVMType myType;
-    public final HashMap<String, T> values = new HashMap<>();
+    public final @NonNull String noun;
+    public final @NonNull MVMEnv env;
+    public final @NonNull MVMType myType;
+    public final @NonNull HashMap<String, T> values = new HashMap<>();
 
     /**
      * @param slotPrefix The resulting slots have this prefix.
@@ -40,7 +41,7 @@ public class MVMNamespace<T> {
      * @param noun The noun used where applicable.
      * @param type The MVMType.
      */
-    public MVMNamespace(String slotPrefix, String apiPrefixBase, MVMEnv env, String noun, MVMType type) {
+    public MVMNamespace(@Nullable String slotPrefix, @NonNull String apiPrefixBase, @NonNull MVMEnv env, @NonNull String noun, @NonNull MVMType type) {
         myType = type;
         this.noun = noun;
         String apiPrefix = apiPrefixBase + "-";

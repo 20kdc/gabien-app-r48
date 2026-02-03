@@ -115,7 +115,7 @@ public class MVMIntegrationLibrary {
                     sb.append(textToHTML(help));
                 }
             }
-            try (OutputStream os = GaBIEn.getOutFile("r48-repl-help.html")) {
+            try (OutputStream os = GaBIEn.getOutFileOrThrow("r48-repl-help.html")) {
                 os.write(sb.toString().getBytes(StandardCharsets.UTF_8));
             } catch (Exception ex) {
                 throw new RuntimeException(ex);

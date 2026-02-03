@@ -41,7 +41,7 @@ public class NamespacedIntegerSchemaElement extends SchemaElement {
         namespaceOf(Long.MAX_VALUE);
     }
 
-    public @Nullable Namespace namespaceOf(long v) {
+    public @NonNull Namespace namespaceOf(long v) {
         for (Namespace n : namespaces)
             if (n.contains(v))
                 return n;

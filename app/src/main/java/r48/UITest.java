@@ -62,11 +62,9 @@ public class UITest extends AppUI.Prx {
                 loadObject(back.removeLast());
         });
         topBar = new UIAppendButton(T.u.test_PTF, topBar, () -> {
-            try {
-                OutputStream fos = GaBIEn.getOutFile(getPrintPath(app));
+            try (OutputStream fos = GaBIEn.getOutFile(getPrintPath(app))) {
                 PrintStream ps = new PrintStream(fos);
                 ps.print(currentObj.toStringLong(""));
-                fos.close();
                 U.launchDialog(T.u.test_prOk);
             } catch (Exception e) {
                 U.launchDialog(T.u.test_prFail, e);
