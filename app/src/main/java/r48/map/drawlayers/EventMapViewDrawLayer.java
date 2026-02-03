@@ -25,8 +25,16 @@ import java.util.LinkedList;
  * Created on 08/06/17.
  */
 public class EventMapViewDrawLayer extends MapViewDrawLayer {
+    /**
+     * MAY BE POKED BY EXTERNAL CODE
+     * DO NOT MAKE FINAL OR RENAME
+     */
     public IEventAccess eventList;
     public final int layer;
+    /**
+     * MAY BE POKED BY EXTERNAL CODE
+     * DO NOT MAKE FINAL OR RENAME
+     */
     public IEventGraphicRenderer iegr;
     public final RenderArt art;
 
