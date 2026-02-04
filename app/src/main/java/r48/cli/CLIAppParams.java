@@ -49,6 +49,6 @@ public class CLIAppParams {
         EngineDef engine = ilg.getEngineDef(this.engine);
         if (engine == null)
             throw new RuntimeException("EngineDef " + this.engine + " missing!");
-        return new R48(ilg, charset, engine, rootPath, silPath, progress -> {}, () -> "CLI");
+        return new R48(ilg, charset, engine, rootPath, silPath, progress -> {});
     }
 }

@@ -54,6 +54,7 @@ import r48.schema.util.SchemaPath;
 import r48.toolsets.BasicToolset;
 import r48.toolsets.IToolset;
 import r48.toolsets.MapToolset;
+import r48.tr.TrPage.FF0;
 import r48.tr.pages.TrRoot;
 import r48.ui.dialog.UITextPrompt;
 import r48.ui.help.HelpSystemController;
@@ -88,13 +89,15 @@ public class AppUI extends R48.Svc implements IAppAsSeenByLauncher {
 
     public final FontSizes f;
     public final AppNewProject np;
+    public final @NonNull FF0 launchConfigName;
 
-    public AppUI(R48 app, boolean mobile) {
+    public AppUI(R48 app, boolean mobile, @NonNull FF0 launchConfigName) {
         super(app);
         f = app.f;
         np = new AppNewProject(this);
         isMobile = mobile;
         coco = new Coco(this);
+        this.launchConfigName = launchConfigName;
     }
 
     public void initialize(WindowCreatingUIElementConsumer uiTicker) {

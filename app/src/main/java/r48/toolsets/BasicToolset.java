@@ -82,7 +82,7 @@ public class BasicToolset extends AppUI.Svc implements IToolset {
 
         UISplitterLayout rowsHintSplit = new UISplitterLayout(topBottomRowSplit, createInitialHelp(), true, 2d / 3d);
 
-        UILabel engine = new UILabel(app.launchConfigName.r(), app.f.statusBarTH);
+        UILabel engine = new UILabel(U.launchConfigName.r(), app.f.statusBarTH);
 
         UISplitterLayout engineRowsHintSplit = new UISplitterLayout(engine, rowsHintSplit, true, 0);
 

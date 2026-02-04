@@ -66,7 +66,6 @@ import r48.toolsets.utils.IDChangerEntry;
 import r48.tr.DynTrBase;
 import r48.tr.IDynTrProxy;
 import r48.tr.TrNames;
-import r48.tr.TrPage.FF0;
 import r48.tr.TrPage.FF1;
 import r48.tr.pages.TrRoot;
 import r48.ui.AppUI;
@@ -182,8 +181,6 @@ public final class R48 implements IDynTrProxy, TimeMachine.Host, ObjectDB.Host {
     @NonNull
     public final Consumer<String> loadProgress;
 
-    public final @NonNull FF0 launchConfigName;
-
     public HashMap<Integer, String> osSHESEDB;
 
     /**
@@ -278,7 +275,7 @@ public final class R48 implements IDynTrProxy, TimeMachine.Host, ObjectDB.Host {
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public R48(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, @NonNull FSBackend rp, @Nullable FSBackend sip, Consumer<String> loadProgress, @NonNull FF0 launchConfigName) {
+    public R48(InterlaunchGlobals ilg, @NonNull Charset charset, @NonNull EngineDef gp, @NonNull FSBackend rp, @Nullable FSBackend sip, Consumer<String> loadProgress) {
         this.ilg = ilg;
         this.encoding = charset;
         a = ilg.a;
@@ -319,8 +316,6 @@ public final class R48 implements IDynTrProxy, TimeMachine.Host, ObjectDB.Host {
         odb = new ObjectDB(this, backend);
 
         PleaseFailBrutally.checkFailBrutallyAtAppInit();
-
-        this.launchConfigName = launchConfigName;
 
         // -- OBJECT DATABASE READY --
 
