@@ -48,6 +48,8 @@ public class Art extends RenderArt {
 
     public Art() {
         try (InputStream inp = GaBIEn.getResource("animations/logo.pva")) {
+            if (inp == null)
+                throw new RuntimeException("Missing animations/logo.pva");
             r48Logo = new PVARenderer(inp);
         } catch (IOException e) {
             throw new RuntimeException(e);

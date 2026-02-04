@@ -47,6 +47,7 @@ public abstract class BaseRubyTableSchemaElement extends SchemaElement.Leaf {
     public void modifyVal(IRIO target, SchemaPath index, boolean setDefault) {
         boolean needChange = setDefault;
     
+        PathSyntax iVar = this.iVar;
         if (iVar != null) {
             IRIO st = iVar.getRW(target);
             if (st == null) {

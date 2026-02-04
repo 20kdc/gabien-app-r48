@@ -9,7 +9,7 @@ package r48.ui.dialog;
 
 import java.util.function.Consumer;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.GaBIEn;
 import gabien.GaBIEnUI;
@@ -149,7 +149,7 @@ public class UIColourPicker extends AppUI.Prx {
         }
 
         @Override
-        protected @Nullable Size layoutRecalculateMetricsImpl() {
+        protected @NonNull Size layoutRecalculateMetricsImpl() {
             Size size = contents.getWantedSize();
             if ((size.width < numberBoxMinimumSize.width) || (size.height < numberBoxMinimumSize.height))
                 return new Size(Math.max(size.width, numberBoxMinimumSize.width), Math.max(size.height, numberBoxMinimumSize.height));
@@ -163,8 +163,8 @@ public class UIColourPicker extends AppUI.Prx {
         }
 
         @Override
-        protected @Nullable Size layoutRecalculateMetricsImpl() {
-            Size size = super.layoutRecalculateMetricsImpl();
+        protected @NonNull Size layoutRecalculateMetricsImpl() {
+            Size size = contents.getWantedSize();
             return new Size(size.height, size.height);
         }
     }

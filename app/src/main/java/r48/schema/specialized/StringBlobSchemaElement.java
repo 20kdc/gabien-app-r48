@@ -58,11 +58,11 @@ public class StringBlobSchemaElement extends SchemaElement.Leaf {
         UISplitterLayout usl = new UISplitterLayout(new UITextButton(T.s.bExportEdit, app.f.blobTH, () -> {
             try {
                 AdHocSaveLoad.prepare();
-                OutputStream os = GaBIEn.getOutFile(fpath);
-                InputStream dis = getDecompressionInputStream(target.getBufferCopy());
-                copyStream(dis, os);
-                dis.close();
-                os.close();
+                try (OutputStream os = GaBIEn.getOutFileOrThrow(fpath)) {
+                    try (InputStream dis = getDecompressionInputStream(target.getBufferCopy())) {
+                        copyStream(dis, os);
+                    }
+                }
                 if (!GaBIEn.tryStartTextEditor(fpath))
                     U.launchDialog(T.s.scx_editorFail);
             } catch (IOException ioe) {

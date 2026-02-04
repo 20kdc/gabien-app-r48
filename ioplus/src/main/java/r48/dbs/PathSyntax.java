@@ -10,7 +10,7 @@ package r48.dbs;
 import java.util.HashSet;
 import java.util.function.Function;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.DMKey;
 import r48.io.data.DMPath;
@@ -62,7 +62,7 @@ public final class PathSyntax implements Function<IRIO, IRIO> {
      * Traces the execution of a get to find the involved objects.
      * Used in SchemaPath.tracePathRoute().
      */
-    public final @Nullable HashSet<RORIO> traceRO(RORIO v) {
+    public final @NonNull HashSet<RORIO> traceRO(RORIO v) {
         HashSet<RORIO> set = new HashSet<>();
         RORIO[] res = path.traceRouteComplete(v);
         for (int i = 0; i < res.length; i++)

@@ -7,7 +7,7 @@
 
 package r48.ui;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
@@ -157,7 +157,7 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
     }
 
     @Override
-    protected @Nullable Size layoutRecalculateMetricsImpl() {
+    protected @NonNull Size layoutRecalculateMetricsImpl() {
         // uhhh
         return new Size(tileSizeW * 3, tileSizeH * 3);
     }

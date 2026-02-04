@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 
 import datum.DatumSymbol;
 import r48.minivm.MVMU;
@@ -96,7 +95,7 @@ public class MVMScopingLibrary {
         // compiled lambda code, but expects to be framed in an MVMFn in the context of the creation
         int exprs = call.length - base;
         final MVMCExpr compiledLambda = exprs == 1 ? lambdaSc.compile(call[base]) : MVMCBegin.of(lambdaSc, call, base, exprs);
-        final @Nullable MVMCompileFrame rootFrame = lambdaSc.getFrameIfOwned();
+        final @NonNull MVMCompileFrame rootFrame = lambdaSc.getFrameAssumeOwned();
         // finally, confirm
         MVMType.Fn fnType = new MVMType.Fn(compiledLambda.returnType, argTypesArray.length, argTypesArray, vaType);
         if (isVA) {

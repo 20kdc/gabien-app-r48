@@ -57,9 +57,9 @@ public class ImageEditorEDS {
         if (currentFileFormat.saveName(currentImage) == null)
             throw new IOException("File has become incompatible with the current internal format. Use the Save As option, to the right.");
         byte[] data = currentFileFormat.saveFile(currentImage);
-        OutputStream os = GaBIEn.getOutFile(currentFileName);
-        os.write(data);
-        os.close();
+        try (OutputStream os = GaBIEn.getOutFileOrThrow(currentFileName)) {
+            os.write(data);
+        }
         saveDepth = 0;
     }
 

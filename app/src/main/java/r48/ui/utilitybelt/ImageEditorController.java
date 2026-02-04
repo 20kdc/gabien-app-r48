@@ -294,9 +294,9 @@ public class ImageEditorController extends AppUI.Svc {
                                             if (format.saveName(imageEditView.image) == null)
                                                 throw new Exception("Became unable to save file between dialog launch and confirmation");
                                             byte[] data = format.saveFile(imageEditView.image);
-                                            OutputStream os = GaBIEn.getOutFile(s);
-                                            os.write(data);
-                                            os.close();
+                                            try (OutputStream os = GaBIEn.getOutFileOrThrow(s)) {
+                                                os.write(data);
+                                            }
                                             imageEditView.eds.didSuccessfulSave(s, format);
                                         } catch (Exception e) {
                                             U.launchDialog(T.ie.saveFail.r(s), e);

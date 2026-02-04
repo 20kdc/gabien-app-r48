@@ -224,9 +224,7 @@ public class R48ObjectBackend extends OldObjectBackend<RORIO, IRIO> {
         // Everything else.
         // Firstly, pre-process (iVars wrapping)
         String[] iVarKeys = rio.getIVars();
-        boolean ivarData = iVarKeys != null;
-        if (ivarData)
-            ivarData = iVarKeys.length > 0;
+        boolean ivarData = iVarKeys != null && iVarKeys.length > 0;
         if (b == 'o')
             ivarData = false;
         if (ivarData)

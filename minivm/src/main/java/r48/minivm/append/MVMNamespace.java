@@ -101,7 +101,7 @@ public class MVMNamespace<T> {
      * @param typeName The type name to register. Also the noun.
      * @param typeClass The type of things in this namespace.
      */
-    public MVMNamespace(String slotPrefix, String apiPrefixBase, MVMEnv env, String typeName, Class<T> typeClass) {
+    public MVMNamespace(@Nullable String slotPrefix, @NonNull String apiPrefixBase, @NonNull MVMEnv env, @NonNull String typeName, @NonNull Class<T> typeClass) {
         this(slotPrefix, apiPrefixBase, env, typeName, MVMType.typeOfClass(typeClass));
         env.defineType(new DatumSymbol(typeName), myType);
     }

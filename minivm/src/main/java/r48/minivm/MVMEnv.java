@@ -126,6 +126,13 @@ public class MVMEnv {
         return values.get(d);
     }
 
+    public @NonNull MVMSlot getSlotOrThrow(DatumSymbol a0) {
+        MVMSlot slot = getSlot(a0);
+        if (slot == null)
+            throw new RuntimeException("Slot " + a0 + " not found.");
+        return slot;
+    }
+
     /**
      * Ensures a slot is present (like define does)
      */

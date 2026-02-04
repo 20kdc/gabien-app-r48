@@ -9,7 +9,6 @@ package r48.minivm.expr;
 import static datum.DatumTreeUtils.*;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 
 import r48.minivm.MVMScope;
 import r48.minivm.MVMType;
@@ -21,9 +20,9 @@ import r48.minivm.MVMU;
  */
 public final class MVMCWhile extends MVMCExpr {
     public final @NonNull MVMCExpr c;
-    public final @Nullable MVMCExpr v;
+    public final @NonNull MVMCExpr v;
 
-    public MVMCWhile(@NonNull MVMCExpr c, @Nullable MVMCExpr v) {
+    public MVMCWhile(@NonNull MVMCExpr c, @NonNull MVMCExpr v) {
         super(MVMType.ANY);
         this.c = c;
         this.v = v;

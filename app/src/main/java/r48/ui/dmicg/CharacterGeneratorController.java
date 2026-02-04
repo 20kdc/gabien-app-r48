@@ -168,10 +168,8 @@ public class CharacterGeneratorController extends AppUI.Svc {
             GaBIEn.startFileBrowser(T.u.cg_savePNG, true, "", new Consumer<String>() {
                 @Override
                 public void accept(String s) {
-                    try {
-                        OutputStream os = GaBIEn.getOutFile(s);
+                    try (OutputStream os = GaBIEn.getOutFileOrThrow(s)) {
                         os.write(b);
-                        os.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                         aui.launchDialog(e);

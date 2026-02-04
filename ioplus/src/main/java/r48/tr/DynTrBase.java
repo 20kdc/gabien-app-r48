@@ -38,7 +38,7 @@ public abstract class DynTrBase extends MVMFn.Fixed implements TrPage.FF0, TrPag
         if (mode == null) {
             return env.evalObject(v, srcLoc);
         } else {
-            return ((MVMFn) env.getSlot(mode).v).clDirect(v);
+            return ((MVMFn) env.getSlotOrThrow(mode).v).clDirect(v);
         }
     }
 

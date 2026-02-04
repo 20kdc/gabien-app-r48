@@ -6,7 +6,7 @@
  */
 package r48.minivm.fn;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
 
 import r48.minivm.MVMScope;
 import r48.minivm.MVMType;
@@ -19,11 +19,11 @@ import r48.minivm.expr.MVMCLocal;
  * Created 1st March 2023.
  */
 public class MVMLambdaFn extends MVMFn {
-    public final MVMScope scope;
-    public final MVMCExpr content;
-    public final MVMCLocal[] argL;
-    public final @Nullable MVMCompileFrame rootFrame;
-    public MVMLambdaFn(String nh, MVMScope scope, MVMCExpr content, MVMCLocal[] args, MVMCompileFrame rootFrame) {
+    public final @NonNull MVMScope scope;
+    public final @NonNull MVMCExpr content;
+    public final @NonNull MVMCLocal[] argL;
+    public final @NonNull MVMCompileFrame rootFrame;
+    public MVMLambdaFn(@NonNull String nh, @NonNull MVMScope scope, @NonNull MVMCExpr content, @NonNull MVMCLocal[] args, @NonNull MVMCompileFrame rootFrame) {
         super(new MVMType.Fn(content.returnType), nh);
         this.scope = scope;
         this.content = content;

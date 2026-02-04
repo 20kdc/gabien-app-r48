@@ -26,7 +26,7 @@ public class MVMSubScope extends MVMCompileScope {
     /**
      * Stack frame layout etc.
      */
-    private final MVMCompileFrame frame;
+    private final @NonNull MVMCompileFrame frame;
     /**
      * If this instance originated frame.
      */
@@ -37,7 +37,7 @@ public class MVMSubScope extends MVMCompileScope {
      * This is because the wrapping wouldn't apply to already compiled code.
      * The "good news" is that in all such cases, it can be "fixed" by forcibly deoptimizing the local.
      */
-    protected final HashMap<DatumSymbol, Local> locals;
+    protected final @NonNull HashMap<DatumSymbol, Local> locals;
 
     public MVMSubScope(MVMToplevelScope tl) {
         super(tl);
@@ -65,6 +65,10 @@ public class MVMSubScope extends MVMCompileScope {
      */
     public @Nullable MVMCompileFrame getFrameIfOwned() {
         return ownsFrame ? frame : null;
+    }
+
+    public @NonNull MVMCompileFrame getFrameAssumeOwned() {
+        return frame;
     }
 
     private int getFreeFastLocalSlot() {
