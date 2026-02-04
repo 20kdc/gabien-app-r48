@@ -178,12 +178,12 @@ public class BasicToolset extends AppUI.Svc implements IToolset {
                                 U.launchDialog(T.u.dFileUnreadable);
                             } else {
                                 try {
-                                    OutputStream os = GaBIEn.getOutFile(app.gameRoot.into("objcompareAB.txt"));
+                                    OutputStream os = app.gameRoot.into("objcompareAB.txt").openWrite();
                                     byte[] cid = IMIUtils.createIMIData(objA.getObject(), objB.getObject(), "");
                                     if (cid != null)
                                         os.write(cid);
                                     os.close();
-                                    os = GaBIEn.getOutFile(app.gameRoot.into("objcompareBA.txt"));
+                                    os = app.gameRoot.into("objcompareBA.txt").openWrite();
                                     cid = IMIUtils.createIMIData(objB.getObject(), objA.getObject(), "");
                                     if (cid != null)
                                         os.write(cid);

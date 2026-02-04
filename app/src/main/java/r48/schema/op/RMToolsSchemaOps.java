@@ -48,7 +48,8 @@ public class RMToolsSchemaOps {
                 public String invoke(SchemaOp.ExpandedCtx parameters) {
                     if (DEBUG)
                         System.out.println("textmanip invoked");
-                    if (parameters.commandList == null) {
+                    CommandListSelection commandList = parameters.commandList;
+                    if (commandList == null) {
                         if (DEBUG)
                             System.out.println("textmanip error no CL");
                         return null;
@@ -58,15 +59,15 @@ public class RMToolsSchemaOps {
                     int fieldWidth = (int) getParamLong(parameters, "@wrap_to_limit", 0);
                     boolean wrap = fieldWidth > 0;
                     // This has to be written in a really specific way, because we insert new commands.
-                    int idx = parameters.commandList.startIndex;
-                    int endIndex = parameters.commandList.endIndex;
+                    int idx = commandList.startIndex;
+                    int endIndex = commandList.endIndex;
                     IRIO cmdArray = parameters.path.targetElement;
                     boolean didModify = false;
                     if (DEBUG)
                         System.out.println("textmanip " + idx + " " + endIndex);
                     while (idx < endIndex) {
                         IRIO cmd = cmdArray.getAElem(idx);
-                        RPGCommand rc = parameters.commandList.cmdb.entryOf(cmd);
+                        RPGCommand rc = commandList.cmdb.entryOf(cmd);
                         if (rc == null) {
                             if (DEBUG)
                                 System.out.println("textmanip root CMD unknown!");
@@ -84,7 +85,7 @@ public class RMToolsSchemaOps {
                         // ugh
                         int additionCode = rc.additionCode == -1 ? rc.commandId : rc.additionCode;
                         // get the original group length
-                        int groupLen = parameters.commandList.cmdb.getGroupLengthCore(cmdArray, idx);
+                        int groupLen = commandList.cmdb.getGroupLengthCore(cmdArray, idx);
                         if (groupLen < 1)
                             groupLen = 1;
                         if (DEBUG)
@@ -96,7 +97,7 @@ public class RMToolsSchemaOps {
                         boolean ignoreFirstFlag = ignoreFirst;
                         for (int subIdx = 0; subIdx < groupLen; subIdx++) {
                             IRIO subCmd = cmdArray.getAElem(idx + subIdx);
-                            RPGCommand subRC = parameters.commandList.cmdb.entryOf(subCmd);
+                            RPGCommand subRC = commandList.cmdb.entryOf(subCmd);
                             if (subRC == null)
                                 continue;
                             if (subRC.textArg == -1)
@@ -130,8 +131,8 @@ public class RMToolsSchemaOps {
                         }
                         while (text.length > commandTextIRIOs.size()) {
                             IRIO newCmd = cmdArray.addAElem(idx);
-                            parameters.commandList.eventCommandArraySchema.initCommand(additionCode, newCmd, idx);
-                            commandTextIRIOs.add(newCmd.getIVar("@parameters").getAElem(parameters.commandList.cmdb.knownCommands.get((int) additionCode).textArg));
+                            commandList.eventCommandArraySchema.initCommand(additionCode, newCmd, idx);
+                            commandTextIRIOs.add(newCmd.getIVar("@parameters").getAElem(commandList.cmdb.knownCommands.get((int) additionCode).textArg));
                             commandCmdIRIOs.add(newCmd);
                             idx++;
                             endIndex++;
@@ -149,12 +150,13 @@ public class RMToolsSchemaOps {
         new SchemaOp(app, BASE_SYSCORE, "rmcopytext", sortRTM, app.opSites.SCHEMA_HEADER, app.opSites.ARRAY_SEL) {
             @Override
             public String shouldDisplay(SchemaOp.ExpandedCtx context) {
-                if (context.commandList != null) {
+                CommandListSelection commandList = context.commandList;
+                if (commandList != null) {
                     IRIO target = context.path.targetElement;
-                    for (int i = context.commandList.startIndex; i < context.commandList.endIndex; i++) {
+                    for (int i = commandList.startIndex; i < commandList.endIndex; i++) {
                         IRIO commandTarg = target.getAElem(i);
                         int code = (int) commandTarg.getIVar("@code").getFX();
-                        RPGCommand rc = context.commandList.cmdb.knownCommands.get(code);
+                        RPGCommand rc = commandList.cmdb.knownCommands.get(code);
                         if (rc != null)
                             if (rc.textArg != -1)
                                 return app.t.s.bCopyTextToClipboard;
@@ -165,12 +167,13 @@ public class RMToolsSchemaOps {
             @Override
             public String invoke(SchemaOp.ExpandedCtx parameters) {
                 StringBuilder total = new StringBuilder();
-                if (parameters.commandList != null) {
+                CommandListSelection commandList = parameters.commandList;
+                if (commandList != null) {
                     IRIO target = parameters.path.targetElement;
-                    for (int i = parameters.commandList.startIndex; i < parameters.commandList.endIndex; i++) {
+                    for (int i = commandList.startIndex; i < commandList.endIndex; i++) {
                         IRIO commandTarg = target.getAElem(i);
                         int code = (int) commandTarg.getIVar("@code").getFX();
-                        RPGCommand rc = parameters.commandList.cmdb.knownCommands.get(code);
+                        RPGCommand rc = commandList.cmdb.knownCommands.get(code);
                         if (rc != null)
                             if (rc.textArg != -1) {
                                 // VERY UGLY AND BAD: We use commandSiteAllowed as a shorthand for 'paragraph break'.

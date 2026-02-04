@@ -157,9 +157,11 @@ public class SchemaPath {
      * Going upward, find the first 'window' SchemaPath.
      * Returns null if none found.
      */
-    public @Nullable Page findFirstEditable() {
-        if (parent == null)
-            return null;
+    public @NonNull Page findFirstEditable() {
+        if (parent == null) {
+            // this should be impossible *frowns*
+            return pathRoot;
+        }
         return parent.findFirstEditable();
     }
 
@@ -287,8 +289,6 @@ public class SchemaPath {
      */
     public @Nullable SchemaPath traceRoute(RORIO tracertTarget, Set<RORIO> expected) {
         Page sp = findFirstEditable();
-        if (sp == null)
-            return null;
         // RPG_RT.ldb
         // @common_events:{11@list]5
         AtomicReference<SchemaPath> path = new AtomicReference<>();
@@ -301,8 +301,6 @@ public class SchemaPath {
             if (!expected.contains(vTarget))
                 return false;
             Page oPath = vPath.findFirstEditable();
-            if (oPath == null)
-                return true;
 
             // Determine our escalation
             int ourEscalation = 0;
@@ -378,10 +376,6 @@ public class SchemaPath {
      */
     public @Nullable SchemaPath tracePathRoute(@NonNull DMPath path) {
         Page sp = findFirstEditable();
-        if (sp == null) {
-            System.err.println("tracePathRoute failed: findFirstEditable failed");
-            return null;
-        }
         RORIO res = path.getRO(sp.targetElement);
         if (res == null) {
             System.err.println("tracePathRoute failed: path failed");

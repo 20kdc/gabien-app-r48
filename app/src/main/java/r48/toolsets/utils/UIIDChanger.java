@@ -118,6 +118,7 @@ public class UIIDChanger extends AppUI.Prx {
             }
             return true;
         };
+        SchemaPath.Page fixedPath = this.fixedPath;
         if (fixedPath != null) {
             fixedPath.editor.visit(fixedPath.targetElement, fixedPath, v, false);
         } else {

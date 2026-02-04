@@ -31,12 +31,14 @@ public final class SchemaDynamicContext extends R48.Svc {
     }
 
     public @NonNull StuffRenderer getRenderer() {
+        UIMapView mapView = this.mapView;
         if (mapView != null)
             return mapView.mapTable.renderer;
         return app.stuffRendererIndependent;
     }
 
     public String getGUM() {
+        UIMapView mapView = this.mapView;
         if (mapView != null)
             return mapView.mapGUM;
         return null;

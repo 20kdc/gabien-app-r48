@@ -60,7 +60,8 @@ public class UIEnumChoice extends AppUI.Prx {
                     wantsSelfClose = true;
                 });
                 UIElement element = button;
-                if (o.editSuffix != null) {
+                final Consumer<String> editSuffix = o.editSuffix;
+                if (editSuffix != null) {
                     final UIAppendButton switcheroo = new UIAppendButton(T.u.bEnumRename, element, null, app.f.enumChoiceTH);
                     final UITextBox textbox = new UITextBox(o.textSuffix.r(), app.f.enumChoiceTH);
                     final AtomicBoolean ab = new AtomicBoolean(false);
@@ -76,7 +77,7 @@ public class UIEnumChoice extends AppUI.Prx {
                     textbox.onEdit = () -> {
                         String txt = textbox.getText();
                         button.setText(o.textPrefix + txt);
-                        o.editSuffix.accept(txt);
+                        editSuffix.accept(txt);
                         ab.set(false);
                         switcheroo.setSubElement(button);
                     };
