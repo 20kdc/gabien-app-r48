@@ -20,8 +20,9 @@ public abstract class RMZAccurateDrawLayer extends ZSortingDrawLayer {
     public SignalMapViewLayer[] tileSignalLayers;
     public TrRoot T;
 
-    public RMZAccurateDrawLayer(String name, RubyTableR tbl, int layers) {
+    public RMZAccurateDrawLayer(TrRoot t, String name, RubyTableR tbl, int layers) {
         super(name);
+        this.T = t;
         mapTable = tbl;
         tileSignalLayers = new SignalMapViewLayer[layers];
         for (int i = 0; i < tileSignalLayers.length; i++) {
