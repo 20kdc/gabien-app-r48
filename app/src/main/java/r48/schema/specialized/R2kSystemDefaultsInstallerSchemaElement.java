@@ -180,7 +180,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
                     break;
                 case 4:
                     // map_id saner default setter, but only for savefiles.
-                    mapIdMagic(target, path.findRoot());
+                    mapIdMagic(target, path.pathRoot);
                     break;
             }
             // finally, signal
@@ -189,7 +189,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
     }
 
     // sets target to the relevant map ID based on vague information
-    private void mapIdMagic(IRIO target, SchemaPath root) {
+    private void mapIdMagic(IRIO target, SchemaPath.Page root) {
         String str = app.odb.getIdByObject(root.root);
         if (str == null)
             return;

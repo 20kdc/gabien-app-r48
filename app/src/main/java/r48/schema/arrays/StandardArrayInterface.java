@@ -162,7 +162,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                         copyRange(fixedStart, fixedEnd);
                                         deleteRange(fixedStart, fixedEnd);
                                     }));
-                                    SchemaOp.createOperatorMenuEntries(U, menu, array.getTrueSchemaPath(), app.opSites.ARRAY_SEL, valid, ctx, array.getTrueSchemaHost().getContext());
+                                    SchemaOp.createOperatorMenuEntries(U, menu, array.getArraySchemaPage(), app.opSites.ARRAY_SEL, valid, ctx, array.getTrueSchemaHost().getContext());
                                     return (UIElement) UIMenuButton.coreMenuGen(U, valid, menu);
                                 });
                             } else if ((mi < selectedStart) || (mi > selectedEnd)) {

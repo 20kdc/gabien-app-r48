@@ -70,7 +70,7 @@ public class AppMain {
             ObjectRootHandle root = aui.app.odb.getObject(name);
             if (root != null) {
                 root.getObject().setDeepClone(sysDump.getHashVal(rk));
-                root.objectRootModified(new SchemaPath(new OpaqueSchemaElement(aui.app), root));
+                root.objectRootModified(new SchemaPath.Page(new OpaqueSchemaElement(aui.app), root));
             }
         }
         if (sysDump.getIVar("@emergency").getType() == 'T') {

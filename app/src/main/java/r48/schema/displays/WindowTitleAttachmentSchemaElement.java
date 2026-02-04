@@ -39,7 +39,7 @@ public class WindowTitleAttachmentSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public @Nullable String windowTitleSuffix(SchemaPath path) {
+    public @Nullable String windowTitleSuffix(SchemaPath.Page path) {
         return suffixRoutine.r(path.targetElement, path.lastArrayIndex);
     }
 }

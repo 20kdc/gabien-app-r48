@@ -218,7 +218,7 @@ public final class ObjectDB {
     private void markObjectAsAmbiguouslyModified(ObjectRootHandle lo) {
         // Use an opaque schema element because we really don't have a good one here.
         // We don't use changeOccurred because that would activate schema processing, which is also undesired here.
-        lo.objectRootModified(new SchemaPath(host.odbHostGetOpaqueSE(), lo));
+        lo.objectRootModified(new SchemaPath.Page(host.odbHostGetOpaqueSE(), lo));
     }
 
     /**

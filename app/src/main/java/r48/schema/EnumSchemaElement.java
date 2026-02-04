@@ -118,7 +118,7 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
         return new UIEnumChoice(aui, result, viewOptions, buttonText.r(), entryMode);
     }
 
-    public static UIEnumChoice.Option makeStandardOption(DMKey val, FF0 text, @Nullable Consumer<String> edit, @Nullable SchemaPath fdb) {
+    public static UIEnumChoice.Option makeStandardOption(DMKey val, FF0 text, @Nullable Consumer<String> edit, @Nullable SchemaPath.Page fdb) {
         return new UIEnumChoice.Option(val.toString() + " : ", text, val, edit, fdb);
     }
 

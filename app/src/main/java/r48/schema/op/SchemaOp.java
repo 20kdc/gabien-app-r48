@@ -113,7 +113,7 @@ public abstract class SchemaOp extends R48.Svc {
     /**
      * See the other definition, but this one runs the full expansion from no configuration first.
      */
-    public void invokeUI(@NonNull AppUI appUI, SchemaPath path, Map<String, DMKey> context) {
+    public void invokeUI(@NonNull AppUI appUI, SchemaPath.Page path, Map<String, DMKey> context) {
         invokeUI(appUI, new SchemaOp.ExpandedCtx(path, createOperatorConfig(context).getObject(), app, appUI));
     }
 
@@ -128,7 +128,7 @@ public abstract class SchemaOp extends R48.Svc {
         SchemaPath.setDefaultValue(ig, se, null);
         ObjectRootHandle.Isolated root = new ObjectRootHandle.Isolated(se, ig, "operator-config");
         root.getObject().setObject("R48::OpCfg::" + id.id);
-        se.modifyVal(root.getObject(), new SchemaPath(se, root), true);
+        se.modifyVal(root.getObject(), new SchemaPath.Page(se, root), true);
         // merge in context
         for (Map.Entry<String, DMKey> context : operatorContext.entrySet())
             root.getObject().addIVar(context.getKey()).setDeepClone(context.getValue());
@@ -138,7 +138,7 @@ public abstract class SchemaOp extends R48.Svc {
     /**
      * Builds an operator menu.
      */
-    public static void createOperatorMenuEntries(AppUI U, LinkedList<UIPopupMenu.Entry> entries, SchemaPath innerElem, SchemaOpSite site, Supplier<Boolean> validity, Map<String, DMKey> operatorContext, SchemaDynamicContext rendererSource) {
+    public static void createOperatorMenuEntries(AppUI U, LinkedList<UIPopupMenu.Entry> entries, SchemaPath.Page innerElem, SchemaOpSite site, Supplier<Boolean> validity, Map<String, DMKey> operatorContext, SchemaDynamicContext rendererSource) {
         R48 app = U.app;
         LinkedList<SchemaOp> ll = new LinkedList<>();
         ExpandedCtx ctx1 = new ExpandedCtx(innerElem, operatorContext::get, app, rendererSource.appUI);
@@ -161,7 +161,7 @@ public abstract class SchemaOp extends R48.Svc {
                 // and now for the rest...
                 if (op.config != null) {
                     UISchemaHostWidget wdg = new UISchemaHostWidget(U, rendererSource);
-                    wdg.pushObject(new SchemaPath(cfg));
+                    wdg.pushObject(new SchemaPath.Page(cfg));
                     AtomicBoolean invalidator = new AtomicBoolean(false);
                     UITextButton confirmButton = new UITextButton(app.t.g.bConfirm, app.f.schemaFieldTH, () -> {
                         if (validity.get() && !invalidator.get())
@@ -187,7 +187,7 @@ public abstract class SchemaOp extends R48.Svc {
     /**
      * Builds an operator menu.
      */
-    public static UIElement createOperatorMenu(AppUI U, SchemaPath innerElem, SchemaOpSite site, Supplier<Boolean> validity, Map<String, DMKey> operatorContext, SchemaDynamicContext rendererSource) {
+    public static UIElement createOperatorMenu(AppUI U, SchemaPath.Page innerElem, SchemaOpSite site, Supplier<Boolean> validity, Map<String, DMKey> operatorContext, SchemaDynamicContext rendererSource) {
         LinkedList<UIPopupMenu.Entry> entries = new LinkedList<>();
         createOperatorMenuEntries(U, entries, innerElem, site, validity, operatorContext, rendererSource);
         return UIMenuButton.coreMenuGen(U, validity, entries);
@@ -197,13 +197,13 @@ public abstract class SchemaOp extends R48.Svc {
      * Expanded context. Includes extra things we don't want to try and reparse over and over.
      */
     public final static class ExpandedCtx implements Function<String, DMKey> {
-        public final SchemaPath path;
-        public final Function<String, DMKey> context;
-        public final CommandListSelection commandList;
+        public final @NonNull SchemaPath.Page path;
+        public final @NonNull Function<String, DMKey> context;
+        public final @Nullable CommandListSelection commandList;
         public final @NonNull R48 app;
         public final @Nullable AppUI appUI;
 
-        public ExpandedCtx(SchemaPath path, Function<String, DMKey> ctx, @NonNull R48 app, @Nullable AppUI appUI) {
+        public ExpandedCtx(@NonNull SchemaPath.Page path, @NonNull Function<String, DMKey> ctx, @NonNull R48 app, @Nullable AppUI appUI) {
             this.path = path;
             this.context = ctx;
             this.commandList = CommandListSelection.extractSelection(path, ctx);
@@ -211,7 +211,7 @@ public abstract class SchemaOp extends R48.Svc {
             this.appUI = appUI;
         }
 
-        public ExpandedCtx(SchemaPath path, RORIO ctx, @NonNull R48 app, @Nullable AppUI appUI) {
+        public ExpandedCtx(SchemaPath.Page path, RORIO ctx, @NonNull R48 app, @Nullable AppUI appUI) {
             this(path, (s) -> {
                 RORIO tmp = ctx.getIVar(s);
                 if (tmp == null)

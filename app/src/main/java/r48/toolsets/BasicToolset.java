@@ -154,7 +154,7 @@ public class BasicToolset extends AppUI.Svc implements IToolset {
                         final ObjectRootHandle rio = app.odb.getObject(s);
                         U.launchPrompt(T.u.prSchemaID, (sid) -> {
                             SchemaElement ise = app.sdb.getSDBEntry(sid);
-                            ise.modifyVal(rio.getObject(), new SchemaPath(ise, rio), false);
+                            ise.modifyVal(rio.getObject(), new SchemaPath.Page(ise, rio), false);
                             U.launchDialog(T.u.done);
                         });
                     });
@@ -240,7 +240,7 @@ public class BasicToolset extends AppUI.Svc implements IToolset {
                             try {
                                 IRIO irio = rio.getObject();
                                 IMIUtils.runIMISegment(is, irio);
-                                rio.objectRootModified(new SchemaPath(new OpaqueSchemaElement(app), rio));
+                                rio.objectRootModified(new SchemaPath.Page(new OpaqueSchemaElement(app), rio));
                                 U.launchDialog(T.u.done);
                             } catch (Exception ioe) {
                                 try {

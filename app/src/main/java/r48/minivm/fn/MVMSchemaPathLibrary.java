@@ -38,7 +38,7 @@ public class MVMSchemaPathLibrary extends R48.Svc {
         ObjectRootHandle root2 = MVMDMAppLibrary.assertObjectRoot(app, root, true);
         if (root2 == null)
             throw new RuntimeException("Unable to create " + root);
-        SchemaPath pathRoot = new SchemaPath(root2);
+        SchemaPath pathRoot = new SchemaPath.Page(root2);
         if (dmPath != null)
             return pathRoot.tracePathRoute(dmPath);
         return pathRoot;
@@ -55,16 +55,16 @@ public class MVMSchemaPathLibrary extends R48.Svc {
     @Defun(n = "sp-editor", r = 1)
     @Help("Get the SchemaElement. sp-editor and sp-target are either both null or neither are. Null passes through.")
     public SchemaElement spEditor(@Nullable SchemaPath sp) {
-        if (sp == null)
+        if (sp == null || !(sp instanceof SchemaPath.Page))
             return null;
-        return SchemaElement.cast(sp.editor);
+        return SchemaElement.cast(((SchemaPath.Page) sp).editor);
     }
 
     @Defun(n = "sp-target", r = 1)
     @Help("Get the target IRIO. sp-editor and sp-target are either both null or neither are. Null passes through.")
     public IRIO spTarget(@Nullable SchemaPath sp) {
-        if (sp == null)
+        if (sp == null || !(sp instanceof SchemaPath.Page))
             return null;
-        return sp.targetElement;
+        return ((SchemaPath.Page) sp).targetElement;
     }
 }

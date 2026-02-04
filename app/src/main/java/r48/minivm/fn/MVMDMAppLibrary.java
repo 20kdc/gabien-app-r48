@@ -48,7 +48,7 @@ public class MVMDMAppLibrary {
             ObjectRootHandle lo = assertObjectRoot(app, text, true);
             if (lo == null)
                 throw new RuntimeException("Root lookup failed: " + text);
-            SchemaPath sp = new SchemaPath(app.sdb.getSDBEntry("OPAQUE"), lo);
+            SchemaPath.Page sp = new SchemaPath.Page(app.sdb.getSDBEntry("OPAQUE"), lo);
             Object res = fn2.callDirect(sp.targetElement);
             sp.changeOccurred(false);
             return res;

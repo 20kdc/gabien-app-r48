@@ -110,8 +110,10 @@ public abstract class ArraySchemaElement extends SchemaElement {
             }
             
             @Override
-            public SchemaPath getTrueSchemaPath() {
-                return path;
+            public SchemaPath.Page getArraySchemaPage() {
+                if (path instanceof SchemaPath.Page && (((SchemaPath.Page) path).editor == ArraySchemaElement.this) && (((SchemaPath.Page) path).targetElement == target))
+                    return (SchemaPath.Page) path;
+                return path.newWindow(ArraySchemaElement.this, target);
             }
             
             @Override

@@ -29,7 +29,7 @@ public abstract class USFROperationMode {
         return null;
     }
 
-    public abstract void locate(R48 app, SchemaPath root, Visitor visitor, boolean detailedPaths);
+    public abstract void locate(R48 app, SchemaPath.Page root, Visitor visitor, boolean detailedPaths);
 
     public static USFROperationMode[] listForApp(R48 app) {
         LinkedList<USFROperationMode> lls = new LinkedList<>();
@@ -49,7 +49,7 @@ public abstract class USFROperationMode {
         }
 
         @Override
-        public void locate(R48 app, SchemaPath root, Visitor visitor, boolean detailedPaths) {
+        public void locate(R48 app, SchemaPath.Page root, Visitor visitor, boolean detailedPaths) {
             root.editor.visit(root.targetElement, root, makeMyVisitor(visitor), detailedPaths);
         }
 
@@ -80,7 +80,7 @@ public abstract class USFROperationMode {
         }
 
         @Override
-        public void locate(R48 app, SchemaPath root, Visitor visitor, boolean detailedPaths) {
+        public void locate(R48 app, SchemaPath.Page root, Visitor visitor, boolean detailedPaths) {
             Visitor mod = All.makeMyVisitor(visitor);
             root.editor.visit(root.targetElement, root, (element, target, path) -> {
                 if (element instanceof RPGCommandSchemaElement) {

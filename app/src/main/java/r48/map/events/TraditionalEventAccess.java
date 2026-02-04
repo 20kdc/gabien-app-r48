@@ -98,7 +98,7 @@ public class TraditionalEventAccess extends R48.Svc implements IEventAccess {
             // we don't trust this value at all, hold in an intermediary and bash it around a bit
             IRIOGeneric ig = new IRIOGeneric(app.ctxDisposableAppEncoding);
             ig.setDeepClone(eve);
-            new SchemaPath(eventSchema, new ObjectRootHandle.Isolated(eventSchema, ig, "TraditionalEventAccess")).changeOccurred(false);
+            new SchemaPath.Page(eventSchema, new ObjectRootHandle.Isolated(eventSchema, ig, "TraditionalEventAccess")).changeOccurred(false);
             // now we're sure it's safe...
             eveTarget.setDeepClone(ig);
             // and just to be sure
@@ -172,7 +172,7 @@ public class TraditionalEventAccess extends R48.Svc implements IEventAccess {
     }
 
     private SchemaPath makeMapRootSchemaPath() {
-        return new SchemaPath(mapRootSchema, mapRoot);
+        return new SchemaPath.Page(mapRootSchema, mapRoot);
     }
     private SchemaPath makeEventSchemaPath(DMKey key) {
         SchemaPath base = makeMapRootSchemaPath();

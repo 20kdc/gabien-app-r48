@@ -30,7 +30,7 @@ public interface ISchemaHost {
     /**
      * Navigates to an object, putting it on the history stack.
      */
-    void pushObject(SchemaPath nextObject);
+    void pushObject(SchemaPath.Page nextObject);
 
     /**
      * Goes backwards through the stack, navigating to the previous object.
@@ -40,13 +40,13 @@ public interface ISchemaHost {
 
     default void pushPathTree(SchemaPath nextObject) {
         // "Decompile" the path into a usable forward/back tree.
-        LinkedList<SchemaPath> rv = new LinkedList<>();
+        LinkedList<SchemaPath.Page> rv = new LinkedList<>();
         while (nextObject != null) {
-            if (nextObject.editor != null)
-                rv.addFirst(nextObject);
+            if (nextObject instanceof SchemaPath.Page)
+                rv.addFirst((SchemaPath.Page) nextObject);
             nextObject = nextObject.parent;
         }
-        for (SchemaPath sp : rv)
+        for (SchemaPath.Page sp : rv)
             pushObject(sp);
     }
 
@@ -61,7 +61,7 @@ public interface ISchemaHost {
 
     ISchemaHost newBlank();
 
-    SchemaPath getCurrentObject();
+    SchemaPath.Page getCurrentObject();
 
     default <T> EmbedDataSlot<T> embedSlot(IRIO target, EmbedDataKey<T> prop, T def) {
         return embedSlot(getCurrentObject(), target, prop, def);

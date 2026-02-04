@@ -52,7 +52,7 @@ public class CommandListSelection {
     /**
      * Extracts a command list selection.
      */
-    public static @Nullable CommandListSelection extractSelection(SchemaPath path, Function<String, DMKey> parameters) {
+    public static @Nullable CommandListSelection extractSelection(SchemaPath.Page path, Function<String, DMKey> parameters) {
         // Must always be an array.
         if (path.targetElement.getType() != '[')
             return null;

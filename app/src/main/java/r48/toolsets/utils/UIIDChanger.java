@@ -30,7 +30,7 @@ import r48.ui.AppUI;
  * Created 17th July, 2023.
  */
 public class UIIDChanger extends AppUI.Prx {
-    public @Nullable SchemaPath fixedPath;
+    public @Nullable SchemaPath.Page fixedPath;
 
     public IDChangerEntry entry;
     public final UITextButton chooseButton;
@@ -40,7 +40,7 @@ public class UIIDChanger extends AppUI.Prx {
     public final UITextButton swapModeButton;
     public DMKey fromValue, toValue;
 
-    public UIIDChanger(AppUI app, @Nullable SchemaPath sp) {
+    public UIIDChanger(AppUI app, @Nullable SchemaPath.Page sp) {
         super(app);
         fixedPath = sp;
         entry = app.app.idc.getFirst();
@@ -122,7 +122,7 @@ public class UIIDChanger extends AppUI.Prx {
             fixedPath.editor.visit(fixedPath.targetElement, fixedPath, v, false);
         } else {
             for (ObjectInfo oi : app.getObjectInfos()) {
-                SchemaPath root = oi.makePath(true);
+                SchemaPath.Page root = oi.makePath(true);
                 if (root == null)
                     continue;
                 root.editor.visit(root.targetElement, root, v, false);

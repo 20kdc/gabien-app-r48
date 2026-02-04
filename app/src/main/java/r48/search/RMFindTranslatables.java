@@ -47,7 +47,7 @@ public class RMFindTranslatables extends AppUI.Svc {
     }
 
     public void addSitesFromMap(final @Nullable UIMapView ctx, String eventPage, final ICommandClassifier.Instance cf) {
-        final SchemaPath rootSchemaPath = new SchemaPath(app.sdb.getSDBEntry("RPG::Map"), objRoot);
+        final SchemaPath rootSchemaPath = new SchemaPath.Page(app.sdb.getSDBEntry("RPG::Map"), objRoot);
 
         IRIO events = objRoot.getObject().getIVar("@events");
         for (DMKey eventKey : events.getHashKeys()) {
@@ -78,7 +78,7 @@ public class RMFindTranslatables extends AppUI.Svc {
         if (sch == null) {
             U.launchDialog(T.u.cCommonEventsNoSchema);
         } else {
-            SchemaPath rootSP = new SchemaPath(sch, objRoot);
+            SchemaPath rootSP = new SchemaPath.Page(sch, objRoot);
             EventCommandArraySchemaElement ecase = RMFindTranslatables.getEventCommandArraySchemaElement(app, "EventListEditor");
             for (IRIO rio : commonEvents) {
                 // It sure would be nice if the common events schema was properly noted down...

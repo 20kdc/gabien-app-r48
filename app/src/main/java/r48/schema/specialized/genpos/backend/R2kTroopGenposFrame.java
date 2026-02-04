@@ -78,7 +78,7 @@ public class R2kTroopGenposFrame extends TroopGenposFrame {
     }
 
     @Override
-    public SchemaPath getCellProp(int ct, int i) {
+    public SchemaPath.Page getCellProp(int ct, int i) {
         SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(DMKey.of(ct + 1), "[" + (ct + 1) + "]");
         IRIO member = troop.getIVar("@members").getAElem(ct + 1);
         SchemaElement se = getCellPropSchemas()[i];

@@ -130,7 +130,7 @@ public class RXPRMLikeMapInfoBackend extends R48.Svc implements IRMLikeMapInfoBa
 
     @Override
     public void complete() {
-        SchemaPath fakePath = new SchemaPath(app.sdb.getSDBEntry("File.MapInfos"), mapInfos);
+        SchemaPath fakePath = new SchemaPath.Page(app.sdb.getSDBEntry("File.MapInfos"), mapInfos);
         mapInfos.objectRootModified(fakePath);
         modHandler.accept(fakePath);
     }

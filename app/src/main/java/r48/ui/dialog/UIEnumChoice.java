@@ -168,7 +168,7 @@ public class UIEnumChoice extends AppUI.Prx {
         private String textMerged;
         public final DMKey value;
         public final @Nullable Consumer<String> editSuffix;
-        public final @Nullable SchemaPath furtherDataButton;
+        public final @Nullable SchemaPath.Page furtherDataButton;
 
         public Option(String s, DMKey integer) {
             textPrefix = s;
@@ -178,7 +178,7 @@ public class UIEnumChoice extends AppUI.Prx {
             furtherDataButton = null;
         }
 
-        public Option(String pfx, FF0 sfx, DMKey integer, @Nullable Consumer<String> edit, @Nullable SchemaPath fdb) {
+        public Option(String pfx, FF0 sfx, DMKey integer, @Nullable Consumer<String> edit, @Nullable SchemaPath.Page fdb) {
             textPrefix = pfx;
             textSuffix = sfx;
             value = integer;

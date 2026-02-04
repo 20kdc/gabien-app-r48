@@ -164,7 +164,7 @@ public class R2kRMLikeMapInfoBackend extends R48.Svc implements IRMLikeMapInfoBa
             map.getIVar("@indent").setFX(parentStack.size());
         }
         // and done!
-        SchemaPath fakePath = new SchemaPath(app.sdb.getSDBEntry("File.RPG_RT.lmt"), mapTree);
+        SchemaPath fakePath = new SchemaPath.Page(app.sdb.getSDBEntry("File.RPG_RT.lmt"), mapTree);
         mapTree.objectRootModified(fakePath);
         modHandler.accept(fakePath);
     }

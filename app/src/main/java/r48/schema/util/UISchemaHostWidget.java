@@ -28,7 +28,7 @@ public class UISchemaHostWidget extends SchemaHostBase {
     }
 
     @Override
-    public void pushObject(SchemaPath nextObject) {
+    public void pushObject(SchemaPath.Page nextObject) {
         if (innerElem == null) {
             switchObject(nextObject);
         } else {

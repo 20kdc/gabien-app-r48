@@ -67,7 +67,7 @@ public class SchemaParseTest {
             SchemaPath.setDefaultValue(rio2, st.baseElement, DMKey.of(0));
             for (int i : st.database.knownCommandOrder) {
                 rio2.getIVar("@code").setFX(i);
-                st.baseElement.modifyVal(rio, new SchemaPath(st, new ObjectRootHandle.Isolated(st, rio, "SchemaParseTest")), false);
+                st.baseElement.modifyVal(rio, new SchemaPath.Page(st, new ObjectRootHandle.Isolated(st, rio, "SchemaParseTest")), false);
             }
         }
         System.out.println("SchemaParseTest END: " + gamepak);

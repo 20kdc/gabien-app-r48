@@ -164,7 +164,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         final R48 app = launcher.getApp();
         final AppUI U = launcher.getAppUI();
         final TrRoot T = app.t;
-        TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, path);
+        TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, path.findFirstEditable());
         temp.heldDialog = new UIEnumChoice(U, (integer) -> {
             long fnv = integer.getFX();
             // NOTE: This just uses ints for everything.

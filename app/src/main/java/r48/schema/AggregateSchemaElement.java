@@ -186,7 +186,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     }
 
     @Override
-    public @Nullable String windowTitleSuffix(SchemaPath path) {
+    public @Nullable String windowTitleSuffix(SchemaPath.Page path) {
         for (SchemaElement ise : aggregate) {
             String res = ise.windowTitleSuffix(path);
             if (res != null)

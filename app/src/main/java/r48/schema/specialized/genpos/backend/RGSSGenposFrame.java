@@ -197,7 +197,7 @@ public class RGSSGenposFrame extends R48.Svc implements IGenposFrame {
     }
 
     @Override
-    public SchemaPath getCellProp(final int ct, final int i) {
+    public SchemaPath.Page getCellProp(final int ct, final int i) {
         // much better
         SchemaElement se = new RubyTableIndividualCellSchemaElement(ct, i, 0, getCellPropSchemas()[i]);
         return path.newWindow(se, getFrame().getIVar("@cell_data"));

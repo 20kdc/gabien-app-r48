@@ -60,7 +60,7 @@ public class UICellEditingPanel extends AppUI.Pan {
 
     private UIElement createPropertyEditor(final int i) {
         if (cellSelectionPanel.cellNumber != -1) {
-            SchemaPath sp = root.frame.getCellProp(cellSelectionPanel.cellNumber, i);
+            SchemaPath.Page sp = root.frame.getCellProp(cellSelectionPanel.cellNumber, i);
             // Used to have to 'correct host' here, but host's very existence was bad for window cloning and also totally unnecessary
             UIElement uie = SchemaElement.cast(sp.editor).buildHoldingEditor(sp.targetElement, root.hostLauncher, sp);
             if (root.tweening != null) {

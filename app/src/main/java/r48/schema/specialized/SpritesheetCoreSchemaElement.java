@@ -43,8 +43,8 @@ public class SpritesheetCoreSchemaElement extends SchemaElement.Leaf {
         final ISpritesheetProvider localProvider = provider.apply(target);
         final IRIO actTarg = numberProvider.apply(target);
         return new UITextButton(text.apply(actTarg), app.f.schemaFieldTH, () -> {
-            TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, path);
-            final SchemaPath innerPath = path.newWindow(temp, target);
+            TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, path.findFirstEditable());
+            final SchemaPath.Page innerPath = path.newWindow(temp, target);
             temp.heldDialog = new UISpritesheetChoice(app, actTarg.getFX(), localProvider, (integer) -> {
                 actTarg.setFX(integer);
                 innerPath.changeOccurred(false);

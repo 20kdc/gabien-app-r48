@@ -45,9 +45,9 @@ public interface IArrayInterface {
          */
         IRIO getTrueIRIO();
         /**
-         * Gets the true SchemaPath of the array.
+         * Gets a Schema Page for the array itself.
          */
-        SchemaPath getTrueSchemaPath();
+        SchemaPath.Page getArraySchemaPage();
         /**
          * Gets the true ISchemaHost.
          */

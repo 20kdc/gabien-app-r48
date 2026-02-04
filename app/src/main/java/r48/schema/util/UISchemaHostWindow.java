@@ -27,7 +27,7 @@ import org.eclipse.jdt.annotation.Nullable;
 public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableWindow {
     private UIElement innerElemEditor;
 
-    private final Stack<SchemaPath> backStack = new Stack<SchemaPath>();
+    private final Stack<SchemaPath.Page> backStack = new Stack<>();
 
     private UILabel pathLabel = new UILabel("", app.f.schemaPathTH);
     private UIAppendButton toolbarP = new UIAppendButton(Art.Symbol.Back.i(app), pathLabel, () -> {
@@ -62,7 +62,7 @@ public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableW
     }
 
     @Override
-    public void pushObject(SchemaPath nextObject) {
+    public void pushObject(SchemaPath.Page nextObject) {
         if (innerElem != null)
             backStack.push(innerElem);
         switchObject(nextObject);
@@ -150,7 +150,7 @@ public class UISchemaHostWindow extends SchemaHostBase implements IDuplicatableW
         windowOpen = false;
         stayClosed = true;
         if (innerElem != null) {
-            innerElem.findRoot().root.deregisterModificationHandler(nudgeRunnable);
+            innerElem.root.deregisterModificationHandler(nudgeRunnable);
             replaceValidity(); // We're not seeing modifications, so don't check validity.
             innerElem = null;
             innerElemEditor = null;

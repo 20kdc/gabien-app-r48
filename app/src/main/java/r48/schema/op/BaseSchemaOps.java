@@ -69,7 +69,7 @@ public class BaseSchemaOps {
             }
             @Override
             public String invoke(SchemaOp.ExpandedCtx parameters) {
-                SchemaPath path = parameters.path;
+                SchemaPath.Page path = parameters.path;
                 try (UIReporter uir = parameters.makeReporter()) {
                     handler.run(path, uir, parameters.appUI);
                 }
@@ -107,7 +107,7 @@ public class BaseSchemaOps {
             }
             @Override
             public String invoke(SchemaOp.ExpandedCtx parameters) {
-                SchemaPath path = parameters.path;
+                SchemaPath.Page path = parameters.path;
                 RORIO arrayStartK = getParamOrDMNull(parameters, CTXPARAM_ARRAYSTART);
                 RORIO arrayEndK = getParamOrDMNull(parameters, CTXPARAM_ARRAYEND);
                 if (path.targetElement.getType() == '[' && arrayStartK.getType() == 'i' && arrayEndK.getType() == 'i') {
@@ -128,7 +128,7 @@ public class BaseSchemaOps {
         app.opPaste = new SchemaOp(app, BASE_SYSCORE, "paste", sortIdx(SORT_SYSCORE, catIdx++), app.opSites.ARRAY_SEL) {
             @Override
             public String shouldDisplay(SchemaOp.ExpandedCtx parameters) {
-                SchemaPath path = parameters.path;
+                SchemaPath.Page path = parameters.path;
                 if (app.theClipboard == null)
                     return null;
 
@@ -140,7 +140,7 @@ public class BaseSchemaOps {
             }
             @Override
             public String invoke(SchemaOp.ExpandedCtx parameters) {
-                SchemaPath path = parameters.path;
+                SchemaPath.Page path = parameters.path;
                 if (app.theClipboard == null)
                     return T.u.shcEmpty;
 
@@ -185,7 +185,7 @@ public class BaseSchemaOps {
             }
         };
         sysOperator(app, "save", () -> app.t.g.wordSave, (innerElem, reporter, appUI) -> {
-            SchemaPath root = innerElem.findRoot();
+            SchemaPath.Page root = innerElem.pathRoot;
             // perform a final verification of the file, just in case? (NOPE: Causes long save times on, say, LDBs)
             // root.editor.modifyVal(root.targetElement, root, false);
             try (UIReporter uir = (appUI == null ? new UIReporter(app) : new UIReporter(appUI))) {
@@ -218,6 +218,6 @@ public class BaseSchemaOps {
     }
 
     public interface SysOperatorInternal {
-        void run(@NonNull SchemaPath innerElem, @NonNull Reporter rep, @Nullable AppUI ui);
+        void run(@NonNull SchemaPath.Page innerElem, @NonNull Reporter rep, @Nullable AppUI ui);
     }
 }

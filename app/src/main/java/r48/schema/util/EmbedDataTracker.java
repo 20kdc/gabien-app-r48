@@ -25,7 +25,7 @@ public class EmbedDataTracker {
     public EmbedDataTracker() {
     }
 
-    public EmbedDataTracker(Stack<SchemaPath> paths, EmbedDataTracker other) {
+    public EmbedDataTracker(Stack<SchemaPath.Page> paths, EmbedDataTracker other) {
         for (SchemaPath sp : paths) {
             LinkedList<EmbedDataSlot<?>> sph = other.mapTree.get(sp);
             if (sph != null)

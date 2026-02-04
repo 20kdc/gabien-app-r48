@@ -282,6 +282,6 @@ public class R2kSavefileEventAccess extends R48.Svc implements IEventAccess {
     }
 
     public void pokeHive() {
-        saveFileRoot.objectRootModified(new SchemaPath(saveFileRootSchema, saveFileRoot));
+        saveFileRoot.objectRootModified(new SchemaPath.Page(saveFileRootSchema, saveFileRoot));
     }
 }

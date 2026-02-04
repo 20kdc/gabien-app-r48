@@ -9,6 +9,8 @@ package r48.schema.specialized;
 
 import java.util.function.Supplier;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.ui.UIElement;
 import r48.R48;
 import r48.io.data.IRIO;
@@ -32,7 +34,7 @@ public class TempDialogSchemaChoice extends SchemaElement.Leaf {
     public Supplier<Boolean> update;
     public SchemaPath hPar;
 
-    public TempDialogSchemaChoice(R48 app, Supplier<Boolean> updater, SchemaPath hr) {
+    public TempDialogSchemaChoice(R48 app, Supplier<Boolean> updater, @Nullable SchemaPath hr) {
         super(app);
         update = updater;
         hPar = hr;
@@ -59,8 +61,10 @@ public class TempDialogSchemaChoice extends SchemaElement.Leaf {
 
     @Override
     public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        if (hPar.editor != null)
-            hPar.editor.modifyVal(hPar.targetElement, hPar, setDefault);
+        if (hPar != null) {
+            SchemaPath.Page page = hPar.findFirstEditable();
+            page.editor.modifyVal(page.targetElement, page, setDefault);
+        }
         if (update != null)
             update.get();
     }

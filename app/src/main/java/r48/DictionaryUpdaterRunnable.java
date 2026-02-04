@@ -148,8 +148,8 @@ public class DictionaryUpdaterRunnable extends R48.Svc implements SDB.DynamicSch
             // Actual found name
             final IRIO mappedRIO = (iVar != null) ? iVar.apply(rio) : rio;
             // Data schema path
-            final SchemaPath rootSchemaPath = targetILO == null ? null : new SchemaPath(new OpaqueSchemaElement(app), targetILO);
-            final SchemaPath dataSchemaPath = ((rootSchemaPath == null) || (dataSchema == null)) ? null : rootSchemaPath.arrayHashIndex(kc, p).newWindow(dataSchema, rio);
+            final SchemaPath rootSchemaPath = targetILO == null ? null : new SchemaPath.Page(new OpaqueSchemaElement(app), targetILO);
+            final SchemaPath.Page dataSchemaPath = ((rootSchemaPath == null) || (dataSchema == null)) ? null : rootSchemaPath.arrayHashIndex(kc, p).newWindow(dataSchema, rio);
             // Details
             String text;
             Consumer<String> editor = null;

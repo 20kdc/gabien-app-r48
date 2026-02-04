@@ -125,7 +125,7 @@ public class RMTools extends AppUI.Svc implements Consumer<LinkedList<UIPopupMen
             LinkedList<ObjectInfo> objects = app.getObjectInfos();
             for (final ObjectInfo obj : objects) {
                 System.out.println(obj + "...");
-                SchemaPath sp = obj.makePath(false);
+                SchemaPath.Page sp = obj.makePath(false);
                 if (sp == null)
                     continue;
                 Consumer<SchemaPath> modListen = (path) -> {

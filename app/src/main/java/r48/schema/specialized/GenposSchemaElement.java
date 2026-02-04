@@ -49,8 +49,8 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
             @Override
             public void run() {
                 final ISchemaHost launcher = lBase.newBlank();
-                TempDialogSchemaChoice boot = new TempDialogSchemaChoice(app, null, pBase);
-                final SchemaPath path = pBase.newWindow(boot, target);
+                TempDialogSchemaChoice boot = new TempDialogSchemaChoice(app, null, pBase.findFirstEditable());
+                final SchemaPath.Page path = pBase.newWindow(boot, target);
                 if (genposType.equals("vxaAnimation") || genposType.equals("xpAnimation")) {
                     Runnable updater = new Runnable() {
                         @Override
@@ -158,7 +158,7 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
         });
     }
 
-    private void launchFrame(ISchemaHost launcher, SchemaPath path, IGenposFrame gpf, TempDialogSchemaChoice boot) {
+    private void launchFrame(ISchemaHost launcher, SchemaPath.Page path, IGenposFrame gpf, TempDialogSchemaChoice boot) {
         final GenposFramePanelController rmarp = new GenposFramePanelController(gpf, null, launcher);
         rmarp.frameChanged();
         // Setup automatic-update safety net
@@ -170,7 +170,7 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
         }, boot, path);
     }
 
-    private void safetyWrap(UIElement rmarp, ISchemaHost shi, Supplier<Boolean> update, TempDialogSchemaChoice sc, final SchemaPath path) {
+    private void safetyWrap(UIElement rmarp, ISchemaHost shi, Supplier<Boolean> update, TempDialogSchemaChoice sc, final SchemaPath.Page path) {
         sc.heldDialog = rmarp;
         sc.update = update;
         shi.pushObject(path);

@@ -111,7 +111,7 @@ public class R2kAreaEditingToolbarController extends R48.Svc implements IEditing
                 r.setFX(Math.max(firstPointX, x) + 1);
                 d.setFX(Math.max(firstPointY, y) + 1);
                 R48 app = mapToolContext.getMapView().app;
-                mapInfosRoot.objectRootModified(new SchemaPath(app.sdb.getSDBEntry("RPG::MapTree"), mapInfosRoot));
+                mapInfosRoot.objectRootModified(new SchemaPath.Page(app.sdb.getSDBEntry("RPG::MapTree"), mapInfosRoot));
                 label.setText(textA);
                 definingPoint2 = false;
             }

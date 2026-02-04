@@ -65,7 +65,7 @@ public class MVMAppUILibrary extends R48.Svc {
 
     @Defun(n = "sop-invoke-ui", r = 3)
     @Help("Invokes the given Schema Operator on the given path with the given parameters root. Results are reported via UI.")
-    public void sopInvokeUI(Object op, SchemaPath path, ObjectRootHandle parameters) {
+    public void sopInvokeUI(Object op, SchemaPath.Page path, ObjectRootHandle parameters) {
         SchemaOp operator = app.operators.coerce(op);
         AppUI aui = getAppUIFromAppChecked(app);
         operator.invokeUI(aui, new SchemaOp.ExpandedCtx(path, parameters.getObject(), app, aui));

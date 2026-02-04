@@ -37,8 +37,8 @@ public class MVMSchemaOpLibrary extends R48.Svc {
     }
 
     @Defun(n = "sop-invoke", r = 3)
-    @Help("Invokes the given Schema Operator on the given path with the given parameters root. Results are reported via the returned string.")
-    public String sopInvoke(Object op, SchemaPath path, ObjectRootHandle parameters) {
+    @Help("Invokes the given Schema Operator on the given schema page with the given parameters root. Results are reported via the returned string.")
+    public String sopInvoke(Object op, SchemaPath.Page path, ObjectRootHandle parameters) {
         SchemaOp operator = app.operators.coerce(op);
         return operator.invoke(new SchemaOp.ExpandedCtx(path, parameters.getObject(), app, app.uiAttachmentPoint));
     }

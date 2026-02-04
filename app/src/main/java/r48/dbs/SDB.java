@@ -242,7 +242,7 @@ public class SDB extends R48.Svc {
         }
 
         @Override
-        public @Nullable String windowTitleSuffix(SchemaPath path) {
+        public @Nullable String windowTitleSuffix(SchemaPath.Page path) {
             return getEntry().windowTitleSuffix(path);
         }
 

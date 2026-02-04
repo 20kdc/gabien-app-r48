@@ -112,7 +112,7 @@ public class UIRMUniversalStringExportImport extends AppUI.Prx {
         StringBuilder log = new StringBuilder();
         USFROperationMode mode = modeSelector.getSelected();
         for (ObjectInfo objInfo : setSelector.getSet()) {
-            SchemaPath sp = objInfo.makePath(false);
+            SchemaPath.Page sp = objInfo.makePath(false);
             if (sp == null)
                 continue;
             files++;
@@ -190,14 +190,15 @@ public class UIRMUniversalStringExportImport extends AppUI.Prx {
         }
     }
     private void reifyPathElement(IRIO target, @NonNull SchemaPath path, HashMap<SchemaElementIOP, String> elemToName) {
-        SchemaElementIOP se = path.editor;
-        if (se == null) {
+        if (!(path instanceof SchemaPath.Page)) {
             target.setNull();
             return;
         }
-        if (path.editor instanceof RPGCommandSchemaElement) {
-            RPGCommandSchemaElement rc = (RPGCommandSchemaElement) path.editor;
-            RPGCommand rm = rc.getRPGCommand(path.targetElement);
+        SchemaPath.Page page = (SchemaPath.Page) path;
+        SchemaElementIOP se = page.editor;
+        if (page.editor instanceof RPGCommandSchemaElement) {
+            RPGCommandSchemaElement rc = (RPGCommandSchemaElement) page.editor;
+            RPGCommand rm = rc.getRPGCommand(page.targetElement);
             if (rm != null) {
                 target.setFX(rm.commandId);
                 return;

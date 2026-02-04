@@ -41,6 +41,7 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class SchemaPath {
     public final SchemaPath parent;
+    public final Page pathRoot;
     public final int windowDepth, depth;
 
     /**
@@ -48,11 +49,6 @@ public class SchemaPath {
      * Responsible for managing modification notifications and saving.
      */
     public final @NonNull ObjectRootHandle root;
-
-    // If editor is null, targetElement must be null, and vice versa.
-    // Host may be there or not.
-    public final @Nullable SchemaElementIOP editor;
-    public final @Nullable IRIO targetElement;
 
     // Should only ever be set to true by tagSEMonitor.
     // Implies editor and target.
@@ -70,43 +66,35 @@ public class SchemaPath {
 
     public final HashMap<String, SchemaElementIOP> contextualSchemas = new HashMap<>();
 
-    private SchemaPath(@NonNull SchemaPath sp, SchemaElementIOP editor, IRIO targetElement, DMKey lastArrayIndex, String hrIndex) {
+    protected SchemaPath(@NonNull SchemaPath sp, DMKey lastArrayIndex, String hrIndex) {
         parent = sp;
+        pathRoot = sp.pathRoot;
         depth = sp.depth + 1;
-        windowDepth = parent.windowDepth + (editor != null ? 1 : 0);
+        windowDepth = parent.windowDepth + ((this instanceof Page) ? 1 : 0);
         root = sp.root;
-        this.editor = editor;
-        this.targetElement = targetElement;
         this.lastArrayIndex = lastArrayIndex;
         this.hrIndex = hrIndex;
         contextualSchemas.putAll(sp.contextualSchemas);
     }
 
-    // The basic root constructor.
-    public SchemaPath(@NonNull ObjectRootHandle root) {
-        this(verifyRootHasSchema(root), root);
-    }
-
-    // The advanced root constructor.
-    public SchemaPath(@NonNull SchemaElementIOP heldElement, @NonNull ObjectRootHandle root) {
-        heldElement = weDoNotTrustOurCallers(heldElement, root);
+    // Internal root constructor. Only call from Page constructor.
+    protected SchemaPath(@NonNull ObjectRootHandle root) {
         parent = null;
+        pathRoot = (SchemaPath.Page) this;
         depth = 0;
         windowDepth = 1;
         this.root = root;
         hrIndex = root.toString();
-        editor = heldElement;
-        targetElement = root.getObject();
         lastArrayIndex = null;
     }
 
-    private static @NonNull SchemaElementIOP verifyRootHasSchema(@NonNull ObjectRootHandle root) {
+    protected static @NonNull SchemaElementIOP verifyRootHasSchema(@NonNull ObjectRootHandle root) {
         SchemaElementIOP se = root.rootSchema;
         if (se == null)
             throw new NullPointerException("Gah! Creating SchemaPath to " + root + " ; but it has no schema!");
         return se;
     }
-    private static @NonNull SchemaElementIOP weDoNotTrustOurCallers(@Nullable SchemaElementIOP he, @NonNull ObjectRootHandle root) {
+    protected static @NonNull SchemaElementIOP weDoNotTrustOurCallers(@Nullable SchemaElementIOP he, @NonNull ObjectRootHandle root) {
         if (he == null) {
             System.err.println("Gah! Creating SchemaPath to " + root + " with null SchemaElement.");
             return verifyRootHasSchema(root);
@@ -130,7 +118,7 @@ public class SchemaPath {
      */
     public static void setDefaultValue(@NonNull IRIO target, @NonNull SchemaElementIOP ise, @Nullable DMKey arrayIndex, @Nullable Consumer<Runnable> adjustments) {
         ObjectRootHandle dvRoot = new ObjectRootHandle.Isolated(ise, target, "setDefaultValue");
-        SchemaPath adjuster = new SchemaPath(ise, dvRoot).arrayHashIndex(arrayIndex, "AnonObject");
+        SchemaPath adjuster = new Page(ise, dvRoot).arrayHashIndex(arrayIndex, "AnonObject");
         ise.modifyVal(target, adjuster, true);
         if (adjustments != null)
             adjustments.accept(() -> ise.modifyVal(target, adjuster, false));
@@ -165,20 +153,11 @@ public class SchemaPath {
         return str;
     }
 
-    public SchemaPath findRoot() {
-        SchemaPath root = this;
-        while (root.parent != null)
-            root = root.parent;
-        return root;
-    }
-
     /**
      * Going upward, find the first 'window' SchemaPath.
      * Returns null if none found.
      */
-    public @Nullable SchemaPath findFirstEditable() {
-        if (editor != null)
-            return this;
+    public @Nullable Page findFirstEditable() {
         if (parent == null)
             return null;
         return parent.findFirstEditable();
@@ -198,28 +177,29 @@ public class SchemaPath {
     // -- Important Stuff (always used) --
 
     public SchemaPath arrayHashIndex(DMKey index, String indexS) {
-        return new SchemaPath(this, null, null, index, indexS);
+        return new SchemaPath(this, index, indexS);
     }
 
     // -- Display Stuff (used in buildHoldingEditor) --
 
-    public SchemaPath newWindow(SchemaElementIOP heldElement, IRIO target) {
-        return new SchemaPath(this, heldElement, target, lastArrayIndex, null);
+    public Page newWindow(SchemaElementIOP heldElement, IRIO target) {
+        return new Page(this, heldElement, target, lastArrayIndex, null);
     }
 
     // Not so much used, and quite unimportant
 
     public SchemaPath otherIndex(String index) {
-        return new SchemaPath(this, null, null, lastArrayIndex, index);
+        return new SchemaPath(this, lastArrayIndex, index);
     }
 
-    public SchemaPath tagSEMonitor(IRIO target, SchemaElementIOP ise, boolean upwards) {
+    public SchemaPath tagSEMonitor(@NonNull IRIO target, SchemaElementIOP ise, boolean upwards) {
         if (upwards) {
             // This is for DisambiguatorSchemaElement to make sure the entire structure containing a disambiguator gets the tag.
             // This is so that edits to the thing being disambiguated on get caught properly.
+            // (To be honest, I have long since forgotten how this actually worked.)
             SchemaPath spp = this;
             SchemaPath sppLast = this;
-            while ((target == spp.targetElement) || (target == null)) {
+            while ((spp instanceof Page) && target == ((Page) spp).targetElement) {
                 sppLast = spp;
                 spp = spp.parent;
                 if (spp == null)
@@ -228,7 +208,7 @@ public class SchemaPath {
             if (sppLast != spp)
                 sppLast.monitorsSubelements = true;
         }
-        SchemaPath sp = new SchemaPath(this, ise, target, lastArrayIndex, null);
+        Page sp = new Page(this, ise, target, lastArrayIndex, null);
         sp.monitorsSubelements = true;
         return sp;
     }
@@ -269,14 +249,12 @@ public class SchemaPath {
 
     public void pokeHighestSubwatcherEditor() {
         SchemaPath sw = findHighestSubwatcher();
-        if (sw.editor != null)
-            sw.editor.modifyVal(sw.targetElement, sw, false);
+        if (sw instanceof Page)
+            ((Page) sw).editor.modifyVal(((Page) sw).targetElement, sw, false);
     }
 
     // If this is true, a temp dialog (unique UIElement) is in use and thus this can't be cloned.
     public boolean hasTempDialog() {
-        if (editor != null && editor.isTempDialog())
-            return true;
         if (parent != null)
             return parent.hasTempDialog();
         return false;
@@ -286,7 +264,7 @@ public class SchemaPath {
      * Attaches a contextual schema element, which will be used when relevant. 
      */
     public SchemaPath contextSchema(String contextName, SchemaElementIOP enumSchemaElement) {
-        SchemaPath sp = new SchemaPath(this, null, null, lastArrayIndex, null);
+        SchemaPath sp = new SchemaPath(this, lastArrayIndex, null);
         sp.contextualSchemas.put(contextName, enumSchemaElement);
         return sp;
     }
@@ -298,11 +276,6 @@ public class SchemaPath {
         String parentSuffix = "";
         if (parent != null)
             parentSuffix = parent.windowTitleSuffix();
-        if (editor != null) {
-            String attemptedEditorSuffix = editor.windowTitleSuffix(this);
-            if (attemptedEditorSuffix != null)
-                return parentSuffix + ":" + attemptedEditorSuffix;
-        }
         return parentSuffix;
     }
 
@@ -313,7 +286,7 @@ public class SchemaPath {
      * In particular, it helps keep Schema and Java logic decoupled.
      */
     public @Nullable SchemaPath traceRoute(RORIO tracertTarget, Set<RORIO> expected) {
-        SchemaPath sp = findFirstEditable();
+        Page sp = findFirstEditable();
         if (sp == null)
             return null;
         // RPG_RT.ldb
@@ -327,7 +300,7 @@ public class SchemaPath {
             // Make sure we don't go off-track or else we'll visit the entire database.
             if (!expected.contains(vTarget))
                 return false;
-            SchemaPath oPath = vPath.findFirstEditable();
+            Page oPath = vPath.findFirstEditable();
             if (oPath == null)
                 return true;
 
@@ -404,7 +377,7 @@ public class SchemaPath {
      * traceRoute for a given DMPath target.
      */
     public @Nullable SchemaPath tracePathRoute(@NonNull DMPath path) {
-        SchemaPath sp = findFirstEditable();
+        Page sp = findFirstEditable();
         if (sp == null) {
             System.err.println("tracePathRoute failed: findFirstEditable failed");
             return null;
@@ -419,5 +392,62 @@ public class SchemaPath {
         mainSet.add(sp.targetElement);
         mainSet.add(res);
         return sp.traceRoute(res, mainSet);
+    }
+
+    /**
+     * Specifically for those schema paths with actual pages in them.
+     * Created 4th February, 2026 (just)
+     */
+    public static class Page extends SchemaPath {
+        /**
+         * Editor element.
+         */
+        public final @NonNull SchemaElementIOP editor;
+
+        /**
+         * Target element.
+         */
+        public final @NonNull IRIO targetElement;
+
+        private Page(@NonNull SchemaPath sp, @NonNull SchemaElementIOP editor, @NonNull IRIO targetElement, @Nullable DMKey lastArrayIndex, @Nullable String hrIndex) {
+            super(sp, lastArrayIndex, hrIndex);
+
+            this.editor = editor;
+            this.targetElement = targetElement;
+        }
+
+        // The basic root constructor.
+        public Page(@NonNull ObjectRootHandle root) {
+            this(verifyRootHasSchema(root), root);
+        }
+
+        // The advanced root constructor.
+        public Page(@NonNull SchemaElementIOP heldElement, @NonNull ObjectRootHandle root) {
+            super(root);
+            heldElement = weDoNotTrustOurCallers(heldElement, root);
+            editor = heldElement;
+            targetElement = root.getObject();
+        }
+
+        @Override
+        public Page findFirstEditable() {
+            return this;
+        }
+
+        @Override
+        public boolean hasTempDialog() {
+            if (editor.isTempDialog())
+                return true;
+            return super.hasTempDialog();
+        }
+
+        @Override
+        public String windowTitleSuffix() {
+            String parentSuffix = super.windowTitleSuffix();
+            String attemptedEditorSuffix = editor.windowTitleSuffix(this);
+            if (attemptedEditorSuffix != null)
+                return parentSuffix + ":" + attemptedEditorSuffix;
+            return parentSuffix;
+        }
     }
 }

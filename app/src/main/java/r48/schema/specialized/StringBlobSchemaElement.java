@@ -90,7 +90,7 @@ public class StringBlobSchemaElement extends SchemaElement.Leaf {
                 }
                 path.changeOccurred(false);
             }), true, 1);
-            TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, update, path);
+            TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, update, path.findFirstEditable());
             temp.heldDialog = ui;
             launcher.pushObject(path.newWindow(temp, target));
         }), false, 1);

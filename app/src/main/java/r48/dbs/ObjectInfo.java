@@ -47,11 +47,11 @@ public class ObjectInfo extends R48.Svc {
         return app.odb.getObject(idName, create);
     }
 
-    public @Nullable SchemaPath makePath(boolean create) {
+    public @Nullable SchemaPath.Page makePath(boolean create) {
         SchemaElement se = schema;
         ObjectRootHandle ilo = getILO(create);
         if (se == null || ilo == null)
             return null;
-        return new SchemaPath(se, ilo);
+        return new SchemaPath.Page(se, ilo);
     }
 }

@@ -78,7 +78,7 @@ public class R2kGenposFrame extends R48.Svc implements IGenposFrame {
     }
 
     @Override
-    public SchemaPath getCellProp(int ct, int i) {
+    public SchemaPath.Page getCellProp(int ct, int i) {
         String[] trueIVars = new String[] {
                 "@visible",
                 "@cell_id",

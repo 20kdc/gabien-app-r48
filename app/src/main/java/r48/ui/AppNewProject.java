@@ -121,7 +121,7 @@ public class AppNewProject extends AppUI.Svc {
                 () -> {
                     ObjectRootHandle root = app.odb.getObject("RPG_RT.ldb");
                     R2kSystemDefaultsInstallerSchemaElement.upgradeDatabase(root.getObject());
-                    root.objectRootModified(new SchemaPath(new OpaqueSchemaElement(app), root));
+                    root.objectRootModified(new SchemaPath.Page(new OpaqueSchemaElement(app), root));
                     deploy2k.run();
                 }, () -> {
                 }

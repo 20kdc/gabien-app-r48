@@ -44,7 +44,7 @@ public class R2kTools extends AppUI.Svc implements Consumer<LinkedList<UIPopupMe
             ObjectRootHandle orh = new ObjectRootHandle.Isolated(se, ig, T.u.mFindCommonEventsWithSwitchID);
             UITextButton ok = new UITextButton(T.g.bConfirm, app.f.dialogWindowTH, null);
             UISchemaHostWidget w = new UISchemaHostWidget(U, null);
-            w.pushObject(new SchemaPath(orh));
+            w.pushObject(new SchemaPath.Page(orh));
             UIDynAppPrx prx = UIDynAppPrx.wrap(U, new UISplitterLayout(w, ok, false, 1));
             ok.onClick = () -> {
                 ObjectRootHandle database = app.odb.getObject("RPG_RT.ldb");

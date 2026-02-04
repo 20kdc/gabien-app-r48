@@ -25,7 +25,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * Extracted from SchemaHostImpl, 17th July, 2023.
  */
 public abstract class SchemaHostBase extends AppUI.Pan implements ISchemaHost {
-    protected SchemaPath innerElem;
+    protected SchemaPath.Page innerElem;
 
     protected Consumer<SchemaPath> nudgeRunnable = new Consumer<SchemaPath>() {
         @Override
@@ -79,7 +79,7 @@ public abstract class SchemaHostBase extends AppUI.Pan implements ISchemaHost {
     }
 
     @Override
-    public SchemaPath getCurrentObject() {
+    public SchemaPath.Page getCurrentObject() {
         return innerElem;
     }
 
@@ -122,12 +122,10 @@ public abstract class SchemaHostBase extends AppUI.Pan implements ISchemaHost {
     /**
      * Implements the actual 'switch' operation.
      */
-    protected final void switchObject(SchemaPath nextObject) {
+    protected final void switchObject(SchemaPath.Page nextObject) {
         // switch over listeners, validity, state
         if (innerElem != null)
             innerElem.root.deregisterModificationHandler(nudgeRunnable);
-        while (nextObject.editor == null)
-            nextObject = nextObject.parent;
         nextObject.root.registerModificationHandler(nudgeRunnable);
         replaceValidity();
         innerElem = nextObject;

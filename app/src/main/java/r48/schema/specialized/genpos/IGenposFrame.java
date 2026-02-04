@@ -38,7 +38,7 @@ public interface IGenposFrame {
     // Note: The target will be modified.
     // targetElement and the path itself should be used by the caller.
     // Use newWindow.
-    SchemaPath getCellProp(int ct, int i);
+    SchemaPath.Page getCellProp(int ct, int i);
 
     // Returns null for non-tweenable properties.
     // Semantics of access to this are the same as with getFrame() in GenposAnim.

@@ -101,7 +101,7 @@ public class ObjectClassSchemaElement extends SchemaElement {
     }
 
     @Override
-    public String windowTitleSuffix(SchemaPath path) {
+    public String windowTitleSuffix(SchemaPath.Page path) {
         return backing.windowTitleSuffix(path);
     }
 }

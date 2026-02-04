@@ -152,7 +152,7 @@ public class LocalTestExecutiveTest {
                 objectInternalCopy.registerModificationHandler((schemaPath) -> {
                     throw new RuntimeException("A modification occurred on LTE data. This shouldn't happen: " + schemaPath.toString());
                 });
-                wse.modifyVal(objectInternalCopy.getObject(), new SchemaPath(wse, objectInternalCopy), false);
+                wse.modifyVal(objectInternalCopy.getObject(), new SchemaPath.Page(wse, objectInternalCopy), false);
 
                 objectInternalCopyILO.save();
 

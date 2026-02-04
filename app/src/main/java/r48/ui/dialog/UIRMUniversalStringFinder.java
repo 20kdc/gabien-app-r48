@@ -63,7 +63,7 @@ public class UIRMUniversalStringFinder extends AppUI.Prx {
             int files = 0;
             StringBuilder log = new StringBuilder();
             for (ObjectInfo objInfo : setSelector.getSet()) {
-                SchemaPath sp = objInfo.makePath(true);
+                SchemaPath.Page sp = objInfo.makePath(true);
                 if (sp != null) {
                     files++;
                     // now do it!

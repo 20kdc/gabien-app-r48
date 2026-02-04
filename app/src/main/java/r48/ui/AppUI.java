@@ -352,11 +352,16 @@ public class AppUI extends R48.Svc implements IAppAsSeenByLauncher {
     // Used for event selection boxes.
     public boolean currentlyOpenInEditor(IRIO r) {
         for (ISchemaHost ish : activeHosts) {
-            SchemaPath sp = ish.getCurrentObject();
+            SchemaPath.Page sp = ish.getCurrentObject();
             while (sp != null) {
                 if (sp.targetElement == r)
                     return true;
-                sp = sp.parent;
+                SchemaPath sp2 = sp.parent;
+                if (sp2 != null) {
+                    sp = sp2.findFirstEditable();
+                } else {
+                    break;
+                }
             }
         }
         return false;
@@ -466,7 +471,7 @@ public class AppUI extends R48.Svc implements IAppAsSeenByLauncher {
     public ISchemaHost launchSchema(SchemaElement s, @NonNull ObjectRootHandle rio, @Nullable SchemaDynamicContext context) {
         // Responsible for keeping listeners in place so nothing breaks.
         UISchemaHostWindow watcher = new UISchemaHostWindow(this, context);
-        watcher.pushObject(new SchemaPath(s, rio));
+        watcher.pushObject(new SchemaPath.Page(s, rio));
         return watcher;
     }
 
@@ -477,7 +482,7 @@ public class AppUI extends R48.Svc implements IAppAsSeenByLauncher {
     public ISchemaHost launchDisconnectedSchema(@NonNull ObjectRootHandle root, DMKey arrayIndex, IRIO element, SchemaElement elementSchema, String indexText, SchemaDynamicContext context) {
         // produce a valid (and false) parent chain, that handles all required guarantees.
         ISchemaHost shi = launchSchema(root, context);
-        SchemaPath sp = new SchemaPath(root);
+        SchemaPath sp = new SchemaPath.Page(root);
         sp = sp.arrayHashIndex(arrayIndex, indexText);
         shi.pushObject(sp.newWindow(elementSchema, element));
         return shi;
@@ -488,7 +493,7 @@ public class AppUI extends R48.Svc implements IAppAsSeenByLauncher {
      * Or tries, anyway.
      */
     public @Nullable ISchemaHost launchSchemaTrace(@NonNull ObjectRootHandle root, @Nullable SchemaDynamicContext context, @NonNull DMPath goal) {
-        SchemaPath pathRoot = new SchemaPath(root);
+        SchemaPath pathRoot = new SchemaPath.Page(root);
         SchemaPath res = pathRoot.tracePathRoute(goal);
         if (res == null) {
             launchDialog(T.u.schemaTraceFailure);

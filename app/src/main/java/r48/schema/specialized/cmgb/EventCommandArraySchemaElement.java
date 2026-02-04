@@ -351,10 +351,10 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         //     (so the user knows the command was added anyway)
         SubwindowSchemaElement targ = getElementContextualSubwindowSchema(targetElem, idx, "");
         path = path.arrayHashIndex(DMKey.of(idx), "[" + idx + "]");
-        path = path.newWindow(targ.heldElement, target);
-        launcher.pushObject(path);
+        SchemaPath.Page page = path.newWindow(targ.heldElement, target);
+        launcher.pushObject(page);
         // Ok, now navigate to the command selector
-        path = path.newWindow(RPGCommandSchemaElement.navigateToCode(launcher, targetElem, new Consumer<int[]>() {
+        page = page.newWindow(RPGCommandSchemaElement.navigateToCode(launcher, targetElem, new Consumer<int[]>() {
             @Override
             public void accept(int[] i) {
                 for (int j = 0; j < i.length; j++) {
@@ -364,8 +364,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 }
                 sp.changeOccurred(false);
             }
-        }, path, database), target);
-        launcher.pushObject(path);
+        }, page, database), target);
+        launcher.pushObject(page);
     }
 
     /**

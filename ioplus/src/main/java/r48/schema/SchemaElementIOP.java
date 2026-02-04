@@ -64,7 +64,7 @@ public abstract class SchemaElementIOP {
      * But going "sideways" (passing the element to parts of an aggregate/etc. in the same object) is fine.
      * It's important to return null on failure.
      */
-    public @Nullable String windowTitleSuffix(SchemaPath path) {
+    public @Nullable String windowTitleSuffix(SchemaPath.Page path) {
         return null;
     }
 
