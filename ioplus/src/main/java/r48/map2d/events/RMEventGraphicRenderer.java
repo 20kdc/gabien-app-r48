@@ -5,15 +5,15 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.events;
+package r48.map2d.events;
 
 import gabien.GaBIEn;
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
 import gabien.uslx.append.MathsX;
-import r48.R48;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
+import r48.imagefx.ImageFXCache;
 import r48.io.data.RORIO;
 import r48.map2d.tiles.TileRenderer;
 import r48.texture.ITexLoader;
@@ -25,15 +25,16 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * Created on 1/27/17.
  */
-public class RMEventGraphicRenderer extends R48.Svc implements IEventGraphicRenderer {
+public class RMEventGraphicRenderer implements IEventGraphicRenderer {
 
     private int patternCount = 4;
     private boolean useVXAExtensionScheme = false;
+    public final ImageFXCache imageFXCache;
     public final ITexLoader imageLoader;
     private final TileRenderer tileRenderer;
 
-    public RMEventGraphicRenderer(R48 app, ITexLoader img, TileRenderer tile, boolean vxa) {
-        super(app);
+    public RMEventGraphicRenderer(ImageFXCache imageFXCache, ITexLoader img, TileRenderer tile, boolean vxa) {
+        this.imageFXCache = imageFXCache;
         imageLoader = img;
         tileRenderer = tile;
         if (vxa) {
@@ -135,7 +136,7 @@ public class RMEventGraphicRenderer extends R48.Svc implements IEventGraphicRend
                 if (hue != 0)
                     hsie.add(new HueShiftImageEffect(hue));
             }
-            i = app.imageFXCache.process(i, hsie);
+            i = imageFXCache.process(i, hsie);
             int blendMode = IGrDriver.BLEND_NORMAL;
             if (blendType == 1)
                 blendMode = IGrDriver.BLEND_ADD;

@@ -5,14 +5,14 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.events;
+package r48.game.r2k;
 
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.render.IGrDriver;
 import gabien.render.IImage;
-import r48.R48;
 import r48.io.data.RORIO;
+import r48.map2d.events.IEventGraphicRenderer;
 import r48.map2d.tiles.TileRenderer;
 import r48.texture.ITexLoader;
 
@@ -20,7 +20,7 @@ import r48.texture.ITexLoader;
  * An interlude.
  * Created on 31/05/17.
  */
-public class R2kEventGraphicRenderer extends R48.Svc implements IEventGraphicRenderer {
+public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
     public final ITexLoader imageLoader;
     public final TileRenderer tileRenderer;
     // Idea is, if 2x is needed, this is set in the constructor.
@@ -29,8 +29,7 @@ public class R2kEventGraphicRenderer extends R48.Svc implements IEventGraphicRen
     public final int localTileSize = 16;
     private final int remoteTileSize;
 
-    public R2kEventGraphicRenderer(R48 app, ITexLoader imageLoad, TileRenderer tr) {
-        super(app);
+    public R2kEventGraphicRenderer(ITexLoader imageLoad, TileRenderer tr) {
         tileRenderer = tr;
         imageLoader = imageLoad;
         remoteTileSize = tileRenderer.tileSize;

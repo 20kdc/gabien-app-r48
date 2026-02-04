@@ -14,6 +14,7 @@ import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.ioplus.Reporter;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
+import r48.map2d.events.IEventAccess;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -209,7 +210,7 @@ public class R2kSavefileEventAccess extends R48.Svc implements IEventAccess {
                 chosenSchema = app.sdb.getSDBEntry("RPG::SaveMapEvent");
             }
         }
-        return new EventSchema(saveFileRootSchema, chosenSchema, saveFileRoot, key);
+        return new EventSchema(chosenSchema, saveFileRoot, key);
     }
 
     @Override

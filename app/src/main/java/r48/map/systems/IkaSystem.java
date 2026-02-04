@@ -14,11 +14,11 @@ import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController;
 import r48.map.StuffRenderer;
-import r48.map.events.IEventAccess;
-import r48.map.events.IEventGraphicRenderer;
-import r48.map.events.IkaEventGraphicRenderer;
 import r48.map.events.TraditionalEventAccess;
 import r48.map.tiles.IkaTileRenderer;
+import r48.map2d.events.IEventAccess;
+import r48.map2d.events.IEventGraphicRenderer;
+import r48.map2d.events.IkaEventGraphicRenderer;
 import r48.texture.CacheTexLoader;
 import r48.texture.FixAndSecondaryTexLoader;
 import r48.texture.GabienTexLoader;
@@ -35,7 +35,7 @@ public class IkaSystem extends MapSystem {
 
     public StuffRenderer rendererGeneral() {
         tileRenderer.checkReload();
-        IEventGraphicRenderer eventRenderer = new IkaEventGraphicRenderer(app, imageLoader);
+        IEventGraphicRenderer eventRenderer = new IkaEventGraphicRenderer(imageLoader);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }
 

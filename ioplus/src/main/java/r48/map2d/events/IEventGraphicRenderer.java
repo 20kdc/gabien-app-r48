@@ -5,7 +5,7 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.events;
+package r48.map2d.events;
 
 import org.eclipse.jdt.annotation.Nullable;
 

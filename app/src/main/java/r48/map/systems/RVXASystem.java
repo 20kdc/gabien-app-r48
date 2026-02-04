@@ -19,13 +19,15 @@ import r48.map.MapEditingToolbarController;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.*;
-import r48.map.events.IEventAccess;
-import r48.map.events.IEventGraphicRenderer;
-import r48.map.events.RMEventGraphicRenderer;
 import r48.map.tiles.TSOAwareTileRenderer;
 import r48.map.tiles.VXATileRenderer;
+import r48.map2d.events.EventMapViewDrawLayer;
+import r48.map2d.events.IEventAccess;
+import r48.map2d.events.IEventGraphicRenderer;
+import r48.map2d.events.RMEventGraphicRenderer;
 import r48.map2d.layers.GridMapViewDrawLayer;
 import r48.map2d.layers.MapViewDrawLayer;
+import r48.map2d.layers.PanoramaMapViewDrawLayer;
 import r48.map2d.tiles.TileRenderer;
 import r48.maptools.UIMTBase;
 import r48.maptools.UIMTShadowLayer;
@@ -52,7 +54,7 @@ public class RVXASystem extends RXPSystem {
 
     @Override
     public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tso, IEventAccess events, TileRenderer tileRenderer) {
-        RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, true);
+        RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app.imageFXCache, imageLoader, tileRenderer, true);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }
 
@@ -88,7 +90,7 @@ public class RVXASystem extends RXPSystem {
     public StuffRenderer rendererFromTso(IRIO tso) {
         TSOAwareTileRenderer tileRenderer = createTileRenderer();
         tileRenderer.checkReloadTSO(tso);
-        IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, true);
+        IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app.imageFXCache, imageLoader, tileRenderer, true);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }
 

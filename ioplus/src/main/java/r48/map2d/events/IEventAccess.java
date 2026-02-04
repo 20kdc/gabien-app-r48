@@ -5,14 +5,14 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.events;
+package r48.map2d.events;
 
 import r48.dbs.ObjectRootHandle;
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.ioplus.Reporter;
-import r48.schema.SchemaElement;
+import r48.schema.SchemaElementIOP;
 
 import java.util.LinkedList;
 import java.util.function.Consumer;
@@ -58,11 +58,10 @@ public interface IEventAccess {
     @Nullable EventSchema getEventSchema(DMKey key);
 
     public static class EventSchema {
-        public final SchemaElement rootSchema, eventSchema;
+        public final SchemaElementIOP eventSchema;
         public final ObjectRootHandle root;
         public final DMKey key;
-        public EventSchema(SchemaElement rs, SchemaElement es, ObjectRootHandle r, DMKey key) {
-            rootSchema = rs;
+        public EventSchema(SchemaElementIOP es, ObjectRootHandle r, DMKey key) {
             eventSchema = es;
             root = r;
             this.key = key;

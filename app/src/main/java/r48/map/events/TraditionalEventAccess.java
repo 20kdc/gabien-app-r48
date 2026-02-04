@@ -15,6 +15,7 @@ import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.ioplus.Reporter;
+import r48.map2d.events.IEventAccess;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -109,7 +110,7 @@ public class TraditionalEventAccess extends R48.Svc implements IEventAccess {
 
     @Override
     public @Nullable EventSchema getEventSchema(DMKey key) {
-        return new EventSchema(mapRootSchema, eventSchema, mapRoot, key);
+        return new EventSchema(eventSchema, mapRoot, key);
     }
 
     @Override

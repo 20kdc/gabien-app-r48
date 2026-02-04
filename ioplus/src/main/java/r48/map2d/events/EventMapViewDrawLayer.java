@@ -5,14 +5,12 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.drawlayers;
+package r48.map2d.events;
 
 import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.ioplus.RenderArt;
-import r48.map.events.IEventAccess;
-import r48.map.events.IEventGraphicRenderer;
 import r48.map2d.MapViewDrawContext;
 import r48.map2d.layers.MapViewDrawLayer;
 import r48.tr.pages.TrRoot;

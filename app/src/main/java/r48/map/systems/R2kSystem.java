@@ -19,6 +19,7 @@ import r48.R48;
 import r48.RubyTableR;
 import r48.dbs.ObjectInfo;
 import r48.dbs.ObjectRootHandle;
+import r48.game.r2k.R2kEventGraphicRenderer;
 import r48.game.r2k.R2kPassabilitySource;
 import r48.game.r2k.R2kTileMapViewDrawLayer;
 import r48.imageio.BMP8IImageIOFormat;
@@ -36,8 +37,12 @@ import r48.map.mapinfos.UIGRMMapInfos;
 import r48.map.mapinfos.UISaveScanMapInfos;
 import r48.map.tiles.LcfTileRenderer;
 import r48.map.tiles.LoopTileAccess;
+import r48.map2d.events.EventMapViewDrawLayer;
+import r48.map2d.events.IEventAccess;
+import r48.map2d.events.IEventGraphicRenderer;
 import r48.map2d.layers.GridMapViewDrawLayer;
 import r48.map2d.layers.MapViewDrawLayer;
+import r48.map2d.layers.PanoramaMapViewDrawLayer;
 import r48.map2d.layers.PassabilityMapViewDrawLayer;
 import r48.maptools.UIMTBase;
 import r48.maptools.deep.UIMTFtrGdt01;
@@ -137,7 +142,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
 
     // saveData is optional, and replaces some things.
     private StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events, LcfTileRenderer tileRenderer) {
-        IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(app, imageLoader, tileRenderer);
+        IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }
 
@@ -197,7 +202,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     public StuffRenderer rendererFromTso(IRIO tso) {
         LcfTileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader);
         tileRenderer.checkReloadTSO(tso);
-        IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(app, imageLoader, tileRenderer);
+        IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }
 

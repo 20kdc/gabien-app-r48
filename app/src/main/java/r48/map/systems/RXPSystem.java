@@ -23,16 +23,18 @@ import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.map.*;
 import r48.map.drawlayers.*;
-import r48.map.events.IEventAccess;
-import r48.map.events.IEventGraphicRenderer;
-import r48.map.events.RMEventGraphicRenderer;
 import r48.map.events.TraditionalEventAccess;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
 import r48.map.tiles.TSOAwareTileRenderer;
 import r48.map.tiles.XPTileRenderer;
+import r48.map2d.events.EventMapViewDrawLayer;
+import r48.map2d.events.IEventAccess;
+import r48.map2d.events.IEventGraphicRenderer;
+import r48.map2d.events.RMEventGraphicRenderer;
 import r48.map2d.layers.GridMapViewDrawLayer;
 import r48.map2d.layers.MapViewDrawLayer;
+import r48.map2d.layers.PanoramaMapViewDrawLayer;
 import r48.map2d.tiles.TileRenderer;
 import r48.texture.CacheTexLoader;
 import r48.texture.ChainedTexLoader;
@@ -115,7 +117,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
     }
 
     public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events, TileRenderer tileRenderer) {
-        RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, false);
+        RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app.imageFXCache, imageLoader, tileRenderer, false);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }
 
@@ -162,7 +164,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
     public StuffRenderer rendererFromTso(IRIO tso) {
         TSOAwareTileRenderer tileRenderer = createTileRenderer();
         tileRenderer.checkReloadTSO(tso);
-        IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, false);
+        IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app.imageFXCache, imageLoader, tileRenderer, false);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer);
     }
 

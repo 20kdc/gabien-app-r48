@@ -5,13 +5,12 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48.map.drawlayers;
+package r48.map2d.layers;
 
 import gabien.GaBIEn;
 import gabien.render.IImage;
-import gabien.ui.UIElement;
+import gabien.uslx.append.MathsX;
 import r48.map2d.MapViewDrawContext;
-import r48.map2d.layers.MapViewDrawLayer;
 import r48.tr.pages.TrRoot;
 
 /**
@@ -125,10 +124,10 @@ public class PanoramaMapViewDrawLayer extends MapViewDrawLayer {
                 }
             }
 
-            int camOTX = UIElement.sensibleCellDiv(eCamX + mvdc.cam.x, effectiveImWidth);
-            int camOTY = UIElement.sensibleCellDiv(eCamY + mvdc.cam.y, effectiveImHeight);
-            int camOTeX = UIElement.sensibleCellDiv(eCamX + mvdc.cam.x + mvdc.cam.width, effectiveImWidth) + 1;
-            int camOTeY = UIElement.sensibleCellDiv(eCamY + mvdc.cam.y + mvdc.cam.height, effectiveImHeight) + 1;
+            int camOTX = MathsX.seqDiv(eCamX + mvdc.cam.x, effectiveImWidth);
+            int camOTY = MathsX.seqDiv(eCamY + mvdc.cam.y, effectiveImHeight);
+            int camOTeX = MathsX.seqDiv(eCamX + mvdc.cam.x + mvdc.cam.width, effectiveImWidth) + 1;
+            int camOTeY = MathsX.seqDiv(eCamY + mvdc.cam.y + mvdc.cam.height, effectiveImHeight) + 1;
 
             // If *nothing's* looping, it's probably 'bound to the map' (YumeNikki Nexus, OneShot Maize).
             // Failing anything else this helps avoid confusion: "where was the actual map again?"

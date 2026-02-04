@@ -18,9 +18,9 @@ import r48.io.data.IRIO;
 import r48.ioplus.Reporter;
 import r48.map.IMapToolContext;
 import r48.map.UIMapView;
-import r48.map.events.IEventAccess;
 import r48.map2d.IMapViewCallbacks;
 import r48.map2d.MapViewDrawContext;
+import r48.map2d.events.IEventAccess;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaDynamicContext;
 import r48.ui.AppUI;
@@ -205,7 +205,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         if (root == null)
             return;
         key = root.key;
-        map.U.launchDisconnectedSchema(root.root, key, event, root.eventSchema, "E" + key, new SchemaDynamicContext(map.app, map, map.U));
+        map.U.launchDisconnectedSchema(root.root, key, event, SchemaElement.cast(root.eventSchema), "E" + key, new SchemaDynamicContext(map.app, map, map.U));
     }
 
     public static void showEventDivorced(AppUI aui, DMKey key, ObjectRootHandle map, IRIO event, SchemaElement eventSchema) {
