@@ -103,7 +103,7 @@ public class SaveActor extends DM2R2kObject {
     public BooleanR2kStruct twoWeapon;
     @DMFXOBinding("@lock_equipment") @DM2LcfBinding(0x5D) @DMCXBoolean(false)
     public BooleanR2kStruct lockEquipment;
-    @DMFXOBinding("@auto_battle") @DM2LcfBinding(0x5E)
+    @DMFXOBinding("@auto_battle") @DM2LcfBinding(0x5E) @DMCXBoolean(false)
     public BooleanR2kStruct autoBattle;
     @DMFXOBinding("@super_guard") @DM2LcfBinding(0x5F) @DMCXBoolean(false)
     public BooleanR2kStruct superGuard;
