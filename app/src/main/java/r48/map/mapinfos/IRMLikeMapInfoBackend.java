@@ -12,6 +12,8 @@ import r48.io.data.IRIO;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Contains some of the bare reading primitives for use by MapInfoReparentUtil as part of WPriv
  * Some notes:
@@ -31,5 +33,5 @@ public interface IRMLikeMapInfoBackend {
     long getMapOfOrder(int order);
 
     // MapInfos should be disabled if this returns non-null.
-    String calculateIndentsAndGetErrors(HashMap<Long, Integer> id);
+    @Nullable String calculateIndentsAndGetErrors(HashMap<Long, Integer> id);
 }

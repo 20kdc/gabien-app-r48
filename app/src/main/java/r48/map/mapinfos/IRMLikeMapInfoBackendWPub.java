@@ -9,6 +9,9 @@ package r48.map.mapinfos;
 
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import r48.schema.util.SchemaPath;
 import r48.ui.AppUI;
 import r48.ui.Art;
@@ -54,9 +57,9 @@ public interface IRMLikeMapInfoBackendWPub extends IRMLikeMapInfoBackend {
     void complete();
 
     // Gets a symbol index for treeview
-    Art.Symbol getIconForMap(long k);
+    @NonNull Art.Symbol getIconForMap(long k);
 
     // Translates a map entry to a GUM.
     // Returning null is fine, and will return the user to the No Map Selected display.
-    String translateToGUM(long k);
+    @Nullable String translateToGUM(long k);
 }
