@@ -751,8 +751,10 @@ RM2003: (exp * LVL) + (factorial(LVL) * exp_mul) + (exp_add * LVL)")
 (e rpg_battleranimation_type 0 battlerCharSet 1 animationId)
 (@ name string)
 (@ type rpg_battleranimation_type)
-(@ battler_name string)
+(@ battler_name f_battlecharset_name)
 (@ battler_index int)
+(+ spriteSelector @battler_index @battler_name BattleCharSet/)
+
 (@ animation_id animation_id)
 
 (. rpg_bas_animset_base)

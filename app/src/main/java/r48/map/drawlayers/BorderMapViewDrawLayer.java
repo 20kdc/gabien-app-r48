@@ -34,7 +34,7 @@ public class BorderMapViewDrawLayer extends MapViewDrawLayer {
                 app.a.drawSymbol(mvdc.igd, Art.Symbol.Stripes, i, mapBoundsPx.y - mvdc.tileSize, mvdc.tileSize, false, false);
                 app.a.drawSymbol(mvdc.igd, Art.Symbol.Stripes, i, mapBoundsPx.bottom, mvdc.tileSize, false, false);
             }
-            for (int j = Math.max(mvdc.cam.y, mapBoundsPx.y - mvdc.tileSize); j < Math.min(mvdc.cam.bottom, mapBoundsPx.right + mvdc.tileSize); j += mvdc.tileSize) {
+            for (int j = Math.max(mvdc.cam.y, mapBoundsPx.y - mvdc.tileSize); j < Math.min(mvdc.cam.bottom, mapBoundsPx.bottom + mvdc.tileSize); j += mvdc.tileSize) {
                 app.a.drawSymbol(mvdc.igd, Art.Symbol.Stripes, mapBoundsPx.x - mvdc.tileSize, j, mvdc.tileSize, false, false);
                 app.a.drawSymbol(mvdc.igd, Art.Symbol.Stripes, mapBoundsPx.right, j, mvdc.tileSize, false, false);
             }

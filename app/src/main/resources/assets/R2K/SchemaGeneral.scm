@@ -46,12 +46,14 @@
 (> f_picture_name { string imgSelector Picture/ Picture/ })
 (> f_movie_name { string fileSelector Movie/ })
 (> f_battleback_name { string= backdrop imgSelector Backdrop/ Backdrop/ })
+(> f_battlecharset_name { string imgSelector BattleCharSet/ BattleCharSet/ })
 (> f_monster_name { string= monster imgSelector Monster/ Monster/ })
 (> f_battle_name { string imgSelector Battle/ Battle/ })
 (> f_battle2_name { string imgSelector Battle2/ Battle2/ })
 
 (C spritesheet "Select character index..." CharSet/ r2kCharacter)
 (C spritesheet "Select face index..." FaceSet/ 48 48 4 0 0 48 48 0)
+(C spritesheet "Select battler index..." BattleCharSet/ 48 48 1 0 0 48 48)
 
 ; Var/Switch
 (> var_id internal_variableDictionary)
