@@ -235,6 +235,7 @@ public class MVMSubScope extends MVMCompileScope {
             return this;
         }
 
+        @Override
         public MVMCExpr getter(boolean isPastFVBarrier) {
             return base.getter(true);
         }

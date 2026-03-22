@@ -204,6 +204,7 @@ public class DM2R2kObject extends IRIOFixedObjectPacked implements IR2kInterpret
 
     // ---
 
+    @Override
     public void importData(InputStream src) throws IOException {
         // Doing this sets the object back into the packed state.
         packedChunkData = new HashMap<Integer, byte[]>();

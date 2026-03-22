@@ -131,6 +131,7 @@ public class UIRMUniversalStringReplacer extends AppUI.Prx {
                 // partial replacements - longer first!
                 final LinkedList<Replacement> ent = new LinkedList<Replacement>(settingsPartial.settings);
                 Collections.sort(ent, new Comparator<Replacement>() {
+                    @Override
                     public int compare(Replacement o1, Replacement o2) {
                         int l1 = o1.key.length();
                         int l2 = o2.key.length();

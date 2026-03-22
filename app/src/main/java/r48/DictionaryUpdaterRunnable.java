@@ -59,6 +59,7 @@ public class DictionaryUpdaterRunnable extends R48.Svc implements SDB.DynamicSch
         dataSchema = ds;
     }
 
+    @Override
     public boolean actIfRequired(ObjectRootHandle map) {
         if (actNow) {
             actNow = false;
@@ -174,6 +175,7 @@ public class DictionaryUpdaterRunnable extends R48.Svc implements SDB.DynamicSch
         actNow = true;
     }
 
+    @Override
     public void sanitize() {
         finalizeVals(new LinkedList<UIEnumChoice.Option>());
     }

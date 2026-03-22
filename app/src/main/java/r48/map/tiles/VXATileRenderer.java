@@ -290,6 +290,7 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
         return false;
     }
 
+    @Override
     public TileEditingTab[] getEditConfig(int layer) {
         if (layer == 3) {
             return new TileEditingTab[0];

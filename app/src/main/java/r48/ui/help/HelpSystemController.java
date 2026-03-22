@@ -32,6 +32,7 @@ public class HelpSystemController implements Consumer<String> {
         hs = charge;
     }
 
+    @Override
     public void accept(final String link) {
         if (link.contains(":")) {
             String[] coms = link.split(":");

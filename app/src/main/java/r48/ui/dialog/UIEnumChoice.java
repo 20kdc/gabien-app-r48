@@ -158,6 +158,7 @@ public class UIEnumChoice extends AppUI.Prx {
     }
 
     public static final Comparator<Option> COMPARATOR_OPTION = new Comparator<UIEnumChoice.Option>() {
+        @Override
         public int compare(UIEnumChoice.Option o1, UIEnumChoice.Option o2) {
             return UITest.natStrComp(o1.getTextMerged(), o2.getTextMerged());
         }

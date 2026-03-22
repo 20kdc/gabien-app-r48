@@ -27,8 +27,6 @@ public class XPTroopGenposFrame extends TroopGenposFrame {
             0, 0,
     };
 
-    public IImage[] enemies;
-
     public XPTroopGenposFrame(R48 app, IRIO t, SchemaPath path, Runnable change) {
         super(app, t, path, change);
         // Immediately try and get needed resources

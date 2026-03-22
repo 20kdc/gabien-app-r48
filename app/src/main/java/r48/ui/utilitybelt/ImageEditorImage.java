@@ -143,6 +143,7 @@ public class ImageEditorImage extends ImageIOImage {
         cachedD1 = null;
     }
 
+    @Override
     public IImage rasterize() {
         if (cachedD1 != null)
             return cachedD1;

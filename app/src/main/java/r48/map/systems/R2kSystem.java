@@ -358,6 +358,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
                 }, map.getObject(), "@data", false, iea, tileLoopX, tileLoopY);
             }
 
+            @Override
             public IEditingToolbarController makeToolbar(IMapToolContext context) {
                 return new MapEditingToolbarController(context, false, new ToolButton[] {
                     new ToolButton(T.m.tDeepWaterButton) {

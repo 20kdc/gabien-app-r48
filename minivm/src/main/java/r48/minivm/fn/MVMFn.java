@@ -109,18 +109,23 @@ public abstract class MVMFn extends MVMHelpable implements IMVMTypable {
             super(type, nh);
         }
 
+        @Override
         public final Object callDirect() {
             return callIndirect(new Object[] {});
         }
+        @Override
         public final Object callDirect(Object a0) {
             return callIndirect(new Object[] {a0});
         }
+        @Override
         public final Object callDirect(Object a0, Object a1) {
             return callIndirect(new Object[] {a0, a1});
         }
+        @Override
         public final Object callDirect(Object a0, Object a1, Object a2) {
             return callIndirect(new Object[] {a0, a1, a2});
         }
+        @Override
         public final Object callDirect(Object a0, Object a1, Object a2, Object a3) {
             return callIndirect(new Object[] {a0, a1, a2, a3});
         }
@@ -143,18 +148,23 @@ public abstract class MVMFn extends MVMHelpable implements IMVMTypable {
             super(fn, nh);
         }
 
+        @Override
         public Object callDirect() {
             throw new RuntimeException(this + " supplied no args");
         }
+        @Override
         public Object callDirect(Object a0) {
             throw new RuntimeException(this + " supplied 1 arg");
         }
+        @Override
         public Object callDirect(Object a0, Object a1) {
             throw new RuntimeException(this + " supplied 2 args");
         }
+        @Override
         public Object callDirect(Object a0, Object a1, Object a2) {
             throw new RuntimeException(this + " supplied 3 args");
         }
+        @Override
         public Object callDirect(Object a0, Object a1, Object a2, Object a3) {
             throw new RuntimeException(this + " supplied 4 args");
         }
@@ -190,21 +200,25 @@ public abstract class MVMFn extends MVMHelpable implements IMVMTypable {
         public abstract Object loneOp(V a);
         public abstract V twoOp(V a, V b);
 
+        @Override
         public final Object callDirect(Object a0) {
             V v0 = checkParticipant(a0);
             return loneOp(v0);
         }
+        @Override
         public final Object callDirect(Object a0, Object a1) {
             V v0 = checkParticipant(a0);
             V v1 = checkParticipant(a1);
             return twoOp(v0, v1);
         }
+        @Override
         public final Object callDirect(Object a0, Object a1, Object a2) {
             V v0 = checkParticipant(a0);
             V v1 = checkParticipant(a1);
             V v2 = checkParticipant(a2);
             return twoOp(twoOp(v0, v1), v2);
         }
+        @Override
         public final Object callDirect(Object a0, Object a1, Object a2, Object a3) {
             V v0 = checkParticipant(a0);
             V v1 = checkParticipant(a1);

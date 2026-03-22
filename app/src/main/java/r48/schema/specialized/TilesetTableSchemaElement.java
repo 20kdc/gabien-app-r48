@@ -24,6 +24,7 @@ public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRende
         super(app, iVar, wVar, hVar, dc, dw, dh, defL, itce, defVal);
     }
 
+    @Override
     public StuffRenderer baseInitializeHelper(IRIO target) {
         return app.system.rendererFromTso(target);
     }
@@ -34,6 +35,7 @@ public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRende
         return new Size(ts, ts);
     }
 
+    @Override
     public StuffRenderer baseTileDraw(IRIO target, int t, int x, int y, IGrDriver igd, StuffRenderer osr) {
         int ts = osr.tileRenderer.tileSize * app.f.getSpriteScale();
         Size sz = getGridSize(osr);

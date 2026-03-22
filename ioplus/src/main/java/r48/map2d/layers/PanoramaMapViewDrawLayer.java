@@ -55,6 +55,7 @@ public class PanoramaMapViewDrawLayer extends MapViewDrawLayer {
         parallaxRatioB = prb;
     }
 
+    @Override
     public void draw(MapViewDrawContext mvdc) {
         // Panorama Enable
         if (im != null) {

@@ -62,6 +62,7 @@ public class RMGenposAnim extends R48.Svc implements IGenposAnim {
         return target.getType() == '[';
     }
 
+    @Override
     public IRIO getFrame() {
         int min = 0;
         if (ix1)

@@ -28,6 +28,7 @@ public class Learning extends DM2R2kObject {
     }
 
     // Skill = Blob;2b 01 04
+    @Override
     public boolean disableSanity() {
         return true;
     }
