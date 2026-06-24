@@ -30,7 +30,6 @@ import gabien.ui.layouts.UITabPane;
 import gabien.ui.layouts.UITabBar.Tab;
 import gabien.ui.layouts.UITabBar.TabIcon;
 import gabien.uslx.append.Rect;
-import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IGrInDriver;
 import gabien.wsi.IPeripherals;
 import gabienapp.state.LSInApp;
@@ -169,18 +168,15 @@ public class UILauncher extends UIProxy {
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
         super.update(deltaTime, selected, peripherals);
-        if (peripherals instanceof IDesktopPeripherals) {
-            IDesktopPeripherals dph = (IDesktopPeripherals) peripherals;
-            // UI debugging feature
-            if (dph.isKeyDown(IGrInDriver.VK_CONTROL) && dph.isKeyJustPressed(IGrInDriver.VK_I)) {
-                counterForTree++;
-                if (counterForTree == 3) {
-                    counterForTree = 0;
-                    StringWriter sw = new StringWriter();
-                    DatumWriter dw = new DatumWriter(sw);
-                    debugDumpUITree(dw);
-                    GaBIEn.clipboard.copyText(sw.toString());
-                }
+        // UI debugging feature
+        if (peripherals.isKeyDown(IGrInDriver.VK_CONTROL) && peripherals.isKeyJustPressed(IGrInDriver.VK_I)) {
+            counterForTree++;
+            if (counterForTree == 3) {
+                counterForTree = 0;
+                StringWriter sw = new StringWriter();
+                DatumWriter dw = new DatumWriter(sw);
+                debugDumpUITree(dw);
+                GaBIEn.clipboard.copyText(sw.toString());
             }
         }
     }

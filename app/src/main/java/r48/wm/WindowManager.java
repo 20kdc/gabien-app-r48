@@ -19,7 +19,6 @@ import gabien.ui.layouts.UIWindowView.TabShell;
 import gabien.uslx.append.Block;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
-import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
 import r48.app.InterlaunchGlobals;
@@ -65,18 +64,17 @@ public class WindowManager {
     protected final LinkedList<UIWindowView> allWindowViews = new LinkedList<UIWindowView>();
     private boolean performingScreenTransfer = true;
     public final HashMap<String, Rect> recordedWindowPositions = new HashMap<String, Rect>();
-    public final Consumer<IDesktopPeripherals> coco;
+    public final Consumer<IPeripherals> coco;
     public final InterlaunchGlobals ilg;
 
-    public WindowManager(InterlaunchGlobals ilg, final Consumer<IDesktopPeripherals> coco, final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR, IQuickStatusGetter qsg) {
+    public WindowManager(InterlaunchGlobals ilg, final Consumer<IPeripherals> coco, final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR, IQuickStatusGetter qsg) {
         this.ilg = ilg;
         this.coco = coco;
         uiTicker = new TrackedUITicker(uiTick);
         rootView = new UIWindowView() {
             @Override
             public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
-                if (peripherals instanceof IDesktopPeripherals)
-                    coco.accept((IDesktopPeripherals) peripherals);
+                coco.accept(peripherals);
                 uiTicker.shakeOffDeadWindows();
                 super.update(deltaTime, selected, peripherals);
             }

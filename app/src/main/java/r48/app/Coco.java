@@ -9,8 +9,8 @@ package r48.app;
 
 import gabien.GaBIEn;
 import gabien.audio.IRawAudioDriver.IRawAudioSource;
-import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IGrInDriver;
+import gabien.wsi.IPeripherals;
 import r48.ui.AppUI;
 
 import java.io.BufferedReader;
@@ -24,7 +24,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * Manager for easter egg of unspecified origin response.
  * Created on 07/06/17.
  */
-public class Coco extends AppUI.Svc implements Consumer<IDesktopPeripherals> {
+public class Coco extends AppUI.Svc implements Consumer<IPeripherals> {
     private char[] combuf = new char[10];
     public int helpDisplayMode;
 
@@ -33,7 +33,7 @@ public class Coco extends AppUI.Svc implements Consumer<IDesktopPeripherals> {
     }
 
     @Override
-    public void accept(IDesktopPeripherals igd) {
+    public void accept(IPeripherals igd) {
         if (igd.isKeyJustPressed(IGrInDriver.VK_LEFT))
             key('L');
         if (igd.isKeyJustPressed(IGrInDriver.VK_DOWN))

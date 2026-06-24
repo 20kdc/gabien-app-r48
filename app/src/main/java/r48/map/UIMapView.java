@@ -15,7 +15,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.*;
 import gabien.render.IGrDriver;
 import gabien.uslx.append.*;
-import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IGrInDriver;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
@@ -153,11 +152,10 @@ public class UIMapView extends UIPlaneView {
         }
         shiftDown = false;
         ctrlDown = false;
-        if (peripherals instanceof IDesktopPeripherals) {
-            recalcXYT(((IDesktopPeripherals) peripherals).getMouseX(), ((IDesktopPeripherals) peripherals).getMouseY());
-            shiftDown = ((IDesktopPeripherals) peripherals).isKeyDown(IGrInDriver.VK_SHIFT);
-            ctrlDown = ((IDesktopPeripherals) peripherals).isKeyDown(IGrInDriver.VK_CONTROL);
-        }
+        if (peripherals.mouseIsConnected())
+            recalcXYT(peripherals.getMouseX(), peripherals.getMouseY());
+        shiftDown = peripherals.isKeyDown(IGrInDriver.VK_SHIFT);
+        ctrlDown = peripherals.isKeyDown(IGrInDriver.VK_CONTROL);
     }
 
     @Override

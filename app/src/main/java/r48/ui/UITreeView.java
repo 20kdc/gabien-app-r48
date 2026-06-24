@@ -11,7 +11,6 @@ import gabien.render.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.elements.UIBorderedElement;
 import gabien.uslx.append.*;
-import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
 
@@ -111,9 +110,9 @@ public class UITreeView extends AppUI.Pan implements OldMouseEmulator.IOldMouseR
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
         super.update(deltaTime, selected, peripherals);
-        if (peripherals instanceof IDesktopPeripherals) {
-            mouseEmulator.mouseX = ((IDesktopPeripherals) peripherals).getMouseX();
-            mouseEmulator.mouseY = ((IDesktopPeripherals) peripherals).getMouseY();
+        if (peripherals.mouseIsConnected()) {
+            mouseEmulator.mouseX = peripherals.getMouseX();
+            mouseEmulator.mouseY = peripherals.getMouseY();
         }
     }
 

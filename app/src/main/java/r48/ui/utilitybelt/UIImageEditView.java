@@ -84,9 +84,7 @@ public class UIImageEditView extends UIPlaneView {
 
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
-        shift = false;
-        if (peripherals instanceof IDesktopPeripherals)
-            shift = ((IDesktopPeripherals) peripherals).isKeyDown(IGrInDriver.VK_SHIFT);
+        shift = peripherals.isKeyDown(IGrInDriver.VK_SHIFT);
     }
 
     @Override

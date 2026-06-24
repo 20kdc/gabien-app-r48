@@ -15,7 +15,6 @@ import gabien.ui.*;
 import gabien.ui.elements.UIScrollbar;
 import gabien.uslx.append.Rect;
 import gabien.uslx.append.Size;
-import gabien.wsi.IDesktopPeripherals;
 import gabien.wsi.IPeripherals;
 import gabien.wsi.IPointer;
 import r48.R48;
@@ -73,9 +72,9 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
         super.update(deltaTime, selected, peripherals);
-        if (peripherals instanceof IDesktopPeripherals) {
-            mouseEmulator.mouseX = ((IDesktopPeripherals) peripherals).getMouseX();
-            mouseEmulator.mouseY = ((IDesktopPeripherals) peripherals).getMouseY();
+        if (peripherals.mouseIsConnected()) {
+            mouseEmulator.mouseX = peripherals.getMouseX();
+            mouseEmulator.mouseY = peripherals.getMouseY();
         }
     }
 
