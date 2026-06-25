@@ -24,31 +24,30 @@ public class UITileGrid extends UIGrid {
 
     public final int[] viewMap, viewMapHover;
 
-    private final String toStringRes;
+    private String toStringRes = "Nts/UITileGrid";
 
-    public UITileGrid(R48 app, StuffRenderer sr, int l, boolean at, int[] mapN, int[] mapH, String tiles, int sprScale) {
-        this(app, sr, at ? sprScale : 0, l, !at, mapN, mapH, tiles, sprScale);
+    public UITileGrid(R48 app, StuffRenderer sr, int layer, int[] remap, int sprScale) {
+        this(app, sr, 0, layer, remap, remap, sprScale);
     }
 
-    public UITileGrid(R48 app, StuffRenderer sr, int l, int[] remap, int sprScale) {
-        this(app, sr, 0, l, false, remap, remap, "Nts/UITileGrid", sprScale);
-    }
-
-    public UITileGrid(R48 app, StuffRenderer sr, int bs, int l, boolean cms, int[] mapN, int[] mapH, String tiles, int sprScale) {
+    public UITileGrid(R48 app, StuffRenderer sr, int borderWidth, int layer, int[] mapN, int[] mapH, int sprScale) {
         super(app, 1337, 1337, mapN.length);
         if (mapN.length != mapH.length)
-            throw new IndexOutOfBoundsException("n!=Ir2");
-        tileSizeW = tileSizeH = (sr.tileRenderer.tileSize * sprScale) + (bs * 2);
-        borderWidth = bs;
-        toStringRes = tiles;
-        canMultiSelect = cms;
+            throw new IndexOutOfBoundsException("hover remap table must match regular remap table in length");
+        tileSizeW = tileSizeH = (sr.tileRenderer.tileSize * sprScale) + (borderWidth * 2);
+        this.borderWidth = borderWidth;
         renderer = sr;
-        layer = l;
+        this.layer = layer;
         bkgR = 128;
         bkgB = 128;
         viewMap = mapN;
         viewMapHover = mapH;
         spriteScale = sprScale;
+    }
+
+    public UITileGrid setName(String name) {
+        toStringRes = name;
+        return this;
     }
 
     @Override

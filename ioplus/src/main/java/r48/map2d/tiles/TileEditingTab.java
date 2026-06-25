@@ -13,22 +13,35 @@ import r48.gameinfo.ATDB;
  * Created on December 29, 2018.
  */
 public final class TileEditingTab {
+    /**
+     * This tab isn't really supposed to be valid in this layer.
+     */
+    public static final int DONOTUSE = 1;
+    /**
+     * Do not process AT fields by default.
+     * This should generally be reserved for 'explicit AT write' fields or things known to be put into ATs as 'decoration'.
+     */
+    public static final int AT_NOPROC = 2;
+    /**
+     * Tiles represent AT groups.
+     */
+    public static final int ATGROUP = 4;
+
     public final String localizedText;
-    public final boolean atProcessing, doNotUse;
+    public final int flags;
     public final int[] visTilesNormal;
     public final int[] visTilesHover;
     public final int[] actTiles;
 
-    public TileEditingTab(String text, boolean dnu, boolean atp, int[] type) {
-        atProcessing = atp;
-        doNotUse = dnu;
+    public TileEditingTab(String text, int flags, int[] type) {
+        this.flags = flags;
         localizedText = text;
         actTiles = type;
         visTilesNormal = type;
         visTilesHover = type;
     }
 
-    public TileEditingTab(ATDB[] appAutoTiles, String text, boolean dnu, int[] typea, AutoTileTypeField[] attf) {
+    public TileEditingTab(ATDB[] appAutoTiles, String text, int flags, int[] typea, AutoTileTypeField[] attf) {
         int[] typeb = new int[typea.length];
         int[] typec = new int[typea.length];
         for (int i = 0; i < typea.length; i++) {
@@ -45,12 +58,15 @@ public final class TileEditingTab {
                 }
             }
         }
-        atProcessing = true;
-        doNotUse = dnu;
         localizedText = text;
+        this.flags = flags;
         actTiles = typea;
         visTilesNormal = typeb;
         visTilesHover = typec;
+    }
+
+    public boolean hasFlag(int flag) {
+        return (flags & flag) != 0;
     }
 
     public static int[] range(int low, int count) {

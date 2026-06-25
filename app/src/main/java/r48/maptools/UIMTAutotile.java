@@ -74,13 +74,17 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         tileMaps = new UITileGrid[tileTabs.length];
         for (int i = 0; i < tileTabs.length; i++) {
             String lText = tileTabs[i].localizedText;
-            if (tileTabs[i].doNotUse) {
+            if (tileTabs[i].hasFlag(TileEditingTab.DONOTUSE)) {
                 lText = " " + lText + "<X>";
             } else {
                 lText = " " + lText;
             }
 
-            tileMaps[i] = new UITileGrid(app, map.mapTable.renderer, map.currentLayer, tileTabs[i].atProcessing, tileTabs[i].visTilesNormal, tileTabs[i].visTilesHover, lText, resultScale);
+            boolean isATGroup = tileTabs[i].hasFlag(TileEditingTab.ATGROUP);
+            UITileGrid grid = new UITileGrid(app, map.mapTable.renderer, isATGroup ? resultScale : 0, map.currentLayer, tileTabs[i].visTilesNormal, tileTabs[i].visTilesHover, resultScale);
+            grid.canMultiSelect = !isATGroup;
+            grid.setName(lText);
+            tileMaps[i] = grid;
         }
 
         tabPane = new UITabPane(app.f.tilesTabTH, true, false, app.f.tilesTabS);
@@ -147,7 +151,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         setupView(false);
         if (tet != null) {
             for (int i = 0; i < tileTabs.length; i++) {
-                if (!tileTabs[i].doNotUse) {
+                if (!tileTabs[i].hasFlag(TileEditingTab.DONOTUSE)) {
                     if (tileTabs[i].compatibleWith(tet)) {
                         tileMaps[i].setSelected(inTabIndex);
                         tabPane.selectTab(tileMaps[i]);
@@ -246,7 +250,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             if (!first)
                 return;
             // Tool 1: Rectangle
-            mapToolContext.accept(new UIMTAutotileRectangle(this, x, y, tileTabs[tab].atProcessing));
+            mapToolContext.accept(new UIMTAutotileRectangle(this, x, y, !tileTabs[tab].hasFlag(TileEditingTab.AT_NOPROC)));
         } else if (subtool == 2) {
             if (!first)
                 return;
@@ -275,7 +279,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             fa.availablePointSet.add(new FillAlgorithm.Point(x, y));
             while (!fa.availablePointSet.isEmpty())
                 fa.pass();
-            if (tileTabs[tab].atProcessing)
+            if (!tileTabs[tab].hasFlag(TileEditingTab.AT_NOPROC))
                 for (FillAlgorithm.Point ffp : fa.executedPointSet)
                     for (int i = -1; i < 2; i++)
                         for (int j = -1; j < 2; j++)
@@ -289,7 +293,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         if (tab == -1)
             return;
         boolean willATProcess = false;
-        boolean shouldCheckATProcess = tileTabs[tab].atProcessing;
+        boolean shouldCheckATProcess = !tileTabs[tab].hasFlag(TileEditingTab.AT_NOPROC);
         for (int px = x; px <= mx; px++) {
             for (int py = y; py <= my; py++) {
                 if (map.mapTable.outOfBounds(px, py))
@@ -387,7 +391,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             if (pass != 0)
                 queryATProcessingValue = !queryATProcessingValue;
             for (int i = 0; i < tileTabs.length; i++) {
-                if (tileTabs[i].atProcessing != queryATProcessingValue)
+                if (tileTabs[i].hasFlag(TileEditingTab.ATGROUP) != queryATProcessingValue)
                     continue;
                 for (int j = 0; j < tileTabs[i].actTiles.length; j++) {
                     if (tileTabs[i].actTiles[j] == aShort) {

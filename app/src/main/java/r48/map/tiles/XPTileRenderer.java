@@ -158,7 +158,7 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
             tileCount = ((rh / 32) * 8);
         }
         return new TileEditingTab[] {
-                new TileEditingTab(app.autoTiles, "AUTO", false, new int[] {
+                new TileEditingTab(app.autoTiles, "AUTO", TileEditingTab.ATGROUP, new int[] {
                         0,
                         48,
                         48 * 2,
@@ -168,8 +168,8 @@ public class XPTileRenderer extends TSOAwareTileRenderer {
                         48 * 6,
                         48 * 7
                 }, indicateATs()),
-                new TileEditingTab("TMAP", false, true, TileEditingTab.range(48 * 8, tileCount)),
-                new TileEditingTab("AT-M", false, false, TileEditingTab.range(48, 48 * 7)),
+                new TileEditingTab("TMAP", 0, TileEditingTab.range(48 * 8, tileCount)),
+                new TileEditingTab("AT-M", TileEditingTab.AT_NOPROC, TileEditingTab.range(48, 48 * 7)),
         };
     }
 

@@ -299,15 +299,15 @@ public class VXATileRenderer extends TSOAwareTileRenderer {
             for (int i = 0; i < allATs.length; i++)
                 allATs[i] = 0x800 + (i * 48);
             return new TileEditingTab[] {
-                    new TileEditingTab(app.autoTiles, "AT", false, allATs, indicateATs()),
+                    new TileEditingTab(app.autoTiles, "AT", TileEditingTab.ATGROUP, allATs, indicateATs()),
 
-                    new TileEditingTab("G1", false, true, TileEditingTab.range(0x000, 0x400)),
-                    new TileEditingTab("G2", false, true, TileEditingTab.range(0x600, 0x100)),
+                    new TileEditingTab("G1", 0, TileEditingTab.range(0x000, 0x400)),
+                    new TileEditingTab("G2", 0, TileEditingTab.range(0x600, 0x100)),
 
-                    new TileEditingTab("AT1-M", false, false, TileEditingTab.range(0x800, 0x300)),
-                    new TileEditingTab("AT2-M", false, false, TileEditingTab.range(0xB00, 0x600)),
-                    new TileEditingTab("AT3-M", false, false, TileEditingTab.range(0x1100, 0x600)),
-                    new TileEditingTab("AT4-M", false, false, TileEditingTab.range(0x1700, 0x900))
+                    new TileEditingTab("AT1-M", TileEditingTab.AT_NOPROC, TileEditingTab.range(0x800, 0x300)),
+                    new TileEditingTab("AT2-M", TileEditingTab.AT_NOPROC, TileEditingTab.range(0xB00, 0x600)),
+                    new TileEditingTab("AT3-M", TileEditingTab.AT_NOPROC, TileEditingTab.range(0x1100, 0x600)),
+                    new TileEditingTab("AT4-M", TileEditingTab.AT_NOPROC, TileEditingTab.range(0x1700, 0x900))
             };
         }
     }

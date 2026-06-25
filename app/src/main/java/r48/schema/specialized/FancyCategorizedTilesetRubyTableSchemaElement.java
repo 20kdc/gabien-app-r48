@@ -60,7 +60,9 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
         for (int i = 0; i < tileTabs.length; i++) {
             final TileEditingTab tab = tileTabs[i];
             // Multi-select is allowed on everything.
-            final UITileGrid tileGrid = new UITileGrid(app, renderer, 0, 0, true, tab.visTilesNormal, tab.visTilesHover, " " + tab.localizedText + " ", spriteScale);
+            final UITileGrid tileGrid = new UITileGrid(app, renderer, 0, 0, tab.visTilesNormal, tab.visTilesHover, spriteScale);
+            tileGrid.canMultiSelect = true;
+            tileGrid.setName(" " + tab.localizedText + " ");
             
             UIScrollLayout fields = new UIScrollLayout(true, app.f.generalS);
             LinkedList<UIElement> fieldsList = new LinkedList<>();
@@ -84,7 +86,7 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
                             writeData(originalTile);
                             // If this is an AT field tab, making a change here nukes everything
                             //  in the AT field.
-                            if (tab.atProcessing)
+                            if (tab.hasFlag(TileEditingTab.ATGROUP))
                                 for (AutoTileTypeField attf : atFields)
                                     if (attf.contains(originalTile))
                                         for (int st = 0; st < attf.length; st++)

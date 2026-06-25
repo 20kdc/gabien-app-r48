@@ -279,14 +279,16 @@ public class LcfTileRenderer extends TSOAwareTileRenderer {
             genLcfATs[ia++] = 4000 + (i * 50);
         // On L0, lower layer tiles take priority,
         // on L1, upper layer tiles take priority
-        TileEditingTab atf = new TileEditingTab(app.autoTiles, "ATF", layerIdx != 0, genLcfATs, indicateATs());
-        TileEditingTab lwr = new TileEditingTab("LOWER", layerIdx != 0, true, TileEditingTab.range(5000, 144));
-        TileEditingTab ani = new TileEditingTab("ANI", layerIdx != 0, false, new int[] {3000, 3050, 3100});
-        TileEditingTab tem = new TileEditingTab("TEM", layerIdx != 0, false, TileEditingTab.range(4000, 600));
-        TileEditingTab w1m = new TileEditingTab("W1M", layerIdx != 0, false, TileEditingTab.range(0, 1000));
-        TileEditingTab w2m = new TileEditingTab("W2M", layerIdx != 0, false, TileEditingTab.range(1000, 1000));
-        TileEditingTab w3m = new TileEditingTab("W3M", layerIdx != 0, false, TileEditingTab.range(2000, 1000));
-        TileEditingTab upr = new TileEditingTab("UPPER", layerIdx != 1, true, TileEditingTab.range(10000, 144));
+        int flagsForLayer0 = layerIdx != 0 ? TileEditingTab.DONOTUSE : 0;
+        int flagsForLayer1 = layerIdx != 0 ? 0 : TileEditingTab.DONOTUSE;
+        TileEditingTab atf = new TileEditingTab(app.autoTiles, "ATF", flagsForLayer0 | TileEditingTab.ATGROUP, genLcfATs, indicateATs());
+        TileEditingTab lwr = new TileEditingTab("LOWER", flagsForLayer0, TileEditingTab.range(5000, 144));
+        TileEditingTab ani = new TileEditingTab("ANI", flagsForLayer0 | TileEditingTab.AT_NOPROC, new int[] {3000, 3050, 3100});
+        TileEditingTab tem = new TileEditingTab("TEM", flagsForLayer0 | TileEditingTab.AT_NOPROC, TileEditingTab.range(4000, 600));
+        TileEditingTab w1m = new TileEditingTab("W1M", flagsForLayer0 | TileEditingTab.AT_NOPROC, TileEditingTab.range(0, 1000));
+        TileEditingTab w2m = new TileEditingTab("W2M", flagsForLayer0 | TileEditingTab.AT_NOPROC, TileEditingTab.range(1000, 1000));
+        TileEditingTab w3m = new TileEditingTab("W3M", flagsForLayer0 | TileEditingTab.AT_NOPROC, TileEditingTab.range(2000, 1000));
+        TileEditingTab upr = new TileEditingTab("UPPER", flagsForLayer1, TileEditingTab.range(10000, 144));
         if (layerIdx == 0) {
             return new TileEditingTab[] {
                     atf,

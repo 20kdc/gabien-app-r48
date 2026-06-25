@@ -94,7 +94,7 @@ public class IkaTileRenderer extends TileRenderer {
     @Override
     public TileEditingTab[] getEditConfig(int layerIdx) {
         return new TileEditingTab[] {
-                new TileEditingTab(T.m.tiles, false, false, TileEditingTab.range(0, 256))
+                new TileEditingTab(T.m.tiles, 0, TileEditingTab.range(0, 256))
         };
     }
 
