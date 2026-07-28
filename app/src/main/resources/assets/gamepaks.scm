@@ -26,6 +26,9 @@
 	(entry r2k_ms936 "R2K[3?] (Simplified Chinese/MS936)"
 		r2k MS936
 	)
+	(entry r2k_cp950 "R2K[3?] (Traditional Chinese/CP950)"
+		r2k Cp950
+	)
 )
 (category rgss "RGSS Engines (RPG Maker XP, VX Ace)"
 	(entry rxp "RXP"
