@@ -63,7 +63,7 @@ public class StartupCause implements Runnable {
                     // Regarding thread safety, this should be safe enough because app is kept here.
                     // It's then transferred out.
                     R48 app = new R48(ls.lun.ilg, charset, engine, rootPath, silPath, theKickstart);
-                    AppUI aui = new AppUI(app, ls.lun.isMobile, entryName);
+                    AppUI aui = new AppUI(app, ls.lun.isMobile || ls.lun.c.fontOverride == null, entryName);
                     aui.initialize(ls.lun.uiTicker);
                     theKickstart.doneInjector.set(() -> {
                         lia.app = aui;
