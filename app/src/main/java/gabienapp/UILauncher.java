@@ -23,6 +23,7 @@ import gabien.ui.dialogs.UICredits;
 import gabien.ui.elements.UIAdjuster;
 import gabien.ui.elements.UIEmpty;
 import gabien.ui.elements.UILabel;
+import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
 import gabien.ui.layouts.UISplitterLayout;
@@ -50,7 +51,8 @@ import r48.ui.spacing.UIBorderedSubpanel;
  */
 public class UILauncher extends UIProxy {
     private boolean gamepaksRequestClose = false;
-    public final UIGamePathList rootBox, sillBox;
+    public final UISavableList<UITextBox, String> rootBox;
+    public final UISavableList<UITextBox, String> sillBox;
 
     private final UIScrollLayout gamepaks;
     private final Config c;
@@ -103,7 +105,15 @@ public class UILauncher extends UIProxy {
         HelpSystemController hsc = new HelpSystemController(null, "Help/Launcher/Entry", uhs);
         hsc.loadPage(0);
 
-        rootBox = new UIGamePathList(c, c.rootPathBackup) {
+        rootBox = new UISavableList<UITextBox, String>(c, new UITextBox("", c.f.launcherTH), c.rootPathBackup) {
+            @Override
+            public String getValue() {
+                return text.getText();
+            }
+            @Override
+            public void putValue(String value) {
+                text.setText(value);
+            }
             @Override
             public void modified() {
                 super.modified();
@@ -111,7 +121,15 @@ public class UILauncher extends UIProxy {
             }
         };
 
-        sillBox = new UIGamePathList(c, c.secondaryImageLoadLocationBackup) {
+        sillBox = new UISavableList<UITextBox, String>(c, new UITextBox("", c.f.launcherTH), c.secondaryImageLoadLocationBackup) {
+            @Override
+            public String getValue() {
+                return text.getText();
+            }
+            @Override
+            public void putValue(String value) {
+                text.setText(value);
+            }
             @Override
             public void modified() {
                 super.modified();

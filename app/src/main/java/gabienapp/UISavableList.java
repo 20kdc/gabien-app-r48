@@ -20,37 +20,41 @@ import r48.ui.UIAppendButton;
 /**
  * Created on 24th August 2022.
  */
-public class UIGamePathList extends UIProxy {
-    public final List<String> values;
+public abstract class UISavableList<E extends UIElement, V> extends UIProxy {
+    public final List<V> values;
     private UIListLayout layout;
-    public final UITextBox text;
+    public final E text;
     private final UIAppendButton appendButton;
     public final Config c;
 
-    public UIGamePathList(Config c, List<String> val) {
+    public UISavableList(Config c, E editor, List<V> val) {
         this.c = c;
-        String initText = "";
-        if (val.size() > 0)
-            initText = val.get(val.size() - 1);
-        text = new UITextBox(initText, c.f.launcherTH);
+        text = editor;
         values = val;
         appendButton = new UIAppendButton("+", text, () -> {
-            String v = text.getText();
+            V v = getValue();
             if (!values.contains(v)) {
                 values.add(v);
                 modified();
             }
         }, c.f.launcherTH);
         layout = new UIListLayout(true);
+        if (val.size() > 0) {
+            V initText = val.get(val.size() - 1);
+            putValue(initText);
+        }
         refresh();
         proxySetElement(layout, true);
     }
 
+    public abstract V getValue();
+    public abstract void putValue(V value);
+
     public void refresh() {
         LinkedList<UIElement> uie = new LinkedList<>();
-        for (final String v : values) {
-            UITextButton mainButton = new UITextButton(v, c.f.launcherTH, () -> {
-                text.setText(v);
+        for (final V v : values) {
+            UITextButton mainButton = new UITextButton(v.toString(), c.f.launcherTH, () -> {
+                putValue(v);
                 values.remove(v);
                 values.add(v);
                 modified();
