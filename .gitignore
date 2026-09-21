@@ -9,6 +9,11 @@
 !releaser/*.sh
 !releaser/icon.png
 
+# egg
+!AGENTS.md
+!CLAUDE.md
+!GEMINI.md
+
 # Build script
 !build-script
 !build-script/pom.xml
@@ -58,4 +63,3 @@
 # Test dir
 !app/test-out
 !app/test-out/placeholder
-
