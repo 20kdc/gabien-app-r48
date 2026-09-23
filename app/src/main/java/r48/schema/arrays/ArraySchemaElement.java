@@ -38,7 +38,11 @@ import java.util.function.Supplier;
  * Created on 12/28/16. Abstractified 16 Feb 2017.
  */
 public abstract class ArraySchemaElement extends SchemaElement {
-    public int sizeFixed, indexDisplayOffset;
+    /**
+     * -1: Size not fixed
+     */
+    public int sizeFixed;
+    public int indexDisplayOffset;
     public int atLeast;
 
     public IArrayInterface uiHelper;

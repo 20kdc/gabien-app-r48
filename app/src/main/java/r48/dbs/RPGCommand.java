@@ -9,6 +9,7 @@ package r48.dbs;
 
 import gabien.ui.UIElement;
 import r48.R48;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
@@ -88,7 +89,7 @@ public class RPGCommand extends R48.Svc {
     /**
      * This code can be added to extend the group.
      */
-    public int additionCode = -1;
+    public @Nullable DMKey additionCode = null;
 
     public RPGCommand(R48 app, int objId, DatumSrcLoc srcLoc, String dbId, String nru) {
         super(app);

@@ -8,7 +8,6 @@
 package r48.schema.specialized.cmgb;
 
 import r48.io.data.IRIO;
-import r48.schema.SchemaElement;
 
 /**
  * Used in RPGCommand arrays. Tagged onto potential first elements of a group.
@@ -25,5 +24,5 @@ public interface IGroupBehavior {
 
     // This second pass is used by certain group-behaviors that *really, really* need accurate indent information to not cause damage.
     // Specifically consider this for behaviors which add/remove commands.
-    boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, SchemaElement baseElement);
+    boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, RPGCommandSchemaElement baseElement);
 }

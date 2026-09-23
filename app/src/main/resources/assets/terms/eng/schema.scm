@@ -78,6 +78,7 @@
 	cmdRaw "Raw"
 	cmdNoDescription "This command is known, but no description exists."
 	cmdUnkName "Unknown Command"
+	cmdExtraParams "Extra parameters - see raw view"
 	theTrueNameOfAtIndent "@indent"
 	codeAsInOpcode "Code"
 	gpBeginButton "Graphically edit this..."

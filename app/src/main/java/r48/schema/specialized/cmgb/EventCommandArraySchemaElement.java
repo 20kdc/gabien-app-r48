@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.ui.*;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIScrollLayout;
@@ -84,7 +86,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         // Attempting to 'fix' it will only make it worse.
         boolean lastWasBlockLeave = false;
         boolean lastWasStrictLeave = false;
-        int lastCode = -1;
+        long lastCode = -1;
 
         // Indent tracking
         int indent = 0;
@@ -118,8 +120,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                     if (!lastWasBlockLeave) {
                         if (rc.blockLeaveReplacement != lastCode) {
                             IRIO c = array.addAElem(i);
+                            baseElement.initCommand(c, DMKey.of(i), database.blockLeaveCmd);
                             SchemaPath.setDefaultValue(c, baseElement, DMKey.of(i));
-                            c.getIVar("@code").setFX(database.blockLeaveCmd);
                             if (baseElement.allowControlOfIndent)
                                 c.getIVar("@indent").setFX(indentOld);
 
@@ -127,7 +129,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                             indent = indentOld;
                             lastWasBlockLeave = true;
                             // What to do here depends on a few things. They'll be handled in CMDB.
-                            lastCode = database.blockLeaveCmd;
+                            lastCode = database.blockLeaveCmd.getFX();
                             modified = true;
                             continue;
                         }
@@ -187,8 +189,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 // 0 so that the code won't combust from lacking an array
                 int l = array.getALen();
                 IRIO c = array.addAElem(l);
-                SchemaPath.setDefaultValue(c, baseElement, DMKey.of(l));
-                c.getIVar("@code").setDeepClone(database.listLeaveCmd);
+                baseElement.initCommand(c, DMKey.of(l), database.listLeaveCmd);
                 modified = true;
             }
         }
@@ -207,7 +208,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         boolean canCopyText = false;
         SchemaElement[] group = new SchemaElement[length + 1];
         RPGCommandSchemaElement rcse = baseElement;
-        int additionCode = -1; 
+        @Nullable DMKey additionCode = null; 
         for (int i = 0; i < group.length - 1; i++) {
             IRIO commandTarg = arr.getAElem(start + i);
             int code = (int) commandTarg.getIVar("@code").getFX();
@@ -221,28 +222,27 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             if (rc != null) {
                 if (rc.textArg != -1)
                     canCopyText = true;
-                if (i == 0 && rc.additionCode != -1)
+                if (i == 0 && rc.additionCode != null)
                     additionCode = rc.additionCode;
             }
         }
         final String addText = T.s.bAddToGroup;
-        final int additionCodeF = additionCode;
+        final DMKey additionCodeF = additionCode;
         final boolean cctF = canCopyText;
         group[group.length - 1] = new SchemaElement.Leaf(app) {
             @Override
             public UIElement buildHoldingEditorImpl(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
                 AppUI U = launcher.getAppUI();
                 LinkedList<UIElement> addons = new LinkedList<>();
-                if (additionCodeF != -1) {
+                if (additionCodeF != null) {
                     addons.add(new UITextButton(addText, app.f.schemaFieldTH, () -> {
                         IRIO commandTarg = target.getAElem(start);
                         int code = (int) commandTarg.getIVar("@code").getFX();
                         RPGCommand rc = database.knownCommands.get(code);
                         if (rc != null)
-                            if (rc.additionCode != -1) {
+                            if (rc.additionCode != null) {
                                 IRIO ne = target.addAElem(start + length);
-                                SchemaPath.setDefaultValue(ne, baseElement, null);
-                                ne.getIVar("@code").setFX(rc.additionCode);
+                                baseElement.initCommand(ne, DMKey.of(start + length), rc.additionCode);
                                 path.changeOccurred(false);
                             }
                     }));
@@ -358,23 +358,13 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             @Override
             public void accept(int[] i) {
                 for (int j = 0; j < i.length; j++) {
-                    IRIO ne = target.addAElem(idx + j + 1);
-                    SchemaPath.setDefaultValue(ne, baseElement, null);
-                    ne.getIVar("@code").setFX(i[j]);
+                    int newIdx = idx + j + 1;
+                    IRIO ne = target.addAElem(idx);
+                    baseElement.initCommand(ne, DMKey.of(newIdx), DMKey.of(i[j]));
                 }
                 sp.changeOccurred(false);
             }
         }, page, database), target);
         launcher.pushObject(page);
-    }
-
-    /**
-     * Initializes a command.
-     */
-    public void initCommand(long code, IRIO newCmd, int idx) {
-        SchemaPath.setDefaultValue(newCmd, baseElement, DMKey.of(idx), (correct) -> {
-            newCmd.getIVar("@code").setFX(code);
-            correct.run();
-        });
     }
 }

@@ -69,6 +69,7 @@ public class TrSchema extends TrPage {
     public String cmdRaw;
     public String cmdNoDescription;
     public String cmdUnkName;
+    public String cmdExtraParams;
     public String theTrueNameOfAtIndent;
     public String codeAsInOpcode;
     public String gpBeginButton;

@@ -8,6 +8,7 @@ package r48.schema.op;
 
 import r48.R48;
 import r48.dbs.RPGCommand;
+import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.schema.specialized.textboxes.R2kTextRules;
 import r48.schema.specialized.textboxes.TextRules;
@@ -83,7 +84,7 @@ public class RMToolsSchemaOps {
                             continue;
                         }
                         // ugh
-                        int additionCode = rc.additionCode == -1 ? rc.commandId : rc.additionCode;
+                        DMKey additionCode = rc.additionCode == null ? DMKey.of(rc.commandId) : rc.additionCode;
                         // get the original group length
                         int groupLen = commandList.cmdb.getGroupLengthCore(cmdArray, idx);
                         if (groupLen < 1)
@@ -131,8 +132,8 @@ public class RMToolsSchemaOps {
                         }
                         while (text.length > commandTextIRIOs.size()) {
                             IRIO newCmd = cmdArray.addAElem(idx);
-                            commandList.eventCommandArraySchema.initCommand(additionCode, newCmd, idx);
-                            commandTextIRIOs.add(newCmd.getIVar("@parameters").getAElem(commandList.cmdb.knownCommands.get((int) additionCode).textArg));
+                            commandList.eventCommandArraySchema.baseElement.initCommand(newCmd, DMKey.of(idx), additionCode);
+                            commandTextIRIOs.add(newCmd.getIVar("@parameters").getAElem(commandList.cmdb.knownCommands.get((int) additionCode.getFX()).textArg));
                             commandCmdIRIOs.add(newCmd);
                             idx++;
                             endIndex++;

@@ -21,11 +21,8 @@ import r48.io.data.DMKey;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.AggregateSchemaElement;
-import r48.schema.OpaqueSchemaElement;
 import r48.schema.PathSchemaElement;
 import r48.schema.SchemaElement;
-import r48.schema.arrays.StandardArrayInterface;
-import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.ROIntegerSchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
@@ -152,7 +149,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         return attachRawAccess(target, launcher, path, buildSubElem(target, launcher, path));
     }
 
-    public UIElement attachRawAccess(final IRIO target, final ISchemaHost launcher, final SchemaPath path, UIElement base) {
+    private UIElement attachRawAccess(final IRIO target, final ISchemaHost launcher, final SchemaPath path, UIElement base) {
         if ((flags & RCSE_RAW) != 0)
             return base;
         return new UIAppendButton(T.s.cmdRaw, base, () -> {
@@ -178,7 +175,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     uiSVLList.add(ise.buildHoldingEditor(target, launcher, path));
                 }
             }
-            UILabel[] labels = new UILabel[param.getALen()];
+            UILabel[] labels = new UILabel[rc.params.size()];
             AtomicInteger labelWidth = new AtomicInteger();
             for (int i = 0; i < labels.length; i++) {
                 @Nullable String paramName = rc.getParameterName(param, i);
@@ -196,6 +193,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
                         st.applyTo(i, uiSVLList, param, launcher, path);
                 }
             }
+            if (labels.length < param.getALen())
+                uiSVLList.add(new UILabel(T.s.cmdExtraParams, app.f.schemaFieldTH));
             return AggregateSchemaElement.createScrollSavingSVL(launcher, scrollPointKey, target, uiSVLList);
         }
         return mostOfSchema.buildHoldingEditor(target, launcher, path);
@@ -214,6 +213,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             long fnv = integer.getFX();
             // NOTE: This just uses ints for everything.
             RPGCommand rc = database.knownCommands.get((int) fnv);
+            // BEHOLD! THIS IS TECHNICAL DEBT
             target.getIVar("@code").setFX(fnv);
             IRIO param = target.getIVar("@parameters");
             if (rc != null) {
@@ -249,6 +249,18 @@ public class RPGCommandSchemaElement extends SchemaElement {
         return database.knownCommands.get((int) target.getIVar("@code").getFX());
     }
 
+    /**
+     * This function MUST be the entrypoint for most things that write into "@code"!
+     * navigateToCode is exempt because technical debt.
+     * This is because, to prevent extensions from being wiped, we bypass the usual resolution for disambiguators.
+     */
+    public void initCommand(IRIO target, DMKey lastArrayIndex, RORIO code) {
+        SchemaPath.setDefaultValue(target, actualSchema, lastArrayIndex, (t) -> {
+            target.getIVar("@code").setDeepClone(code);
+            t.run();
+        });
+    }
+
     @Override
     public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         path = path.tagSEMonitor(target, this, false);
@@ -261,14 +273,20 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 rc.specialSchema.modifyVal(target, path, mode);
             } else {
                 IRIO param = target.getIVar("@parameters");
-                // All parameters are described, and the SASE will ensure length is precisely equal
-                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(app, new OpaqueSchemaElement(app), rc.params.size(), false, 0, new StandardArrayInterface());
-                parametersSanitySchema.modifyVal(param, path, mode);
+                boolean didModify = false;
+                // actualSchema should ensure parameters is an array, so ensure parameter count is correct
+                if ((param.getALen() < rc.params.size()) || (mode.aggressive && (param.getALen() != rc.params.size()))) {
+                    IntUtils.resizeArrayTo(param, rc.params.size());
+                    didModify = true;
+                }
+                // continue
                 int alen = param.getALen();
                 for (int i = 0; i < alen; i++) {
                     SchemaElement ise = rc.getParameterSchema(param, i);
                     ise.modifyVal(param.getAElem(i), path.arrayHashIndex(DMKey.of(i), "[" + i + "]"), mode);
                 }
+                if (didModify)
+                    path.changeOccurred(true);
             }
         }
     }
@@ -285,9 +303,6 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 rc.specialSchema.visit(target, path, v, detailedPaths);
             } else {
                 IRIO param = target.getIVar("@parameters");
-                // All parameters are described, and the SASE will ensure length is precisely equal
-                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(app, new OpaqueSchemaElement(app), rc.params.size(), false, 0, new StandardArrayInterface());
-                parametersSanitySchema.visit(param, path, v, detailedPaths);
                 int alen = param.getALen();
                 for (int i = 0; i < alen; i++) {
                     SchemaElement ise = rc.getParameterSchema(param, i);

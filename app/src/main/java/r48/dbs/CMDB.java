@@ -19,7 +19,7 @@ import r48.ioplus.DBLoader;
 import r48.ioplus.IDatabase;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
-import r48.schema.util.SchemaPath;
+import r48.schema.specialized.cmgb.RPGCommandSchemaElement;
 import r48.search.CommandTag;
 import r48.tr.TrNames;
 import r48.tr.TrPage.FF0;
@@ -47,7 +47,7 @@ public class CMDB extends R48.Svc {
     public HashMap<Integer, RPGCommand> knownCommands = new HashMap<Integer, RPGCommand>();
     public LinkedList<Integer> knownCommandOrder = new LinkedList<Integer>();
     public @Nullable DMKey listLeaveCmd = null; // null means "no list leave command actually exists".
-    public int blockLeaveCmd = 0; // This is 10 on R2k, but that is controlled via Lblock.
+    public @NonNull DMKey blockLeaveCmd = DMKey.of(0); // This is 10 on R2k, but that is controlled via Lblock.
 
     public CMDB(final CMDBDB cdb, final String id) {
         super(cdb.app);
@@ -96,7 +96,8 @@ public class CMDB extends R48.Svc {
                 // For commands with just one parameter that is a string.
                 if (arg.equals("messagebox")) {
                     final int code = Integer.parseInt(gbStateArgs[gbStatePosition++]);
-                    rc.additionCode = code;
+                    // should really check if -1 is used anywhere
+                    rc.additionCode = code == -1 ? null : DMKey.of(code);
                     return new IGroupBehavior() {
                         @Override
                         public int getGroupLength(IRIO array, int index) {
@@ -118,7 +119,7 @@ public class CMDB extends R48.Svc {
                         }
 
                         @Override
-                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, RPGCommandSchemaElement baseElement) {
                             return false;
                         }
                     };
@@ -160,7 +161,7 @@ public class CMDB extends R48.Svc {
                         }
 
                         @Override
-                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, RPGCommandSchemaElement baseElement) {
                             return false;
                         }
                     };
@@ -184,7 +185,7 @@ public class CMDB extends R48.Svc {
                         }
 
                         @Override
-                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, RPGCommandSchemaElement baseElement) {
                             // Form correction
                             IRIO rio = commandTarg.getIVar("@indent");
                             long topIndent = 0;
@@ -224,8 +225,7 @@ public class CMDB extends R48.Svc {
                             }
                             // Didn't find 'top', insert at best-guess
                             IRIO cap = arr.addAElem(indexOfLastValid + 1);
-                            SchemaPath.setDefaultValue(cap, baseElement, null);
-                            cap.getIVar("@code").setFX(lastId);
+                            baseElement.initCommand(cap, DMKey.of(indexOfLastValid + 1), DMKey.of(lastId));
                             return true;
                         }
                     };
@@ -246,7 +246,7 @@ public class CMDB extends R48.Svc {
                         }
 
                         @Override
-                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, RPGCommandSchemaElement baseElement) {
                             IRIO rio = commandTarg.getIVar("@indent");
                             long topIndent = 0;
                             if (rio != null)
@@ -318,7 +318,7 @@ public class CMDB extends R48.Svc {
                         }
 
                         @Override
-                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, RPGCommandSchemaElement baseElement) {
                             if (!checkCondition(commandTarg))
                                 return false;
                             return igb.majorCorrectElement(arr, i, commandTarg, baseElement);
@@ -393,7 +393,7 @@ public class CMDB extends R48.Svc {
                     if (args.length > 0) {
                         if (args[0].equals("block")) {
                             // block context only
-                            blockLeaveCmd = workingCmdId;
+                            blockLeaveCmd = DMKey.of(workingCmdId);
                             rc.typeBlockLeave = true;
                         } else if (args[0].equals("list")) {
                             listLeaveCmd = DMKey.of(workingCmdId);
@@ -405,7 +405,7 @@ public class CMDB extends R48.Svc {
                     } else {
                         // default context: all
                         listLeaveCmd = DMKey.of(workingCmdId);
-                        blockLeaveCmd = workingCmdId;
+                        blockLeaveCmd = DMKey.of(workingCmdId);
                         rc.typeBlockLeave = true;
                         rc.typeListLeave = true;
                     }
