@@ -55,8 +55,8 @@ public class SubwindowSchemaElement extends SchemaElement implements IProxySchem
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        heldElement.modifyVal(target, path, setDefault);
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+        heldElement.modifyVal(target, path, mode);
     }
 
     @Override

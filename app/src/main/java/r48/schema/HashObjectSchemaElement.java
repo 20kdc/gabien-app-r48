@@ -39,8 +39,8 @@ public class HashObjectSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        if (checkType(target, '{', null, setDefault && (!inner))) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+        if (checkType(target, '{', null, mode.setDefault && (!inner))) {
             target.setHash();
             path.changeOccurred(true);
         } else {

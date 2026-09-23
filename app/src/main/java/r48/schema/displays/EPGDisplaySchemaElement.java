@@ -60,7 +60,7 @@ public class EPGDisplaySchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath index, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath index, ModifyMode mode) {
 
     }
 }

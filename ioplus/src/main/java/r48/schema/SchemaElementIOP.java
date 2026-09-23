@@ -39,7 +39,7 @@ public abstract class SchemaElementIOP {
     // "Primary" types will completely wipe the slate if they're invalid.
     // This means any "annotations" (IVars) will be destroyed, so ensure those are *after* the primary in an aggregate.
     // Hopefully this situation should never affect anything.
-    public abstract void modifyVal(IRIO target, SchemaPath path, boolean setDefault);
+    public abstract void modifyVal(IRIO target, SchemaPath path, ModifyMode mode);
 
     /**
      * Visits everything.
@@ -84,5 +84,25 @@ public abstract class SchemaElementIOP {
          * If this returns true, the children are visited.
          */
         boolean visit(@NonNull SchemaElementIOP element, IRIO target, SchemaPath path);
+    }
+
+    public enum ModifyMode {
+        FIXUP(false, false),
+        RESET(true, true),
+        TEST(false, true);
+        public final boolean setDefault, aggressive;
+        ModifyMode(boolean setDefault, boolean aggressive) {
+            this.setDefault = setDefault;
+            this.aggressive = aggressive;
+        }
+
+        /**
+         * Controls how arrays and similar "multi-pass" setups should act.
+         */
+        public ModifyMode getSecondPass() {
+            if (setDefault)
+                return FIXUP;
+            return this;
+        }
     }
 }

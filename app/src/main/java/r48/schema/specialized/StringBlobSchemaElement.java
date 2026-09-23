@@ -142,8 +142,8 @@ public class StringBlobSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        if (SchemaElement.checkType(target, '\"', null, setDefault)) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+        if (SchemaElement.checkType(target, '\"', null, mode.setDefault)) {
             target.putBuffer(createDefaultByteArray());
             path.changeOccurred(true);
         }

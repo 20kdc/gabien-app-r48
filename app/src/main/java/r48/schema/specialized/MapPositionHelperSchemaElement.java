@@ -89,7 +89,7 @@ public class MapPositionHelperSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         // Nothing can be done here.
     }
 }

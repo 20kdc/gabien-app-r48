@@ -44,7 +44,7 @@ public class TypeChangerSchemaElement extends SchemaElement {
                 @Override
                 public void run() {
                     targetValue.setNull();
-                    targets[fi].modifyVal(targetValue, path, true);
+                    targets[fi].modifyVal(targetValue, path, ModifyMode.RESET);
                     path.changeOccurred(false);
                     // auto-updates
                 }
@@ -69,19 +69,19 @@ public class TypeChangerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         int rei = -1;
-        if (!setDefault)
+        if (!mode.setDefault)
             rei = getRelevantElementId(target);
         if (rei == -1) {
             rei = targets.length - 1;
-            setDefault = true;
+            mode = ModifyMode.RESET;
         }
 
         SchemaElement targetS = targets[rei];
 
         // If the target performs a correction, it will cause a changeOccurred.
-        targetS.modifyVal(target, path, setDefault);
+        targetS.modifyVal(target, path, mode);
     }
 
     @Override

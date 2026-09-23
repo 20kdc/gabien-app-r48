@@ -55,9 +55,9 @@ public class BooleanSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         boolean modified = false;
-        if (setDefault) {
+        if (mode.setDefault) {
             modified = modifyValueTruth(target, defaultVal);
         } else if (truthInvalid(target)) {
             modified = modifyValueTruth(target, defaultVal);

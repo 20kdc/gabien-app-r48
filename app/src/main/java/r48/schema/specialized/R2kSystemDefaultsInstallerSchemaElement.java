@@ -95,8 +95,8 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement.Leaf 
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        if (setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mmx) {
+        if (mmx.setDefault) {
             // Target is RPG::Database.
             // Note that this relies on schema defaults for the most part,
             // it just puts some stuff that isn't so easily definable into place.

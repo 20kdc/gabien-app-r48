@@ -247,8 +247,8 @@ public class SDB extends R48.Svc {
         }
 
         @Override
-        public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-            getEntry().modifyVal(target, path, setDefault);
+        public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+            getEntry().modifyVal(target, path, mode);
         }
 
         @Override

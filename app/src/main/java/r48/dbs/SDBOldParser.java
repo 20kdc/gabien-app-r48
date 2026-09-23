@@ -532,8 +532,8 @@ public class SDBOldParser extends R48.Svc implements IDatabase {
                         }
 
                         @Override
-                        public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-                            getSchema(path).modifyVal(target, path, setDefault);
+                        public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+                            getSchema(path).modifyVal(target, path, mode);
                         }
 
                         @Override
@@ -584,8 +584,8 @@ public class SDBOldParser extends R48.Svc implements IDatabase {
                         }
 
                         @Override
-                        public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-                            insideThat.modifyVal(target, applySchema(target, path, false), setDefault);
+                        public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+                            insideThat.modifyVal(target, applySchema(target, path, false), mode);
                         }
 
                         @Override

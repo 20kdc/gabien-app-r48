@@ -34,6 +34,7 @@ import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.append.MVMNamespace;
 import r48.schema.SchemaElement;
+import r48.schema.SchemaElementIOP.ModifyMode;
 import r48.schema.displays.LabelSchemaElement;
 import r48.schema.util.SchemaDynamicContext;
 import r48.schema.util.SchemaPath;
@@ -128,7 +129,7 @@ public abstract class SchemaOp extends R48.Svc {
         SchemaPath.setDefaultValue(ig, se, null);
         ObjectRootHandle.Isolated root = new ObjectRootHandle.Isolated(se, ig, "operator-config");
         root.getObject().setObject("R48::OpCfg::" + id.id);
-        se.modifyVal(root.getObject(), new SchemaPath.Page(se, root), true);
+        se.modifyVal(root.getObject(), new SchemaPath.Page(se, root), ModifyMode.RESET);
         // merge in context
         for (Map.Entry<String, DMKey> context : operatorContext.entrySet())
             root.getObject().addIVar(context.getKey()).setDeepClone(context.getValue());

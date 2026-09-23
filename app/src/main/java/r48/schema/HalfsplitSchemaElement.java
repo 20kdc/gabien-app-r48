@@ -41,9 +41,9 @@ public class HalfsplitSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        a.modifyVal(target, path, setDefault);
-        b.modifyVal(target, path, setDefault);
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+        a.modifyVal(target, path, mode);
+        b.modifyVal(target, path, mode);
     }
 
     @Override

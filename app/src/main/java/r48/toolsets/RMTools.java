@@ -18,6 +18,7 @@ import r48.io.data.IRIO;
 import r48.map.systems.IRMMapSystem;
 import r48.maptools.UIMTEventPicker;
 import r48.schema.AggregateSchemaElement;
+import r48.schema.SchemaElementIOP.ModifyMode;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.search.CompoundCommandClassifier;
@@ -136,7 +137,7 @@ public class RMTools extends AppUI.Svc implements Consumer<LinkedList<UIPopupMen
                     throw new RuntimeException("MODIFY " + obj + " " + path);
                 };
                 sp.root.registerModificationHandler(modListen);
-                sp.editor.modifyVal(sp.targetElement, sp, false);
+                sp.editor.modifyVal(sp.targetElement, sp, ModifyMode.FIXUP);
                 sp.root.deregisterModificationHandler(modListen);
                 System.out.println(obj + " done.");
             }

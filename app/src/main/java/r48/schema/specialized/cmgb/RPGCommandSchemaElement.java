@@ -225,11 +225,11 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 for (int i = 0; i < size; i++) {
                     IRIO rio = param.getAElem(i);
                     SchemaElement ise = rc.getParameterSchema(param, i);
-                    ise.modifyVal(rio, path.arrayHashIndex(DMKey.of(i), "[" + i + "]"), true);
+                    ise.modifyVal(rio, path.arrayHashIndex(DMKey.of(i), "[" + i + "]"), ModifyMode.RESET);
                 }
                 if (rc.specialSchema != null) {
                     SchemaElement schemaElement = rc.specialSchema;
-                    schemaElement.modifyVal(target, path, true);
+                    schemaElement.modifyVal(target, path, ModifyMode.RESET);
                 }
                 templateAndConfirm.accept(rc.template);
             } else {
@@ -250,24 +250,24 @@ public class RPGCommandSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         path = path.tagSEMonitor(target, this, false);
-        actualSchema.modifyVal(target, path, setDefault);
+        actualSchema.modifyVal(target, path, mode);
         RPGCommand rc = getRPGCommand(target);
         if (rc != null) {
             if (rc.specialSchema != null) {
                 // The amount of parameters isn't always fully described.
                 // Cutting down on length is done when the command code is set - That's as good as it gets.
-                rc.specialSchema.modifyVal(target, path, setDefault);
+                rc.specialSchema.modifyVal(target, path, mode);
             } else {
                 IRIO param = target.getIVar("@parameters");
                 // All parameters are described, and the SASE will ensure length is precisely equal
                 SchemaElement parametersSanitySchema = new StandardArraySchemaElement(app, new OpaqueSchemaElement(app), rc.params.size(), false, 0, new StandardArrayInterface());
-                parametersSanitySchema.modifyVal(param, path, setDefault);
+                parametersSanitySchema.modifyVal(param, path, mode);
                 int alen = param.getALen();
                 for (int i = 0; i < alen; i++) {
                     SchemaElement ise = rc.getParameterSchema(param, i);
-                    ise.modifyVal(param.getAElem(i), path.arrayHashIndex(DMKey.of(i), "[" + i + "]"), setDefault);
+                    ise.modifyVal(param.getAElem(i), path.arrayHashIndex(DMKey.of(i), "[" + i + "]"), mode);
                 }
             }
         }

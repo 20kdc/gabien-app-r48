@@ -54,7 +54,7 @@ public class FloatSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         boolean ok = false;
         int typ = target.getType();
         if (jsonCoerce)
@@ -62,7 +62,7 @@ public class FloatSchemaElement extends SchemaElement.Leaf {
                 ok = true;
         if (typ == 'f')
             ok = true;
-        if (setDefault)
+        if (mode.setDefault)
             ok = false;
         if (!ok) {
             if (!IntUtils.encodeRbFloat(target, def, jsonCoerce))

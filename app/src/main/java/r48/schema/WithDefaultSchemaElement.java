@@ -35,13 +35,13 @@ public class WithDefaultSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        if (setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+        if (mode.setDefault) {
             target.setDeepClone(def);
-            content.modifyVal(target, path, false);
+            content.modifyVal(target, path, ModifyMode.FIXUP);
             path.changeOccurred(true);
         } else {
-            content.modifyVal(target, path, setDefault);
+            content.modifyVal(target, path, mode);
         }
     }
 

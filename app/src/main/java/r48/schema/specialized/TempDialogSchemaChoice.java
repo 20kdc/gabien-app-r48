@@ -60,10 +60,10 @@ public class TempDialogSchemaChoice extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         if (hPar != null) {
             SchemaPath.Page page = hPar.findFirstEditable();
-            page.editor.modifyVal(page.targetElement, page, setDefault);
+            page.editor.modifyVal(page.targetElement, page, mode);
         }
         if (update != null)
             update.get();

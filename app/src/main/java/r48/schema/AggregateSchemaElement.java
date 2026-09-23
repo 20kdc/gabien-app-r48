@@ -85,9 +85,9 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath i, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath i, ModifyMode mode) {
         for (SchemaElement ise : aggregate)
-            ise.modifyVal(target, i, setDefault);
+            ise.modifyVal(target, i, mode);
     }
 
     @Override

@@ -177,7 +177,7 @@ public class GenposSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         // "How should I know?" *commences shrugging*
     }
 }

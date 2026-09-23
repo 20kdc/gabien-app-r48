@@ -86,12 +86,13 @@ public class ObjectClassSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        setDefault = SchemaElement.checkType(target, type, symbol, setDefault);
-        if (setDefault)
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+        if (SchemaElement.checkType(target, type, symbol, mode.setDefault)) {
+            mode = ModifyMode.RESET;
             target.setObject(symbol);
-        backing.modifyVal(target, path, setDefault);
-        if (setDefault)
+        }
+        backing.modifyVal(target, path, mode);
+        if (mode.setDefault)
             path.changeOccurred(true);
     }
 

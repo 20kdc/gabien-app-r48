@@ -26,6 +26,7 @@ import r48.io.undoredo.DMChangeTracker;
 import r48.io.undoredo.IDM3Data;
 import r48.ioplus.IDatabase;
 import r48.schema.SchemaElement;
+import r48.schema.SchemaElementIOP.ModifyMode;
 import r48.schema.util.SchemaPath;
 
 import java.io.FileInputStream;
@@ -152,7 +153,7 @@ public class LocalTestExecutiveTest {
                 objectInternalCopy.registerModificationHandler((schemaPath) -> {
                     throw new RuntimeException("A modification occurred on LTE data. This shouldn't happen: " + schemaPath.toString());
                 });
-                wse.modifyVal(objectInternalCopy.getObject(), new SchemaPath.Page(wse, objectInternalCopy), false);
+                wse.modifyVal(objectInternalCopy.getObject(), new SchemaPath.Page(wse, objectInternalCopy), ModifyMode.TEST);
 
                 objectInternalCopyILO.save();
 

@@ -78,7 +78,7 @@ public class HashSchemaElement extends SchemaElement {
                 // Try adding 1
                 long plannedVal = keyWorkspace.getFX() + 1;
                 keyWorkspace.setFX(plannedVal);
-                keyElem.modifyVal(keyWorkspace, rioPath, false);
+                keyElem.modifyVal(keyWorkspace, rioPath, ModifyMode.FIXUP);
                 if ((keyWorkspace.getType() != 'i') || (keyWorkspace.getFX() != plannedVal)) {
                     // Let's not try that again
                     break;
@@ -178,14 +178,15 @@ public class HashSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        setDefault = SchemaElement.checkType(target, '{', null, setDefault);
-        if (setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+        if (SchemaElement.checkType(target, '{', null, mode.setDefault))
+            mode = ModifyMode.RESET;
+        if (mode.setDefault) {
             target.setHash();
         } else {
             for (DMKey e : target.getHashKeys()) {
                 IRIO ek = target.getHashVal(e);
-                valElem.modifyVal(ek, path.arrayHashIndex(e, "{" + getKeyText(e) + "}"), false);
+                valElem.modifyVal(ek, path.arrayHashIndex(e, "{" + getKeyText(e) + "}"), mode);
             }
         }
     }

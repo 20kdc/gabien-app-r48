@@ -38,9 +38,9 @@ public class OpaqueSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         // Not a clue.
-        if (setDefault)
+        if (mode.setDefault)
             path.changeOccurred(true);
     }
 }

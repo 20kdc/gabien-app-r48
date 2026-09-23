@@ -29,6 +29,7 @@ import r48.io.data.IRIOGeneric;
 import r48.io.data.RORIO;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.SchemaElementIOP.ModifyMode;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.utils.LibLCF245Dumper;
 import r48.toolsets.utils.UITestGraphicsStuff;
@@ -154,7 +155,7 @@ public class BasicToolset extends AppUI.Svc implements IToolset {
                         final ObjectRootHandle rio = app.odb.getObject(s);
                         U.launchPrompt(T.u.prSchemaID, (sid) -> {
                             SchemaElement ise = app.sdb.getSDBEntry(sid);
-                            ise.modifyVal(rio.getObject(), new SchemaPath.Page(ise, rio), false);
+                            ise.modifyVal(rio.getObject(), new SchemaPath.Page(ise, rio), ModifyMode.FIXUP);
                             U.launchDialog(T.u.done);
                         });
                     });

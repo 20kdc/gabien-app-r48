@@ -40,8 +40,8 @@ public class HiddenSchemaElement extends SchemaElement implements IProxySchemaEl
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        content.modifyVal(target, path, setDefault);
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+        content.modifyVal(target, path, mode);
     }
 
     @Override

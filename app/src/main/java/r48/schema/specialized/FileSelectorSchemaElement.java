@@ -100,7 +100,7 @@ public class FileSelectorSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         // Does nothing - this is solely an editor helper element.
     }
 }

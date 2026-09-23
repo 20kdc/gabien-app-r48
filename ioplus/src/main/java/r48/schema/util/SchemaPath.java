@@ -14,6 +14,7 @@ import r48.io.data.DMPath;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.schema.SchemaElementIOP;
+import r48.schema.SchemaElementIOP.ModifyMode;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -119,9 +120,9 @@ public class SchemaPath {
     public static void setDefaultValue(@NonNull IRIO target, @NonNull SchemaElementIOP ise, @Nullable DMKey arrayIndex, @Nullable Consumer<Runnable> adjustments) {
         ObjectRootHandle dvRoot = new ObjectRootHandle.Isolated(ise, target, "setDefaultValue");
         SchemaPath adjuster = new Page(ise, dvRoot).arrayHashIndex(arrayIndex, "AnonObject");
-        ise.modifyVal(target, adjuster, true);
+        ise.modifyVal(target, adjuster, ModifyMode.RESET);
         if (adjustments != null)
-            adjustments.accept(() -> ise.modifyVal(target, adjuster, false));
+            adjustments.accept(() -> ise.modifyVal(target, adjuster, ModifyMode.FIXUP));
     }
 
     @Override
@@ -253,7 +254,7 @@ public class SchemaPath {
     public void pokeHighestSubwatcherEditor() {
         SchemaPath sw = findHighestSubwatcher();
         if (sw instanceof Page)
-            ((Page) sw).editor.modifyVal(((Page) sw).targetElement, sw, false);
+            ((Page) sw).editor.modifyVal(((Page) sw).targetElement, sw, ModifyMode.FIXUP);
     }
 
     // If this is true, a temp dialog (unique UIElement) is in use and thus this can't be cloned.

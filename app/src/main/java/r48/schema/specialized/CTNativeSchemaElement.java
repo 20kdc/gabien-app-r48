@@ -65,8 +65,8 @@ public class CTNativeSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        if (checkType(target, 'u', cls, setDefault)) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+        if (checkType(target, 'u', cls, mode.setDefault)) {
             ByteArrayMemoryish bam = new ByteArrayMemoryish(new byte[32]);
             bam.setF64LE(0, 0);
             bam.setF64LE(8, 0);

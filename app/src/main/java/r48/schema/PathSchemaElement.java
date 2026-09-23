@@ -96,10 +96,10 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         IRIO r = pStr.getRW(target);
         if (r != null) {
-            subElem.modifyVal(r, doOtherIndex(path), setDefault);
+            subElem.modifyVal(r, doOtherIndex(path), mode);
         } else {
             if (!optional) {
                 IRIO rio = pStr.add(target);
@@ -119,7 +119,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
 
     private void createIVar(IRIO r, SchemaPath targetPath, boolean mv) {
         // being created, so create from scratch no matter what.
-        subElem.modifyVal(r, doOtherIndex(targetPath), mv);
+        subElem.modifyVal(r, doOtherIndex(targetPath), ModifyMode.RESET);
         targetPath.changeOccurred(mv);
     }
 }

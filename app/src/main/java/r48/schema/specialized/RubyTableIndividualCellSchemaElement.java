@@ -36,8 +36,8 @@ public class RubyTableIndividualCellSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        interior.modifyVal(new CellMask(target), path, setDefault);
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+        interior.modifyVal(new CellMask(target), path, mode);
     }
 
     @Override

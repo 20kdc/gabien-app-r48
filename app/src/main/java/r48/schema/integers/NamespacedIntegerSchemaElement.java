@@ -55,7 +55,7 @@ public class NamespacedIntegerSchemaElement extends SchemaElement {
         LinkedList<UIPopupMenu.Entry> mapped = new LinkedList<>();
         for (final Namespace ns2 : namespaces) {
             mapped.add(new UIPopupMenu.Entry(ns2.name.r(), () -> {
-                ns2.editor.modifyVal(new NamespacingMask(target, ns2.base), path, true);
+                ns2.editor.modifyVal(new NamespacingMask(target, ns2.base), path, ModifyMode.RESET);
                 path.changeOccurred(false);
             }));
         }
@@ -70,15 +70,16 @@ public class NamespacedIntegerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         Namespace ns;
-        if (setDefault || target.getType() != 'i') {
-            setDefault = true;
+        if (target.getType() != 'i')
+            mode = ModifyMode.RESET;
+        if (mode.setDefault) {
             ns = namespaces[0];
         } else {
             ns = namespaceOf(target.getFX());
         }
-        ns.editor.modifyVal(new NamespacingMask(target, ns.base), path, setDefault);
+        ns.editor.modifyVal(new NamespacingMask(target, ns.base), path, mode);
     }
 
     @Override

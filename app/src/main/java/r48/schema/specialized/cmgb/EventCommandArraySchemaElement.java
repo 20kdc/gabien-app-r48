@@ -282,7 +282,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             }
 
             @Override
-            public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+            public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
             }
         };
         return new AggregateSchemaElement(app, group, scrollKey);

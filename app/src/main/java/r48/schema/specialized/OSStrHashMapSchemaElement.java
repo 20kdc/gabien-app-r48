@@ -102,13 +102,13 @@ public class OSStrHashMapSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         if (target.getType() != 'l') {
-            if (IntegerSchemaElement.checkType(target, 'i', null, setDefault)) {
+            if (IntegerSchemaElement.checkType(target, 'i', null, mode.setDefault)) {
                 target.setFX(0);
                 path.changeOccurred(true);
             }
-        } else if (setDefault) {
+        } else if (mode.setDefault) {
             target.setFX(0);
             path.changeOccurred(true);
         }

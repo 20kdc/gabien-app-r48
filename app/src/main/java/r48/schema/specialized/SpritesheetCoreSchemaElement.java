@@ -55,9 +55,9 @@ public class SpritesheetCoreSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         IRIO actTarg = numberProvider.apply(target);
-        if (checkType(actTarg, 'i', null, setDefault)) {
+        if (checkType(actTarg, 'i', null, mode.setDefault)) {
             actTarg.setFX(defaultVal);
             path.changeOccurred(true);
         }

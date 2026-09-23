@@ -51,7 +51,7 @@ public class InitButtonSchemaElement extends SchemaElement.Leaf {
             public void run() {
                 // This is going to show up as a modifyVal changeOccurred, so it needs to be run again
                 //  to trigger the subwatcher stuff
-                reinitializer.modifyVal(target, path, asDefault);
+                reinitializer.modifyVal(target, path, asDefault ? ModifyMode.RESET : ModifyMode.FIXUP);
                 path.changeOccurred(false);
             }
         }).togglable(condition.eval(target));
@@ -59,10 +59,10 @@ public class InitButtonSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         // No need to perform a second changeOccurred
-        if (defaulting && setDefault)
-            reinitializer.modifyVal(target, path, true);
+        if (defaulting && mode.setDefault)
+            reinitializer.modifyVal(target, path, mode);
     }
 
     public interface Condition {

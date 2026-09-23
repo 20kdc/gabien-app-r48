@@ -226,7 +226,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     target.addAElem(target.getALen());
                 SchemaElement subelem = getElementSchema(i);
                 IRIO rio = target.addAElem(i);
-                subelem.modifyVal(rio, ind, true);
+                subelem.modifyVal(rio, ind, ModifyMode.RESET);
 
                 // whack the UI
                 path.changeOccurred(false);
@@ -278,16 +278,17 @@ public abstract class ArraySchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path2, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path2, ModifyMode mode) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
-        setDefault = checkType(target, '[', null, setDefault);
-        if (setDefault) {
+        if (checkType(target, '[', null, mode.setDefault))
+            mode = ModifyMode.RESET;
+        if (mode.setDefault) {
             target.setArray();
             if (target.getALen() < atLeast)
                 IntUtils.resizeArrayTo(target, atLeast);
         }
         boolean debugMod = false;
-        boolean modified = setDefault;
+        boolean modified = mode.setDefault;
         if (debugMod && modified)
             System.out.println("MOD: setDefault");
         if (sizeFixed != -1) {
@@ -313,7 +314,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 //  it will lead to an infinite loop!
                 // So it has to be able to see it's own object for the loop to terminate.
                 // (Later: This got changed around a bit in a restructuring. Point is, target.arrVal[j] == rio)
-                getElementSchema(j).modifyVal(rio, path.arrayHashIndex(DMKey.of(j), "[" + j + "]"), setDefault);
+                getElementSchema(j).modifyVal(rio, path.arrayHashIndex(DMKey.of(j), "[" + j + "]"), mode);
             }
             int groupStep;
             for (int j = 0; j < alen; j += groupStep) {
@@ -322,7 +323,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     groupStep = 1;
                     continue;
                 }
-                ec.element.modifyVal(target, path, setDefault);
+                ec.element.modifyVal(target, path, mode);
                 groupStep = ec.groupLength;
             }
             boolean aca = autoCorrectArray(target, path);
@@ -331,7 +332,9 @@ public abstract class ArraySchemaElement extends SchemaElement {
             modified = modified || aca;
             if (!aca)
                 break;
-            setDefault = false;
+            // 'decay' mode into FIXUP
+            if (mode.setDefault)
+                mode = mode.getSecondPass();
         }
         if (modified)
             path.changeOccurred(true);
@@ -512,11 +515,11 @@ public abstract class ArraySchemaElement extends SchemaElement {
         }
 
         @Override
-        public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+        public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
             int actualStart = findActualStart(target, tracker);
             if (actualStart == -1)
                 return;
-            parentArraySE.getElementContextualWindowSchemaUntracked(target, actualStart, ecwsKey).modifyVal(target, path, setDefault);
+            parentArraySE.getElementContextualWindowSchemaUntracked(target, actualStart, ecwsKey).modifyVal(target, path, mode);
         }
 
         @Override

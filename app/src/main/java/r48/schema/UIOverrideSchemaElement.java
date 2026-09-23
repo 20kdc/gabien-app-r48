@@ -38,8 +38,8 @@ public class UIOverrideSchemaElement extends SchemaElement implements IProxySche
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        data.modifyVal(target, path, setDefault);
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+        data.modifyVal(target, path, mode);
     }
 
     @Override

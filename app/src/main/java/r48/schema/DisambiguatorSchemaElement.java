@@ -73,16 +73,16 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path2, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path2, ModifyMode mode) {
         final SchemaPath path = path2.tagSEMonitor(target, this, true);
 
         String iv = getDisambigIndex(target);
-        if (!setDefault)
+        if (!mode.setDefault)
             if (iv.equals(""))
                 System.out.println("Warning: Disambiguator working off of nothing here, this CANNOT GO WELL");
         try {
             SchemaElement ise = getSchemaElement(iv);
-            ise.modifyVal(target, path, setDefault);
+            ise.modifyVal(target, path, mode);
         } catch (RuntimeException e) {
             e.printStackTrace(System.out);
             System.out.println("ArrayDisambiguator Debug: " + iv);

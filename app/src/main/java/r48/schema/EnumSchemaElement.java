@@ -151,9 +151,9 @@ public class EnumSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         liveUpdate();
-        if (SchemaElement.checkType(target, defaultVal.getType(), null, setDefault)) {
+        if (SchemaElement.checkType(target, defaultVal.getType(), null, mode.setDefault)) {
             target.setDeepClone(defaultVal);
             path.changeOccurred(true);
         }

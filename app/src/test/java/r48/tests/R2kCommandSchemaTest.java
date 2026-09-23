@@ -22,6 +22,7 @@ import r48.io.data.IRIO;
 import r48.io.r2k.obj.Event;
 import r48.io.undoredo.DMChangeTracker;
 import r48.schema.SchemaElement;
+import r48.schema.SchemaElementIOP.ModifyMode;
 import r48.schema.util.SchemaPath;
 
 /**
@@ -51,14 +52,14 @@ public class R2kCommandSchemaTest {
         IRIO lst = rpgEvInst.getIVar("@pages").getAElem(1).getIVar("@list");
         IRIO res = addCommandInto(app, "RPG::EventCommand", lst);
         res.getIVar("@code").setFX(11330);
-        rpgEv.modifyVal(rpgEvInst, rpgEvP, false);
+        rpgEv.modifyVal(rpgEvInst, rpgEvP, ModifyMode.FIXUP);
         runMainCommandProcedure(app, "RPG::MoveCommand", "move", res.getIVar("@move_commands"));
     }
 
     private IRIO addCommandInto(R48 app, String listType, IRIO iVar) {
         IRIO res = iVar.addAElem(0);
         SchemaPath.setDefaultValue(res, app.sdb.getSDBEntry(listType), DMKey.of(0));
-        rpgEv.modifyVal(rpgEvInst, rpgEvP, false);
+        rpgEv.modifyVal(rpgEvInst, rpgEvP, ModifyMode.FIXUP);
         return res;
     }
 
@@ -67,7 +68,7 @@ public class R2kCommandSchemaTest {
         rpgEvInst = new Event(new DMContext(DMChangeTracker.Null.TESTS, StandardCharsets.UTF_8));
         rpgEv = app.sdb.getSDBEntry("RPG::Event");
         rpgEvP = new SchemaPath.Page(rpgEv, new ObjectRootHandle.Isolated(rpgEv, rpgEvInst, "rpgEvP"));
-        rpgEv.modifyVal(rpgEvInst, rpgEvP, true);
+        rpgEv.modifyVal(rpgEvInst, rpgEvP, ModifyMode.RESET);
         return app;
     }
 
@@ -76,7 +77,7 @@ public class R2kCommandSchemaTest {
         CMDB cmdb = app.cmdbs.getCMDB(cmd);
         for (int i : cmdb.knownCommandOrder) {
             res.getIVar("@code").setFX(i);
-            rpgEv.modifyVal(rpgEvInst, rpgEvP, true);
+            rpgEv.modifyVal(rpgEvInst, rpgEvP, ModifyMode.RESET);
         }
     }
 }

@@ -70,8 +70,8 @@ public class IntegerSchemaElement extends SchemaElement.Leaf {
     }
 
     @Override
-    public final void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        if (checkType(target, 'i', null, setDefault)) {
+    public final void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
+        if (checkType(target, 'i', null, mode.setDefault)) {
             target.setFX(defaultInt);
             path.changeOccurred(true);
         }

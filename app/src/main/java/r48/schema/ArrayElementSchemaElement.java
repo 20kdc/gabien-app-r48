@@ -64,7 +64,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
             return new UITextButton(tx, app.f.schemaFieldTH, () -> {
                 // resize to include and set default
                 resizeToInclude(target);
-                subElem.modifyVal(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), "." + name), true);
+                subElem.modifyVal(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), "." + name), ModifyMode.RESET);
                 path.changeOccurred(false);
             });
         }
@@ -105,7 +105,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     }
 
     @Override
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, ModifyMode mode) {
         boolean changed = false;
         // Just in case.
         // Turns out there was a reason, if not a good one, for array encapsulation - it ensured the object was actually an array.
@@ -119,7 +119,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
             changed |= resizeToInclude(target);
         if (target.getALen() > index) {
             String indexStr = alias != null ? "." + alias.r() : ("]" + index);
-            subElem.modifyVal(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), indexStr), setDefault);
+            subElem.modifyVal(target.getAElem(index), path.arrayHashIndex(DMKey.of(index), indexStr), mode);
         }
         if (changed)
             path.changeOccurred(true);
