@@ -66,6 +66,7 @@ public class TrSchema extends TrPage {
     public String cmdOutOfList;
     public String cmdHelp;
     public String cmdUnk;
+    public String cmdRaw;
     public String cmdNoDescription;
     public String cmdUnkName;
     public String theTrueNameOfAtIndent;

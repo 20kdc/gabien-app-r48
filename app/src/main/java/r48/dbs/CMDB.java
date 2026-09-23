@@ -524,11 +524,13 @@ public class CMDB extends R48.Svc {
     }
 
     public String buildCodename(IRIO target, boolean indent, boolean full) {
-        String ext = "";
+        String ext;
         int cid = (int) target.getIVar("@code").getFX();
         if (knownCommands.containsKey(cid)) {
             RPGCommand cmd = knownCommands.get(cid);
             ext = cmd.formatName(target.getIVar("@parameters"));
+        } else {
+            ext = T.s.cmdUnkName;
         }
         String spc = full ? lenForm(cid) + " " : "";
         IRIO indentValue = target.getIVar("@indent");

@@ -11,7 +11,6 @@ import java.util.List;
 
 import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIProxy;
-import gabien.ui.elements.UITextBox;
 import gabien.ui.elements.UITextButton;
 import gabien.ui.layouts.UIListLayout;
 import r48.cfg.Config;

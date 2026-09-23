@@ -57,7 +57,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
 
     public EventCommandArraySchemaElement(R48 app, SchemaElement a, SchemaElement b, CMDB db, boolean indentControl) {
         super(app, -1, 0, 0, new StandardArrayInterface().withoutIndexLabels());
-        baseElement = new RPGCommandSchemaElement(app, a, b, db, indentControl, true);
+        baseElement = new RPGCommandSchemaElement(app, a, b, db, indentControl, 0);
         // gets rid of subwindows & proxies
         database = db;
         app.sdb.registerECA(this);

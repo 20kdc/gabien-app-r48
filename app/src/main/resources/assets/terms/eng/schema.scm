@@ -75,6 +75,7 @@
 	cmdOutOfList "The command isn't in the list anymore, so it has no context."
 	cmdHelp " ? "
 	cmdUnk "This command isn't known by the schema's CMDB."
+	cmdRaw "Raw"
 	cmdNoDescription "This command is known, but no description exists."
 	cmdUnkName "Unknown Command"
 	theTrueNameOfAtIndent "@indent"

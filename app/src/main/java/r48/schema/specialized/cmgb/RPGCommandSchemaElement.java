@@ -52,7 +52,6 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class RPGCommandSchemaElement extends SchemaElement {
     public final boolean allowControlOfIndent;
-    public final boolean showHeader;
 
     // actualSchema is used for modifyVal,
     // while mostOfSchema is used for display.
@@ -60,19 +59,54 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
     public final CMDB database;
 
-    private RPGCommandSchemaElement hiddenHeadVer;
+    /**
+     * Hide the header.
+     */
+    public static final int RCSE_HIDE_HEADER = 1;
+
+    /**
+     * Forget all database entries exist.
+     */
+    public static final int RCSE_RAW = 2;
+
+    public final int flags;
+
+    /**
+     * This happens internally a LOT, so cache.
+     */
+    private RPGCommandSchemaElement hiddenHeadVer = null;
 
     public final EmbedDataKey<Double> scrollPointKey = new EmbedDataKey<>();
 
-    public RPGCommandSchemaElement(R48 app, SchemaElement ise, SchemaElement mos, CMDB db, boolean allowIndentControl, boolean showHdr) {
+    public RPGCommandSchemaElement(R48 app, SchemaElement ise, SchemaElement mos, CMDB db, boolean allowIndentControl, int flags) {
         super(app);
         actualSchema = ise;
         mostOfSchema = mos;
         database = db;
         allowControlOfIndent = allowIndentControl;
-        showHeader = showHdr;
-        if (!showHeader)
-            hiddenHeadVer = this;
+        this.flags = flags;
+    }
+
+    public RPGCommandSchemaElement(RPGCommandSchemaElement src, int flags) {
+        super(src.app);
+        actualSchema = src.actualSchema;
+        mostOfSchema = src.mostOfSchema;
+        database = src.database;
+        allowControlOfIndent = src.allowControlOfIndent;
+        this.flags = flags;
+    }
+
+    /**
+     * Creates a version of this RPGCommandSchemaElement with the header hidden.
+     * This is used for group sub-elements.
+     */
+    public RPGCommandSchemaElement hideHeaderVer() {
+        if (hiddenHeadVer != null)
+            return hiddenHeadVer;
+        RPGCommandSchemaElement rcse = new RPGCommandSchemaElement(this, flags | RCSE_HIDE_HEADER);
+        rcse.hiddenHeadVer = rcse;
+        hiddenHeadVer = rcse;
+        return rcse;
     }
 
     @Override
@@ -87,13 +121,14 @@ public class RPGCommandSchemaElement extends SchemaElement {
         final SchemaPath path = path2.tagSEMonitor(target, this, false);
         final AppUI U = launcher.getAppUI();
 
-        if (showHeader) {
-            UIElement chooseCode = new UIAppendButton(T.s.cmdHelp, new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTH, () -> {
+        if ((flags & RCSE_HIDE_HEADER) == 0) {
+            UITextButton selectorButton = new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTH, () -> {
                 launcher.pushObject(path2.newWindow(navigateToCode(launcher, target, (_tmp) -> {
                     // Templates don't work from here, but the path does
                     path.changeOccurred(false);
                 }, path, database), target));
-            }), () -> {
+            });
+            Runnable triggerHelp = () -> {
                 int code = (int) target.getIVar("@code").getFX();
                 RPGCommand rc = database.knownCommands.get(code);
                 String title = code + " : ";
@@ -109,11 +144,21 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     title += T.s.cmdUnkName;
                 }
                 U.launchDialog(title + "\n" + result);
-            }, app.f.schemaFieldTH);
+            };
+            UIElement chooseCode = new UIAppendButton(T.s.cmdHelp, attachRawAccess(target, launcher, path, selectorButton), triggerHelp, app.f.schemaFieldTH);
 
             return new UISplitterLayout(chooseCode, buildSubElem(target, launcher, path), true, 0);
         }
-        return buildSubElem(target, launcher, path);
+        return attachRawAccess(target, launcher, path, buildSubElem(target, launcher, path));
+    }
+
+    public UIElement attachRawAccess(final IRIO target, final ISchemaHost launcher, final SchemaPath path, UIElement base) {
+        if ((flags & RCSE_RAW) != 0)
+            return base;
+        return new UIAppendButton(T.s.cmdRaw, base, () -> {
+            RPGCommandSchemaElement rawVer = new RPGCommandSchemaElement(this, flags | RCSE_RAW);
+            launcher.pushObject(path.newWindow(rawVer, target));
+        }, app.f.schemaFieldTH);
     }
 
     private UIElement buildSubElem(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
@@ -125,7 +170,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             LinkedList<UIElement> uiSVLList = new LinkedList<>();
 
             if (target.getIVar("@indent") != null) {
-                if (showHeader) {
+                if ((flags & RCSE_HIDE_HEADER) == 0) {
                     PathSyntax indent = PathSyntax.compile(app.ilg.strict, "@indent");
                     SchemaElement ise = new PathSchemaElement(indent, () -> T.s.theTrueNameOfAtIndent, new ROIntegerSchemaElement(app, 0), false);
                     if (!allowControlOfIndent)
@@ -199,6 +244,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
     }
 
     public @Nullable RPGCommand getRPGCommand(RORIO target) {
+        if ((flags & RCSE_RAW) != 0)
+            return null;
         return database.knownCommands.get((int) target.getIVar("@code").getFX());
     }
 
@@ -248,13 +295,5 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 }
             }
         }
-    }
-
-    public RPGCommandSchemaElement hideHeaderVer() {
-        if (hiddenHeadVer != null)
-            return hiddenHeadVer;
-        RPGCommandSchemaElement rcse = new RPGCommandSchemaElement(app, actualSchema, mostOfSchema, database, allowControlOfIndent, false);
-        hiddenHeadVer = rcse;
-        return rcse;
     }
 }
